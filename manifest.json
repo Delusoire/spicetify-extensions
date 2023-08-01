@@ -1,0 +1,89 @@
+[
+    {
+        "name": "play-enhanced-songs",
+        "description": "Play your playlists and others' with enhanced songs",
+        "preview": "play-enhanced-songs/assets/preview.png",
+        "main": "dist/play-enhanced-songs.js",
+        "readme": "play-enhanced-songs/assets/README.md",
+        "authors": [
+            {
+                "name": "Delusoire",
+                "url": "https://github.com/Delusoire"
+            }
+        ],
+        "tags": [
+            "enhanced"
+        ]
+    },
+    {
+        "name": "search-on-youtube",
+        "description": "Search/Play the music video of the selected track on YouTube",
+        "preview": "search-on-youtube/assets/preview.png",
+        "main": "dist/search-on-youtube.js",
+        "readme": "search-on-youtube/assets/README.md",
+        "authors": [
+            {
+                "name": "Delusoire",
+                "url": "https://github.com/Delusoire"
+            }
+        ],
+        "tags": [
+            "search",
+            "youtube"
+        ]
+    },
+    {
+        "name": "show-the-genres",
+        "description": "Show the genres for the currently playing track and any artist page",
+        "preview": "show-the-genres/assets/preview.png",
+        "main": "dist/show-the-genres.js",
+        "readme": "show-the-genres/assets/README.md",
+        "authors": [
+            {
+                "name": "Delusoire",
+                "url": "https://github.com/Delusoire"
+            }
+        ],
+        "tags": [
+            "genres",
+            "lastfm"
+        ]
+    },
+    {
+        "name": "sort-plus",
+        "description": "Sort tracks by Spotify {playcount,popularity} or LastFM {playcount,scrobbles,personal scrobbles}",
+        "preview": "sort-plus/assets/preview.png",
+        "main": "dist/sort-plus.js",
+        "readme": "sort-plus/assets/README.md",
+        "authors": [
+            {
+                "name": "Delusoire",
+                "url": "https://github.com/Delusoire"
+            }
+        ],
+        "tags": [
+            "sort",
+            "playcount",
+            "lastfm"
+        ]
+    },
+    {
+        "name": "vaultify",
+        "description": "Vault for your playlists and settings (Backup/Restore)",
+        "preview": "vaultify/assets/preview.png",
+        "main": "dist/vaultify.js",
+        "readme": "vaultify/assets/README.md",
+        "authors": [
+            {
+                "name": "Delusoire",
+                "url": "https://github.com/Delusoire"
+            }
+        ],
+        "tags": [
+            "save",
+            "backup",
+            "restore",
+            "settings"
+        ]
+    }
+]

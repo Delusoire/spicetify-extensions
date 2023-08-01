@@ -1,0 +1,22 @@
+{
+    "packageManager": "yarn@3.6.1",
+    "type": "module",
+    "scripts": {
+        "bundle": "node esbuild.config.js"
+    },
+    "dependencies": {
+        "esbuild": "^0.18.17",
+        "esbuild-plugin-external-global": "^1.0.1",
+        "fp-ts": "^2.16.1",
+        "fp-ts-std": "^0.17.1",
+        "monocle-ts": "^2.3.13",
+        "newtype-ts": "^0.3.5",
+        "spcr-settings": "^1.2.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.2.18",
+        "@types/react-dom": "^18.2.7",
+        "prettier": "^3.0.0",
+        "typescript": "^5.1.6"
+    }
+}
