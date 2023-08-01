@@ -5,9 +5,8 @@ import {
     fetchArtistRelatedGQL,
     fetchArtistsSpotAPI50,
     fetchSoundOfSpotifyPlaylist,
-} from "./api"
-import { async } from "./fp"
-import "./popup.css"
+} from "../../shared/api"
+import { async } from "../../shared/fp"
 import {
     SpotifyURI,
     SpotifyURIType,
@@ -15,7 +14,8 @@ import {
     parseUri,
     titleCase,
     waitForElement,
-} from "./util"
+} from "../../shared/util"
+import "./popup.css"
 
 export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
     const uri = pathname.replaceAll("/", ":")

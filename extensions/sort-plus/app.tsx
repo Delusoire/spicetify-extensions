@@ -21,8 +21,8 @@ import {
     fetchPlaylistAPI,
     fetchTrackLFMAPI,
     fetchTracksSpotAPI,
-} from "./api"
-import { async, objConcat } from "./fp"
+} from "../../shared/api"
+import { async, objConcat } from "../../shared/fp"
 import {
     TrackData,
     TracksPopulater,
@@ -32,9 +32,9 @@ import {
     parseTrackFromArtistLikedTracksSP,
     parseTrackFromPlaylistAPI,
     parseTrackFromSpotifyAPI,
-} from "./parse"
+} from "../../shared/parse"
 import { CONFIG } from "./settings"
-import { SpotifyURI, SpotifyURIType, parseUri } from "./util"
+import { SpotifyURI, SpotifyURIType, parseUri } from "../../shared/util"
 
 export enum SortBy {
     SPOTIFY_PLAYCOUNT = "Spotify - Play Count",

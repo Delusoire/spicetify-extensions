@@ -3,16 +3,19 @@ import { array as a } from "fp-ts"
 import { flip, pipe as p, tupled } from "fp-ts/function"
 import { startsWith } from "fp-ts/string"
 
-import { fetchTracksSpotAPI, searchYoutube as searchYouTube } from "./api"
-import { parseTrackFromSpotifyAPI } from "./parse"
-import { CONFIG } from "./settings"
+import {
+    fetchTracksSpotAPI,
+    searchYoutube as searchYouTube,
+} from "../../shared/api"
 import {
     SpotifyID,
     SpotifyURI,
     SpotifyURIType,
     normalizeStr,
     parseUri,
-} from "./util"
+} from "../../shared/util"
+import { parseTrackFromSpotifyAPI } from "../../shared/parse"
+import { CONFIG } from "./settings"
 
 const YTVidIDCache = new Map<SpotifyID, string>()
 
@@ -27,7 +30,7 @@ const showOnYouTube = async (uri: SpotifyURI) => {
         let videos = []
         if (CONFIG.YouTubeApiKey)
             try {
-                videos = await searchYouTube(searchString)
+                videos = await searchYouTube(CONFIG.YouTubeApiKey, searchString)
             } catch (_) {}
 
         if (!videos?.length)

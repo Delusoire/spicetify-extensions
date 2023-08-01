@@ -3,8 +3,8 @@ export default {}
 import { array as a } from "fp-ts"
 import { pipe as p, tupled, flip } from "fp-ts/function"
 import { startsWith } from "fp-ts/string"
-import { fetchPlaylistEnhancedSongs } from "./api"
-import { SpotifyURI, SpotifyURIType } from "./util"
+import { fetchPlaylistEnhancedSongs } from "../../shared/api"
+import { SpotifyURI, SpotifyURIType } from "../../shared/util"
 
 let queue = new Array<any>()
 const playEnhancedSongs = async (uri: SpotifyURI) => {

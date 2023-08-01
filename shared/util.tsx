@@ -15,14 +15,14 @@ const spotUriRe =
 export const isUri = (possibleUri: string): possibleUri is SpotifyURI =>
     spotUriRe.test(possibleUri)
 
-export const parseUri = (uri: SpotifyURI) => {
-    const groups = uri.match(spotUriRe)?.groups
+export const parseUri = (uri: SpotifyURI) =>
+    uri.match(spotUriRe)?.groups as { type: SpotifyURIType; id: SpotifyID }
 
-    return {
-        type: groups?.type as SpotifyURIType,
-        id: groups?.id as SpotifyID,
-    }
-}
+export const escapeRegex = (str: string) =>
+    str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`)
+
+export const titleCase = (str: string) =>
+    str.replace(/\b\w/g, l => l.toUpperCase())
 
 export const normalizeStr = (str: string) =>
     str
@@ -30,12 +30,6 @@ export const normalizeStr = (str: string) =>
         .replace(/\[.*\]/g, "")
         .replace(/[^a-zA-Z0-9 ]/g, "")
         .toLowerCase()
-
-export const escapeRegex = (str: string) =>
-    str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`)
-
-export const titleCase = (str: string) =>
-    str.replace(/\b\w/g, l => l.toUpperCase())
 
 export const waitForElement = (
     selector: string,

@@ -6083,6 +6083,165 @@ sort.plus = (() => {
     }
   });
 
+  // shared/fp.tsx
+  var import_Semigroup3, objConcat2, objConcat, async;
+  var init_fp = __esm({
+    "shared/fp.tsx"() {
+      "use strict";
+      init_Record();
+      init_es6();
+      import_Semigroup3 = __toESM(require_Semigroup(), 1);
+      objConcat2 = () => getUnionSemigroup2((0, import_Semigroup3.first)()).concat;
+      objConcat = () => Array_exports.reduce({}, objConcat2());
+      async = (f4) => (fa) => __async(void 0, null, function* () {
+        return f4(yield fa);
+      });
+    }
+  });
+
+  // shared/util.tsx
+  var spotUriRe, parseUri;
+  var init_util = __esm({
+    "shared/util.tsx"() {
+      "use strict";
+      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
+      parseUri = (uri) => {
+        var _a;
+        return (_a = uri.match(spotUriRe)) == null ? void 0 : _a.groups;
+      };
+    }
+  });
+
+  // shared/api.tsx
+  var import_function23, fetchAlbumGQL, fetchArtistGQL, fetchTracksSpotAPI50, fetchTracksSpotAPI, fetchPlaylistAPI, createFolder, fetchArtistLikedTracksSP, fetchTrackLFMAPI;
+  var init_api = __esm({
+    "shared/api.tsx"() {
+      "use strict";
+      init_Function();
+      init_Array();
+      import_function23 = __toESM(require_function(), 1);
+      init_fp();
+      init_util();
+      fetchAlbumGQL = (uri, offset = 0, limit = 487) => __async(void 0, null, function* () {
+        return (yield Spicetify.GraphQL.Request(
+          Spicetify.GraphQL.Definitions.getAlbum,
+          { uri, locale: Spicetify.Locale.getLocale(), offset, limit }
+        )).data.albumUnion;
+      });
+      fetchArtistGQL = (uri) => __async(void 0, null, function* () {
+        return (yield Spicetify.GraphQL.Request(
+          Spicetify.GraphQL.Definitions.queryArtistOverview,
+          {
+            uri,
+            locale: Spicetify.Locale.getLocale(),
+            includePrerelease: true
+          }
+        )).data.artistUnion;
+      });
+      fetchTracksSpotAPI50 = (ids) => __async(void 0, null, function* () {
+        return (yield Spicetify.CosmosAsync.get(
+          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
+        )).tracks;
+      });
+      fetchTracksSpotAPI = (0, import_function23.flow)(
+        chunksOf3(50),
+        map(fetchTracksSpotAPI50),
+        (x) => Promise.all(x),
+        async(flatten)
+      );
+      fetchPlaylistAPI = (uri) => __async(void 0, null, function* () {
+        return (yield Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
+      });
+      createFolder = Spicetify.Platform.RootlistAPI.createFolder;
+      fetchArtistLikedTracksSP = (id6) => __async(void 0, null, function* () {
+        return (yield Spicetify.CosmosAsync.get(
+          `sp://core-collection/unstable/@/list/tracks/artist/${id6}`
+        )).items;
+      });
+      fetchTrackLFMAPI = (LFMApiKey, artist, trackName, lastFmUsername = "") => __async(void 0, null, function* () {
+        return (0, import_function23.pipe)(
+          `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
+            artist
+          )}&track=${encodeURIComponent(
+            trackName
+          )}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
+          fetch,
+          async(invokeNullary("json"))
+        );
+      });
+    }
+  });
+
+  // shared/parse.tsx
+  var parseTrackFromAlbum, parseTopTrackFromArtist, parseTrackFromArtistLikedTracksSP, parseTrackFromPlaylistAPI, parseTrackFromSpotifyAPI;
+  var init_parse = __esm({
+    "shared/parse.tsx"() {
+      "use strict";
+      parseTrackFromAlbum = ({ track }) => ({
+        albumName: void 0,
+        // gets filled in later
+        albumUri: void 0,
+        // gets filled in later
+        artistName: track.artists.items[0].profile.name,
+        artistUri: track.artists.items[0].uri,
+        durationMilis: track.duration.totalMilliseconds,
+        name: track.name,
+        playcount: Number(track.playcount),
+        popularity: void 0,
+        releaseDate: void 0,
+        // gets filled in later
+        uri: track.uri
+      });
+      parseTopTrackFromArtist = (track) => ({
+        albumUri: track.albumOfTrack.uri,
+        artistName: track.artists.items[0].profile.name,
+        artistUri: track.artists.items[0].uri,
+        durationMilis: track.duration.totalMilliseconds,
+        name: track.name,
+        playcount: Number(track.playcount),
+        popularity: void 0,
+        releaseDate: void 0,
+        uri: track.uri
+      });
+      parseTrackFromArtistLikedTracksSP = (track) => ({
+        albumName: track.album.name,
+        albumUri: track.album.link,
+        artistName: track.artists[0].name,
+        artistUri: track.artists[0].link,
+        durationMilis: track.length * 1e3,
+        name: track.name,
+        playcount: void 0,
+        popularity: track.popularity,
+        releaseDate: track.album.year,
+        uri: track.link
+      });
+      parseTrackFromPlaylistAPI = (track) => ({
+        albumName: track.album.name,
+        albumUri: track.album.uri,
+        artistName: track.artists[0].name,
+        artistUri: track.artists[0].uri,
+        durationMilis: track.duration.milliSeconds,
+        name: track.name,
+        playcount: void 0,
+        popularity: void 0,
+        releaseDate: void 0,
+        uri: track.uri
+      });
+      parseTrackFromSpotifyAPI = (track) => ({
+        albumName: track.album.name,
+        albumUri: track.album.uri,
+        artistName: track.artists[0].name,
+        artistUri: track.artists[0].uri,
+        durationMilis: track.duration_ms,
+        name: track.name,
+        playcount: void 0,
+        popularity: track.popularity,
+        releaseDate: track.album.releaseDate,
+        uri: track.uri
+      });
+    }
+  });
+
   // external-global-plugin:react
   var require_react = __commonJS({
     "external-global-plugin:react"(exports, module) {
@@ -6382,163 +6541,6 @@ sort.plus = (() => {
       CONFIG = new Proxy(settings, {
         get: (target, prop2) => target.getFieldValue(prop2.toString())
       });
-    }
-  });
-
-  // extensions/sort-plus/fp.tsx
-  var import_Semigroup3, objConcat2, objConcat, async;
-  var init_fp = __esm({
-    "extensions/sort-plus/fp.tsx"() {
-      "use strict";
-      init_Record();
-      init_es6();
-      import_Semigroup3 = __toESM(require_Semigroup(), 1);
-      objConcat2 = () => getUnionSemigroup2((0, import_Semigroup3.first)()).concat;
-      objConcat = () => Array_exports.reduce({}, objConcat2());
-      async = (f4) => (fa) => __async(void 0, null, function* () {
-        return f4(yield fa);
-      });
-    }
-  });
-
-  // extensions/sort-plus/api.tsx
-  var import_function23, fetchAlbumGQL, fetchArtistGQL, fetchArtistLikedTracksSP, fetchPlaylistAPI, fetchTracksSpotAPI50, fetchTracksSpotAPI, fetchTrackLFMAPI;
-  var init_api = __esm({
-    "extensions/sort-plus/api.tsx"() {
-      "use strict";
-      init_Array();
-      import_function23 = __toESM(require_function(), 1);
-      init_settings();
-      init_Function();
-      init_fp();
-      fetchAlbumGQL = (uri, offset = 0, limit = 487) => __async(void 0, null, function* () {
-        return (yield Spicetify.GraphQL.Request(
-          Spicetify.GraphQL.Definitions.getAlbum,
-          { uri, locale: Spicetify.Locale.getLocale(), offset, limit }
-        )).data.albumUnion;
-      });
-      fetchArtistGQL = (uri) => __async(void 0, null, function* () {
-        return (yield Spicetify.GraphQL.Request(
-          Spicetify.GraphQL.Definitions.queryArtistOverview,
-          {
-            uri,
-            locale: Spicetify.Locale.getLocale(),
-            includePrerelease: true
-          }
-        )).data.artistUnion;
-      });
-      fetchArtistLikedTracksSP = (id6) => __async(void 0, null, function* () {
-        return (yield Spicetify.CosmosAsync.get(
-          `sp://core-collection/unstable/@/list/tracks/artist/${id6}`
-        )).items;
-      });
-      fetchPlaylistAPI = (uri) => __async(void 0, null, function* () {
-        return (yield Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
-      });
-      fetchTracksSpotAPI50 = (ids) => __async(void 0, null, function* () {
-        return (yield Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-        )).tracks;
-      });
-      fetchTracksSpotAPI = (0, import_function23.flow)(
-        chunksOf3(50),
-        map(fetchTracksSpotAPI50),
-        (x) => Promise.all(x),
-        async(flatten)
-      );
-      fetchTrackLFMAPI = (artist, trackName, lastFmUsername = "") => __async(void 0, null, function* () {
-        return (0, import_function23.pipe)(
-          `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${CONFIG.LFMApiKey}&artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(
-            trackName
-          )}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
-          fetch,
-          async(invokeNullary("json"))
-        );
-      });
-    }
-  });
-
-  // extensions/sort-plus/parse.tsx
-  var parseTrackFromAlbum, parseTopTrackFromArtist, parseTrackFromArtistLikedTracksSP, parseTrackFromPlaylistAPI, parseTrackFromSpotifyAPI;
-  var init_parse = __esm({
-    "extensions/sort-plus/parse.tsx"() {
-      "use strict";
-      parseTrackFromAlbum = ({ track }) => ({
-        albumName: void 0,
-        // gets filled in later
-        albumUri: void 0,
-        // gets filled in later
-        artistName: track.artists.items[0].profile.name,
-        artistUri: track.artists.items[0].uri,
-        durationMilis: track.duration.totalMilliseconds,
-        name: track.name,
-        playcount: Number(track.playcount),
-        popularity: void 0,
-        releaseDate: void 0,
-        // gets filled in later
-        uri: track.uri
-      });
-      parseTopTrackFromArtist = (track) => ({
-        albumUri: track.albumOfTrack.uri,
-        artistName: track.artists.items[0].profile.name,
-        artistUri: track.artists.items[0].uri,
-        durationMilis: track.duration.totalMilliseconds,
-        name: track.name,
-        playcount: Number(track.playcount),
-        popularity: void 0,
-        releaseDate: void 0,
-        uri: track.uri
-      });
-      parseTrackFromArtistLikedTracksSP = (track) => ({
-        albumName: track.album.name,
-        albumUri: track.album.link,
-        artistName: track.artists[0].name,
-        artistUri: track.artists[0].link,
-        durationMilis: track.length * 1e3,
-        name: track.name,
-        playcount: void 0,
-        popularity: track.popularity,
-        releaseDate: track.album.year,
-        uri: track.link
-      });
-      parseTrackFromPlaylistAPI = (track) => ({
-        albumName: track.album.name,
-        albumUri: track.album.uri,
-        artistName: track.artists[0].name,
-        artistUri: track.artists[0].uri,
-        durationMilis: track.duration.milliSeconds,
-        name: track.name,
-        playcount: void 0,
-        popularity: void 0,
-        releaseDate: void 0,
-        uri: track.uri
-      });
-      parseTrackFromSpotifyAPI = (track) => ({
-        albumName: track.album.name,
-        albumUri: track.album.uri,
-        artistName: track.artists[0].name,
-        artistUri: track.artists[0].uri,
-        durationMilis: track.duration_ms,
-        name: track.name,
-        playcount: void 0,
-        popularity: track.popularity,
-        releaseDate: track.album.releaseDate,
-        uri: track.uri
-      });
-    }
-  });
-
-  // extensions/sort-plus/util.tsx
-  var parseUri;
-  var init_util = __esm({
-    "extensions/sort-plus/util.tsx"() {
-      "use strict";
-      parseUri = (uri) => {
-        var _a;
-        return (_a = uri.match(
-          new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$")
-        )) == null ? void 0 : _a.groups;
-      };
     }
   });
 

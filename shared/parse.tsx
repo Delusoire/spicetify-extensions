@@ -22,21 +22,20 @@ export type TrackParser = (track: UnparsedTrack) => TrackData
 export type TracksPopulater = (tracks: TrackData[]) => Promise<TrackData[]>
 
 export type fetchAlbumGQLResTrack = fetchAlbumGQLRes["tracks"]["items"][0]
-export const parseTrackFromAlbum = ({ track }: fetchAlbumGQLResTrack) =>
-    ({
-        albumName: undefined, // gets filled in later
-        albumUri: undefined, // gets filled in later
-        artistName: track.artists.items[0].profile.name,
-        artistUri: track.artists.items[0].uri,
-        durationMilis: track.duration.totalMilliseconds,
-        name: track.name,
-        playcount: Number(track.playcount),
-        popularity: undefined,
-        releaseDate: undefined, // gets filled in later
-        uri: track.uri,
-    } as TrackData)
+export const parseTrackFromAlbum = ({ track }: fetchAlbumGQLResTrack) => ({
+    albumName: undefined, // gets filled in later
+    albumUri: undefined, // gets filled in later
+    artistName: track.artists.items[0].profile.name,
+    artistUri: track.artists.items[0].uri,
+    durationMilis: track.duration.totalMilliseconds,
+    name: track.name,
+    playcount: Number(track.playcount),
+    popularity: undefined,
+    releaseDate: undefined, // gets filled in later
+    uri: track.uri,
+})
 
-export const parseTopTrackFromArtist: TrackParser = track => ({
+export const parseTopTrackFromArtist = (track: UnparsedTrack) => ({
     albumUri: track.albumOfTrack.uri,
     artistName: track.artists.items[0].profile.name,
     artistUri: track.artists.items[0].uri,
@@ -48,7 +47,7 @@ export const parseTopTrackFromArtist: TrackParser = track => ({
     uri: track.uri,
 })
 
-export const parseTrackFromArtistLikedTracksSP: TrackParser = track => ({
+export const parseTrackFromArtistLikedTracksSP = (track: UnparsedTrack) => ({
     albumName: track.album.name,
     albumUri: track.album.link,
     artistName: track.artists[0].name,
@@ -61,7 +60,7 @@ export const parseTrackFromArtistLikedTracksSP: TrackParser = track => ({
     uri: track.link,
 })
 
-export const parseTrackFromPlaylistSP: TrackParser = track => ({
+export const parseTrackFromPlaylistSP = (track: UnparsedTrack) => ({
     albumName: track.album.name,
     albumUri: track.album.link,
     artistName: track.artists[0].name,
@@ -74,7 +73,7 @@ export const parseTrackFromPlaylistSP: TrackParser = track => ({
     uri: track.link,
 })
 
-export const parseTrackFromPlaylistAPI: TrackParser = track => ({
+export const parseTrackFromPlaylistAPI = (track: UnparsedTrack) => ({
     albumName: track.album.name,
     albumUri: track.album.uri,
     artistName: track.artists[0].name,
@@ -87,7 +86,7 @@ export const parseTrackFromPlaylistAPI: TrackParser = track => ({
     uri: track.uri,
 })
 
-export const parseTrackFromSpotifyAPI: TrackParser = track => ({
+export const parseTrackFromSpotifyAPI = (track: UnparsedTrack) => ({
     albumName: track.album.name,
     albumUri: track.album.uri,
     artistName: track.artists[0].name,

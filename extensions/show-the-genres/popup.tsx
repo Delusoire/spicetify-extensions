@@ -1,8 +1,8 @@
 import { task } from "fp-ts"
 import React, { useState } from "react"
-import { fetchSoundOfSpotifyPlaylist } from "./api"
+import { fetchSoundOfSpotifyPlaylist } from "../../shared/api"
+import { normalizeStr, titleCase } from "../../shared/util"
 import { lastFmTags, spotifyGenres } from "./app"
-import { normalizeStr, titleCase } from "./util"
 import "./popup.css"
 
 export const genrePopup = () => {

@@ -10,8 +10,9 @@ import {
     fetchLikedPlaylistsSP,
     fetchPlaylistAPI,
     likePlaylist,
-} from "./api"
-import { guard2, guard3 } from "./fp"
+} from "../../shared/api"
+import { guard2, guard3 } from "../../shared/fp"
+import { SpotifyURI } from "../../shared/util"
 import {
     EFolder,
     EPlaylistLiked,
@@ -20,7 +21,6 @@ import {
     Folder,
     Playlist,
     PoF,
-    SpotifyURI,
 } from "./util"
 
 const extractLikedPlaylistTreeRecur = (leaf: PoF): Promise<EPoF> =>
@@ -71,7 +71,7 @@ const restorePlaylistseRecur = async (leaf: EPoF) => {
         [
             (leaf): leaf is EPlaylistPersonal =>
                 leaf.type === "playlist personal",
-            createPlaylist,
+            playlist => createPlaylist(playlist.name, playlist.uris),
         ],
         [
             (leaf): leaf is EPlaylistLiked => leaf.type === "playlist liked",

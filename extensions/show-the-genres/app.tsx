@@ -2,19 +2,19 @@ export default {}
 
 import { array as a, string as str } from "fp-ts"
 import { pipe as p } from "fp-ts/function"
-import { fetchSoundOfSpotifyPlaylist, fetchTrackLFMAPI } from "./api"
-import { getArtistsGenres, updateArtistPage } from "./artistPage"
-import { async } from "./fp"
-import { genrePopup } from "./popup"
-import "./popup.css"
+import { fetchSoundOfSpotifyPlaylist, fetchTrackLFMAPI } from "../../shared/api"
+import { async } from "../../shared/fp"
 import {
-    SpotifyURI,
     SpotifyURIType,
     isUri,
     parseUri,
     titleCase,
     waitForElement,
-} from "./util"
+} from "../../shared/util"
+import { getArtistsGenres, updateArtistPage } from "./artistPage"
+import { genrePopup } from "./popup"
+import "./popup.css"
+import { CONFIG } from "./settings"
 
 const searchPlaylist = (query: string) =>
     Spicetify.Platform.History.push(`/search/${query}/playlists`)
@@ -62,6 +62,7 @@ const updateGenresUI = async (genres: string[]) => {
 
         lastFmTags = p(
             await fetchTrackLFMAPI(
+                CONFIG.LFMApiKey,
                 metadata.artist_name as string,
                 metadata.title as string,
             ),
