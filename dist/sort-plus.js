@@ -1,29 +1,12 @@
 "use strict";
-var sort = sort || {};
-sort.plus = (() => {
+var sort;
+(sort ||= {}).plus = (() => {
   var __create = Object.create;
   var __defProp = Object.defineProperty;
-  var __defProps = Object.defineProperties;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
   var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __getOwnPropSymbols = Object.getOwnPropertySymbols;
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __propIsEnum = Object.prototype.propertyIsEnumerable;
-  var __defNormalProp = (obj, key2, value) => key2 in obj ? __defProp(obj, key2, { enumerable: true, configurable: true, writable: true, value }) : obj[key2] = value;
-  var __spreadValues = (a, b) => {
-    for (var prop2 in b || (b = {}))
-      if (__hasOwnProp.call(b, prop2))
-        __defNormalProp(a, prop2, b[prop2]);
-    if (__getOwnPropSymbols)
-      for (var prop2 of __getOwnPropSymbols(b)) {
-        if (__propIsEnum.call(b, prop2))
-          __defNormalProp(a, prop2, b[prop2]);
-      }
-    return a;
-  };
-  var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   var __esm = (fn, res) => function __init() {
     return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
   };
@@ -50,30 +33,6 @@ sort.plus = (() => {
     isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
     mod
   ));
-  var __publicField = (obj, key2, value) => {
-    __defNormalProp(obj, typeof key2 !== "symbol" ? key2 + "" : key2, value);
-    return value;
-  };
-  var __async = (__this, __arguments, generator) => {
-    return new Promise((resolve, reject) => {
-      var fulfilled = (value) => {
-        try {
-          step(generator.next(value));
-        } catch (e) {
-          reject(e);
-        }
-      };
-      var rejected = (value) => {
-        try {
-          step(generator.throw(value));
-        } catch (e) {
-          reject(e);
-        }
-      };
-      var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-      step((generator = generator.apply(__this, __arguments)).next());
-    });
-  };
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/function.js
   function identity(a) {
@@ -4016,11 +3975,8 @@ sort.plus = (() => {
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
-      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
-      parseUri = (uri) => {
-        var _a;
-        return (_a = uri.match(spotUriRe)) == null ? void 0 : _a.groups;
-      };
+      spotUriRe = /^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$/;
+      parseUri = (uri) => uri.match(spotUriRe)?.groups;
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
   });
@@ -4680,16 +4636,18 @@ sort.plus = (() => {
       };
       of6 = import_function16.constant;
       ap6 = (f4) => (g) => (x) => g(x)(f4(x));
-      Applicative3 = __spreadProps(__spreadValues({}, Functor5), {
+      Applicative3 = {
+        ...Functor5,
         of: of6,
         ap: (f4, g) => ap6(g)(f4)
-      });
+      };
       apFirst5 = apFirst(Applicative3);
       apSecond5 = apSecond(Applicative3);
       chain4 = (f4) => (g) => (x) => f4(g(x))(x);
-      Monad4 = __spreadProps(__spreadValues({}, Applicative3), {
+      Monad4 = {
+        ...Applicative3,
         chain: (f4, g) => chain4(g)(f4)
-      });
+      };
       Do4 = of6({});
       bindTo5 = bindTo(Functor5);
       bind5 = bind(Monad4);
@@ -6111,15 +6069,13 @@ sort.plus = (() => {
       );
       objConcat2 = () => getUnionSemigroup2((0, import_Semigroup3.first)()).concat;
       objConcat = () => Array_exports.reduce({}, objConcat2());
-      async = (f4) => (fa) => __async(void 0, null, function* () {
-        return f4(yield fa);
-      });
+      async = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
     }
   });
 
   // shared/api.tsx
-  var import_function23, fetchAlbumGQL, fetchArtistGQL, fetchTracksSpotAPI50, fetchTracksSpotAPI, fetchPlaylistAPI, createFolder, fetchArtistLikedTracksSP, fetchTrackLFMAPI;
+  var import_function23, fetchAlbumGQL, fetchArtistGQL, fetchTracksSpotAPI50, fetchTracksSpotAPI, fetchPlaylistAPI, fetchArtistLikedTracksSP, fetchTrackLFMAPI;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -6128,53 +6084,40 @@ sort.plus = (() => {
       import_function23 = __toESM(require_function(), 1);
       init_fp();
       init_util();
-      fetchAlbumGQL = (uri, offset = 0, limit = 487) => __async(void 0, null, function* () {
-        return (yield Spicetify.GraphQL.Request(
-          Spicetify.GraphQL.Definitions.getAlbum,
-          { uri, locale: Spicetify.Locale.getLocale(), offset, limit }
-        )).data.albumUnion;
-      });
-      fetchArtistGQL = (uri) => __async(void 0, null, function* () {
-        return (yield Spicetify.GraphQL.Request(
-          Spicetify.GraphQL.Definitions.queryArtistOverview,
-          {
-            uri,
-            locale: Spicetify.Locale.getLocale(),
-            includePrerelease: true
-          }
-        )).data.artistUnion;
-      });
-      fetchTracksSpotAPI50 = (ids) => __async(void 0, null, function* () {
-        return (yield Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-        )).tracks;
-      });
+      fetchAlbumGQL = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(
+        Spicetify.GraphQL.Definitions.getAlbum,
+        { uri, locale: Spicetify.Locale.getLocale(), offset, limit }
+      )).data.albumUnion;
+      fetchArtistGQL = async (uri) => (await Spicetify.GraphQL.Request(
+        Spicetify.GraphQL.Definitions.queryArtistOverview,
+        {
+          uri,
+          locale: Spicetify.Locale.getLocale(),
+          includePrerelease: true
+        }
+      )).data.artistUnion;
+      fetchTracksSpotAPI50 = async (ids) => (await Spicetify.CosmosAsync.get(
+        `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
+      )).tracks;
       fetchTracksSpotAPI = (0, import_function23.flow)(
         chunksOf3(50),
         map(fetchTracksSpotAPI50),
         (x) => Promise.all(x),
         async(flatten)
       );
-      fetchPlaylistAPI = (uri) => __async(void 0, null, function* () {
-        return (yield Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
-      });
-      createFolder = Spicetify.Platform.RootlistAPI.createFolder;
-      fetchArtistLikedTracksSP = (id6) => __async(void 0, null, function* () {
-        return (yield Spicetify.CosmosAsync.get(
-          `sp://core-collection/unstable/@/list/tracks/artist/${id6}`
-        )).items;
-      });
-      fetchTrackLFMAPI = (LFMApiKey, artist, trackName, lastFmUsername = "") => __async(void 0, null, function* () {
-        return (0, import_function23.pipe)(
-          `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
-            artist
-          )}&track=${encodeURIComponent(
-            trackName
-          )}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
-          fetch,
-          async(invokeNullary("json"))
-        );
-      });
+      fetchPlaylistAPI = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
+      fetchArtistLikedTracksSP = async (id6) => (await Spicetify.CosmosAsync.get(
+        `sp://core-collection/unstable/@/list/tracks/artist/${id6}`
+      )).items;
+      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function23.pipe)(
+        `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
+          artist
+        )}&track=${encodeURIComponent(
+          trackName
+        )}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
+        fetch,
+        async(invokeNullary("json"))
+      );
     }
   });
 
@@ -6277,223 +6220,237 @@ sort.plus = (() => {
           this.name = name;
           this.sectionId = sectionId;
           this.sectionFields = sectionFields;
-          __publicField(this, "stopHistoryListener");
-          __publicField(this, "setRerender", null);
-          __publicField(this, "pushSettings", () => __async(this, null, function* () {
-            var _a, _b;
-            while (!((_b = (_a = Spicetify == null ? void 0 : Spicetify.Platform) == null ? void 0 : _a.History) == null ? void 0 : _b.listen))
-              yield sleep(100);
-            if (this.stopHistoryListener)
-              this.stopHistoryListener();
-            this.stopHistoryListener = Spicetify.Platform.History.listen(
-              ({ pathname = "" }) => {
-                if (pathname === "/preferences")
-                  this.render();
-              }
-            );
-            if (Spicetify.Platform.History.location.pathname === "/preferences")
-              yield this.render();
-          }));
-          __publicField(this, "rerender", () => {
-            if (this.setRerender)
-              this.setRerender(Math.random());
-          });
-          __publicField(this, "render", () => __async(this, null, function* () {
-            while (!document.getElementById("desktop.settings.selectLanguage")) {
-              if (Spicetify.Platform.History.location.pathname !== "/preferences")
-                return;
-              yield sleep(100);
+        }
+        stopHistoryListener;
+        setRerender = null;
+        static waitForReact = async () => {
+          while (!(Spicetify.React && Spicetify.ReactDOM))
+            sleep(100);
+          return this;
+        };
+        pushSettings = async () => {
+          while (!Spicetify?.Platform?.History?.listen)
+            await sleep(100);
+          if (this.stopHistoryListener)
+            this.stopHistoryListener();
+          this.stopHistoryListener = Spicetify.Platform.History.listen(
+            ({ pathname = "" }) => {
+              if (pathname === "/preferences")
+                this.render();
             }
-            const allSettingsContainer = document.querySelector(
-              ".main-view-container__scroll-node-child main div"
-            );
-            if (!allSettingsContainer)
-              return console.error("[spcr-settings] settings container not found");
-            let pluginSettingsContainer = Array.from(
-              allSettingsContainer.children
-            ).find(({ id: id6 }) => id6 === this.sectionId);
-            if (!pluginSettingsContainer) {
-              pluginSettingsContainer = document.createElement("div");
-              pluginSettingsContainer.id = this.sectionId;
-              pluginSettingsContainer.className = "settingsContainer";
-              allSettingsContainer.appendChild(pluginSettingsContainer);
-            }
-            import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
-          }));
-          __publicField(this, "addButton", (nameId, description, text, onClick = import_function24.constVoid, events = {}) => {
-            const id6 = this.getId(nameId);
-            events.onClick = (e) => {
-              if (onClick)
-                onClick(e);
-            };
-            this.sectionFields[nameId] = {
-              id: id6,
-              type: "button" /* BUTTON */,
-              description,
-              text,
-              events
-            };
-            return this;
-          });
-          __publicField(this, "addToggle", (nameId, description, defaultValue, onChange = import_function24.constVoid, events = {}) => {
-            const id6 = this.getId(nameId);
-            this.setDefaultFieldValue(id6, defaultValue);
-            const [value, setValue] = this.useStateFor(id6);
-            events.onChange = (e) => {
-              setValue(e.currentTarget.checked);
-              if (onChange)
-                onChange(e);
-            };
-            events.onChange = onChange;
-            this.sectionFields[nameId] = {
-              id: id6,
-              type: "toggle" /* TOGGLE */,
-              description,
-              events
-            };
-            return this;
-          });
-          __publicField(this, "addInput", (nameId, description, defaultValue, onChange = import_function24.constVoid, inputType = "text", events = {}) => {
-            const id6 = this.getId(nameId);
-            this.setDefaultFieldValue(id6, defaultValue);
-            const [value, setValue] = this.useStateFor(id6);
-            events.onChange = (e) => {
-              setValue(e.currentTarget.value);
-              if (onChange)
-                onChange(e);
-            };
-            this.sectionFields[nameId] = {
-              id: id6,
-              type: "input" /* INPUT */,
-              description,
-              inputType,
-              events
-            };
-            return this;
-          });
-          __publicField(this, "addDropDown", (nameId, description, options, defaultValue = 0, onChange = import_function24.constVoid, events = {}) => {
-            const id6 = this.getId(nameId);
-            this.setDefaultFieldValue(id6, defaultValue);
-            const [value, setValue] = this.useStateFor(id6);
-            events.onChange = (e) => {
-              setValue(e.currentTarget.selectedIndex);
-              if (onChange)
-                onChange(e);
-            };
-            this.sectionFields[nameId] = {
-              id: id6,
-              type: "dropdown" /* DROPDOWN */,
-              description,
-              options,
-              events
-            };
-            return this;
-          });
-          __publicField(this, "addHidden", (nameId, defaultValue) => {
-            const id6 = this.getId(nameId);
-            this.setDefaultFieldValue(id6, defaultValue);
-            this.sectionFields[nameId] = {
-              id: id6,
-              type: "hidden" /* HIDDEN */,
-              description: ""
-            };
-            return this;
-          });
-          __publicField(this, "getId", (nameId) => `${this.sectionId}.${nameId}`);
-          __publicField(this, "useStateFor", (id6) => {
-            const [value, setValueState] = (0, import_react.useState)(this.getFieldValue(id6));
-            return [
-              value,
-              (newValue) => {
-                if (newValue !== void 0) {
-                  setValueState(newValue);
-                  this.setFieldValue(id6, newValue);
-                }
-              }
-            ];
-          });
-          __publicField(this, "getFieldValue", (id6) => {
-            var _a, _b;
-            return (_b = JSON.parse((_a = Spicetify.LocalStorage.get(id6)) != null ? _a : "{}")) == null ? void 0 : _b.value;
-          });
-          __publicField(this, "setFieldValue", (id6, newValue) => {
-            Spicetify.LocalStorage.set(id6, JSON.stringify({ value: newValue }));
-          });
-          __publicField(this, "setDefaultFieldValue", (id6, defaultValue) => {
-            if (this.getFieldValue(id6) === void 0)
-              this.setFieldValue(id6, defaultValue);
-          });
-          __publicField(this, "FieldsContainer", () => {
-            const [rerender, setRerender] = (0, import_react.useState)(0);
-            this.setRerender = setRerender;
-            return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-section", key: rerender }, /* @__PURE__ */ import_react.default.createElement("h2", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type" }, this.name), Object.entries(this.sectionFields).map(([nameId, field]) => {
-              return /* @__PURE__ */ import_react.default.createElement(this.Field, { field });
-            }));
-          });
-          __publicField(this, "Field", ({ field }) => {
-            const isType = is("type");
-            return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(
-              this.SettingDescription,
-              {
-                id: field.id,
-                description: field.description
-              }
-            ), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
-              [
-                isType("input" /* INPUT */),
-                this.SettingInputField
-              ],
-              [isType("button" /* BUTTON */), this.SettingButtonField],
-              [isType("toggle" /* TOGGLE */), this.SettingToggleField],
-              [isType("dropdown" /* DROPDOWN */), this.SettingDropdownField]
-            ])(this.SettingHidden)(field)));
-          });
-          __publicField(this, "SettingDescription", ({
+          );
+          if (Spicetify.Platform.History.location.pathname === "/preferences")
+            await this.render();
+        };
+        toObject = () => new Proxy(
+          {},
+          {
+            get: (target, prop2) => this.getFieldValue(prop2.toString())
+          }
+        );
+        rerender = () => {
+          if (this.setRerender)
+            this.setRerender(Math.random());
+        };
+        render = async () => {
+          while (!document.getElementById("desktop.settings.selectLanguage")) {
+            if (Spicetify.Platform.History.location.pathname !== "/preferences")
+              return;
+            await sleep(100);
+          }
+          const allSettingsContainer = document.querySelector(
+            ".main-view-container__scroll-node-child main div"
+          );
+          if (!allSettingsContainer)
+            return console.error("[spcr-settings] settings container not found");
+          let pluginSettingsContainer = Array.from(
+            allSettingsContainer.children
+          ).find(({ id: id6 }) => id6 === this.sectionId);
+          if (!pluginSettingsContainer) {
+            pluginSettingsContainer = document.createElement("div");
+            pluginSettingsContainer.id = this.sectionId;
+            pluginSettingsContainer.className = "settingsContainer";
+            allSettingsContainer.appendChild(pluginSettingsContainer);
+          }
+          import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
+        };
+        addButton = (nameId, description, text, onClick = import_function24.constVoid, events = {}) => {
+          const id6 = this.getId(nameId);
+          events.onClick = onClick;
+          this.sectionFields[nameId] = {
             id: id6,
-            description
-          }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement(
-            "label",
+            type: "button" /* BUTTON */,
+            description,
+            text,
+            events
+          };
+          return this;
+        };
+        addToggle = (nameId, description, defaultValue, onChange = import_function24.constVoid, events = {}) => {
+          const id6 = this.getId(nameId);
+          this.setDefaultFieldValue(id6, defaultValue);
+          events.onChange = onChange;
+          this.sectionFields[nameId] = {
+            id: id6,
+            type: "toggle" /* TOGGLE */,
+            description,
+            events
+          };
+          return this;
+        };
+        addInput = (nameId, description, defaultValue, onChange = import_function24.constVoid, inputType = "text", events = {}) => {
+          const id6 = this.getId(nameId);
+          this.setDefaultFieldValue(id6, defaultValue);
+          events.onChange = onChange;
+          this.sectionFields[nameId] = {
+            id: id6,
+            type: "input" /* INPUT */,
+            description,
+            inputType,
+            events
+          };
+          return this;
+        };
+        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function24.constVoid, events = {}) => {
+          const id6 = this.getId(nameId);
+          this.setDefaultFieldValue(id6, defaultValue);
+          events.onChange = onChange;
+          this.sectionFields[nameId] = {
+            id: id6,
+            type: "dropdown" /* DROPDOWN */,
+            description,
+            options,
+            events
+          };
+          return this;
+        };
+        addHidden = (nameId, defaultValue) => {
+          const id6 = this.getId(nameId);
+          this.setDefaultFieldValue(id6, defaultValue);
+          this.sectionFields[nameId] = {
+            id: id6,
+            type: "hidden" /* HIDDEN */,
+            description: ""
+          };
+          return this;
+        };
+        getId = (nameId) => `extensions:${this.sectionId}:${nameId}`;
+        useStateFor = (id6) => {
+          const [value, setValueState] = (0, import_react.useState)(this.getFieldValue(id6));
+          return [
+            value,
+            (newValue) => {
+              if (newValue !== void 0) {
+                setValueState(newValue);
+                this.setFieldValue(id6, newValue);
+              }
+            }
+          ];
+        };
+        getFieldValue = (id6) => {
+          return JSON.parse(Spicetify.LocalStorage.get(id6) ?? "{}")?.value;
+        };
+        setFieldValue = (id6, newValue) => {
+          Spicetify.LocalStorage.set(id6, JSON.stringify({ value: newValue }));
+        };
+        setDefaultFieldValue = (id6, defaultValue) => {
+          if (this.getFieldValue(id6) === void 0)
+            this.setFieldValue(id6, defaultValue);
+        };
+        FieldsContainer = () => {
+          const [rerender, setRerender] = (0, import_react.useState)(0);
+          this.setRerender = setRerender;
+          return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-section", key: rerender }, /* @__PURE__ */ import_react.default.createElement("h2", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type" }, this.name), Object.entries(this.sectionFields).map(([nameId, field]) => {
+            return /* @__PURE__ */ import_react.default.createElement(this.Field, { field });
+          }));
+        };
+        Field = ({ field }) => {
+          const isType = is("type");
+          return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(
+            this.SettingDescription,
             {
-              className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
-              htmlFor: id6
-            },
-            description
-          )));
-          __publicField(this, "SettingButtonField", (field) => /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
-            "button",
-            __spreadProps(__spreadValues({
               id: field.id,
-              className: "Button-sc-y0gtbx-0 Button-sm-buttonSecondary-isUsingKeyboard-useBrowserDefaultFocusStyle x-settings-button"
-            }, field.events), {
-              type: field.type
-            }),
-            this.getFieldValue(field.id)
-          )));
-          __publicField(this, "SettingToggleField", (field) => /* @__PURE__ */ import_react.default.createElement("label", { className: "x-settings-secondColumn x-toggle-wrapper" }, /* @__PURE__ */ import_react.default.createElement(
+              description: field.description
+            }
+          ), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
+            [
+              isType("input" /* INPUT */),
+              this.SettingInputField
+            ],
+            [isType("button" /* BUTTON */), this.SettingButtonField],
+            [isType("toggle" /* TOGGLE */), this.SettingToggleField],
+            [isType("dropdown" /* DROPDOWN */), this.SettingDropdownField]
+          ])(this.SettingHidden)(field)));
+        };
+        SettingDescription = ({
+          id: id6,
+          description
+        }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement(
+          "label",
+          {
+            className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
+            htmlFor: id6
+          },
+          description
+        ));
+        SettingButtonField = (field) => /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
+          "button",
+          {
+            id: field.id,
+            className: "Button-sc-y0gtbx-0 Button-sm-buttonSecondary-useBrowserDefaultFocusStyle x-settings-button",
+            ...field.events,
+            type: field.type
+          },
+          field.text
+        ));
+        SettingToggleField = (field) => {
+          const [value, setValue] = this.useStateFor(field.id);
+          return /* @__PURE__ */ import_react.default.createElement("label", { className: "x-settings-secondColumn x-toggle-wrapper" }, /* @__PURE__ */ import_react.default.createElement(
             "input",
-            __spreadValues({
+            {
               id: field.id,
               className: "x-toggle-input",
               type: "checkbox",
-              checked: this.getFieldValue(field.id)
-            }, field.events)
-          ), /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicator" }))));
-          __publicField(this, "SettingInputField", (field) => /* @__PURE__ */ import_react.default.createElement(
+              checked: this.getFieldValue(field.id),
+              ...field.events,
+              onChange: (e) => {
+                setValue(e.currentTarget.checked);
+                field.events.onChange?.(e);
+              }
+            }
+          ), /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicator" })));
+        };
+        SettingInputField = (field) => {
+          const [value, setValue] = this.useStateFor(field.id);
+          return /* @__PURE__ */ import_react.default.createElement(
             "input",
-            __spreadValues({
+            {
               className: "x-settings-input",
               id: field.id,
               dir: "ltr",
               value: this.getFieldValue(field.id),
-              type: field.inputType
-            }, field.events)
-          ));
-          __publicField(this, "SettingDropdownField", (field) => /* @__PURE__ */ import_react.default.createElement(
+              type: field.inputType,
+              ...field.events,
+              onChange: (e) => {
+                setValue(e.currentTarget.value);
+                field.events.onChange?.(e);
+              }
+            }
+          );
+        };
+        SettingDropdownField = (field) => {
+          const [value, setValue] = this.useStateFor(field.id);
+          return /* @__PURE__ */ import_react.default.createElement(
             "select",
-            __spreadValues({
+            {
               className: "main-dropDown-dropDown",
-              id: field.id
-            }, field.events),
+              id: field.id,
+              ...field.events,
+              onChange: (e) => {
+                setValue(e.currentTarget.selectedIndex);
+                field.events.onChange?.(e);
+              }
+            },
             field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement(
               "option",
               {
@@ -6502,9 +6459,9 @@ sort.plus = (() => {
               },
               option2
             ))
-          ));
-          __publicField(this, "SettingHidden", () => /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null));
-        }
+          );
+        };
+        SettingHidden = () => /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null);
       };
     }
   });
@@ -6515,25 +6472,13 @@ sort.plus = (() => {
     "extensions/sort-plus/settings.tsx"() {
       "use strict";
       init_settings();
-      settings = new SettingsSection("Sort+", "sort-plus");
-      settings.addToggle("ascending", "Ascending", false);
-      settings.addToggle("artist", "Ascending", false);
-      settings.addToggle("artistTopTracks", "Top Tracks", true);
-      settings.addToggle("artistPopularReleases", "Popular Releases", false);
-      settings.addToggle("artistSingles", "Singles", true);
-      settings.addToggle("artistAlbums", "Albums", true);
-      settings.addToggle("artistCompilations", "Compilations", true);
-      settings.addToggle("artistLikedTracks", "Liked Tracks", false);
-      settings.addInput("lastFmUsername", "Last.fm Username", "Delusoire");
-      settings.addInput(
+      settings = new SettingsSection("Sort+", "sort-plus").addToggle("ascending", "Ascending", false).addToggle("artist", "Ascending", false).addToggle("artistTopTracks", "Top Tracks", true).addToggle("artistPopularReleases", "Popular Releases", false).addToggle("artistSingles", "Singles", true).addToggle("artistAlbums", "Albums", true).addToggle("artistCompilations", "Compilations", true).addToggle("artistLikedTracks", "Liked Tracks", false).addInput("lastFmUsername", "Last.fm Username", "Delusoire").addInput(
         "LFMApiKey",
         "Last.fm API Key",
         "44654ea047786d90338c17331a5f5d95"
       );
       settings.pushSettings();
-      CONFIG = new Proxy(settings, {
-        get: (target, prop2) => target.getFieldValue(prop2.toString())
-      });
+      CONFIG = settings.toObject();
     }
   });
 
@@ -6548,64 +6493,62 @@ sort.plus = (() => {
     populateTracks: () => populateTracks,
     sortByProp: () => sortByProp
   });
-  function getArtistTracks(uri) {
-    return __async(this, null, function* () {
-      const parseTracksFromAggregates = (0, import_function25.flow)(
-        Array_exports.map(
-          (0, import_function25.flow)(
-            Lens.fromPath()(["releases", "items", 0, "uri"]).get,
-            getAlbumTracks
-          )
-        ),
-        (x) => Promise.all(x),
-        async(Array_exports.flatten)
+  async function getArtistTracks(uri) {
+    const parseTracksFromAggregates = (0, import_function25.flow)(
+      Array_exports.map(
+        (0, import_function25.flow)(
+          Lens.fromPath()(["releases", "items", 0, "uri"]).get,
+          getAlbumTracks
+        )
+      ),
+      (x) => Promise.all(x),
+      async(Array_exports.flatten)
+    );
+    const disc = (await fetchArtistGQL(uri)).discography;
+    const artistTopTracks = disc.topTracks.items;
+    const artistPopularReleases = disc.popularReleasesAlbums.items;
+    const artistAlbums = disc.albums.items;
+    const artistSingles = disc.singles.items;
+    const artistCompilations = disc.compilations.items;
+    const formatUrisAsAggregates = Array_exports.map(
+      ({ uri: uri2 }) => ({
+        releases: { items: [{ uri: uri2 }] }
+      })
+    );
+    const allTracks = new Array();
+    const add = (tracks) => void Array.prototype.push.apply(allTracks, tracks);
+    if (CONFIG.artistTopTracks)
+      add(
+        (0, import_function25.pipe)(
+          artistTopTracks,
+          Array_exports.map((0, import_function25.flow)(lookup4("track"), Option_exports.map(parseTopTrackFromArtist))),
+          Array_exports.sequence(Option_exports.Applicative),
+          Option_exports.getOrElse((0, import_function25.constant)([]))
+        )
       );
-      const disc = (yield fetchArtistGQL(uri)).discography;
-      const artistTopTracks = disc.topTracks.items;
-      const artistPopularReleases = disc.popularReleasesAlbums.items;
-      const artistAlbums = disc.albums.items;
-      const artistSingles = disc.singles.items;
-      const artistCompilations = disc.compilations.items;
-      const formatUrisAsAggregates = Array_exports.map(
-        ({ uri: uri2 }) => ({
-          releases: { items: [{ uri: uri2 }] }
-        })
+    if (CONFIG.artistPopularReleases)
+      add(
+        await (0, import_function25.pipe)(
+          artistPopularReleases,
+          formatUrisAsAggregates,
+          parseTracksFromAggregates
+        )
       );
-      const allTracks = new Array();
-      const add = (tracks) => void Array.prototype.push.apply(allTracks, tracks);
-      if (CONFIG.artistTopTracks)
-        add(
-          (0, import_function25.pipe)(
-            artistTopTracks,
-            Array_exports.map((0, import_function25.flow)(lookup4("track"), Option_exports.map(parseTopTrackFromArtist))),
-            Array_exports.sequence(Option_exports.Applicative),
-            Option_exports.getOrElse((0, import_function25.constant)([]))
-          )
-        );
-      if (CONFIG.artistPopularReleases)
-        add(
-          yield (0, import_function25.pipe)(
-            artistPopularReleases,
-            formatUrisAsAggregates,
-            parseTracksFromAggregates
-          )
-        );
-      if (CONFIG.artistSingles)
-        add(yield parseTracksFromAggregates(artistSingles));
-      if (CONFIG.artistAlbums)
-        add(yield parseTracksFromAggregates(artistAlbums));
-      if (CONFIG.artistCompilations)
-        add(yield parseTracksFromAggregates(artistCompilations));
-      if (CONFIG.artistLikedTracks)
-        add(
-          yield (0, import_function25.pipe)(
-            parseUri(uri).id,
-            fetchArtistLikedTracksSP,
-            async(Array_exports.map(parseTrackFromArtistLikedTracksSP))
-          )
-        );
-      return allTracks;
-    });
+    if (CONFIG.artistSingles)
+      add(await parseTracksFromAggregates(artistSingles));
+    if (CONFIG.artistAlbums)
+      add(await parseTracksFromAggregates(artistAlbums));
+    if (CONFIG.artistCompilations)
+      add(await parseTracksFromAggregates(artistCompilations));
+    if (CONFIG.artistLikedTracks)
+      add(
+        await (0, import_function25.pipe)(
+          parseUri(uri).id,
+          fetchArtistLikedTracksSP,
+          async(Array_exports.map(parseTrackFromArtistLikedTracksSP))
+        )
+      );
+    return allTracks;
   }
   var import_function25, app_default, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, queue, sortByProp, showIn, showAlways, createSortByPropSubmenu;
   var init_app = __esm({
@@ -6641,8 +6584,8 @@ sort.plus = (() => {
         SortProp2["LastFM - Play Count"] = "lastfmPlaycount";
         return SortProp2;
       })(SortProp || {});
-      getAlbumTracks = (uri) => __async(void 0, null, function* () {
-        const albumRes = yield fetchAlbumGQL(uri);
+      getAlbumTracks = async (uri) => {
+        const albumRes = await fetchAlbumGQL(uri);
         const releaseDate = albumRes.date.isoString.split("T")[0];
         return (0, import_function25.pipe)(
           albumRes.tracks.items,
@@ -6655,7 +6598,7 @@ sort.plus = (() => {
             )
           )
         );
-      });
+      };
       getPlaylistTracks = (0, import_function25.flow)(
         fetchPlaylistAPI,
         async(Array_exports.map(parseTrackFromPlaylistAPI))
@@ -6667,12 +6610,12 @@ sort.plus = (() => {
       );
       fetchAlbumTracksFromTracks = (0, import_function25.flow)(
         groupBy((track) => String(track.albumUri)),
-        mapWithIndex3((albumUri, tracks) => __async(void 0, null, function* () {
-          const albumTracks = yield getAlbumTracks(albumUri);
+        mapWithIndex3(async (albumUri, tracks) => {
+          const albumTracks = await getAlbumTracks(albumUri);
           return Array_exports.filter(
             (albumTrack) => Array_exports.some((track) => albumTrack.uri === track.uri)(tracks)
           )(albumTracks);
-        })),
+        }),
         values,
         (x) => Promise.all(x),
         async(Array_exports.flatten)
@@ -6700,8 +6643,8 @@ sort.plus = (() => {
         async(values),
         async(Array_exports.map(objConcat()))
       );
-      populateTrackLastFM = (track) => __async(void 0, null, function* () {
-        const lastfmTrack = (yield fetchTrackLFMAPI(
+      populateTrackLastFM = async (track) => {
+        const lastfmTrack = (await fetchTrackLFMAPI(
           track.artistName,
           track.name,
           CONFIG.lastFmUserName
@@ -6710,7 +6653,7 @@ sort.plus = (() => {
         track.scrobbles = Number(lastfmTrack.playcount);
         track.personalScrobbles = Number(lastfmTrack.userplaycount);
         return track;
-      });
+      };
       fetchTracks = guard4([
         [startsWith("spotify:album" /* ALBUM */), getAlbumTracks],
         [startsWith("spotify:artist" /* ARTIST */), getArtistTracks],
@@ -6724,10 +6667,10 @@ sort.plus = (() => {
         ]
       ])((0, import_function25.constant)(Task_exports.of([])));
       queue = new Array();
-      sortByProp = (name) => (uri) => __async(void 0, null, function* () {
+      sortByProp = (name) => async (uri) => {
         const prop2 = SortProp[name];
         const toProp = Optional.fromNullableProp()(prop2).getOption;
-        queue = yield (0, import_function25.pipe)(
+        queue = await (0, import_function25.pipe)(
           uri,
           fetchTracks,
           async(populateTracks(name)),
@@ -6743,10 +6686,10 @@ sort.plus = (() => {
         );
         if (queue.length <= 1)
           return Spicetify.showNotification("Data not available");
-        yield Spicetify.Platform.PlayerAPI.clearQueue();
-        yield Spicetify.Platform.PlayerAPI.addToQueue(queue);
+        await Spicetify.Platform.PlayerAPI.clearQueue();
+        await Spicetify.Platform.PlayerAPI.addToQueue(queue);
         Spicetify.Player.next();
-      });
+      };
       showIn = (allowedTypes) => ([uri]) => (0, import_function25.pipe)(allowedTypes, Array_exports.some((0, import_function25.flip)(startsWith)(uri)));
       showAlways = showIn([
         "spotify:album" /* ALBUM */,
@@ -6777,7 +6720,7 @@ sort.plus = (() => {
   init_Record();
   var import_function26 = __toESM(require_function(), 1);
   init_util();
-  (() => __async(void 0, null, function* () {
+  (async () => {
     const mustLoad = [
       "ContextMenu",
       "CosmosAsync",
@@ -6785,11 +6728,13 @@ sort.plus = (() => {
       "Locale",
       "Platform",
       "Player",
+      "React",
+      "ReactDOM",
       "showNotification"
     ];
     let timer = 0;
     while (mustLoad.some((0, import_function26.flow)((0, import_function26.flip)(lookup4)(Spicetify), Option_exports.isNone)))
-      yield sleep(timer += 100);
-    yield Promise.resolve().then(() => (init_app(), app_exports));
-  }))();
+      await sleep(timer += 100);
+    await Promise.resolve().then(() => (init_app(), app_exports));
+  })();
 })();

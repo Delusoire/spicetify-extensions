@@ -10,6 +10,8 @@ import { sleep } from "../../shared/util"
         "Locale",
         "Platform",
         "Player",
+        "React",
+        "ReactDOM",
         "showNotification",
     ]
 

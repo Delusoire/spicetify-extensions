@@ -10,6 +10,8 @@ import { sleep } from "../../shared/util"
         "Platform",
         "Player",
         "PopupModal",
+        "React",
+        "ReactDOM",
     ]
 
     let timer = 0

@@ -1,30 +1,12 @@
 "use strict";
-var search = search || {};
-search.on = search.on || {};
-search.on.youtube = (() => {
+var search;
+((search ||= {}).on ||= {}).youtube = (() => {
   var __create = Object.create;
   var __defProp = Object.defineProperty;
-  var __defProps = Object.defineProperties;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
   var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __getOwnPropSymbols = Object.getOwnPropertySymbols;
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __propIsEnum = Object.prototype.propertyIsEnumerable;
-  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-  var __spreadValues = (a, b) => {
-    for (var prop in b || (b = {}))
-      if (__hasOwnProp.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    if (__getOwnPropSymbols)
-      for (var prop of __getOwnPropSymbols(b)) {
-        if (__propIsEnum.call(b, prop))
-          __defNormalProp(a, prop, b[prop]);
-      }
-    return a;
-  };
-  var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   var __esm = (fn, res) => function __init() {
     return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
   };
@@ -51,30 +33,6 @@ search.on.youtube = (() => {
     isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
     mod
   ));
-  var __publicField = (obj, key, value) => {
-    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-    return value;
-  };
-  var __async = (__this, __arguments, generator) => {
-    return new Promise((resolve, reject) => {
-      var fulfilled = (value) => {
-        try {
-          step(generator.next(value));
-        } catch (e) {
-          reject(e);
-        }
-      };
-      var rejected = (value) => {
-        try {
-          step(generator.throw(value));
-        } catch (e) {
-          reject(e);
-        }
-      };
-      var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-      step((generator = generator.apply(__this, __arguments)).next());
-    });
-  };
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/function.js
   function identity(a) {
@@ -3270,11 +3228,8 @@ search.on.youtube = (() => {
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
-      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
-      parseUri = (uri) => {
-        var _a;
-        return (_a = uri.match(spotUriRe)) == null ? void 0 : _a.groups;
-      };
+      spotUriRe = /^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$/;
+      parseUri = (uri) => uri.match(spotUriRe)?.groups;
       normalizeStr = (str) => str.replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase();
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
@@ -3935,16 +3890,18 @@ search.on.youtube = (() => {
       };
       of5 = import_function9.constant;
       ap4 = (f3) => (g) => (x) => g(x)(f3(x));
-      Applicative3 = __spreadProps(__spreadValues({}, Functor3), {
+      Applicative3 = {
+        ...Functor3,
         of: of5,
         ap: (f3, g) => ap4(g)(f3)
-      });
+      };
       apFirst4 = apFirst(Applicative3);
       apSecond4 = apSecond(Applicative3);
       chain3 = (f3) => (g) => (x) => f3(g(x))(x);
-      Monad3 = __spreadProps(__spreadValues({}, Applicative3), {
+      Monad3 = {
+        ...Applicative3,
         chain: (f3, g) => chain3(g)(f3)
-      });
+      };
       Do3 = of5({});
       bindTo4 = bindTo(Functor3);
       bind4 = bind(Monad3);
@@ -3977,15 +3934,13 @@ search.on.youtube = (() => {
       guard42 = (branches) => guard4(
         branches
       );
-      async = (f3) => (fa) => __async(void 0, null, function* () {
-        return f3(yield fa);
-      });
+      async = (f3) => async (fa) => f3(await fa);
       is = (c) => (a) => (field) => field[c] === a;
     }
   });
 
   // shared/api.tsx
-  var import_function10, fetchTracksSpotAPI50, fetchTracksSpotAPI, createFolder, searchYoutube;
+  var import_function10, fetchTracksSpotAPI50, fetchTracksSpotAPI, searchYoutube;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -3993,25 +3948,20 @@ search.on.youtube = (() => {
       import_function10 = __toESM(require_function(), 1);
       init_fp();
       init_util();
-      fetchTracksSpotAPI50 = (ids) => __async(void 0, null, function* () {
-        return (yield Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-        )).tracks;
-      });
+      fetchTracksSpotAPI50 = async (ids) => (await Spicetify.CosmosAsync.get(
+        `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
+      )).tracks;
       fetchTracksSpotAPI = (0, import_function10.flow)(
         chunksOf3(50),
         map(fetchTracksSpotAPI50),
         (x) => Promise.all(x),
         async(flatten)
       );
-      createFolder = Spicetify.Platform.RootlistAPI.createFolder;
-      searchYoutube = (YouTubeApiKey, searchString) => __async(void 0, null, function* () {
-        return (yield (yield fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(
-            searchString
-          )}&type=video&key=${YouTubeApiKey}`
-        )).json()).items;
-      });
+      searchYoutube = async (YouTubeApiKey, searchString) => (await (await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(
+          searchString
+        )}&type=video&key=${YouTubeApiKey}`
+      )).json()).items;
     }
   });
 
@@ -4064,223 +4014,237 @@ search.on.youtube = (() => {
           this.name = name;
           this.sectionId = sectionId;
           this.sectionFields = sectionFields;
-          __publicField(this, "stopHistoryListener");
-          __publicField(this, "setRerender", null);
-          __publicField(this, "pushSettings", () => __async(this, null, function* () {
-            var _a, _b;
-            while (!((_b = (_a = Spicetify == null ? void 0 : Spicetify.Platform) == null ? void 0 : _a.History) == null ? void 0 : _b.listen))
-              yield sleep(100);
-            if (this.stopHistoryListener)
-              this.stopHistoryListener();
-            this.stopHistoryListener = Spicetify.Platform.History.listen(
-              ({ pathname = "" }) => {
-                if (pathname === "/preferences")
-                  this.render();
-              }
-            );
-            if (Spicetify.Platform.History.location.pathname === "/preferences")
-              yield this.render();
-          }));
-          __publicField(this, "rerender", () => {
-            if (this.setRerender)
-              this.setRerender(Math.random());
-          });
-          __publicField(this, "render", () => __async(this, null, function* () {
-            while (!document.getElementById("desktop.settings.selectLanguage")) {
-              if (Spicetify.Platform.History.location.pathname !== "/preferences")
-                return;
-              yield sleep(100);
+        }
+        stopHistoryListener;
+        setRerender = null;
+        static waitForReact = async () => {
+          while (!(Spicetify.React && Spicetify.ReactDOM))
+            sleep(100);
+          return this;
+        };
+        pushSettings = async () => {
+          while (!Spicetify?.Platform?.History?.listen)
+            await sleep(100);
+          if (this.stopHistoryListener)
+            this.stopHistoryListener();
+          this.stopHistoryListener = Spicetify.Platform.History.listen(
+            ({ pathname = "" }) => {
+              if (pathname === "/preferences")
+                this.render();
             }
-            const allSettingsContainer = document.querySelector(
-              ".main-view-container__scroll-node-child main div"
-            );
-            if (!allSettingsContainer)
-              return console.error("[spcr-settings] settings container not found");
-            let pluginSettingsContainer = Array.from(
-              allSettingsContainer.children
-            ).find(({ id }) => id === this.sectionId);
-            if (!pluginSettingsContainer) {
-              pluginSettingsContainer = document.createElement("div");
-              pluginSettingsContainer.id = this.sectionId;
-              pluginSettingsContainer.className = "settingsContainer";
-              allSettingsContainer.appendChild(pluginSettingsContainer);
-            }
-            import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
-          }));
-          __publicField(this, "addButton", (nameId, description, text, onClick = import_function11.constVoid, events = {}) => {
-            const id = this.getId(nameId);
-            events.onClick = (e) => {
-              if (onClick)
-                onClick(e);
-            };
-            this.sectionFields[nameId] = {
-              id,
-              type: "button" /* BUTTON */,
-              description,
-              text,
-              events
-            };
-            return this;
-          });
-          __publicField(this, "addToggle", (nameId, description, defaultValue, onChange = import_function11.constVoid, events = {}) => {
-            const id = this.getId(nameId);
-            this.setDefaultFieldValue(id, defaultValue);
-            const [value, setValue] = this.useStateFor(id);
-            events.onChange = (e) => {
-              setValue(e.currentTarget.checked);
-              if (onChange)
-                onChange(e);
-            };
-            events.onChange = onChange;
-            this.sectionFields[nameId] = {
-              id,
-              type: "toggle" /* TOGGLE */,
-              description,
-              events
-            };
-            return this;
-          });
-          __publicField(this, "addInput", (nameId, description, defaultValue, onChange = import_function11.constVoid, inputType = "text", events = {}) => {
-            const id = this.getId(nameId);
-            this.setDefaultFieldValue(id, defaultValue);
-            const [value, setValue] = this.useStateFor(id);
-            events.onChange = (e) => {
-              setValue(e.currentTarget.value);
-              if (onChange)
-                onChange(e);
-            };
-            this.sectionFields[nameId] = {
-              id,
-              type: "input" /* INPUT */,
-              description,
-              inputType,
-              events
-            };
-            return this;
-          });
-          __publicField(this, "addDropDown", (nameId, description, options, defaultValue = 0, onChange = import_function11.constVoid, events = {}) => {
-            const id = this.getId(nameId);
-            this.setDefaultFieldValue(id, defaultValue);
-            const [value, setValue] = this.useStateFor(id);
-            events.onChange = (e) => {
-              setValue(e.currentTarget.selectedIndex);
-              if (onChange)
-                onChange(e);
-            };
-            this.sectionFields[nameId] = {
-              id,
-              type: "dropdown" /* DROPDOWN */,
-              description,
-              options,
-              events
-            };
-            return this;
-          });
-          __publicField(this, "addHidden", (nameId, defaultValue) => {
-            const id = this.getId(nameId);
-            this.setDefaultFieldValue(id, defaultValue);
-            this.sectionFields[nameId] = {
-              id,
-              type: "hidden" /* HIDDEN */,
-              description: ""
-            };
-            return this;
-          });
-          __publicField(this, "getId", (nameId) => `${this.sectionId}.${nameId}`);
-          __publicField(this, "useStateFor", (id) => {
-            const [value, setValueState] = (0, import_react.useState)(this.getFieldValue(id));
-            return [
-              value,
-              (newValue) => {
-                if (newValue !== void 0) {
-                  setValueState(newValue);
-                  this.setFieldValue(id, newValue);
-                }
-              }
-            ];
-          });
-          __publicField(this, "getFieldValue", (id) => {
-            var _a, _b;
-            return (_b = JSON.parse((_a = Spicetify.LocalStorage.get(id)) != null ? _a : "{}")) == null ? void 0 : _b.value;
-          });
-          __publicField(this, "setFieldValue", (id, newValue) => {
-            Spicetify.LocalStorage.set(id, JSON.stringify({ value: newValue }));
-          });
-          __publicField(this, "setDefaultFieldValue", (id, defaultValue) => {
-            if (this.getFieldValue(id) === void 0)
-              this.setFieldValue(id, defaultValue);
-          });
-          __publicField(this, "FieldsContainer", () => {
-            const [rerender, setRerender] = (0, import_react.useState)(0);
-            this.setRerender = setRerender;
-            return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-section", key: rerender }, /* @__PURE__ */ import_react.default.createElement("h2", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type" }, this.name), Object.entries(this.sectionFields).map(([nameId, field]) => {
-              return /* @__PURE__ */ import_react.default.createElement(this.Field, { field });
-            }));
-          });
-          __publicField(this, "Field", ({ field }) => {
-            const isType = is("type");
-            return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(
-              this.SettingDescription,
-              {
-                id: field.id,
-                description: field.description
-              }
-            ), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
-              [
-                isType("input" /* INPUT */),
-                this.SettingInputField
-              ],
-              [isType("button" /* BUTTON */), this.SettingButtonField],
-              [isType("toggle" /* TOGGLE */), this.SettingToggleField],
-              [isType("dropdown" /* DROPDOWN */), this.SettingDropdownField]
-            ])(this.SettingHidden)(field)));
-          });
-          __publicField(this, "SettingDescription", ({
+          );
+          if (Spicetify.Platform.History.location.pathname === "/preferences")
+            await this.render();
+        };
+        toObject = () => new Proxy(
+          {},
+          {
+            get: (target, prop) => this.getFieldValue(prop.toString())
+          }
+        );
+        rerender = () => {
+          if (this.setRerender)
+            this.setRerender(Math.random());
+        };
+        render = async () => {
+          while (!document.getElementById("desktop.settings.selectLanguage")) {
+            if (Spicetify.Platform.History.location.pathname !== "/preferences")
+              return;
+            await sleep(100);
+          }
+          const allSettingsContainer = document.querySelector(
+            ".main-view-container__scroll-node-child main div"
+          );
+          if (!allSettingsContainer)
+            return console.error("[spcr-settings] settings container not found");
+          let pluginSettingsContainer = Array.from(
+            allSettingsContainer.children
+          ).find(({ id }) => id === this.sectionId);
+          if (!pluginSettingsContainer) {
+            pluginSettingsContainer = document.createElement("div");
+            pluginSettingsContainer.id = this.sectionId;
+            pluginSettingsContainer.className = "settingsContainer";
+            allSettingsContainer.appendChild(pluginSettingsContainer);
+          }
+          import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
+        };
+        addButton = (nameId, description, text, onClick = import_function11.constVoid, events = {}) => {
+          const id = this.getId(nameId);
+          events.onClick = onClick;
+          this.sectionFields[nameId] = {
             id,
-            description
-          }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement(
-            "label",
+            type: "button" /* BUTTON */,
+            description,
+            text,
+            events
+          };
+          return this;
+        };
+        addToggle = (nameId, description, defaultValue, onChange = import_function11.constVoid, events = {}) => {
+          const id = this.getId(nameId);
+          this.setDefaultFieldValue(id, defaultValue);
+          events.onChange = onChange;
+          this.sectionFields[nameId] = {
+            id,
+            type: "toggle" /* TOGGLE */,
+            description,
+            events
+          };
+          return this;
+        };
+        addInput = (nameId, description, defaultValue, onChange = import_function11.constVoid, inputType = "text", events = {}) => {
+          const id = this.getId(nameId);
+          this.setDefaultFieldValue(id, defaultValue);
+          events.onChange = onChange;
+          this.sectionFields[nameId] = {
+            id,
+            type: "input" /* INPUT */,
+            description,
+            inputType,
+            events
+          };
+          return this;
+        };
+        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function11.constVoid, events = {}) => {
+          const id = this.getId(nameId);
+          this.setDefaultFieldValue(id, defaultValue);
+          events.onChange = onChange;
+          this.sectionFields[nameId] = {
+            id,
+            type: "dropdown" /* DROPDOWN */,
+            description,
+            options,
+            events
+          };
+          return this;
+        };
+        addHidden = (nameId, defaultValue) => {
+          const id = this.getId(nameId);
+          this.setDefaultFieldValue(id, defaultValue);
+          this.sectionFields[nameId] = {
+            id,
+            type: "hidden" /* HIDDEN */,
+            description: ""
+          };
+          return this;
+        };
+        getId = (nameId) => `extensions:${this.sectionId}:${nameId}`;
+        useStateFor = (id) => {
+          const [value, setValueState] = (0, import_react.useState)(this.getFieldValue(id));
+          return [
+            value,
+            (newValue) => {
+              if (newValue !== void 0) {
+                setValueState(newValue);
+                this.setFieldValue(id, newValue);
+              }
+            }
+          ];
+        };
+        getFieldValue = (id) => {
+          return JSON.parse(Spicetify.LocalStorage.get(id) ?? "{}")?.value;
+        };
+        setFieldValue = (id, newValue) => {
+          Spicetify.LocalStorage.set(id, JSON.stringify({ value: newValue }));
+        };
+        setDefaultFieldValue = (id, defaultValue) => {
+          if (this.getFieldValue(id) === void 0)
+            this.setFieldValue(id, defaultValue);
+        };
+        FieldsContainer = () => {
+          const [rerender, setRerender] = (0, import_react.useState)(0);
+          this.setRerender = setRerender;
+          return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-section", key: rerender }, /* @__PURE__ */ import_react.default.createElement("h2", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type" }, this.name), Object.entries(this.sectionFields).map(([nameId, field]) => {
+            return /* @__PURE__ */ import_react.default.createElement(this.Field, { field });
+          }));
+        };
+        Field = ({ field }) => {
+          const isType = is("type");
+          return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(
+            this.SettingDescription,
             {
-              className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
-              htmlFor: id
-            },
-            description
-          )));
-          __publicField(this, "SettingButtonField", (field) => /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
-            "button",
-            __spreadProps(__spreadValues({
               id: field.id,
-              className: "Button-sc-y0gtbx-0 Button-sm-buttonSecondary-isUsingKeyboard-useBrowserDefaultFocusStyle x-settings-button"
-            }, field.events), {
-              type: field.type
-            }),
-            this.getFieldValue(field.id)
-          )));
-          __publicField(this, "SettingToggleField", (field) => /* @__PURE__ */ import_react.default.createElement("label", { className: "x-settings-secondColumn x-toggle-wrapper" }, /* @__PURE__ */ import_react.default.createElement(
+              description: field.description
+            }
+          ), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
+            [
+              isType("input" /* INPUT */),
+              this.SettingInputField
+            ],
+            [isType("button" /* BUTTON */), this.SettingButtonField],
+            [isType("toggle" /* TOGGLE */), this.SettingToggleField],
+            [isType("dropdown" /* DROPDOWN */), this.SettingDropdownField]
+          ])(this.SettingHidden)(field)));
+        };
+        SettingDescription = ({
+          id,
+          description
+        }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement(
+          "label",
+          {
+            className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
+            htmlFor: id
+          },
+          description
+        ));
+        SettingButtonField = (field) => /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
+          "button",
+          {
+            id: field.id,
+            className: "Button-sc-y0gtbx-0 Button-sm-buttonSecondary-useBrowserDefaultFocusStyle x-settings-button",
+            ...field.events,
+            type: field.type
+          },
+          field.text
+        ));
+        SettingToggleField = (field) => {
+          const [value, setValue] = this.useStateFor(field.id);
+          return /* @__PURE__ */ import_react.default.createElement("label", { className: "x-settings-secondColumn x-toggle-wrapper" }, /* @__PURE__ */ import_react.default.createElement(
             "input",
-            __spreadValues({
+            {
               id: field.id,
               className: "x-toggle-input",
               type: "checkbox",
-              checked: this.getFieldValue(field.id)
-            }, field.events)
-          ), /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicator" }))));
-          __publicField(this, "SettingInputField", (field) => /* @__PURE__ */ import_react.default.createElement(
+              checked: this.getFieldValue(field.id),
+              ...field.events,
+              onChange: (e) => {
+                setValue(e.currentTarget.checked);
+                field.events.onChange?.(e);
+              }
+            }
+          ), /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicator" })));
+        };
+        SettingInputField = (field) => {
+          const [value, setValue] = this.useStateFor(field.id);
+          return /* @__PURE__ */ import_react.default.createElement(
             "input",
-            __spreadValues({
+            {
               className: "x-settings-input",
               id: field.id,
               dir: "ltr",
               value: this.getFieldValue(field.id),
-              type: field.inputType
-            }, field.events)
-          ));
-          __publicField(this, "SettingDropdownField", (field) => /* @__PURE__ */ import_react.default.createElement(
+              type: field.inputType,
+              ...field.events,
+              onChange: (e) => {
+                setValue(e.currentTarget.value);
+                field.events.onChange?.(e);
+              }
+            }
+          );
+        };
+        SettingDropdownField = (field) => {
+          const [value, setValue] = this.useStateFor(field.id);
+          return /* @__PURE__ */ import_react.default.createElement(
             "select",
-            __spreadValues({
+            {
               className: "main-dropDown-dropDown",
-              id: field.id
-            }, field.events),
+              id: field.id,
+              ...field.events,
+              onChange: (e) => {
+                setValue(e.currentTarget.selectedIndex);
+                field.events.onChange?.(e);
+              }
+            },
             field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement(
               "option",
               {
@@ -4289,9 +4253,9 @@ search.on.youtube = (() => {
               },
               option2
             ))
-          ));
-          __publicField(this, "SettingHidden", () => /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null));
-        }
+          );
+        };
+        SettingHidden = () => /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null);
       };
     }
   });
@@ -4302,16 +4266,16 @@ search.on.youtube = (() => {
     "extensions/search-on-youtube/settings.tsx"() {
       "use strict";
       init_settings();
-      settings = new SettingsSection("Show on youtube", "show-on-youtube");
-      settings.addInput(
+      settings = new SettingsSection(
+        "Show on youtube",
+        "show-on-youtube"
+      ).addInput(
         "YouTubeApiKey",
         "YouTube API Key",
         "000000000000000000000000000000000000000"
       );
       settings.pushSettings();
-      CONFIG = new Proxy(settings, {
-        get: (target, prop) => target.getFieldValue(prop.toString())
-      });
+      CONFIG = settings.toObject();
     }
   });
 
@@ -4333,21 +4297,20 @@ search.on.youtube = (() => {
       init_settings2();
       app_default = {};
       YTVidIDCache = /* @__PURE__ */ new Map();
-      showOnYouTube = (uri) => __async(void 0, null, function* () {
-        var _a, _b;
+      showOnYouTube = async (uri) => {
         const id = parseUri(uri).id;
         if (!YTVidIDCache.get(id)) {
           const track = parseTrackFromSpotifyAPI(
-            (yield fetchTracksSpotAPI([id]))[0]
+            (await fetchTracksSpotAPI([id]))[0]
           );
           const searchString = `${track.artistName} - ${track.name} music video`;
           let videos = [];
           if (CONFIG.YouTubeApiKey)
             try {
-              videos = yield searchYoutube(CONFIG.YouTubeApiKey, searchString);
+              videos = await searchYoutube(CONFIG.YouTubeApiKey, searchString);
             } catch (_) {
             }
-          if (!(videos == null ? void 0 : videos.length))
+          if (!videos?.length)
             return void window.open(
               `https://www.youtube.com/results?search_query=${encodeURIComponent(
                 searchString
@@ -4356,13 +4319,13 @@ search.on.youtube = (() => {
           const normalizedTrackName = normalizeStr(track.name);
           YTVidIDCache.set(
             id,
-            (_b = (_a = videos.find((video) => {
+            videos.find((video) => {
               normalizeStr(video.snippet.title).includes(normalizedTrackName);
-            })) == null ? void 0 : _a.id.videoId) != null ? _b : videos[0].id.videoId
+            })?.id.videoId ?? videos[0].id.videoId
           );
         }
         window.open(`https://www.youtube.com/watch?v=${YTVidIDCache.get(id)}`);
-      });
+      };
       showIn = (allowedTypes) => ([uri]) => (0, import_function12.pipe)(allowedTypes, Array_exports.some((0, import_function12.flip)(startsWith)(uri)));
       new Spicetify.ContextMenu.Item(
         "Search on YouTube",
@@ -4378,11 +4341,11 @@ search.on.youtube = (() => {
   init_Record();
   var import_function13 = __toESM(require_function(), 1);
   init_util();
-  (() => __async(void 0, null, function* () {
-    const mustLoad = ["ContextMenu", "CosmosAsync"];
+  (async () => {
+    const mustLoad = ["ContextMenu", "CosmosAsync", "React", "ReactDOM"];
     let timer = 0;
     while (mustLoad.some((0, import_function13.flow)((0, import_function13.flip)(lookup4)(Spicetify), Option_exports.isNone)))
-      yield sleep(timer += 100);
-    yield Promise.resolve().then(() => (init_app(), app_exports));
-  }))();
+      await sleep(timer += 100);
+    await Promise.resolve().then(() => (init_app(), app_exports));
+  })();
 })();

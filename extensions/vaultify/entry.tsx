@@ -7,6 +7,8 @@ import { sleep } from "../../shared/util"
         "CosmosAsync",
         "LocalStorage",
         "Platform",
+        "React",
+        "ReactDOM",
         "showNotification",
     ]
 

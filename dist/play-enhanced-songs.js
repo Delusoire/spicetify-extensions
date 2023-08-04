@@ -1,7 +1,6 @@
 "use strict";
-var play = play || {};
-play.enhanced = play.enhanced || {};
-play.enhanced.songs = (() => {
+var play;
+((play ||= {}).enhanced ||= {}).songs = (() => {
   var __create = Object.create;
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -34,26 +33,6 @@ play.enhanced.songs = (() => {
     isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
     mod
   ));
-  var __async = (__this, __arguments, generator) => {
-    return new Promise((resolve, reject) => {
-      var fulfilled = (value) => {
-        try {
-          step(generator.next(value));
-        } catch (e) {
-          reject(e);
-        }
-      };
-      var rejected = (value) => {
-        try {
-          step(generator.throw(value));
-        } catch (e) {
-          reject(e);
-        }
-      };
-      var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-      step((generator = generator.apply(__this, __arguments)).next());
-    });
-  };
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/function.js
   function identity(a) {
@@ -3146,11 +3125,10 @@ play.enhanced.songs = (() => {
   });
 
   // shared/util.tsx
-  var spotUriRe, sleep;
+  var sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
-      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
   });
@@ -3160,14 +3138,12 @@ play.enhanced.songs = (() => {
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
-      async = (f3) => (fa) => __async(void 0, null, function* () {
-        return f3(yield fa);
-      });
+      async = (f3) => async (fa) => f3(await fa);
     }
   });
 
   // shared/api.tsx
-  var import_function8, fetchTracksSpotAPI50, fetchTracksSpotAPI, createFolder, fetchPlaylistEnhancedSongs100, fetchPlaylistEnhancedSongs;
+  var import_function8, fetchTracksSpotAPI50, fetchTracksSpotAPI, fetchPlaylistEnhancedSongs100, fetchPlaylistEnhancedSongs;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -3175,30 +3151,25 @@ play.enhanced.songs = (() => {
       import_function8 = __toESM(require_function(), 1);
       init_fp();
       init_util();
-      fetchTracksSpotAPI50 = (ids) => __async(void 0, null, function* () {
-        return (yield Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-        )).tracks;
-      });
+      fetchTracksSpotAPI50 = async (ids) => (await Spicetify.CosmosAsync.get(
+        `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
+      )).tracks;
       fetchTracksSpotAPI = (0, import_function8.flow)(
         chunksOf3(50),
         map(fetchTracksSpotAPI50),
         (x) => Promise.all(x),
         async(flatten)
       );
-      createFolder = Spicetify.Platform.RootlistAPI.createFolder;
-      fetchPlaylistEnhancedSongs100 = (uri, offset = 0) => __async(void 0, null, function* () {
-        return (yield Spicetify.CosmosAsync.get(
-          `https://spclient.wg.spotify.com/enhanced-view/v1/context/${uri}?&offset=${offset}&format=json`
-        )).pageItems;
-      });
-      fetchPlaylistEnhancedSongs = (uri, offset = 0) => __async(void 0, null, function* () {
-        const nextPageItems = yield fetchPlaylistEnhancedSongs100(uri, offset);
-        if ((nextPageItems == null ? void 0 : nextPageItems.length) < 100)
+      fetchPlaylistEnhancedSongs100 = async (uri, offset = 0) => (await Spicetify.CosmosAsync.get(
+        `https://spclient.wg.spotify.com/enhanced-view/v1/context/${uri}?&offset=${offset}&format=json`
+      )).pageItems;
+      fetchPlaylistEnhancedSongs = async (uri, offset = 0) => {
+        const nextPageItems = await fetchPlaylistEnhancedSongs100(uri, offset);
+        if (nextPageItems?.length < 100)
           return nextPageItems;
         else
           return nextPageItems.concat(fetch);
-      });
+      };
     }
   });
 
@@ -3218,11 +3189,11 @@ play.enhanced.songs = (() => {
       init_util();
       app_default = {};
       queue = new Array();
-      playEnhancedSongs = (uri) => __async(void 0, null, function* () {
-        queue = yield fetchPlaylistEnhancedSongs(uri);
+      playEnhancedSongs = async (uri) => {
+        queue = await fetchPlaylistEnhancedSongs(uri);
         Spicetify.Platform.PlayerAPI.clearQueue();
         Spicetify.Platform.PlayerAPI.addToQueue(queue);
-      });
+      };
       showIn = (allowedTypes) => ([uri]) => (0, import_function9.pipe)(allowedTypes, Array_exports.some((0, import_function9.flip)(startsWith)(uri)));
       new Spicetify.ContextMenu.Item(
         "Play enhanced songs",
@@ -3238,11 +3209,11 @@ play.enhanced.songs = (() => {
   init_Record();
   var import_function10 = __toESM(require_function(), 1);
   init_util();
-  (() => __async(void 0, null, function* () {
+  (async () => {
     const mustLoad = ["ContextMenu", "CosmosAsync", "Platform"];
     let timer = 0;
     while (mustLoad.some((0, import_function10.flow)((0, import_function10.flip)(lookup4)(Spicetify), Option_exports.isNone)))
-      yield sleep(timer += 100);
-    yield Promise.resolve().then(() => (init_app(), app_exports));
-  }))();
+      await sleep(timer += 100);
+    await Promise.resolve().then(() => (init_app(), app_exports));
+  })();
 })();

@@ -86,7 +86,8 @@ export const fetchPlaylistAPI = async (uri: SpotifyURI) =>
     (await Spicetify.Platform.PlaylistAPI.getContents(uri))
         .items as fetchPlaylistAPIRes
 
-export const createFolder = Spicetify.Platform.RootlistAPI.createFolder
+export const createFolder = (name: string) =>
+    Spicetify.Platform.RootlistAPI.createFolder(name)
 
 export const likePlaylist = (uri: SpotifyURI) =>
     Spicetify.Platform.RootlistAPI.add([uri])

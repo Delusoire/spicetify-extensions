@@ -35,7 +35,7 @@ const buildExtension = async name => {
         entryPoints: [entryJs],
         minify: false,
         outfile: outJs,
-        target: "es6",
+        target: "es2022",
         external: ["react", "react-dom"],
         bundle: true,
         globalName: name.replaceAll("-", "."),

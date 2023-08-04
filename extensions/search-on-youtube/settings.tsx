@@ -1,8 +1,9 @@
 import { SettingsSection } from "../../shared/settings"
 
-const settings = new SettingsSection("Show on youtube", "show-on-youtube")
-
-settings.addInput(
+const settings = new SettingsSection(
+    "Show on youtube",
+    "show-on-youtube",
+).addInput(
     "YouTubeApiKey",
     "YouTube API Key",
     "000000000000000000000000000000000000000",
@@ -10,8 +11,4 @@ settings.addInput(
 
 settings.pushSettings()
 
-export const CONFIG = new Proxy(settings, {
-    get: (target, prop) => target.getFieldValue(prop.toString()),
-}) as unknown as {
-    YouTubeApiKey: string
-}
+export const CONFIG = settings.toObject() as { YouTubeApiKey: string }
