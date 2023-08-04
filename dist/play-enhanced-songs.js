@@ -3145,6 +3145,16 @@ play.enhanced.songs = (() => {
     }
   });
 
+  // shared/util.tsx
+  var spotUriRe, sleep;
+  var init_util = __esm({
+    "shared/util.tsx"() {
+      "use strict";
+      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
+      sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    }
+  });
+
   // shared/fp.tsx
   var async;
   var init_fp = __esm({
@@ -3153,15 +3163,6 @@ play.enhanced.songs = (() => {
       async = (f3) => (fa) => __async(void 0, null, function* () {
         return f3(yield fa);
       });
-    }
-  });
-
-  // shared/util.tsx
-  var spotUriRe;
-  var init_util = __esm({
-    "shared/util.tsx"() {
-      "use strict";
-      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
     }
   });
 
@@ -3236,9 +3237,9 @@ play.enhanced.songs = (() => {
   init_es6();
   init_Record();
   var import_function10 = __toESM(require_function(), 1);
+  init_util();
   (() => __async(void 0, null, function* () {
     const mustLoad = ["ContextMenu", "CosmosAsync", "Platform"];
-    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     let timer = 0;
     while (mustLoad.some((0, import_function10.flow)((0, import_function10.flip)(lookup4)(Spicetify), Option_exports.isNone)))
       yield sleep(timer += 100);

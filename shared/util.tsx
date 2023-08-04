@@ -57,3 +57,6 @@ export const waitForElement = (
 
         if (timeout) setTimeout(() => res(null), timeout)
     })
+
+export const sleep = (ms: number) =>
+    new Promise(resolve => setTimeout(resolve, ms))

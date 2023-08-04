@@ -360,6 +360,7 @@ export type fetchArtistsSpotAPI50Res = Array<{
 export interface fetchTrackLFMAPIRes {
     track: {
         name: string
+        mbid: string
         url: string
         duration: string
         streamable: {
@@ -376,17 +377,28 @@ export interface fetchTrackLFMAPIRes {
         album: {
             artist: string
             title: string
+            mbid: string
             url: string
-            image: {
+            image: Array<{
                 "#text": string
                 size: string
-            }[]
+            }>
+            "@attr": {
+                position: string
+            }
         }
+        userplaycount: string
+        userloved: string
         toptags: {
             tag: Array<{
                 name: string
                 url: string
             }>
+        }
+        wiki: {
+            published: string
+            summary: string
+            content: string
         }
     }
 }

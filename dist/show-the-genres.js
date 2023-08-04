@@ -246,8 +246,8 @@ show.the.genres = (() => {
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Apply.js
   function apFirst(A) {
     return function(second) {
-      return function(first2) {
-        return A.ap(A.map(first2, function(a) {
+      return function(first3) {
+        return A.ap(A.map(first3, function(a) {
           return function() {
             return a;
           };
@@ -257,8 +257,8 @@ show.the.genres = (() => {
   }
   function apSecond(A) {
     return function(second) {
-      return function(first2) {
-        return A.ap(A.map(first2, function() {
+      return function(first3) {
+        return A.ap(A.map(first3, function() {
           return function(b) {
             return b;
           };
@@ -281,8 +281,8 @@ show.the.genres = (() => {
   function getApplySemigroup(F) {
     return function(S) {
       return {
-        concat: function(first2, second) {
-          return F.ap(F.map(first2, function(x) {
+        concat: function(first3, second) {
+          return F.ap(F.map(first3, function(x) {
             return function(y) {
               return S.concat(x, y);
             };
@@ -364,14 +364,14 @@ show.the.genres = (() => {
   function chainFirst(M) {
     var tapM = tap(M);
     return function(f3) {
-      return function(first2) {
-        return tapM(first2, f3);
+      return function(first3) {
+        return tapM(first3, f3);
       };
     };
   }
   function tap(M) {
-    return function(first2, f3) {
-      return M.chain(first2, function(a) {
+    return function(first3, f3) {
+      return M.chain(first3, function(a) {
         return M.map(f3(a), function() {
           return a;
         });
@@ -444,31 +444,31 @@ show.the.genres = (() => {
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Ord.js
-  function compare(first2, second) {
-    return first2 < second ? -1 : first2 > second ? 1 : 0;
+  function compare(first3, second) {
+    return first3 < second ? -1 : first3 > second ? 1 : 0;
   }
   var equalsDefault, fromCompare, getSemigroup, getMonoid, strictOrd;
   var init_Ord = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Ord.js"() {
       init_Eq();
       equalsDefault = function(compare2) {
-        return function(first2, second) {
-          return first2 === second || compare2(first2, second) === 0;
+        return function(first3, second) {
+          return first3 === second || compare2(first3, second) === 0;
         };
       };
       fromCompare = function(compare2) {
         return {
           equals: equalsDefault(compare2),
-          compare: function(first2, second) {
-            return first2 === second ? 0 : compare2(first2, second);
+          compare: function(first3, second) {
+            return first3 === second ? 0 : compare2(first3, second);
           }
         };
       };
       getSemigroup = function() {
         return {
-          concat: function(first2, second) {
+          concat: function(first3, second) {
             return fromCompare(function(a, b) {
-              var ox = first2.compare(a, b);
+              var ox = first3.compare(a, b);
               return ox !== 0 ? ox : second.compare(a, b);
             });
           }
@@ -721,8 +721,8 @@ show.the.genres = (() => {
       union = function(E) {
         var uniqE = uniq(E);
         return function(second) {
-          return function(first2) {
-            return uniqE(pipe(first2, concat(second)));
+          return function(first3) {
+            return uniqE(pipe(first3, concat(second)));
           };
         };
       };
@@ -822,14 +822,14 @@ show.the.genres = (() => {
   var init_number = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/number.js"() {
       Eq = {
-        equals: function(first2, second) {
-          return first2 === second;
+        equals: function(first3, second) {
+          return first3 === second;
         }
       };
       Ord = {
         equals: Eq.equals,
-        compare: function(first2, second) {
-          return first2 < second ? -1 : first2 > second ? 1 : 0;
+        compare: function(first3, second) {
+          return first3 < second ? -1 : first3 > second ? 1 : 0;
         }
       };
       Bounded = {
@@ -839,18 +839,18 @@ show.the.genres = (() => {
         bottom: -Infinity
       };
       MagmaSub = {
-        concat: function(first2, second) {
-          return first2 - second;
+        concat: function(first3, second) {
+          return first3 - second;
         }
       };
       SemigroupSum = {
-        concat: function(first2, second) {
-          return first2 + second;
+        concat: function(first3, second) {
+          return first3 + second;
         }
       };
       SemigroupProduct = {
-        concat: function(first2, second) {
-          return first2 * second;
+        concat: function(first3, second) {
+          return first3 * second;
         }
       };
       MonoidSum = {
@@ -870,11 +870,11 @@ show.the.genres = (() => {
         degree: function(_) {
           return 1;
         },
-        div: function(first2, second) {
-          return first2 / second;
+        div: function(first3, second) {
+          return first3 / second;
         },
-        mod: function(first2, second) {
-          return first2 % second;
+        mod: function(first3, second) {
+          return first3 % second;
         }
       };
     }
@@ -1470,14 +1470,14 @@ show.the.genres = (() => {
   }
   function union3(E) {
     var unionE = union(E);
-    return function(first2, second) {
+    return function(first3, second) {
       if (second === void 0) {
         var unionE_1 = union3(E);
         return function(second2) {
-          return unionE_1(second2, first2);
+          return unionE_1(second2, first3);
         };
       }
-      return isNonEmpty5(first2) && isNonEmpty5(second) ? unionE(second)(first2) : isNonEmpty5(first2) ? copy2(first2) : copy2(second);
+      return isNonEmpty5(first3) && isNonEmpty5(second) ? unionE(second)(first3) : isNonEmpty5(first3) ? copy2(first3) : copy2(second);
     };
   }
   function intersection(E) {
@@ -1768,8 +1768,8 @@ show.the.genres = (() => {
         };
       };
       concatW = function(second) {
-        return function(first2) {
-          return isEmpty(first2) ? copy2(second) : isEmpty(second) ? copy2(first2) : first2.concat(second);
+        return function(first3) {
+          return isEmpty(first3) ? copy2(second) : isEmpty(second) ? copy2(first3) : first3.concat(second);
         };
       };
       concat2 = concatW;
@@ -2047,8 +2047,8 @@ show.the.genres = (() => {
       getShow3 = getShow2;
       getSemigroup3 = function() {
         return {
-          concat: function(first2, second) {
-            return first2.concat(second);
+          concat: function(first3, second) {
+            return first3.concat(second);
           }
         };
       };
@@ -2063,8 +2063,8 @@ show.the.genres = (() => {
       getUnionSemigroup = function(E) {
         var unionE = union3(E);
         return {
-          concat: function(first2, second) {
-            return unionE(second)(first2);
+          concat: function(first3, second) {
+            return unionE(second)(first3);
           }
         };
       };
@@ -2077,16 +2077,16 @@ show.the.genres = (() => {
       getIntersectionSemigroup = function(E) {
         var intersectionE = intersection(E);
         return {
-          concat: function(first2, second) {
-            return intersectionE(second)(first2);
+          concat: function(first3, second) {
+            return intersectionE(second)(first3);
           }
         };
       };
       getDifferenceMagma = function(E) {
         var differenceE = difference(E);
         return {
-          concat: function(first2, second) {
-            return differenceE(second)(first2);
+          concat: function(first3, second) {
+            return differenceE(second)(first3);
           }
         };
       };
@@ -2927,8 +2927,8 @@ show.the.genres = (() => {
       init_function();
       getSemigroup4 = function() {
         return {
-          concat: function(first2, second) {
-            return flow(first2, second);
+          concat: function(first3, second) {
+            return flow(first3, second);
           }
         };
       };
@@ -3342,13 +3342,13 @@ show.the.genres = (() => {
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js"() {
       init_ReadonlyNonEmptyArray();
       Eq2 = {
-        equals: function(first2, second) {
-          return first2 === second;
+        equals: function(first3, second) {
+          return first3 === second;
         }
       };
       Semigroup = {
-        concat: function(first2, second) {
-          return first2 + second;
+        concat: function(first3, second) {
+          return first3 + second;
         }
       };
       empty4 = "";
@@ -3358,8 +3358,8 @@ show.the.genres = (() => {
       };
       Ord2 = {
         equals: Eq2.equals,
-        compare: function(first2, second) {
-          return first2 < second ? -1 : first2 > second ? 1 : 0;
+        compare: function(first3, second) {
+          return first3 < second ? -1 : first3 > second ? 1 : 0;
         }
       };
       Show = {
@@ -3726,8 +3726,8 @@ show.the.genres = (() => {
       exports.not = not2;
       var getEndomorphismMonoid = function() {
         return {
-          concat: function(first2, second) {
-            return flow5(first2, second);
+          concat: function(first3, second) {
+            return flow5(first3, second);
           },
           empty: identity2
         };
@@ -3748,6 +3748,42 @@ show.the.genres = (() => {
         };
       };
       exports.dual = dual2;
+    }
+  });
+
+  // shared/util.tsx
+  var spotUriRe, isUri, parseUri, escapeRegex, titleCase, normalizeStr, waitForElement, sleep;
+  var init_util = __esm({
+    "shared/util.tsx"() {
+      "use strict";
+      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
+      isUri = (possibleUri) => spotUriRe.test(possibleUri);
+      parseUri = (uri) => {
+        var _a;
+        return (_a = uri.match(spotUriRe)) == null ? void 0 : _a.groups;
+      };
+      escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
+      titleCase = (str) => str.replace(/\b\w/g, (l) => l.toUpperCase());
+      normalizeStr = (str) => str.replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase();
+      waitForElement = (selector, timeout = 1e3, location = document.body) => new Promise((resolve) => {
+        if (document.querySelector(selector))
+          return resolve(document.querySelector(selector));
+        const res = (v) => {
+          observer.disconnect();
+          resolve(v);
+        };
+        let observer = new MutationObserver(() => __async(void 0, null, function* () {
+          if (document.querySelector(selector))
+            return res(document.querySelector(selector));
+        }));
+        observer.observe(location, {
+          childList: true,
+          subtree: true
+        });
+        if (timeout)
+          setTimeout(() => res(null), timeout);
+      });
+      sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
   });
 
@@ -3902,8 +3938,8 @@ show.the.genres = (() => {
       exports.concatAll = exports.endo = exports.filterSecond = exports.filterFirst = exports.reverse = void 0;
       var reverse6 = function(M) {
         return {
-          concat: function(first2, second) {
-            return M.concat(second, first2);
+          concat: function(first3, second) {
+            return M.concat(second, first3);
           }
         };
       };
@@ -3911,8 +3947,8 @@ show.the.genres = (() => {
       var filterFirst = function(predicate) {
         return function(M) {
           return {
-            concat: function(first2, second) {
-              return predicate(first2) ? M.concat(first2, second) : second;
+            concat: function(first3, second) {
+              return predicate(first3) ? M.concat(first3, second) : second;
             }
           };
         };
@@ -3921,8 +3957,8 @@ show.the.genres = (() => {
       var filterSecond = function(predicate) {
         return function(M) {
           return {
-            concat: function(first2, second) {
-              return predicate(second) ? M.concat(first2, second) : first2;
+            concat: function(first3, second) {
+              return predicate(second) ? M.concat(first3, second) : first3;
             }
           };
         };
@@ -3931,8 +3967,8 @@ show.the.genres = (() => {
       var endo = function(f3) {
         return function(M) {
           return {
-            concat: function(first2, second) {
-              return M.concat(f3(first2), f3(second));
+            concat: function(first3, second) {
+              return M.concat(f3(first3), f3(second));
             }
           };
         };
@@ -3967,9 +4003,9 @@ show.the.genres = (() => {
       };
       exports.fromEquals = fromEquals2;
       var struct2 = function(eqs) {
-        return (0, exports.fromEquals)(function(first2, second) {
+        return (0, exports.fromEquals)(function(first3, second) {
           for (var key in eqs) {
-            if (!eqs[key].equals(first2[key], second[key])) {
+            if (!eqs[key].equals(first3[key], second[key])) {
               return false;
             }
           }
@@ -3982,9 +4018,9 @@ show.the.genres = (() => {
         for (var _i = 0; _i < arguments.length; _i++) {
           eqs[_i] = arguments[_i];
         }
-        return (0, exports.fromEquals)(function(first2, second) {
+        return (0, exports.fromEquals)(function(first3, second) {
           return eqs.every(function(E, i) {
-            return E.equals(first2[i], second[i]);
+            return E.equals(first3[i], second[i]);
           });
         });
       };
@@ -4040,8 +4076,8 @@ show.the.genres = (() => {
       exports.eqString = exports.eqStrict;
       exports.eqNumber = exports.eqStrict;
       exports.eqDate = {
-        equals: function(first2, second) {
-          return first2.valueOf() === second.valueOf();
+        equals: function(first3, second) {
+          return first3.valueOf() === second.valueOf();
         }
       };
     }
@@ -4056,16 +4092,16 @@ show.the.genres = (() => {
       var Eq_1 = require_Eq();
       var function_1 = require_function();
       var equalsDefault2 = function(compare3) {
-        return function(first2, second) {
-          return first2 === second || compare3(first2, second) === 0;
+        return function(first3, second) {
+          return first3 === second || compare3(first3, second) === 0;
         };
       };
       exports.equalsDefault = equalsDefault2;
       var fromCompare2 = function(compare3) {
         return {
           equals: (0, exports.equalsDefault)(compare3),
-          compare: function(first2, second) {
-            return first2 === second ? 0 : compare3(first2, second);
+          compare: function(first3, second) {
+            return first3 === second ? 0 : compare3(first3, second);
           }
         };
       };
@@ -4075,21 +4111,21 @@ show.the.genres = (() => {
         for (var _i = 0; _i < arguments.length; _i++) {
           ords[_i] = arguments[_i];
         }
-        return (0, exports.fromCompare)(function(first2, second) {
+        return (0, exports.fromCompare)(function(first3, second) {
           var i = 0;
           for (; i < ords.length - 1; i++) {
-            var r = ords[i].compare(first2[i], second[i]);
+            var r = ords[i].compare(first3[i], second[i]);
             if (r !== 0) {
               return r;
             }
           }
-          return ords[i].compare(first2[i], second[i]);
+          return ords[i].compare(first3[i], second[i]);
         });
       };
       exports.tuple = tuple2;
       var reverse6 = function(O) {
-        return (0, exports.fromCompare)(function(first2, second) {
-          return O.compare(second, first2);
+        return (0, exports.fromCompare)(function(first3, second) {
+          return O.compare(second, first3);
         });
       };
       exports.reverse = reverse6;
@@ -4098,8 +4134,8 @@ show.the.genres = (() => {
       };
       var contramap = function(f3) {
         return function(fa) {
-          return (0, exports.fromCompare)(function(first2, second) {
-            return fa.compare(f3(first2), f3(second));
+          return (0, exports.fromCompare)(function(first3, second) {
+            return fa.compare(f3(first3), f3(second));
           });
         };
       };
@@ -4107,9 +4143,9 @@ show.the.genres = (() => {
       exports.URI = "Ord";
       var getSemigroup6 = function() {
         return {
-          concat: function(first2, second) {
+          concat: function(first3, second) {
             return (0, exports.fromCompare)(function(a, b) {
-              var ox = first2.compare(a, b);
+              var ox = first3.compare(a, b);
               return ox !== 0 ? ox : second.compare(a, b);
             });
           }
@@ -4135,45 +4171,45 @@ show.the.genres = (() => {
       };
       var equals = function(O) {
         return function(second) {
-          return function(first2) {
-            return first2 === second || O.compare(first2, second) === 0;
+          return function(first3) {
+            return first3 === second || O.compare(first3, second) === 0;
           };
         };
       };
       exports.equals = equals;
       var lt = function(O) {
-        return function(first2, second) {
-          return O.compare(first2, second) === -1;
+        return function(first3, second) {
+          return O.compare(first3, second) === -1;
         };
       };
       exports.lt = lt;
       var gt = function(O) {
-        return function(first2, second) {
-          return O.compare(first2, second) === 1;
+        return function(first3, second) {
+          return O.compare(first3, second) === 1;
         };
       };
       exports.gt = gt;
       var leq = function(O) {
-        return function(first2, second) {
-          return O.compare(first2, second) !== 1;
+        return function(first3, second) {
+          return O.compare(first3, second) !== 1;
         };
       };
       exports.leq = leq;
       var geq = function(O) {
-        return function(first2, second) {
-          return O.compare(first2, second) !== -1;
+        return function(first3, second) {
+          return O.compare(first3, second) !== -1;
         };
       };
       exports.geq = geq;
       var min4 = function(O) {
-        return function(first2, second) {
-          return first2 === second || O.compare(first2, second) < 1 ? first2 : second;
+        return function(first3, second) {
+          return first3 === second || O.compare(first3, second) < 1 ? first3 : second;
         };
       };
       exports.min = min4;
       var max5 = function(O) {
-        return function(first2, second) {
-          return first2 === second || O.compare(first2, second) > -1 ? first2 : second;
+        return function(first3, second) {
+          return first3 === second || O.compare(first3, second) > -1 ? first3 : second;
         };
       };
       exports.max = max5;
@@ -4200,8 +4236,8 @@ show.the.genres = (() => {
       exports.getTupleOrd = exports.tuple;
       exports.getDualOrd = exports.reverse;
       exports.ord = exports.Contravariant;
-      function compare2(first2, second) {
-        return first2 < second ? -1 : first2 > second ? 1 : 0;
+      function compare2(first3, second) {
+        return first3 < second ? -1 : first3 > second ? 1 : 0;
       }
       var strictOrd2 = {
         equals: Eq_1.eqStrict.equals,
@@ -4284,11 +4320,11 @@ show.the.genres = (() => {
       exports.reverse = M.reverse;
       var struct2 = function(semigroups) {
         return {
-          concat: function(first3, second) {
+          concat: function(first4, second) {
             var r = {};
             for (var k in semigroups) {
               if (_.has.call(semigroups, k)) {
-                r[k] = semigroups[k].concat(first3[k], second[k]);
+                r[k] = semigroups[k].concat(first4[k], second[k]);
               }
             }
             return r;
@@ -4302,9 +4338,9 @@ show.the.genres = (() => {
           semigroups[_i] = arguments[_i];
         }
         return {
-          concat: function(first3, second) {
+          concat: function(first4, second) {
             return semigroups.map(function(s, i) {
-              return s.concat(first3[i], second[i]);
+              return s.concat(first4[i], second[i]);
             });
           }
         };
@@ -4320,10 +4356,10 @@ show.the.genres = (() => {
         };
       };
       exports.intercalate = intercalate4;
-      var first2 = function() {
+      var first3 = function() {
         return { concat: function_1.identity };
       };
-      exports.first = first2;
+      exports.first = first3;
       var last7 = function() {
         return { concat: function(_2, y) {
           return y;
@@ -4334,8 +4370,8 @@ show.the.genres = (() => {
       exports.semigroupVoid = (0, exports.constant)(void 0);
       var getObjectSemigroup = function() {
         return {
-          concat: function(first3, second) {
-            return Object.assign({}, first3, second);
+          concat: function(first4, second) {
+            return Object.assign({}, first4, second);
           }
         };
       };
@@ -4385,13 +4421,16 @@ show.the.genres = (() => {
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function12, URI4, map5, Functor4, of6, ap5, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var import_function12, import_Semigroup2, URI4, map5, Functor4, of6, ap5, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
+      init_Option();
+      init_Array();
       import_function12 = __toESM(require_function());
       init_Predicate();
       init_Endomorphism();
       init_Monoid();
+      import_Semigroup2 = __toESM(require_Semigroup());
       init_Functor();
       init_Apply();
       init_Chain();
@@ -4419,6 +4458,7 @@ show.the.genres = (() => {
       apS5 = apS(Applicative3);
       let_5 = let_(Functor4);
       unary = import_function12.tupled;
+      guard4 = (branches) => (fallback) => (input) => (0, import_function12.pipe)(branches, map(([f3, g]) => (0, import_function12.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function12.getMonoid)(getMonoid3((0, import_Semigroup2.first)()))()), (0, import_function12.apply)(input), getOrElse(() => fallback(input)));
       unless = (f3) => (onFalse) => (x) => f3(x) ? x : onFalse(x);
       when = (0, import_function12.flow)(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
@@ -4436,48 +4476,18 @@ show.the.genres = (() => {
   });
 
   // shared/fp.tsx
-  var async;
+  var guard42, async, is;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
+      init_Function();
+      guard42 = (branches) => guard4(
+        branches
+      );
       async = (f3) => (fa) => __async(void 0, null, function* () {
         return f3(yield fa);
       });
-    }
-  });
-
-  // shared/util.tsx
-  var spotUriRe, isUri, parseUri, escapeRegex, titleCase, normalizeStr, waitForElement;
-  var init_util = __esm({
-    "shared/util.tsx"() {
-      "use strict";
-      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
-      isUri = (possibleUri) => spotUriRe.test(possibleUri);
-      parseUri = (uri) => {
-        var _a;
-        return (_a = uri.match(spotUriRe)) == null ? void 0 : _a.groups;
-      };
-      escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
-      titleCase = (str) => str.replace(/\b\w/g, (l) => l.toUpperCase());
-      normalizeStr = (str) => str.replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase();
-      waitForElement = (selector, timeout = 1e3, location = document.body) => new Promise((resolve) => {
-        if (document.querySelector(selector))
-          return resolve(document.querySelector(selector));
-        const res = (v) => {
-          observer.disconnect();
-          resolve(v);
-        };
-        let observer = new MutationObserver(() => __async(void 0, null, function* () {
-          if (document.querySelector(selector))
-            return res(document.querySelector(selector));
-        }));
-        observer.observe(location, {
-          childList: true,
-          subtree: true
-        });
-        if (timeout)
-          setTimeout(() => res(null), timeout);
-      });
+      is = (c) => (a) => (field) => field[c] === a;
     }
   });
 
@@ -4546,7 +4556,7 @@ show.the.genres = (() => {
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/ReadonlyArray.js
-  var import_function14, import_Semigroup2, none3, join, sum, product, median, moveFrom, moveTo, dropRightWhile, takeRightWhile, minimum, maximum, fromIterable;
+  var import_function14, import_Semigroup3, none3, join, sum, product, median, moveFrom, moveTo, dropRightWhile, takeRightWhile, minimum, maximum, fromIterable;
   var init_ReadonlyArray2 = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/ReadonlyArray.js"() {
       import_function14 = __toESM(require_function());
@@ -4556,7 +4566,7 @@ show.the.genres = (() => {
       init_ReadonlyArray();
       init_Option();
       init_Monoid();
-      import_Semigroup2 = __toESM(require_Semigroup());
+      import_Semigroup3 = __toESM(require_Semigroup());
       init_Function();
       none3 = (0, import_function14.flow)(not, (p4) => every(p4));
       join = (x) => invoke("join")([x]);
@@ -4570,8 +4580,8 @@ show.the.genres = (() => {
       moveTo = (0, import_function14.flip)(moveFrom);
       dropRightWhile = (f3) => (0, import_function14.flow)(reverse2, dropLeftWhile(f3), reverse2);
       takeRightWhile = (f3) => (0, import_function14.flow)(reverse2, takeLeftWhile(f3), reverse2);
-      minimum = (0, import_function14.flow)(import_Semigroup2.min, concatAll3);
-      maximum = (0, import_function14.flow)(import_Semigroup2.max, concatAll3);
+      minimum = (0, import_function14.flow)(import_Semigroup3.min, concatAll3);
+      maximum = (0, import_function14.flow)(import_Semigroup3.max, concatAll3);
       fromIterable = Array.from;
     }
   });
@@ -4784,261 +4794,248 @@ show.the.genres = (() => {
     }
   });
 
-  // .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css
-  var settings_module_default;
-  var init_settings_module = __esm({
-    ".yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css"() {
-      settings_module_default = {};
-    }
-  });
-
-  // .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settingsSection.tsx
-  var import_react2, import_react_dom, SettingsSection;
-  var init_settingsSection = __esm({
-    ".yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settingsSection.tsx"() {
-      import_react2 = __toESM(require_react());
-      import_react_dom = __toESM(require_react_dom());
-      init_settings_module();
+  // shared/settings.tsx
+  var import_function17, import_react2, import_react_dom, SettingsSection;
+  var init_settings = __esm({
+    "shared/settings.tsx"() {
+      "use strict";
+      import_function17 = __toESM(require_function(), 1);
+      import_react2 = __toESM(require_react(), 1);
+      import_react_dom = __toESM(require_react_dom(), 1);
+      init_fp();
+      init_util();
       SettingsSection = class {
-        constructor(name, settingsId, initialSettingsFields = {}) {
+        constructor(name, sectionId, sectionFields = {}) {
           this.name = name;
-          this.settingsId = settingsId;
-          this.initialSettingsFields = initialSettingsFields;
-          __publicField(this, "settingsFields", this.initialSettingsFields);
+          this.sectionId = sectionId;
+          this.sectionFields = sectionFields;
           __publicField(this, "stopHistoryListener");
           __publicField(this, "setRerender", null);
-          __publicField(this, "buttonClassnames", null);
           __publicField(this, "pushSettings", () => __async(this, null, function* () {
             var _a, _b;
-            Object.entries(this.settingsFields).forEach(([nameId, field]) => {
-              if (field.type !== "button" && this.getFieldValue(nameId) === void 0) {
-                this.setFieldValue(nameId, field.defaultValue);
-              }
-            });
-            while (!((_b = (_a = Spicetify == null ? void 0 : Spicetify.Platform) == null ? void 0 : _a.History) == null ? void 0 : _b.listen)) {
-              yield new Promise((resolve) => setTimeout(resolve, 100));
-            }
+            while (!((_b = (_a = Spicetify == null ? void 0 : Spicetify.Platform) == null ? void 0 : _a.History) == null ? void 0 : _b.listen))
+              yield sleep(100);
             if (this.stopHistoryListener)
               this.stopHistoryListener();
-            this.stopHistoryListener = Spicetify.Platform.History.listen((e) => {
-              if (e.pathname === "/preferences") {
-                this.render();
+            this.stopHistoryListener = Spicetify.Platform.History.listen(
+              ({ pathname = "" }) => {
+                if (pathname === "/preferences")
+                  this.render();
               }
-            });
-            if (Spicetify.Platform.History.location.pathname === "/preferences") {
+            );
+            if (Spicetify.Platform.History.location.pathname === "/preferences")
               yield this.render();
-            }
           }));
           __publicField(this, "rerender", () => {
-            if (this.setRerender) {
+            if (this.setRerender)
               this.setRerender(Math.random());
-            }
           });
           __publicField(this, "render", () => __async(this, null, function* () {
-            var _a, _b;
             while (!document.getElementById("desktop.settings.selectLanguage")) {
               if (Spicetify.Platform.History.location.pathname !== "/preferences")
                 return;
-              yield new Promise((resolve) => setTimeout(resolve, 100));
+              yield sleep(100);
             }
             const allSettingsContainer = document.querySelector(
               ".main-view-container__scroll-node-child main div"
             );
             if (!allSettingsContainer)
               return console.error("[spcr-settings] settings container not found");
-            this.buttonClassnames = (_b = (_a = Array.from(allSettingsContainer.querySelectorAll(":scope > button")).at(
-              -1
-            )) == null ? void 0 : _a.className) != null ? _b : null;
             let pluginSettingsContainer = Array.from(
               allSettingsContainer.children
-            ).find((child) => child.id === this.settingsId);
+            ).find(({ id }) => id === this.sectionId);
             if (!pluginSettingsContainer) {
               pluginSettingsContainer = document.createElement("div");
-              pluginSettingsContainer.id = this.settingsId;
-              pluginSettingsContainer.className = settings_module_default.settingsContainer;
+              pluginSettingsContainer.id = this.sectionId;
+              pluginSettingsContainer.className = "settingsContainer";
               allSettingsContainer.appendChild(pluginSettingsContainer);
-            } else {
-              console.log(pluginSettingsContainer);
             }
             import_react_dom.default.render(/* @__PURE__ */ import_react2.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
           }));
-          __publicField(this, "addButton", (nameId, description, value, onClick, events) => {
-            this.settingsFields[nameId] = {
-              type: "button",
-              description,
-              value,
-              events: __spreadValues({
-                onClick
-              }, events)
+          __publicField(this, "addButton", (nameId, description, text, onClick = import_function17.constVoid, events = {}) => {
+            const id = this.getId(nameId);
+            events.onClick = (e) => {
+              if (onClick)
+                onClick(e);
             };
+            this.sectionFields[nameId] = {
+              id,
+              type: "button" /* BUTTON */,
+              description,
+              text,
+              events
+            };
+            return this;
           });
-          __publicField(this, "addInput", (nameId, description, defaultValue, onChange, inputType, events) => {
-            this.settingsFields[nameId] = {
-              type: "input",
-              description,
-              defaultValue,
-              inputType,
-              events: __spreadValues({
-                onChange
-              }, events)
+          __publicField(this, "addToggle", (nameId, description, defaultValue, onChange = import_function17.constVoid, events = {}) => {
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            const [value, setValue] = this.useStateFor(id);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.checked);
+              if (onChange)
+                onChange(e);
             };
+            events.onChange = onChange;
+            this.sectionFields[nameId] = {
+              id,
+              type: "toggle" /* TOGGLE */,
+              description,
+              events
+            };
+            return this;
+          });
+          __publicField(this, "addInput", (nameId, description, defaultValue, onChange = import_function17.constVoid, inputType = "text", events = {}) => {
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            const [value, setValue] = this.useStateFor(id);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.value);
+              if (onChange)
+                onChange(e);
+            };
+            this.sectionFields[nameId] = {
+              id,
+              type: "input" /* INPUT */,
+              description,
+              inputType,
+              events
+            };
+            return this;
+          });
+          __publicField(this, "addDropDown", (nameId, description, options, defaultValue = 0, onChange = import_function17.constVoid, events = {}) => {
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            const [value, setValue] = this.useStateFor(id);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.selectedIndex);
+              if (onChange)
+                onChange(e);
+            };
+            this.sectionFields[nameId] = {
+              id,
+              type: "dropdown" /* DROPDOWN */,
+              description,
+              options,
+              events
+            };
+            return this;
           });
           __publicField(this, "addHidden", (nameId, defaultValue) => {
-            this.settingsFields[nameId] = {
-              type: "hidden",
-              defaultValue
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            this.sectionFields[nameId] = {
+              id,
+              type: "hidden" /* HIDDEN */,
+              description: ""
             };
+            return this;
           });
-          __publicField(this, "addToggle", (nameId, description, defaultValue, onChange, events) => {
-            this.settingsFields[nameId] = {
-              type: "toggle",
-              description,
-              defaultValue,
-              events: __spreadValues({
-                onChange
-              }, events)
-            };
+          __publicField(this, "getId", (nameId) => `${this.sectionId}.${nameId}`);
+          __publicField(this, "useStateFor", (id) => {
+            const [value, setValueState] = (0, import_react2.useState)(this.getFieldValue(id));
+            return [
+              value,
+              (newValue) => {
+                if (newValue !== void 0) {
+                  setValueState(newValue);
+                  this.setFieldValue(id, newValue);
+                }
+              }
+            ];
           });
-          __publicField(this, "addDropDown", (nameId, description, options, defaultIndex, onSelect, events) => {
-            this.settingsFields[nameId] = {
-              type: "dropdown",
-              description,
-              defaultValue: options[defaultIndex],
-              options,
-              events: __spreadValues({
-                onSelect
-              }, events)
-            };
+          __publicField(this, "getFieldValue", (id) => {
+            var _a, _b;
+            return (_b = JSON.parse((_a = Spicetify.LocalStorage.get(id)) != null ? _a : "{}")) == null ? void 0 : _b.value;
           });
-          __publicField(this, "getFieldValue", (nameId) => {
-            var _a;
-            return (_a = JSON.parse(
-              Spicetify.LocalStorage.get(`${this.settingsId}.${nameId}`) || "{}"
-            )) == null ? void 0 : _a.value;
+          __publicField(this, "setFieldValue", (id, newValue) => {
+            Spicetify.LocalStorage.set(id, JSON.stringify({ value: newValue }));
           });
-          __publicField(this, "setFieldValue", (nameId, newValue) => {
-            Spicetify.LocalStorage.set(
-              `${this.settingsId}.${nameId}`,
-              JSON.stringify({ value: newValue })
-            );
+          __publicField(this, "setDefaultFieldValue", (id, defaultValue) => {
+            if (this.getFieldValue(id) === void 0)
+              this.setFieldValue(id, defaultValue);
           });
           __publicField(this, "FieldsContainer", () => {
             const [rerender, setRerender] = (0, import_react2.useState)(0);
             this.setRerender = setRerender;
-            return /* @__PURE__ */ import_react2.default.createElement("div", { className: settings_module_default.settingsContainer, key: rerender }, /* @__PURE__ */ import_react2.default.createElement(
-              "h2",
-              {
-                className: ["main-shelf-title main-type-cello", settings_module_default.heading].join(
-                  " "
-                )
-              },
-              this.name
-            ), Object.entries(this.settingsFields).map(([nameId, field]) => {
-              return /* @__PURE__ */ import_react2.default.createElement(this.Field, { nameId, field });
+            return /* @__PURE__ */ import_react2.default.createElement("div", { className: "x-settings-section", key: rerender }, /* @__PURE__ */ import_react2.default.createElement("h2", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type" }, this.name), Object.entries(this.sectionFields).map(([nameId, field]) => {
+              return /* @__PURE__ */ import_react2.default.createElement(this.Field, { field });
             }));
           });
-          __publicField(this, "Field", (props) => {
-            var _a;
-            const id = `${this.settingsId}.${props.nameId}`;
-            let defaultStateValue;
-            if (props.field.type === "button") {
-              defaultStateValue = props.field.value;
-            } else {
-              defaultStateValue = this.getFieldValue(props.nameId);
-            }
-            if (props.field.type === "hidden") {
-              return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null);
-            }
-            const [value, setValueState] = (0, import_react2.useState)(defaultStateValue);
-            const setValue = (newValue) => {
-              if (newValue !== void 0) {
-                setValueState(newValue);
-                this.setFieldValue(props.nameId, newValue);
+          __publicField(this, "Field", ({ field }) => {
+            const isType = is("type");
+            return /* @__PURE__ */ import_react2.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react2.default.createElement(
+              this.SettingDescription,
+              {
+                id: field.id,
+                description: field.description
               }
-            };
-            return /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null, /* @__PURE__ */ import_react2.default.createElement(
-              "div",
-              {
-                className: "main-type-mesto",
-                style: { color: "var(--spice-subtext)" }
-              },
-              /* @__PURE__ */ import_react2.default.createElement("label", { className: settings_module_default.description, htmlFor: id }, props.field.description || "")
-            ), /* @__PURE__ */ import_react2.default.createElement(
-              "span",
-              {
-                className: ["x-settings-secondColumn", settings_module_default.inputWrapper].join(" ")
-              },
-              props.field.type === "input" ? /* @__PURE__ */ import_react2.default.createElement(
-                "input",
-                __spreadProps(__spreadValues({
-                  className: "main-dropDown-dropDown",
-                  id,
-                  dir: "ltr",
-                  value,
-                  type: props.field.inputType || "text"
-                }, props.field.events), {
-                  onChange: (e) => {
-                    var _a2;
-                    setValue(e.currentTarget.value);
-                    const onChange = (_a2 = props.field.events) == null ? void 0 : _a2.onChange;
-                    if (onChange)
-                      onChange(e);
-                  }
-                })
-              ) : props.field.type === "button" ? /* @__PURE__ */ import_react2.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react2.default.createElement(
-                "button",
-                __spreadProps(__spreadValues({
-                  id,
-                  className: (_a = this.buttonClassnames) != null ? _a : ""
-                }, props.field.events), {
-                  onClick: (e) => {
-                    var _a2;
-                    setValue();
-                    const onClick = (_a2 = props.field.events) == null ? void 0 : _a2.onClick;
-                    if (onClick)
-                      onClick(e);
-                  },
-                  type: "button"
-                }),
-                value
-              )) : props.field.type === "toggle" ? /* @__PURE__ */ import_react2.default.createElement("label", { className: "x-toggle-wrapper x-settings-secondColumn" }, /* @__PURE__ */ import_react2.default.createElement(
-                "input",
-                __spreadProps(__spreadValues({
-                  id,
-                  className: "x-toggle-input",
-                  type: "checkbox",
-                  checked: value
-                }, props.field.events), {
-                  onClick: (e) => {
-                    var _a2;
-                    setValue(e.currentTarget.checked);
-                    const onClick = (_a2 = props.field.events) == null ? void 0 : _a2.onClick;
-                    if (onClick)
-                      onClick(e);
-                  }
-                })
-              ), /* @__PURE__ */ import_react2.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react2.default.createElement("span", { className: "x-toggle-indicator" }))) : props.field.type === "dropdown" ? /* @__PURE__ */ import_react2.default.createElement(
-                "select",
-                __spreadProps(__spreadValues({
-                  className: "main-dropDown-dropDown",
-                  id
-                }, props.field.events), {
-                  onChange: (e) => {
-                    var _a2;
-                    setValue(
-                      props.field.options[e.currentTarget.selectedIndex]
-                    );
-                    const onChange = (_a2 = props.field.events) == null ? void 0 : _a2.onChange;
-                    if (onChange)
-                      onChange(e);
-                  }
-                }),
-                props.field.options.map((option2, i) => {
-                  return /* @__PURE__ */ import_react2.default.createElement("option", { selected: option2 === value, value: i + 1 }, option2);
-                })
-              ) : /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null)
-            ));
+            ), /* @__PURE__ */ import_react2.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
+              [
+                isType("input" /* INPUT */),
+                this.SettingInputField
+              ],
+              [isType("button" /* BUTTON */), this.SettingButtonField],
+              [isType("toggle" /* TOGGLE */), this.SettingToggleField],
+              [isType("dropdown" /* DROPDOWN */), this.SettingDropdownField]
+            ])(this.SettingHidden)(field)));
           });
+          __publicField(this, "SettingDescription", ({
+            id,
+            description
+          }) => /* @__PURE__ */ import_react2.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react2.default.createElement(
+            "label",
+            {
+              className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
+              htmlFor: id
+            },
+            description
+          )));
+          __publicField(this, "SettingButtonField", (field) => /* @__PURE__ */ import_react2.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react2.default.createElement(
+            "button",
+            __spreadProps(__spreadValues({
+              id: field.id,
+              className: "Button-sc-y0gtbx-0 Button-sm-buttonSecondary-isUsingKeyboard-useBrowserDefaultFocusStyle x-settings-button"
+            }, field.events), {
+              type: field.type
+            }),
+            this.getFieldValue(field.id)
+          )));
+          __publicField(this, "SettingToggleField", (field) => /* @__PURE__ */ import_react2.default.createElement("label", { className: "x-settings-secondColumn x-toggle-wrapper" }, /* @__PURE__ */ import_react2.default.createElement(
+            "input",
+            __spreadValues({
+              id: field.id,
+              className: "x-toggle-input",
+              type: "checkbox",
+              checked: this.getFieldValue(field.id)
+            }, field.events)
+          ), /* @__PURE__ */ import_react2.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react2.default.createElement("span", { className: "x-toggle-indicator" }))));
+          __publicField(this, "SettingInputField", (field) => /* @__PURE__ */ import_react2.default.createElement(
+            "input",
+            __spreadValues({
+              className: "x-settings-input",
+              id: field.id,
+              dir: "ltr",
+              value: this.getFieldValue(field.id),
+              type: field.inputType
+            }, field.events)
+          ));
+          __publicField(this, "SettingDropdownField", (field) => /* @__PURE__ */ import_react2.default.createElement(
+            "select",
+            __spreadValues({
+              className: "main-dropDown-dropDown",
+              id: field.id
+            }, field.events),
+            field.options.map((option2, i) => /* @__PURE__ */ import_react2.default.createElement(
+              "option",
+              {
+                selected: i === this.getFieldValue(field.id),
+                value: i + 1
+              },
+              option2
+            ))
+          ));
+          __publicField(this, "SettingHidden", () => /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null));
         }
       };
     }
@@ -5046,10 +5043,10 @@ show.the.genres = (() => {
 
   // extensions/show-the-genres/settings.tsx
   var settings, CONFIG;
-  var init_settings = __esm({
+  var init_settings2 = __esm({
     "extensions/show-the-genres/settings.tsx"() {
       "use strict";
-      init_settingsSection();
+      init_settings();
       settings = new SettingsSection("Show The Genre", "show-the-genre");
       settings.addInput(
         "LFMApiKey",
@@ -5070,26 +5067,26 @@ show.the.genres = (() => {
     lastFmTags: () => lastFmTags,
     spotifyGenres: () => spotifyGenres
   });
-  var import_function17, app_default, searchPlaylist, spotifyGenres, lastFmTags, updateGenreContainer, updateGenresUI, getArtistUrisFromCurrentTrack, updateGenres, genreContainer;
+  var import_function18, app_default, searchPlaylist, spotifyGenres, lastFmTags, updateGenreContainer, updateGenresUI, getArtistUrisFromCurrentTrack, updateGenres, genreContainer;
   var init_app = __esm({
     "extensions/show-the-genres/app.tsx"() {
       "use strict";
       init_es6();
-      import_function17 = __toESM(require_function(), 1);
+      import_function18 = __toESM(require_function(), 1);
       init_api();
       init_fp();
       init_util();
       init_artistPage();
       init_popup2();
       init_popup();
-      init_settings();
+      init_settings2();
       app_default = {};
       searchPlaylist = (query) => Spicetify.Platform.History.push(`/search/${query}/playlists`);
       window.searchPlaylist = searchPlaylist;
       spotifyGenres = new Array();
       lastFmTags = new Array();
       updateGenreContainer = (genres) => __async(void 0, null, function* () {
-        genreContainer.innerHTML = yield (0, import_function17.pipe)(
+        genreContainer.innerHTML = yield (0, import_function18.pipe)(
           genres,
           Array_exports.map((genre) => __async(void 0, null, function* () {
             const uri = yield fetchSoundOfSpotifyPlaylist(genre);
@@ -5109,7 +5106,7 @@ show.the.genres = (() => {
         const { uri, metadata } = Spicetify.Player.data.track;
         if (metadata && !metadata.is_local && isUri(uri) && parseUri(uri).type === "spotify:track" /* TRACK */ && genres.length) {
           trackInfoContainer == null ? void 0 : trackInfoContainer.appendChild(yield updateGenreContainer(genres));
-          lastFmTags = (0, import_function17.pipe)(
+          lastFmTags = (0, import_function18.pipe)(
             yield fetchTrackLFMAPI(
               CONFIG.LFMApiKey,
               metadata.artist_name,
@@ -5144,7 +5141,8 @@ show.the.genres = (() => {
   // extensions/show-the-genres/entry.tsx
   init_es6();
   init_Record();
-  var import_function18 = __toESM(require_function(), 1);
+  var import_function19 = __toESM(require_function(), 1);
+  init_util();
   (() => __async(void 0, null, function* () {
     const mustLoad = [
       "CosmosAsync",
@@ -5154,9 +5152,8 @@ show.the.genres = (() => {
       "Player",
       "PopupModal"
     ];
-    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     let timer = 0;
-    while (mustLoad.some((0, import_function18.flow)((0, import_function18.flip)(lookup4)(Spicetify), Option_exports.isNone)))
+    while (mustLoad.some((0, import_function19.flow)((0, import_function19.flip)(lookup4)(Spicetify), Option_exports.isNone)))
       yield sleep(timer += 100);
     yield Promise.resolve().then(() => (init_app(), app_exports));
   }))();
@@ -5298,26 +5295,6 @@ input.small-input {
 }
 .GenericModal[aria-label*="Genres of"] .main-trackCreditsModal-header .tetrax-settings-discord-link:hover {
   color: var(--spice-custom-link-hover);
-}
-
-/* .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css */
-.settingsContainer {
-  display: contents;
-}
-.heading {
-  grid-column: 1/-1;
-  font-size: 1.125rem;
-  line-height: 1.5rem;
-  color: #fff;
-  margin-top: 24px;
-}
-.description {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-.inputWrapper {
-  display: flex;
-  justify-self: end;
 }
 `.trim()
                         document.head.appendChild(el)

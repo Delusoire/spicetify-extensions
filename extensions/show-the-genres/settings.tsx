@@ -1,4 +1,4 @@
-import { SettingsSection } from "spcr-settings"
+import { SettingsSection } from "../../shared/settings"
 
 const settings = new SettingsSection("Show The Genre", "show-the-genre")
 

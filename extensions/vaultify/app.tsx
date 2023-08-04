@@ -11,23 +11,24 @@ import {
     fetchPlaylistAPI,
     likePlaylist,
 } from "../../shared/api"
-import { guard2, guard3 } from "../../shared/fp"
+import { guard2, guard3, is } from "../../shared/fp"
 import { SpotifyURI } from "../../shared/util"
 import {
     EFolder,
     EPlaylistLiked,
     EPlaylistPersonal,
     EPoF,
-    Folder,
-    Playlist,
-    PoF,
+    SFolder,
+    SPlaylist,
+    SPoF,
 } from "./util"
 
-const extractLikedPlaylistTreeRecur = (leaf: PoF): Promise<EPoF> =>
-    guard2<PoF, Playlist, Folder, Promise<EPoF>>([
+const isType = is<SPoF>("type")
+const extractLikedPlaylistTreeRecur = (leaf: SPoF): Promise<EPoF> =>
+    guard2<SPoF, SPlaylist, SFolder, Promise<EPoF>>([
         [
-            (leaf): leaf is Playlist => leaf.type === "playlist",
-            async (playlist: Playlist) =>
+            isType("playlist"),
+            async playlist =>
                 playlist.ownedBySelf
                     ? {
                           type: "playlist personal",
@@ -51,8 +52,8 @@ const extractLikedPlaylistTreeRecur = (leaf: PoF): Promise<EPoF> =>
                       },
         ],
         [
-            (leaf): leaf is Folder => leaf.type === "folder",
-            async (folder: Folder) => ({
+            isType("folder"),
+            async folder => ({
                 type: folder.type,
                 name: folder.name,
                 uris: folder.rows
@@ -67,21 +68,21 @@ const extractLikedPlaylistTreeRecur = (leaf: PoF): Promise<EPoF> =>
     ])(constant(Promise.resolve({} as EPoF)))(leaf)
 
 const restorePlaylistseRecur = async (leaf: EPoF) => {
+    const isType = is<EPoF>("type")
     guard3<EPoF, EPlaylistPersonal, EPlaylistLiked, EFolder, any>([
         [
-            (leaf): leaf is EPlaylistPersonal =>
-                leaf.type === "playlist personal",
+            isType("playlist personal"),
             playlist => createPlaylist(playlist.name, playlist.uris),
         ],
+        [isType("playlist liked"), ({ uri }) => likePlaylist(uri)],
         [
-            (leaf): leaf is EPlaylistLiked => leaf.type === "playlist liked",
-            playlist => likePlaylist(playlist.uri),
-        ],
-        [
-            (leaf): leaf is EFolder => leaf.type === "folder",
-            (folder: EFolder) =>
-                createFolder(folder.name) &&
-                map(restorePlaylistseRecur)(folder.uris),
+            isType("folder"),
+            folder =>
+                p(
+                    createFolder(folder.name),
+                    constant(folder.uris),
+                    map(restorePlaylistseRecur),
+                ),
         ],
     ])(constant(void 0))(leaf)
 }

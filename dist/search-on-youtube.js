@@ -235,8 +235,8 @@ search.on.youtube = (() => {
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Apply.js
   function apFirst(A) {
     return function(second) {
-      return function(first2) {
-        return A.ap(A.map(first2, function(a) {
+      return function(first3) {
+        return A.ap(A.map(first3, function(a) {
           return function() {
             return a;
           };
@@ -246,8 +246,8 @@ search.on.youtube = (() => {
   }
   function apSecond(A) {
     return function(second) {
-      return function(first2) {
-        return A.ap(A.map(first2, function() {
+      return function(first3) {
+        return A.ap(A.map(first3, function() {
           return function(b) {
             return b;
           };
@@ -270,8 +270,8 @@ search.on.youtube = (() => {
   function getApplySemigroup(F) {
     return function(S) {
       return {
-        concat: function(first2, second) {
-          return F.ap(F.map(first2, function(x) {
+        concat: function(first3, second) {
+          return F.ap(F.map(first3, function(x) {
             return function(y) {
               return S.concat(x, y);
             };
@@ -353,14 +353,14 @@ search.on.youtube = (() => {
   function chainFirst(M) {
     var tapM = tap(M);
     return function(f3) {
-      return function(first2) {
-        return tapM(first2, f3);
+      return function(first3) {
+        return tapM(first3, f3);
       };
     };
   }
   function tap(M) {
-    return function(first2, f3) {
-      return M.chain(first2, function(a) {
+    return function(first3, f3) {
+      return M.chain(first3, function(a) {
         return M.map(f3(a), function() {
           return a;
         });
@@ -433,31 +433,31 @@ search.on.youtube = (() => {
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Ord.js
-  function compare(first2, second) {
-    return first2 < second ? -1 : first2 > second ? 1 : 0;
+  function compare(first3, second) {
+    return first3 < second ? -1 : first3 > second ? 1 : 0;
   }
   var equalsDefault, fromCompare, getSemigroup, getMonoid, strictOrd;
   var init_Ord = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Ord.js"() {
       init_Eq();
       equalsDefault = function(compare2) {
-        return function(first2, second) {
-          return first2 === second || compare2(first2, second) === 0;
+        return function(first3, second) {
+          return first3 === second || compare2(first3, second) === 0;
         };
       };
       fromCompare = function(compare2) {
         return {
           equals: equalsDefault(compare2),
-          compare: function(first2, second) {
-            return first2 === second ? 0 : compare2(first2, second);
+          compare: function(first3, second) {
+            return first3 === second ? 0 : compare2(first3, second);
           }
         };
       };
       getSemigroup = function() {
         return {
-          concat: function(first2, second) {
+          concat: function(first3, second) {
             return fromCompare(function(a, b) {
-              var ox = first2.compare(a, b);
+              var ox = first3.compare(a, b);
               return ox !== 0 ? ox : second.compare(a, b);
             });
           }
@@ -478,11 +478,28 @@ search.on.youtube = (() => {
     }
   });
 
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Magma.js
+  var concatAll;
+  var init_Magma = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Magma.js"() {
+      concatAll = function(M) {
+        return function(startWith) {
+          return function(as3) {
+            return as3.reduce(function(a, acc) {
+              return M.concat(a, acc);
+            }, startWith);
+          };
+        };
+      };
+    }
+  });
+
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Semigroup.js
-  var constant2, first, last, semigroupVoid;
+  var constant2, first, last, concatAll2, semigroupVoid, semigroupAll, semigroupAny, semigroupString, semigroupSum, semigroupProduct;
   var init_Semigroup = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Semigroup.js"() {
       init_function();
+      init_Magma();
       constant2 = function(a) {
         return {
           concat: function() {
@@ -498,12 +515,38 @@ search.on.youtube = (() => {
           return y;
         } };
       };
+      concatAll2 = concatAll;
       semigroupVoid = constant2(void 0);
+      semigroupAll = {
+        concat: function(x, y) {
+          return x && y;
+        }
+      };
+      semigroupAny = {
+        concat: function(x, y) {
+          return x || y;
+        }
+      };
+      semigroupString = {
+        concat: function(x, y) {
+          return x + y;
+        }
+      };
+      semigroupSum = {
+        concat: function(x, y) {
+          return x + y;
+        }
+      };
+      semigroupProduct = {
+        concat: function(x, y) {
+          return x * y;
+        }
+      };
     }
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyNonEmptyArray.js
-  var __spreadArray3, isNonEmpty2, isOutOfBound, prependW, prepend, prependAll, intersperse, extract, head2, tail2, last2, concatAll, intercalate;
+  var __spreadArray3, isNonEmpty2, isOutOfBound, prependW, prepend, prependAll, intersperse, extract, head2, tail2, last2, concatAll3, intercalate;
   var init_ReadonlyNonEmptyArray = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyNonEmptyArray.js"() {
       init_function();
@@ -550,13 +593,13 @@ search.on.youtube = (() => {
       last2 = function(as3) {
         return as3[as3.length - 1];
       };
-      concatAll = function(S) {
+      concatAll3 = function(S) {
         return function(as3) {
           return as3.reduce(S.concat);
         };
       };
       intercalate = function(S) {
-        var concatAllS = concatAll(S);
+        var concatAllS = concatAll3(S);
         return function(middle) {
           return flow(intersperse(middle), concatAllS);
         };
@@ -653,8 +696,8 @@ search.on.youtube = (() => {
       union = function(E) {
         var uniqE = uniq(E);
         return function(second) {
-          return function(first2) {
-            return uniqE(pipe(first2, concat(second)));
+          return function(first3) {
+            return uniqE(pipe(first3, concat(second)));
           };
         };
       };
@@ -754,14 +797,14 @@ search.on.youtube = (() => {
   var init_number = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/number.js"() {
       Eq = {
-        equals: function(first2, second) {
-          return first2 === second;
+        equals: function(first3, second) {
+          return first3 === second;
         }
       };
       Ord = {
         equals: Eq.equals,
-        compare: function(first2, second) {
-          return first2 < second ? -1 : first2 > second ? 1 : 0;
+        compare: function(first3, second) {
+          return first3 < second ? -1 : first3 > second ? 1 : 0;
         }
       };
       Bounded = {
@@ -771,18 +814,18 @@ search.on.youtube = (() => {
         bottom: -Infinity
       };
       MagmaSub = {
-        concat: function(first2, second) {
-          return first2 - second;
+        concat: function(first3, second) {
+          return first3 - second;
         }
       };
       SemigroupSum = {
-        concat: function(first2, second) {
-          return first2 + second;
+        concat: function(first3, second) {
+          return first3 + second;
         }
       };
       SemigroupProduct = {
-        concat: function(first2, second) {
-          return first2 * second;
+        concat: function(first3, second) {
+          return first3 * second;
         }
       };
       MonoidSum = {
@@ -802,11 +845,11 @@ search.on.youtube = (() => {
         degree: function(_) {
           return 1;
         },
-        div: function(first2, second) {
-          return first2 / second;
+        div: function(first3, second) {
+          return first3 / second;
         },
-        mod: function(first2, second) {
-          return first2 % second;
+        mod: function(first3, second) {
+          return first3 % second;
         }
       };
     }
@@ -1259,7 +1302,7 @@ search.on.youtube = (() => {
     reduceRightWithIndex: () => reduceRightWithIndex3,
     reduceWithIndex: () => reduceWithIndex3,
     replicate: () => replicate,
-    reverse: () => reverse,
+    reverse: () => reverse2,
     rights: () => rights,
     rotate: () => rotate3,
     scanLeft: () => scanLeft,
@@ -1353,14 +1396,14 @@ search.on.youtube = (() => {
   }
   function union3(E) {
     var unionE = union(E);
-    return function(first2, second) {
+    return function(first3, second) {
       if (second === void 0) {
         var unionE_1 = union3(E);
         return function(second2) {
-          return unionE_1(second2, first2);
+          return unionE_1(second2, first3);
         };
       }
-      return isNonEmpty5(first2) && isNonEmpty5(second) ? unionE(second)(first2) : isNonEmpty5(first2) ? copy2(first2) : copy2(second);
+      return isNonEmpty5(first3) && isNonEmpty5(second) ? unionE(second)(first3) : isNonEmpty5(first3) ? copy2(first3) : copy2(second);
     };
   }
   function intersection(E) {
@@ -1391,7 +1434,7 @@ search.on.youtube = (() => {
       });
     };
   }
-  var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last5, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt, updateAt, deleteAt, modifyAt, reverse, rights, lefts, sort2, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI, getShow3, getSemigroup3, getMonoid2, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, chainFirst2, Monad, Unfoldable, Alt, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty2, cons3, snoc3, prependToAll, array;
+  var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last5, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt, updateAt, deleteAt, modifyAt, reverse2, rights, lefts, sort2, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI, getShow3, getSemigroup3, getMonoid2, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, chainFirst2, Monad, Unfoldable, Alt, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty2, cons3, snoc3, prependToAll, array;
   var init_Array = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Array.js"() {
       init_Apply();
@@ -1548,7 +1591,7 @@ search.on.youtube = (() => {
           return isOutOfBound4(i, as3) ? none : some(unsafeUpdateAt3(i, f3(as3[i]), as3));
         };
       };
-      reverse = function(as3) {
+      reverse2 = function(as3) {
         return isEmpty(as3) ? [] : as3.slice().reverse();
       };
       rights = function(as3) {
@@ -1651,8 +1694,8 @@ search.on.youtube = (() => {
         };
       };
       concatW = function(second) {
-        return function(first2) {
-          return isEmpty(first2) ? copy2(second) : isEmpty(second) ? copy2(first2) : first2.concat(second);
+        return function(first3) {
+          return isEmpty(first3) ? copy2(second) : isEmpty(second) ? copy2(first3) : first3.concat(second);
         };
       };
       concat2 = concatW;
@@ -1930,8 +1973,8 @@ search.on.youtube = (() => {
       getShow3 = getShow2;
       getSemigroup3 = function() {
         return {
-          concat: function(first2, second) {
-            return first2.concat(second);
+          concat: function(first3, second) {
+            return first3.concat(second);
           }
         };
       };
@@ -1946,8 +1989,8 @@ search.on.youtube = (() => {
       getUnionSemigroup = function(E) {
         var unionE = union3(E);
         return {
-          concat: function(first2, second) {
-            return unionE(second)(first2);
+          concat: function(first3, second) {
+            return unionE(second)(first3);
           }
         };
       };
@@ -1960,16 +2003,16 @@ search.on.youtube = (() => {
       getIntersectionSemigroup = function(E) {
         var intersectionE = intersection(E);
         return {
-          concat: function(first2, second) {
-            return intersectionE(second)(first2);
+          concat: function(first3, second) {
+            return intersectionE(second)(first3);
           }
         };
       };
       getDifferenceMagma = function(E) {
         var differenceE = difference(E);
         return {
-          concat: function(first2, second) {
-            return differenceE(second)(first2);
+          concat: function(first3, second) {
+            return differenceE(second)(first3);
           }
         };
       };
@@ -2803,9 +2846,65 @@ search.on.youtube = (() => {
     }
   });
 
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Endomorphism.js
+  var getSemigroup4, getMonoid4;
+  var init_Endomorphism = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Endomorphism.js"() {
+      init_function();
+      getSemigroup4 = function() {
+        return {
+          concat: function(first3, second) {
+            return flow(first3, second);
+          }
+        };
+      };
+      getMonoid4 = function() {
+        return {
+          concat: getSemigroup4().concat,
+          empty: identity
+        };
+      };
+    }
+  });
+
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/HKT/index.js
   var init_HKT = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/HKT/index.js"() {
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Monoid.js
+  var concatAll4, monoidVoid, monoidAll, monoidAny, monoidString, monoidSum, monoidProduct;
+  var init_Monoid = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Monoid.js"() {
+      init_Semigroup();
+      concatAll4 = function(M) {
+        return concatAll2(M)(M.empty);
+      };
+      monoidVoid = {
+        concat: semigroupVoid.concat,
+        empty: void 0
+      };
+      monoidAll = {
+        concat: semigroupAll.concat,
+        empty: true
+      };
+      monoidAny = {
+        concat: semigroupAny.concat,
+        empty: false
+      };
+      monoidString = {
+        concat: semigroupString.concat,
+        empty: ""
+      };
+      monoidSum = {
+        concat: semigroupSum.concat,
+        empty: 0
+      };
+      monoidProduct = {
+        concat: semigroupProduct.concat,
+        empty: 1
+      };
     }
   });
 
@@ -2814,13 +2913,13 @@ search.on.youtube = (() => {
   var init_string = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js"() {
       Eq2 = {
-        equals: function(first2, second) {
-          return first2 === second;
+        equals: function(first3, second) {
+          return first3 === second;
         }
       };
       Semigroup = {
-        concat: function(first2, second) {
-          return first2 + second;
+        concat: function(first3, second) {
+          return first3 + second;
         }
       };
       empty3 = "";
@@ -2830,8 +2929,8 @@ search.on.youtube = (() => {
       };
       Ord2 = {
         equals: Eq2.equals,
-        compare: function(first2, second) {
-          return first2 < second ? -1 : first2 > second ? 1 : 0;
+        compare: function(first3, second) {
+          return first3 < second ? -1 : first3 > second ? 1 : 0;
         }
       };
       startsWith = function(searchString, position) {
@@ -2925,7 +3024,7 @@ search.on.youtube = (() => {
         };
       };
       exports.getBooleanAlgebra = getBooleanAlgebra;
-      var getSemigroup4 = function(S) {
+      var getSemigroup5 = function(S) {
         return function() {
           return {
             concat: function(f3, g) {
@@ -2936,8 +3035,8 @@ search.on.youtube = (() => {
           };
         };
       };
-      exports.getSemigroup = getSemigroup4;
-      var getMonoid5 = function(M) {
+      exports.getSemigroup = getSemigroup5;
+      var getMonoid6 = function(M) {
         var getSemigroupM = (0, exports.getSemigroup)(M);
         return function() {
           return {
@@ -2948,7 +3047,7 @@ search.on.youtube = (() => {
           };
         };
       };
-      exports.getMonoid = getMonoid5;
+      exports.getMonoid = getMonoid6;
       var getSemiring = function(S) {
         return {
           add: function(f3, g) {
@@ -2985,29 +3084,29 @@ search.on.youtube = (() => {
         };
       };
       exports.getRing = getRing;
-      var apply = function(a) {
+      var apply2 = function(a) {
         return function(f3) {
           return f3(a);
         };
       };
-      exports.apply = apply;
+      exports.apply = apply2;
       function identity2(a) {
         return a;
       }
       exports.identity = identity2;
       exports.unsafeCoerce = identity2;
-      function constant3(a) {
+      function constant4(a) {
         return function() {
           return a;
         };
       }
-      exports.constant = constant3;
-      exports.constTrue = constant3(true);
-      exports.constFalse = constant3(false);
-      exports.constNull = constant3(null);
-      exports.constUndefined = constant3(void 0);
+      exports.constant = constant4;
+      exports.constTrue = constant4(true);
+      exports.constFalse = constant4(false);
+      exports.constNull = constant4(null);
+      exports.constUndefined = constant4(void 0);
       exports.constVoid = exports.constUndefined;
-      function flip3(f3) {
+      function flip4(f3) {
         return function() {
           var args = [];
           for (var _i = 0; _i < arguments.length; _i++) {
@@ -3021,8 +3120,8 @@ search.on.youtube = (() => {
           };
         };
       }
-      exports.flip = flip3;
-      function flow2(ab, bc, cd, de, ef, fg, gh, hi, ij) {
+      exports.flip = flip4;
+      function flow3(ab, bc, cd, de, ef, fg, gh, hi, ij) {
         switch (arguments.length) {
           case 1:
             return ab;
@@ -3061,15 +3160,15 @@ search.on.youtube = (() => {
         }
         return;
       }
-      exports.flow = flow2;
-      function tuple() {
+      exports.flow = flow3;
+      function tuple2() {
         var t = [];
         for (var _i = 0; _i < arguments.length; _i++) {
           t[_i] = arguments[_i];
         }
         return t;
       }
-      exports.tuple = tuple;
+      exports.tuple = tuple2;
       function increment(n) {
         return n + 1;
       }
@@ -3082,12 +3181,12 @@ search.on.youtube = (() => {
         throw new Error("Called `absurd` function which should be uncallable");
       }
       exports.absurd = absurd;
-      function tupled2(f3) {
+      function tupled3(f3) {
         return function(a) {
           return f3.apply(void 0, a);
         };
       }
-      exports.tupled = tupled2;
+      exports.tupled = tupled3;
       function untupled(f3) {
         return function() {
           var a = [];
@@ -3098,7 +3197,7 @@ search.on.youtube = (() => {
         };
       }
       exports.untupled = untupled;
-      function pipe2(a, ab, bc, cd, de, ef, fg, gh, hi) {
+      function pipe3(a, ab, bc, cd, de, ef, fg, gh, hi) {
         switch (arguments.length) {
           case 1:
             return a;
@@ -3127,7 +3226,7 @@ search.on.youtube = (() => {
           }
         }
       }
-      exports.pipe = pipe2;
+      exports.pipe = pipe3;
       exports.hole = absurd;
       var SK2 = function(_, b) {
         return b;
@@ -3141,8 +3240,8 @@ search.on.youtube = (() => {
       exports.not = not2;
       var getEndomorphismMonoid = function() {
         return {
-          concat: function(first2, second) {
-            return flow2(first2, second);
+          concat: function(first3, second) {
+            return flow3(first3, second);
           },
           empty: identity2
         };
@@ -3166,19 +3265,8 @@ search.on.youtube = (() => {
     }
   });
 
-  // shared/fp.tsx
-  var async;
-  var init_fp = __esm({
-    "shared/fp.tsx"() {
-      "use strict";
-      async = (f3) => (fa) => __async(void 0, null, function* () {
-        return f3(yield fa);
-      });
-    }
-  });
-
   // shared/util.tsx
-  var spotUriRe, parseUri, normalizeStr;
+  var spotUriRe, parseUri, normalizeStr, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
@@ -3188,16 +3276,721 @@ search.on.youtube = (() => {
         return (_a = uri.match(spotUriRe)) == null ? void 0 : _a.groups;
       };
       normalizeStr = (str) => str.replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase();
+      sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/internal.js
+  var require_internal = __commonJS({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/internal.js"(exports) {
+      "use strict";
+      var __spreadArray6 = exports && exports.__spreadArray || function(to, from, pack) {
+        if (pack || arguments.length === 2)
+          for (var i = 0, l = from.length, ar; i < l; i++) {
+            if (ar || !(i in from)) {
+              if (!ar)
+                ar = Array.prototype.slice.call(from, 0, i);
+              ar[i] = from[i];
+            }
+          }
+        return to.concat(ar || Array.prototype.slice.call(from));
+      };
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.flatMapReader = exports.flatMapTask = exports.flatMapIO = exports.flatMapEither = exports.flatMapOption = exports.flatMapNullable = exports.liftOption = exports.liftNullable = exports.fromReadonlyNonEmptyArray = exports.has = exports.emptyRecord = exports.emptyReadonlyArray = exports.tail = exports.head = exports.isNonEmpty = exports.singleton = exports.right = exports.left = exports.isRight = exports.isLeft = exports.some = exports.none = exports.isSome = exports.isNone = void 0;
+      var function_1 = require_function();
+      var isNone3 = function(fa) {
+        return fa._tag === "None";
+      };
+      exports.isNone = isNone3;
+      var isSome3 = function(fa) {
+        return fa._tag === "Some";
+      };
+      exports.isSome = isSome3;
+      exports.none = { _tag: "None" };
+      var some5 = function(a) {
+        return { _tag: "Some", value: a };
+      };
+      exports.some = some5;
+      var isLeft2 = function(ma) {
+        return ma._tag === "Left";
+      };
+      exports.isLeft = isLeft2;
+      var isRight = function(ma) {
+        return ma._tag === "Right";
+      };
+      exports.isRight = isRight;
+      var left = function(e) {
+        return { _tag: "Left", left: e };
+      };
+      exports.left = left;
+      var right = function(a) {
+        return { _tag: "Right", right: a };
+      };
+      exports.right = right;
+      var singleton3 = function(a) {
+        return [a];
+      };
+      exports.singleton = singleton3;
+      var isNonEmpty6 = function(as3) {
+        return as3.length > 0;
+      };
+      exports.isNonEmpty = isNonEmpty6;
+      var head6 = function(as3) {
+        return as3[0];
+      };
+      exports.head = head6;
+      var tail5 = function(as3) {
+        return as3.slice(1);
+      };
+      exports.tail = tail5;
+      exports.emptyReadonlyArray = [];
+      exports.emptyRecord = {};
+      exports.has = Object.prototype.hasOwnProperty;
+      var fromReadonlyNonEmptyArray3 = function(as3) {
+        return __spreadArray6([as3[0]], as3.slice(1), true);
+      };
+      exports.fromReadonlyNonEmptyArray = fromReadonlyNonEmptyArray3;
+      var liftNullable = function(F) {
+        return function(f3, onNullable) {
+          return function() {
+            var a = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+              a[_i] = arguments[_i];
+            }
+            var o = f3.apply(void 0, a);
+            return F.fromEither(o == null ? (0, exports.left)(onNullable.apply(void 0, a)) : (0, exports.right)(o));
+          };
+        };
+      };
+      exports.liftNullable = liftNullable;
+      var liftOption = function(F) {
+        return function(f3, onNone) {
+          return function() {
+            var a = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+              a[_i] = arguments[_i];
+            }
+            var o = f3.apply(void 0, a);
+            return F.fromEither((0, exports.isNone)(o) ? (0, exports.left)(onNone.apply(void 0, a)) : (0, exports.right)(o.value));
+          };
+        };
+      };
+      exports.liftOption = liftOption;
+      var flatMapNullable = function(F, M) {
+        return (0, function_1.dual)(3, function(self, f3, onNullable) {
+          return M.flatMap(self, (0, exports.liftNullable)(F)(f3, onNullable));
+        });
+      };
+      exports.flatMapNullable = flatMapNullable;
+      var flatMapOption = function(F, M) {
+        return (0, function_1.dual)(3, function(self, f3, onNone) {
+          return M.flatMap(self, (0, exports.liftOption)(F)(f3, onNone));
+        });
+      };
+      exports.flatMapOption = flatMapOption;
+      var flatMapEither = function(F, M) {
+        return (0, function_1.dual)(2, function(self, f3) {
+          return M.flatMap(self, function(a) {
+            return F.fromEither(f3(a));
+          });
+        });
+      };
+      exports.flatMapEither = flatMapEither;
+      var flatMapIO = function(F, M) {
+        return (0, function_1.dual)(2, function(self, f3) {
+          return M.flatMap(self, function(a) {
+            return F.fromIO(f3(a));
+          });
+        });
+      };
+      exports.flatMapIO = flatMapIO;
+      var flatMapTask = function(F, M) {
+        return (0, function_1.dual)(2, function(self, f3) {
+          return M.flatMap(self, function(a) {
+            return F.fromTask(f3(a));
+          });
+        });
+      };
+      exports.flatMapTask = flatMapTask;
+      var flatMapReader = function(F, M) {
+        return (0, function_1.dual)(2, function(self, f3) {
+          return M.flatMap(self, function(a) {
+            return F.fromReader(f3(a));
+          });
+        });
+      };
+      exports.flatMapReader = flatMapReader;
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Magma.js
+  var require_Magma = __commonJS({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Magma.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.concatAll = exports.endo = exports.filterSecond = exports.filterFirst = exports.reverse = void 0;
+      var reverse4 = function(M) {
+        return {
+          concat: function(first3, second) {
+            return M.concat(second, first3);
+          }
+        };
+      };
+      exports.reverse = reverse4;
+      var filterFirst = function(predicate) {
+        return function(M) {
+          return {
+            concat: function(first3, second) {
+              return predicate(first3) ? M.concat(first3, second) : second;
+            }
+          };
+        };
+      };
+      exports.filterFirst = filterFirst;
+      var filterSecond = function(predicate) {
+        return function(M) {
+          return {
+            concat: function(first3, second) {
+              return predicate(second) ? M.concat(first3, second) : first3;
+            }
+          };
+        };
+      };
+      exports.filterSecond = filterSecond;
+      var endo = function(f3) {
+        return function(M) {
+          return {
+            concat: function(first3, second) {
+              return M.concat(f3(first3), f3(second));
+            }
+          };
+        };
+      };
+      exports.endo = endo;
+      var concatAll5 = function(M) {
+        return function(startWith) {
+          return function(as3) {
+            return as3.reduce(function(a, acc) {
+              return M.concat(a, acc);
+            }, startWith);
+          };
+        };
+      };
+      exports.concatAll = concatAll5;
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Eq.js
+  var require_Eq = __commonJS({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Eq.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.eqDate = exports.eqNumber = exports.eqString = exports.eqBoolean = exports.eq = exports.strictEqual = exports.getStructEq = exports.getTupleEq = exports.Contravariant = exports.getMonoid = exports.getSemigroup = exports.eqStrict = exports.URI = exports.contramap = exports.tuple = exports.struct = exports.fromEquals = void 0;
+      var function_1 = require_function();
+      var fromEquals2 = function(equals) {
+        return {
+          equals: function(x, y) {
+            return x === y || equals(x, y);
+          }
+        };
+      };
+      exports.fromEquals = fromEquals2;
+      var struct2 = function(eqs) {
+        return (0, exports.fromEquals)(function(first3, second) {
+          for (var key in eqs) {
+            if (!eqs[key].equals(first3[key], second[key])) {
+              return false;
+            }
+          }
+          return true;
+        });
+      };
+      exports.struct = struct2;
+      var tuple2 = function() {
+        var eqs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          eqs[_i] = arguments[_i];
+        }
+        return (0, exports.fromEquals)(function(first3, second) {
+          return eqs.every(function(E, i) {
+            return E.equals(first3[i], second[i]);
+          });
+        });
+      };
+      exports.tuple = tuple2;
+      var contramap_ = function(fa, f3) {
+        return (0, function_1.pipe)(fa, (0, exports.contramap)(f3));
+      };
+      var contramap = function(f3) {
+        return function(fa) {
+          return (0, exports.fromEquals)(function(x, y) {
+            return fa.equals(f3(x), f3(y));
+          });
+        };
+      };
+      exports.contramap = contramap;
+      exports.URI = "Eq";
+      exports.eqStrict = {
+        equals: function(a, b) {
+          return a === b;
+        }
+      };
+      var empty4 = {
+        equals: function() {
+          return true;
+        }
+      };
+      var getSemigroup5 = function() {
+        return {
+          concat: function(x, y) {
+            return (0, exports.fromEquals)(function(a, b) {
+              return x.equals(a, b) && y.equals(a, b);
+            });
+          }
+        };
+      };
+      exports.getSemigroup = getSemigroup5;
+      var getMonoid6 = function() {
+        return {
+          concat: (0, exports.getSemigroup)().concat,
+          empty: empty4
+        };
+      };
+      exports.getMonoid = getMonoid6;
+      exports.Contravariant = {
+        URI: exports.URI,
+        contramap: contramap_
+      };
+      exports.getTupleEq = exports.tuple;
+      exports.getStructEq = exports.struct;
+      exports.strictEqual = exports.eqStrict.equals;
+      exports.eq = exports.Contravariant;
+      exports.eqBoolean = exports.eqStrict;
+      exports.eqString = exports.eqStrict;
+      exports.eqNumber = exports.eqStrict;
+      exports.eqDate = {
+        equals: function(first3, second) {
+          return first3.valueOf() === second.valueOf();
+        }
+      };
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Ord.js
+  var require_Ord = __commonJS({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Ord.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.ordDate = exports.ordNumber = exports.ordString = exports.ordBoolean = exports.ord = exports.getDualOrd = exports.getTupleOrd = exports.between = exports.clamp = exports.max = exports.min = exports.geq = exports.leq = exports.gt = exports.lt = exports.equals = exports.trivial = exports.Contravariant = exports.getMonoid = exports.getSemigroup = exports.URI = exports.contramap = exports.reverse = exports.tuple = exports.fromCompare = exports.equalsDefault = void 0;
+      var Eq_1 = require_Eq();
+      var function_1 = require_function();
+      var equalsDefault2 = function(compare3) {
+        return function(first3, second) {
+          return first3 === second || compare3(first3, second) === 0;
+        };
+      };
+      exports.equalsDefault = equalsDefault2;
+      var fromCompare2 = function(compare3) {
+        return {
+          equals: (0, exports.equalsDefault)(compare3),
+          compare: function(first3, second) {
+            return first3 === second ? 0 : compare3(first3, second);
+          }
+        };
+      };
+      exports.fromCompare = fromCompare2;
+      var tuple2 = function() {
+        var ords = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          ords[_i] = arguments[_i];
+        }
+        return (0, exports.fromCompare)(function(first3, second) {
+          var i = 0;
+          for (; i < ords.length - 1; i++) {
+            var r = ords[i].compare(first3[i], second[i]);
+            if (r !== 0) {
+              return r;
+            }
+          }
+          return ords[i].compare(first3[i], second[i]);
+        });
+      };
+      exports.tuple = tuple2;
+      var reverse4 = function(O) {
+        return (0, exports.fromCompare)(function(first3, second) {
+          return O.compare(second, first3);
+        });
+      };
+      exports.reverse = reverse4;
+      var contramap_ = function(fa, f3) {
+        return (0, function_1.pipe)(fa, (0, exports.contramap)(f3));
+      };
+      var contramap = function(f3) {
+        return function(fa) {
+          return (0, exports.fromCompare)(function(first3, second) {
+            return fa.compare(f3(first3), f3(second));
+          });
+        };
+      };
+      exports.contramap = contramap;
+      exports.URI = "Ord";
+      var getSemigroup5 = function() {
+        return {
+          concat: function(first3, second) {
+            return (0, exports.fromCompare)(function(a, b) {
+              var ox = first3.compare(a, b);
+              return ox !== 0 ? ox : second.compare(a, b);
+            });
+          }
+        };
+      };
+      exports.getSemigroup = getSemigroup5;
+      var getMonoid6 = function() {
+        return {
+          concat: (0, exports.getSemigroup)().concat,
+          empty: (0, exports.fromCompare)(function() {
+            return 0;
+          })
+        };
+      };
+      exports.getMonoid = getMonoid6;
+      exports.Contravariant = {
+        URI: exports.URI,
+        contramap: contramap_
+      };
+      exports.trivial = {
+        equals: function_1.constTrue,
+        compare: /* @__PURE__ */ (0, function_1.constant)(0)
+      };
+      var equals = function(O) {
+        return function(second) {
+          return function(first3) {
+            return first3 === second || O.compare(first3, second) === 0;
+          };
+        };
+      };
+      exports.equals = equals;
+      var lt = function(O) {
+        return function(first3, second) {
+          return O.compare(first3, second) === -1;
+        };
+      };
+      exports.lt = lt;
+      var gt = function(O) {
+        return function(first3, second) {
+          return O.compare(first3, second) === 1;
+        };
+      };
+      exports.gt = gt;
+      var leq = function(O) {
+        return function(first3, second) {
+          return O.compare(first3, second) !== 1;
+        };
+      };
+      exports.leq = leq;
+      var geq = function(O) {
+        return function(first3, second) {
+          return O.compare(first3, second) !== -1;
+        };
+      };
+      exports.geq = geq;
+      var min3 = function(O) {
+        return function(first3, second) {
+          return first3 === second || O.compare(first3, second) < 1 ? first3 : second;
+        };
+      };
+      exports.min = min3;
+      var max3 = function(O) {
+        return function(first3, second) {
+          return first3 === second || O.compare(first3, second) > -1 ? first3 : second;
+        };
+      };
+      exports.max = max3;
+      var clamp = function(O) {
+        var minO = (0, exports.min)(O);
+        var maxO = (0, exports.max)(O);
+        return function(low, hi) {
+          return function(a) {
+            return maxO(minO(a, hi), low);
+          };
+        };
+      };
+      exports.clamp = clamp;
+      var between = function(O) {
+        var ltO = (0, exports.lt)(O);
+        var gtO = (0, exports.gt)(O);
+        return function(low, hi) {
+          return function(a) {
+            return ltO(a, low) || gtO(a, hi) ? false : true;
+          };
+        };
+      };
+      exports.between = between;
+      exports.getTupleOrd = exports.tuple;
+      exports.getDualOrd = exports.reverse;
+      exports.ord = exports.Contravariant;
+      function compare2(first3, second) {
+        return first3 < second ? -1 : first3 > second ? 1 : 0;
+      }
+      var strictOrd2 = {
+        equals: Eq_1.eqStrict.equals,
+        compare: compare2
+      };
+      exports.ordBoolean = strictOrd2;
+      exports.ordString = strictOrd2;
+      exports.ordNumber = strictOrd2;
+      exports.ordDate = (0, function_1.pipe)(
+        exports.ordNumber,
+        /* @__PURE__ */ (0, exports.contramap)(function(date) {
+          return date.valueOf();
+        })
+      );
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Semigroup.js
+  var require_Semigroup = __commonJS({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Semigroup.js"(exports) {
+      "use strict";
+      var __createBinding = exports && exports.__createBinding || (Object.create ? function(o, m, k, k2) {
+        if (k2 === void 0)
+          k2 = k;
+        var desc = Object.getOwnPropertyDescriptor(m, k);
+        if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+          desc = { enumerable: true, get: function() {
+            return m[k];
+          } };
+        }
+        Object.defineProperty(o, k2, desc);
+      } : function(o, m, k, k2) {
+        if (k2 === void 0)
+          k2 = k;
+        o[k2] = m[k];
+      });
+      var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? function(o, v) {
+        Object.defineProperty(o, "default", { enumerable: true, value: v });
+      } : function(o, v) {
+        o["default"] = v;
+      });
+      var __importStar = exports && exports.__importStar || function(mod) {
+        if (mod && mod.__esModule)
+          return mod;
+        var result = {};
+        if (mod != null) {
+          for (var k in mod)
+            if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+              __createBinding(result, mod, k);
+        }
+        __setModuleDefault(result, mod);
+        return result;
+      };
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.semigroupProduct = exports.semigroupSum = exports.semigroupString = exports.getFunctionSemigroup = exports.semigroupAny = exports.semigroupAll = exports.fold = exports.getIntercalateSemigroup = exports.getMeetSemigroup = exports.getJoinSemigroup = exports.getDualSemigroup = exports.getStructSemigroup = exports.getTupleSemigroup = exports.getFirstSemigroup = exports.getLastSemigroup = exports.getObjectSemigroup = exports.semigroupVoid = exports.concatAll = exports.last = exports.first = exports.intercalate = exports.tuple = exports.struct = exports.reverse = exports.constant = exports.max = exports.min = void 0;
+      var function_1 = require_function();
+      var _ = __importStar(require_internal());
+      var M = __importStar(require_Magma());
+      var Or = __importStar(require_Ord());
+      var min3 = function(O) {
+        return {
+          concat: Or.min(O)
+        };
+      };
+      exports.min = min3;
+      var max3 = function(O) {
+        return {
+          concat: Or.max(O)
+        };
+      };
+      exports.max = max3;
+      var constant4 = function(a) {
+        return {
+          concat: function() {
+            return a;
+          }
+        };
+      };
+      exports.constant = constant4;
+      exports.reverse = M.reverse;
+      var struct2 = function(semigroups) {
+        return {
+          concat: function(first4, second) {
+            var r = {};
+            for (var k in semigroups) {
+              if (_.has.call(semigroups, k)) {
+                r[k] = semigroups[k].concat(first4[k], second[k]);
+              }
+            }
+            return r;
+          }
+        };
+      };
+      exports.struct = struct2;
+      var tuple2 = function() {
+        var semigroups = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          semigroups[_i] = arguments[_i];
+        }
+        return {
+          concat: function(first4, second) {
+            return semigroups.map(function(s, i) {
+              return s.concat(first4[i], second[i]);
+            });
+          }
+        };
+      };
+      exports.tuple = tuple2;
+      var intercalate4 = function(middle) {
+        return function(S) {
+          return {
+            concat: function(x, y) {
+              return S.concat(x, S.concat(middle, y));
+            }
+          };
+        };
+      };
+      exports.intercalate = intercalate4;
+      var first3 = function() {
+        return { concat: function_1.identity };
+      };
+      exports.first = first3;
+      var last6 = function() {
+        return { concat: function(_2, y) {
+          return y;
+        } };
+      };
+      exports.last = last6;
+      exports.concatAll = M.concatAll;
+      exports.semigroupVoid = (0, exports.constant)(void 0);
+      var getObjectSemigroup = function() {
+        return {
+          concat: function(first4, second) {
+            return Object.assign({}, first4, second);
+          }
+        };
+      };
+      exports.getObjectSemigroup = getObjectSemigroup;
+      exports.getLastSemigroup = exports.last;
+      exports.getFirstSemigroup = exports.first;
+      exports.getTupleSemigroup = exports.tuple;
+      exports.getStructSemigroup = exports.struct;
+      exports.getDualSemigroup = exports.reverse;
+      exports.getJoinSemigroup = exports.max;
+      exports.getMeetSemigroup = exports.min;
+      exports.getIntercalateSemigroup = exports.intercalate;
+      function fold2(S) {
+        var concatAllS = (0, exports.concatAll)(S);
+        return function(startWith, as3) {
+          return as3 === void 0 ? concatAllS(startWith) : concatAllS(startWith)(as3);
+        };
+      }
+      exports.fold = fold2;
+      exports.semigroupAll = {
+        concat: function(x, y) {
+          return x && y;
+        }
+      };
+      exports.semigroupAny = {
+        concat: function(x, y) {
+          return x || y;
+        }
+      };
+      exports.getFunctionSemigroup = function_1.getSemigroup;
+      exports.semigroupString = {
+        concat: function(x, y) {
+          return x + y;
+        }
+      };
+      exports.semigroupSum = {
+        concat: function(x, y) {
+          return x + y;
+        }
+      };
+      exports.semigroupProduct = {
+        concat: function(x, y) {
+          return x * y;
+        }
+      };
+    }
+  });
+
+  // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
+  var import_function9, import_Semigroup2, URI3, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, guard4, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var init_Function = __esm({
+    ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
+      init_Option();
+      init_Array();
+      import_function9 = __toESM(require_function());
+      init_Predicate();
+      init_Endomorphism();
+      init_Monoid();
+      import_Semigroup2 = __toESM(require_Semigroup());
+      init_Functor();
+      init_Apply();
+      init_Chain();
+      URI3 = "Function";
+      map4 = (f3) => (g) => (0, import_function9.flow)(g, f3);
+      Functor3 = {
+        URI: URI3,
+        map: (f3, g) => map4(g)(f3)
+      };
+      of5 = import_function9.constant;
+      ap4 = (f3) => (g) => (x) => g(x)(f3(x));
+      Applicative3 = __spreadProps(__spreadValues({}, Functor3), {
+        of: of5,
+        ap: (f3, g) => ap4(g)(f3)
+      });
+      apFirst4 = apFirst(Applicative3);
+      apSecond4 = apSecond(Applicative3);
+      chain3 = (f3) => (g) => (x) => f3(g(x))(x);
+      Monad3 = __spreadProps(__spreadValues({}, Applicative3), {
+        chain: (f3, g) => chain3(g)(f3)
+      });
+      Do3 = of5({});
+      bindTo4 = bindTo(Functor3);
+      bind4 = bind(Monad3);
+      apS4 = apS(Applicative3);
+      let_4 = let_(Functor3);
+      unary = import_function9.tupled;
+      guard4 = (branches) => (fallback) => (input) => (0, import_function9.pipe)(branches, map(([f3, g]) => (0, import_function9.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function9.getMonoid)(getMonoid3((0, import_Semigroup2.first)()))()), (0, import_function9.apply)(input), getOrElse(() => fallback(input)));
+      unless = (f3) => (onFalse) => (x) => f3(x) ? x : onFalse(x);
+      when = (0, import_function9.flow)(not, unless);
+      invoke = (x) => (ys) => (z) => z[x](...ys);
+      invokeNullary = (0, import_function9.flip)(invoke)([]);
+      curry2T = (f3) => (a) => (b) => f3([a, b]);
+      curry2 = (0, import_function9.flow)(unary, curry2T);
+      curry3T = (f3) => (a) => (b) => (c) => f3([a, b, c]);
+      curry3 = (0, import_function9.flow)(unary, curry3T);
+      curry4T = (f3) => (a) => (b) => (c) => (d) => f3([a, b, c, d]);
+      curry4 = (0, import_function9.flow)(unary, curry4T);
+      curry5T = (f3) => (a) => (b) => (c) => (d) => (e) => f3([a, b, c, d, e]);
+      curry5 = (0, import_function9.flow)(unary, curry5T);
+      applyEvery = concatAll4(getMonoid4());
+    }
+  });
+
+  // shared/fp.tsx
+  var guard42, async, is;
+  var init_fp = __esm({
+    "shared/fp.tsx"() {
+      "use strict";
+      init_Function();
+      guard42 = (branches) => guard4(
+        branches
+      );
+      async = (f3) => (fa) => __async(void 0, null, function* () {
+        return f3(yield fa);
+      });
+      is = (c) => (a) => (field) => field[c] === a;
     }
   });
 
   // shared/api.tsx
-  var import_function8, fetchTracksSpotAPI50, fetchTracksSpotAPI, createFolder, searchYoutube;
+  var import_function10, fetchTracksSpotAPI50, fetchTracksSpotAPI, createFolder, searchYoutube;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_Array();
-      import_function8 = __toESM(require_function(), 1);
+      import_function10 = __toESM(require_function(), 1);
       init_fp();
       init_util();
       fetchTracksSpotAPI50 = (ids) => __async(void 0, null, function* () {
@@ -3205,7 +3998,7 @@ search.on.youtube = (() => {
           `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
         )).tracks;
       });
-      fetchTracksSpotAPI = (0, import_function8.flow)(
+      fetchTracksSpotAPI = (0, import_function10.flow)(
         chunksOf3(50),
         map(fetchTracksSpotAPI50),
         (x) => Promise.all(x),
@@ -3256,261 +4049,248 @@ search.on.youtube = (() => {
     }
   });
 
-  // .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css
-  var settings_module_default;
-  var init_settings_module = __esm({
-    ".yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css"() {
-      settings_module_default = {};
-    }
-  });
-
-  // .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settingsSection.tsx
-  var import_react, import_react_dom, SettingsSection;
-  var init_settingsSection = __esm({
-    ".yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settingsSection.tsx"() {
-      import_react = __toESM(require_react());
-      import_react_dom = __toESM(require_react_dom());
-      init_settings_module();
+  // shared/settings.tsx
+  var import_function11, import_react, import_react_dom, SettingsSection;
+  var init_settings = __esm({
+    "shared/settings.tsx"() {
+      "use strict";
+      import_function11 = __toESM(require_function(), 1);
+      import_react = __toESM(require_react(), 1);
+      import_react_dom = __toESM(require_react_dom(), 1);
+      init_fp();
+      init_util();
       SettingsSection = class {
-        constructor(name, settingsId, initialSettingsFields = {}) {
+        constructor(name, sectionId, sectionFields = {}) {
           this.name = name;
-          this.settingsId = settingsId;
-          this.initialSettingsFields = initialSettingsFields;
-          __publicField(this, "settingsFields", this.initialSettingsFields);
+          this.sectionId = sectionId;
+          this.sectionFields = sectionFields;
           __publicField(this, "stopHistoryListener");
           __publicField(this, "setRerender", null);
-          __publicField(this, "buttonClassnames", null);
           __publicField(this, "pushSettings", () => __async(this, null, function* () {
             var _a, _b;
-            Object.entries(this.settingsFields).forEach(([nameId, field]) => {
-              if (field.type !== "button" && this.getFieldValue(nameId) === void 0) {
-                this.setFieldValue(nameId, field.defaultValue);
-              }
-            });
-            while (!((_b = (_a = Spicetify == null ? void 0 : Spicetify.Platform) == null ? void 0 : _a.History) == null ? void 0 : _b.listen)) {
-              yield new Promise((resolve) => setTimeout(resolve, 100));
-            }
+            while (!((_b = (_a = Spicetify == null ? void 0 : Spicetify.Platform) == null ? void 0 : _a.History) == null ? void 0 : _b.listen))
+              yield sleep(100);
             if (this.stopHistoryListener)
               this.stopHistoryListener();
-            this.stopHistoryListener = Spicetify.Platform.History.listen((e) => {
-              if (e.pathname === "/preferences") {
-                this.render();
+            this.stopHistoryListener = Spicetify.Platform.History.listen(
+              ({ pathname = "" }) => {
+                if (pathname === "/preferences")
+                  this.render();
               }
-            });
-            if (Spicetify.Platform.History.location.pathname === "/preferences") {
+            );
+            if (Spicetify.Platform.History.location.pathname === "/preferences")
               yield this.render();
-            }
           }));
           __publicField(this, "rerender", () => {
-            if (this.setRerender) {
+            if (this.setRerender)
               this.setRerender(Math.random());
-            }
           });
           __publicField(this, "render", () => __async(this, null, function* () {
-            var _a, _b;
             while (!document.getElementById("desktop.settings.selectLanguage")) {
               if (Spicetify.Platform.History.location.pathname !== "/preferences")
                 return;
-              yield new Promise((resolve) => setTimeout(resolve, 100));
+              yield sleep(100);
             }
             const allSettingsContainer = document.querySelector(
               ".main-view-container__scroll-node-child main div"
             );
             if (!allSettingsContainer)
               return console.error("[spcr-settings] settings container not found");
-            this.buttonClassnames = (_b = (_a = Array.from(allSettingsContainer.querySelectorAll(":scope > button")).at(
-              -1
-            )) == null ? void 0 : _a.className) != null ? _b : null;
             let pluginSettingsContainer = Array.from(
               allSettingsContainer.children
-            ).find((child) => child.id === this.settingsId);
+            ).find(({ id }) => id === this.sectionId);
             if (!pluginSettingsContainer) {
               pluginSettingsContainer = document.createElement("div");
-              pluginSettingsContainer.id = this.settingsId;
-              pluginSettingsContainer.className = settings_module_default.settingsContainer;
+              pluginSettingsContainer.id = this.sectionId;
+              pluginSettingsContainer.className = "settingsContainer";
               allSettingsContainer.appendChild(pluginSettingsContainer);
-            } else {
-              console.log(pluginSettingsContainer);
             }
             import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
           }));
-          __publicField(this, "addButton", (nameId, description, value, onClick, events) => {
-            this.settingsFields[nameId] = {
-              type: "button",
-              description,
-              value,
-              events: __spreadValues({
-                onClick
-              }, events)
+          __publicField(this, "addButton", (nameId, description, text, onClick = import_function11.constVoid, events = {}) => {
+            const id = this.getId(nameId);
+            events.onClick = (e) => {
+              if (onClick)
+                onClick(e);
             };
+            this.sectionFields[nameId] = {
+              id,
+              type: "button" /* BUTTON */,
+              description,
+              text,
+              events
+            };
+            return this;
           });
-          __publicField(this, "addInput", (nameId, description, defaultValue, onChange, inputType, events) => {
-            this.settingsFields[nameId] = {
-              type: "input",
-              description,
-              defaultValue,
-              inputType,
-              events: __spreadValues({
-                onChange
-              }, events)
+          __publicField(this, "addToggle", (nameId, description, defaultValue, onChange = import_function11.constVoid, events = {}) => {
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            const [value, setValue] = this.useStateFor(id);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.checked);
+              if (onChange)
+                onChange(e);
             };
+            events.onChange = onChange;
+            this.sectionFields[nameId] = {
+              id,
+              type: "toggle" /* TOGGLE */,
+              description,
+              events
+            };
+            return this;
+          });
+          __publicField(this, "addInput", (nameId, description, defaultValue, onChange = import_function11.constVoid, inputType = "text", events = {}) => {
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            const [value, setValue] = this.useStateFor(id);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.value);
+              if (onChange)
+                onChange(e);
+            };
+            this.sectionFields[nameId] = {
+              id,
+              type: "input" /* INPUT */,
+              description,
+              inputType,
+              events
+            };
+            return this;
+          });
+          __publicField(this, "addDropDown", (nameId, description, options, defaultValue = 0, onChange = import_function11.constVoid, events = {}) => {
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            const [value, setValue] = this.useStateFor(id);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.selectedIndex);
+              if (onChange)
+                onChange(e);
+            };
+            this.sectionFields[nameId] = {
+              id,
+              type: "dropdown" /* DROPDOWN */,
+              description,
+              options,
+              events
+            };
+            return this;
           });
           __publicField(this, "addHidden", (nameId, defaultValue) => {
-            this.settingsFields[nameId] = {
-              type: "hidden",
-              defaultValue
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            this.sectionFields[nameId] = {
+              id,
+              type: "hidden" /* HIDDEN */,
+              description: ""
             };
+            return this;
           });
-          __publicField(this, "addToggle", (nameId, description, defaultValue, onChange, events) => {
-            this.settingsFields[nameId] = {
-              type: "toggle",
-              description,
-              defaultValue,
-              events: __spreadValues({
-                onChange
-              }, events)
-            };
+          __publicField(this, "getId", (nameId) => `${this.sectionId}.${nameId}`);
+          __publicField(this, "useStateFor", (id) => {
+            const [value, setValueState] = (0, import_react.useState)(this.getFieldValue(id));
+            return [
+              value,
+              (newValue) => {
+                if (newValue !== void 0) {
+                  setValueState(newValue);
+                  this.setFieldValue(id, newValue);
+                }
+              }
+            ];
           });
-          __publicField(this, "addDropDown", (nameId, description, options, defaultIndex, onSelect, events) => {
-            this.settingsFields[nameId] = {
-              type: "dropdown",
-              description,
-              defaultValue: options[defaultIndex],
-              options,
-              events: __spreadValues({
-                onSelect
-              }, events)
-            };
+          __publicField(this, "getFieldValue", (id) => {
+            var _a, _b;
+            return (_b = JSON.parse((_a = Spicetify.LocalStorage.get(id)) != null ? _a : "{}")) == null ? void 0 : _b.value;
           });
-          __publicField(this, "getFieldValue", (nameId) => {
-            var _a;
-            return (_a = JSON.parse(
-              Spicetify.LocalStorage.get(`${this.settingsId}.${nameId}`) || "{}"
-            )) == null ? void 0 : _a.value;
+          __publicField(this, "setFieldValue", (id, newValue) => {
+            Spicetify.LocalStorage.set(id, JSON.stringify({ value: newValue }));
           });
-          __publicField(this, "setFieldValue", (nameId, newValue) => {
-            Spicetify.LocalStorage.set(
-              `${this.settingsId}.${nameId}`,
-              JSON.stringify({ value: newValue })
-            );
+          __publicField(this, "setDefaultFieldValue", (id, defaultValue) => {
+            if (this.getFieldValue(id) === void 0)
+              this.setFieldValue(id, defaultValue);
           });
           __publicField(this, "FieldsContainer", () => {
             const [rerender, setRerender] = (0, import_react.useState)(0);
             this.setRerender = setRerender;
-            return /* @__PURE__ */ import_react.default.createElement("div", { className: settings_module_default.settingsContainer, key: rerender }, /* @__PURE__ */ import_react.default.createElement(
-              "h2",
-              {
-                className: ["main-shelf-title main-type-cello", settings_module_default.heading].join(
-                  " "
-                )
-              },
-              this.name
-            ), Object.entries(this.settingsFields).map(([nameId, field]) => {
-              return /* @__PURE__ */ import_react.default.createElement(this.Field, { nameId, field });
+            return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-section", key: rerender }, /* @__PURE__ */ import_react.default.createElement("h2", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type" }, this.name), Object.entries(this.sectionFields).map(([nameId, field]) => {
+              return /* @__PURE__ */ import_react.default.createElement(this.Field, { field });
             }));
           });
-          __publicField(this, "Field", (props) => {
-            var _a;
-            const id = `${this.settingsId}.${props.nameId}`;
-            let defaultStateValue;
-            if (props.field.type === "button") {
-              defaultStateValue = props.field.value;
-            } else {
-              defaultStateValue = this.getFieldValue(props.nameId);
-            }
-            if (props.field.type === "hidden") {
-              return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null);
-            }
-            const [value, setValueState] = (0, import_react.useState)(defaultStateValue);
-            const setValue = (newValue) => {
-              if (newValue !== void 0) {
-                setValueState(newValue);
-                this.setFieldValue(props.nameId, newValue);
+          __publicField(this, "Field", ({ field }) => {
+            const isType = is("type");
+            return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(
+              this.SettingDescription,
+              {
+                id: field.id,
+                description: field.description
               }
-            };
-            return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement(
-              "div",
-              {
-                className: "main-type-mesto",
-                style: { color: "var(--spice-subtext)" }
-              },
-              /* @__PURE__ */ import_react.default.createElement("label", { className: settings_module_default.description, htmlFor: id }, props.field.description || "")
-            ), /* @__PURE__ */ import_react.default.createElement(
-              "span",
-              {
-                className: ["x-settings-secondColumn", settings_module_default.inputWrapper].join(" ")
-              },
-              props.field.type === "input" ? /* @__PURE__ */ import_react.default.createElement(
-                "input",
-                __spreadProps(__spreadValues({
-                  className: "main-dropDown-dropDown",
-                  id,
-                  dir: "ltr",
-                  value,
-                  type: props.field.inputType || "text"
-                }, props.field.events), {
-                  onChange: (e) => {
-                    var _a2;
-                    setValue(e.currentTarget.value);
-                    const onChange = (_a2 = props.field.events) == null ? void 0 : _a2.onChange;
-                    if (onChange)
-                      onChange(e);
-                  }
-                })
-              ) : props.field.type === "button" ? /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
-                "button",
-                __spreadProps(__spreadValues({
-                  id,
-                  className: (_a = this.buttonClassnames) != null ? _a : ""
-                }, props.field.events), {
-                  onClick: (e) => {
-                    var _a2;
-                    setValue();
-                    const onClick = (_a2 = props.field.events) == null ? void 0 : _a2.onClick;
-                    if (onClick)
-                      onClick(e);
-                  },
-                  type: "button"
-                }),
-                value
-              )) : props.field.type === "toggle" ? /* @__PURE__ */ import_react.default.createElement("label", { className: "x-toggle-wrapper x-settings-secondColumn" }, /* @__PURE__ */ import_react.default.createElement(
-                "input",
-                __spreadProps(__spreadValues({
-                  id,
-                  className: "x-toggle-input",
-                  type: "checkbox",
-                  checked: value
-                }, props.field.events), {
-                  onClick: (e) => {
-                    var _a2;
-                    setValue(e.currentTarget.checked);
-                    const onClick = (_a2 = props.field.events) == null ? void 0 : _a2.onClick;
-                    if (onClick)
-                      onClick(e);
-                  }
-                })
-              ), /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicator" }))) : props.field.type === "dropdown" ? /* @__PURE__ */ import_react.default.createElement(
-                "select",
-                __spreadProps(__spreadValues({
-                  className: "main-dropDown-dropDown",
-                  id
-                }, props.field.events), {
-                  onChange: (e) => {
-                    var _a2;
-                    setValue(
-                      props.field.options[e.currentTarget.selectedIndex]
-                    );
-                    const onChange = (_a2 = props.field.events) == null ? void 0 : _a2.onChange;
-                    if (onChange)
-                      onChange(e);
-                  }
-                }),
-                props.field.options.map((option2, i) => {
-                  return /* @__PURE__ */ import_react.default.createElement("option", { selected: option2 === value, value: i + 1 }, option2);
-                })
-              ) : /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null)
-            ));
+            ), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
+              [
+                isType("input" /* INPUT */),
+                this.SettingInputField
+              ],
+              [isType("button" /* BUTTON */), this.SettingButtonField],
+              [isType("toggle" /* TOGGLE */), this.SettingToggleField],
+              [isType("dropdown" /* DROPDOWN */), this.SettingDropdownField]
+            ])(this.SettingHidden)(field)));
           });
+          __publicField(this, "SettingDescription", ({
+            id,
+            description
+          }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement(
+            "label",
+            {
+              className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
+              htmlFor: id
+            },
+            description
+          )));
+          __publicField(this, "SettingButtonField", (field) => /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
+            "button",
+            __spreadProps(__spreadValues({
+              id: field.id,
+              className: "Button-sc-y0gtbx-0 Button-sm-buttonSecondary-isUsingKeyboard-useBrowserDefaultFocusStyle x-settings-button"
+            }, field.events), {
+              type: field.type
+            }),
+            this.getFieldValue(field.id)
+          )));
+          __publicField(this, "SettingToggleField", (field) => /* @__PURE__ */ import_react.default.createElement("label", { className: "x-settings-secondColumn x-toggle-wrapper" }, /* @__PURE__ */ import_react.default.createElement(
+            "input",
+            __spreadValues({
+              id: field.id,
+              className: "x-toggle-input",
+              type: "checkbox",
+              checked: this.getFieldValue(field.id)
+            }, field.events)
+          ), /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicator" }))));
+          __publicField(this, "SettingInputField", (field) => /* @__PURE__ */ import_react.default.createElement(
+            "input",
+            __spreadValues({
+              className: "x-settings-input",
+              id: field.id,
+              dir: "ltr",
+              value: this.getFieldValue(field.id),
+              type: field.inputType
+            }, field.events)
+          ));
+          __publicField(this, "SettingDropdownField", (field) => /* @__PURE__ */ import_react.default.createElement(
+            "select",
+            __spreadValues({
+              className: "main-dropDown-dropDown",
+              id: field.id
+            }, field.events),
+            field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement(
+              "option",
+              {
+                selected: i === this.getFieldValue(field.id),
+                value: i + 1
+              },
+              option2
+            ))
+          ));
+          __publicField(this, "SettingHidden", () => /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null));
         }
       };
     }
@@ -3518,12 +4298,16 @@ search.on.youtube = (() => {
 
   // extensions/search-on-youtube/settings.tsx
   var settings, CONFIG;
-  var init_settings = __esm({
+  var init_settings2 = __esm({
     "extensions/search-on-youtube/settings.tsx"() {
       "use strict";
-      init_settingsSection();
+      init_settings();
       settings = new SettingsSection("Show on youtube", "show-on-youtube");
-      settings.addInput("YouTubeApiKey", "YouTube API Key", "000000000000000000000000000000000000000");
+      settings.addInput(
+        "YouTubeApiKey",
+        "YouTube API Key",
+        "000000000000000000000000000000000000000"
+      );
       settings.pushSettings();
       CONFIG = new Proxy(settings, {
         get: (target, prop) => target.getFieldValue(prop.toString())
@@ -3536,17 +4320,17 @@ search.on.youtube = (() => {
   __export(app_exports, {
     default: () => app_default
   });
-  var import_function9, app_default, YTVidIDCache, showOnYouTube, showIn;
+  var import_function12, app_default, YTVidIDCache, showOnYouTube, showIn;
   var init_app = __esm({
     "extensions/search-on-youtube/app.tsx"() {
       "use strict";
       init_es6();
-      import_function9 = __toESM(require_function(), 1);
+      import_function12 = __toESM(require_function(), 1);
       init_string();
       init_api();
       init_util();
       init_parse();
-      init_settings();
+      init_settings2();
       app_default = {};
       YTVidIDCache = /* @__PURE__ */ new Map();
       showOnYouTube = (uri) => __async(void 0, null, function* () {
@@ -3579,10 +4363,10 @@ search.on.youtube = (() => {
         }
         window.open(`https://www.youtube.com/watch?v=${YTVidIDCache.get(id)}`);
       });
-      showIn = (allowedTypes) => ([uri]) => (0, import_function9.pipe)(allowedTypes, Array_exports.some((0, import_function9.flip)(startsWith)(uri)));
+      showIn = (allowedTypes) => ([uri]) => (0, import_function12.pipe)(allowedTypes, Array_exports.some((0, import_function12.flip)(startsWith)(uri)));
       new Spicetify.ContextMenu.Item(
         "Search on YouTube",
-        (0, import_function9.tupled)(showOnYouTube),
+        (0, import_function12.tupled)(showOnYouTube),
         showIn(["spotify:track" /* TRACK */]),
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="19px" height="19px"><path fill="currentColor" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"/><path fill="var(--spice-main)" d="M20 31L20 17 32 24z"/></svg>`
       ).register();
@@ -3592,40 +4376,13 @@ search.on.youtube = (() => {
   // extensions/search-on-youtube/entry.tsx
   init_es6();
   init_Record();
-  var import_function10 = __toESM(require_function(), 1);
+  var import_function13 = __toESM(require_function(), 1);
+  init_util();
   (() => __async(void 0, null, function* () {
     const mustLoad = ["ContextMenu", "CosmosAsync"];
-    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     let timer = 0;
-    while (mustLoad.some((0, import_function10.flow)((0, import_function10.flip)(lookup4)(Spicetify), Option_exports.isNone)))
+    while (mustLoad.some((0, import_function13.flow)((0, import_function13.flip)(lookup4)(Spicetify), Option_exports.isNone)))
       yield sleep(timer += 100);
     yield Promise.resolve().then(() => (init_app(), app_exports));
   }))();
 })();
-(async () => {
-                    if (!document.getElementById(`search-on-youtube`)) {
-                        var el = document.createElement("style")
-                        el.id = `search-on-youtube`
-                        el.textContent = String.raw`/* .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css */
-.settingsContainer {
-  display: contents;
-}
-.heading {
-  grid-column: 1/-1;
-  font-size: 1.125rem;
-  line-height: 1.5rem;
-  color: #fff;
-  margin-top: 24px;
-}
-.description {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-.inputWrapper {
-  display: flex;
-  justify-self: end;
-}
-`.trim()
-                        document.head.appendChild(el)
-                    }
-                })()

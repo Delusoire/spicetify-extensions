@@ -9,7 +9,6 @@ export const guard2 = <A, A1 extends A, A2 extends A, R>(
     branches: [refineBranch<A, A1, R>, refineBranch<A, A2, R>],
 ) =>
     guard(branches as unknown as [refineBranch<A, A, R>, refineBranch<A, A, R>])
-
 export const guard3 = <A, A1 extends A, A2 extends A, A3 extends A, R>(
     branches: [
         refineBranch<A, A1, R>,
@@ -19,6 +18,55 @@ export const guard3 = <A, A1 extends A, A2 extends A, A3 extends A, R>(
 ) =>
     guard(
         branches as unknown as [
+            refineBranch<A, A, R>,
+            refineBranch<A, A, R>,
+            refineBranch<A, A, R>,
+        ],
+    )
+export const guard4 = <
+    A,
+    A1 extends A,
+    A2 extends A,
+    A3 extends A,
+    A4 extends A,
+    R,
+>(
+    branches: [
+        refineBranch<A, A1, R>,
+        refineBranch<A, A2, R>,
+        refineBranch<A, A3, R>,
+        refineBranch<A, A4, R>,
+    ],
+) =>
+    guard(
+        branches as unknown as [
+            refineBranch<A, A, R>,
+            refineBranch<A, A, R>,
+            refineBranch<A, A, R>,
+            refineBranch<A, A, R>,
+        ],
+    )
+export const guard5 = <
+    A,
+    A1 extends A,
+    A2 extends A,
+    A3 extends A,
+    A4 extends A,
+    A5 extends A,
+    R,
+>(
+    branches: [
+        refineBranch<A, A1, R>,
+        refineBranch<A, A2, R>,
+        refineBranch<A, A3, R>,
+        refineBranch<A, A4, R>,
+        refineBranch<A, A5, R>,
+    ],
+) =>
+    guard(
+        branches as unknown as [
+            refineBranch<A, A, R>,
+            refineBranch<A, A, R>,
             refineBranch<A, A, R>,
             refineBranch<A, A, R>,
             refineBranch<A, A, R>,
@@ -34,3 +82,9 @@ type async = {
     <A, B>(f: (a: A) => B): (fa: Promise<A>) => Promise<B>
 }
 export const async: async = (f: any) => async (fa: any) => f(await fa)
+
+export const is =
+    <A,>(c: keyof A) =>
+    <B extends A>(a: A[typeof c]) =>
+    (field: A): field is B =>
+        field[c] === a

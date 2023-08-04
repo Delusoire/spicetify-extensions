@@ -4011,6 +4011,20 @@ sort.plus = (() => {
     }
   });
 
+  // shared/util.tsx
+  var spotUriRe, parseUri, sleep;
+  var init_util = __esm({
+    "shared/util.tsx"() {
+      "use strict";
+      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
+      parseUri = (uri) => {
+        var _a;
+        return (_a = uri.match(spotUriRe)) == null ? void 0 : _a.groups;
+      };
+      sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    }
+  });
+
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/internal.js
   var require_internal = __commonJS({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/internal.js"(exports) {
@@ -6084,31 +6098,23 @@ sort.plus = (() => {
   });
 
   // shared/fp.tsx
-  var import_Semigroup3, objConcat2, objConcat, async;
+  var import_Semigroup3, guard42, objConcat2, objConcat, async, is;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
+      init_Function();
       init_Record();
       init_es6();
       import_Semigroup3 = __toESM(require_Semigroup(), 1);
+      guard42 = (branches) => guard4(
+        branches
+      );
       objConcat2 = () => getUnionSemigroup2((0, import_Semigroup3.first)()).concat;
       objConcat = () => Array_exports.reduce({}, objConcat2());
       async = (f4) => (fa) => __async(void 0, null, function* () {
         return f4(yield fa);
       });
-    }
-  });
-
-  // shared/util.tsx
-  var spotUriRe, parseUri;
-  var init_util = __esm({
-    "shared/util.tsx"() {
-      "use strict";
-      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
-      parseUri = (uri) => {
-        var _a;
-        return (_a = uri.match(spotUriRe)) == null ? void 0 : _a.groups;
-      };
+      is = (c) => (a) => (field) => field[c] === a;
     }
   });
 
@@ -6256,261 +6262,248 @@ sort.plus = (() => {
     }
   });
 
-  // .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css
-  var settings_module_default;
-  var init_settings_module = __esm({
-    ".yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css"() {
-      settings_module_default = {};
-    }
-  });
-
-  // .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settingsSection.tsx
-  var import_react, import_react_dom, SettingsSection;
-  var init_settingsSection = __esm({
-    ".yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settingsSection.tsx"() {
-      import_react = __toESM(require_react());
-      import_react_dom = __toESM(require_react_dom());
-      init_settings_module();
+  // shared/settings.tsx
+  var import_function24, import_react, import_react_dom, SettingsSection;
+  var init_settings = __esm({
+    "shared/settings.tsx"() {
+      "use strict";
+      import_function24 = __toESM(require_function(), 1);
+      import_react = __toESM(require_react(), 1);
+      import_react_dom = __toESM(require_react_dom(), 1);
+      init_fp();
+      init_util();
       SettingsSection = class {
-        constructor(name, settingsId, initialSettingsFields = {}) {
+        constructor(name, sectionId, sectionFields = {}) {
           this.name = name;
-          this.settingsId = settingsId;
-          this.initialSettingsFields = initialSettingsFields;
-          __publicField(this, "settingsFields", this.initialSettingsFields);
+          this.sectionId = sectionId;
+          this.sectionFields = sectionFields;
           __publicField(this, "stopHistoryListener");
           __publicField(this, "setRerender", null);
-          __publicField(this, "buttonClassnames", null);
           __publicField(this, "pushSettings", () => __async(this, null, function* () {
             var _a, _b;
-            Object.entries(this.settingsFields).forEach(([nameId, field]) => {
-              if (field.type !== "button" && this.getFieldValue(nameId) === void 0) {
-                this.setFieldValue(nameId, field.defaultValue);
-              }
-            });
-            while (!((_b = (_a = Spicetify == null ? void 0 : Spicetify.Platform) == null ? void 0 : _a.History) == null ? void 0 : _b.listen)) {
-              yield new Promise((resolve) => setTimeout(resolve, 100));
-            }
+            while (!((_b = (_a = Spicetify == null ? void 0 : Spicetify.Platform) == null ? void 0 : _a.History) == null ? void 0 : _b.listen))
+              yield sleep(100);
             if (this.stopHistoryListener)
               this.stopHistoryListener();
-            this.stopHistoryListener = Spicetify.Platform.History.listen((e) => {
-              if (e.pathname === "/preferences") {
-                this.render();
+            this.stopHistoryListener = Spicetify.Platform.History.listen(
+              ({ pathname = "" }) => {
+                if (pathname === "/preferences")
+                  this.render();
               }
-            });
-            if (Spicetify.Platform.History.location.pathname === "/preferences") {
+            );
+            if (Spicetify.Platform.History.location.pathname === "/preferences")
               yield this.render();
-            }
           }));
           __publicField(this, "rerender", () => {
-            if (this.setRerender) {
+            if (this.setRerender)
               this.setRerender(Math.random());
-            }
           });
           __publicField(this, "render", () => __async(this, null, function* () {
-            var _a, _b;
             while (!document.getElementById("desktop.settings.selectLanguage")) {
               if (Spicetify.Platform.History.location.pathname !== "/preferences")
                 return;
-              yield new Promise((resolve) => setTimeout(resolve, 100));
+              yield sleep(100);
             }
             const allSettingsContainer = document.querySelector(
               ".main-view-container__scroll-node-child main div"
             );
             if (!allSettingsContainer)
               return console.error("[spcr-settings] settings container not found");
-            this.buttonClassnames = (_b = (_a = Array.from(allSettingsContainer.querySelectorAll(":scope > button")).at(
-              -1
-            )) == null ? void 0 : _a.className) != null ? _b : null;
             let pluginSettingsContainer = Array.from(
               allSettingsContainer.children
-            ).find((child) => child.id === this.settingsId);
+            ).find(({ id: id6 }) => id6 === this.sectionId);
             if (!pluginSettingsContainer) {
               pluginSettingsContainer = document.createElement("div");
-              pluginSettingsContainer.id = this.settingsId;
-              pluginSettingsContainer.className = settings_module_default.settingsContainer;
+              pluginSettingsContainer.id = this.sectionId;
+              pluginSettingsContainer.className = "settingsContainer";
               allSettingsContainer.appendChild(pluginSettingsContainer);
-            } else {
-              console.log(pluginSettingsContainer);
             }
             import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
           }));
-          __publicField(this, "addButton", (nameId, description, value, onClick, events) => {
-            this.settingsFields[nameId] = {
-              type: "button",
-              description,
-              value,
-              events: __spreadValues({
-                onClick
-              }, events)
+          __publicField(this, "addButton", (nameId, description, text, onClick = import_function24.constVoid, events = {}) => {
+            const id6 = this.getId(nameId);
+            events.onClick = (e) => {
+              if (onClick)
+                onClick(e);
             };
+            this.sectionFields[nameId] = {
+              id: id6,
+              type: "button" /* BUTTON */,
+              description,
+              text,
+              events
+            };
+            return this;
           });
-          __publicField(this, "addInput", (nameId, description, defaultValue, onChange, inputType, events) => {
-            this.settingsFields[nameId] = {
-              type: "input",
-              description,
-              defaultValue,
-              inputType,
-              events: __spreadValues({
-                onChange
-              }, events)
+          __publicField(this, "addToggle", (nameId, description, defaultValue, onChange = import_function24.constVoid, events = {}) => {
+            const id6 = this.getId(nameId);
+            this.setDefaultFieldValue(id6, defaultValue);
+            const [value, setValue] = this.useStateFor(id6);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.checked);
+              if (onChange)
+                onChange(e);
             };
+            events.onChange = onChange;
+            this.sectionFields[nameId] = {
+              id: id6,
+              type: "toggle" /* TOGGLE */,
+              description,
+              events
+            };
+            return this;
+          });
+          __publicField(this, "addInput", (nameId, description, defaultValue, onChange = import_function24.constVoid, inputType = "text", events = {}) => {
+            const id6 = this.getId(nameId);
+            this.setDefaultFieldValue(id6, defaultValue);
+            const [value, setValue] = this.useStateFor(id6);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.value);
+              if (onChange)
+                onChange(e);
+            };
+            this.sectionFields[nameId] = {
+              id: id6,
+              type: "input" /* INPUT */,
+              description,
+              inputType,
+              events
+            };
+            return this;
+          });
+          __publicField(this, "addDropDown", (nameId, description, options, defaultValue = 0, onChange = import_function24.constVoid, events = {}) => {
+            const id6 = this.getId(nameId);
+            this.setDefaultFieldValue(id6, defaultValue);
+            const [value, setValue] = this.useStateFor(id6);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.selectedIndex);
+              if (onChange)
+                onChange(e);
+            };
+            this.sectionFields[nameId] = {
+              id: id6,
+              type: "dropdown" /* DROPDOWN */,
+              description,
+              options,
+              events
+            };
+            return this;
           });
           __publicField(this, "addHidden", (nameId, defaultValue) => {
-            this.settingsFields[nameId] = {
-              type: "hidden",
-              defaultValue
+            const id6 = this.getId(nameId);
+            this.setDefaultFieldValue(id6, defaultValue);
+            this.sectionFields[nameId] = {
+              id: id6,
+              type: "hidden" /* HIDDEN */,
+              description: ""
             };
+            return this;
           });
-          __publicField(this, "addToggle", (nameId, description, defaultValue, onChange, events) => {
-            this.settingsFields[nameId] = {
-              type: "toggle",
-              description,
-              defaultValue,
-              events: __spreadValues({
-                onChange
-              }, events)
-            };
+          __publicField(this, "getId", (nameId) => `${this.sectionId}.${nameId}`);
+          __publicField(this, "useStateFor", (id6) => {
+            const [value, setValueState] = (0, import_react.useState)(this.getFieldValue(id6));
+            return [
+              value,
+              (newValue) => {
+                if (newValue !== void 0) {
+                  setValueState(newValue);
+                  this.setFieldValue(id6, newValue);
+                }
+              }
+            ];
           });
-          __publicField(this, "addDropDown", (nameId, description, options, defaultIndex, onSelect, events) => {
-            this.settingsFields[nameId] = {
-              type: "dropdown",
-              description,
-              defaultValue: options[defaultIndex],
-              options,
-              events: __spreadValues({
-                onSelect
-              }, events)
-            };
+          __publicField(this, "getFieldValue", (id6) => {
+            var _a, _b;
+            return (_b = JSON.parse((_a = Spicetify.LocalStorage.get(id6)) != null ? _a : "{}")) == null ? void 0 : _b.value;
           });
-          __publicField(this, "getFieldValue", (nameId) => {
-            var _a;
-            return (_a = JSON.parse(
-              Spicetify.LocalStorage.get(`${this.settingsId}.${nameId}`) || "{}"
-            )) == null ? void 0 : _a.value;
+          __publicField(this, "setFieldValue", (id6, newValue) => {
+            Spicetify.LocalStorage.set(id6, JSON.stringify({ value: newValue }));
           });
-          __publicField(this, "setFieldValue", (nameId, newValue) => {
-            Spicetify.LocalStorage.set(
-              `${this.settingsId}.${nameId}`,
-              JSON.stringify({ value: newValue })
-            );
+          __publicField(this, "setDefaultFieldValue", (id6, defaultValue) => {
+            if (this.getFieldValue(id6) === void 0)
+              this.setFieldValue(id6, defaultValue);
           });
           __publicField(this, "FieldsContainer", () => {
             const [rerender, setRerender] = (0, import_react.useState)(0);
             this.setRerender = setRerender;
-            return /* @__PURE__ */ import_react.default.createElement("div", { className: settings_module_default.settingsContainer, key: rerender }, /* @__PURE__ */ import_react.default.createElement(
-              "h2",
-              {
-                className: ["main-shelf-title main-type-cello", settings_module_default.heading].join(
-                  " "
-                )
-              },
-              this.name
-            ), Object.entries(this.settingsFields).map(([nameId, field]) => {
-              return /* @__PURE__ */ import_react.default.createElement(this.Field, { nameId, field });
+            return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-section", key: rerender }, /* @__PURE__ */ import_react.default.createElement("h2", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type" }, this.name), Object.entries(this.sectionFields).map(([nameId, field]) => {
+              return /* @__PURE__ */ import_react.default.createElement(this.Field, { field });
             }));
           });
-          __publicField(this, "Field", (props2) => {
-            var _a;
-            const id6 = `${this.settingsId}.${props2.nameId}`;
-            let defaultStateValue;
-            if (props2.field.type === "button") {
-              defaultStateValue = props2.field.value;
-            } else {
-              defaultStateValue = this.getFieldValue(props2.nameId);
-            }
-            if (props2.field.type === "hidden") {
-              return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null);
-            }
-            const [value, setValueState] = (0, import_react.useState)(defaultStateValue);
-            const setValue = (newValue) => {
-              if (newValue !== void 0) {
-                setValueState(newValue);
-                this.setFieldValue(props2.nameId, newValue);
+          __publicField(this, "Field", ({ field }) => {
+            const isType = is("type");
+            return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(
+              this.SettingDescription,
+              {
+                id: field.id,
+                description: field.description
               }
-            };
-            return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement(
-              "div",
-              {
-                className: "main-type-mesto",
-                style: { color: "var(--spice-subtext)" }
-              },
-              /* @__PURE__ */ import_react.default.createElement("label", { className: settings_module_default.description, htmlFor: id6 }, props2.field.description || "")
-            ), /* @__PURE__ */ import_react.default.createElement(
-              "span",
-              {
-                className: ["x-settings-secondColumn", settings_module_default.inputWrapper].join(" ")
-              },
-              props2.field.type === "input" ? /* @__PURE__ */ import_react.default.createElement(
-                "input",
-                __spreadProps(__spreadValues({
-                  className: "main-dropDown-dropDown",
-                  id: id6,
-                  dir: "ltr",
-                  value,
-                  type: props2.field.inputType || "text"
-                }, props2.field.events), {
-                  onChange: (e) => {
-                    var _a2;
-                    setValue(e.currentTarget.value);
-                    const onChange = (_a2 = props2.field.events) == null ? void 0 : _a2.onChange;
-                    if (onChange)
-                      onChange(e);
-                  }
-                })
-              ) : props2.field.type === "button" ? /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
-                "button",
-                __spreadProps(__spreadValues({
-                  id: id6,
-                  className: (_a = this.buttonClassnames) != null ? _a : ""
-                }, props2.field.events), {
-                  onClick: (e) => {
-                    var _a2;
-                    setValue();
-                    const onClick = (_a2 = props2.field.events) == null ? void 0 : _a2.onClick;
-                    if (onClick)
-                      onClick(e);
-                  },
-                  type: "button"
-                }),
-                value
-              )) : props2.field.type === "toggle" ? /* @__PURE__ */ import_react.default.createElement("label", { className: "x-toggle-wrapper x-settings-secondColumn" }, /* @__PURE__ */ import_react.default.createElement(
-                "input",
-                __spreadProps(__spreadValues({
-                  id: id6,
-                  className: "x-toggle-input",
-                  type: "checkbox",
-                  checked: value
-                }, props2.field.events), {
-                  onClick: (e) => {
-                    var _a2;
-                    setValue(e.currentTarget.checked);
-                    const onClick = (_a2 = props2.field.events) == null ? void 0 : _a2.onClick;
-                    if (onClick)
-                      onClick(e);
-                  }
-                })
-              ), /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicator" }))) : props2.field.type === "dropdown" ? /* @__PURE__ */ import_react.default.createElement(
-                "select",
-                __spreadProps(__spreadValues({
-                  className: "main-dropDown-dropDown",
-                  id: id6
-                }, props2.field.events), {
-                  onChange: (e) => {
-                    var _a2;
-                    setValue(
-                      props2.field.options[e.currentTarget.selectedIndex]
-                    );
-                    const onChange = (_a2 = props2.field.events) == null ? void 0 : _a2.onChange;
-                    if (onChange)
-                      onChange(e);
-                  }
-                }),
-                props2.field.options.map((option2, i) => {
-                  return /* @__PURE__ */ import_react.default.createElement("option", { selected: option2 === value, value: i + 1 }, option2);
-                })
-              ) : /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null)
-            ));
+            ), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
+              [
+                isType("input" /* INPUT */),
+                this.SettingInputField
+              ],
+              [isType("button" /* BUTTON */), this.SettingButtonField],
+              [isType("toggle" /* TOGGLE */), this.SettingToggleField],
+              [isType("dropdown" /* DROPDOWN */), this.SettingDropdownField]
+            ])(this.SettingHidden)(field)));
           });
+          __publicField(this, "SettingDescription", ({
+            id: id6,
+            description
+          }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement(
+            "label",
+            {
+              className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
+              htmlFor: id6
+            },
+            description
+          )));
+          __publicField(this, "SettingButtonField", (field) => /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
+            "button",
+            __spreadProps(__spreadValues({
+              id: field.id,
+              className: "Button-sc-y0gtbx-0 Button-sm-buttonSecondary-isUsingKeyboard-useBrowserDefaultFocusStyle x-settings-button"
+            }, field.events), {
+              type: field.type
+            }),
+            this.getFieldValue(field.id)
+          )));
+          __publicField(this, "SettingToggleField", (field) => /* @__PURE__ */ import_react.default.createElement("label", { className: "x-settings-secondColumn x-toggle-wrapper" }, /* @__PURE__ */ import_react.default.createElement(
+            "input",
+            __spreadValues({
+              id: field.id,
+              className: "x-toggle-input",
+              type: "checkbox",
+              checked: this.getFieldValue(field.id)
+            }, field.events)
+          ), /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicator" }))));
+          __publicField(this, "SettingInputField", (field) => /* @__PURE__ */ import_react.default.createElement(
+            "input",
+            __spreadValues({
+              className: "x-settings-input",
+              id: field.id,
+              dir: "ltr",
+              value: this.getFieldValue(field.id),
+              type: field.inputType
+            }, field.events)
+          ));
+          __publicField(this, "SettingDropdownField", (field) => /* @__PURE__ */ import_react.default.createElement(
+            "select",
+            __spreadValues({
+              className: "main-dropDown-dropDown",
+              id: field.id
+            }, field.events),
+            field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement(
+              "option",
+              {
+                selected: i === this.getFieldValue(field.id),
+                value: i + 1
+              },
+              option2
+            ))
+          ));
+          __publicField(this, "SettingHidden", () => /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null));
         }
       };
     }
@@ -6518,10 +6511,10 @@ sort.plus = (() => {
 
   // extensions/sort-plus/settings.tsx
   var settings, CONFIG;
-  var init_settings = __esm({
+  var init_settings2 = __esm({
     "extensions/sort-plus/settings.tsx"() {
       "use strict";
-      init_settingsSection();
+      init_settings();
       settings = new SettingsSection("Sort+", "sort-plus");
       settings.addToggle("ascending", "Ascending", false);
       settings.addToggle("artist", "Ascending", false);
@@ -6557,9 +6550,9 @@ sort.plus = (() => {
   });
   function getArtistTracks(uri) {
     return __async(this, null, function* () {
-      const parseTracksFromAggregates = (0, import_function24.flow)(
+      const parseTracksFromAggregates = (0, import_function25.flow)(
         Array_exports.map(
-          (0, import_function24.flow)(
+          (0, import_function25.flow)(
             Lens.fromPath()(["releases", "items", 0, "uri"]).get,
             getAlbumTracks
           )
@@ -6582,16 +6575,16 @@ sort.plus = (() => {
       const add = (tracks) => void Array.prototype.push.apply(allTracks, tracks);
       if (CONFIG.artistTopTracks)
         add(
-          (0, import_function24.pipe)(
+          (0, import_function25.pipe)(
             artistTopTracks,
-            Array_exports.map((0, import_function24.flow)(lookup4("track"), Option_exports.map(parseTopTrackFromArtist))),
+            Array_exports.map((0, import_function25.flow)(lookup4("track"), Option_exports.map(parseTopTrackFromArtist))),
             Array_exports.sequence(Option_exports.Applicative),
-            Option_exports.getOrElse((0, import_function24.constant)([]))
+            Option_exports.getOrElse((0, import_function25.constant)([]))
           )
         );
       if (CONFIG.artistPopularReleases)
         add(
-          yield (0, import_function24.pipe)(
+          yield (0, import_function25.pipe)(
             artistPopularReleases,
             formatUrisAsAggregates,
             parseTracksFromAggregates
@@ -6605,7 +6598,7 @@ sort.plus = (() => {
         add(yield parseTracksFromAggregates(artistCompilations));
       if (CONFIG.artistLikedTracks)
         add(
-          yield (0, import_function24.pipe)(
+          yield (0, import_function25.pipe)(
             parseUri(uri).id,
             fetchArtistLikedTracksSP,
             async(Array_exports.map(parseTrackFromArtistLikedTracksSP))
@@ -6614,7 +6607,7 @@ sort.plus = (() => {
       return allTracks;
     });
   }
-  var import_function24, app_default, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, queue, sortByProp, showIn, showAlways, createSortByPropSubmenu;
+  var import_function25, app_default, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, queue, sortByProp, showIn, showAlways, createSortByPropSubmenu;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6623,13 +6616,13 @@ sort.plus = (() => {
       init_Record2();
       init_NonEmptyArray();
       init_Record();
-      import_function24 = __toESM(require_function(), 1);
+      import_function25 = __toESM(require_function(), 1);
       init_string();
       init_es62();
       init_api();
       init_fp();
       init_parse();
-      init_settings();
+      init_settings2();
       init_util();
       app_default = {};
       SortBy = /* @__PURE__ */ ((SortBy2) => {
@@ -6651,10 +6644,10 @@ sort.plus = (() => {
       getAlbumTracks = (uri) => __async(void 0, null, function* () {
         const albumRes = yield fetchAlbumGQL(uri);
         const releaseDate = albumRes.date.isoString.split("T")[0];
-        return (0, import_function24.pipe)(
+        return (0, import_function25.pipe)(
           albumRes.tracks.items,
           Array_exports.map(
-            (0, import_function24.flow)(
+            (0, import_function25.flow)(
               parseTrackFromAlbum,
               Lens.fromProp()("albumUri").set(albumRes.uri),
               Lens.fromProp()("albumName").set(albumRes.name),
@@ -6663,16 +6656,16 @@ sort.plus = (() => {
           )
         );
       });
-      getPlaylistTracks = (0, import_function24.flow)(
+      getPlaylistTracks = (0, import_function25.flow)(
         fetchPlaylistAPI,
         async(Array_exports.map(parseTrackFromPlaylistAPI))
       );
-      fetchAPITracksFromTracks = (0, import_function24.flow)(
+      fetchAPITracksFromTracks = (0, import_function25.flow)(
         Array_exports.map((track) => parseUri(track.uri).id),
         fetchTracksSpotAPI,
         async(Array_exports.map(parseTrackFromSpotifyAPI))
       );
-      fetchAlbumTracksFromTracks = (0, import_function24.flow)(
+      fetchAlbumTracksFromTracks = (0, import_function25.flow)(
         groupBy((track) => String(track.albumUri)),
         mapWithIndex3((albumUri, tracks) => __async(void 0, null, function* () {
           const albumTracks = yield getAlbumTracks(albumUri);
@@ -6684,10 +6677,10 @@ sort.plus = (() => {
         (x) => Promise.all(x),
         async(Array_exports.flatten)
       );
-      populateTracksSpot = (propName) => (tracks) => (0, import_function24.pipe)(
+      populateTracksSpot = (propName) => (tracks) => (0, import_function25.pipe)(
         tracks,
         Array_exports.filter(
-          (0, import_function24.flow)(
+          (0, import_function25.flow)(
             Optional.fromNullableProp()(SortProp[propName]).getOption,
             Option_exports.isNone
           )
@@ -6695,13 +6688,13 @@ sort.plus = (() => {
         guard4([
           [
             startsWith("Spotify - Play Count" /* SPOTIFY_PLAYCOUNT */),
-            (0, import_function24.constant)(fetchAlbumTracksFromTracks)
+            (0, import_function25.constant)(fetchAlbumTracksFromTracks)
           ],
           [
             startsWith("Spotify - Popularity" /* SPOTIFY_POPULARITY */),
-            (0, import_function24.constant)(fetchAPITracksFromTracks)
+            (0, import_function25.constant)(fetchAPITracksFromTracks)
           ]
-        ])((0, import_function24.constant)(Task_exports.of([])))(propName),
+        ])((0, import_function25.constant)(Task_exports.of([])))(propName),
         async(Array_exports.concat(tracks)),
         async(groupBy(Lens.fromProp()("uri").get)),
         async(values),
@@ -6727,25 +6720,25 @@ sort.plus = (() => {
         [startsWith("Spotify"), populateTracksSpot],
         [
           startsWith("LastFM"),
-          (0, import_function24.constant)((0, import_function24.flow)(Array_exports.map(populateTrackLastFM), (x) => Promise.all(x)))
+          (0, import_function25.constant)((0, import_function25.flow)(Array_exports.map(populateTrackLastFM), (x) => Promise.all(x)))
         ]
-      ])((0, import_function24.constant)(Task_exports.of([])));
+      ])((0, import_function25.constant)(Task_exports.of([])));
       queue = new Array();
       sortByProp = (name) => (uri) => __async(void 0, null, function* () {
         const prop2 = SortProp[name];
         const toProp = Optional.fromNullableProp()(prop2).getOption;
-        queue = yield (0, import_function24.pipe)(
+        queue = yield (0, import_function25.pipe)(
           uri,
           fetchTracks,
           async(populateTracks(name)),
-          async(Array_exports.filter((0, import_function24.flow)(toProp, Option_exports.isSome))),
+          async(Array_exports.filter((0, import_function25.flow)(toProp, Option_exports.isSome))),
           async(Array_exports.sort(
-            (0, import_function24.pipe)(
+            (0, import_function25.pipe)(
               number_exports.Ord,
-              Ord_exports.contramap((0, import_function24.flow)(toProp, Option_exports.getOrElse((0, import_function24.constant)(-1))))
+              Ord_exports.contramap((0, import_function25.flow)(toProp, Option_exports.getOrElse((0, import_function25.constant)(-1))))
             )
           )),
-          async(CONFIG.ascending ? import_function24.identity : Array_exports.reverse),
+          async(CONFIG.ascending ? import_function25.identity : Array_exports.reverse),
           async(Array_exports.append({ uri: "spotify:delimiter" }))
         );
         if (queue.length <= 1)
@@ -6754,7 +6747,7 @@ sort.plus = (() => {
         yield Spicetify.Platform.PlayerAPI.addToQueue(queue);
         Spicetify.Player.next();
       });
-      showIn = (allowedTypes) => ([uri]) => (0, import_function24.pipe)(allowedTypes, Array_exports.some((0, import_function24.flip)(startsWith)(uri)));
+      showIn = (allowedTypes) => ([uri]) => (0, import_function25.pipe)(allowedTypes, Array_exports.some((0, import_function25.flip)(startsWith)(uri)));
       showAlways = showIn([
         "spotify:album" /* ALBUM */,
         "spotify:artist" /* ARTIST */,
@@ -6762,7 +6755,7 @@ sort.plus = (() => {
       ]);
       createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(
         name,
-        (0, import_function24.tupled)(sortByProp(name)),
+        (0, import_function25.tupled)(sortByProp(name)),
         showAlways,
         icon,
         false
@@ -6782,7 +6775,8 @@ sort.plus = (() => {
   // extensions/sort-plus/entry.tsx
   init_es6();
   init_Record();
-  var import_function25 = __toESM(require_function(), 1);
+  var import_function26 = __toESM(require_function(), 1);
+  init_util();
   (() => __async(void 0, null, function* () {
     const mustLoad = [
       "ContextMenu",
@@ -6793,37 +6787,9 @@ sort.plus = (() => {
       "Player",
       "showNotification"
     ];
-    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     let timer = 0;
-    while (mustLoad.some((0, import_function25.flow)((0, import_function25.flip)(lookup4)(Spicetify), Option_exports.isNone)))
+    while (mustLoad.some((0, import_function26.flow)((0, import_function26.flip)(lookup4)(Spicetify), Option_exports.isNone)))
       yield sleep(timer += 100);
     yield Promise.resolve().then(() => (init_app(), app_exports));
   }))();
 })();
-(async () => {
-                    if (!document.getElementById(`sort-plus`)) {
-                        var el = document.createElement("style")
-                        el.id = `sort-plus`
-                        el.textContent = String.raw`/* .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css */
-.settingsContainer {
-  display: contents;
-}
-.heading {
-  grid-column: 1/-1;
-  font-size: 1.125rem;
-  line-height: 1.5rem;
-  color: #fff;
-  margin-top: 24px;
-}
-.description {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-.inputWrapper {
-  display: flex;
-  justify-self: end;
-}
-`.trim()
-                        document.head.appendChild(el)
-                    }
-                })()

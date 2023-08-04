@@ -3296,6 +3296,16 @@ var vaultify = (() => {
     }
   });
 
+  // shared/util.tsx
+  var spotUriRe, sleep;
+  var init_util = __esm({
+    "shared/util.tsx"() {
+      "use strict";
+      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
+      sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    }
+  });
+
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/internal.js
   var require_internal = __commonJS({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/internal.js"(exports) {
@@ -3985,7 +3995,7 @@ var vaultify = (() => {
   });
 
   // shared/fp.tsx
-  var guard22, guard32, async;
+  var guard22, guard32, guard42, async, is;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
@@ -3994,18 +4004,13 @@ var vaultify = (() => {
       guard32 = (branches) => guard4(
         branches
       );
+      guard42 = (branches) => guard4(
+        branches
+      );
       async = (f4) => (fa) => __async(void 0, null, function* () {
         return f4(yield fa);
       });
-    }
-  });
-
-  // shared/util.tsx
-  var spotUriRe;
-  var init_util = __esm({
-    "shared/util.tsx"() {
-      "use strict";
-      spotUriRe = new RegExp("^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$");
+      is = (c) => (a) => (field) => field[c] === a;
     }
   });
 
@@ -4058,261 +4063,248 @@ var vaultify = (() => {
     }
   });
 
-  // .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css
-  var settings_module_default;
-  var init_settings_module = __esm({
-    ".yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css"() {
-      settings_module_default = {};
-    }
-  });
-
-  // .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settingsSection.tsx
-  var import_react, import_react_dom, SettingsSection;
-  var init_settingsSection = __esm({
-    ".yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settingsSection.tsx"() {
-      import_react = __toESM(require_react());
-      import_react_dom = __toESM(require_react_dom());
-      init_settings_module();
+  // shared/settings.tsx
+  var import_function11, import_react, import_react_dom, SettingsSection;
+  var init_settings = __esm({
+    "shared/settings.tsx"() {
+      "use strict";
+      import_function11 = __toESM(require_function(), 1);
+      import_react = __toESM(require_react(), 1);
+      import_react_dom = __toESM(require_react_dom(), 1);
+      init_fp();
+      init_util();
       SettingsSection = class {
-        constructor(name, settingsId, initialSettingsFields = {}) {
+        constructor(name, sectionId, sectionFields = {}) {
           this.name = name;
-          this.settingsId = settingsId;
-          this.initialSettingsFields = initialSettingsFields;
-          __publicField(this, "settingsFields", this.initialSettingsFields);
+          this.sectionId = sectionId;
+          this.sectionFields = sectionFields;
           __publicField(this, "stopHistoryListener");
           __publicField(this, "setRerender", null);
-          __publicField(this, "buttonClassnames", null);
           __publicField(this, "pushSettings", () => __async(this, null, function* () {
             var _a, _b;
-            Object.entries(this.settingsFields).forEach(([nameId, field]) => {
-              if (field.type !== "button" && this.getFieldValue(nameId) === void 0) {
-                this.setFieldValue(nameId, field.defaultValue);
-              }
-            });
-            while (!((_b = (_a = Spicetify == null ? void 0 : Spicetify.Platform) == null ? void 0 : _a.History) == null ? void 0 : _b.listen)) {
-              yield new Promise((resolve) => setTimeout(resolve, 100));
-            }
+            while (!((_b = (_a = Spicetify == null ? void 0 : Spicetify.Platform) == null ? void 0 : _a.History) == null ? void 0 : _b.listen))
+              yield sleep(100);
             if (this.stopHistoryListener)
               this.stopHistoryListener();
-            this.stopHistoryListener = Spicetify.Platform.History.listen((e) => {
-              if (e.pathname === "/preferences") {
-                this.render();
+            this.stopHistoryListener = Spicetify.Platform.History.listen(
+              ({ pathname = "" }) => {
+                if (pathname === "/preferences")
+                  this.render();
               }
-            });
-            if (Spicetify.Platform.History.location.pathname === "/preferences") {
+            );
+            if (Spicetify.Platform.History.location.pathname === "/preferences")
               yield this.render();
-            }
           }));
           __publicField(this, "rerender", () => {
-            if (this.setRerender) {
+            if (this.setRerender)
               this.setRerender(Math.random());
-            }
           });
           __publicField(this, "render", () => __async(this, null, function* () {
-            var _a, _b;
             while (!document.getElementById("desktop.settings.selectLanguage")) {
               if (Spicetify.Platform.History.location.pathname !== "/preferences")
                 return;
-              yield new Promise((resolve) => setTimeout(resolve, 100));
+              yield sleep(100);
             }
             const allSettingsContainer = document.querySelector(
               ".main-view-container__scroll-node-child main div"
             );
             if (!allSettingsContainer)
               return console.error("[spcr-settings] settings container not found");
-            this.buttonClassnames = (_b = (_a = Array.from(allSettingsContainer.querySelectorAll(":scope > button")).at(
-              -1
-            )) == null ? void 0 : _a.className) != null ? _b : null;
             let pluginSettingsContainer = Array.from(
               allSettingsContainer.children
-            ).find((child) => child.id === this.settingsId);
+            ).find(({ id }) => id === this.sectionId);
             if (!pluginSettingsContainer) {
               pluginSettingsContainer = document.createElement("div");
-              pluginSettingsContainer.id = this.settingsId;
-              pluginSettingsContainer.className = settings_module_default.settingsContainer;
+              pluginSettingsContainer.id = this.sectionId;
+              pluginSettingsContainer.className = "settingsContainer";
               allSettingsContainer.appendChild(pluginSettingsContainer);
-            } else {
-              console.log(pluginSettingsContainer);
             }
             import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
           }));
-          __publicField(this, "addButton", (nameId, description, value, onClick, events) => {
-            this.settingsFields[nameId] = {
-              type: "button",
-              description,
-              value,
-              events: __spreadValues({
-                onClick
-              }, events)
+          __publicField(this, "addButton", (nameId, description, text, onClick = import_function11.constVoid, events = {}) => {
+            const id = this.getId(nameId);
+            events.onClick = (e) => {
+              if (onClick)
+                onClick(e);
             };
+            this.sectionFields[nameId] = {
+              id,
+              type: "button" /* BUTTON */,
+              description,
+              text,
+              events
+            };
+            return this;
           });
-          __publicField(this, "addInput", (nameId, description, defaultValue, onChange, inputType, events) => {
-            this.settingsFields[nameId] = {
-              type: "input",
-              description,
-              defaultValue,
-              inputType,
-              events: __spreadValues({
-                onChange
-              }, events)
+          __publicField(this, "addToggle", (nameId, description, defaultValue, onChange = import_function11.constVoid, events = {}) => {
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            const [value, setValue] = this.useStateFor(id);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.checked);
+              if (onChange)
+                onChange(e);
             };
+            events.onChange = onChange;
+            this.sectionFields[nameId] = {
+              id,
+              type: "toggle" /* TOGGLE */,
+              description,
+              events
+            };
+            return this;
+          });
+          __publicField(this, "addInput", (nameId, description, defaultValue, onChange = import_function11.constVoid, inputType = "text", events = {}) => {
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            const [value, setValue] = this.useStateFor(id);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.value);
+              if (onChange)
+                onChange(e);
+            };
+            this.sectionFields[nameId] = {
+              id,
+              type: "input" /* INPUT */,
+              description,
+              inputType,
+              events
+            };
+            return this;
+          });
+          __publicField(this, "addDropDown", (nameId, description, options, defaultValue = 0, onChange = import_function11.constVoid, events = {}) => {
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            const [value, setValue] = this.useStateFor(id);
+            events.onChange = (e) => {
+              setValue(e.currentTarget.selectedIndex);
+              if (onChange)
+                onChange(e);
+            };
+            this.sectionFields[nameId] = {
+              id,
+              type: "dropdown" /* DROPDOWN */,
+              description,
+              options,
+              events
+            };
+            return this;
           });
           __publicField(this, "addHidden", (nameId, defaultValue) => {
-            this.settingsFields[nameId] = {
-              type: "hidden",
-              defaultValue
+            const id = this.getId(nameId);
+            this.setDefaultFieldValue(id, defaultValue);
+            this.sectionFields[nameId] = {
+              id,
+              type: "hidden" /* HIDDEN */,
+              description: ""
             };
+            return this;
           });
-          __publicField(this, "addToggle", (nameId, description, defaultValue, onChange, events) => {
-            this.settingsFields[nameId] = {
-              type: "toggle",
-              description,
-              defaultValue,
-              events: __spreadValues({
-                onChange
-              }, events)
-            };
+          __publicField(this, "getId", (nameId) => `${this.sectionId}.${nameId}`);
+          __publicField(this, "useStateFor", (id) => {
+            const [value, setValueState] = (0, import_react.useState)(this.getFieldValue(id));
+            return [
+              value,
+              (newValue) => {
+                if (newValue !== void 0) {
+                  setValueState(newValue);
+                  this.setFieldValue(id, newValue);
+                }
+              }
+            ];
           });
-          __publicField(this, "addDropDown", (nameId, description, options, defaultIndex, onSelect, events) => {
-            this.settingsFields[nameId] = {
-              type: "dropdown",
-              description,
-              defaultValue: options[defaultIndex],
-              options,
-              events: __spreadValues({
-                onSelect
-              }, events)
-            };
+          __publicField(this, "getFieldValue", (id) => {
+            var _a, _b;
+            return (_b = JSON.parse((_a = Spicetify.LocalStorage.get(id)) != null ? _a : "{}")) == null ? void 0 : _b.value;
           });
-          __publicField(this, "getFieldValue", (nameId) => {
-            var _a;
-            return (_a = JSON.parse(
-              Spicetify.LocalStorage.get(`${this.settingsId}.${nameId}`) || "{}"
-            )) == null ? void 0 : _a.value;
+          __publicField(this, "setFieldValue", (id, newValue) => {
+            Spicetify.LocalStorage.set(id, JSON.stringify({ value: newValue }));
           });
-          __publicField(this, "setFieldValue", (nameId, newValue) => {
-            Spicetify.LocalStorage.set(
-              `${this.settingsId}.${nameId}`,
-              JSON.stringify({ value: newValue })
-            );
+          __publicField(this, "setDefaultFieldValue", (id, defaultValue) => {
+            if (this.getFieldValue(id) === void 0)
+              this.setFieldValue(id, defaultValue);
           });
           __publicField(this, "FieldsContainer", () => {
             const [rerender, setRerender] = (0, import_react.useState)(0);
             this.setRerender = setRerender;
-            return /* @__PURE__ */ import_react.default.createElement("div", { className: settings_module_default.settingsContainer, key: rerender }, /* @__PURE__ */ import_react.default.createElement(
-              "h2",
-              {
-                className: ["main-shelf-title main-type-cello", settings_module_default.heading].join(
-                  " "
-                )
-              },
-              this.name
-            ), Object.entries(this.settingsFields).map(([nameId, field]) => {
-              return /* @__PURE__ */ import_react.default.createElement(this.Field, { nameId, field });
+            return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-section", key: rerender }, /* @__PURE__ */ import_react.default.createElement("h2", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type" }, this.name), Object.entries(this.sectionFields).map(([nameId, field]) => {
+              return /* @__PURE__ */ import_react.default.createElement(this.Field, { field });
             }));
           });
-          __publicField(this, "Field", (props) => {
-            var _a;
-            const id = `${this.settingsId}.${props.nameId}`;
-            let defaultStateValue;
-            if (props.field.type === "button") {
-              defaultStateValue = props.field.value;
-            } else {
-              defaultStateValue = this.getFieldValue(props.nameId);
-            }
-            if (props.field.type === "hidden") {
-              return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null);
-            }
-            const [value, setValueState] = (0, import_react.useState)(defaultStateValue);
-            const setValue = (newValue) => {
-              if (newValue !== void 0) {
-                setValueState(newValue);
-                this.setFieldValue(props.nameId, newValue);
+          __publicField(this, "Field", ({ field }) => {
+            const isType2 = is("type");
+            return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(
+              this.SettingDescription,
+              {
+                id: field.id,
+                description: field.description
               }
-            };
-            return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement(
-              "div",
-              {
-                className: "main-type-mesto",
-                style: { color: "var(--spice-subtext)" }
-              },
-              /* @__PURE__ */ import_react.default.createElement("label", { className: settings_module_default.description, htmlFor: id }, props.field.description || "")
-            ), /* @__PURE__ */ import_react.default.createElement(
-              "span",
-              {
-                className: ["x-settings-secondColumn", settings_module_default.inputWrapper].join(" ")
-              },
-              props.field.type === "input" ? /* @__PURE__ */ import_react.default.createElement(
-                "input",
-                __spreadProps(__spreadValues({
-                  className: "main-dropDown-dropDown",
-                  id,
-                  dir: "ltr",
-                  value,
-                  type: props.field.inputType || "text"
-                }, props.field.events), {
-                  onChange: (e) => {
-                    var _a2;
-                    setValue(e.currentTarget.value);
-                    const onChange = (_a2 = props.field.events) == null ? void 0 : _a2.onChange;
-                    if (onChange)
-                      onChange(e);
-                  }
-                })
-              ) : props.field.type === "button" ? /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
-                "button",
-                __spreadProps(__spreadValues({
-                  id,
-                  className: (_a = this.buttonClassnames) != null ? _a : ""
-                }, props.field.events), {
-                  onClick: (e) => {
-                    var _a2;
-                    setValue();
-                    const onClick = (_a2 = props.field.events) == null ? void 0 : _a2.onClick;
-                    if (onClick)
-                      onClick(e);
-                  },
-                  type: "button"
-                }),
-                value
-              )) : props.field.type === "toggle" ? /* @__PURE__ */ import_react.default.createElement("label", { className: "x-toggle-wrapper x-settings-secondColumn" }, /* @__PURE__ */ import_react.default.createElement(
-                "input",
-                __spreadProps(__spreadValues({
-                  id,
-                  className: "x-toggle-input",
-                  type: "checkbox",
-                  checked: value
-                }, props.field.events), {
-                  onClick: (e) => {
-                    var _a2;
-                    setValue(e.currentTarget.checked);
-                    const onClick = (_a2 = props.field.events) == null ? void 0 : _a2.onClick;
-                    if (onClick)
-                      onClick(e);
-                  }
-                })
-              ), /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicator" }))) : props.field.type === "dropdown" ? /* @__PURE__ */ import_react.default.createElement(
-                "select",
-                __spreadProps(__spreadValues({
-                  className: "main-dropDown-dropDown",
-                  id
-                }, props.field.events), {
-                  onChange: (e) => {
-                    var _a2;
-                    setValue(
-                      props.field.options[e.currentTarget.selectedIndex]
-                    );
-                    const onChange = (_a2 = props.field.events) == null ? void 0 : _a2.onChange;
-                    if (onChange)
-                      onChange(e);
-                  }
-                }),
-                props.field.options.map((option2, i) => {
-                  return /* @__PURE__ */ import_react.default.createElement("option", { selected: option2 === value, value: i + 1 }, option2);
-                })
-              ) : /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null)
-            ));
+            ), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
+              [
+                isType2("input" /* INPUT */),
+                this.SettingInputField
+              ],
+              [isType2("button" /* BUTTON */), this.SettingButtonField],
+              [isType2("toggle" /* TOGGLE */), this.SettingToggleField],
+              [isType2("dropdown" /* DROPDOWN */), this.SettingDropdownField]
+            ])(this.SettingHidden)(field)));
           });
+          __publicField(this, "SettingDescription", ({
+            id,
+            description
+          }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement(
+            "label",
+            {
+              className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
+              htmlFor: id
+            },
+            description
+          )));
+          __publicField(this, "SettingButtonField", (field) => /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
+            "button",
+            __spreadProps(__spreadValues({
+              id: field.id,
+              className: "Button-sc-y0gtbx-0 Button-sm-buttonSecondary-isUsingKeyboard-useBrowserDefaultFocusStyle x-settings-button"
+            }, field.events), {
+              type: field.type
+            }),
+            this.getFieldValue(field.id)
+          )));
+          __publicField(this, "SettingToggleField", (field) => /* @__PURE__ */ import_react.default.createElement("label", { className: "x-settings-secondColumn x-toggle-wrapper" }, /* @__PURE__ */ import_react.default.createElement(
+            "input",
+            __spreadValues({
+              id: field.id,
+              className: "x-toggle-input",
+              type: "checkbox",
+              checked: this.getFieldValue(field.id)
+            }, field.events)
+          ), /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicatorWrapper" }, /* @__PURE__ */ import_react.default.createElement("span", { className: "x-toggle-indicator" }))));
+          __publicField(this, "SettingInputField", (field) => /* @__PURE__ */ import_react.default.createElement(
+            "input",
+            __spreadValues({
+              className: "x-settings-input",
+              id: field.id,
+              dir: "ltr",
+              value: this.getFieldValue(field.id),
+              type: field.inputType
+            }, field.events)
+          ));
+          __publicField(this, "SettingDropdownField", (field) => /* @__PURE__ */ import_react.default.createElement(
+            "select",
+            __spreadValues({
+              className: "main-dropDown-dropDown",
+              id: field.id
+            }, field.events),
+            field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement(
+              "option",
+              {
+                selected: i === this.getFieldValue(field.id),
+                value: i + 1
+              },
+              option2
+            ))
+          ));
+          __publicField(this, "SettingHidden", () => /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null));
         }
       };
     }
@@ -4321,10 +4313,10 @@ var vaultify = (() => {
   // extensions/vaultify/settings.tsx
   var settings_exports = {};
   var settings;
-  var init_settings = __esm({
+  var init_settings2 = __esm({
     "extensions/vaultify/settings.tsx"() {
       "use strict";
-      init_settingsSection();
+      init_settings();
       init_app();
       settings = new SettingsSection("Vaultify", "vaultify");
       settings.addButton(
@@ -4356,7 +4348,7 @@ var vaultify = (() => {
     default: () => app_default,
     restore: () => restore
   });
-  var import_function11, app_default, extractLikedPlaylistTreeRecur, restorePlaylistseRecur, backup, restore;
+  var import_function12, app_default, isType, extractLikedPlaylistTreeRecur, restorePlaylistseRecur, backup, restore;
   var init_app = __esm({
     "extensions/vaultify/app.tsx"() {
       "use strict";
@@ -4364,24 +4356,25 @@ var vaultify = (() => {
       init_Array();
       init_Option();
       init_Record();
-      import_function11 = __toESM(require_function(), 1);
+      import_function12 = __toESM(require_function(), 1);
       init_api();
       init_fp();
       app_default = {};
+      isType = is("type");
       extractLikedPlaylistTreeRecur = (leaf) => guard22([
         [
-          (leaf2) => leaf2.type === "playlist",
+          isType("playlist"),
           (playlist) => __async(void 0, null, function* () {
             return playlist.ownedBySelf ? {
               type: "playlist personal",
               name: playlist.name,
-              uris: yield (0, import_function11.pipe)(
+              uris: yield (0, import_function12.pipe)(
                 playlist.link,
                 fetchPlaylistAPI,
                 (x) => __async(void 0, null, function* () {
-                  return (0, import_function11.pipe)(
+                  return (0, import_function12.pipe)(
                     yield x,
-                    map((0, import_function11.flow)(lookup4("uri"))),
+                    map((0, import_function12.flow)(lookup4("uri"))),
                     Array_exports.sequence(Option_exports.Applicative),
                     getOrElse(() => [])
                   );
@@ -4395,12 +4388,12 @@ var vaultify = (() => {
           })
         ],
         [
-          (leaf2) => leaf2.type === "folder",
+          isType("folder"),
           (folder) => __async(void 0, null, function* () {
             return {
               type: folder.type,
               name: folder.name,
-              uris: folder.rows ? yield (0, import_function11.pipe)(
+              uris: folder.rows ? yield (0, import_function12.pipe)(
                 folder.rows,
                 map(extractLikedPlaylistTreeRecur),
                 (x) => Promise.all(x)
@@ -4408,25 +4401,27 @@ var vaultify = (() => {
             };
           })
         ]
-      ])((0, import_function11.constant)(Promise.resolve({})))(leaf);
+      ])((0, import_function12.constant)(Promise.resolve({})))(leaf);
       restorePlaylistseRecur = (leaf) => __async(void 0, null, function* () {
+        const isType2 = is("type");
         guard32([
           [
-            (leaf2) => leaf2.type === "playlist personal",
+            isType2("playlist personal"),
             (playlist) => createPlaylist(playlist.name, playlist.uris)
           ],
+          [isType2("playlist liked"), ({ uri }) => likePlaylist(uri)],
           [
-            (leaf2) => leaf2.type === "playlist liked",
-            (playlist) => likePlaylist(playlist.uri)
-          ],
-          [
-            (leaf2) => leaf2.type === "folder",
-            (folder) => createFolder(folder.name) && map(restorePlaylistseRecur)(folder.uris)
+            isType2("folder"),
+            (folder) => (0, import_function12.pipe)(
+              createFolder(folder.name),
+              (0, import_function12.constant)(folder.uris),
+              map(restorePlaylistseRecur)
+            )
           ]
-        ])((0, import_function11.constant)(void 0))(leaf);
+        ])((0, import_function12.constant)(void 0))(leaf);
       });
       backup = () => __async(void 0, null, function* () {
-        const playlistData = yield (0, import_function11.pipe)(
+        const playlistData = yield (0, import_function12.pipe)(
           yield fetchLikedPlaylistsSP(),
           extractLikedPlaylistTreeRecur
         );
@@ -4443,18 +4438,19 @@ var vaultify = (() => {
           Spicetify.showNotification("Restored Playlists");
         }
         if (mode === "appData") {
-          map((0, import_function11.tupled)(Spicetify.LocalStorage.set))(vault.appData);
+          map((0, import_function12.tupled)(Spicetify.LocalStorage.set))(vault.appData);
           Spicetify.showNotification("Restored Settings");
         }
       });
-      Promise.resolve().then(() => init_settings());
+      Promise.resolve().then(() => init_settings2());
     }
   });
 
   // extensions/vaultify/entry.tsx
   init_es6();
   init_Record();
-  var import_function12 = __toESM(require_function(), 1);
+  var import_function13 = __toESM(require_function(), 1);
+  init_util();
   (() => __async(void 0, null, function* () {
     const mustLoad = [
       "CosmosAsync",
@@ -4462,37 +4458,9 @@ var vaultify = (() => {
       "Platform",
       "showNotification"
     ];
-    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     let timer = 0;
-    while (mustLoad.some((0, import_function12.flow)((0, import_function12.flip)(lookup4)(Spicetify), Option_exports.isNone)))
+    while (mustLoad.some((0, import_function13.flow)((0, import_function13.flip)(lookup4)(Spicetify), Option_exports.isNone)))
       yield sleep(timer += 100);
     yield Promise.resolve().then(() => (init_app(), app_exports));
   }))();
 })();
-(async () => {
-                    if (!document.getElementById(`vaultify`)) {
-                        var el = document.createElement("style")
-                        el.id = `vaultify`
-                        el.textContent = String.raw`/* .yarn/cache/spcr-settings-npm-1.2.0-849a2f9552-a422be2118.zip/node_modules/spcr-settings/settings.module.css */
-.settingsContainer {
-  display: contents;
-}
-.heading {
-  grid-column: 1/-1;
-  font-size: 1.125rem;
-  line-height: 1.5rem;
-  color: #fff;
-  margin-top: 24px;
-}
-.description {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-.inputWrapper {
-  display: flex;
-  justify-self: end;
-}
-`.trim()
-                        document.head.appendChild(el)
-                    }
-                })()

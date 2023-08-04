@@ -166,15 +166,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^17.0.11":
-  version: 17.0.20
-  resolution: "@types/react-dom@npm:17.0.20"
-  dependencies:
-    "@types/react": ^17
-  checksum: 525439fb14a033fc5dbe74711ecc50ec82273a528df9656594066a6219401e975101dafffd15d9a1a57a9442d52ea0c92eaacae09554dde27cd792e773f67467
-  languageName: node
-  linkType: hard
-
 "@types/react-dom@npm:^18.2.7":
   version: 18.2.7
   resolution: "@types/react-dom@npm:18.2.7"
@@ -192,17 +183,6 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 2e0d75de2b618e76780019e52478b1bec2b015a9187aea30f84518c0c3ddc639055bdfea50864aece937bad0cb0544d0100b80d30f5461e72fbc1c3c0be8b140
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:^17, @types/react@npm:^17.0.38":
-  version: 17.0.62
-  resolution: "@types/react@npm:17.0.62"
-  dependencies:
-    "@types/prop-types": "*"
-    "@types/scheduler": "*"
-    csstype: ^3.0.2
-  checksum: 428a5aff44824ef504e9a9259b5894fe44a5db1c344b536990f07e132900ff5b34cbef0be77a84f30f37be1f88fc8b56dce328f568de8d65de3bfe414c05b2e1
   languageName: node
   linkType: hard
 
@@ -353,20 +333,9 @@ __metadata:
     fp-ts-std: ^0.17.1
     monocle-ts: ^2.3.13
     newtype-ts: ^0.3.5
-    spcr-settings: ^1.2.0
     typescript: ^5.1.6
   languageName: unknown
   linkType: soft
-
-"spcr-settings@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "spcr-settings@npm:1.2.0"
-  dependencies:
-    "@types/react": ^17.0.38
-    "@types/react-dom": ^17.0.11
-  checksum: a422be2118166dfeb015d49b1fef4018d3f3e9146688e771fba76b90cf681ffbe3ecaf23c3e3b545185860bc86e36023dee0de40ca9a08f1bf3a605fed64ddf1
-  languageName: node
-  linkType: hard
 
 "typescript@npm:^5.1.6":
   version: 5.1.6

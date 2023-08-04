@@ -10,8 +10,7 @@
         "fp-ts": "^2.16.1",
         "fp-ts-std": "^0.17.1",
         "monocle-ts": "^2.3.13",
-        "newtype-ts": "^0.3.5",
-        "spcr-settings": "^1.2.0"
+        "newtype-ts": "^0.3.5"
     },
     "devDependencies": {
         "@types/react": "^18.2.18",

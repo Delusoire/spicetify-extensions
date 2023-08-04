@@ -1,4 +1,4 @@
-import { SettingsSection } from "spcr-settings"
+import { SettingsSection } from "../../shared/settings"
 import { backup, restore } from "./app"
 
 const settings = new SettingsSection("Vaultify", "vaultify")

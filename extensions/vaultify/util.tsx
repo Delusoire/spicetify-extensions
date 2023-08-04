@@ -1,19 +1,19 @@
 export type SpotifyID = string
 export type SpotifyURI = string
 
-export type PoF = Playlist | Folder
+export type SPoF = SPlaylist | SFolder
 
-export interface Playlist {
+export interface SPlaylist {
     type: "playlist"
     name: string
     ownedBySelf: boolean
     link: SpotifyURI
 }
 
-export interface Folder {
+export interface SFolder {
     type: "folder"
     name: string
-    rows: PoF[]
+    rows: SPoF[]
 }
 
 export type EPoF = EPlaylistPersonal | EPlaylistLiked | EFolder
