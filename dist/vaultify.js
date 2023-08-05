@@ -4384,7 +4384,10 @@ var vaultify = (() => {
           await fetchLikedPlaylistsSP(),
           extractLikedPlaylistTreeRecur
         );
-        const appData = toUnfoldable(Array_exports)(localStorage);
+        const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)/;
+        const appData = toUnfoldable(Array_exports)(localStorage).filter(
+          ([key]) => allowedAppDataRegex.test(key)
+        );
         await Spicetify.Platform.ClipboardAPI.copy(
           JSON.stringify({ playlistData, appData })
         );

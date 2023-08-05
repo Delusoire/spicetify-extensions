@@ -93,7 +93,10 @@ export const backup = async () => {
         extractLikedPlaylistTreeRecur,
     )
 
-    const appData = toUnfoldable(array)(localStorage)
+    const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)/
+    const appData = toUnfoldable(array)(localStorage).filter(([key]) =>
+        allowedAppDataRegex.test(key),
+    )
 
     await Spicetify.Platform.ClipboardAPI.copy(
         JSON.stringify({ playlistData, appData }),
