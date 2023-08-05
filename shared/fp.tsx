@@ -1,7 +1,7 @@
-import { guard } from "fp-ts-std/Function"
-import { Refinement } from "fp-ts/Refinement"
-import { getUnionSemigroup } from "fp-ts/Record"
 import { array as a } from "fp-ts"
+import { guard } from "fp-ts-std/Function"
+import { getUnionSemigroup } from "fp-ts/Record"
+import { Refinement } from "fp-ts/Refinement"
 import { first } from "fp-ts/lib/Semigroup"
 
 type refineBranch<A, B extends A, R> = [Refinement<A, B>, (x: B) => R]
@@ -81,7 +81,10 @@ type async = {
     <A, B>(f: (a: A) => Promise<B>): (fa: Promise<A>) => Promise<B>
     <A, B>(f: (a: A) => B): (fa: Promise<A>) => Promise<B>
 }
-export const async: async = (f: any) => async (fa: any) => f(await fa)
+export const PromiseMchain: async =
+    <A, R>(f: (a: A) => R) =>
+    async (fa: A) =>
+        f(await fa)
 
 export const is =
     <A,>(c: keyof A) =>

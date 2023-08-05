@@ -1,5 +1,11 @@
-export type SpotifyID = string
+import { Newtype } from "newtype-ts"
 
+// export interface SpotifyID
+//     extends Newtype<{ readonly SpotifyID: unique symbol }, string> {}
+// export interface SpotifyURI
+//     extends Newtype<{ readonly SpotifyURI: unique symbol }, string> {}
+
+export type SpotifyID = string
 export type SpotifyURI = string
 
 export const enum SpotifyURIType {

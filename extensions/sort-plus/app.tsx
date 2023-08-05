@@ -22,7 +22,7 @@ import {
     fetchTrackLFMAPI,
     fetchTracksSpotAPI,
 } from "../../shared/api"
-import { async, objConcat } from "../../shared/fp"
+import { PromiseMchain, objConcat } from "../../shared/fp"
 import {
     TrackData,
     TracksPopulater,
@@ -73,7 +73,7 @@ const getAlbumTracks = async (uri: SpotifyURI) => {
 
 export const getPlaylistTracks = f(
     fetchPlaylistAPI,
-    async(a.map(parseTrackFromPlaylistAPI)),
+    PromiseMchain(a.map(parseTrackFromPlaylistAPI)),
 )
 
 async function getArtistTracks(uri: SpotifyURI) {
@@ -91,7 +91,7 @@ async function getArtistTracks(uri: SpotifyURI) {
             ),
         ),
         x => Promise.all(x),
-        async(a.flatten),
+        PromiseMchain(a.flatten),
     )
 
     const disc = (await fetchArtistGQL(uri)).discography
@@ -141,7 +141,7 @@ async function getArtistTracks(uri: SpotifyURI) {
             await p(
                 parseUri(uri).id,
                 fetchArtistLikedTracksSP,
-                async(a.map(parseTrackFromArtistLikedTracksSP)),
+                PromiseMchain(a.map(parseTrackFromArtistLikedTracksSP)),
             ),
         )
 
@@ -153,11 +153,11 @@ async function getArtistTracks(uri: SpotifyURI) {
 const fetchAPITracksFromTracks: TracksPopulater = f(
     a.map(track => parseUri(track.uri).id),
     fetchTracksSpotAPI,
-    async(a.map(parseTrackFromSpotifyAPI)),
+    PromiseMchain(a.map(parseTrackFromSpotifyAPI)),
 )
 
 const fetchAlbumTracksFromTracks: TracksPopulater = f(
-    groupBy(track => String(track.albumUri)),
+    groupBy(track => track.albumUri!),
     mapWithIndex(async (albumUri: SpotifyURI, tracks: TrackData[]) => {
         const albumTracks = await getAlbumTracks(albumUri)
         return a.filter<TrackData>(albumTrack =>
@@ -166,7 +166,7 @@ const fetchAlbumTracksFromTracks: TracksPopulater = f(
     }),
     values,
     x => Promise.all(x),
-    async(a.flatten),
+    PromiseMchain(a.flatten),
 )
 
 const populateTracksSpot =
@@ -190,10 +190,10 @@ const populateTracksSpot =
                     constant(fetchAPITracksFromTracks),
                 ],
             ])(constant(task.of([])))(propName),
-            async(a.concat(tracks)),
-            async(groupBy(Lens.fromProp<TrackData>()("uri").get)),
-            async(values<TrackData[]>),
-            async(a.map(objConcat<TrackData>())),
+            PromiseMchain(a.concat(tracks)),
+            PromiseMchain(groupBy(Lens.fromProp<TrackData>()("uri").get)),
+            PromiseMchain(values<TrackData[]>),
+            PromiseMchain(a.map(objConcat<TrackData>())),
         )
 
 // Populating Tracks For LastFM
@@ -237,9 +237,9 @@ export const sortByProp =
         queue = await p(
             uri,
             fetchTracks,
-            async(populateTracks(name)),
-            async(a.filter(f(toProp, o.isSome))),
-            async(
+            PromiseMchain(populateTracks(name)),
+            PromiseMchain(a.filter(f(toProp, o.isSome))),
+            PromiseMchain(
                 a.sort(
                     p(
                         number.Ord,
@@ -247,8 +247,8 @@ export const sortByProp =
                     ),
                 ),
             ),
-            async(CONFIG.ascending ? identity : a.reverse),
-            async(a.append({ uri: "spotify:delimiter" } as TrackData)),
+            PromiseMchain(CONFIG.ascending ? identity : a.reverse),
+            PromiseMchain(a.append({ uri: "spotify:delimiter" } as TrackData)),
         )
 
         if (queue.length <= 1)

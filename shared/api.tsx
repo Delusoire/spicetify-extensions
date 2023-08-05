@@ -1,7 +1,7 @@
 import { invokeNullary } from "fp-ts-std/Function"
 import { chunksOf, flatten, map } from "fp-ts/Array"
 import { flow as f, pipe as p } from "fp-ts/function"
-import { async as as, async } from "./fp"
+import { PromiseMchain as as, PromiseMchain } from "./fp"
 import { SpotifyID, SpotifyURI, escapeRegex } from "./util"
 
 /*                          GraphQL                                           */
@@ -59,7 +59,7 @@ export const fetchTracksSpotAPI = f(
     chunksOf(50)<SpotifyID>,
     map(fetchTracksSpotAPI50),
     x => Promise.all(x),
-    async(flatten<fetchTracksSpotAPI50Res>),
+    PromiseMchain(flatten<fetchTracksSpotAPI50Res>),
 )
 
 export const searchItemSpotAPI = async (q: string, type: string[]) =>
@@ -172,13 +172,13 @@ export const searchYoutube = async (
 
 export interface fetchAlbumGQLRes {
     __typename: string
-    uri: string
+    uri: SpotifyURI
     name: string
     artists: {
         totalCount: number
         items: Array<{
             id: string
-            uri: string
+            uri: SpotifyURI
             profile: {
                 name: string
             }
@@ -226,7 +226,7 @@ export interface fetchAlbumGQLRes {
     releases: {
         totalCount: number
         items: Array<{
-            uri: string
+            uri: SpotifyURI
             name: string
         }>
     }
@@ -259,7 +259,7 @@ export interface fetchAlbumGQLRes {
             uid: string
             track: {
                 saved: boolean
-                uri: string
+                uri: SpotifyURI
                 name: string
                 playcount: string
                 discNumber: number
@@ -276,7 +276,7 @@ export interface fetchAlbumGQLRes {
                 }
                 artists: {
                     items: Array<{
-                        uri: string
+                        uri: SpotifyURI
                         profile: {
                             name: string
                         }
@@ -291,7 +291,7 @@ export interface fetchAlbumGQLRes {
                 popularReleasesAlbums: {
                     items: Array<{
                         id: string
-                        uri: string
+                        uri: SpotifyURI
                         name: string
                         date: {
                             year: number
@@ -321,7 +321,7 @@ export interface fetchAlbumGQLRes {
 
 export type fetchArtistRelatedGQLRes = Array<{
     id: string
-    uri: string
+    uri: SpotifyURI
     profile: {
         name: string
     }
@@ -355,7 +355,7 @@ export type fetchArtistsSpotAPI50Res = Array<{
     name: string
     popularity: number
     type: string
-    uri: string
+    uri: SpotifyURI
 }>
 
 export interface fetchTrackLFMAPIRes {

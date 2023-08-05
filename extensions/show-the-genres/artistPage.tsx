@@ -1,12 +1,12 @@
 import { array as a, string as str } from "fp-ts"
 import { prepend } from "fp-ts-std/String"
-import { pipe as p } from "fp-ts/function"
+import { flow as f, pipe as p } from "fp-ts/function"
 import {
     fetchArtistRelatedGQL,
     fetchArtistsSpotAPI50,
     fetchSoundOfSpotifyPlaylist,
 } from "../../shared/api"
-import { async } from "../../shared/fp"
+import { PromiseMchain } from "../../shared/fp"
 import {
     SpotifyURI,
     SpotifyURIType,
@@ -30,7 +30,7 @@ export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
     const genreContainer = document.createElement("div")
     genreContainer.className = "main-entityHeader-detailsText genre-container"
     genreContainer.innerHTML = await p(
-        await getArtistsGenres([uri]),
+        await getArtistsGenresOrRelated([uri]),
         a.takeLeft(5),
         a.map(async genre => {
             const uri = await fetchSoundOfSpotifyPlaylist(genre)
@@ -43,8 +43,8 @@ export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
             )}</a>`
         }),
         x => Promise.all(x),
-        async(a.intercalate(str.Monoid)(`<span>, </span>`)),
-        async(prepend(`<span>Artist Genres : </span>`)),
+        PromiseMchain(a.intercalate(str.Monoid)(`<span>, </span>`)),
+        PromiseMchain(prepend(`<span>Artist Genres : </span>`)),
     )
 
     // remove old genreContainer
@@ -61,29 +61,37 @@ export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
     )
 }
 
-export const getArtistsGenres = async (
+export const getArtistsGenresOrRelated = async (
     artistsUris: SpotifyURI[],
     src = null,
 ) => {
-    const rec = async (artistsUris: SpotifyURI[]) =>
-        p(
-            artistsUris,
+    const getArtistsGenres: (artistsUris: SpotifyURI[]) => Promise<string[]> =
+        f(
             a.map(uri => parseUri(uri).id),
             fetchArtistsSpotAPI50,
-            async(a.flatMap(artist => artist.genres)),
-            async(a.uniq(str.Eq)),
+            PromiseMchain(a.flatMap(artist => artist.genres)),
+            PromiseMchain(a.uniq(str.Eq)),
         )
 
-    const allGenres = await rec(artistsUris)
+    const allGenres = await getArtistsGenres(artistsUris)
 
     return allGenres.length
         ? allGenres
         : await p(
-              await fetchArtistRelatedGQL(artistsUris[0]),
-              a.map(a => a.uri),
-              a.chunksOf(5),
-              a.reduce(Promise.resolve([] as string[]), async (acc, arr5uris) =>
-                  (await acc).length ? await acc : await rec(arr5uris),
+              artistsUris[0],
+              fetchArtistRelatedGQL,
+              PromiseMchain(a.map(a => a.uri)),
+              PromiseMchain(a.chunksOf(5)),
+              PromiseMchain(
+                  a.reduce(
+                      Promise.resolve([] as string[]),
+                      async (acc, arr5uris) =>
+                          (
+                              await acc
+                          ).length
+                              ? await acc
+                              : await getArtistsGenres(arr5uris),
+                  ),
               ),
           )
 }

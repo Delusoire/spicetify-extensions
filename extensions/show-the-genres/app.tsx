@@ -3,7 +3,7 @@ export default {}
 import { array as a, string as str } from "fp-ts"
 import { pipe as p } from "fp-ts/function"
 import { fetchSoundOfSpotifyPlaylist, fetchTrackLFMAPI } from "../../shared/api"
-import { async } from "../../shared/fp"
+import { PromiseMchain } from "../../shared/fp"
 import {
     SpotifyURIType,
     isUri,
@@ -11,7 +11,7 @@ import {
     titleCase,
     waitForElement,
 } from "../../shared/util"
-import { getArtistsGenres, updateArtistPage } from "./artistPage"
+import { getArtistsGenresOrRelated, updateArtistPage } from "./artistPage"
 import { genrePopup } from "./popup"
 import "./popup.css"
 import { CONFIG } from "./settings"
@@ -38,7 +38,7 @@ const updateGenreContainer = async (genres: string[]) => {
             )}</a>`
         }),
         x => Promise.all(x),
-        async(a.intercalate(str.Monoid)(`<span>, </span>`)),
+        PromiseMchain(a.intercalate(str.Monoid)(`<span>, </span>`)),
     )
     return genreContainer
 }
@@ -82,7 +82,7 @@ const getArtistUrisFromCurrentTrack = () => {
 
 const updateGenres = async () => {
     const artistUris = getArtistUrisFromCurrentTrack()
-    spotifyGenres = await getArtistsGenres(artistUris)
+    spotifyGenres = await getArtistsGenresOrRelated(artistUris)
 
     await updateGenresUI(spotifyGenres.slice(0, 5))
 }
