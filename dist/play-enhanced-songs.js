@@ -3134,11 +3134,11 @@ var play;
   });
 
   // shared/fp.tsx
-  var async;
+  var PromiseMchain;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
-      async = (f3) => async (fa) => f3(await fa);
+      PromiseMchain = (f3) => async (fa) => f3(await fa);
     }
   });
 
@@ -3158,7 +3158,7 @@ var play;
         chunksOf3(50),
         map(fetchTracksSpotAPI50),
         (x) => Promise.all(x),
-        async(flatten)
+        PromiseMchain(flatten)
       );
       fetchPlaylistEnhancedSongs100 = async (uri, offset = 0) => (await Spicetify.CosmosAsync.get(
         `https://spclient.wg.spotify.com/enhanced-view/v1/context/${uri}?&offset=${offset}&format=json`

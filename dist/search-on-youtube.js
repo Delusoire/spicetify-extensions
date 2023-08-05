@@ -3926,7 +3926,7 @@ var search;
   });
 
   // shared/fp.tsx
-  var guard42, async, is;
+  var guard42, PromiseMchain, is;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
@@ -3934,7 +3934,7 @@ var search;
       guard42 = (branches) => guard4(
         branches
       );
-      async = (f3) => async (fa) => f3(await fa);
+      PromiseMchain = (f3) => async (fa) => f3(await fa);
       is = (c) => (a) => (field) => field[c] === a;
     }
   });
@@ -3955,7 +3955,7 @@ var search;
         chunksOf3(50),
         map(fetchTracksSpotAPI50),
         (x) => Promise.all(x),
-        async(flatten)
+        PromiseMchain(flatten)
       );
       searchYoutube = async (YouTubeApiKey, searchString) => (await (await fetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(

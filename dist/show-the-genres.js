@@ -192,9 +192,9 @@ var show;
         return __spreadArray2([as4[0]], as4.slice(1), true);
       };
       flatMapIO = function(F, M) {
-        return dual(2, function(self, f3) {
+        return dual(2, function(self, f4) {
           return M.flatMap(self, function(a) {
-            return F.fromIO(f3(a));
+            return F.fromIO(f4(a));
           });
         });
       };
@@ -258,8 +258,8 @@ var show;
   function flap(F) {
     return function(a) {
       return function(fab) {
-        return F.map(fab, function(f3) {
-          return f3(a);
+        return F.map(fab, function(f4) {
+          return f4(a);
         });
       };
     };
@@ -275,11 +275,11 @@ var show;
     };
   }
   function let_(F) {
-    return function(name, f3) {
+    return function(name, f4) {
       return function(fa) {
         return F.map(fa, function(a) {
           var _a;
-          return Object.assign({}, a, (_a = {}, _a[name] = f3(a), _a));
+          return Object.assign({}, a, (_a = {}, _a[name] = f4(a), _a));
         });
       };
     };
@@ -304,10 +304,10 @@ var show;
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Applicative.js
   function getApplicativeMonoid(F) {
-    var f3 = getApplySemigroup(F);
+    var f4 = getApplySemigroup(F);
     return function(M) {
       return {
-        concat: f3(M).concat,
+        concat: f4(M).concat,
         empty: F.of(M.empty)
       };
     };
@@ -321,26 +321,26 @@ var show;
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Chain.js
   function chainFirst(M) {
     var tapM = tap(M);
-    return function(f3) {
+    return function(f4) {
       return function(first3) {
-        return tapM(first3, f3);
+        return tapM(first3, f4);
       };
     };
   }
   function tap(M) {
-    return function(first3, f3) {
+    return function(first3, f4) {
       return M.chain(first3, function(a) {
-        return M.map(f3(a), function() {
+        return M.map(f4(a), function() {
           return a;
         });
       });
     };
   }
   function bind(M) {
-    return function(name, f3) {
+    return function(name, f4) {
       return function(ma) {
         return M.chain(ma, function(a) {
-          return M.map(f3(a), function(b) {
+          return M.map(f4(a), function(b) {
             var _a;
             return Object.assign({}, a, (_a = {}, _a[name] = b, _a));
           });
@@ -355,23 +355,23 @@ var show;
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/FromEither.js
   function fromEitherK(F) {
-    return function(f3) {
-      return flow(f3, F.fromEither);
+    return function(f4) {
+      return flow(f4, F.fromEither);
     };
   }
   function chainEitherK(F, M) {
     var fromEitherKF = fromEitherK(F);
-    return function(f3) {
+    return function(f4) {
       return function(ma) {
-        return M.chain(ma, fromEitherKF(f3));
+        return M.chain(ma, fromEitherKF(f4));
       };
     };
   }
   function tapEither(F, M) {
     var fromEither3 = fromEitherK(F);
     var tapM = tap(M);
-    return function(self, f3) {
-      return tapM(self, fromEither3(f3));
+    return function(self, f4) {
+      return tapM(self, fromEither3(f4));
     };
   }
   var init_FromEither = __esm({
@@ -692,20 +692,20 @@ var show;
             return copy(as4);
           }
           if (m < 0) {
-            var _a = splitAt(-m)(as4), f3 = _a[0], s = _a[1];
-            return pipe(s, concat(f3));
+            var _a = splitAt(-m)(as4), f4 = _a[0], s = _a[1];
+            return pipe(s, concat(f4));
           } else {
             return rotate(m - len)(as4);
           }
         };
       };
       fromReadonlyNonEmptyArray2 = fromReadonlyNonEmptyArray;
-      makeBy = function(f3) {
+      makeBy = function(f4) {
         return function(n) {
           var j = Math.max(0, Math.floor(n));
-          var out = [f3(0)];
+          var out = [f4(0)];
           for (var i = 1; i < j; i++) {
-            out.push(f3(i));
+            out.push(f4(i));
           }
           return out;
         };
@@ -739,13 +739,13 @@ var show;
           return isNonEmpty3(rest) ? pipe(rest, prependAll2(middle), prepend2(head3(as4))) : copy(as4);
         };
       };
-      chop = function(f3) {
+      chop = function(f4) {
         return function(as4) {
-          var _a = f3(as4), b = _a[0], rest = _a[1];
+          var _a = f4(as4), b = _a[0], rest = _a[1];
           var out = [b];
           var next = rest;
           while (isNonEmpty3(next)) {
-            var _b = f3(next), b_1 = _b[0], rest_2 = _b[1];
+            var _b = f4(next), b_1 = _b[0], rest_2 = _b[1];
             out.push(b_1);
             next = rest_2;
           }
@@ -852,16 +852,16 @@ var show;
   function wiltDefault(T, C) {
     return function(F) {
       var traverseF = T.traverse(F);
-      return function(wa, f3) {
-        return F.map(traverseF(wa, f3), C.separate);
+      return function(wa, f4) {
+        return F.map(traverseF(wa, f4), C.separate);
       };
     };
   }
   function witherDefault(T, C) {
     return function(F) {
       var traverseF = T.traverse(F);
-      return function(wa, f3) {
-        return F.map(traverseF(wa, f3), C.compact);
+      return function(wa, f4) {
+        return F.map(traverseF(wa, f4), C.compact);
       };
     };
   }
@@ -1021,10 +1021,10 @@ var show;
           return none;
         };
       };
-      findFirstMap = function(f3) {
+      findFirstMap = function(f4) {
         return function(as4) {
           for (var i = 0; i < as4.length; i++) {
-            var out = f3(as4[i]);
+            var out = f4(as4[i]);
             if (isSome(out)) {
               return out;
             }
@@ -1032,10 +1032,10 @@ var show;
           return none;
         };
       };
-      findLastMap = function(f3) {
+      findLastMap = function(f4) {
         return function(as4) {
           for (var i = as4.length - 1; i >= 0; i--) {
-            var out = f3(as4[i]);
+            var out = f4(as4[i]);
             if (isSome(out)) {
               return out;
             }
@@ -1066,53 +1066,53 @@ var show;
       reverse2 = function(as4) {
         return as4.length <= 1 ? as4 : as4.slice().reverse();
       };
-      _chainRecDepthFirst = function(a, f3) {
-        return pipe(a, chainRecDepthFirst(f3));
+      _chainRecDepthFirst = function(a, f4) {
+        return pipe(a, chainRecDepthFirst(f4));
       };
-      _chainRecBreadthFirst = function(a, f3) {
-        return pipe(a, chainRecBreadthFirst(f3));
+      _chainRecBreadthFirst = function(a, f4) {
+        return pipe(a, chainRecBreadthFirst(f4));
       };
       foldMapWithIndex2 = function(M) {
-        return function(f3) {
+        return function(f4) {
           return function(fa) {
             return fa.reduce(function(b, a, i) {
-              return M.concat(b, f3(i, a));
+              return M.concat(b, f4(i, a));
             }, M.empty);
           };
         };
       };
-      reduce2 = function(b, f3) {
+      reduce2 = function(b, f4) {
         return reduceWithIndex2(b, function(_, b2, a) {
-          return f3(b2, a);
+          return f4(b2, a);
         });
       };
       foldMap2 = function(M) {
         var foldMapWithIndexM = foldMapWithIndex2(M);
-        return function(f3) {
+        return function(f4) {
           return foldMapWithIndexM(function(_, a) {
-            return f3(a);
+            return f4(a);
           });
         };
       };
-      reduceWithIndex2 = function(b, f3) {
+      reduceWithIndex2 = function(b, f4) {
         return function(fa) {
           var len = fa.length;
           var out = b;
           for (var i = 0; i < len; i++) {
-            out = f3(i, out, fa[i]);
+            out = f4(i, out, fa[i]);
           }
           return out;
         };
       };
-      reduceRight2 = function(b, f3) {
+      reduceRight2 = function(b, f4) {
         return reduceRightWithIndex2(b, function(_, a, b2) {
-          return f3(a, b2);
+          return f4(a, b2);
         });
       };
-      reduceRightWithIndex2 = function(b, f3) {
+      reduceRightWithIndex2 = function(b, f4) {
         return function(fa) {
           return fa.reduceRight(function(b2, a, i) {
-            return f3(i, a, b2);
+            return f4(i, a, b2);
           }, b);
         };
       };
@@ -1144,14 +1144,14 @@ var show;
           return Ord.compare(aLen, bLen);
         });
       };
-      chainRecDepthFirst = function(f3) {
+      chainRecDepthFirst = function(f4) {
         return function(a) {
-          var todo = __spreadArray5([], f3(a), true);
+          var todo = __spreadArray5([], f4(a), true);
           var out = [];
           while (todo.length > 0) {
             var e = todo.shift();
             if (isLeft(e)) {
-              todo.unshift.apply(todo, f3(e.left));
+              todo.unshift.apply(todo, f4(e.left));
             } else {
               out.push(e.right);
             }
@@ -1159,14 +1159,14 @@ var show;
           return out;
         };
       };
-      chainRecBreadthFirst = function(f3) {
+      chainRecBreadthFirst = function(f4) {
         return function(a) {
-          var initial = f3(a);
+          var initial = f4(a);
           var todo = [];
           var out = [];
           function go(e2) {
             if (isLeft(e2)) {
-              f3(e2.left).forEach(function(v) {
+              f4(e2.left).forEach(function(v) {
                 return todo.push(v);
               });
             } else {
@@ -1413,7 +1413,7 @@ var show;
       return [a, b];
     });
   }
-  function comprehension(input, f3, g) {
+  function comprehension(input, f4, g) {
     if (g === void 0) {
       g = function() {
         return true;
@@ -1422,7 +1422,7 @@ var show;
     var go = function(scope, input2) {
       return isNonEmpty5(input2) ? flatMap(head3(input2), function(a) {
         return go(pipe(scope, append3(a)), tail3(input2));
-      }) : g.apply(void 0, scope) ? [f3.apply(void 0, scope)] : [];
+      }) : g.apply(void 0, scope) ? [f4.apply(void 0, scope)] : [];
     };
     return go([], input);
   }
@@ -1488,8 +1488,8 @@ var show;
       prependW3 = prependW2;
       append3 = append;
       appendW3 = appendW;
-      makeBy3 = function(n, f3) {
-        return n <= 0 ? [] : makeBy(f3)(n);
+      makeBy3 = function(n, f4) {
+        return n <= 0 ? [] : makeBy(f4)(n);
       };
       replicate = function(n, a) {
         return makeBy3(n, function() {
@@ -1522,33 +1522,33 @@ var show;
       };
       matchRight = matchRightW;
       foldRight = matchRight;
-      chainWithIndex = function(f3) {
+      chainWithIndex = function(f4) {
         return function(as4) {
           var out = [];
           for (var i = 0; i < as4.length; i++) {
-            out.push.apply(out, f3(i, as4[i]));
+            out.push.apply(out, f4(i, as4[i]));
           }
           return out;
         };
       };
-      scanLeft = function(b, f3) {
+      scanLeft = function(b, f4) {
         return function(as4) {
           var len = as4.length;
           var out = new Array(len + 1);
           out[0] = b;
           for (var i = 0; i < len; i++) {
-            out[i + 1] = f3(out[i], as4[i]);
+            out[i + 1] = f4(out[i], as4[i]);
           }
           return out;
         };
       };
-      scanRight = function(b, f3) {
+      scanRight = function(b, f4) {
         return function(as4) {
           var len = as4.length;
           var out = new Array(len + 1);
           out[len] = b;
           for (var i = len - 1; i >= 0; i--) {
-            out[i] = f3(as4[i], out[i + 1]);
+            out[i] = f4(as4[i], out[i + 1]);
           }
           return out;
         };
@@ -1618,9 +1618,9 @@ var show;
           return isOutOfBound4(i, as4) ? none : some(unsafeDeleteAt2(i, as4));
         };
       };
-      modifyAt = function(i, f3) {
+      modifyAt = function(i, f4) {
         return function(as4) {
-          return isOutOfBound4(i, as4) ? none : some(unsafeUpdateAt3(i, f3(as4[i]), as4));
+          return isOutOfBound4(i, as4) ? none : some(unsafeUpdateAt3(i, f4(as4[i]), as4));
         };
       };
       reverse3 = function(as4) {
@@ -1651,11 +1651,11 @@ var show;
           return as4.length <= 1 ? copy2(as4) : as4.slice().sort(O.compare);
         };
       };
-      zipWith = function(fa, fb, f3) {
+      zipWith = function(fa, fb, f4) {
         var fc = [];
         var len = Math.min(fa.length, fb.length);
         for (var i = 0; i < len; i++) {
-          fc[i] = f3(fa[i], fb[i]);
+          fc[i] = f4(fa[i], fb[i]);
         }
         return fc;
       };
@@ -1669,38 +1669,38 @@ var show;
         return [fa, fb];
       };
       prependAll3 = function(middle) {
-        var f3 = prependAll2(middle);
+        var f4 = prependAll2(middle);
         return function(as4) {
-          return isNonEmpty5(as4) ? f3(as4) : [];
+          return isNonEmpty5(as4) ? f4(as4) : [];
         };
       };
       intersperse3 = function(middle) {
-        var f3 = intersperse2(middle);
+        var f4 = intersperse2(middle);
         return function(as4) {
-          return isNonEmpty5(as4) ? f3(as4) : copy2(as4);
+          return isNonEmpty5(as4) ? f4(as4) : copy2(as4);
         };
       };
       rotate3 = function(n) {
-        var f3 = rotate(n);
+        var f4 = rotate(n);
         return function(as4) {
-          return isNonEmpty5(as4) ? f3(as4) : copy2(as4);
+          return isNonEmpty5(as4) ? f4(as4) : copy2(as4);
         };
       };
       elem2 = elem;
       uniq3 = function(E) {
-        var f3 = uniq(E);
+        var f4 = uniq(E);
         return function(as4) {
-          return isNonEmpty5(as4) ? f3(as4) : copy2(as4);
+          return isNonEmpty5(as4) ? f4(as4) : copy2(as4);
         };
       };
       sortBy3 = function(ords) {
-        var f3 = sortBy(ords);
+        var f4 = sortBy(ords);
         return function(as4) {
-          return isNonEmpty5(as4) ? f3(as4) : copy2(as4);
+          return isNonEmpty5(as4) ? f4(as4) : copy2(as4);
         };
       };
-      chop3 = function(f3) {
-        var g = chop(f3);
+      chop3 = function(f4) {
+        var g = chop(f4);
         return function(as4) {
           return isNonEmpty5(as4) ? g(as4) : [];
         };
@@ -1711,18 +1711,18 @@ var show;
         };
       };
       chunksOf3 = function(n) {
-        var f3 = chunksOf(n);
+        var f4 = chunksOf(n);
         return function(as4) {
-          return isNonEmpty5(as4) ? f3(as4) : [];
+          return isNonEmpty5(as4) ? f4(as4) : [];
         };
       };
-      fromOptionK = function(f3) {
+      fromOptionK = function(f4) {
         return function() {
           var a = [];
           for (var _i = 0; _i < arguments.length; _i++) {
             a[_i] = arguments[_i];
           }
-          return fromOption(f3.apply(void 0, a));
+          return fromOption(f4.apply(void 0, a));
         };
       };
       concatW = function(second) {
@@ -1731,11 +1731,11 @@ var show;
         };
       };
       concat2 = concatW;
-      _map = function(fa, f3) {
-        return pipe(fa, map(f3));
+      _map = function(fa, f4) {
+        return pipe(fa, map(f4));
       };
-      _mapWithIndex = function(fa, f3) {
-        return pipe(fa, mapWithIndex(f3));
+      _mapWithIndex = function(fa, f4) {
+        return pipe(fa, mapWithIndex(f4));
       };
       _ap = function(fab, fa) {
         return pipe(fab, ap2(fa));
@@ -1743,67 +1743,67 @@ var show;
       _filter = function(fa, predicate) {
         return pipe(fa, filter(predicate));
       };
-      _filterMap = function(fa, f3) {
-        return pipe(fa, filterMap(f3));
+      _filterMap = function(fa, f4) {
+        return pipe(fa, filterMap(f4));
       };
       _partition = function(fa, predicate) {
         return pipe(fa, partition(predicate));
       };
-      _partitionMap = function(fa, f3) {
-        return pipe(fa, partitionMap(f3));
+      _partitionMap = function(fa, f4) {
+        return pipe(fa, partitionMap(f4));
       };
       _partitionWithIndex = function(fa, predicateWithIndex) {
         return pipe(fa, partitionWithIndex(predicateWithIndex));
       };
-      _partitionMapWithIndex = function(fa, f3) {
-        return pipe(fa, partitionMapWithIndex(f3));
+      _partitionMapWithIndex = function(fa, f4) {
+        return pipe(fa, partitionMapWithIndex(f4));
       };
       _alt = function(fa, that) {
         return pipe(fa, alt(that));
       };
-      _reduce = function(fa, b, f3) {
-        return pipe(fa, reduce3(b, f3));
+      _reduce = function(fa, b, f4) {
+        return pipe(fa, reduce3(b, f4));
       };
       _foldMap = function(M) {
         var foldMapM = foldMap3(M);
-        return function(fa, f3) {
-          return pipe(fa, foldMapM(f3));
+        return function(fa, f4) {
+          return pipe(fa, foldMapM(f4));
         };
       };
-      _reduceRight = function(fa, b, f3) {
-        return pipe(fa, reduceRight3(b, f3));
+      _reduceRight = function(fa, b, f4) {
+        return pipe(fa, reduceRight3(b, f4));
       };
-      _reduceWithIndex = function(fa, b, f3) {
-        return pipe(fa, reduceWithIndex3(b, f3));
+      _reduceWithIndex = function(fa, b, f4) {
+        return pipe(fa, reduceWithIndex3(b, f4));
       };
       _foldMapWithIndex = function(M) {
         var foldMapWithIndexM = foldMapWithIndex3(M);
-        return function(fa, f3) {
-          return pipe(fa, foldMapWithIndexM(f3));
+        return function(fa, f4) {
+          return pipe(fa, foldMapWithIndexM(f4));
         };
       };
-      _reduceRightWithIndex = function(fa, b, f3) {
-        return pipe(fa, reduceRightWithIndex3(b, f3));
+      _reduceRightWithIndex = function(fa, b, f4) {
+        return pipe(fa, reduceRightWithIndex3(b, f4));
       };
-      _filterMapWithIndex = function(fa, f3) {
-        return pipe(fa, filterMapWithIndex(f3));
+      _filterMapWithIndex = function(fa, f4) {
+        return pipe(fa, filterMapWithIndex(f4));
       };
       _filterWithIndex = function(fa, predicateWithIndex) {
         return pipe(fa, filterWithIndex(predicateWithIndex));
       };
-      _extend = function(fa, f3) {
-        return pipe(fa, extend(f3));
+      _extend = function(fa, f4) {
+        return pipe(fa, extend(f4));
       };
       _traverse = function(F) {
         var traverseF = traverse(F);
-        return function(ta, f3) {
-          return pipe(ta, traverseF(f3));
+        return function(ta, f4) {
+          return pipe(ta, traverseF(f4));
         };
       };
       _traverseWithIndex = function(F) {
         var traverseWithIndexF = traverseWithIndex(F);
-        return function(ta, f3) {
-          return pipe(ta, traverseWithIndexF(f3));
+        return function(ta, f4) {
+          return pipe(ta, traverseWithIndexF(f4));
         };
       };
       _chainRecDepthFirst2 = _chainRecDepthFirst;
@@ -1812,36 +1812,36 @@ var show;
       zero = function() {
         return [];
       };
-      map = function(f3) {
+      map = function(f4) {
         return function(fa) {
           return fa.map(function(a) {
-            return f3(a);
+            return f4(a);
           });
         };
       };
       ap2 = function(fa) {
-        return flatMap(function(f3) {
-          return pipe(fa, map(f3));
+        return flatMap(function(f4) {
+          return pipe(fa, map(f4));
         });
       };
-      flatMap = /* @__PURE__ */ dual(2, function(ma, f3) {
+      flatMap = /* @__PURE__ */ dual(2, function(ma, f4) {
         return pipe(ma, chainWithIndex(function(i, a) {
-          return f3(a, i);
+          return f4(a, i);
         }));
       });
       flatten = /* @__PURE__ */ flatMap(identity);
-      mapWithIndex = function(f3) {
+      mapWithIndex = function(f4) {
         return function(fa) {
           return fa.map(function(a, i) {
-            return f3(i, a);
+            return f4(i, a);
           });
         };
       };
-      filterMapWithIndex = function(f3) {
+      filterMapWithIndex = function(f4) {
         return function(fa) {
           var out = [];
           for (var i = 0; i < fa.length; i++) {
-            var optionB = f3(i, fa[i]);
+            var optionB = f4(i, fa[i]);
             if (isSome(optionB)) {
               out.push(optionB.value);
             }
@@ -1849,9 +1849,9 @@ var show;
           return out;
         };
       };
-      filterMap = function(f3) {
+      filterMap = function(f4) {
         return filterMapWithIndex(function(_, a) {
-          return f3(a);
+          return f4(a);
         });
       };
       compact = /* @__PURE__ */ filterMap(identity);
@@ -1893,17 +1893,17 @@ var show;
           return separated(left, right);
         };
       };
-      partitionMap = function(f3) {
+      partitionMap = function(f4) {
         return partitionMapWithIndex(function(_, a) {
-          return f3(a);
+          return f4(a);
         });
       };
-      partitionMapWithIndex = function(f3) {
+      partitionMapWithIndex = function(f4) {
         return function(fa) {
           var left = [];
           var right = [];
           for (var i = 0; i < fa.length; i++) {
-            var e = f3(i, fa[i]);
+            var e = f4(i, fa[i]);
             if (e._tag === "Left") {
               left.push(e.left);
             } else {
@@ -1926,10 +1926,10 @@ var show;
           });
         };
       };
-      extend = function(f3) {
+      extend = function(f4) {
         return function(wa) {
           return wa.map(function(_, i) {
-            return f3(wa.slice(i));
+            return f4(wa.slice(i));
           });
         };
       };
@@ -1942,9 +1942,9 @@ var show;
       reduceRightWithIndex3 = reduceRightWithIndex2;
       traverse = function(F) {
         var traverseWithIndexF = traverseWithIndex(F);
-        return function(f3) {
+        return function(f4) {
           return traverseWithIndexF(function(_, a) {
-            return f3(a);
+            return f4(a);
           });
         };
       };
@@ -1960,37 +1960,37 @@ var show;
         };
       };
       traverseWithIndex = function(F) {
-        return function(f3) {
+        return function(f4) {
           return reduceWithIndex3(F.of(zero()), function(i, fbs, a) {
             return F.ap(F.map(fbs, function(bs) {
               return function(b) {
                 return pipe(bs, append3(b));
               };
-            }), f3(i, a));
+            }), f4(i, a));
           });
         };
       };
       wither = function(F) {
         var _witherF = _wither(F);
-        return function(f3) {
+        return function(f4) {
           return function(fa) {
-            return _witherF(fa, f3);
+            return _witherF(fa, f4);
           };
         };
       };
       wilt = function(F) {
         var _wiltF = _wilt(F);
-        return function(f3) {
+        return function(f4) {
           return function(fa) {
-            return _wiltF(fa, f3);
+            return _wiltF(fa, f4);
           };
         };
       };
-      unfold = function(b, f3) {
+      unfold = function(b, f4) {
         var out = [];
         var bb = b;
         while (true) {
-          var mt = f3(bb);
+          var mt = f4(bb);
           if (isSome(mt)) {
             var _a = mt.value, a = _a[0], b_1 = _a[1];
             out.push(a);
@@ -2450,28 +2450,28 @@ var show;
       getRight = function(ma) {
         return ma._tag === "Left" ? none2 : some3(ma.right);
       };
-      _map2 = function(fa, f3) {
-        return pipe(fa, map2(f3));
+      _map2 = function(fa, f4) {
+        return pipe(fa, map2(f4));
       };
       _ap2 = function(fab, fa) {
         return pipe(fab, ap3(fa));
       };
-      _reduce2 = function(fa, b, f3) {
-        return pipe(fa, reduce4(b, f3));
+      _reduce2 = function(fa, b, f4) {
+        return pipe(fa, reduce4(b, f4));
       };
       _foldMap2 = function(M) {
         var foldMapM = foldMap4(M);
-        return function(fa, f3) {
-          return pipe(fa, foldMapM(f3));
+        return function(fa, f4) {
+          return pipe(fa, foldMapM(f4));
         };
       };
-      _reduceRight2 = function(fa, b, f3) {
-        return pipe(fa, reduceRight4(b, f3));
+      _reduceRight2 = function(fa, b, f4) {
+        return pipe(fa, reduceRight4(b, f4));
       };
       _traverse2 = function(F) {
         var traverseF = traverse2(F);
-        return function(ta, f3) {
-          return pipe(ta, traverseF(f3));
+        return function(ta, f4) {
+          return pipe(ta, traverseF(f4));
         };
       };
       _alt2 = function(fa, that) {
@@ -2480,17 +2480,17 @@ var show;
       _filter2 = function(fa, predicate) {
         return pipe(fa, filter2(predicate));
       };
-      _filterMap2 = function(fa, f3) {
-        return pipe(fa, filterMap2(f3));
+      _filterMap2 = function(fa, f4) {
+        return pipe(fa, filterMap2(f4));
       };
-      _extend2 = function(wa, f3) {
-        return pipe(wa, extend2(f3));
+      _extend2 = function(wa, f4) {
+        return pipe(wa, extend2(f4));
       };
       _partition2 = function(fa, predicate) {
         return pipe(fa, partition2(predicate));
       };
-      _partitionMap2 = function(fa, f3) {
-        return pipe(fa, partitionMap2(f3));
+      _partitionMap2 = function(fa, f4) {
+        return pipe(fa, partitionMap2(f4));
       };
       URI2 = "Option";
       getShow4 = function(S) {
@@ -2523,9 +2523,9 @@ var show;
           empty: none2
         };
       };
-      map2 = function(f3) {
+      map2 = function(f4) {
         return function(fa) {
-          return isNone2(fa) ? none2 : some3(f3(fa.value));
+          return isNone2(fa) ? none2 : some3(f4(fa.value));
         };
       };
       Functor2 = {
@@ -2555,8 +2555,8 @@ var show;
         ap: _ap2,
         of: of4
       };
-      flatMap2 = /* @__PURE__ */ dual(2, function(ma, f3) {
-        return isNone2(ma) ? none2 : f3(ma.value);
+      flatMap2 = /* @__PURE__ */ dual(2, function(ma, f4) {
+        return isNone2(ma) ? none2 : f4(ma.value);
       });
       Chain2 = {
         URI: URI2,
@@ -2571,21 +2571,21 @@ var show;
         of: of4,
         chain: flatMap2
       };
-      reduce4 = function(b, f3) {
+      reduce4 = function(b, f4) {
         return function(fa) {
-          return isNone2(fa) ? b : f3(b, fa.value);
+          return isNone2(fa) ? b : f4(b, fa.value);
         };
       };
       foldMap4 = function(M) {
-        return function(f3) {
+        return function(f4) {
           return function(fa) {
-            return isNone2(fa) ? M.empty : f3(fa.value);
+            return isNone2(fa) ? M.empty : f4(fa.value);
           };
         };
       };
-      reduceRight4 = function(b, f3) {
+      reduceRight4 = function(b, f4) {
         return function(fa) {
-          return isNone2(fa) ? b : f3(fa.value, b);
+          return isNone2(fa) ? b : f4(fa.value, b);
         };
       };
       Foldable2 = {
@@ -2620,9 +2620,9 @@ var show;
         alt: _alt2,
         zero: zero2
       };
-      extend2 = function(f3) {
+      extend2 = function(f4) {
         return function(wa) {
-          return isNone2(wa) ? none2 : some3(f3(wa));
+          return isNone2(wa) ? none2 : some3(f4(wa));
         };
       };
       Extend2 = {
@@ -2645,9 +2645,9 @@ var show;
           return isNone2(fa) ? none2 : predicate(fa.value) ? fa : none2;
         };
       };
-      filterMap2 = function(f3) {
+      filterMap2 = function(f4) {
         return function(fa) {
-          return isNone2(fa) ? none2 : f3(fa.value);
+          return isNone2(fa) ? none2 : f4(fa.value);
         };
       };
       partition2 = function(predicate) {
@@ -2655,8 +2655,8 @@ var show;
           return separated(_filter2(fa, not(predicate)), _filter2(fa, predicate));
         };
       };
-      partitionMap2 = function(f3) {
-        return flow(map2(f3), separate2);
+      partitionMap2 = function(f4) {
+        return flow(map2(f4), separate2);
       };
       Filterable2 = {
         URI: URI2,
@@ -2669,9 +2669,9 @@ var show;
         partitionMap: _partitionMap2
       };
       traverse2 = function(F) {
-        return function(f3) {
+        return function(f4) {
           return function(ta) {
-            return isNone2(ta) ? F.of(none2) : F.map(f3(ta.value), some3);
+            return isNone2(ta) ? F.of(none2) : F.map(f4(ta.value), some3);
           };
         };
       };
@@ -2693,17 +2693,17 @@ var show;
       _wilt2 = /* @__PURE__ */ wiltDefault(Traversable2, Compactable2);
       wither2 = function(F) {
         var _witherF = _wither2(F);
-        return function(f3) {
+        return function(f4) {
           return function(fa) {
-            return _witherF(fa, f3);
+            return _witherF(fa, f4);
           };
         };
       };
       wilt2 = function(F) {
         var _wiltF = _wilt2(F);
-        return function(f3) {
+        return function(f4) {
           return function(fa) {
-            return _wiltF(fa, f3);
+            return _wiltF(fa, f4);
           };
         };
       };
@@ -2771,30 +2771,30 @@ var show;
       fromNullable = function(a) {
         return a == null ? none2 : some3(a);
       };
-      tryCatch = function(f3) {
+      tryCatch = function(f4) {
         try {
-          return some3(f3());
+          return some3(f4());
         } catch (e) {
           return none2;
         }
       };
-      tryCatchK = function(f3) {
+      tryCatchK = function(f4) {
         return function() {
           var a = [];
           for (var _i = 0; _i < arguments.length; _i++) {
             a[_i] = arguments[_i];
           }
           return tryCatch(function() {
-            return f3.apply(void 0, a);
+            return f4.apply(void 0, a);
           });
         };
       };
-      fromNullableK = function(f3) {
-        return flow(f3, fromNullable);
+      fromNullableK = function(f4) {
+        return flow(f4, fromNullable);
       };
-      chainNullableK = function(f3) {
+      chainNullableK = function(f4) {
         return function(ma) {
-          return isNone2(ma) ? none2 : fromNullable(f3(ma.value));
+          return isNone2(ma) ? none2 : fromNullable(f4(ma.value));
         };
       };
       toNullable = /* @__PURE__ */ match3(constNull, identity);
@@ -2810,15 +2810,15 @@ var show;
       bind3 = /* @__PURE__ */ bind(Chain2);
       apS3 = /* @__PURE__ */ apS(Apply2);
       ApT = /* @__PURE__ */ of4(emptyReadonlyArray);
-      traverseReadonlyNonEmptyArrayWithIndex = function(f3) {
+      traverseReadonlyNonEmptyArrayWithIndex = function(f4) {
         return function(as4) {
-          var o = f3(0, head(as4));
+          var o = f4(0, head(as4));
           if (isNone2(o)) {
             return none2;
           }
           var out = [o.value];
           for (var i = 1; i < as4.length; i++) {
-            var o_1 = f3(i, as4[i]);
+            var o_1 = f4(i, as4[i]);
             if (isNone2(o_1)) {
               return none2;
             }
@@ -2827,16 +2827,16 @@ var show;
           return some3(out);
         };
       };
-      traverseReadonlyArrayWithIndex = function(f3) {
-        var g = traverseReadonlyNonEmptyArrayWithIndex(f3);
+      traverseReadonlyArrayWithIndex = function(f4) {
+        var g = traverseReadonlyNonEmptyArrayWithIndex(f4);
         return function(as4) {
           return isNonEmpty(as4) ? g(as4) : ApT;
         };
       };
       traverseArrayWithIndex = traverseReadonlyArrayWithIndex;
-      traverseArray = function(f3) {
+      traverseArray = function(f4) {
         return traverseReadonlyArrayWithIndex(function(_, a) {
-          return f3(a);
+          return f4(a);
         });
       };
       sequenceArray = /* @__PURE__ */ traverseArray(identity);
@@ -2901,14 +2901,14 @@ var show;
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/FromIO.js
   function fromIOK(F) {
-    return function(f3) {
-      return flow(f3, F.fromIO);
+    return function(f4) {
+      return flow(f4, F.fromIO);
     };
   }
   function tapIO(F, M) {
     var chainFirstM = tap(M);
-    return function(self, f3) {
-      return chainFirstM(self, flow(f3, F.fromIO));
+    return function(self, f4) {
+      return chainFirstM(self, flow(f4, F.fromIO));
     };
   }
   var init_FromIO = __esm({
@@ -3055,21 +3055,21 @@ var show;
           return Promise.resolve().then(ma);
         };
       };
-      _map3 = function(fa, f3) {
-        return pipe(fa, map3(f3));
+      _map3 = function(fa, f4) {
+        return pipe(fa, map3(f4));
       };
       _apPar = function(fab, fa) {
         return pipe(fab, ap4(fa));
       };
       _apSeq = function(fab, fa) {
-        return flatMap3(fab, function(f3) {
-          return pipe(fa, map3(f3));
+        return flatMap3(fab, function(f4) {
+          return pipe(fa, map3(f4));
         });
       };
-      map3 = function(f3) {
+      map3 = function(f4) {
         return function(fa) {
           return function() {
-            return Promise.resolve().then(fa).then(f3);
+            return Promise.resolve().then(fa).then(f4);
           };
         };
       };
@@ -3077,8 +3077,8 @@ var show;
         return function(fab) {
           return function() {
             return Promise.all([Promise.resolve().then(fab), Promise.resolve().then(fa)]).then(function(_a) {
-              var f3 = _a[0], a = _a[1];
-              return f3(a);
+              var f4 = _a[0], a = _a[1];
+              return f4(a);
             });
           };
         };
@@ -3088,10 +3088,10 @@ var show;
           return Promise.resolve(a);
         };
       };
-      flatMap3 = /* @__PURE__ */ dual(2, function(ma, f3) {
+      flatMap3 = /* @__PURE__ */ dual(2, function(ma, f4) {
         return function() {
           return Promise.resolve().then(ma).then(function(a) {
-            return f3(a)();
+            return f4(a)();
           });
         };
       });
@@ -3195,54 +3195,54 @@ var show;
       bind4 = /* @__PURE__ */ bind(Chain3);
       apS4 = /* @__PURE__ */ apS(ApplyPar);
       ApT2 = /* @__PURE__ */ of5(emptyReadonlyArray);
-      traverseReadonlyNonEmptyArrayWithIndex2 = function(f3) {
+      traverseReadonlyNonEmptyArrayWithIndex2 = function(f4) {
         return function(as4) {
           return function() {
             return Promise.all(as4.map(function(a, i) {
               return Promise.resolve().then(function() {
-                return f3(i, a)();
+                return f4(i, a)();
               });
             }));
           };
         };
       };
-      traverseReadonlyArrayWithIndex2 = function(f3) {
-        var g = traverseReadonlyNonEmptyArrayWithIndex2(f3);
+      traverseReadonlyArrayWithIndex2 = function(f4) {
+        var g = traverseReadonlyNonEmptyArrayWithIndex2(f4);
         return function(as4) {
           return isNonEmpty(as4) ? g(as4) : ApT2;
         };
       };
-      traverseReadonlyNonEmptyArrayWithIndexSeq = function(f3) {
+      traverseReadonlyNonEmptyArrayWithIndexSeq = function(f4) {
         return function(as4) {
           return function() {
             return tail(as4).reduce(function(acc, a, i) {
               return acc.then(function(bs) {
-                return Promise.resolve().then(f3(i + 1, a)).then(function(b) {
+                return Promise.resolve().then(f4(i + 1, a)).then(function(b) {
                   bs.push(b);
                   return bs;
                 });
               });
-            }, Promise.resolve().then(f3(0, head(as4))).then(singleton));
+            }, Promise.resolve().then(f4(0, head(as4))).then(singleton));
           };
         };
       };
-      traverseReadonlyArrayWithIndexSeq = function(f3) {
-        var g = traverseReadonlyNonEmptyArrayWithIndexSeq(f3);
+      traverseReadonlyArrayWithIndexSeq = function(f4) {
+        var g = traverseReadonlyNonEmptyArrayWithIndexSeq(f4);
         return function(as4) {
           return isNonEmpty(as4) ? g(as4) : ApT2;
         };
       };
       traverseArrayWithIndex2 = traverseReadonlyArrayWithIndex2;
-      traverseArray2 = function(f3) {
+      traverseArray2 = function(f4) {
         return traverseReadonlyArrayWithIndex2(function(_, a) {
-          return f3(a);
+          return f4(a);
         });
       };
       sequenceArray2 = /* @__PURE__ */ traverseArray2(identity);
       traverseSeqArrayWithIndex = traverseReadonlyArrayWithIndexSeq;
-      traverseSeqArray = function(f3) {
+      traverseSeqArray = function(f4) {
         return traverseReadonlyArrayWithIndexSeq(function(_, a) {
-          return f3(a);
+          return f4(a);
         });
       };
       sequenceSeqArray = /* @__PURE__ */ traverseSeqArray(identity);
@@ -3471,9 +3471,9 @@ var show;
       var getSemigroup6 = function(S) {
         return function() {
           return {
-            concat: function(f3, g) {
+            concat: function(f4, g) {
               return function(a) {
-                return S.concat(f3(a), g(a));
+                return S.concat(f4(a), g(a));
               };
             }
           };
@@ -3494,17 +3494,17 @@ var show;
       exports.getMonoid = getMonoid8;
       var getSemiring = function(S) {
         return {
-          add: function(f3, g) {
+          add: function(f4, g) {
             return function(x) {
-              return S.add(f3(x), g(x));
+              return S.add(f4(x), g(x));
             };
           },
           zero: function() {
             return S.zero;
           },
-          mul: function(f3, g) {
+          mul: function(f4, g) {
             return function(x) {
-              return S.mul(f3(x), g(x));
+              return S.mul(f4(x), g(x));
             };
           },
           one: function() {
@@ -3520,17 +3520,17 @@ var show;
           mul: S.mul,
           one: S.one,
           zero: S.zero,
-          sub: function(f3, g) {
+          sub: function(f4, g) {
             return function(x) {
-              return R.sub(f3(x), g(x));
+              return R.sub(f4(x), g(x));
             };
           }
         };
       };
       exports.getRing = getRing;
       var apply2 = function(a) {
-        return function(f3) {
-          return f3(a);
+        return function(f4) {
+          return f4(a);
         };
       };
       exports.apply = apply2;
@@ -3550,17 +3550,17 @@ var show;
       exports.constNull = constant5(null);
       exports.constUndefined = constant5(void 0);
       exports.constVoid = exports.constUndefined;
-      function flip5(f3) {
+      function flip5(f4) {
         return function() {
           var args = [];
           for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
           }
           if (args.length > 1) {
-            return f3(args[1], args[0]);
+            return f4(args[1], args[0]);
           }
           return function(a) {
-            return f3(a)(args[0]);
+            return f4(a)(args[0]);
           };
         };
       }
@@ -3625,19 +3625,19 @@ var show;
         throw new Error("Called `absurd` function which should be uncallable");
       }
       exports.absurd = absurd;
-      function tupled2(f3) {
+      function tupled2(f4) {
         return function(a) {
-          return f3.apply(void 0, a);
+          return f4.apply(void 0, a);
         };
       }
       exports.tupled = tupled2;
-      function untupled(f3) {
+      function untupled(f4) {
         return function() {
           var a = [];
           for (var _i = 0; _i < arguments.length; _i++) {
             a[_i] = arguments[_i];
           }
-          return f3(a);
+          return f4(a);
         };
       }
       exports.untupled = untupled;
@@ -3813,71 +3813,71 @@ var show;
       };
       exports.fromReadonlyNonEmptyArray = fromReadonlyNonEmptyArray3;
       var liftNullable = function(F) {
-        return function(f3, onNullable) {
+        return function(f4, onNullable) {
           return function() {
             var a = [];
             for (var _i = 0; _i < arguments.length; _i++) {
               a[_i] = arguments[_i];
             }
-            var o = f3.apply(void 0, a);
+            var o = f4.apply(void 0, a);
             return F.fromEither(o == null ? (0, exports.left)(onNullable.apply(void 0, a)) : (0, exports.right)(o));
           };
         };
       };
       exports.liftNullable = liftNullable;
       var liftOption = function(F) {
-        return function(f3, onNone) {
+        return function(f4, onNone) {
           return function() {
             var a = [];
             for (var _i = 0; _i < arguments.length; _i++) {
               a[_i] = arguments[_i];
             }
-            var o = f3.apply(void 0, a);
+            var o = f4.apply(void 0, a);
             return F.fromEither((0, exports.isNone)(o) ? (0, exports.left)(onNone.apply(void 0, a)) : (0, exports.right)(o.value));
           };
         };
       };
       exports.liftOption = liftOption;
       var flatMapNullable = function(F, M) {
-        return (0, function_1.dual)(3, function(self, f3, onNullable) {
-          return M.flatMap(self, (0, exports.liftNullable)(F)(f3, onNullable));
+        return (0, function_1.dual)(3, function(self, f4, onNullable) {
+          return M.flatMap(self, (0, exports.liftNullable)(F)(f4, onNullable));
         });
       };
       exports.flatMapNullable = flatMapNullable;
       var flatMapOption = function(F, M) {
-        return (0, function_1.dual)(3, function(self, f3, onNone) {
-          return M.flatMap(self, (0, exports.liftOption)(F)(f3, onNone));
+        return (0, function_1.dual)(3, function(self, f4, onNone) {
+          return M.flatMap(self, (0, exports.liftOption)(F)(f4, onNone));
         });
       };
       exports.flatMapOption = flatMapOption;
       var flatMapEither = function(F, M) {
-        return (0, function_1.dual)(2, function(self, f3) {
+        return (0, function_1.dual)(2, function(self, f4) {
           return M.flatMap(self, function(a) {
-            return F.fromEither(f3(a));
+            return F.fromEither(f4(a));
           });
         });
       };
       exports.flatMapEither = flatMapEither;
       var flatMapIO3 = function(F, M) {
-        return (0, function_1.dual)(2, function(self, f3) {
+        return (0, function_1.dual)(2, function(self, f4) {
           return M.flatMap(self, function(a) {
-            return F.fromIO(f3(a));
+            return F.fromIO(f4(a));
           });
         });
       };
       exports.flatMapIO = flatMapIO3;
       var flatMapTask = function(F, M) {
-        return (0, function_1.dual)(2, function(self, f3) {
+        return (0, function_1.dual)(2, function(self, f4) {
           return M.flatMap(self, function(a) {
-            return F.fromTask(f3(a));
+            return F.fromTask(f4(a));
           });
         });
       };
       exports.flatMapTask = flatMapTask;
       var flatMapReader = function(F, M) {
-        return (0, function_1.dual)(2, function(self, f3) {
+        return (0, function_1.dual)(2, function(self, f4) {
           return M.flatMap(self, function(a) {
-            return F.fromReader(f3(a));
+            return F.fromReader(f4(a));
           });
         });
       };
@@ -3919,11 +3919,11 @@ var show;
         };
       };
       exports.filterSecond = filterSecond;
-      var endo = function(f3) {
+      var endo = function(f4) {
         return function(M) {
           return {
             concat: function(first3, second) {
-              return M.concat(f3(first3), f3(second));
+              return M.concat(f4(first3), f4(second));
             }
           };
         };
@@ -3980,13 +3980,13 @@ var show;
         });
       };
       exports.tuple = tuple2;
-      var contramap_ = function(fa, f3) {
-        return (0, function_1.pipe)(fa, (0, exports.contramap)(f3));
+      var contramap_ = function(fa, f4) {
+        return (0, function_1.pipe)(fa, (0, exports.contramap)(f4));
       };
-      var contramap = function(f3) {
+      var contramap = function(f4) {
         return function(fa) {
           return (0, exports.fromEquals)(function(x, y) {
-            return fa.equals(f3(x), f3(y));
+            return fa.equals(f4(x), f4(y));
           });
         };
       };
@@ -4084,13 +4084,13 @@ var show;
         });
       };
       exports.reverse = reverse6;
-      var contramap_ = function(fa, f3) {
-        return (0, function_1.pipe)(fa, (0, exports.contramap)(f3));
+      var contramap_ = function(fa, f4) {
+        return (0, function_1.pipe)(fa, (0, exports.contramap)(f4));
       };
-      var contramap = function(f3) {
+      var contramap = function(f4) {
         return function(fa) {
           return (0, exports.fromCompare)(function(first3, second) {
-            return fa.compare(f3(first3), f3(second));
+            return fa.compare(f4(first3), f4(second));
           });
         };
       };
@@ -4390,24 +4390,24 @@ var show;
       init_Apply();
       init_Chain();
       URI4 = "Function";
-      map5 = (f3) => (g) => (0, import_function12.flow)(g, f3);
+      map5 = (f4) => (g) => (0, import_function12.flow)(g, f4);
       Functor4 = {
         URI: URI4,
-        map: (f3, g) => map5(g)(f3)
+        map: (f4, g) => map5(g)(f4)
       };
       of6 = import_function12.constant;
-      ap5 = (f3) => (g) => (x) => g(x)(f3(x));
+      ap5 = (f4) => (g) => (x) => g(x)(f4(x));
       Applicative3 = {
         ...Functor4,
         of: of6,
-        ap: (f3, g) => ap5(g)(f3)
+        ap: (f4, g) => ap5(g)(f4)
       };
       apFirst5 = apFirst(Applicative3);
       apSecond5 = apSecond(Applicative3);
-      chain4 = (f3) => (g) => (x) => f3(g(x))(x);
+      chain4 = (f4) => (g) => (x) => f4(g(x))(x);
       Monad4 = {
         ...Applicative3,
-        chain: (f3, g) => chain4(g)(f3)
+        chain: (f4, g) => chain4(g)(f4)
       };
       Do4 = of6({});
       bindTo5 = bindTo(Functor4);
@@ -4415,25 +4415,25 @@ var show;
       apS5 = apS(Applicative3);
       let_5 = let_(Functor4);
       unary = import_function12.tupled;
-      guard4 = (branches) => (fallback) => (input) => (0, import_function12.pipe)(branches, map(([f3, g]) => (0, import_function12.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function12.getMonoid)(getMonoid3((0, import_Semigroup2.first)()))()), (0, import_function12.apply)(input), getOrElse(() => fallback(input)));
-      unless = (f3) => (onFalse) => (x) => f3(x) ? x : onFalse(x);
+      guard4 = (branches) => (fallback) => (input) => (0, import_function12.pipe)(branches, map(([f4, g]) => (0, import_function12.flow)(fromPredicate2(f4), map2(g))), concatAll4((0, import_function12.getMonoid)(getMonoid3((0, import_Semigroup2.first)()))()), (0, import_function12.apply)(input), getOrElse(() => fallback(input)));
+      unless = (f4) => (onFalse) => (x) => f4(x) ? x : onFalse(x);
       when = (0, import_function12.flow)(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
       invokeNullary = (0, import_function12.flip)(invoke)([]);
-      curry2T = (f3) => (a) => (b) => f3([a, b]);
+      curry2T = (f4) => (a) => (b) => f4([a, b]);
       curry2 = (0, import_function12.flow)(unary, curry2T);
-      curry3T = (f3) => (a) => (b) => (c) => f3([a, b, c]);
+      curry3T = (f4) => (a) => (b) => (c) => f4([a, b, c]);
       curry3 = (0, import_function12.flow)(unary, curry3T);
-      curry4T = (f3) => (a) => (b) => (c) => (d) => f3([a, b, c, d]);
+      curry4T = (f4) => (a) => (b) => (c) => (d) => f4([a, b, c, d]);
       curry4 = (0, import_function12.flow)(unary, curry4T);
-      curry5T = (f3) => (a) => (b) => (c) => (d) => (e) => f3([a, b, c, d, e]);
+      curry5T = (f4) => (a) => (b) => (c) => (d) => (e) => f4([a, b, c, d, e]);
       curry5 = (0, import_function12.flow)(unary, curry5T);
       applyEvery = concatAll4(getMonoid4());
     }
   });
 
   // shared/fp.tsx
-  var guard42, async, is;
+  var guard42, PromiseMchain, is;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
@@ -4441,7 +4441,7 @@ var show;
       guard42 = (branches) => guard4(
         branches
       );
-      async = (f3) => async (fa) => f3(await fa);
+      PromiseMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
     }
   });
@@ -4473,7 +4473,7 @@ var show;
         chunksOf3(50),
         map(fetchTracksSpotAPI50),
         (x) => Promise.all(x),
-        async(flatten)
+        PromiseMchain(flatten)
       );
       searchItemSpotAPI = async (q, type) => Spicetify.CosmosAsync.get(
         `https://api.spotify.com/v1/search?q=${encodeURIComponent(
@@ -4494,7 +4494,7 @@ var show;
           trackName
         )}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
         fetch,
-        async(invokeNullary("json"))
+        PromiseMchain(invokeNullary("json"))
       );
     }
   });
@@ -4522,8 +4522,8 @@ var show;
       });
       moveFrom = (from) => (to) => (xs) => from >= xs.length || to >= xs.length ? none2 : from === to ? some3(xs) : (0, import_function14.pipe)(xs, lookup(from), chain2((x) => (0, import_function14.pipe)(deleteAt(from)(xs), chain2(insertAt(to, x)))));
       moveTo = (0, import_function14.flip)(moveFrom);
-      dropRightWhile = (f3) => (0, import_function14.flow)(reverse2, dropLeftWhile(f3), reverse2);
-      takeRightWhile = (f3) => (0, import_function14.flow)(reverse2, takeLeftWhile(f3), reverse2);
+      dropRightWhile = (f4) => (0, import_function14.flow)(reverse2, dropLeftWhile(f4), reverse2);
+      takeRightWhile = (f4) => (0, import_function14.flow)(reverse2, takeLeftWhile(f4), reverse2);
       minimum = (0, import_function14.flow)(import_Semigroup3.min, concatAll3);
       maximum = (0, import_function14.flow)(import_Semigroup3.max, concatAll3);
       fromIterable = Array.from;
@@ -4547,7 +4547,7 @@ var show;
       append5 = (0, import_function15.flip)(prepend4);
       takeLeft3 = (n) => slice(0, (0, import_Ord3.max)(Ord)(0, n));
       takeRight3 = (n) => (x) => slice((0, import_Ord3.max)(Ord)(0, x.length - Math.floor(n)), Infinity)(x);
-      under = (f3) => (0, import_function15.flow)(split(""), f3, join(""));
+      under = (f4) => (0, import_function15.flow)(split(""), f4, join(""));
       reverse5 = under(reverse2);
       lines = split(/\r\n|\r|\n/);
       unlines = join("\n");
@@ -4564,7 +4564,7 @@ var show;
       tail5 = (0, import_function15.flow)(fromPredicate2(not(isEmpty2)), map2(dropLeft3(1)));
       last6 = (0, import_function15.flow)(fromPredicate2(not(isEmpty2)), map2(takeRight3(1)));
       init4 = (0, import_function15.flow)(fromPredicate2(not(isEmpty2)), map2(dropRight2(1)));
-      takeLeftWhile3 = (0, import_function15.flow)((f3) => takeLeftWhile(f3), under);
+      takeLeftWhile3 = (0, import_function15.flow)((f4) => takeLeftWhile(f4), under);
       takeRightWhile2 = (0, import_function15.flow)(takeRightWhile, under);
       isAlpha = test(/^\p{Alpha}+$/u);
       isAlphaNum = test(/^(\p{Alpha}|\p{Number})+$/u);
@@ -4583,7 +4583,7 @@ var show;
   });
 
   // extensions/show-the-genres/artistPage.tsx
-  var import_function16, updateArtistPage, getArtistsGenres;
+  var import_function16, updateArtistPage, getArtistsGenresOrRelated;
   var init_artistPage = __esm({
     "extensions/show-the-genres/artistPage.tsx"() {
       "use strict";
@@ -4604,7 +4604,7 @@ var show;
         const genreContainer2 = document.createElement("div");
         genreContainer2.className = "main-entityHeader-detailsText genre-container";
         genreContainer2.innerHTML = await (0, import_function16.pipe)(
-          await getArtistsGenres([uri]),
+          await getArtistsGenresOrRelated([uri]),
           Array_exports.takeLeft(5),
           Array_exports.map(async (genre) => {
             const uri2 = await fetchSoundOfSpotifyPlaylist(genre);
@@ -4613,8 +4613,8 @@ var show;
             )}</a>`;
           }),
           (x) => Promise.all(x),
-          async(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`)),
-          async(prepend4(`<span>Artist Genres : </span>`))
+          PromiseMchain(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`)),
+          PromiseMchain(prepend4(`<span>Artist Genres : </span>`))
         );
         document.querySelector(".genre-container")?.remove();
         const entityHeaderText = await waitForElement(
@@ -4625,22 +4625,24 @@ var show;
           await waitForElement("span.main-entityHeader-detailsText")
         );
       };
-      getArtistsGenres = async (artistsUris, src = null) => {
-        const rec = async (artistsUris2) => (0, import_function16.pipe)(
-          artistsUris2,
+      getArtistsGenresOrRelated = async (artistsUris, src = null) => {
+        const getArtistsGenres = (0, import_function16.flow)(
           Array_exports.map((uri) => parseUri(uri).id),
           fetchArtistsSpotAPI50,
-          async(Array_exports.flatMap((artist) => artist.genres)),
-          async(Array_exports.uniq(string_exports.Eq))
+          PromiseMchain(Array_exports.flatMap((artist) => artist.genres)),
+          PromiseMchain(Array_exports.uniq(string_exports.Eq))
         );
-        const allGenres = await rec(artistsUris);
+        const allGenres = await getArtistsGenres(artistsUris);
         return allGenres.length ? allGenres : await (0, import_function16.pipe)(
-          await fetchArtistRelatedGQL(artistsUris[0]),
-          Array_exports.map((a) => a.uri),
-          Array_exports.chunksOf(5),
-          Array_exports.reduce(
-            Promise.resolve([]),
-            async (acc, arr5uris) => (await acc).length ? await acc : await rec(arr5uris)
+          artistsUris[0],
+          fetchArtistRelatedGQL,
+          PromiseMchain(Array_exports.map((a) => a.uri)),
+          PromiseMchain(Array_exports.chunksOf(5)),
+          PromiseMchain(
+            Array_exports.reduce(
+              Promise.resolve([]),
+              async (acc, arr5uris) => (await acc).length ? await acc : await getArtistsGenres(arr5uris)
+            )
           )
         );
       };
@@ -5043,7 +5045,7 @@ var show;
             )}</a>`;
           }),
           (x) => Promise.all(x),
-          async(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`))
+          PromiseMchain(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`))
         );
         return genreContainer;
       };
@@ -5072,7 +5074,7 @@ var show;
       };
       updateGenres = async () => {
         const artistUris = getArtistUrisFromCurrentTrack();
-        spotifyGenres = await getArtistsGenres(artistUris);
+        spotifyGenres = await getArtistsGenresOrRelated(artistUris);
         await updateGenresUI(spotifyGenres.slice(0, 5));
       };
       genreContainer = document.createElement("div");

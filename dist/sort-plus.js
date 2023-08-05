@@ -6056,20 +6056,20 @@ var sort;
   });
 
   // shared/fp.tsx
-  var import_Semigroup3, guard42, objConcat2, objConcat, async, is;
+  var import_Semigroup3, guard42, objConcat2, objConcat, PromiseMchain, is;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
+      init_es6();
       init_Function();
       init_Record();
-      init_es6();
       import_Semigroup3 = __toESM(require_Semigroup(), 1);
       guard42 = (branches) => guard4(
         branches
       );
       objConcat2 = () => getUnionSemigroup2((0, import_Semigroup3.first)()).concat;
       objConcat = () => Array_exports.reduce({}, objConcat2());
-      async = (f4) => async (fa) => f4(await fa);
+      PromiseMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
     }
   });
@@ -6103,7 +6103,7 @@ var sort;
         chunksOf3(50),
         map(fetchTracksSpotAPI50),
         (x) => Promise.all(x),
-        async(flatten)
+        PromiseMchain(flatten)
       );
       fetchPlaylistAPI = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
       fetchArtistLikedTracksSP = async (id6) => (await Spicetify.CosmosAsync.get(
@@ -6116,7 +6116,7 @@ var sort;
           trackName
         )}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
         fetch,
-        async(invokeNullary("json"))
+        PromiseMchain(invokeNullary("json"))
       );
     }
   });
@@ -6502,7 +6502,7 @@ var sort;
         )
       ),
       (x) => Promise.all(x),
-      async(Array_exports.flatten)
+      PromiseMchain(Array_exports.flatten)
     );
     const disc = (await fetchArtistGQL(uri)).discography;
     const artistTopTracks = disc.topTracks.items;
@@ -6545,7 +6545,7 @@ var sort;
         await (0, import_function25.pipe)(
           parseUri(uri).id,
           fetchArtistLikedTracksSP,
-          async(Array_exports.map(parseTrackFromArtistLikedTracksSP))
+          PromiseMchain(Array_exports.map(parseTrackFromArtistLikedTracksSP))
         )
       );
     return allTracks;
@@ -6601,15 +6601,15 @@ var sort;
       };
       getPlaylistTracks = (0, import_function25.flow)(
         fetchPlaylistAPI,
-        async(Array_exports.map(parseTrackFromPlaylistAPI))
+        PromiseMchain(Array_exports.map(parseTrackFromPlaylistAPI))
       );
       fetchAPITracksFromTracks = (0, import_function25.flow)(
         Array_exports.map((track) => parseUri(track.uri).id),
         fetchTracksSpotAPI,
-        async(Array_exports.map(parseTrackFromSpotifyAPI))
+        PromiseMchain(Array_exports.map(parseTrackFromSpotifyAPI))
       );
       fetchAlbumTracksFromTracks = (0, import_function25.flow)(
-        groupBy((track) => String(track.albumUri)),
+        groupBy((track) => track.albumUri),
         mapWithIndex3(async (albumUri, tracks) => {
           const albumTracks = await getAlbumTracks(albumUri);
           return Array_exports.filter(
@@ -6618,7 +6618,7 @@ var sort;
         }),
         values,
         (x) => Promise.all(x),
-        async(Array_exports.flatten)
+        PromiseMchain(Array_exports.flatten)
       );
       populateTracksSpot = (propName) => (tracks) => (0, import_function25.pipe)(
         tracks,
@@ -6638,10 +6638,10 @@ var sort;
             (0, import_function25.constant)(fetchAPITracksFromTracks)
           ]
         ])((0, import_function25.constant)(Task_exports.of([])))(propName),
-        async(Array_exports.concat(tracks)),
-        async(groupBy(Lens.fromProp()("uri").get)),
-        async(values),
-        async(Array_exports.map(objConcat()))
+        PromiseMchain(Array_exports.concat(tracks)),
+        PromiseMchain(groupBy(Lens.fromProp()("uri").get)),
+        PromiseMchain(values),
+        PromiseMchain(Array_exports.map(objConcat()))
       );
       populateTrackLastFM = async (track) => {
         const lastfmTrack = (await fetchTrackLFMAPI(
@@ -6673,16 +6673,18 @@ var sort;
         queue = await (0, import_function25.pipe)(
           uri,
           fetchTracks,
-          async(populateTracks(name)),
-          async(Array_exports.filter((0, import_function25.flow)(toProp, Option_exports.isSome))),
-          async(Array_exports.sort(
-            (0, import_function25.pipe)(
-              number_exports.Ord,
-              Ord_exports.contramap((0, import_function25.flow)(toProp, Option_exports.getOrElse((0, import_function25.constant)(-1))))
+          PromiseMchain(populateTracks(name)),
+          PromiseMchain(Array_exports.filter((0, import_function25.flow)(toProp, Option_exports.isSome))),
+          PromiseMchain(
+            Array_exports.sort(
+              (0, import_function25.pipe)(
+                number_exports.Ord,
+                Ord_exports.contramap((0, import_function25.flow)(toProp, Option_exports.getOrElse((0, import_function25.constant)(-1))))
+              )
             )
-          )),
-          async(CONFIG.ascending ? import_function25.identity : Array_exports.reverse),
-          async(Array_exports.append({ uri: "spotify:delimiter" }))
+          ),
+          PromiseMchain(CONFIG.ascending ? import_function25.identity : Array_exports.reverse),
+          PromiseMchain(Array_exports.append({ uri: "spotify:delimiter" }))
         );
         if (queue.length <= 1)
           return Spicetify.showNotification("Data not available");

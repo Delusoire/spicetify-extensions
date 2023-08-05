@@ -3955,7 +3955,7 @@ var vaultify = (() => {
   });
 
   // shared/fp.tsx
-  var guard22, guard32, guard42, async, is;
+  var guard22, guard32, guard42, PromiseMchain, is;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
@@ -3967,7 +3967,7 @@ var vaultify = (() => {
       guard42 = (branches) => guard4(
         branches
       );
-      async = (f4) => async (fa) => f4(await fa);
+      PromiseMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
     }
   });
@@ -3988,7 +3988,7 @@ var vaultify = (() => {
         chunksOf3(50),
         map(fetchTracksSpotAPI50),
         (x) => Promise.all(x),
-        async(flatten)
+        PromiseMchain(flatten)
       );
       fetchPlaylistAPI = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
       createFolder = (name) => Spicetify.Platform.RootlistAPI.createFolder(name);
