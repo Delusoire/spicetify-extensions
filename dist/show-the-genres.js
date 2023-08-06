@@ -3719,7 +3719,7 @@ var show;
       parseUri = (uri) => uri.match(spotUriRe)?.groups;
       escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
       titleCase = (str) => str.replace(/\b\w/g, (l) => l.toUpperCase());
-      normalizeStr = (str) => str.replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase();
+      normalizeStr = (str) => str.replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase().trim();
       waitForElement = (selector, timeout = 1e3, location = document.body) => new Promise((resolve) => {
         if (document.querySelector(selector))
           return resolve(document.querySelector(selector));
@@ -4670,7 +4670,7 @@ var show;
       genrePopup = () => {
         Spicetify.PopupModal.display({
           title: `Genres of "${normalizeStr(
-            Spicetify.Player.data.track?.metadata?.title ?? "undefined"
+            Spicetify.Player.data.track?.metadata?.title
           )}"`,
           //<style>{css}</style>
           content: /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("div", { className: "popup-row" }, /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" })), /* @__PURE__ */ import_react.default.createElement(GenreItem, null), /* @__PURE__ */ import_react.default.createElement(LastFmTagItem, null)),

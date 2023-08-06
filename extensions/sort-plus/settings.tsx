@@ -2,7 +2,6 @@ import { SettingsSection } from "../../shared/settings"
 
 const settings = new SettingsSection("Sort+", "sort-plus")
     .addToggle("ascending", "Ascending", false)
-    .addToggle("artist", "Ascending", false)
     .addToggle("artistTopTracks", "Top Tracks", true)
     .addToggle("artistPopularReleases", "Popular Releases", false)
     .addToggle("artistSingles", "Singles", true)

@@ -36,6 +36,7 @@ export const normalizeStr = (str: string) =>
         .replace(/\[.*\]/g, "")
         .replace(/[^a-zA-Z0-9 ]/g, "")
         .toLowerCase()
+        .trim()
 
 export const waitForElement = (
     selector: string,

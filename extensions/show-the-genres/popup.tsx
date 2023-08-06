@@ -8,7 +8,7 @@ import "./popup.css"
 export const genrePopup = () => {
     Spicetify.PopupModal.display({
         title: `Genres of "${normalizeStr(
-            Spicetify.Player.data.track?.metadata?.title ?? "undefined",
+            Spicetify.Player.data.track?.metadata?.title!,
         )}"`,
         //<style>{css}</style>
         content: (

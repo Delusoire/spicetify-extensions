@@ -3230,7 +3230,7 @@ var search;
       "use strict";
       spotUriRe = /^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$/;
       parseUri = (uri) => uri.match(spotUriRe)?.groups;
-      normalizeStr = (str) => str.replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase();
+      normalizeStr = (str) => str.replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase().trim();
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
   });
