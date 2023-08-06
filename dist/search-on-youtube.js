@@ -3981,7 +3981,7 @@ var search;
         name: track.name,
         playcount: void 0,
         popularity: track.popularity,
-        releaseDate: track.album.release_date,
+        releaseDate: new Date(track.album.release_date).getTime(),
         uri: track.uri
       });
     }

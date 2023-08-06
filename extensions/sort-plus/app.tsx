@@ -1,14 +1,5 @@
 export default {}
-import {
-    array as a,
-    array,
-    number,
-    option as o,
-    ord,
-    refinement,
-    string,
-    task,
-} from "fp-ts"
+import { array as a, number, option as o, ord, task } from "fp-ts"
 import { guard } from "fp-ts-std/Function"
 import { values } from "fp-ts-std/Record"
 import { groupBy } from "fp-ts/NonEmptyArray"
@@ -31,7 +22,7 @@ import {
     fetchTrackLFMAPI,
     fetchTracksSpotAPI,
 } from "../../shared/api"
-import { pMchain, is, objConcat } from "../../shared/fp"
+import { objConcat, pMchain } from "../../shared/fp"
 import {
     TrackData,
     TracksPopulater,
@@ -44,9 +35,6 @@ import {
 } from "../../shared/parse"
 import { SpotifyURI, SpotifyURIType, parseUri } from "../../shared/util"
 import { CONFIG } from "./settings"
-import { test } from "fp-ts-std/String"
-import { sequenceS } from "fp-ts/lib/Apply"
-import { Ord } from "fp-ts/lib/Ord"
 
 export enum SortBy {
     SPOTIFY_PLAYCOUNT = "Spotify - Play Count",
@@ -70,7 +58,7 @@ export enum SortProp {
 
 const getAlbumTracks = async (uri: SpotifyURI) => {
     const albumRes = await fetchAlbumGQL(uri)
-    const releaseDate = albumRes.date.isoString.split("T")[0]
+    const releaseDate = new Date(albumRes.date.isoString).getTime()
 
     return p(
         albumRes.tracks.items,
@@ -199,15 +187,7 @@ const populateTracksSpot =
                     startsWith(SortBy.SPOTIFY_PLAYCOUNT),
                     constant(fetchAlbumTracksFromTracks),
                 ],
-                [
-                    test(
-                        new RegExp(
-                            `/^(?:${SortBy.SPOTIFY_POPULARITY})(?:${SortBy.SPOTIFY_RELEASEDATE})/`,
-                        ),
-                    ),
-                    constant(fetchAPITracksFromTracks),
-                ],
-            ])(constant(task.of([])))(propName),
+            ])(constant(fetchAPITracksFromTracks))(propName),
             pMchain(a.concat(tracks)),
             pMchain(groupBy(Lens.fromProp<TrackData>()("uri").get)),
             pMchain(values<TrackData[]>),
@@ -268,13 +248,10 @@ export const sortByProp =
             pMchain(
                 o.map(
                     a.sort(
-                        prop === SortProp[SortBy.SPOTIFY_RELEASEDATE]
-                            ? ord.contramap(
-                                  (x: Required<TrackData>) => x[prop],
-                              )(string.Ord)
-                            : ord.contramap(
-                                  (x: Required<TrackData>) => x[prop],
-                              )(number.Ord),
+                        p(
+                            number.Ord,
+                            ord.contramap((x: Required<TrackData>) => x[prop]),
+                        ),
                     ),
                 ),
             ),
@@ -317,7 +294,7 @@ new Spicetify.ContextMenu.SubMenu(
     "Sort by",
     a.zipWith(
         values(SortBy),
-        ["play", "heart", "volume", "artist", "subtitles"],
+        ["play", "heart", "list-view", "volume", "artist", "subtitles"],
         createSortByPropSubmenu,
     ),
     showAlways,

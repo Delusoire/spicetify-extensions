@@ -10,7 +10,7 @@ export type TrackData = {
     name: string
     playcount?: number
     popularity?: number
-    releaseDate?: string
+    releaseDate?: number
     uri: SpotifyURI
     lastfmPlaycount?: number
     scrobbles?: number
@@ -57,7 +57,7 @@ export const parseTrackFromArtistLikedTracksSP = (track: UnparsedTrack) => ({
     name: track.name,
     playcount: undefined,
     popularity: track.popularity,
-    releaseDate: track.album.year,
+    releaseDate: new Date(track.album.year).getTime(),
     uri: track.link,
 })
 
@@ -97,6 +97,6 @@ export const parseTrackFromSpotifyAPI = (track: SpotApiTrack) => ({
     name: track.name,
     playcount: undefined,
     popularity: track.popularity,
-    releaseDate: track.album.release_date,
+    releaseDate: new Date(track.album.release_date).getTime(),
     uri: track.uri,
 })
