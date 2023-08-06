@@ -3,7 +3,6 @@ import React, { useState } from "react"
 import ReactDOM from "react-dom"
 import { guard4, is } from "./fp"
 import { sleep } from "./util"
-import { flow as f } from "fp-ts/function"
 
 export class SettingsSection {
     private stopHistoryListener: any
@@ -39,7 +38,8 @@ export class SettingsSection {
         new Proxy(
             {},
             {
-                get: (target, prop) => this.getFieldValue(prop.toString()),
+                get: (target, prop) =>
+                    SettingsSection.getFieldValue(this.getId(prop.toString())),
             },
         )
 
@@ -107,7 +107,7 @@ export class SettingsSection {
     ) => {
         const id = this.getId(nameId)
 
-        this.setDefaultFieldValue(id, defaultValue)
+        SettingsSection.setDefaultFieldValue(id, defaultValue)
 
         events.onChange = onChange
         this.sectionFields[nameId] = {
@@ -129,7 +129,7 @@ export class SettingsSection {
     ) => {
         const id = this.getId(nameId)
 
-        this.setDefaultFieldValue(id, defaultValue)
+        SettingsSection.setDefaultFieldValue(id, defaultValue)
 
         events.onChange = onChange
         this.sectionFields[nameId] = {
@@ -153,7 +153,7 @@ export class SettingsSection {
     ) => {
         const id = this.getId(nameId)
 
-        this.setDefaultFieldValue(id, defaultValue)
+        SettingsSection.setDefaultFieldValue(id, defaultValue)
 
         events.onChange = onChange
         this.sectionFields[nameId] = {
@@ -169,7 +169,7 @@ export class SettingsSection {
     addHidden = (nameId: string, defaultValue: any) => {
         const id = this.getId(nameId)
 
-        this.setDefaultFieldValue(id, defaultValue)
+        SettingsSection.setDefaultFieldValue(id, defaultValue)
 
         this.sectionFields[nameId] = {
             id,
@@ -182,30 +182,32 @@ export class SettingsSection {
     getId = (nameId: string) => `extensions:${this.sectionId}:${nameId}`
 
     private useStateFor = <A,>(id: string) => {
-        const [value, setValueState] = useState(this.getFieldValue<A>(id))
+        const [value, setValueState] = useState(
+            SettingsSection.getFieldValue<A>(id),
+        )
 
         return [
             value,
             (newValue: A) => {
                 if (newValue !== undefined) {
                     setValueState(newValue)
-                    this.setFieldValue(id!, newValue)
+                    SettingsSection.setFieldValue(id!, newValue)
                 }
             },
         ] as [A, (newValue: A) => void]
     }
 
-    getFieldValue = <R,>(id: string): R => {
-        return JSON.parse(Spicetify.LocalStorage.get(id) ?? "{}")?.value
+    static getFieldValue = <R,>(id: string): R => {
+        return JSON.parse(Spicetify.LocalStorage.get(id) ?? "{}")
     }
 
-    setFieldValue = (id: string, newValue: any) => {
-        Spicetify.LocalStorage.set(id, JSON.stringify({ value: newValue }))
+    static setFieldValue = (id: string, newValue: any) => {
+        Spicetify.LocalStorage.set(id, JSON.stringify(newValue))
     }
 
-    private setDefaultFieldValue = (id: string, defaultValue: any) => {
-        if (this.getFieldValue(id) === undefined)
-            this.setFieldValue(id, defaultValue)
+    private static setDefaultFieldValue = (id: string, defaultValue: any) => {
+        if (SettingsSection.getFieldValue(id) === undefined)
+            SettingsSection.setFieldValue(id, defaultValue)
     }
 
     private FieldsContainer = () => {
@@ -287,7 +289,7 @@ export class SettingsSection {
                     id={field.id}
                     className="x-toggle-input"
                     type="checkbox"
-                    checked={this.getFieldValue(field.id)}
+                    checked={SettingsSection.getFieldValue(field.id)}
                     {...field.events}
                     onChange={e => {
                         setValue(e.currentTarget.checked)
@@ -309,7 +311,7 @@ export class SettingsSection {
                 className="x-settings-input"
                 id={field.id}
                 dir="ltr"
-                value={this.getFieldValue(field.id)}
+                value={SettingsSection.getFieldValue(field.id)}
                 type={field.inputType}
                 {...field.events}
                 onChange={e => {
@@ -334,7 +336,7 @@ export class SettingsSection {
             >
                 {field.options.map((option, i) => (
                     <option
-                        selected={i === this.getFieldValue(field.id)}
+                        selected={i === SettingsSection.getFieldValue(field.id)}
                         value={i + 1}
                     >
                         {option}

@@ -6215,7 +6215,7 @@ var sort;
       import_react_dom = __toESM(require_react_dom(), 1);
       init_fp();
       init_util();
-      SettingsSection = class {
+      SettingsSection = class _SettingsSection {
         constructor(name, sectionId, sectionFields = {}) {
           this.name = name;
           this.sectionId = sectionId;
@@ -6245,7 +6245,7 @@ var sort;
         toObject = () => new Proxy(
           {},
           {
-            get: (target, prop2) => this.getFieldValue(prop2.toString())
+            get: (target, prop2) => _SettingsSection.getFieldValue(this.getId(prop2.toString()))
           }
         );
         rerender = () => {
@@ -6288,7 +6288,7 @@ var sort;
         };
         addToggle = (nameId, description, defaultValue, onChange = import_function24.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
-          this.setDefaultFieldValue(id6, defaultValue);
+          _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
           this.sectionFields[nameId] = {
             id: id6,
@@ -6300,7 +6300,7 @@ var sort;
         };
         addInput = (nameId, description, defaultValue, onChange = import_function24.constVoid, inputType = "text", events = {}) => {
           const id6 = this.getId(nameId);
-          this.setDefaultFieldValue(id6, defaultValue);
+          _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
           this.sectionFields[nameId] = {
             id: id6,
@@ -6313,7 +6313,7 @@ var sort;
         };
         addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function24.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
-          this.setDefaultFieldValue(id6, defaultValue);
+          _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
           this.sectionFields[nameId] = {
             id: id6,
@@ -6326,7 +6326,7 @@ var sort;
         };
         addHidden = (nameId, defaultValue) => {
           const id6 = this.getId(nameId);
-          this.setDefaultFieldValue(id6, defaultValue);
+          _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           this.sectionFields[nameId] = {
             id: id6,
             type: "hidden" /* HIDDEN */,
@@ -6336,26 +6336,28 @@ var sort;
         };
         getId = (nameId) => `extensions:${this.sectionId}:${nameId}`;
         useStateFor = (id6) => {
-          const [value, setValueState] = (0, import_react.useState)(this.getFieldValue(id6));
+          const [value, setValueState] = (0, import_react.useState)(
+            _SettingsSection.getFieldValue(id6)
+          );
           return [
             value,
             (newValue) => {
               if (newValue !== void 0) {
                 setValueState(newValue);
-                this.setFieldValue(id6, newValue);
+                _SettingsSection.setFieldValue(id6, newValue);
               }
             }
           ];
         };
-        getFieldValue = (id6) => {
-          return JSON.parse(Spicetify.LocalStorage.get(id6) ?? "{}")?.value;
+        static getFieldValue = (id6) => {
+          return JSON.parse(Spicetify.LocalStorage.get(id6) ?? "{}");
         };
-        setFieldValue = (id6, newValue) => {
-          Spicetify.LocalStorage.set(id6, JSON.stringify({ value: newValue }));
+        static setFieldValue = (id6, newValue) => {
+          Spicetify.LocalStorage.set(id6, JSON.stringify(newValue));
         };
-        setDefaultFieldValue = (id6, defaultValue) => {
-          if (this.getFieldValue(id6) === void 0)
-            this.setFieldValue(id6, defaultValue);
+        static setDefaultFieldValue = (id6, defaultValue) => {
+          if (_SettingsSection.getFieldValue(id6) === void 0)
+            _SettingsSection.setFieldValue(id6, defaultValue);
         };
         FieldsContainer = () => {
           const [rerender, setRerender] = (0, import_react.useState)(0);
@@ -6411,7 +6413,7 @@ var sort;
               id: field.id,
               className: "x-toggle-input",
               type: "checkbox",
-              checked: this.getFieldValue(field.id),
+              checked: _SettingsSection.getFieldValue(field.id),
               ...field.events,
               onChange: (e) => {
                 setValue(e.currentTarget.checked);
@@ -6428,7 +6430,7 @@ var sort;
               className: "x-settings-input",
               id: field.id,
               dir: "ltr",
-              value: this.getFieldValue(field.id),
+              value: _SettingsSection.getFieldValue(field.id),
               type: field.inputType,
               ...field.events,
               onChange: (e) => {
@@ -6454,7 +6456,7 @@ var sort;
             field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement(
               "option",
               {
-                selected: i === this.getFieldValue(field.id),
+                selected: i === _SettingsSection.getFieldValue(field.id),
                 value: i + 1
               },
               option2
@@ -6565,8 +6567,8 @@ var sort;
       init_api();
       init_fp();
       init_parse();
-      init_settings2();
       init_util();
+      init_settings2();
       app_default = {};
       SortBy = /* @__PURE__ */ ((SortBy2) => {
         SortBy2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
@@ -6683,6 +6685,7 @@ var sort;
               )
             )
           ),
+          (x) => x,
           PromiseMchain(CONFIG.ascending ? import_function25.identity : Array_exports.reverse),
           PromiseMchain(Array_exports.append({ uri: "spotify:delimiter" }))
         );

@@ -33,8 +33,8 @@ import {
     parseTrackFromPlaylistAPI,
     parseTrackFromSpotifyAPI,
 } from "../../shared/parse"
-import { CONFIG } from "./settings"
 import { SpotifyURI, SpotifyURIType, parseUri } from "../../shared/util"
+import { CONFIG } from "./settings"
 
 export enum SortBy {
     SPOTIFY_PLAYCOUNT = "Spotify - Play Count",
@@ -247,6 +247,7 @@ export const sortByProp =
                     ),
                 ),
             ),
+            x => x,
             PromiseMchain(CONFIG.ascending ? identity : a.reverse),
             PromiseMchain(a.append({ uri: "spotify:delimiter" } as TrackData)),
         )

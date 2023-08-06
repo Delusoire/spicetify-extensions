@@ -4744,7 +4744,7 @@ var show;
       import_react_dom = __toESM(require_react_dom(), 1);
       init_fp();
       init_util();
-      SettingsSection = class {
+      SettingsSection = class _SettingsSection {
         constructor(name, sectionId, sectionFields = {}) {
           this.name = name;
           this.sectionId = sectionId;
@@ -4774,7 +4774,7 @@ var show;
         toObject = () => new Proxy(
           {},
           {
-            get: (target, prop) => this.getFieldValue(prop.toString())
+            get: (target, prop) => _SettingsSection.getFieldValue(this.getId(prop.toString()))
           }
         );
         rerender = () => {
@@ -4817,7 +4817,7 @@ var show;
         };
         addToggle = (nameId, description, defaultValue, onChange = import_function17.constVoid, events = {}) => {
           const id = this.getId(nameId);
-          this.setDefaultFieldValue(id, defaultValue);
+          _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
           this.sectionFields[nameId] = {
             id,
@@ -4829,7 +4829,7 @@ var show;
         };
         addInput = (nameId, description, defaultValue, onChange = import_function17.constVoid, inputType = "text", events = {}) => {
           const id = this.getId(nameId);
-          this.setDefaultFieldValue(id, defaultValue);
+          _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
           this.sectionFields[nameId] = {
             id,
@@ -4842,7 +4842,7 @@ var show;
         };
         addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function17.constVoid, events = {}) => {
           const id = this.getId(nameId);
-          this.setDefaultFieldValue(id, defaultValue);
+          _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
           this.sectionFields[nameId] = {
             id,
@@ -4855,7 +4855,7 @@ var show;
         };
         addHidden = (nameId, defaultValue) => {
           const id = this.getId(nameId);
-          this.setDefaultFieldValue(id, defaultValue);
+          _SettingsSection.setDefaultFieldValue(id, defaultValue);
           this.sectionFields[nameId] = {
             id,
             type: "hidden" /* HIDDEN */,
@@ -4865,26 +4865,28 @@ var show;
         };
         getId = (nameId) => `extensions:${this.sectionId}:${nameId}`;
         useStateFor = (id) => {
-          const [value, setValueState] = (0, import_react2.useState)(this.getFieldValue(id));
+          const [value, setValueState] = (0, import_react2.useState)(
+            _SettingsSection.getFieldValue(id)
+          );
           return [
             value,
             (newValue) => {
               if (newValue !== void 0) {
                 setValueState(newValue);
-                this.setFieldValue(id, newValue);
+                _SettingsSection.setFieldValue(id, newValue);
               }
             }
           ];
         };
-        getFieldValue = (id) => {
-          return JSON.parse(Spicetify.LocalStorage.get(id) ?? "{}")?.value;
+        static getFieldValue = (id) => {
+          return JSON.parse(Spicetify.LocalStorage.get(id) ?? "{}");
         };
-        setFieldValue = (id, newValue) => {
-          Spicetify.LocalStorage.set(id, JSON.stringify({ value: newValue }));
+        static setFieldValue = (id, newValue) => {
+          Spicetify.LocalStorage.set(id, JSON.stringify(newValue));
         };
-        setDefaultFieldValue = (id, defaultValue) => {
-          if (this.getFieldValue(id) === void 0)
-            this.setFieldValue(id, defaultValue);
+        static setDefaultFieldValue = (id, defaultValue) => {
+          if (_SettingsSection.getFieldValue(id) === void 0)
+            _SettingsSection.setFieldValue(id, defaultValue);
         };
         FieldsContainer = () => {
           const [rerender, setRerender] = (0, import_react2.useState)(0);
@@ -4940,7 +4942,7 @@ var show;
               id: field.id,
               className: "x-toggle-input",
               type: "checkbox",
-              checked: this.getFieldValue(field.id),
+              checked: _SettingsSection.getFieldValue(field.id),
               ...field.events,
               onChange: (e) => {
                 setValue(e.currentTarget.checked);
@@ -4957,7 +4959,7 @@ var show;
               className: "x-settings-input",
               id: field.id,
               dir: "ltr",
-              value: this.getFieldValue(field.id),
+              value: _SettingsSection.getFieldValue(field.id),
               type: field.inputType,
               ...field.events,
               onChange: (e) => {
@@ -4983,7 +4985,7 @@ var show;
             field.options.map((option2, i) => /* @__PURE__ */ import_react2.default.createElement(
               "option",
               {
-                selected: i === this.getFieldValue(field.id),
+                selected: i === _SettingsSection.getFieldValue(field.id),
                 value: i + 1
               },
               option2

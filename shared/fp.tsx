@@ -91,3 +91,10 @@ export const is =
     <B extends A>(a: A[typeof c]) =>
     (field: A): field is B =>
         field[c] === a
+
+export const tapAny =
+    <A,>(f: (a: A) => void) =>
+    (fa: A) => {
+        f(fa)
+        return fa
+    }
