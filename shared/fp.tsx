@@ -1,4 +1,5 @@
 import { array as a } from "fp-ts"
+import { flow as f } from "fp-ts/function"
 import { guard } from "fp-ts-std/Function"
 import { getUnionSemigroup } from "fp-ts/Record"
 import { Refinement } from "fp-ts/Refinement"
@@ -81,7 +82,7 @@ type async = {
     <A, B>(f: (a: A) => Promise<B>): (fa: Promise<A>) => Promise<B>
     <A, B>(f: (a: A) => B): (fa: Promise<A>) => Promise<B>
 }
-export const PromiseMchain: async =
+export const pMchain: async =
     <A, R>(f: (a: A) => R) =>
     async (fa: A) =>
         f(await fa)
@@ -98,3 +99,8 @@ export const tapAny =
         f(fa)
         return fa
     }
+
+export const chunckify =
+    (n: number) =>
+    <A, R>(g: (a: A[]) => Promise<R[]>) =>
+        f(a.chunksOf(n)<A>, a.map(g), x => Promise.all(x), pMchain(a.flatten))

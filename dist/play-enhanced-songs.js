@@ -3134,31 +3134,33 @@ var play;
   });
 
   // shared/fp.tsx
-  var PromiseMchain;
+  var import_function8, pMchain, chunckify;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
-      PromiseMchain = (f3) => async (fa) => f3(await fa);
+      init_es6();
+      import_function8 = __toESM(require_function(), 1);
+      pMchain = (f3) => async (fa) => f3(await fa);
+      chunckify = (n) => (g) => (0, import_function8.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
     }
   });
 
   // shared/api.tsx
-  var import_function8, fetchTracksSpotAPI50, fetchTracksSpotAPI, fetchPlaylistEnhancedSongs100, fetchPlaylistEnhancedSongs;
+  var fetchArtistsSpotAPI, fetchTracksSpotAPI, fetchPlaylistEnhancedSongs100, fetchPlaylistEnhancedSongs;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
-      init_Array();
-      import_function8 = __toESM(require_function(), 1);
       init_fp();
       init_util();
-      fetchTracksSpotAPI50 = async (ids) => (await Spicetify.CosmosAsync.get(
-        `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-      )).tracks;
-      fetchTracksSpotAPI = (0, import_function8.flow)(
-        chunksOf3(50),
-        map(fetchTracksSpotAPI50),
-        (x) => Promise.all(x),
-        PromiseMchain(flatten)
+      fetchArtistsSpotAPI = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(
+          `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`
+        )).artists
+      );
+      fetchTracksSpotAPI = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(
+          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
+        )).tracks
       );
       fetchPlaylistEnhancedSongs100 = async (uri, offset = 0) => (await Spicetify.CosmosAsync.get(
         `https://spclient.wg.spotify.com/enhanced-view/v1/context/${uri}?&offset=${offset}&format=json`

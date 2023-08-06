@@ -1,7 +1,6 @@
 import { invokeNullary } from "fp-ts-std/Function"
-import { chunksOf, flatten, map } from "fp-ts/Array"
-import { flow as f, pipe as p } from "fp-ts/function"
-import { PromiseMchain as as, PromiseMchain } from "./fp"
+import { pipe as p } from "fp-ts/function"
+import { pMchain as as, chunckify } from "./fp"
 import { SpotifyID, SpotifyURI, escapeRegex } from "./util"
 
 /*                          GraphQL                                           */
@@ -41,25 +40,22 @@ export const fetchArtistRelatedGQL = async (uri: SpotifyURI) =>
 
 /*                          Spotify Web API                                   */
 
-export const fetchArtistsSpotAPI50 = async (ids: SpotifyID[]) =>
-    (
-        await Spicetify.CosmosAsync.get(
-            `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`,
-        )
-    ).artists as fetchArtistsSpotAPI50Res
+export const fetchArtistsSpotAPI = chunckify(50)(
+    async (ids: SpotifyID[]) =>
+        (
+            await Spicetify.CosmosAsync.get(
+                `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`,
+            )
+        ).artists as SpotApiArtist[],
+)
 
-export type fetchTracksSpotAPI50Res = any[]
-export const fetchTracksSpotAPI50 = async (ids: SpotifyID[]) =>
-    (
-        await Spicetify.CosmosAsync.get(
-            `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`,
-        )
-    ).tracks as fetchTracksSpotAPI50Res
-export const fetchTracksSpotAPI = f(
-    chunksOf(50)<SpotifyID>,
-    map(fetchTracksSpotAPI50),
-    x => Promise.all(x),
-    PromiseMchain(flatten<fetchTracksSpotAPI50Res>),
+export const fetchTracksSpotAPI = chunckify(50)(
+    async (ids: SpotifyID[]) =>
+        (
+            await Spicetify.CosmosAsync.get(
+                `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`,
+            )
+        ).tracks as SpotApiTrack[],
 )
 
 export const searchItemSpotAPI = async (q: string, type: string[]) =>
@@ -81,7 +77,6 @@ export const fetchSoundOfSpotifyPlaylist = async (genre: string) => {
 
 /*                          Platform                                          */
 
-export type fetchPlaylistAPIRes = any[]
 export const fetchPlaylistAPI = async (uri: SpotifyURI) =>
     (await Spicetify.Platform.PlaylistAPI.getContents(uri))
         .items as fetchPlaylistAPIRes
@@ -171,7 +166,7 @@ export const searchYoutube = async (
 /*                          Types                                             */
 
 export interface fetchAlbumGQLRes {
-    __typename: string
+    __typename: "album"
     uri: SpotifyURI
     name: string
     artists: {
@@ -184,11 +179,7 @@ export interface fetchAlbumGQLRes {
             }
             visuals: {
                 avatarImage: {
-                    sources: Array<{
-                        url: string
-                        width: number
-                        height: number
-                    }>
+                    sources: SpotApiImage[]
                 }
             }
             sharingInfo: {
@@ -208,11 +199,7 @@ export interface fetchAlbumGQLRes {
                 hex: string
             }
         }
-        sources: Array<{
-            url: string
-            width: number
-            height: number
-        }>
+        sources: SpotApiImage[]
     }
     discs: {
         totalCount: number
@@ -297,11 +284,7 @@ export interface fetchAlbumGQLRes {
                             year: number
                         }
                         coverArt: {
-                            sources: Array<{
-                                url: string
-                                width: number
-                                height: number
-                            }>
+                            sources: SpotApiImage[]
                         }
                         playability: {
                             playable: boolean
@@ -327,35 +310,57 @@ export type fetchArtistRelatedGQLRes = Array<{
     }
     visuals: {
         avatarImage: {
-            sources: Array<{
-                url: string
-                width: number
-                height: number
-            }>
+            sources: SpotApiImage[]
         }
     }
 }>
 
-export type fetchArtistsSpotAPI50Res = Array<{
-    external_urls: {
-        spotify: string
+export type fetchPlaylistAPIRes = Array<{
+    uid: string
+    playIndex: null
+    addedAt: string
+    addedBy: {
+        type: string
+        uri: SpotifyURI
+        username: string
+        displayName: string
+        images: Array<{
+            url: string
+            label: "small" | "standard" | "large" | "xlarge"
+        }>
     }
-    followers: {
-        href: null
-        total: number
-    }
-    genres: string[]
-    href: string
-    id: string
-    images: {
-        height: number
-        url: string
-        width: number
-    }[]
+    formatListAttributes: {}
+    type: "track"
+    uri: string
     name: string
-    popularity: number
-    type: string
-    uri: SpotifyURI
+    album: {
+        type: "album"
+        uri: string
+        name: string
+        artist: {
+            type: "artist"
+            uri: string
+            name: string
+        }
+        images: Array<{
+            url: string
+            label: "small" | "standard" | "large" | "xlarge"
+        }>
+    }
+    artists: Array<{
+        type: "artist"
+        uri: string
+        name: string
+    }>
+    discNumber: number
+    trackNumber: number
+    duration: {
+        milliseconds: number
+    }
+    isExplicit: boolean
+    isLocal: boolean
+    isPlayable: boolean
+    is19PlusOnly: boolean
 }>
 
 export interface fetchTrackLFMAPIRes {
@@ -402,4 +407,98 @@ export interface fetchTrackLFMAPIRes {
             content: string
         }
     }
+}
+
+export interface SpotApiTrack {
+    album: SpotApiAlbum
+    artists: SpotApiArtist[]
+    available_markets: string[]
+    disc_number: number
+    duration_ms: number
+    explicit: boolean
+    external_ids: SpotApiEIDs
+    external_urls: SpotApiEUrls
+    href: string
+    id: string
+    is_playable: boolean
+    linked_from: {}
+    restrictions: SpotApiRestrictions
+    name: string
+    popularity: number
+    preview_url: string
+    track_number: number
+    type: string
+    uri: string
+    is_local: boolean
+}
+
+export interface SpotApiArtist {
+    external_urls: SpotApiEUrls
+    followers: SpotApiFollowers
+    genres: string[]
+    href: string
+    id: string
+    images: SpotApiImage[]
+    name: string
+    popularity: number
+    type: string
+    uri: string
+}
+
+export interface SpotApiAlbum {
+    album_type: string
+    total_tracks: number
+    available_markets: string[]
+    external_urls: SpotApiEUrls
+    href: string
+    id: string
+    images: SpotApiImage[]
+    name: string
+    release_date: string
+    release_date_precision: string
+    restrictions: SpotApiRestrictions
+    type: string
+    uri: string
+    copyrights: Array<{
+        text: string
+        type: string
+    }>
+    external_ids: SpotApiEIDs
+    genres: string[]
+    label: string
+    popularity: number
+    album_group: string
+    artists: Array<{
+        external_urls: SpotApiEUrls
+        href: string
+        id: string
+        name: string
+        type: string
+        uri: string
+    }>
+}
+
+export interface SpotApiEUrls {
+    spotify: string
+}
+
+export interface SpotApiEIDs {
+    isrc: string
+    ean: string
+    upc: string
+}
+
+export interface SpotApiImage {
+    url: string
+    width: number
+    height: number
+}
+
+export interface SpotApiRestrictions {
+    reason: string
+}
+
+export interface SpotApiFollowers {
+    href: string
+    total: number
 }

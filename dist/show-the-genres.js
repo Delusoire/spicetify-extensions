@@ -4433,27 +4433,29 @@ var show;
   });
 
   // shared/fp.tsx
-  var guard42, PromiseMchain, is;
+  var import_function13, guard42, pMchain, is, chunckify;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
+      init_es6();
+      import_function13 = __toESM(require_function(), 1);
       init_Function();
       guard42 = (branches) => guard4(
         branches
       );
-      PromiseMchain = (f4) => async (fa) => f4(await fa);
+      pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
+      chunckify = (n) => (g) => (0, import_function13.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
     }
   });
 
   // shared/api.tsx
-  var import_function13, fetchArtistRelatedGQL, fetchArtistsSpotAPI50, fetchTracksSpotAPI50, fetchTracksSpotAPI, searchItemSpotAPI, fetchSoundOfSpotifyPlaylist, fetchTrackLFMAPI;
+  var import_function14, fetchArtistRelatedGQL, fetchArtistsSpotAPI, fetchTracksSpotAPI, searchItemSpotAPI, fetchSoundOfSpotifyPlaylist, fetchTrackLFMAPI;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_Function();
-      init_Array();
-      import_function13 = __toESM(require_function(), 1);
+      import_function14 = __toESM(require_function(), 1);
       init_fp();
       init_util();
       fetchArtistRelatedGQL = async (uri) => (await Spicetify.GraphQL.Request(
@@ -4463,17 +4465,15 @@ var show;
           locale: Spicetify.Locale.getLocale()
         }
       )).data.artistUnion.relatedContent.relatedArtists.items;
-      fetchArtistsSpotAPI50 = async (ids) => (await Spicetify.CosmosAsync.get(
-        `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`
-      )).artists;
-      fetchTracksSpotAPI50 = async (ids) => (await Spicetify.CosmosAsync.get(
-        `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-      )).tracks;
-      fetchTracksSpotAPI = (0, import_function13.flow)(
-        chunksOf3(50),
-        map(fetchTracksSpotAPI50),
-        (x) => Promise.all(x),
-        PromiseMchain(flatten)
+      fetchArtistsSpotAPI = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(
+          `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`
+        )).artists
+      );
+      fetchTracksSpotAPI = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(
+          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
+        )).tracks
       );
       searchItemSpotAPI = async (q, type) => Spicetify.CosmosAsync.get(
         `https://api.spotify.com/v1/search?q=${encodeURIComponent(
@@ -4487,23 +4487,23 @@ var show;
         const item = res.playlists.items[0];
         return item?.owner.id === "thesoundsofspotify" && re.test(item.name) ? item.uri : null;
       };
-      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function13.pipe)(
+      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function14.pipe)(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
           artist
         )}&track=${encodeURIComponent(
           trackName
         )}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
         fetch,
-        PromiseMchain(invokeNullary("json"))
+        pMchain(invokeNullary("json"))
       );
     }
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/ReadonlyArray.js
-  var import_function14, import_Semigroup3, none3, join, sum, product, median, moveFrom, moveTo, dropRightWhile, takeRightWhile, minimum, maximum, fromIterable;
+  var import_function15, import_Semigroup3, none3, join, sum, product, median, moveFrom, moveTo, dropRightWhile, takeRightWhile, minimum, maximum, fromIterable;
   var init_ReadonlyArray2 = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/ReadonlyArray.js"() {
-      import_function14 = __toESM(require_function());
+      import_function15 = __toESM(require_function());
       init_Predicate();
       init_number();
       init_ReadonlyNonEmptyArray();
@@ -4512,29 +4512,29 @@ var show;
       init_Monoid();
       import_Semigroup3 = __toESM(require_Semigroup());
       init_Function();
-      none3 = (0, import_function14.flow)(not, (p4) => every(p4));
+      none3 = (0, import_function15.flow)(not, (p4) => every(p4));
       join = (x) => invoke("join")([x]);
       sum = concatAll4(MonoidSum);
       product = concatAll4(MonoidProduct);
-      median = (0, import_function14.flow)(sort(Ord), (xs) => {
+      median = (0, import_function15.flow)(sort(Ord), (xs) => {
         const i = xs.length / 2;
         return i % 1 === 0 ? (xs[i - 1] + xs[i]) / 2 : xs[Math.floor(i)];
       });
-      moveFrom = (from) => (to) => (xs) => from >= xs.length || to >= xs.length ? none2 : from === to ? some3(xs) : (0, import_function14.pipe)(xs, lookup(from), chain2((x) => (0, import_function14.pipe)(deleteAt(from)(xs), chain2(insertAt(to, x)))));
-      moveTo = (0, import_function14.flip)(moveFrom);
-      dropRightWhile = (f4) => (0, import_function14.flow)(reverse2, dropLeftWhile(f4), reverse2);
-      takeRightWhile = (f4) => (0, import_function14.flow)(reverse2, takeLeftWhile(f4), reverse2);
-      minimum = (0, import_function14.flow)(import_Semigroup3.min, concatAll3);
-      maximum = (0, import_function14.flow)(import_Semigroup3.max, concatAll3);
+      moveFrom = (from) => (to) => (xs) => from >= xs.length || to >= xs.length ? none2 : from === to ? some3(xs) : (0, import_function15.pipe)(xs, lookup(from), chain2((x) => (0, import_function15.pipe)(deleteAt(from)(xs), chain2(insertAt(to, x)))));
+      moveTo = (0, import_function15.flip)(moveFrom);
+      dropRightWhile = (f4) => (0, import_function15.flow)(reverse2, dropLeftWhile(f4), reverse2);
+      takeRightWhile = (f4) => (0, import_function15.flow)(reverse2, takeLeftWhile(f4), reverse2);
+      minimum = (0, import_function15.flow)(import_Semigroup3.min, concatAll3);
+      maximum = (0, import_function15.flow)(import_Semigroup3.max, concatAll3);
       fromIterable = Array.from;
     }
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/String.js
-  var import_function15, import_Ord3, prepend4, append5, takeLeft3, takeRight3, under, reverse5, lines, unlines, test, dropLeft3, dropRight2, dropRightWhile2, head6, tail5, last6, init4, takeLeftWhile3, takeRightWhile2, isAlpha, isAlphaNum, isLower, isUpper, isSpace, words, unwords;
+  var import_function16, import_Ord3, prepend4, append5, takeLeft3, takeRight3, under, reverse5, lines, unlines, test, dropLeft3, dropRight2, dropRightWhile2, head6, tail5, last6, init4, takeLeftWhile3, takeRightWhile2, isAlpha, isAlphaNum, isLower, isUpper, isSpace, words, unwords;
   var init_String = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/String.js"() {
-      import_function15 = __toESM(require_function());
+      import_function16 = __toESM(require_function());
       init_Predicate();
       init_Option();
       init_ReadonlyArray();
@@ -4544,10 +4544,10 @@ var show;
       init_number();
       init_Function();
       prepend4 = (prepended) => (rest) => prepended + rest;
-      append5 = (0, import_function15.flip)(prepend4);
+      append5 = (0, import_function16.flip)(prepend4);
       takeLeft3 = (n) => slice(0, (0, import_Ord3.max)(Ord)(0, n));
       takeRight3 = (n) => (x) => slice((0, import_Ord3.max)(Ord)(0, x.length - Math.floor(n)), Infinity)(x);
-      under = (f4) => (0, import_function15.flow)(split(""), f4, join(""));
+      under = (f4) => (0, import_function16.flow)(split(""), f4, join(""));
       reverse5 = under(reverse2);
       lines = split(/\r\n|\r|\n/);
       unlines = join("\n");
@@ -4558,14 +4558,14 @@ var show;
         return res;
       };
       dropLeft3 = (n) => invoke("substring")([n]);
-      dropRight2 = (n) => (x) => (0, import_function15.pipe)(x, invoke("substring")([0, x.length - Math.floor(n)]));
-      dropRightWhile2 = (0, import_function15.flow)(dropRightWhile, under);
-      head6 = (0, import_function15.flow)(fromPredicate2(not(isEmpty2)), map2(takeLeft3(1)));
-      tail5 = (0, import_function15.flow)(fromPredicate2(not(isEmpty2)), map2(dropLeft3(1)));
-      last6 = (0, import_function15.flow)(fromPredicate2(not(isEmpty2)), map2(takeRight3(1)));
-      init4 = (0, import_function15.flow)(fromPredicate2(not(isEmpty2)), map2(dropRight2(1)));
-      takeLeftWhile3 = (0, import_function15.flow)((f4) => takeLeftWhile(f4), under);
-      takeRightWhile2 = (0, import_function15.flow)(takeRightWhile, under);
+      dropRight2 = (n) => (x) => (0, import_function16.pipe)(x, invoke("substring")([0, x.length - Math.floor(n)]));
+      dropRightWhile2 = (0, import_function16.flow)(dropRightWhile, under);
+      head6 = (0, import_function16.flow)(fromPredicate2(not(isEmpty2)), map2(takeLeft3(1)));
+      tail5 = (0, import_function16.flow)(fromPredicate2(not(isEmpty2)), map2(dropLeft3(1)));
+      last6 = (0, import_function16.flow)(fromPredicate2(not(isEmpty2)), map2(takeRight3(1)));
+      init4 = (0, import_function16.flow)(fromPredicate2(not(isEmpty2)), map2(dropRight2(1)));
+      takeLeftWhile3 = (0, import_function16.flow)((f4) => takeLeftWhile(f4), under);
+      takeRightWhile2 = (0, import_function16.flow)(takeRightWhile, under);
       isAlpha = test(/^\p{Alpha}+$/u);
       isAlphaNum = test(/^(\p{Alpha}|\p{Number})+$/u);
       isLower = test(/^\p{Lower}+$/u);
@@ -4583,13 +4583,13 @@ var show;
   });
 
   // extensions/show-the-genres/artistPage.tsx
-  var import_function16, updateArtistPage, getArtistsGenresOrRelated;
+  var import_function17, updateArtistPage, getArtistsGenresOrRelated;
   var init_artistPage = __esm({
     "extensions/show-the-genres/artistPage.tsx"() {
       "use strict";
       init_es6();
       init_String();
-      import_function16 = __toESM(require_function(), 1);
+      import_function17 = __toESM(require_function(), 1);
       init_api();
       init_fp();
       init_util();
@@ -4603,7 +4603,7 @@ var show;
           return;
         const genreContainer2 = document.createElement("div");
         genreContainer2.className = "main-entityHeader-detailsText genre-container";
-        genreContainer2.innerHTML = await (0, import_function16.pipe)(
+        genreContainer2.innerHTML = await (0, import_function17.pipe)(
           await getArtistsGenresOrRelated([uri]),
           Array_exports.takeLeft(5),
           Array_exports.map(async (genre) => {
@@ -4613,8 +4613,8 @@ var show;
             )}</a>`;
           }),
           (x) => Promise.all(x),
-          PromiseMchain(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`)),
-          PromiseMchain(prepend4(`<span>Artist Genres : </span>`))
+          pMchain(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`)),
+          pMchain(prepend4(`<span>Artist Genres : </span>`))
         );
         document.querySelector(".genre-container")?.remove();
         const entityHeaderText = await waitForElement(
@@ -4626,19 +4626,19 @@ var show;
         );
       };
       getArtistsGenresOrRelated = async (artistsUris, src = null) => {
-        const getArtistsGenres = (0, import_function16.flow)(
+        const getArtistsGenres = (0, import_function17.flow)(
           Array_exports.map((uri) => parseUri(uri).id),
-          fetchArtistsSpotAPI50,
-          PromiseMchain(Array_exports.flatMap((artist) => artist.genres)),
-          PromiseMchain(Array_exports.uniq(string_exports.Eq))
+          fetchArtistsSpotAPI,
+          pMchain(Array_exports.flatMap((artist) => artist.genres)),
+          pMchain(Array_exports.uniq(string_exports.Eq))
         );
         const allGenres = await getArtistsGenres(artistsUris);
-        return allGenres.length ? allGenres : await (0, import_function16.pipe)(
+        return allGenres.length ? allGenres : await (0, import_function17.pipe)(
           artistsUris[0],
           fetchArtistRelatedGQL,
-          PromiseMchain(Array_exports.map((a) => a.uri)),
-          PromiseMchain(Array_exports.chunksOf(5)),
-          PromiseMchain(
+          pMchain(Array_exports.map((a) => a.uri)),
+          pMchain(Array_exports.chunksOf(5)),
+          pMchain(
             Array_exports.reduce(
               Promise.resolve([]),
               async (acc, arr5uris) => (await acc).length ? await acc : await getArtistsGenres(arr5uris)
@@ -4735,11 +4735,11 @@ var show;
   });
 
   // shared/settings.tsx
-  var import_function17, import_react2, import_react_dom, SettingsSection;
+  var import_function18, import_react2, import_react_dom, SettingsSection;
   var init_settings = __esm({
     "shared/settings.tsx"() {
       "use strict";
-      import_function17 = __toESM(require_function(), 1);
+      import_function18 = __toESM(require_function(), 1);
       import_react2 = __toESM(require_react(), 1);
       import_react_dom = __toESM(require_react_dom(), 1);
       init_fp();
@@ -4803,7 +4803,7 @@ var show;
           }
           import_react_dom.default.render(/* @__PURE__ */ import_react2.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
         };
-        addButton = (nameId, description, text, onClick = import_function17.constVoid, events = {}) => {
+        addButton = (nameId, description, text, onClick = import_function18.constVoid, events = {}) => {
           const id = this.getId(nameId);
           events.onClick = onClick;
           this.sectionFields[nameId] = {
@@ -4815,7 +4815,7 @@ var show;
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue, onChange = import_function17.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue, onChange = import_function18.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4827,7 +4827,7 @@ var show;
           };
           return this;
         };
-        addInput = (nameId, description, defaultValue, onChange = import_function17.constVoid, inputType = "text", events = {}) => {
+        addInput = (nameId, description, defaultValue, onChange = import_function18.constVoid, inputType = "text", events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4840,7 +4840,7 @@ var show;
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function17.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function18.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -5019,12 +5019,12 @@ var show;
     lastFmTags: () => lastFmTags,
     spotifyGenres: () => spotifyGenres
   });
-  var import_function18, app_default, searchPlaylist, spotifyGenres, lastFmTags, updateGenreContainer, updateGenresUI, getArtistUrisFromCurrentTrack, updateGenres, genreContainer;
+  var import_function19, app_default, searchPlaylist, spotifyGenres, lastFmTags, updateGenreContainer, updateGenresUI, getArtistUrisFromCurrentTrack, updateGenres, genreContainer;
   var init_app = __esm({
     "extensions/show-the-genres/app.tsx"() {
       "use strict";
       init_es6();
-      import_function18 = __toESM(require_function(), 1);
+      import_function19 = __toESM(require_function(), 1);
       init_api();
       init_fp();
       init_util();
@@ -5038,7 +5038,7 @@ var show;
       spotifyGenres = new Array();
       lastFmTags = new Array();
       updateGenreContainer = async (genres) => {
-        genreContainer.innerHTML = await (0, import_function18.pipe)(
+        genreContainer.innerHTML = await (0, import_function19.pipe)(
           genres,
           Array_exports.map(async (genre) => {
             const uri = await fetchSoundOfSpotifyPlaylist(genre);
@@ -5047,7 +5047,7 @@ var show;
             )}</a>`;
           }),
           (x) => Promise.all(x),
-          PromiseMchain(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`))
+          pMchain(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`))
         );
         return genreContainer;
       };
@@ -5058,7 +5058,7 @@ var show;
         const { uri, metadata } = Spicetify.Player.data.track;
         if (metadata && !metadata.is_local && isUri(uri) && parseUri(uri).type === "spotify:track" /* TRACK */ && genres.length) {
           trackInfoContainer?.appendChild(await updateGenreContainer(genres));
-          lastFmTags = (0, import_function18.pipe)(
+          lastFmTags = (0, import_function19.pipe)(
             await fetchTrackLFMAPI(
               CONFIG.LFMApiKey,
               metadata.artist_name,
@@ -5092,7 +5092,7 @@ var show;
   // extensions/show-the-genres/entry.tsx
   init_es6();
   init_Record();
-  var import_function19 = __toESM(require_function(), 1);
+  var import_function20 = __toESM(require_function(), 1);
   init_util();
   (async () => {
     const mustLoad = [
@@ -5106,7 +5106,7 @@ var show;
       "ReactDOM"
     ];
     let timer = 0;
-    while (mustLoad.some((0, import_function19.flow)((0, import_function19.flip)(lookup4)(Spicetify), Option_exports.isNone)))
+    while (mustLoad.some((0, import_function20.flow)((0, import_function20.flip)(lookup4)(Spicetify), Option_exports.isNone)))
       await sleep(timer += 100);
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();

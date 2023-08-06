@@ -3,7 +3,7 @@ export default {}
 import { array as a, string as str } from "fp-ts"
 import { pipe as p } from "fp-ts/function"
 import { fetchSoundOfSpotifyPlaylist, fetchTrackLFMAPI } from "../../shared/api"
-import { PromiseMchain } from "../../shared/fp"
+import { pMchain } from "../../shared/fp"
 import {
     SpotifyURIType,
     isUri,
@@ -38,7 +38,7 @@ const updateGenreContainer = async (genres: string[]) => {
             )}</a>`
         }),
         x => Promise.all(x),
-        PromiseMchain(a.intercalate(str.Monoid)(`<span>, </span>`)),
+        pMchain(a.intercalate(str.Monoid)(`<span>, </span>`)),
     )
     return genreContainer
 }

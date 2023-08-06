@@ -1,5 +1,14 @@
 export default {}
-import { array as a, number, option as o, ord, task } from "fp-ts"
+import {
+    array as a,
+    array,
+    number,
+    option as o,
+    ord,
+    refinement,
+    string,
+    task,
+} from "fp-ts"
 import { guard } from "fp-ts-std/Function"
 import { values } from "fp-ts-std/Record"
 import { groupBy } from "fp-ts/NonEmptyArray"
@@ -22,7 +31,7 @@ import {
     fetchTrackLFMAPI,
     fetchTracksSpotAPI,
 } from "../../shared/api"
-import { PromiseMchain, objConcat } from "../../shared/fp"
+import { pMchain, is, objConcat } from "../../shared/fp"
 import {
     TrackData,
     TracksPopulater,
@@ -35,10 +44,14 @@ import {
 } from "../../shared/parse"
 import { SpotifyURI, SpotifyURIType, parseUri } from "../../shared/util"
 import { CONFIG } from "./settings"
+import { test } from "fp-ts-std/String"
+import { sequenceS } from "fp-ts/lib/Apply"
+import { Ord } from "fp-ts/lib/Ord"
 
 export enum SortBy {
     SPOTIFY_PLAYCOUNT = "Spotify - Play Count",
     SPOTIFY_POPULARITY = "Spotify - Popularity",
+    SPOTIFY_RELEASEDATE = "Spotify - Release Date",
     LASTFM_SCROBBLES = "LastFM - Scrobbles",
     LASTFM_PERSONALSCROBBLES = "LastFM - My Scrobbles",
     LASTFM_PLAYCOUNT = "LastFM - Play Count",
@@ -47,6 +60,7 @@ export enum SortBy {
 export enum SortProp {
     "Spotify - Play Count" = "playcount",
     "Spotify - Popularity" = "popularity",
+    "Spotify - Release Date" = "releaseDate",
     "LastFM - Scrobbles" = "scrobbles",
     "LastFM - My Scrobbles" = "personalScrobbles",
     "LastFM - Play Count" = "lastfmPlaycount",
@@ -73,7 +87,7 @@ const getAlbumTracks = async (uri: SpotifyURI) => {
 
 export const getPlaylistTracks = f(
     fetchPlaylistAPI,
-    PromiseMchain(a.map(parseTrackFromPlaylistAPI)),
+    pMchain(a.map(parseTrackFromPlaylistAPI)),
 )
 
 async function getArtistTracks(uri: SpotifyURI) {
@@ -91,7 +105,7 @@ async function getArtistTracks(uri: SpotifyURI) {
             ),
         ),
         x => Promise.all(x),
-        PromiseMchain(a.flatten),
+        pMchain(a.flatten),
     )
 
     const disc = (await fetchArtistGQL(uri)).discography
@@ -141,7 +155,7 @@ async function getArtistTracks(uri: SpotifyURI) {
             await p(
                 parseUri(uri).id,
                 fetchArtistLikedTracksSP,
-                PromiseMchain(a.map(parseTrackFromArtistLikedTracksSP)),
+                pMchain(a.map(parseTrackFromArtistLikedTracksSP)),
             ),
         )
 
@@ -153,7 +167,7 @@ async function getArtistTracks(uri: SpotifyURI) {
 const fetchAPITracksFromTracks: TracksPopulater = f(
     a.map(track => parseUri(track.uri).id),
     fetchTracksSpotAPI,
-    PromiseMchain(a.map(parseTrackFromSpotifyAPI)),
+    pMchain(a.map(parseTrackFromSpotifyAPI)),
 )
 
 const fetchAlbumTracksFromTracks: TracksPopulater = f(
@@ -166,7 +180,7 @@ const fetchAlbumTracksFromTracks: TracksPopulater = f(
     }),
     values,
     x => Promise.all(x),
-    PromiseMchain(a.flatten),
+    pMchain(a.flatten),
 )
 
 const populateTracksSpot =
@@ -186,14 +200,18 @@ const populateTracksSpot =
                     constant(fetchAlbumTracksFromTracks),
                 ],
                 [
-                    startsWith(SortBy.SPOTIFY_POPULARITY),
+                    test(
+                        new RegExp(
+                            `/^(?:${SortBy.SPOTIFY_POPULARITY})(?:${SortBy.SPOTIFY_RELEASEDATE})/`,
+                        ),
+                    ),
                     constant(fetchAPITracksFromTracks),
                 ],
             ])(constant(task.of([])))(propName),
-            PromiseMchain(a.concat(tracks)),
-            PromiseMchain(groupBy(Lens.fromProp<TrackData>()("uri").get)),
-            PromiseMchain(values<TrackData[]>),
-            PromiseMchain(a.map(objConcat<TrackData>())),
+            pMchain(a.concat(tracks)),
+            pMchain(groupBy(Lens.fromProp<TrackData>()("uri").get)),
+            pMchain(values<TrackData[]>),
+            pMchain(a.map(objConcat<TrackData>())),
         )
 
 // Populating Tracks For LastFM
@@ -231,25 +249,38 @@ export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
 let queue = new Array<TrackData>()
 export const sortByProp =
     (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
-        const prop = SortProp[name]
-        const toProp = Optional.fromNullableProp<TrackData>()(prop).getOption
+        const prop: `${SortProp}` = SortProp[name]
+        const toProp: (s: TrackData) => o.Option<string | number> =
+            Optional.fromNullableProp<TrackData>()(prop).getOption
 
         queue = await p(
             uri,
             fetchTracks,
-            PromiseMchain(populateTracks(name)),
-            PromiseMchain(a.filter(f(toProp, o.isSome))),
-            PromiseMchain(
-                a.sort(
-                    p(
-                        number.Ord,
-                        ord.contramap(f(toProp, o.getOrElse(constant(-1)))),
+            pMchain(populateTracks(name)),
+            pMchain(
+                a.map(x =>
+                    p(x, toProp, o.isSome)
+                        ? o.some(x as Required<TrackData>)
+                        : o.none,
+                ),
+            ),
+            pMchain(a.sequence(o.Applicative)),
+            pMchain(
+                o.map(
+                    a.sort(
+                        prop === SortProp[SortBy.SPOTIFY_RELEASEDATE]
+                            ? ord.contramap(
+                                  (x: Required<TrackData>) => x[prop],
+                              )(string.Ord)
+                            : ord.contramap(
+                                  (x: Required<TrackData>) => x[prop],
+                              )(number.Ord),
                     ),
                 ),
             ),
-            x => x,
-            PromiseMchain(CONFIG.ascending ? identity : a.reverse),
-            PromiseMchain(a.append({ uri: "spotify:delimiter" } as TrackData)),
+            pMchain(o.map(CONFIG.ascending ? identity : a.reverse)),
+            pMchain(o.map(a.append({ uri: "spotify:delimiter" } as TrackData))),
+            pMchain(o.getOrElse(constant([] as TrackData[]))),
         )
 
         if (queue.length <= 1)

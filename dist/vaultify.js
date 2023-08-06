@@ -3955,10 +3955,12 @@ var vaultify = (() => {
   });
 
   // shared/fp.tsx
-  var guard22, guard32, guard42, PromiseMchain, is;
+  var import_function10, guard22, guard32, guard42, pMchain, is, chunckify;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
+      init_es6();
+      import_function10 = __toESM(require_function(), 1);
       init_Function();
       guard22 = (branches) => guard4(branches);
       guard32 = (branches) => guard4(
@@ -3967,28 +3969,28 @@ var vaultify = (() => {
       guard42 = (branches) => guard4(
         branches
       );
-      PromiseMchain = (f4) => async (fa) => f4(await fa);
+      pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
+      chunckify = (n) => (g) => (0, import_function10.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
     }
   });
 
   // shared/api.tsx
-  var import_function10, fetchTracksSpotAPI50, fetchTracksSpotAPI, fetchPlaylistAPI, createFolder, likePlaylist, fetchLikedPlaylistsSP, createPlaylist;
+  var fetchArtistsSpotAPI, fetchTracksSpotAPI, fetchPlaylistAPI, createFolder, likePlaylist, fetchLikedPlaylistsSP, createPlaylist;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
-      init_Array();
-      import_function10 = __toESM(require_function(), 1);
       init_fp();
       init_util();
-      fetchTracksSpotAPI50 = async (ids) => (await Spicetify.CosmosAsync.get(
-        `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-      )).tracks;
-      fetchTracksSpotAPI = (0, import_function10.flow)(
-        chunksOf3(50),
-        map(fetchTracksSpotAPI50),
-        (x) => Promise.all(x),
-        PromiseMchain(flatten)
+      fetchArtistsSpotAPI = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(
+          `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`
+        )).artists
+      );
+      fetchTracksSpotAPI = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(
+          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
+        )).tracks
       );
       fetchPlaylistAPI = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
       createFolder = (name) => Spicetify.Platform.RootlistAPI.createFolder(name);

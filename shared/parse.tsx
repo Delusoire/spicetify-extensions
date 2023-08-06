@@ -1,4 +1,4 @@
-import { fetchAlbumGQLRes } from "./api"
+import { SpotApiTrack, fetchAlbumGQLRes, fetchPlaylistAPIRes } from "./api"
 import { SpotifyURI } from "./util"
 
 export type TrackData = {
@@ -21,8 +21,9 @@ export type UnparsedTrack = any
 export type TrackParser = (track: UnparsedTrack) => TrackData
 export type TracksPopulater = (tracks: TrackData[]) => Promise<TrackData[]>
 
-export type fetchAlbumGQLResTrack = fetchAlbumGQLRes["tracks"]["items"][0]
-export const parseTrackFromAlbum = ({ track }: fetchAlbumGQLResTrack) => ({
+export const parseTrackFromAlbum = ({
+    track,
+}: fetchAlbumGQLRes["tracks"]["items"][0]) => ({
     albumName: undefined, // gets filled in later
     albumUri: undefined, // gets filled in later
     artistName: track.artists.items[0].profile.name,
@@ -60,6 +61,7 @@ export const parseTrackFromArtistLikedTracksSP = (track: UnparsedTrack) => ({
     uri: track.link,
 })
 
+// NOT USED
 export const parseTrackFromPlaylistSP = (track: UnparsedTrack) => ({
     albumName: track.album.name,
     albumUri: track.album.link,
@@ -73,12 +75,12 @@ export const parseTrackFromPlaylistSP = (track: UnparsedTrack) => ({
     uri: track.link,
 })
 
-export const parseTrackFromPlaylistAPI = (track: UnparsedTrack) => ({
+export const parseTrackFromPlaylistAPI = (track: fetchPlaylistAPIRes[0]) => ({
     albumName: track.album.name,
     albumUri: track.album.uri,
     artistName: track.artists[0].name,
     artistUri: track.artists[0].uri,
-    durationMilis: track.duration.milliSeconds,
+    durationMilis: track.duration.milliseconds,
     name: track.name,
     playcount: undefined,
     popularity: undefined,
@@ -86,7 +88,7 @@ export const parseTrackFromPlaylistAPI = (track: UnparsedTrack) => ({
     uri: track.uri,
 })
 
-export const parseTrackFromSpotifyAPI = (track: UnparsedTrack) => ({
+export const parseTrackFromSpotifyAPI = (track: SpotApiTrack) => ({
     albumName: track.album.name,
     albumUri: track.album.uri,
     artistName: track.artists[0].name,
@@ -95,6 +97,6 @@ export const parseTrackFromSpotifyAPI = (track: UnparsedTrack) => ({
     name: track.name,
     playcount: undefined,
     popularity: track.popularity,
-    releaseDate: track.album.releaseDate,
+    releaseDate: track.album.release_date,
     uri: track.uri,
 })

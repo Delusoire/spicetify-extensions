@@ -660,7 +660,7 @@ var sort;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyNonEmptyArray.js
-  var __spreadArray3, isNonEmpty2, isOutOfBound, prependW, prepend, unsafeUpdateAt, prependAll, intersperse, extract, head2, tail2, last2, concatAll3, intercalate;
+  var __spreadArray3, empty, isNonEmpty2, isOutOfBound, prependW, prepend, unsafeInsertAt, unsafeUpdateAt, sort, prependAll, intersperse, extract, head2, tail2, last2, concatAll3, intercalate;
   var init_ReadonlyNonEmptyArray = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyNonEmptyArray.js"() {
       init_function();
@@ -676,16 +676,25 @@ var sort;
           }
         return to.concat(ar || Array.prototype.slice.call(from));
       };
+      empty = emptyReadonlyArray;
       isNonEmpty2 = isNonEmpty;
       isOutOfBound = function(i, as5) {
         return i < 0 || i >= as5.length;
       };
-      prependW = function(head6) {
-        return function(tail5) {
-          return __spreadArray3([head6], tail5, true);
+      prependW = function(head7) {
+        return function(tail6) {
+          return __spreadArray3([head7], tail6, true);
         };
       };
       prepend = prependW;
+      unsafeInsertAt = function(i, a, as5) {
+        if (isNonEmpty2(as5)) {
+          var xs = fromReadonlyNonEmptyArray(as5);
+          xs.splice(i, 0, a);
+          return xs;
+        }
+        return [a];
+      };
       unsafeUpdateAt = function(i, a, as5) {
         if (as5[i] === a) {
           return as5;
@@ -694,6 +703,11 @@ var sort;
           xs[i] = a;
           return xs;
         }
+      };
+      sort = function(O) {
+        return function(as5) {
+          return as5.length === 1 ? as5 : as5.slice().sort(O.compare);
+        };
       };
       prependAll = function(middle) {
         return function(as5) {
@@ -736,10 +750,10 @@ var sort;
       return y2.concat(x);
     };
   }
-  function cons(head6, tail5) {
-    return tail5 === void 0 ? prepend2(head6) : pipe(tail5, prepend2(head6));
+  function cons(head7, tail6) {
+    return tail6 === void 0 ? prepend2(head7) : pipe(tail6, prepend2(head7));
   }
-  var __spreadArray4, isNonEmpty3, isOutOfBound2, prependW2, prepend2, appendW, append, unsafeInsertAt, unsafeUpdateAt2, uniq, sortBy, union, rotate, fromReadonlyNonEmptyArray2, makeBy, range, groupBy, sort, copy, of, prependAll2, intersperse2, chop, splitAt, chunksOf, head3, tail3, last3, init, snoc;
+  var __spreadArray4, isNonEmpty3, isOutOfBound2, prependW2, prepend2, appendW, append, unsafeInsertAt2, unsafeUpdateAt2, uniq, sortBy, union, rotate, fromReadonlyNonEmptyArray2, makeBy, range, groupBy, sort2, copy, of, prependAll2, intersperse2, chop, splitAt, chunksOf, head3, tail3, last3, init, snoc;
   var init_NonEmptyArray = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/NonEmptyArray.js"() {
       init_function();
@@ -763,19 +777,19 @@ var sort;
       isOutOfBound2 = function(i, as5) {
         return i < 0 || i >= as5.length;
       };
-      prependW2 = function(head6) {
-        return function(tail5) {
-          return __spreadArray4([head6], tail5, true);
+      prependW2 = function(head7) {
+        return function(tail6) {
+          return __spreadArray4([head7], tail6, true);
         };
       };
       prepend2 = prependW2;
       appendW = function(end) {
-        return function(init4) {
-          return __spreadArray4(__spreadArray4([], init4, true), [end], false);
+        return function(init5) {
+          return __spreadArray4(__spreadArray4([], init5, true), [end], false);
         };
       };
       append = appendW;
-      unsafeInsertAt = function(i, a, as5) {
+      unsafeInsertAt2 = function(i, a, as5) {
         if (isNonEmpty3(as5)) {
           var xs = fromReadonlyNonEmptyArray2(as5);
           xs.splice(i, 0, a);
@@ -812,7 +826,7 @@ var sort;
       sortBy = function(ords) {
         if (isNonEmpty3(ords)) {
           var M = getMonoid();
-          return sort(ords.reduce(M.concat, M.empty));
+          return sort2(ords.reduce(M.concat, M.empty));
         }
         return copy;
       };
@@ -870,7 +884,7 @@ var sort;
           return out;
         };
       };
-      sort = function(O) {
+      sort2 = function(O) {
         return function(as5) {
           return as5.slice().sort(O.compare);
         };
@@ -924,8 +938,8 @@ var sort;
       init = function(as5) {
         return as5.slice(0, -1);
       };
-      snoc = function(init4, end) {
-        return pipe(init4, append(end));
+      snoc = function(init5, end) {
+        return pipe(init5, append(end));
       };
     }
   });
@@ -1079,6 +1093,26 @@ var sort;
       return lookup(i, as6);
     } : isOutOfBound3(i, as5) ? none : some(as5[i]);
   }
+  function takeLeftWhile(predicate) {
+    return function(as5) {
+      var out = [];
+      for (var _i = 0, as_1 = as5; _i < as_1.length; _i++) {
+        var a = as_1[_i];
+        if (!predicate(a)) {
+          break;
+        }
+        out.push(a);
+      }
+      var len = out.length;
+      return len === as5.length ? as5 : len === 0 ? empty2 : out;
+    };
+  }
+  function dropLeftWhile(predicate) {
+    return function(as5) {
+      var i = spanLeftIndex(as5, predicate);
+      return i === 0 ? as5 : i === as5.length ? empty2 : as5.slice(i);
+    };
+  }
   function findFirst(predicate) {
     return function(as5) {
       for (var i = 0; i < as5.length; i++) {
@@ -1124,7 +1158,7 @@ var sort;
       return as5.every(predicate);
     };
   }
-  var __spreadArray5, isNonEmpty4, matchW, match, isOutOfBound3, head4, last4, findIndex, findFirstMap, findLastMap, findLastIndex, _chainRecDepthFirst, _chainRecBreadthFirst, foldMapWithIndex2, reduce2, foldMap2, reduceWithIndex2, reduceRight2, reduceRightWithIndex2, getShow2, getEq2, getOrd, chainRecDepthFirst, chainRecBreadthFirst, unsafeUpdateAt3, intercalate2;
+  var __spreadArray5, isNonEmpty4, matchW, match, isOutOfBound3, head4, last4, spanLeftIndex, findIndex, findFirstMap, findLastMap, findLastIndex, insertAt, deleteAt, reverse3, _chainRecDepthFirst, _chainRecBreadthFirst, foldMapWithIndex2, reduce2, foldMap2, reduceWithIndex2, reduceRight2, reduceRightWithIndex2, getShow2, getEq2, getOrd, chainRecDepthFirst, chainRecBreadthFirst, unsafeUpdateAt3, unsafeDeleteAt, empty2, intercalate2;
   var init_ReadonlyArray = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyArray.js"() {
       init_Eq();
@@ -1157,6 +1191,16 @@ var sort;
       };
       last4 = function(as5) {
         return isNonEmpty4(as5) ? some(last2(as5)) : none;
+      };
+      spanLeftIndex = function(as5, predicate) {
+        var l = as5.length;
+        var i = 0;
+        for (; i < l; i++) {
+          if (!predicate(as5[i])) {
+            break;
+          }
+        }
+        return i;
       };
       findIndex = function(predicate) {
         return function(as5) {
@@ -1199,6 +1243,19 @@ var sort;
           }
           return none;
         };
+      };
+      insertAt = function(i, a) {
+        return function(as5) {
+          return i < 0 || i > as5.length ? none : some(unsafeInsertAt(i, a, as5));
+        };
+      };
+      deleteAt = function(i) {
+        return function(as5) {
+          return isOutOfBound3(i, as5) ? none : some(unsafeDeleteAt(i, as5));
+        };
+      };
+      reverse3 = function(as5) {
+        return as5.length <= 1 ? as5 : as5.slice().reverse();
       };
       _chainRecDepthFirst = function(a, f4) {
         return pipe(a, chainRecDepthFirst(f4));
@@ -1320,6 +1377,12 @@ var sort;
       unsafeUpdateAt3 = function(i, a, as5) {
         return isNonEmpty4(as5) ? unsafeUpdateAt(i, a, as5) : as5;
       };
+      unsafeDeleteAt = function(i, as5) {
+        var xs = as5.slice();
+        xs.splice(i, 1);
+        return xs;
+      };
+      empty2 = empty;
       intercalate2 = function(M) {
         var intercalateM = intercalate(M);
         return function(middle) {
@@ -1383,14 +1446,14 @@ var sort;
     concatW: () => concatW,
     cons: () => cons3,
     copy: () => copy2,
-    deleteAt: () => deleteAt,
+    deleteAt: () => deleteAt2,
     difference: () => difference,
     dropLeft: () => dropLeft,
-    dropLeftWhile: () => dropLeftWhile,
+    dropLeftWhile: () => dropLeftWhile2,
     dropRight: () => dropRight,
     duplicate: () => duplicate,
     elem: () => elem2,
-    empty: () => empty2,
+    empty: () => empty3,
     every: () => every2,
     exists: () => exists,
     extend: () => extend,
@@ -1429,7 +1492,7 @@ var sort;
     guard: () => guard2,
     head: () => head5,
     init: () => init3,
-    insertAt: () => insertAt,
+    insertAt: () => insertAt2,
     intercalate: () => intercalate3,
     intersection: () => intersection,
     intersperse: () => intersperse3,
@@ -1465,7 +1528,7 @@ var sort;
     reduceRightWithIndex: () => reduceRightWithIndex3,
     reduceWithIndex: () => reduceWithIndex3,
     replicate: () => replicate,
-    reverse: () => reverse3,
+    reverse: () => reverse4,
     rights: () => rights,
     rotate: () => rotate3,
     scanLeft: () => scanLeft,
@@ -1475,20 +1538,20 @@ var sort;
     size: () => size,
     snoc: () => snoc3,
     some: () => some2,
-    sort: () => sort2,
+    sort: () => sort3,
     sortBy: () => sortBy3,
     spanLeft: () => spanLeft,
     splitAt: () => splitAt3,
     tail: () => tail4,
     takeLeft: () => takeLeft,
-    takeLeftWhile: () => takeLeftWhile,
+    takeLeftWhile: () => takeLeftWhile2,
     takeRight: () => takeRight,
     traverse: () => traverse,
     traverseWithIndex: () => traverseWithIndex,
     unfold: () => unfold,
     union: () => union3,
     uniq: () => uniq3,
-    unsafeDeleteAt: () => unsafeDeleteAt,
+    unsafeDeleteAt: () => unsafeDeleteAt2,
     unsafeInsertAt: () => unsafeInsertAt3,
     unsafeUpdateAt: () => unsafeUpdateAt4,
     unzip: () => unzip,
@@ -1504,7 +1567,7 @@ var sort;
       return predicate(a) ? [a] : [];
     };
   }
-  function takeLeftWhile(predicate) {
+  function takeLeftWhile2(predicate) {
     return function(as5) {
       var out = [];
       for (var _i = 0, as_1 = as5; _i < as_1.length; _i++) {
@@ -1519,13 +1582,13 @@ var sort;
   }
   function spanLeft(predicate) {
     return function(as5) {
-      var _a = splitAt3(spanLeftIndex(as5, predicate))(as5), init4 = _a[0], rest = _a[1];
-      return { init: init4, rest };
+      var _a = splitAt3(spanLeftIndex2(as5, predicate))(as5), init5 = _a[0], rest = _a[1];
+      return { init: init5, rest };
     };
   }
-  function dropLeftWhile(predicate) {
+  function dropLeftWhile2(predicate) {
     return function(as5) {
-      return as5.slice(spanLeftIndex(as5, predicate));
+      return as5.slice(spanLeftIndex2(as5, predicate));
     };
   }
   function findFirst2(predicate) {
@@ -1597,7 +1660,7 @@ var sort;
       });
     };
   }
-  var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last5, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt, updateAt, deleteAt, modifyAt, reverse3, rights, lefts, sort2, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI2, getShow3, getSemigroup3, getMonoid2, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, chainFirst2, Monad, Unfoldable, Alt, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt4, unsafeDeleteAt, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty2, cons3, snoc3, prependToAll, array;
+  var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last5, tail4, init3, takeLeft, takeRight, spanLeftIndex2, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt2, updateAt, deleteAt2, modifyAt, reverse4, rights, lefts, sort3, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI2, getShow3, getSemigroup3, getMonoid2, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, chainFirst2, Monad, Unfoldable, Alt, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt4, unsafeDeleteAt2, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty3, cons3, snoc3, prependToAll, array;
   var init_Array = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Array.js"() {
       init_Apply();
@@ -1707,7 +1770,7 @@ var sort;
           return isOutOfBound4(n, as5) ? copy2(as5) : n === 0 ? [] : as5.slice(-n);
         };
       };
-      spanLeftIndex = function(as5, predicate) {
+      spanLeftIndex2 = function(as5, predicate) {
         var l = as5.length;
         var i = 0;
         for (; i < l; i++) {
@@ -1734,7 +1797,7 @@ var sort;
       copy2 = function(as5) {
         return as5.slice();
       };
-      insertAt = function(i, a) {
+      insertAt2 = function(i, a) {
         return function(as5) {
           return i < 0 || i > as5.length ? none : some(unsafeInsertAt3(i, a, as5));
         };
@@ -1744,9 +1807,9 @@ var sort;
           return a;
         });
       };
-      deleteAt = function(i) {
+      deleteAt2 = function(i) {
         return function(as5) {
-          return isOutOfBound4(i, as5) ? none : some(unsafeDeleteAt(i, as5));
+          return isOutOfBound4(i, as5) ? none : some(unsafeDeleteAt2(i, as5));
         };
       };
       modifyAt = function(i, f4) {
@@ -1754,7 +1817,7 @@ var sort;
           return isOutOfBound4(i, as5) ? none : some(unsafeUpdateAt4(i, f4(as5[i]), as5));
         };
       };
-      reverse3 = function(as5) {
+      reverse4 = function(as5) {
         return isEmpty(as5) ? [] : as5.slice().reverse();
       };
       rights = function(as5) {
@@ -1777,7 +1840,7 @@ var sort;
         }
         return r;
       };
-      sort2 = function(O) {
+      sort3 = function(O) {
         return function(as5) {
           return as5.length <= 1 ? copy2(as5) : as5.slice().sort(O.compare);
         };
@@ -2356,11 +2419,11 @@ var sort;
         fromEither
       };
       fromEitherK2 = /* @__PURE__ */ fromEitherK(FromEither);
-      unsafeInsertAt3 = unsafeInsertAt;
+      unsafeInsertAt3 = unsafeInsertAt2;
       unsafeUpdateAt4 = function(i, a, as5) {
         return isNonEmpty5(as5) ? unsafeUpdateAt2(i, a, as5) : [];
       };
-      unsafeDeleteAt = function(i, as5) {
+      unsafeDeleteAt2 = function(i, as5) {
         var xs = as5.slice();
         xs.splice(i, 1);
         return xs;
@@ -2380,7 +2443,7 @@ var sort;
       apS2 = /* @__PURE__ */ apS(Apply);
       chain = flatMap;
       range3 = range;
-      empty2 = [];
+      empty3 = [];
       cons3 = cons;
       snoc3 = snoc;
       prependToAll = prependAll3;
@@ -3505,9 +3568,33 @@ var sort;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js
-  var Eq2, Semigroup, empty3, Monoid, Ord2, startsWith;
+  var string_exports = {};
+  __export(string_exports, {
+    Eq: () => Eq2,
+    Monoid: () => Monoid,
+    Ord: () => Ord2,
+    Semigroup: () => Semigroup,
+    Show: () => Show2,
+    empty: () => empty4,
+    endsWith: () => endsWith,
+    includes: () => includes,
+    isEmpty: () => isEmpty2,
+    isString: () => isString,
+    replace: () => replace,
+    size: () => size2,
+    slice: () => slice,
+    split: () => split,
+    startsWith: () => startsWith,
+    toLowerCase: () => toLowerCase,
+    toUpperCase: () => toUpperCase,
+    trim: () => trim,
+    trimLeft: () => trimLeft,
+    trimRight: () => trimRight
+  });
+  var Eq2, Semigroup, empty4, Monoid, Ord2, Show2, isString, toUpperCase, toLowerCase, replace, trim, trimLeft, trimRight, slice, isEmpty2, size2, split, includes, startsWith, endsWith;
   var init_string = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js"() {
+      init_ReadonlyNonEmptyArray();
       Eq2 = {
         equals: function(first4, second) {
           return first4 === second;
@@ -3518,10 +3605,10 @@ var sort;
           return first4 + second;
         }
       };
-      empty3 = "";
+      empty4 = "";
       Monoid = {
         concat: Semigroup.concat,
-        empty: empty3
+        empty: empty4
       };
       Ord2 = {
         equals: Eq2.equals,
@@ -3529,16 +3616,71 @@ var sort;
           return first4 < second ? -1 : first4 > second ? 1 : 0;
         }
       };
+      Show2 = {
+        show: function(s) {
+          return JSON.stringify(s);
+        }
+      };
+      isString = function(u) {
+        return typeof u === "string";
+      };
+      toUpperCase = function(s) {
+        return s.toUpperCase();
+      };
+      toLowerCase = function(s) {
+        return s.toLowerCase();
+      };
+      replace = function(searchValue, replaceValue) {
+        return function(s) {
+          return s.replace(searchValue, replaceValue);
+        };
+      };
+      trim = function(s) {
+        return s.trim();
+      };
+      trimLeft = function(s) {
+        return s.trimLeft();
+      };
+      trimRight = function(s) {
+        return s.trimRight();
+      };
+      slice = function(start, end) {
+        return function(s) {
+          return s.slice(start, end);
+        };
+      };
+      isEmpty2 = function(s) {
+        return s.length === 0;
+      };
+      size2 = function(s) {
+        return s.length;
+      };
+      split = function(separator) {
+        return function(s) {
+          var out = s.split(separator);
+          return isNonEmpty2(out) ? out : [s];
+        };
+      };
+      includes = function(searchString, position) {
+        return function(s) {
+          return s.includes(searchString, position);
+        };
+      };
       startsWith = function(searchString, position) {
         return function(s) {
           return s.startsWith(searchString, position);
+        };
+      };
+      endsWith = function(searchString, position) {
+        return function(s) {
+          return s.endsWith(searchString, position);
         };
       };
     }
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyRecord.js
-  function deleteAt2(k) {
+  function deleteAt3(k) {
     return function(r) {
       if (!has.call(r, k)) {
         return r;
@@ -3567,11 +3709,11 @@ var sort;
       return out;
     };
   }
-  var isEmpty2, upsertAt, has2, union4, insertAt2;
+  var isEmpty3, upsertAt, has2, union4, insertAt3;
   var init_ReadonlyRecord = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyRecord.js"() {
       init_internal();
-      isEmpty2 = function(r) {
+      isEmpty3 = function(r) {
         for (var k in r) {
           if (has.call(r, k)) {
             return false;
@@ -3595,10 +3737,10 @@ var sort;
       union4 = function(M) {
         return function(second) {
           return function(first4) {
-            if (isEmpty2(first4)) {
+            if (isEmpty3(first4)) {
               return second;
             }
-            if (isEmpty2(second)) {
+            if (isEmpty3(second)) {
               return first4;
             }
             var out = {};
@@ -3618,12 +3760,12 @@ var sort;
           };
         };
       };
-      insertAt2 = upsertAt;
+      insertAt3 = upsertAt;
     }
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Record.js
-  var __assign, isEmpty3, lookup4, mapWithIndex3, union5, getUnionSemigroup2;
+  var __assign, isEmpty4, lookup4, mapWithIndex3, union5, getUnionSemigroup2;
   var init_Record = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Record.js"() {
       init_ReadonlyRecord();
@@ -3639,17 +3781,17 @@ var sort;
         };
         return __assign.apply(this, arguments);
       };
-      isEmpty3 = isEmpty2;
+      isEmpty4 = isEmpty3;
       lookup4 = lookup3;
       mapWithIndex3 = mapWithIndex2;
       union5 = function(M) {
         var unionM = union4(M);
         return function(second) {
           return function(first4) {
-            if (isEmpty3(first4)) {
+            if (isEmpty4(first4)) {
               return __assign({}, second);
             }
-            if (isEmpty3(second)) {
+            if (isEmpty4(second)) {
               return __assign({}, first4);
             }
             return unionM(second)(first4);
@@ -3675,6 +3817,7 @@ var sort;
       init_number();
       init_Option();
       init_Ord();
+      init_string();
       init_Task();
     }
   });
@@ -3741,7 +3884,7 @@ var sort;
         };
       };
       exports.getSemigroup = getSemigroup6;
-      var getMonoid7 = function(M) {
+      var getMonoid8 = function(M) {
         var getSemigroupM = (0, exports.getSemigroup)(M);
         return function() {
           return {
@@ -3752,7 +3895,7 @@ var sort;
           };
         };
       };
-      exports.getMonoid = getMonoid7;
+      exports.getMonoid = getMonoid8;
       var getSemiring = function(S) {
         return {
           add: function(f4, g) {
@@ -3800,18 +3943,18 @@ var sort;
       }
       exports.identity = identity3;
       exports.unsafeCoerce = identity3;
-      function constant5(a) {
+      function constant6(a) {
         return function() {
           return a;
         };
       }
-      exports.constant = constant5;
-      exports.constTrue = constant5(true);
-      exports.constFalse = constant5(false);
-      exports.constNull = constant5(null);
-      exports.constUndefined = constant5(void 0);
+      exports.constant = constant6;
+      exports.constTrue = constant6(true);
+      exports.constFalse = constant6(false);
+      exports.constNull = constant6(null);
+      exports.constUndefined = constant6(void 0);
       exports.constVoid = exports.constUndefined;
-      function flip4(f4) {
+      function flip6(f4) {
         return function() {
           var args = [];
           for (var _i = 0; _i < arguments.length; _i++) {
@@ -3825,8 +3968,8 @@ var sort;
           };
         };
       }
-      exports.flip = flip4;
-      function flow3(ab, bc, cd, de, ef, fg, gh, hi, ij) {
+      exports.flip = flip6;
+      function flow5(ab, bc, cd, de, ef, fg, gh, hi, ij) {
         switch (arguments.length) {
           case 1:
             return ab;
@@ -3865,7 +4008,7 @@ var sort;
         }
         return;
       }
-      exports.flow = flow3;
+      exports.flow = flow5;
       function tuple3() {
         var t = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -3902,7 +4045,7 @@ var sort;
         };
       }
       exports.untupled = untupled;
-      function pipe4(a, ab, bc, cd, de, ef, fg, gh, hi) {
+      function pipe6(a, ab, bc, cd, de, ef, fg, gh, hi) {
         switch (arguments.length) {
           case 1:
             return a;
@@ -3931,7 +4074,7 @@ var sort;
           }
         }
       }
-      exports.pipe = pipe4;
+      exports.pipe = pipe6;
       exports.hole = absurd;
       var SK2 = function(_, b) {
         return b;
@@ -3946,7 +4089,7 @@ var sort;
       var getEndomorphismMonoid = function() {
         return {
           concat: function(first4, second) {
-            return flow3(first4, second);
+            return flow5(first4, second);
           },
           empty: identity3
         };
@@ -4036,14 +4179,14 @@ var sort;
         return as5.length > 0;
       };
       exports.isNonEmpty = isNonEmpty6;
-      var head6 = function(as5) {
+      var head7 = function(as5) {
         return as5[0];
       };
-      exports.head = head6;
-      var tail5 = function(as5) {
+      exports.head = head7;
+      var tail6 = function(as5) {
         return as5.slice(1);
       };
-      exports.tail = tail5;
+      exports.tail = tail6;
       exports.emptyReadonlyArray = [];
       exports.emptyRecord = {};
       exports.has = Object.prototype.hasOwnProperty;
@@ -4130,14 +4273,14 @@ var sort;
       "use strict";
       Object.defineProperty(exports, "__esModule", { value: true });
       exports.concatAll = exports.endo = exports.filterSecond = exports.filterFirst = exports.reverse = void 0;
-      var reverse6 = function(M) {
+      var reverse8 = function(M) {
         return {
           concat: function(first4, second) {
             return M.concat(second, first4);
           }
         };
       };
-      exports.reverse = reverse6;
+      exports.reverse = reverse8;
       var filterFirst = function(predicate) {
         return function(M) {
           return {
@@ -4236,7 +4379,7 @@ var sort;
           return a === b;
         }
       };
-      var empty4 = {
+      var empty5 = {
         equals: function() {
           return true;
         }
@@ -4251,13 +4394,13 @@ var sort;
         };
       };
       exports.getSemigroup = getSemigroup6;
-      var getMonoid7 = function() {
+      var getMonoid8 = function() {
         return {
           concat: (0, exports.getSemigroup)().concat,
-          empty: empty4
+          empty: empty5
         };
       };
-      exports.getMonoid = getMonoid7;
+      exports.getMonoid = getMonoid8;
       exports.Contravariant = {
         URI: exports.URI,
         contramap: contramap_2
@@ -4317,12 +4460,12 @@ var sort;
         });
       };
       exports.tuple = tuple3;
-      var reverse6 = function(O) {
+      var reverse8 = function(O) {
         return (0, exports.fromCompare)(function(first4, second) {
           return O.compare(second, first4);
         });
       };
-      exports.reverse = reverse6;
+      exports.reverse = reverse8;
       var contramap_2 = function(fa, f4) {
         return (0, function_1.pipe)(fa, (0, exports.contramap)(f4));
       };
@@ -4346,7 +4489,7 @@ var sort;
         };
       };
       exports.getSemigroup = getSemigroup6;
-      var getMonoid7 = function() {
+      var getMonoid8 = function() {
         return {
           concat: (0, exports.getSemigroup)().concat,
           empty: (0, exports.fromCompare)(function() {
@@ -4354,7 +4497,7 @@ var sort;
           })
         };
       };
-      exports.getMonoid = getMonoid7;
+      exports.getMonoid = getMonoid8;
       exports.Contravariant = {
         URI: exports.URI,
         contramap: contramap_2
@@ -4395,18 +4538,18 @@ var sort;
         };
       };
       exports.geq = geq2;
-      var min4 = function(O) {
+      var min5 = function(O) {
         return function(first4, second) {
           return first4 === second || O.compare(first4, second) < 1 ? first4 : second;
         };
       };
-      exports.min = min4;
-      var max4 = function(O) {
+      exports.min = min5;
+      var max6 = function(O) {
         return function(first4, second) {
           return first4 === second || O.compare(first4, second) > -1 ? first4 : second;
         };
       };
-      exports.max = max4;
+      exports.max = max6;
       var clamp2 = function(O) {
         var minO = (0, exports.min)(O);
         var maxO = (0, exports.max)(O);
@@ -4491,26 +4634,26 @@ var sort;
       var _ = __importStar(require_internal());
       var M = __importStar(require_Magma());
       var Or = __importStar(require_Ord());
-      var min4 = function(O) {
+      var min5 = function(O) {
         return {
           concat: Or.min(O)
         };
       };
-      exports.min = min4;
-      var max4 = function(O) {
+      exports.min = min5;
+      var max6 = function(O) {
         return {
           concat: Or.max(O)
         };
       };
-      exports.max = max4;
-      var constant5 = function(a) {
+      exports.max = max6;
+      var constant6 = function(a) {
         return {
           concat: function() {
             return a;
           }
         };
       };
-      exports.constant = constant5;
+      exports.constant = constant6;
       exports.reverse = M.reverse;
       var struct2 = function(semigroups) {
         return {
@@ -4554,12 +4697,12 @@ var sort;
         return { concat: function_1.identity };
       };
       exports.first = first4;
-      var last6 = function() {
+      var last7 = function() {
         return { concat: function(_2, y) {
           return y;
         } };
       };
-      exports.last = last6;
+      exports.last = last7;
       exports.concatAll = M.concatAll;
       exports.semigroupVoid = (0, exports.constant)(void 0);
       var getObjectSemigroup = function() {
@@ -4709,9 +4852,9 @@ var sort;
       return lens(function(r) {
         return lookup3(key2, r);
       }, fold(function() {
-        return deleteAt2(key2);
+        return deleteAt3(key2);
       }, function(a) {
-        return insertAt2(key2, a);
+        return insertAt3(key2, a);
       }));
     });
   }
@@ -5098,7 +5241,7 @@ var sort;
               if (r[k] === a || isNone2(lookup3(k, r))) {
                 return r;
               }
-              return insertAt2(k, a)(r);
+              return insertAt3(k, a)(r);
             };
           });
         });
@@ -5127,7 +5270,7 @@ var sort;
   });
 
   // .yarn/__virtual__/monocle-ts-virtual-c3196f52a2/0/cache/monocle-ts-npm-2.3.13-62cec035ff-dddfa5706f.zip/node_modules/monocle-ts/es6/Iso.js
-  var iso2, id, asLens, asPrism, asOptional, asTraversal, compose, reverse5, modify, URI8, Semigroupoid, Category;
+  var iso2, id, asLens, asPrism, asOptional, asTraversal, compose, reverse6, modify, URI8, Semigroupoid, Category;
   var init_Iso = __esm({
     ".yarn/__virtual__/monocle-ts-virtual-c3196f52a2/0/cache/monocle-ts-npm-2.3.13-62cec035ff-dddfa5706f.zip/node_modules/monocle-ts/es6/Iso.js"() {
       init_function();
@@ -5145,7 +5288,7 @@ var sort;
           return iso2(flow(sa.get, ab.get), flow(ab.reverseGet, sa.reverseGet));
         };
       };
-      reverse5 = function(sa) {
+      reverse6 = function(sa) {
         return iso2(sa.reverseGet, sa.get);
       };
       modify = function(f4) {
@@ -5489,7 +5632,7 @@ var sort;
           this.from = this.reverseGet;
         }
         Iso2.prototype.reverse = function() {
-          return fromIso3(reverse5(this));
+          return fromIso3(reverse6(this));
         };
         Iso2.prototype.modify = function(f4) {
           return modify(f4)(this);
@@ -6056,11 +6199,12 @@ var sort;
   });
 
   // shared/fp.tsx
-  var import_Semigroup3, guard42, objConcat2, objConcat, PromiseMchain, is;
+  var import_function23, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, chunckify;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
+      import_function23 = __toESM(require_function(), 1);
       init_Function();
       init_Record();
       import_Semigroup3 = __toESM(require_Semigroup(), 1);
@@ -6069,19 +6213,19 @@ var sort;
       );
       objConcat2 = () => getUnionSemigroup2((0, import_Semigroup3.first)()).concat;
       objConcat = () => Array_exports.reduce({}, objConcat2());
-      PromiseMchain = (f4) => async (fa) => f4(await fa);
+      pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
+      chunckify = (n) => (g) => (0, import_function23.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
     }
   });
 
   // shared/api.tsx
-  var import_function23, fetchAlbumGQL, fetchArtistGQL, fetchTracksSpotAPI50, fetchTracksSpotAPI, fetchPlaylistAPI, fetchArtistLikedTracksSP, fetchTrackLFMAPI;
+  var import_function24, fetchAlbumGQL, fetchArtistGQL, fetchArtistsSpotAPI, fetchTracksSpotAPI, fetchPlaylistAPI, fetchArtistLikedTracksSP, fetchTrackLFMAPI;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_Function();
-      init_Array();
-      import_function23 = __toESM(require_function(), 1);
+      import_function24 = __toESM(require_function(), 1);
       init_fp();
       init_util();
       fetchAlbumGQL = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(
@@ -6096,27 +6240,28 @@ var sort;
           includePrerelease: true
         }
       )).data.artistUnion;
-      fetchTracksSpotAPI50 = async (ids) => (await Spicetify.CosmosAsync.get(
-        `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-      )).tracks;
-      fetchTracksSpotAPI = (0, import_function23.flow)(
-        chunksOf3(50),
-        map(fetchTracksSpotAPI50),
-        (x) => Promise.all(x),
-        PromiseMchain(flatten)
+      fetchArtistsSpotAPI = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(
+          `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`
+        )).artists
+      );
+      fetchTracksSpotAPI = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(
+          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
+        )).tracks
       );
       fetchPlaylistAPI = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
       fetchArtistLikedTracksSP = async (id6) => (await Spicetify.CosmosAsync.get(
         `sp://core-collection/unstable/@/list/tracks/artist/${id6}`
       )).items;
-      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function23.pipe)(
+      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function24.pipe)(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
           artist
         )}&track=${encodeURIComponent(
           trackName
         )}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
         fetch,
-        PromiseMchain(invokeNullary("json"))
+        pMchain(invokeNullary("json"))
       );
     }
   });
@@ -6126,7 +6271,9 @@ var sort;
   var init_parse = __esm({
     "shared/parse.tsx"() {
       "use strict";
-      parseTrackFromAlbum = ({ track }) => ({
+      parseTrackFromAlbum = ({
+        track
+      }) => ({
         albumName: void 0,
         // gets filled in later
         albumUri: void 0,
@@ -6169,7 +6316,7 @@ var sort;
         albumUri: track.album.uri,
         artistName: track.artists[0].name,
         artistUri: track.artists[0].uri,
-        durationMilis: track.duration.milliSeconds,
+        durationMilis: track.duration.milliseconds,
         name: track.name,
         playcount: void 0,
         popularity: void 0,
@@ -6185,7 +6332,7 @@ var sort;
         name: track.name,
         playcount: void 0,
         popularity: track.popularity,
-        releaseDate: track.album.releaseDate,
+        releaseDate: track.album.release_date,
         uri: track.uri
       });
     }
@@ -6206,11 +6353,11 @@ var sort;
   });
 
   // shared/settings.tsx
-  var import_function24, import_react, import_react_dom, SettingsSection;
+  var import_function25, import_react, import_react_dom, SettingsSection;
   var init_settings = __esm({
     "shared/settings.tsx"() {
       "use strict";
-      import_function24 = __toESM(require_function(), 1);
+      import_function25 = __toESM(require_function(), 1);
       import_react = __toESM(require_react(), 1);
       import_react_dom = __toESM(require_react_dom(), 1);
       init_fp();
@@ -6274,7 +6421,7 @@ var sort;
           }
           import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
         };
-        addButton = (nameId, description, text, onClick = import_function24.constVoid, events = {}) => {
+        addButton = (nameId, description, text, onClick = import_function25.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
           events.onClick = onClick;
           this.sectionFields[nameId] = {
@@ -6286,7 +6433,7 @@ var sort;
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue, onChange = import_function24.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue, onChange = import_function25.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
@@ -6298,7 +6445,7 @@ var sort;
           };
           return this;
         };
-        addInput = (nameId, description, defaultValue, onChange = import_function24.constVoid, inputType = "text", events = {}) => {
+        addInput = (nameId, description, defaultValue, onChange = import_function25.constVoid, inputType = "text", events = {}) => {
           const id6 = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
@@ -6311,7 +6458,7 @@ var sort;
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function24.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function25.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
@@ -6484,6 +6631,83 @@ var sort;
     }
   });
 
+  // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/ReadonlyArray.js
+  var import_function26, import_Semigroup4, none3, join, sum, product, median, moveFrom, moveTo, dropRightWhile, takeRightWhile, minimum, maximum, fromIterable;
+  var init_ReadonlyArray2 = __esm({
+    ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/ReadonlyArray.js"() {
+      import_function26 = __toESM(require_function());
+      init_Predicate();
+      init_number();
+      init_ReadonlyNonEmptyArray();
+      init_ReadonlyArray();
+      init_Option();
+      init_Monoid();
+      import_Semigroup4 = __toESM(require_Semigroup());
+      init_Function();
+      none3 = (0, import_function26.flow)(not, (p3) => every(p3));
+      join = (x) => invoke("join")([x]);
+      sum = concatAll4(MonoidSum);
+      product = concatAll4(MonoidProduct);
+      median = (0, import_function26.flow)(sort(Ord), (xs) => {
+        const i = xs.length / 2;
+        return i % 1 === 0 ? (xs[i - 1] + xs[i]) / 2 : xs[Math.floor(i)];
+      });
+      moveFrom = (from) => (to) => (xs) => from >= xs.length || to >= xs.length ? none2 : from === to ? some3(xs) : (0, import_function26.pipe)(xs, lookup(from), chain2((x) => (0, import_function26.pipe)(deleteAt(from)(xs), chain2(insertAt(to, x)))));
+      moveTo = (0, import_function26.flip)(moveFrom);
+      dropRightWhile = (f4) => (0, import_function26.flow)(reverse3, dropLeftWhile(f4), reverse3);
+      takeRightWhile = (f4) => (0, import_function26.flow)(reverse3, takeLeftWhile(f4), reverse3);
+      minimum = (0, import_function26.flow)(import_Semigroup4.min, concatAll3);
+      maximum = (0, import_function26.flow)(import_Semigroup4.max, concatAll3);
+      fromIterable = Array.from;
+    }
+  });
+
+  // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/String.js
+  var import_function27, import_Ord3, prepend4, append5, takeLeft3, takeRight3, under, reverse7, lines, unlines, test, dropLeft3, dropRight2, dropRightWhile2, head6, tail5, last6, init4, takeLeftWhile3, takeRightWhile2, isAlpha, isAlphaNum, isLower, isUpper, isSpace, words, unwords;
+  var init_String = __esm({
+    ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/String.js"() {
+      import_function27 = __toESM(require_function());
+      init_Predicate();
+      init_Option();
+      init_ReadonlyArray();
+      init_string();
+      init_ReadonlyArray2();
+      import_Ord3 = __toESM(require_Ord());
+      init_number();
+      init_Function();
+      prepend4 = (prepended) => (rest) => prepended + rest;
+      append5 = (0, import_function27.flip)(prepend4);
+      takeLeft3 = (n) => slice(0, (0, import_Ord3.max)(Ord)(0, n));
+      takeRight3 = (n) => (x) => slice((0, import_Ord3.max)(Ord)(0, x.length - Math.floor(n)), Infinity)(x);
+      under = (f4) => (0, import_function27.flow)(split(""), f4, join(""));
+      reverse7 = under(reverse3);
+      lines = split(/\r\n|\r|\n/);
+      unlines = join("\n");
+      test = (r) => (x) => {
+        const lastIndex = r.lastIndex;
+        const res = r.test(x);
+        r.lastIndex = lastIndex;
+        return res;
+      };
+      dropLeft3 = (n) => invoke("substring")([n]);
+      dropRight2 = (n) => (x) => (0, import_function27.pipe)(x, invoke("substring")([0, x.length - Math.floor(n)]));
+      dropRightWhile2 = (0, import_function27.flow)(dropRightWhile, under);
+      head6 = (0, import_function27.flow)(fromPredicate2(not(isEmpty2)), map2(takeLeft3(1)));
+      tail5 = (0, import_function27.flow)(fromPredicate2(not(isEmpty2)), map2(dropLeft3(1)));
+      last6 = (0, import_function27.flow)(fromPredicate2(not(isEmpty2)), map2(takeRight3(1)));
+      init4 = (0, import_function27.flow)(fromPredicate2(not(isEmpty2)), map2(dropRight2(1)));
+      takeLeftWhile3 = (0, import_function27.flow)((f4) => takeLeftWhile(f4), under);
+      takeRightWhile2 = (0, import_function27.flow)(takeRightWhile, under);
+      isAlpha = test(/^\p{Alpha}+$/u);
+      isAlphaNum = test(/^(\p{Alpha}|\p{Number})+$/u);
+      isLower = test(/^\p{Lower}+$/u);
+      isUpper = test(/^\p{Upper}+$/u);
+      isSpace = test(/^\s+$/);
+      words = split(/\s/);
+      unwords = join(" ");
+    }
+  });
+
   // extensions/sort-plus/app.tsx
   var app_exports = {};
   __export(app_exports, {
@@ -6496,15 +6720,15 @@ var sort;
     sortByProp: () => sortByProp
   });
   async function getArtistTracks(uri) {
-    const parseTracksFromAggregates = (0, import_function25.flow)(
+    const parseTracksFromAggregates = (0, import_function28.flow)(
       Array_exports.map(
-        (0, import_function25.flow)(
+        (0, import_function28.flow)(
           Lens.fromPath()(["releases", "items", 0, "uri"]).get,
           getAlbumTracks
         )
       ),
       (x) => Promise.all(x),
-      PromiseMchain(Array_exports.flatten)
+      pMchain(Array_exports.flatten)
     );
     const disc = (await fetchArtistGQL(uri)).discography;
     const artistTopTracks = disc.topTracks.items;
@@ -6521,16 +6745,16 @@ var sort;
     const add = (tracks) => void Array.prototype.push.apply(allTracks, tracks);
     if (CONFIG.artistTopTracks)
       add(
-        (0, import_function25.pipe)(
+        (0, import_function28.pipe)(
           artistTopTracks,
-          Array_exports.map((0, import_function25.flow)(lookup4("track"), Option_exports.map(parseTopTrackFromArtist))),
+          Array_exports.map((0, import_function28.flow)(lookup4("track"), Option_exports.map(parseTopTrackFromArtist))),
           Array_exports.sequence(Option_exports.Applicative),
-          Option_exports.getOrElse((0, import_function25.constant)([]))
+          Option_exports.getOrElse((0, import_function28.constant)([]))
         )
       );
     if (CONFIG.artistPopularReleases)
       add(
-        await (0, import_function25.pipe)(
+        await (0, import_function28.pipe)(
           artistPopularReleases,
           formatUrisAsAggregates,
           parseTracksFromAggregates
@@ -6544,15 +6768,15 @@ var sort;
       add(await parseTracksFromAggregates(artistCompilations));
     if (CONFIG.artistLikedTracks)
       add(
-        await (0, import_function25.pipe)(
+        await (0, import_function28.pipe)(
           parseUri(uri).id,
           fetchArtistLikedTracksSP,
-          PromiseMchain(Array_exports.map(parseTrackFromArtistLikedTracksSP))
+          pMchain(Array_exports.map(parseTrackFromArtistLikedTracksSP))
         )
       );
     return allTracks;
   }
-  var import_function25, app_default, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, queue, sortByProp, showIn, showAlways, createSortByPropSubmenu;
+  var import_function28, app_default, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, queue, sortByProp, showIn, showAlways, createSortByPropSubmenu;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6561,7 +6785,7 @@ var sort;
       init_Record2();
       init_NonEmptyArray();
       init_Record();
-      import_function25 = __toESM(require_function(), 1);
+      import_function28 = __toESM(require_function(), 1);
       init_string();
       init_es62();
       init_api();
@@ -6569,10 +6793,12 @@ var sort;
       init_parse();
       init_util();
       init_settings2();
+      init_String();
       app_default = {};
       SortBy = /* @__PURE__ */ ((SortBy2) => {
         SortBy2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
         SortBy2["SPOTIFY_POPULARITY"] = "Spotify - Popularity";
+        SortBy2["SPOTIFY_RELEASEDATE"] = "Spotify - Release Date";
         SortBy2["LASTFM_SCROBBLES"] = "LastFM - Scrobbles";
         SortBy2["LASTFM_PERSONALSCROBBLES"] = "LastFM - My Scrobbles";
         SortBy2["LASTFM_PLAYCOUNT"] = "LastFM - Play Count";
@@ -6581,6 +6807,7 @@ var sort;
       SortProp = /* @__PURE__ */ ((SortProp2) => {
         SortProp2["Spotify - Play Count"] = "playcount";
         SortProp2["Spotify - Popularity"] = "popularity";
+        SortProp2["Spotify - Release Date"] = "releaseDate";
         SortProp2["LastFM - Scrobbles"] = "scrobbles";
         SortProp2["LastFM - My Scrobbles"] = "personalScrobbles";
         SortProp2["LastFM - Play Count"] = "lastfmPlaycount";
@@ -6589,10 +6816,10 @@ var sort;
       getAlbumTracks = async (uri) => {
         const albumRes = await fetchAlbumGQL(uri);
         const releaseDate = albumRes.date.isoString.split("T")[0];
-        return (0, import_function25.pipe)(
+        return (0, import_function28.pipe)(
           albumRes.tracks.items,
           Array_exports.map(
-            (0, import_function25.flow)(
+            (0, import_function28.flow)(
               parseTrackFromAlbum,
               Lens.fromProp()("albumUri").set(albumRes.uri),
               Lens.fromProp()("albumName").set(albumRes.name),
@@ -6601,16 +6828,16 @@ var sort;
           )
         );
       };
-      getPlaylistTracks = (0, import_function25.flow)(
+      getPlaylistTracks = (0, import_function28.flow)(
         fetchPlaylistAPI,
-        PromiseMchain(Array_exports.map(parseTrackFromPlaylistAPI))
+        pMchain(Array_exports.map(parseTrackFromPlaylistAPI))
       );
-      fetchAPITracksFromTracks = (0, import_function25.flow)(
+      fetchAPITracksFromTracks = (0, import_function28.flow)(
         Array_exports.map((track) => parseUri(track.uri).id),
         fetchTracksSpotAPI,
-        PromiseMchain(Array_exports.map(parseTrackFromSpotifyAPI))
+        pMchain(Array_exports.map(parseTrackFromSpotifyAPI))
       );
-      fetchAlbumTracksFromTracks = (0, import_function25.flow)(
+      fetchAlbumTracksFromTracks = (0, import_function28.flow)(
         groupBy((track) => track.albumUri),
         mapWithIndex3(async (albumUri, tracks) => {
           const albumTracks = await getAlbumTracks(albumUri);
@@ -6620,12 +6847,12 @@ var sort;
         }),
         values,
         (x) => Promise.all(x),
-        PromiseMchain(Array_exports.flatten)
+        pMchain(Array_exports.flatten)
       );
-      populateTracksSpot = (propName) => (tracks) => (0, import_function25.pipe)(
+      populateTracksSpot = (propName) => (tracks) => (0, import_function28.pipe)(
         tracks,
         Array_exports.filter(
-          (0, import_function25.flow)(
+          (0, import_function28.flow)(
             Optional.fromNullableProp()(SortProp[propName]).getOption,
             Option_exports.isNone
           )
@@ -6633,17 +6860,21 @@ var sort;
         guard4([
           [
             startsWith("Spotify - Play Count" /* SPOTIFY_PLAYCOUNT */),
-            (0, import_function25.constant)(fetchAlbumTracksFromTracks)
+            (0, import_function28.constant)(fetchAlbumTracksFromTracks)
           ],
           [
-            startsWith("Spotify - Popularity" /* SPOTIFY_POPULARITY */),
-            (0, import_function25.constant)(fetchAPITracksFromTracks)
+            test(
+              new RegExp(
+                `/^(?:${"Spotify - Popularity" /* SPOTIFY_POPULARITY */})(?:${"Spotify - Release Date" /* SPOTIFY_RELEASEDATE */})/`
+              )
+            ),
+            (0, import_function28.constant)(fetchAPITracksFromTracks)
           ]
-        ])((0, import_function25.constant)(Task_exports.of([])))(propName),
-        PromiseMchain(Array_exports.concat(tracks)),
-        PromiseMchain(groupBy(Lens.fromProp()("uri").get)),
-        PromiseMchain(values),
-        PromiseMchain(Array_exports.map(objConcat()))
+        ])((0, import_function28.constant)(Task_exports.of([])))(propName),
+        pMchain(Array_exports.concat(tracks)),
+        pMchain(groupBy(Lens.fromProp()("uri").get)),
+        pMchain(values),
+        pMchain(Array_exports.map(objConcat()))
       );
       populateTrackLastFM = async (track) => {
         const lastfmTrack = (await fetchTrackLFMAPI(
@@ -6665,29 +6896,37 @@ var sort;
         [startsWith("Spotify"), populateTracksSpot],
         [
           startsWith("LastFM"),
-          (0, import_function25.constant)((0, import_function25.flow)(Array_exports.map(populateTrackLastFM), (x) => Promise.all(x)))
+          (0, import_function28.constant)((0, import_function28.flow)(Array_exports.map(populateTrackLastFM), (x) => Promise.all(x)))
         ]
-      ])((0, import_function25.constant)(Task_exports.of([])));
+      ])((0, import_function28.constant)(Task_exports.of([])));
       queue = new Array();
       sortByProp = (name) => async (uri) => {
         const prop2 = SortProp[name];
         const toProp = Optional.fromNullableProp()(prop2).getOption;
-        queue = await (0, import_function25.pipe)(
+        queue = await (0, import_function28.pipe)(
           uri,
           fetchTracks,
-          PromiseMchain(populateTracks(name)),
-          PromiseMchain(Array_exports.filter((0, import_function25.flow)(toProp, Option_exports.isSome))),
-          PromiseMchain(
-            Array_exports.sort(
-              (0, import_function25.pipe)(
-                number_exports.Ord,
-                Ord_exports.contramap((0, import_function25.flow)(toProp, Option_exports.getOrElse((0, import_function25.constant)(-1))))
+          pMchain(populateTracks(name)),
+          pMchain(
+            Array_exports.map(
+              (x) => (0, import_function28.pipe)(x, toProp, Option_exports.isSome) ? Option_exports.some(x) : Option_exports.none
+            )
+          ),
+          pMchain(Array_exports.sequence(Option_exports.Applicative)),
+          pMchain(
+            Option_exports.map(
+              Array_exports.sort(
+                prop2 === SortProp["Spotify - Release Date" /* SPOTIFY_RELEASEDATE */] ? Ord_exports.contramap(
+                  (x) => x[prop2]
+                )(string_exports.Ord) : Ord_exports.contramap(
+                  (x) => x[prop2]
+                )(number_exports.Ord)
               )
             )
           ),
-          (x) => x,
-          PromiseMchain(CONFIG.ascending ? import_function25.identity : Array_exports.reverse),
-          PromiseMchain(Array_exports.append({ uri: "spotify:delimiter" }))
+          pMchain(Option_exports.map(CONFIG.ascending ? import_function28.identity : Array_exports.reverse)),
+          pMchain(Option_exports.map(Array_exports.append({ uri: "spotify:delimiter" }))),
+          pMchain(Option_exports.getOrElse((0, import_function28.constant)([])))
         );
         if (queue.length <= 1)
           return Spicetify.showNotification("Data not available");
@@ -6695,7 +6934,7 @@ var sort;
         await Spicetify.Platform.PlayerAPI.addToQueue(queue);
         Spicetify.Player.next();
       };
-      showIn = (allowedTypes) => ([uri]) => (0, import_function25.pipe)(allowedTypes, Array_exports.some((0, import_function25.flip)(startsWith)(uri)));
+      showIn = (allowedTypes) => ([uri]) => (0, import_function28.pipe)(allowedTypes, Array_exports.some((0, import_function28.flip)(startsWith)(uri)));
       showAlways = showIn([
         "spotify:album" /* ALBUM */,
         "spotify:artist" /* ARTIST */,
@@ -6703,7 +6942,7 @@ var sort;
       ]);
       createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(
         name,
-        (0, import_function25.tupled)(sortByProp(name)),
+        (0, import_function28.tupled)(sortByProp(name)),
         showAlways,
         icon,
         false
@@ -6723,7 +6962,7 @@ var sort;
   // extensions/sort-plus/entry.tsx
   init_es6();
   init_Record();
-  var import_function26 = __toESM(require_function(), 1);
+  var import_function29 = __toESM(require_function(), 1);
   init_util();
   (async () => {
     const mustLoad = [
@@ -6738,7 +6977,7 @@ var sort;
       "showNotification"
     ];
     let timer = 0;
-    while (mustLoad.some((0, import_function26.flow)((0, import_function26.flip)(lookup4)(Spicetify), Option_exports.isNone)))
+    while (mustLoad.some((0, import_function29.flow)((0, import_function29.flip)(lookup4)(Spicetify), Option_exports.isNone)))
       await sleep(timer += 100);
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();

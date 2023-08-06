@@ -3,10 +3,10 @@ import { prepend } from "fp-ts-std/String"
 import { flow as f, pipe as p } from "fp-ts/function"
 import {
     fetchArtistRelatedGQL,
-    fetchArtistsSpotAPI50,
+    fetchArtistsSpotAPI,
     fetchSoundOfSpotifyPlaylist,
 } from "../../shared/api"
-import { PromiseMchain } from "../../shared/fp"
+import { pMchain } from "../../shared/fp"
 import {
     SpotifyURI,
     SpotifyURIType,
@@ -43,8 +43,8 @@ export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
             )}</a>`
         }),
         x => Promise.all(x),
-        PromiseMchain(a.intercalate(str.Monoid)(`<span>, </span>`)),
-        PromiseMchain(prepend(`<span>Artist Genres : </span>`)),
+        pMchain(a.intercalate(str.Monoid)(`<span>, </span>`)),
+        pMchain(prepend(`<span>Artist Genres : </span>`)),
     )
 
     // remove old genreContainer
@@ -68,9 +68,9 @@ export const getArtistsGenresOrRelated = async (
     const getArtistsGenres: (artistsUris: SpotifyURI[]) => Promise<string[]> =
         f(
             a.map(uri => parseUri(uri).id),
-            fetchArtistsSpotAPI50,
-            PromiseMchain(a.flatMap(artist => artist.genres)),
-            PromiseMchain(a.uniq(str.Eq)),
+            fetchArtistsSpotAPI,
+            pMchain(a.flatMap(artist => artist.genres)),
+            pMchain(a.uniq(str.Eq)),
         )
 
     const allGenres = await getArtistsGenres(artistsUris)
@@ -80,9 +80,9 @@ export const getArtistsGenresOrRelated = async (
         : await p(
               artistsUris[0],
               fetchArtistRelatedGQL,
-              PromiseMchain(a.map(a => a.uri)),
-              PromiseMchain(a.chunksOf(5)),
-              PromiseMchain(
+              pMchain(a.map(a => a.uri)),
+              pMchain(a.chunksOf(5)),
+              pMchain(
                   a.reduce(
                       Promise.resolve([] as string[]),
                       async (acc, arr5uris) =>
