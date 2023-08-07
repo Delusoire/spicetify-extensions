@@ -28,6 +28,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
+            ["@types/mousetrap", "npm:1.6.11"],\
             ["@types/react", "npm:18.2.18"],\
             ["@types/react-dom", "npm:18.2.7"],\
             ["esbuild", "npm:0.18.17"],\
@@ -239,6 +240,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@types/mousetrap", [\
+        ["npm:1.6.11", {\
+          "packageLocation": "./.yarn/cache/@types-mousetrap-npm-1.6.11-379be14158-4465d16b7c.zip/node_modules/@types/mousetrap/",\
+          "packageDependencies": [\
+            ["@types/mousetrap", "npm:1.6.11"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@types/prop-types", [\
         ["npm:15.7.5", {\
           "packageLocation": "./.yarn/cache/@types-prop-types-npm-15.7.5-2aa48aa177-5b43b8b154.zip/node_modules/@types/prop-types/",\
@@ -420,6 +430,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["root-workspace-0b6124", "workspace:."],\
+            ["@types/mousetrap", "npm:1.6.11"],\
             ["@types/react", "npm:18.2.18"],\
             ["@types/react-dom", "npm:18.2.7"],\
             ["esbuild", "npm:0.18.17"],\

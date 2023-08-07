@@ -16,7 +16,16 @@ import { sleep } from "../../shared/util"
     ]
 
     let timer = 0
-    while (mustLoad.some(f(flip(lookup)(Spicetify), o.isNone)))
+    while (
+        mustLoad.some(
+            f(
+                flip<string, typeof Spicetify, o.Option<any>>(lookup)(
+                    Spicetify,
+                ),
+                o.isNone,
+            ),
+        )
+    )
         await sleep((timer += 100))
 
     await import("./app")

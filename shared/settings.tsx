@@ -58,7 +58,7 @@ export class SettingsSection {
             ".main-view-container__scroll-node-child main div",
         )
         if (!allSettingsContainer)
-            return console.error("[spcr-settings] settings container not found")
+            return console.error("[settings] container not found")
 
         let pluginSettingsContainer = Array.from(
             allSettingsContainer.children,

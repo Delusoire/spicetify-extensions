@@ -3214,7 +3214,14 @@ var play;
   (async () => {
     const mustLoad = ["ContextMenu", "CosmosAsync", "Platform"];
     let timer = 0;
-    while (mustLoad.some((0, import_function10.flow)((0, import_function10.flip)(lookup4)(Spicetify), Option_exports.isNone)))
+    while (mustLoad.some(
+      (0, import_function10.flow)(
+        (0, import_function10.flip)(lookup4)(
+          Spicetify
+        ),
+        Option_exports.isNone
+      )
+    ))
       await sleep(timer += 100);
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();

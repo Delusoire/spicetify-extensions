@@ -3,7 +3,7 @@ import { lookup } from "fp-ts/Record"
 import { flow as f, flip } from "fp-ts/function"
 import { sleep } from "../../shared/util"
 ;(async () => {
-    const mustLoad = ["ContextMenu", "CosmosAsync", "React", "ReactDOM"]
+    const mustLoad = ["Keyboard", "Mousetrap", "Platform", "Player"]
 
     let timer = 0
     while (

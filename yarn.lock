@@ -159,6 +159,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/mousetrap@npm:^1.6.11":
+  version: 1.6.11
+  resolution: "@types/mousetrap@npm:1.6.11"
+  checksum: 4465d16b7c20ab52d2f6b7fe8087e8f16101472f2e8758f01c63591015c1b0a67c9e6c371d978f24d5f37c4b83457515571489284bf7c7c844eb6c8f2527685b
+  languageName: node
+  linkType: hard
+
 "@types/prop-types@npm:*":
   version: 15.7.5
   resolution: "@types/prop-types@npm:15.7.5"
@@ -325,6 +332,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@types/mousetrap": ^1.6.11
     "@types/react": ^18.2.18
     "@types/react-dom": ^18.2.7
     esbuild: ^0.18.17

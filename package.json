@@ -13,6 +13,7 @@
         "newtype-ts": "^0.3.5"
     },
     "devDependencies": {
+        "@types/mousetrap": "^1.6.11",
         "@types/react": "^18.2.18",
         "@types/react-dom": "^18.2.7",
         "typescript": "^5.1.6"

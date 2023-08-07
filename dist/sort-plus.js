@@ -6266,7 +6266,7 @@ var sort;
             ".main-view-container__scroll-node-child main div"
           );
           if (!allSettingsContainer)
-            return console.error("[spcr-settings] settings container not found");
+            return console.error("[settings] container not found");
           let pluginSettingsContainer = Array.from(
             allSettingsContainer.children
           ).find(({ id: id6 }) => id6 === this.sectionId);
@@ -6747,7 +6747,14 @@ var sort;
       "showNotification"
     ];
     let timer = 0;
-    while (mustLoad.some((0, import_function27.flow)((0, import_function27.flip)(lookup4)(Spicetify), Option_exports.isNone)))
+    while (mustLoad.some(
+      (0, import_function27.flow)(
+        (0, import_function27.flip)(lookup4)(
+          Spicetify
+        ),
+        Option_exports.isNone
+      )
+    ))
       await sleep(timer += 100);
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();
