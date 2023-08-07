@@ -1,5 +1,24 @@
 [
     {
+        "name": "keyboard-shortcuts",
+        "description": "Vim-like keyboard shortcuts for spotify. Now with sneak mode.",
+        "preview": "extensions/keyboard-shortcuts/assets/preview.png",
+        "main": "dist/keyboard-shortcuts.prism.js",
+        "readme": "extensions/keyboard-shortcuts/assets/README.md",
+        "authors": [
+            {
+                "name": "Delusoire",
+                "url": "https://github.com/Delusoire"
+            }
+        ],
+        "tags": [
+            "keybind",
+            "keyboard",
+            "sneak",
+            "vim"
+        ]
+    },
+    {
         "name": "play-enhanced-songs",
         "description": "Play your playlists and others' with enhanced songs",
         "preview": "extensions/play-enhanced-songs/assets/preview.png",
