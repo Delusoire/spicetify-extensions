@@ -5112,10 +5112,10 @@ var show;
   })();
 })();
 (async () => {
-                    if (!document.getElementById(`show-the-genres`)) {
-                        var el = document.createElement("style")
-                        el.id = `show-the-genres`
-                        el.textContent = String.raw`/* extensions/show-the-genres/popup.css */
+    if (!document.getElementById(`show-the-genres-css`)) {
+        const el = document.createElement("style")
+        el.id = `show-the-genres-css`
+        el.textContent = `/* extensions/show-the-genres/popup.css */
 .popup-row::after {
   content: "";
   display: table;
@@ -5248,8 +5248,7 @@ input.small-input {
 }
 .GenericModal[aria-label*="Genres of"] .main-trackCreditsModal-header .tetrax-settings-discord-link:hover {
   color: var(--spice-custom-link-hover);
-}
-`.trim()
-                        document.head.appendChild(el)
-                    }
-                })()
+}`
+        document.head.appendChild(el)
+    }
+})()

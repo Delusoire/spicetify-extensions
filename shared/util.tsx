@@ -1,5 +1,3 @@
-import { Newtype } from "newtype-ts"
-
 // export interface SpotifyID
 //     extends Newtype<{ readonly SpotifyID: unique symbol }, string> {}
 // export interface SpotifyURI

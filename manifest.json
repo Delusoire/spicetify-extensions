@@ -3,7 +3,7 @@
         "name": "play-enhanced-songs",
         "description": "Play your playlists and others' with enhanced songs",
         "preview": "extensions/play-enhanced-songs/assets/preview.png",
-        "main": "dist/play-enhanced-songs.js",
+        "main": "dist/play-enhanced-songs.prism.js",
         "readme": "extensions/play-enhanced-songs/assets/README.md",
         "authors": [
             {
@@ -19,7 +19,7 @@
         "name": "search-on-youtube",
         "description": "Search/Play the music video of the selected track on YouTube",
         "preview": "extensions/search-on-youtube/assets/preview.png",
-        "main": "dist/search-on-youtube.js",
+        "main": "dist/search-on-youtube.prism.js",
         "readme": "extensions/search-on-youtube/assets/README.md",
         "authors": [
             {
@@ -36,7 +36,7 @@
         "name": "show-the-genres",
         "description": "Show the genres for the currently playing track and any artist page",
         "preview": "extensions/show-the-genres/assets/preview.png",
-        "main": "dist/show-the-genres.js",
+        "main": "dist/show-the-genres.prism.js",
         "readme": "extensions/show-the-genres/assets/README.md",
         "authors": [
             {
@@ -53,7 +53,7 @@
         "name": "sort-plus",
         "description": "Sort tracks by Spotify {playcount,popularity} or LastFM {playcount,scrobbles,personal scrobbles}",
         "preview": "extensions/sort-plus/assets/preview.png",
-        "main": "dist/sort-plus.js",
+        "main": "dist/sort-plus.prism.js",
         "readme": "extensions/sort-plus/assets/README.md",
         "authors": [
             {
@@ -71,7 +71,7 @@
         "name": "vaultify",
         "description": "Vault for your playlists and settings (Backup/Restore)",
         "preview": "extensions/vaultify/assets/preview.png",
-        "main": "dist/vaultify.js",
+        "main": "dist/vaultify.prism.js",
         "readme": "extensions/vaultify/assets/README.md",
         "authors": [
             {

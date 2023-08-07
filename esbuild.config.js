@@ -3,12 +3,22 @@ import _externalGlobalPlugin from "esbuild-plugin-external-global"
 const { externalGlobalPlugin } = _externalGlobalPlugin
 import fs from "fs"
 import path from "path"
-import _name from "./package.json" assert { type: "json" }
+
+const wrapInTag = (id, tag, content) =>
+    `(async () => {
+    if (!document.getElementById(\`${id}\`)) {
+        const el = document.createElement("${tag}")
+        el.id = \`${id}\`
+        el.textContent = \`${content}\`
+        document.head.appendChild(el)
+    }
+})()`
 
 const buildExtension = async name => {
     const entryJs = path.join("extensions", name, `entry.tsx`),
         outJs = path.join("dist", `${name}.js`),
-        outCss = path.join("dist", `${name}.css`)
+        outCss = path.join("dist", `${name}.css`),
+        prism = path.join("dist", `${name}.prism.js`)
 
     const bundleCss = () => {
         if (fs.existsSync(outCss)) {
@@ -19,16 +29,18 @@ const buildExtension = async name => {
 
             fs.appendFileSync(
                 outJs,
-                `(async () => {
-                    if (!document.getElementById(\`${name}\`)) {
-                        var el = document.createElement("style")
-                        el.id = \`${name}\`
-                        el.textContent = String.raw\`${css}\`.trim()
-                        document.head.appendChild(el)
-                    }
-                })()`,
+                wrapInTag(`${name}-css`, "style", String.raw`${css}`.trim()),
             )
         }
+
+        fs.writeFileSync(
+            prism,
+            wrapInTag(
+                `${name}-js`,
+                "script",
+                `\${await fetch(\`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/${name}.js\`).then(res => res.json()).then(data => atob(data.content))}`,
+            ),
+        )
     }
 
     await esbuild.build({
