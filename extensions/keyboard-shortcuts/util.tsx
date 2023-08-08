@@ -32,18 +32,19 @@ export const openPage = (page: string) =>
     Spicetify.Platform.History.push({ pathname: page })
 
 export const rotateSidebar = (offset: number) => {
-    const navLinks = document.querySelectorAll(".main-yourLibraryX-navLink")
+    const navLinks = Array.from(
+        document.querySelectorAll(".main-yourLibraryX-navLink").values(),
+    ) as HTMLElement[]
 
     pipe(
         document.querySelector(".main-yourLibraryX-navLinkActive"),
-        active => Array.from(navLinks.values()).findIndex(e => e === active),
+        active => navLinks.findIndex(e => e === active),
         x =>
             pipe(
                 x === -1 && offset <= 0 ? offset : x + offset,
                 Num.mod(navLinks.length),
             ),
-        // @ts-ignore
-        x => navLinks[x].click(),
+        x => (navLinks[x] as HTMLElement).click(),
     )
 }
 

@@ -3512,15 +3512,16 @@ font-weight: 500;
       decVolume = Spicetify.Player.decreaseVolume;
       openPage = (page) => Spicetify.Platform.History.push({ pathname: page });
       rotateSidebar = (offset) => {
-        const navLinks = document.querySelectorAll(".main-yourLibraryX-navLink");
+        const navLinks = Array.from(
+          document.querySelectorAll(".main-yourLibraryX-navLink").values()
+        );
         (0, import_function13.pipe)(
           document.querySelector(".main-yourLibraryX-navLinkActive"),
-          (active) => Array.from(navLinks.values()).findIndex((e) => e === active),
+          (active) => navLinks.findIndex((e) => e === active),
           (x) => (0, import_function13.pipe)(
             x === -1 && offset <= 0 ? offset : x + offset,
             mod(navLinks.length)
           ),
-          // @ts-ignore
           (x) => navLinks[x].click()
         );
       };
@@ -3553,7 +3554,10 @@ font-weight: 500;
       registerBind("G", false, false, false, appScrollTop);
       registerBind("G", false, true, false, appScrollBottom);
       registerBind("M", false, false, false, Spicetify.Player.toggleHeart);
-      registerBind("/", false, false, false, () => openPage("/search"));
+      registerBind("/", false, false, false, (e) => {
+        e.preventDefault();
+        openPage("/search");
+      });
       if (window.navigator.userAgent.indexOf("Win") === -1) {
         registerBind("ARROW_RIGHT", true, false, false, nextSong);
         registerBind("ARROW_LEFT", true, false, false, prevSong);

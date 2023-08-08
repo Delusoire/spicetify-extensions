@@ -48,7 +48,10 @@ registerBind("G", false, true, false, appScrollBottom)
 registerBind("M", false, false, false, Spicetify.Player.toggleHeart)
 
 // Forward Slash to open search page
-registerBind("/", false, false, false, () => openPage("/search"))
+registerBind("/", false, false, false, e => {
+    e.preventDefault()
+    openPage("/search")
+})
 
 if (window.navigator.userAgent.indexOf("Win") === -1) {
     // CTRL + Arrow Left Next and CTRL + Arrow Right  Previous Song
