@@ -3333,18 +3333,8 @@ var keyboard;
         listeningToSneakBinds = false;
       };
       clickElement = (element) => {
-        if (element.hasAttribute("href") || element.tagName === "BUTTON")
+        if (element.hasAttribute("href") || element.tagName === "BUTTON" || element.getAttribute("role") === "button")
           return void element.click();
-        (0, import_function10.pipe)(
-          [`button[data-ta-id="play-button"]`, `button[data-button="play"]`],
-          Array_exports.reduce(
-            null,
-            (e, sel) => e ?? element.querySelector(sel)
-          ),
-          (altBtn) => altBtn instanceof HTMLButtonElement ? altBtn.click() : alert(
-            "Let me know where you found this button, please. I can't click this for you without that information."
-          )
-        );
       };
       listenSneakKeys = (event) => {
         if (!listeningToSneakBinds) {

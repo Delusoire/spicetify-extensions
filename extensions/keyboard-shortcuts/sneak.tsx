@@ -90,22 +90,26 @@ export const quitSneak = (event: KeyboardEvent) => {
 }
 
 export const clickElement = (element: HTMLElement) => {
-    if (element.hasAttribute("href") || element.tagName === "BUTTON")
+    if (
+        element.hasAttribute("href") ||
+        element.tagName === "BUTTON" ||
+        element.getAttribute("role") === "button"
+    )
         return void element.click()
 
-    pipe(
-        [`button[data-ta-id="play-button"]`, `button[data-button="play"]`],
-        a.reduce(
-            null as Element | null,
-            (e, sel) => e ?? element.querySelector(sel),
-        ),
-        altBtn =>
-            altBtn instanceof HTMLButtonElement
-                ? altBtn.click()
-                : alert(
-                      "Let me know where you found this button, please. I can't click this for you without that information.",
-                  ),
-    )
+    // pipe(
+    //     [],
+    //     a.reduce(
+    //         null as Element | null,
+    //         (e, sel) => e ?? element.querySelector(sel),
+    //     ),
+    //     altBtn =>
+    //         altBtn instanceof HTMLButtonElement
+    //             ? altBtn.click()
+    //             : alert(
+    //                   "Let me know where you found this button, please. I can't click this for you without that information.",
+    //               ),
+    // )
 }
 
 export const listenSneakKeys = (event: KeyboardEvent) => {
