@@ -3309,7 +3309,7 @@ var keyboard;
           }
         };
         const sneakKeysFragment = document.createDocumentFragment();
-        const linkSelector = "[href],button";
+        const linkSelector = `[href],button,[role="button"]`;
         shouldListenToSneakBinds = (0, import_function10.pipe)(
           document.querySelectorAll(linkSelector),
           (x) => Array.from(x),

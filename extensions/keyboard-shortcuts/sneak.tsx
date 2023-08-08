@@ -63,7 +63,7 @@ export const enterSneak = (event: KeyboardEvent) => {
     }
 
     const sneakKeysFragment = document.createDocumentFragment()
-    const linkSelector = "[href],button"
+    const linkSelector = `[href],button,[role="button"]`
 
     shouldListenToSneakBinds = pipe(
         document.querySelectorAll(linkSelector),
@@ -96,20 +96,6 @@ export const clickElement = (element: HTMLElement) => {
         element.getAttribute("role") === "button"
     )
         return void element.click()
-
-    // pipe(
-    //     [],
-    //     a.reduce(
-    //         null as Element | null,
-    //         (e, sel) => e ?? element.querySelector(sel),
-    //     ),
-    //     altBtn =>
-    //         altBtn instanceof HTMLButtonElement
-    //             ? altBtn.click()
-    //             : alert(
-    //                   "Let me know where you found this button, please. I can't click this for you without that information.",
-    //               ),
-    // )
 }
 
 export const listenSneakKeys = (event: KeyboardEvent) => {
