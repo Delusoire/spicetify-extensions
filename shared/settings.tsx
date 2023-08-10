@@ -24,22 +24,18 @@ export class SettingsSection {
 
         if (this.stopHistoryListener) this.stopHistoryListener()
 
-        this.stopHistoryListener = Spicetify.Platform.History.listen(
-            ({ pathname = "" }) => {
-                if (pathname === "/preferences") this.render()
-            },
-        )
+        this.stopHistoryListener = Spicetify.Platform.History.listen(({ pathname = "" }) => {
+            if (pathname === "/preferences") this.render()
+        })
 
-        if (Spicetify.Platform.History.location.pathname === "/preferences")
-            await this.render()
+        if (Spicetify.Platform.History.location.pathname === "/preferences") await this.render()
     }
 
     toObject = () =>
         new Proxy(
             {},
             {
-                get: (target, prop) =>
-                    SettingsSection.getFieldValue(this.getId(prop.toString())),
+                get: (target, prop) => SettingsSection.getFieldValue(this.getId(prop.toString())),
             },
         )
 
@@ -49,26 +45,19 @@ export class SettingsSection {
 
     private render = async () => {
         while (!document.getElementById("desktop.settings.selectLanguage")) {
-            if (Spicetify.Platform.History.location.pathname !== "/preferences")
-                return
+            if (Spicetify.Platform.History.location.pathname !== "/preferences") return
             await sleep(100)
         }
 
-        const allSettingsContainer = document.querySelector(
-            ".main-view-container__scroll-node-child main div",
-        )
-        if (!allSettingsContainer)
-            return console.error("[settings] container not found")
+        const allSettingsContainer = document.querySelector(".main-view-container__scroll-node-child main div")
+        if (!allSettingsContainer) return console.error("[settings] container not found")
 
-        let pluginSettingsContainer = Array.from(
-            allSettingsContainer.children,
-        ).find(({ id }) => id === this.sectionId)
+        let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.sectionId)
 
         if (!pluginSettingsContainer) {
             pluginSettingsContainer = document.createElement("div")
             pluginSettingsContainer.id = this.sectionId
             pluginSettingsContainer.className = "settingsContainer"
-
             allSettingsContainer.appendChild(pluginSettingsContainer)
         }
 
@@ -79,9 +68,7 @@ export class SettingsSection {
         nameId: string,
         description: string,
         text: string,
-        onClick: (
-            e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-        ) => void = constVoid,
+        onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void = constVoid,
         events: ButtonField["events"] = {},
     ) => {
         const id = this.getId(nameId)
@@ -182,9 +169,7 @@ export class SettingsSection {
     getId = (nameId: string) => `extensions:${this.sectionId}:${nameId}`
 
     private useStateFor = <A,>(id: string) => {
-        const [value, setValueState] = useState(
-            SettingsSection.getFieldValue<A>(id),
-        )
+        const [value, setValueState] = useState(SettingsSection.getFieldValue<A>(id))
 
         return [
             value,
@@ -194,7 +179,7 @@ export class SettingsSection {
                     SettingsSection.setFieldValue(id!, newValue)
                 }
             },
-        ] as [A, (newValue: A) => void]
+        ] as const
     }
 
     static getFieldValue = <R,>(id: string): R => {
@@ -206,8 +191,7 @@ export class SettingsSection {
     }
 
     private static setDefaultFieldValue = (id: string, defaultValue: any) => {
-        if (SettingsSection.getFieldValue(id) === undefined)
-            SettingsSection.setFieldValue(id, defaultValue)
+        if (SettingsSection.getFieldValue(id) === undefined) SettingsSection.setFieldValue(id, defaultValue)
     }
 
     private FieldsContainer = () => {
@@ -216,9 +200,7 @@ export class SettingsSection {
 
         return (
             <div className="x-settings-section" key={rerender}>
-                <h2 className="Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type">
-                    {this.name}
-                </h2>
+                <h2 className="Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type">{this.name}</h2>
                 {Object.entries(this.sectionFields).map(([nameId, field]) => {
                     return <this.Field field={field} />
                 })}
@@ -231,16 +213,10 @@ export class SettingsSection {
 
         return (
             <div className="x-settings-row">
-                <this.SettingDescription
-                    id={field.id}
-                    description={field.description}
-                />
+                <this.SettingDescription id={field.id} description={field.description} />
                 <div className="x-settings-secondColumn">
                     {guard4([
-                        [
-                            isType<InputField>(FieldType.INPUT),
-                            this.SettingInputField,
-                        ],
+                        [isType<InputField>(FieldType.INPUT), this.SettingInputField],
                         [isType(FieldType.BUTTON), this.SettingButtonField],
                         [isType(FieldType.TOGGLE), this.SettingToggleField],
                         [isType(FieldType.DROPDOWN), this.SettingDropdownField],
@@ -250,18 +226,9 @@ export class SettingsSection {
         )
     }
 
-    private SettingDescription = ({
-        id,
-        description,
-    }: {
-        id: string
-        description: string
-    }) => (
+    private SettingDescription = ({ id, description }: { id: string; description: string }) => (
         <div className="x-settings-firstColumn">
-            <label
-                className="Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type"
-                htmlFor={id}
-            >
+            <label className="Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type" htmlFor={id}>
                 {description}
             </label>
         </div>
@@ -335,10 +302,7 @@ export class SettingsSection {
                 }}
             >
                 {field.options.map((option, i) => (
-                    <option
-                        selected={i === SettingsSection.getFieldValue(field.id)}
-                        value={i + 1}
-                    >
+                    <option selected={i === SettingsSection.getFieldValue(field.id)} value={i + 1}>
                         {option}
                     </option>
                 ))}
@@ -390,9 +354,4 @@ export interface HiddenField extends BaseField<any> {
     type: FieldType.HIDDEN
 }
 
-export type SettingsField =
-    | HiddenField
-    | DropdownField
-    | InputField
-    | ButtonField
-    | ToggleField
+export type SettingsField = HiddenField | DropdownField | InputField | ButtonField | ToggleField

@@ -9,8 +9,7 @@ export const mousetrap: MousetrapInstance = Spicetify.Mousetrap() as any
 
 export const keyList = "abcdefghijklmnopqrstuvwxyz".split("")
 
-const getSneakKeys = () =>
-    Array.from(sneakOverlay.getElementsByClassName("sneak-key")) as SneakKey[]
+const getSneakKeys = () => Array.from(sneakOverlay.getElementsByClassName("sneak-key")) as SneakKey[]
 
 const clearSomeSneakKeys = (sneakKeys: SneakKey[]) => {
     if (sneakKeys.length === 0) return false
@@ -28,35 +27,28 @@ export const enterSneak = (event: KeyboardEvent) => {
     if (clearSneakKeys()) return
 
     const isElementVisible = ({ style }: HTMLElement) =>
-        style.opacity !== "0" &&
-        style.display !== "none" &&
-        style.visibility !== "hidden"
+        style.opacity !== "0" && style.display !== "none" && style.visibility !== "hidden"
     const isElementInViewPort = (e: HTMLElement) => {
         const bound = e.getBoundingClientRect()
         const { clientHeight, clientWidth } = document.body
         const mid = (a: number, b: number) => (a + b) / 2
-        const clamp = (m: number, M: number) => (x: number) =>
-            Math.max(Math.min(x, M), m)
-        const within = (m: number, M: number) => (x: number) =>
-            x === clamp(m, M)(x)
+        const clamp = (m: number, M: number) => (x: number) => Math.max(Math.min(x, M), m)
+        const within = (m: number, M: number) => (x: number) => x === clamp(m, M)(x)
         return (
             pipe(mid(bound.top, bound.bottom), within(0, clientHeight)) &&
             pipe(mid(bound.left, bound.right), within(0, clientWidth))
         )
     }
 
-    const createSneakKey = (
-        target: HTMLElement,
-        key: string,
-        top: string | number,
-        left: string | number,
-    ) => {
+    const createSneakKey = (target: HTMLElement, key: string, top: string | number, left: string | number) => {
         const sneakKey = document.createElement("span") as SneakKey
-        sneakKey.classList.add("sneak-key")
-        sneakKey.innerText = key
-        sneakKey.style.top = top + "px"
-        sneakKey.style.left = left + "px"
-        sneakKey.target = target
+        {
+            sneakKey.classList.add("sneak-key")
+            sneakKey.innerText = key
+            sneakKey.style.top = top + "px"
+            sneakKey.style.left = left + "px"
+            sneakKey.target = target
+        }
         return sneakKey
     }
 
@@ -70,9 +62,7 @@ export const enterSneak = (event: KeyboardEvent) => {
         a.filter(isElementInViewPort),
         a.reduce<HTMLElement, [number, number]>([0, 0], ([k1, k2], e) => {
             const { x, y } = e.getBoundingClientRect()
-            sneakKeysFragment.append(
-                createSneakKey(e, keyList[k1] + keyList[k2++], y, x),
-            )
+            sneakKeysFragment.append(createSneakKey(e, keyList[k1] + keyList[k2++], y, x))
             return k2 >= keyList.length ? [++k1, 0] : [k1, k2]
         }),
         acc => acc[0] + acc[1] !== 0,
@@ -88,11 +78,7 @@ export const quitSneak = (event: KeyboardEvent) => {
 }
 
 export const clickElement = (element: HTMLElement) => {
-    if (
-        element.hasAttribute("href") ||
-        element.tagName === "BUTTON" ||
-        element.getAttribute("role") === "button"
-    )
+    if (element.hasAttribute("href") || element.tagName === "BUTTON" || element.getAttribute("role") === "button")
         return void element.click()
 }
 
@@ -150,5 +136,5 @@ font-size: 14px;
 font-weight: 500;
 }
 </style>`
-    document.body.append(sneakOverlay)
 }
+document.body.append(sneakOverlay)

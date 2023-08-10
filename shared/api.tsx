@@ -5,106 +5,83 @@ import { SpotifyID, SpotifyLoc, SpotifyURI, escapeRegex } from "./util"
 
 /*                          GraphQL                                           */
 
-export const fetchAlbumGQL = async (uri: SpotifyURI, offset = 0, limit = 487) =>
+export const fetchGQLAlbum = async (uri: SpotifyURI, offset = 0, limit = 487) =>
     (
-        await Spicetify.GraphQL.Request(
-            Spicetify.GraphQL.Definitions.getAlbum,
-            { uri, locale: Spicetify.Locale.getLocale(), offset, limit },
-        )
+        await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.getAlbum, {
+            uri,
+            locale: Spicetify.Locale.getLocale(),
+            offset,
+            limit,
+        })
     ).data.albumUnion as fetchGQLAlbumRes
 
 type fetchArtistGQLRes = any
 export const fetchArtistGQL = async (uri: SpotifyURI) =>
     (
-        await Spicetify.GraphQL.Request(
-            Spicetify.GraphQL.Definitions.queryArtistOverview,
-            {
-                uri,
-                locale: Spicetify.Locale.getLocale(),
-                includePrerelease: true,
-            },
-        )
+        await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistOverview, {
+            uri,
+            locale: Spicetify.Locale.getLocale(),
+            includePrerelease: true,
+        })
     ).data.artistUnion as fetchArtistGQLRes
 
-export const fetchArtistRelatedGQL = async (uri: SpotifyURI) =>
+export const fetchGQLArtistRelated = async (uri: SpotifyURI) =>
     (
-        await Spicetify.GraphQL.Request(
-            Spicetify.GraphQL.Definitions.queryArtistRelated,
-            {
-                uri,
-                locale: Spicetify.Locale.getLocale(),
-            },
-        )
-    ).data.artistUnion.relatedContent.relatedArtists
-        .items as fetchGQLArtistRelatedRes
+        await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistRelated, {
+            uri,
+            locale: Spicetify.Locale.getLocale(),
+        })
+    ).data.artistUnion.relatedContent.relatedArtists.items as fetchGQLArtistRelatedRes
 
 /*                          Spotify Web API                                   */
 
-export const fetchArtistsSpotAPI = chunckify(50)(
+export const fetchWebArtistsSpot = chunckify(50)(
     async (ids: SpotifyID[]) =>
-        (
-            await Spicetify.CosmosAsync.get(
-                `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`,
-            )
-        ).artists as SpotApiArtist[],
+        (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`))
+            .artists as SpotApiArtist[],
 )
 
-export const fetchTracksSpotAPI = chunckify(50)(
+export const fetchWebTracksSpot = chunckify(50)(
     async (ids: SpotifyID[]) =>
-        (
-            await Spicetify.CosmosAsync.get(
-                `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`,
-            )
-        ).tracks as SpotApiTrack[],
+        (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`))
+            .tracks as SpotApiTrack[],
 )
 
-export const searchItemSpotAPI = async (q: string, type: string[]) =>
-    Spicetify.CosmosAsync.get(
-        `https://api.spotify.com/v1/search?q=${encodeURIComponent(
-            q,
-        )}&type=${type.join(",")}`,
-    )
+export const searchWebItemSpot = async (q: string, type: string[]) =>
+    Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q=${encodeURIComponent(q)}&type=${type.join(",")}`)
 
-export const fetchSoundOfSpotifyPlaylist = async (genre: string) => {
+export const fetchWebSoundOfSpotifyPlaylist = async (genre: string) => {
     const name = `The Sound Of ${genre}`
     const re = new RegExp(`^${escapeRegex(name)}$`, "i")
-    const res = await searchItemSpotAPI(name, ["playlist"])
+    const res = await searchWebItemSpot(name, ["playlist"])
     const item = res.playlists.items[0]
-    return item?.owner.id === "thesoundsofspotify" && re.test(item.name)
-        ? item.uri
-        : null
+    return item?.owner.id === "thesoundsofspotify" && re.test(item.name) ? item.uri : null
 }
 
 /*                          Platform                                          */
 
-export const fetchPlatArtistLikedTracks = async (
-    uri: SpotifyURI,
-    offset = 0,
-    limit = 100,
-) =>
-    (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit }))
-        .items as fetchPlatArtistLikedTracksRes
+export const fetchPlatLikedTracks = async () =>
+    (
+        await Spicetify.Platform.LibraryAPI.getTracks({
+            limit: Number.MAX_SAFE_INTEGER,
+        })
+    ).items as fetchPlatArtistLikedTracksRes
+export const fetchPlatArtistLikedTracks = async (uri: SpotifyURI, offset = 0, limit = 100) =>
+    (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items as fetchPlatArtistLikedTracksRes
 
-export const fetchRootlistContents = async (uri: SpotifyURI) =>
-    (await Spicetify.Platform.PlaylistAPI.getContents(uri))
-        .items as fetchPlaylistAPIRes
+export const fetchPlatPlaylistContents = async (uri: SpotifyURI) =>
+    (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items as fetchWebPlaylistRes
 
-export const createFolder = (name: string, location: SpotifyLoc = {}) =>
+export const createPlatFolder = (name: string, location: SpotifyLoc = {}) =>
     Spicetify.Platform.RootlistAPI.createFolder(name, location)
 
-export const likePlaylist = (uri: SpotifyURI) =>
-    Spicetify.Platform.RootlistAPI.add([uri])
+export const likePlatPlaylist = (uri: SpotifyURI) => Spicetify.Platform.RootlistAPI.add([uri])
 
-/* Replaced by createPlaylistFromTracks
-export const createPlaylist = (name: string) =>
-    Spicetify.Platform.RootlistAPI.createPlaylist(name)
-export const addTracksToPlaylist = (
-    playlist: SpotifyURI,
-    tracks: SpotifyURI[],
-    location: SpotifyLoc = {},
-) => Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location)
-*/
-export const createPlaylistFromTracks = (name: string, tracks: SpotifyURI[]) =>
+/* Replaced by createSPPlaylistFromTracks */
+export const createPlatPlaylist = (name: string, location: SpotifyLoc = {}) =>
+    Spicetify.Platform.RootlistAPI.createPlaylist(name, location)
+
+export const createSPPlaylistFromTracks = (name: string, tracks: SpotifyURI[]) =>
     Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
         operation: "create",
         playlist: true,
@@ -112,69 +89,43 @@ export const createPlaylistFromTracks = (name: string, tracks: SpotifyURI[]) =>
         name,
     })
 
-export const setPlaylistVisibility = (
-    playlist: SpotifyURI,
-    visibleForAll: boolean,
-) =>
-    Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(
-        playlist,
-        visibleForAll ? "VIEWER" : "BLOCKED",
-    )
-export const setPlaylistPublished = (
-    playlist: SpotifyURI,
-    published: boolean,
-) => Spicetify.Platform.RootlistAPI.setPublishedState(playlist, published)
+export const setPlatPlaylistVisibility = (playlist: SpotifyURI, visibleForAll: boolean) =>
+    Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED")
+export const setPlatPlaylistPublished = (playlist: SpotifyURI, published: boolean) =>
+    Spicetify.Platform.RootlistAPI.setPublishedState(playlist, published)
 
-export const fetchPlatLikedPlaylists = () =>
-    Spicetify.Platform.RootlistAPI.getContents()
+export const fetchPlatPlaylists = () => Spicetify.Platform.RootlistAPI.getContents()
 
-/*                          Other                                             */
+export const addPlatPlaylistTracks = (playlist: SpotifyURI, tracks: SpotifyURI[], location: SpotifyLoc = {}) =>
+    Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location)
 
-export const fetchPlaylistEnhancedSongs300 = async (
-    uri: SpotifyURI,
-    offset = 0,
-    limit = 300,
-) =>
-    (
-        await Spicetify.Platform.EnhanceAPI.getPage(
-            uri,
-            /* iteration */ 0,
-            /* sessionId */ 0,
-            offset,
-            limit,
-        )
-    ).enhancePage.pageItems as any[]
-export const fetchPlaylistEnhancedSongs = async (
-    uri: SpotifyURI,
-    offset = 0,
-) => {
-    const nextPageItems = await fetchPlaylistEnhancedSongs300(uri, offset)
-    if (nextPageItems?.length < 100) return nextPageItems
-    else return nextPageItems.concat(fetch)
+export const movePlatPlaylistTracks = (playlist: SpotifyURI, tracks: SpotifyURI[], location: SpotifyLoc = {}) =>
+    Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location)
+
+export const removePlatPlaylistTracks = (playlist: SpotifyURI, tracks: SpotifyURI[]) =>
+    Spicetify.Platform.PlaylistAPI.move(playlist, tracks)
+
+export const fetchPlatPlaylistEnhancedSongs300 = async (uri: SpotifyURI, offset = 0, limit = 300) =>
+    (await Spicetify.Platform.EnhanceAPI.getPage(uri, /* iteration */ 0, /* sessionId */ 0, offset, limit)).enhancePage
+        .pageItems as any[]
+export const fetchPlatPlaylistEnhancedSongs = async (uri: SpotifyURI, offset = 0): Promise<any[]> => {
+    const nextPageItems = await fetchPlatPlaylistEnhancedSongs300(uri, offset)
+    if (nextPageItems?.length < 300) return nextPageItems
+    else return nextPageItems.concat(fetchPlatPlaylistEnhancedSongs(uri, offset + 300))
 }
 
 /*                          Non Spotify                                       */
 
-export const fetchTrackLFMAPI = async (
-    LFMApiKey: string,
-    artist: string,
-    trackName: string,
-    lastFmUsername = "",
-) =>
+export const fetchTrackLFMAPI = async (LFMApiKey: string, artist: string, trackName: string, lastFmUsername = "") =>
     p(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
             artist,
-        )}&track=${encodeURIComponent(
-            trackName,
-        )}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
+        )}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
         fetch,
         as<Response, fetchTrackLFMAPIRes>(invokeNullary("json")),
     )
 
-export const searchYoutube = async (
-    YouTubeApiKey: string,
-    searchString: string,
-) =>
+export const searchYoutube = async (YouTubeApiKey: string, searchString: string) =>
     (
         await (
             await fetch(
@@ -353,7 +304,7 @@ export type fetchPlatArtistLikedTracksRes = Array<{
     addedAt: string
 }>
 
-export type fetchPlaylistAPIRes = Array<{
+export type fetchWebPlaylistRes = Array<{
     uid: string
     playIndex: null
     addedAt: string

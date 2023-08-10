@@ -11,6 +11,15 @@ export type SpotifyLoc = {
     after?: "end" | SpotifyURI
 }
 
+export namespace SpotifyLoc {
+    export const before = (uri: SpotifyURI) => ({
+        before: uri,
+    })
+    export const after = (uri: SpotifyURI) => ({
+        after: uri,
+    })
+}
+
 export const enum SpotifyURIType {
     TRACK = "spotify:track",
     ALBUM = "spotify:album",
@@ -18,20 +27,15 @@ export const enum SpotifyURIType {
     PLAYLIST = "spotify:playlist",
 }
 
-const spotUriRe =
-    /^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$/
+const spotUriRe = /^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$/
 
-export const isUri = (possibleUri: string): possibleUri is SpotifyURI =>
-    spotUriRe.test(possibleUri)
+export const isUri = (possibleUri?: string | null): possibleUri is SpotifyURI => spotUriRe.test(possibleUri as string)
 
-export const parseUri = (uri: SpotifyURI) =>
-    uri.match(spotUriRe)?.groups as { type: SpotifyURIType; id: SpotifyID }
+export const parseUri = (uri: SpotifyURI) => uri.match(spotUriRe)?.groups as { type: SpotifyURIType; id: SpotifyID }
 
-export const escapeRegex = (str: string) =>
-    str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`)
+export const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`)
 
-export const titleCase = (str: string) =>
-    str.replace(/\b\w/g, l => l.toUpperCase())
+export const titleCase = (str: string) => str.replace(/\b\w/g, l => l.toUpperCase())
 
 export const normalizeStr = (str: string) =>
     str
@@ -41,14 +45,9 @@ export const normalizeStr = (str: string) =>
         .toLowerCase()
         .trim()
 
-export const waitForElement = (
-    selector: string,
-    timeout = 1000,
-    location = document.body,
-) =>
+export const waitForElement = (selector: string, timeout = 1000, location = document.body) =>
     new Promise((resolve: (value: Element | null) => void) => {
-        if (document.querySelector(selector))
-            return resolve(document.querySelector(selector))
+        if (document.querySelector(selector)) return resolve(document.querySelector(selector))
 
         const res = (v: any) => {
             observer.disconnect()
@@ -56,8 +55,7 @@ export const waitForElement = (
         }
 
         let observer = new MutationObserver(async () => {
-            if (document.querySelector(selector))
-                return res(document.querySelector(selector))
+            if (document.querySelector(selector)) return res(document.querySelector(selector))
         })
 
         observer.observe(location, {
@@ -68,5 +66,4 @@ export const waitForElement = (
         if (timeout) setTimeout(() => res(null), timeout)
     })
 
-export const sleep = (ms: number) =>
-    new Promise(resolve => setTimeout(resolve, ms))
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

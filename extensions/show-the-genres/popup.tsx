@@ -1,16 +1,13 @@
 import { task } from "fp-ts"
 import React, { useState } from "react"
-import { fetchSoundOfSpotifyPlaylist } from "../../shared/api"
+import { fetchWebSoundOfSpotifyPlaylist } from "../../shared/api"
 import { normalizeStr, titleCase } from "../../shared/util"
 import { lastFmTags, spotifyGenres } from "./app"
 import "./popup.css"
 
 export const genrePopup = () => {
     Spicetify.PopupModal.display({
-        title: `Genres of "${normalizeStr(
-            Spicetify.Player.data.track?.metadata?.title!,
-        )}"`,
-        //<style>{css}</style>
+        title: `Genres of "${normalizeStr(Spicetify.Player.data.track?.metadata?.title!)}"`,
         content: (
             <div>
                 <div className="popup-row">
@@ -29,9 +26,7 @@ export const genrePopup = () => {
     if (titleGenresOf) {
         container.appendChild(titleGenresOf)
 
-        const headerSection = document.querySelector(
-            ".main-trackCreditsModal-header",
-        )
+        const headerSection = document.querySelector(".main-trackCreditsModal-header")
 
         headerSection?.prepend(container)
     }
@@ -40,11 +35,7 @@ export const genrePopup = () => {
 // @ts-ignore
 window.genrePopup = genrePopup
 
-const ButtonElement = ({
-    name = "",
-    color = "",
-    onClick = task.of(undefined) as task.Task<any>,
-}) => (
+const ButtonElement = ({ name = "", color = "", onClick = task.of(undefined) as task.Task<any> }) => (
     <button className={`login-button${color}`} onClick={onClick}>
         {name}
     </button>
@@ -60,17 +51,14 @@ const GenreItem = () => {
     })
 
     const onClick = (query: string) => async () => {
-        let uri = await fetchSoundOfSpotifyPlaylist(query)
-        if (uri === null)
-            Spicetify.Platform.History.push(`/search/${query}/playlists`)
+        let uri = await fetchWebSoundOfSpotifyPlaylist(query)
+        if (uri === null) Spicetify.Platform.History.push(`/search/${query}/playlists`)
         else Spicetify.Platform.History.push(`/playlist/${uri.split(":")[2]}`)
 
         Spicetify.PopupModal.hide()
     }
 
-    return value.map(n => (
-        <ButtonElement name={titleCase(n)} onClick={onClick(n)} />
-    ))
+    return value.map(n => <ButtonElement name={titleCase(n)} onClick={onClick(n)} />)
 }
 
 const LastFmTagItem = () => {

@@ -1,5 +1,4 @@
-export type SpotifyID = string
-export type SpotifyURI = string
+import { SpotifyURI } from "../../shared/util"
 
 export type PoF = Playlist | Folder
 

@@ -1,20 +1,9 @@
 import { array as a, string as str } from "fp-ts"
 import { prepend } from "fp-ts-std/String"
 import { flow as f, pipe as p } from "fp-ts/function"
-import {
-    fetchArtistRelatedGQL,
-    fetchArtistsSpotAPI,
-    fetchSoundOfSpotifyPlaylist,
-} from "../../shared/api"
+import { fetchGQLArtistRelated, fetchWebArtistsSpot, fetchWebSoundOfSpotifyPlaylist } from "../../shared/api"
 import { pMchain } from "../../shared/fp"
-import {
-    SpotifyURI,
-    SpotifyURIType,
-    isUri,
-    parseUri,
-    titleCase,
-    waitForElement,
-} from "../../shared/util"
+import { SpotifyURI, SpotifyURIType, isUri, parseUri, titleCase, waitForElement } from "../../shared/util"
 import "./popup.css"
 
 export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
@@ -33,14 +22,12 @@ export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
         await getArtistsGenresOrRelated([uri]),
         a.takeLeft(5),
         a.map(async genre => {
-            const uri = await fetchSoundOfSpotifyPlaylist(genre)
+            const uri = await fetchWebSoundOfSpotifyPlaylist(genre)
             return `<a class="main-entityHeader-genreLink" ${
                 uri === null
                     ? `href="#" data-value="${genre}" onclick="searchPlaylist(this.getAttribute('data-value'))`
                     : `href="${uri}"`
-            } style="color: var(--spice-subtext); font-size: 1rem">${titleCase(
-                genre,
-            )}</a>`
+            } style="color: var(--spice-subtext); font-size: 1rem">${titleCase(genre)}</a>`
         }),
         x => Promise.all(x),
         pMchain(a.intercalate(str.Monoid)(`<span>, </span>`)),
@@ -51,27 +38,18 @@ export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
     document.querySelector(".genre-container")?.remove()
 
     // insert new genreContainer
-    const entityHeaderText = await waitForElement(
-        "div.main-entityHeader-headerText",
-    )
+    const entityHeaderText = await waitForElement("div.main-entityHeader-headerText")
 
-    entityHeaderText?.insertBefore(
-        genreContainer,
-        await waitForElement("span.main-entityHeader-detailsText"),
-    )
+    entityHeaderText?.insertBefore(genreContainer, await waitForElement("span.main-entityHeader-detailsText"))
 }
 
-export const getArtistsGenresOrRelated = async (
-    artistsUris: SpotifyURI[],
-    src = null,
-) => {
-    const getArtistsGenres: (artistsUris: SpotifyURI[]) => Promise<string[]> =
-        f(
-            a.map(uri => parseUri(uri).id),
-            fetchArtistsSpotAPI,
-            pMchain(a.flatMap(artist => artist.genres)),
-            pMchain(a.uniq(str.Eq)),
-        )
+export const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[], src = null) => {
+    const getArtistsGenres: (artistsUris: SpotifyURI[]) => Promise<string[]> = f(
+        a.map(uri => parseUri(uri).id),
+        fetchWebArtistsSpot,
+        pMchain(a.flatMap(artist => artist.genres)),
+        pMchain(a.uniq(str.Eq)),
+    )
 
     const allGenres = await getArtistsGenres(artistsUris)
 
@@ -79,18 +57,12 @@ export const getArtistsGenresOrRelated = async (
         ? allGenres
         : await p(
               artistsUris[0],
-              fetchArtistRelatedGQL,
+              fetchGQLArtistRelated,
               pMchain(a.map(a => a.uri)),
               pMchain(a.chunksOf(5)),
               pMchain(
-                  a.reduce(
-                      Promise.resolve([] as string[]),
-                      async (acc, arr5uris) =>
-                          (
-                              await acc
-                          ).length
-                              ? await acc
-                              : await getArtistsGenres(arr5uris),
+                  a.reduce(Promise.resolve([] as string[]), async (acc, arr5uris) =>
+                      (await acc).length ? await acc : await getArtistsGenres(arr5uris),
                   ),
               ),
           )

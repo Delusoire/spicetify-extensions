@@ -3,17 +3,8 @@ import { array as a } from "fp-ts"
 import { flip, pipe as p, tupled } from "fp-ts/function"
 import { startsWith } from "fp-ts/string"
 
-import {
-    fetchTracksSpotAPI,
-    searchYoutube as searchYouTube,
-} from "../../shared/api"
-import {
-    SpotifyID,
-    SpotifyURI,
-    SpotifyURIType,
-    normalizeStr,
-    parseUri,
-} from "../../shared/util"
+import { fetchWebTracksSpot, searchYoutube as searchYouTube } from "../../shared/api"
+import { SpotifyID, SpotifyURI, SpotifyURIType, normalizeStr, parseUri } from "../../shared/util"
 import { parseAPITrackFromSpotify } from "../../shared/parse"
 import { CONFIG } from "./settings"
 
@@ -22,9 +13,7 @@ const YTVidIDCache = new Map<SpotifyID, string>()
 const showOnYouTube = async (uri: SpotifyURI) => {
     const id = parseUri(uri).id
     if (!YTVidIDCache.get(id)) {
-        const track = parseAPITrackFromSpotify(
-            (await fetchTracksSpotAPI([id]))[0],
-        )
+        const track = parseAPITrackFromSpotify((await fetchWebTracksSpot([id]))[0])
         const searchString = `${track.artistName} - ${track.name} music video`
 
         let videos = []
@@ -34,11 +23,7 @@ const showOnYouTube = async (uri: SpotifyURI) => {
             } catch (_) {}
 
         if (!videos?.length)
-            return void window.open(
-                `https://www.youtube.com/results?search_query=${encodeURIComponent(
-                    searchString,
-                )}`,
-            )
+            return void window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(searchString)}`)
 
         const normalizedTrackName = normalizeStr(track.name)
         YTVidIDCache.set(

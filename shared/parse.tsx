@@ -1,9 +1,4 @@
-import {
-    SpotApiTrack,
-    fetchGQLAlbumRes,
-    fetchPlatArtistLikedTracksRes,
-    fetchPlaylistAPIRes,
-} from "./api"
+import { SpotApiTrack, fetchGQLAlbumRes, fetchPlatArtistLikedTracksRes, fetchWebPlaylistRes } from "./api"
 import { SpotifyURI } from "./util"
 
 export type TrackData = {
@@ -26,9 +21,7 @@ export type UnparsedTrack = any
 export type TrackParser = (track: UnparsedTrack) => TrackData
 export type TracksPopulater = (tracks: TrackData[]) => Promise<TrackData[]>
 
-export const parseTrackFromAlbum = ({
-    track,
-}: fetchGQLAlbumRes["tracks"]["items"][0]) => ({
+export const parseTrackFromAlbum = ({ track }: fetchGQLAlbumRes["tracks"]["items"][0]) => ({
     albumName: undefined, // gets filled in later
     albumUri: undefined, // gets filled in later
     artistName: track.artists.items[0].profile.name,
@@ -53,9 +46,7 @@ export const parseTopTrackFromArtist = (track: UnparsedTrack) => ({
     uri: track.uri,
 })
 
-export const parsePlatTrackFromArtistLikedTracks = (
-    track: fetchPlatArtistLikedTracksRes[0],
-) => ({
+export const parsePlatTrackFromArtistLikedTracks = (track: fetchPlatArtistLikedTracksRes[0]) => ({
     albumName: track.album.name,
     albumUri: track.album.uri,
     artistName: track.artists[0].name,
@@ -82,7 +73,7 @@ export const parseTrackFromPlaylistSP = (track: UnparsedTrack) => ({
     uri: track.link,
 })
 
-export const parseAPITrackFromPlaylist = (track: fetchPlaylistAPIRes[0]) => ({
+export const parseAPITrackFromPlaylist = (track: fetchWebPlaylistRes[0]) => ({
     albumName: track.album.name,
     albumUri: track.album.uri,
     artistName: track.artists[0].name,
