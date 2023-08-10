@@ -3272,9 +3272,7 @@ var keyboard;
       init_fp();
       mousetrap = Spicetify.Mousetrap();
       keyList = "abcdefghijklmnopqrstuvwxyz".split("");
-      getSneakKeys = () => Array.from(
-        sneakOverlay.getElementsByClassName("sneak-key")
-      );
+      getSneakKeys = () => Array.from(sneakOverlay.getElementsByClassName("sneak-key"));
       clearSomeSneakKeys = (sneakKeys) => {
         if (sneakKeys.length === 0)
           return false;
@@ -3298,15 +3296,13 @@ var keyboard;
           return (0, import_function10.pipe)(mid(bound.top, bound.bottom), within(0, clientHeight)) && (0, import_function10.pipe)(mid(bound.left, bound.right), within(0, clientWidth));
         };
         const createSneakKey = (target, key, top, left) => {
-          const div = document.createElement("span");
-          {
-            div.classList.add("sneak-key");
-            div.innerText = key;
-            div.style.top = top + "px";
-            div.style.left = left + "px";
-            div.target = target;
-            return div;
-          }
+          const sneakKey = document.createElement("span");
+          sneakKey.classList.add("sneak-key");
+          sneakKey.innerText = key;
+          sneakKey.style.top = top + "px";
+          sneakKey.style.left = left + "px";
+          sneakKey.target = target;
+          return sneakKey;
         };
         const sneakKeysFragment = document.createDocumentFragment();
         const linkSelector = `[href],button,[role="button"]`;

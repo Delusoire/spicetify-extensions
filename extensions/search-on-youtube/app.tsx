@@ -14,7 +14,7 @@ import {
     normalizeStr,
     parseUri,
 } from "../../shared/util"
-import { parseTrackFromSpotifyAPI } from "../../shared/parse"
+import { parseAPITrackFromSpotify } from "../../shared/parse"
 import { CONFIG } from "./settings"
 
 const YTVidIDCache = new Map<SpotifyID, string>()
@@ -22,7 +22,7 @@ const YTVidIDCache = new Map<SpotifyID, string>()
 const showOnYouTube = async (uri: SpotifyURI) => {
     const id = parseUri(uri).id
     if (!YTVidIDCache.get(id)) {
-        const track = parseTrackFromSpotifyAPI(
+        const track = parseAPITrackFromSpotify(
             (await fetchTracksSpotAPI([id]))[0],
         )
         const searchString = `${track.artistName} - ${track.name} music video`

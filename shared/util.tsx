@@ -6,6 +6,11 @@
 export type SpotifyID = string
 export type SpotifyURI = string
 
+export type SpotifyLoc = {
+    before?: "start" | SpotifyURI
+    after?: "end" | SpotifyURI
+}
+
 export const enum SpotifyURIType {
     TRACK = "spotify:track",
     ALBUM = "spotify:album",

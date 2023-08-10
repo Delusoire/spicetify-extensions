@@ -17,8 +17,8 @@ import { Lens, Optional } from "monocle-ts"
 import {
     fetchAlbumGQL,
     fetchArtistGQL,
-    fetchArtistLikedTracksSP,
-    fetchPlaylistAPI,
+    fetchPlatArtistLikedTracks,
+    fetchRootlistContents,
     fetchTrackLFMAPI,
     fetchTracksSpotAPI,
 } from "../../shared/api"
@@ -29,9 +29,9 @@ import {
     UnparsedTrack,
     parseTopTrackFromArtist,
     parseTrackFromAlbum,
-    parseTrackFromArtistLikedTracksSP,
-    parseTrackFromPlaylistAPI,
-    parseTrackFromSpotifyAPI,
+    parsePlatTrackFromArtistLikedTracks,
+    parseAPITrackFromPlaylist,
+    parseAPITrackFromSpotify,
 } from "../../shared/parse"
 import { SpotifyURI, SpotifyURIType, parseUri } from "../../shared/util"
 import { CONFIG } from "./settings"
@@ -74,8 +74,8 @@ const getAlbumTracks = async (uri: SpotifyURI) => {
 }
 
 export const getPlaylistTracks = f(
-    fetchPlaylistAPI,
-    pMchain(a.map(parseTrackFromPlaylistAPI)),
+    fetchRootlistContents,
+    pMchain(a.map(parseAPITrackFromPlaylist)),
 )
 
 async function getArtistTracks(uri: SpotifyURI) {
@@ -141,9 +141,9 @@ async function getArtistTracks(uri: SpotifyURI) {
     if (CONFIG.artistLikedTracks)
         add(
             await p(
-                parseUri(uri).id,
-                fetchArtistLikedTracksSP,
-                pMchain(a.map(parseTrackFromArtistLikedTracksSP)),
+                uri,
+                fetchPlatArtistLikedTracks,
+                pMchain(a.map(parsePlatTrackFromArtistLikedTracks)),
             ),
         )
 
@@ -155,7 +155,7 @@ async function getArtistTracks(uri: SpotifyURI) {
 const fetchAPITracksFromTracks: TracksPopulater = f(
     a.map(track => parseUri(track.uri).id),
     fetchTracksSpotAPI,
-    pMchain(a.map(parseTrackFromSpotifyAPI)),
+    pMchain(a.map(parseAPITrackFromSpotify)),
 )
 
 const fetchAlbumTracksFromTracks: TracksPopulater = f(

@@ -1,95 +1,70 @@
 export default {}
-import { array as a, array, option as o } from "fp-ts"
+import { array as a, array, task } from "fp-ts"
 import { map } from "fp-ts/Array"
-import { getOrElse } from "fp-ts/Option"
-import { lookup, toUnfoldable } from "fp-ts/Record"
-import { constant, flow as f, pipe as p, tupled } from "fp-ts/function"
+import { toUnfoldable } from "fp-ts/Record"
+import { constant, pipe as p, tupled } from "fp-ts/function"
 import {
     createFolder,
-    createPlaylist,
-    fetchLikedPlaylistsSP,
-    fetchPlaylistAPI,
+    createPlaylistFromTracks,
+    fetchPlatLikedPlaylists,
+    fetchRootlistContents,
     likePlaylist,
 } from "../../shared/api"
-import { guard2, guard3, is } from "../../shared/fp"
-import { SpotifyURI } from "../../shared/util"
-import {
-    EFolder,
-    EPlaylistLiked,
-    EPlaylistPersonal,
-    EPoF,
-    SFolder,
-    SPlaylist,
-    SPoF,
-} from "./util"
+import { guard2, guard3, is, pMchain } from "../../shared/fp"
+import { Folder, Playlist, PoF, SpotifyURI } from "./util"
+import { SpotifyID, SpotifyURIType, parseUri } from "../../shared/util"
 
-const isType = is<SPoF>("type")
-const extractLikedPlaylistTreeRecur = (leaf: SPoF): Promise<EPoF> =>
-    guard2<SPoF, SPlaylist, SFolder, Promise<EPoF>>([
+const isType = is<PoF>("type")
+const extractLikedPlaylistTreeRecur = (leaf: PoF) =>
+    guard2<PoF, Playlist, Folder, Promise<{}>>([
         [
             isType("playlist"),
-            async playlist =>
-                playlist.ownedBySelf
-                    ? {
-                          type: "playlist personal",
-                          name: playlist.name,
-                          uris: await p(
-                              playlist.link,
-                              fetchPlaylistAPI,
-                              async x =>
-                                  p(
-                                      await x,
-                                      map(f(lookup("uri")<SpotifyURI>)),
-                                      a.sequence(o.Applicative),
-                                      getOrElse<SpotifyURI[]>(() => []),
-                                  ),
-                          ),
-                      }
-                    : {
-                          type: "playlist liked",
-                          name: playlist.name,
-                          uri: playlist.link as SpotifyURI,
-                      },
-        ],
-        [
-            isType("folder"),
-            async folder => ({
-                type: folder.type,
-                name: folder.name,
-                uris: folder.rows
-                    ? await p(
-                          folder.rows,
-                          map(extractLikedPlaylistTreeRecur),
-                          x => Promise.all(x),
-                      )
-                    : [],
+            async playlist => ({
+                [playlist.name]: playlist.isOwnedBySelf
+                    ? ((await p(
+                          playlist.uri,
+                          fetchRootlistContents,
+                          pMchain(a.map(x => x.uri)),
+                      )) as string[])
+                    : (playlist.uri as string),
             }),
         ],
-    ])(constant(Promise.resolve({} as EPoF)))(leaf)
-
-const restorePlaylistseRecur = async (leaf: EPoF) => {
-    const isType = is<EPoF>("type")
-    guard3<EPoF, EPlaylistPersonal, EPlaylistLiked, EFolder, any>([
-        [
-            isType("playlist personal"),
-            playlist => createPlaylist(playlist.name, playlist.uris),
-        ],
-        [isType("playlist liked"), ({ uri }) => likePlaylist(uri)],
         [
             isType("folder"),
-            folder =>
-                p(
-                    createFolder(folder.name),
-                    constant(folder.uris),
-                    map(restorePlaylistseRecur),
+            async (folder): Promise<{}> => ({
+                [folder.name]: await p(
+                    folder.items,
+                    map(extractLikedPlaylistTreeRecur),
+                    x => Promise.all(x),
                 ),
+            }),
         ],
-    ])(constant(void 0))(leaf)
+    ])(task.of({}))(leaf)
+
+type LikedPlaylist = SpotifyURI
+type PersonalPlaylist = SpotifyURI[]
+type PersonalFolder = Array<LikedPlaylist | PersonalPlaylist | PersonalFolder>
+
+const restorePlaylistseRecur = async (leaf: any) => {
+    Object.keys(leaf).forEach(name => {
+        const subleaf = leaf[name]
+
+        if (!Array.isArray(subleaf)) return void likePlaylist(subleaf as string)
+
+        if (
+            subleaf.length &&
+            parseUri(subleaf[0]).type === SpotifyURIType.TRACK
+        )
+            return void createPlaylistFromTracks(name, subleaf)
+
+        createFolder(name)
+        subleaf.forEach(restorePlaylistseRecur)
+    })
 }
 
 export const backup = async () => {
     const playlistData = await p(
-        await fetchLikedPlaylistsSP(),
+        await fetchPlatLikedPlaylists(),
         extractLikedPlaylistTreeRecur,
     )
 

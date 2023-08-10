@@ -3,16 +3,16 @@ import { flow, pipe } from "fp-ts/function"
 import { MousetrapInstance } from "mousetrap"
 import { tapAny } from "../../shared/fp"
 
+type SneakKey = HTMLSpanElement & { target: HTMLElement }
+
 export const mousetrap: MousetrapInstance = Spicetify.Mousetrap() as any
 
 export const keyList = "abcdefghijklmnopqrstuvwxyz".split("")
 
 const getSneakKeys = () =>
-    Array.from(
-        sneakOverlay.getElementsByClassName("sneak-key"),
-    ) as HTMLDivElement[]
+    Array.from(sneakOverlay.getElementsByClassName("sneak-key")) as SneakKey[]
 
-const clearSomeSneakKeys = (sneakKeys: HTMLDivElement[]) => {
+const clearSomeSneakKeys = (sneakKeys: SneakKey[]) => {
     if (sneakKeys.length === 0) return false
 
     sneakOverlay.remove()
@@ -31,7 +31,7 @@ export const enterSneak = (event: KeyboardEvent) => {
         style.opacity !== "0" &&
         style.display !== "none" &&
         style.visibility !== "hidden"
-    const isElementInViewPort = (e: Element) => {
+    const isElementInViewPort = (e: HTMLElement) => {
         const bound = e.getBoundingClientRect()
         const { clientHeight, clientWidth } = document.body
         const mid = (a: number, b: number) => (a + b) / 2
@@ -46,20 +46,18 @@ export const enterSneak = (event: KeyboardEvent) => {
     }
 
     const createSneakKey = (
-        target: Element,
+        target: HTMLElement,
         key: string,
         top: string | number,
         left: string | number,
     ) => {
-        const div = document.createElement("span")
-        {
-            div.classList.add("sneak-key")
-            div.innerText = key
-            div.style.top = top + "px"
-            div.style.left = left + "px"
-            div.target = target
-            return div
-        }
+        const sneakKey = document.createElement("span") as SneakKey
+        sneakKey.classList.add("sneak-key")
+        sneakKey.innerText = key
+        sneakKey.style.top = top + "px"
+        sneakKey.style.left = left + "px"
+        sneakKey.target = target
+        return sneakKey
     }
 
     const sneakKeysFragment = document.createDocumentFragment()

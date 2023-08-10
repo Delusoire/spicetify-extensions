@@ -1,7 +1,7 @@
 import { invokeNullary } from "fp-ts-std/Function"
 import { pipe as p } from "fp-ts/function"
 import { pMchain as as, chunckify } from "./fp"
-import { SpotifyID, SpotifyURI, escapeRegex } from "./util"
+import { SpotifyID, SpotifyLoc, SpotifyURI, escapeRegex } from "./util"
 
 /*                          GraphQL                                           */
 
@@ -11,7 +11,7 @@ export const fetchAlbumGQL = async (uri: SpotifyURI, offset = 0, limit = 487) =>
             Spicetify.GraphQL.Definitions.getAlbum,
             { uri, locale: Spicetify.Locale.getLocale(), offset, limit },
         )
-    ).data.albumUnion as fetchAlbumGQLRes
+    ).data.albumUnion as fetchGQLAlbumRes
 
 type fetchArtistGQLRes = any
 export const fetchArtistGQL = async (uri: SpotifyURI) =>
@@ -36,7 +36,7 @@ export const fetchArtistRelatedGQL = async (uri: SpotifyURI) =>
             },
         )
     ).data.artistUnion.relatedContent.relatedArtists
-        .items as fetchArtistRelatedGQLRes
+        .items as fetchGQLArtistRelatedRes
 
 /*                          Spotify Web API                                   */
 
@@ -77,56 +77,78 @@ export const fetchSoundOfSpotifyPlaylist = async (genre: string) => {
 
 /*                          Platform                                          */
 
-export const fetchPlaylistAPI = async (uri: SpotifyURI) =>
+export const fetchPlatArtistLikedTracks = async (
+    uri: SpotifyURI,
+    offset = 0,
+    limit = 100,
+) =>
+    (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit }))
+        .items as fetchPlatArtistLikedTracksRes
+
+export const fetchRootlistContents = async (uri: SpotifyURI) =>
     (await Spicetify.Platform.PlaylistAPI.getContents(uri))
         .items as fetchPlaylistAPIRes
 
-export const createFolder = (name: string) =>
-    Spicetify.Platform.RootlistAPI.createFolder(name)
+export const createFolder = (name: string, location: SpotifyLoc = {}) =>
+    Spicetify.Platform.RootlistAPI.createFolder(name, location)
 
 export const likePlaylist = (uri: SpotifyURI) =>
     Spicetify.Platform.RootlistAPI.add([uri])
 
-/*                          Other                                             */
-
-type fetchArtistLikedTracksSPRes = any[]
-export const fetchArtistLikedTracksSP = async (id: SpotifyID) =>
-    (
-        await Spicetify.CosmosAsync.get(
-            `sp://core-collection/unstable/@/list/tracks/artist/${id}`,
-        )
-    ).items as fetchArtistLikedTracksSPRes
-
-export type fetchPlaylistSPRes = any[]
-export const fetchPlaylistSP = async (uri: SpotifyURI) =>
-    (await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}`))
-        .items as fetchPlaylistSPRes
-
-export const fetchLikedPlaylistsSP = () =>
-    Spicetify.CosmosAsync.get("sp://core-playlist/v1/rootlist")
-
-export const createPlaylist = (name: string, uris: SpotifyURI[]) =>
+/* Replaced by createPlaylistFromTracks
+export const createPlaylist = (name: string) =>
+    Spicetify.Platform.RootlistAPI.createPlaylist(name)
+export const addTracksToPlaylist = (
+    playlist: SpotifyURI,
+    tracks: SpotifyURI[],
+    location: SpotifyLoc = {},
+) => Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location)
+*/
+export const createPlaylistFromTracks = (name: string, tracks: SpotifyURI[]) =>
     Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
         operation: "create",
         playlist: true,
-        uris,
+        uris: tracks,
         name,
     })
 
-export const fetchPlaylistEnhancedSongs100 = async (
+export const setPlaylistVisibility = (
+    playlist: SpotifyURI,
+    visibleForAll: boolean,
+) =>
+    Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(
+        playlist,
+        visibleForAll ? "VIEWER" : "BLOCKED",
+    )
+export const setPlaylistPublished = (
+    playlist: SpotifyURI,
+    published: boolean,
+) => Spicetify.Platform.RootlistAPI.setPublishedState(playlist, published)
+
+export const fetchPlatLikedPlaylists = () =>
+    Spicetify.Platform.RootlistAPI.getContents()
+
+/*                          Other                                             */
+
+export const fetchPlaylistEnhancedSongs300 = async (
     uri: SpotifyURI,
     offset = 0,
+    limit = 300,
 ) =>
     (
-        await Spicetify.CosmosAsync.get(
-            `https://spclient.wg.spotify.com/enhanced-view/v1/context/${uri}?&offset=${offset}&format=json`,
+        await Spicetify.Platform.EnhanceAPI.getPage(
+            uri,
+            /* iteration */ 0,
+            /* sessionId */ 0,
+            offset,
+            limit,
         )
-    ).pageItems as any[]
+    ).enhancePage.pageItems as any[]
 export const fetchPlaylistEnhancedSongs = async (
     uri: SpotifyURI,
     offset = 0,
 ) => {
-    const nextPageItems = await fetchPlaylistEnhancedSongs100(uri, offset)
+    const nextPageItems = await fetchPlaylistEnhancedSongs300(uri, offset)
     if (nextPageItems?.length < 100) return nextPageItems
     else return nextPageItems.concat(fetch)
 }
@@ -165,7 +187,7 @@ export const searchYoutube = async (
 
 /*                          Types                                             */
 
-export interface fetchAlbumGQLRes {
+export interface fetchGQLAlbumRes {
     __typename: "album"
     uri: SpotifyURI
     name: string
@@ -302,7 +324,7 @@ export interface fetchAlbumGQLRes {
     }
 }
 
-export type fetchArtistRelatedGQLRes = Array<{
+export type fetchGQLArtistRelatedRes = Array<{
     id: string
     uri: SpotifyURI
     profile: {
@@ -315,6 +337,22 @@ export type fetchArtistRelatedGQLRes = Array<{
     }
 }>
 
+export type fetchPlatArtistLikedTracksRes = Array<{
+    type: string
+    uri: string
+    name: string
+    duration: SpotApiDuration
+    album: SpotApiAlbumMin
+    artists: SpotApiArtistMin[]
+    discNumber: number
+    trackNumber: number
+    isExplicit: boolean
+    isPlayable: boolean
+    isLocal: boolean
+    is19PlusOnly: boolean
+    addedAt: string
+}>
+
 export type fetchPlaylistAPIRes = Array<{
     uid: string
     playIndex: null
@@ -324,39 +362,17 @@ export type fetchPlaylistAPIRes = Array<{
         uri: SpotifyURI
         username: string
         displayName: string
-        images: Array<{
-            url: string
-            label: "small" | "standard" | "large" | "xlarge"
-        }>
+        images: SpotApiImage2[]
     }
     formatListAttributes: {}
     type: "track"
-    uri: string
+    uri: SpotifyURI
     name: string
-    album: {
-        type: "album"
-        uri: string
-        name: string
-        artist: {
-            type: "artist"
-            uri: string
-            name: string
-        }
-        images: Array<{
-            url: string
-            label: "small" | "standard" | "large" | "xlarge"
-        }>
-    }
-    artists: Array<{
-        type: "artist"
-        uri: string
-        name: string
-    }>
+    album: SpotApiAlbumMin
+    artists: SpotApiArtistMin[]
     discNumber: number
     trackNumber: number
-    duration: {
-        milliseconds: number
-    }
+    duration: SpotApiDuration
     isExplicit: boolean
     isLocal: boolean
     isPlayable: boolean
@@ -409,6 +425,21 @@ export interface fetchTrackLFMAPIRes {
     }
 }
 
+//
+
+export interface SpotApiAlbumMin {
+    type: "album"
+    uri: SpotifyURI
+    name: string
+    artist: SpotApiArtistMin
+    images: SpotApiImage2[]
+}
+
+export interface SpotApiImage2 {
+    url: string
+    label: "small" | "standard" | "large" | "xlarge"
+}
+
 export interface SpotApiTrack {
     album: SpotApiAlbum
     artists: SpotApiArtist[]
@@ -428,7 +459,7 @@ export interface SpotApiTrack {
     preview_url: string
     track_number: number
     type: string
-    uri: string
+    uri: SpotifyURI
     is_local: boolean
 }
 
@@ -442,7 +473,13 @@ export interface SpotApiArtist {
     name: string
     popularity: number
     type: string
-    uri: string
+    uri: SpotifyURI
+}
+
+export interface SpotApiArtistMin {
+    type: "artist"
+    uri: SpotifyURI
+    name: string
 }
 
 export interface SpotApiAlbum {
@@ -458,7 +495,7 @@ export interface SpotApiAlbum {
     release_date_precision: string
     restrictions: SpotApiRestrictions
     type: string
-    uri: string
+    uri: SpotifyURI
     copyrights: Array<{
         text: string
         type: string
@@ -474,7 +511,7 @@ export interface SpotApiAlbum {
         id: string
         name: string
         type: string
-        uri: string
+        uri: SpotifyURI
     }>
 }
 
@@ -501,4 +538,7 @@ export interface SpotApiRestrictions {
 export interface SpotApiFollowers {
     href: string
     total: number
+}
+export interface SpotApiDuration {
+    milliseconds: number
 }

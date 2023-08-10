@@ -32,10 +32,6 @@ const { History } = Spicetify.Platform
 registerBind("H", false, true, false, History.goBack)
 registerBind("L", false, true, false, History.goForward)
 
-// PageUp, PageDown to focus on iframe app before scrolling
-// registerBind("PAGE_UP", false, true, false, focusOnApp)
-// registerBind("PAGE_DOWN", false, true, false, focusOnApp)
-
 // J and K to vertically scroll app
 registerBind("J", false, false, false, () => appScroll(1))
 registerBind("K", false, false, false, () => appScroll(-1))
