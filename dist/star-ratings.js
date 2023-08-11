@@ -16726,7 +16726,9 @@ var star;
           (0, import_function25.pipe)(
             trackListTracks,
             Array_exports.map((track) => {
-              getFirstHeart(track).style.display = CONFIG.hideHearts ? "none" : "flex";
+              const heart = getFirstHeart(track);
+              if (heart)
+                heart.style.display = CONFIG.hideHearts ? "none" : "flex";
               const alreadyHasStars = track.getElementsByClassName("stars").length > 0;
               if (alreadyHasStars)
                 return;

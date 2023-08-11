@@ -14,9 +14,7 @@ import {
     getFirstHeart,
     getLastColIndex,
     getNowPlayingHeart,
-    getStarStopsFromStar,
     getStarsContainer,
-    getStarsFromStarsContainer,
     getStarsStops,
     getStarsStopsFromStarsContainer,
     getTrackListHeader,
@@ -63,9 +61,10 @@ export const updateTrackListStars = f(
         p(
             trackListTracks,
             a.map(track => {
-                getFirstHeart(track).style.display = CONFIG.hideHearts ? "none" : "flex"
-                const alreadyHasStars = track.getElementsByClassName("stars").length > 0
+                const heart = getFirstHeart(track)
+                if (heart) heart.style.display = CONFIG.hideHearts ? "none" : "flex"
 
+                const alreadyHasStars = track.getElementsByClassName("stars").length > 0
                 if (alreadyHasStars) return
 
                 let ratingColumn: HTMLDivElement | null = track.querySelector(".starRatings")
