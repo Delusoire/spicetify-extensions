@@ -3,8 +3,6 @@ import { pipe as p } from "fp-ts/function"
 import { pMchain as as, chunckify } from "./fp"
 import { SpotifyID, SpotifyLoc, SpotifyURI, escapeRegex } from "./util"
 
-export const mustLoadForApi = ["CosmosAsync", "GraphQL", "Platform"]
-
 /*                          GraphQL                                           */
 
 export const fetchGQLAlbum = async (uri: SpotifyURI, offset = 0, limit = 487) =>

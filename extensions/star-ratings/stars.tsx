@@ -7,16 +7,21 @@ import {
     setPlatPlaylistVisibility,
 } from "../../shared/api"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util"
+import { playlistUris, tracksRatings } from "./ratings"
+import { CONFIG } from "./settings"
 import {
     HALF_STAR_LENGTH,
-    playlistUris,
-    tracksRatings,
-    updateCollectionStars,
-    updateNowPlayingStars,
-    updateTrackList,
-} from "./app"
-import { CONFIG } from "./settings"
-import { getStarStopsFromStar, getStarsContainer, getStarsFromStarsContainer, starsN2S, starsS2N } from "./util"
+    getStarStopsFromStar,
+    getStarsContainer,
+    getStarsFromStarsContainer,
+    getStarsStopsFromStarsContainer,
+    setStarsGradientFromContainerByRating,
+    starsN2S,
+    starsS2N,
+} from "./util"
+import { updateNowPlayingStars } from "./app"
+
+const { URI } = Spicetify
 
 export type StarStops = [SVGStopElement, SVGStopElement]
 
@@ -73,7 +78,12 @@ export const createStars = (idSuffix: string, size: number) => {
     }
 
     const starsConstructs = nonEmptyArray.range(1, 5).map(i => createStar(id, i, size))
-    p(starsConstructs, a.unzip, ([star]) => star, a.map(starsContainer.append))
+    p(
+        starsConstructs,
+        a.unzip,
+        ([starElements]) => starElements,
+        a.map(starElement => starsContainer.append(starElement)),
+    )
     return [starsContainer, starsConstructs] as [HTMLSpanElement, ReturnType<typeof createStar>[]]
 }
 
@@ -87,7 +97,7 @@ export const setStarsGradientByRating = (rating: number) => (starsSVGStops: Star
 
     p(
         nonEmptyArray.range(0, 9),
-        a.spanLeft(hi => hi <= rating),
+        a.spanLeft(hi => hi < rating),
         ({ init, rest }) => {
             init.map(setHalfStarLit(true))
             rest.map(setHalfStarLit(false))
@@ -140,12 +150,10 @@ export const onStarClick =
             addPlatPlaylistTracks(playlistUri, [trackUri])
         }
 
-        const starsContainer = getStarsContainer(Spicetify.URI.from(trackUri)!.id!)
-        const starsSVGStops = p(starsContainer, getStarsFromStarsContainer, a.map(getStarStopsFromStar))
-        setStarsGradientByRating(newRating)(starsSVGStops)
-        starsContainer.style.visibility = newRating ? "visible" : "hidden"
-
         updateNowPlayingStars()
-        updateCollectionStars(Spicetify.Platform.History.location.pathname)
-        updateTrackList()
+        const trackStarsContainer = getStarsContainer(`${URI.from(trackUri)!.id}`)
+        if (trackStarsContainer) {
+            p(trackStarsContainer, setStarsGradientFromContainerByRating(newRating))
+            trackStarsContainer.style.visibility = newRating ? "visible" : "hidden"
+        }
     }

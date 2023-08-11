@@ -1,11 +1,9 @@
+import { task } from "fp-ts"
 import { constVoid } from "fp-ts/lib/function"
 import React, { useState } from "react"
 import ReactDOM from "react-dom"
 import { guard4, is } from "./fp"
 import { sleep } from "./util"
-import { task } from "fp-ts"
-
-export const mustLoadForSettings = ["React", "ReactDOM"]
 
 export class SettingsSection {
     private stopHistoryListener: any
@@ -186,7 +184,7 @@ export class SettingsSection {
     }
 
     static getFieldValue = <R,>(id: string): R => {
-        return JSON.parse(Spicetify.LocalStorage.get(id) ?? "{}")
+        return JSON.parse(Spicetify.LocalStorage.get(id) ?? "null") // "null" is parsed as null, the more you know
     }
 
     static setFieldValue = (id: string, newValue: any) => {
@@ -194,7 +192,7 @@ export class SettingsSection {
     }
 
     private static setDefaultFieldValue = async (id: string, defaultValue: task.Task<any>) => {
-        if (SettingsSection.getFieldValue(id) === undefined) SettingsSection.setFieldValue(id, await defaultValue())
+        if (SettingsSection.getFieldValue(id) === null) SettingsSection.setFieldValue(id, await defaultValue())
     }
 
     private FieldsContainer = () => {

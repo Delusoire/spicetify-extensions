@@ -1,46 +1,33 @@
 export default {}
 
-import { array as a, record } from "fp-ts"
+import { array as a } from "fp-ts"
 import { anyPass } from "fp-ts-std/Predicate"
-import { range } from "fp-ts/lib/NonEmptyArray"
 import { flow as f, identity, pipe as p } from "fp-ts/lib/function"
 import { get } from "spectacles-ts"
-import {
-    fetchGQLAlbum,
-    fetchPlatArtistLikedTracks,
-    fetchPlatPlaylistContents,
-    fetchWebPlaylistRes,
-} from "../../shared/api"
-import { pMchain } from "../../shared/fp"
-import { SpotifyURI } from "../../shared/util"
-import { addRatingsListenersToStars, aggregateRatings } from "./ratings"
+import { fetchGQLAlbum, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents } from "../../shared/api"
+import { SpotifyURI, sleep, waitForElement } from "../../shared/util"
+import { addRatingsListenersToStars, aggregateRatings, loadRatings, tracksRatings } from "./ratings"
 import { CONFIG } from "./settings"
 import { StarStops, createStars, setStarsGradientByRating } from "./stars"
 import {
+    STAR_SIZE,
     getFirstHeart,
     getLastColIndex,
     getNowPlayingHeart,
-    getRatingsFolder,
     getStarStopsFromStar,
     getStarsContainer,
     getStarsFromStarsContainer,
     getStarsStops,
+    getStarsStopsFromStarsContainer,
     getTrackListHeader,
     getTrackListTrackUri,
     getTrackListTracks,
     getTrackLists,
-    starsN2S,
+    setStarsGradientFromContainerByRating,
     starsS2N,
 } from "./util"
 
 const { URI } = Spicetify
-
-export const RATINGS_FOLDER_NAME = "Ratings"
-
-export const STAR_SIZE = 16
-export const HALF_STAR_LENGTH = STAR_SIZE / 2
-
-export let playlistUris: SpotifyURI[] = []
 
 const customTrackListColCss = [
     null,
@@ -52,59 +39,25 @@ const customTrackListColCss = [
     "[index] 16px [first] 6fr [var1] 4fr [var2] 3fr [var3] minmax(120px,2fr) [var3] 2fr [last] minmax(120px,1fr)",
 ]
 
-// TODO: read ratedFolderURI from settings, if not available, create a new folder
-// TODO: get playlistUris by reading contents of ratedFolder
-export const loadRatings = async () => {
-    const ratingsFolder = await getRatingsFolder()
-
-    const starsS2Narray = p(
-        range(0, 10),
-        a.map(s => [starsN2S(s), s] as [string, number]),
-        record.fromEntries,
-    )
-
-    const playlistUris = p(
-        ratingsFolder!.items!,
-        a.map(p => [p.type, p.uri, starsS2Narray[p.name as string]] as [string, SpotifyURI, number]),
-        a.reduce(
-            [] as SpotifyURI[],
-            (acc, [type, uri, starsN]) => (type === "playlis" && starsN ? (acc[starsN] = uri) : [], acc),
-        ),
-    )
-
-    tracksRatings = await p(
-        playlistUris,
-        a.map<string, Promise<fetchWebPlaylistRes>>(fetchPlatPlaylistContents),
-        ps => Promise.all(ps),
-        pMchain(a.map(a.map(t => t.uri))),
-        pMchain(a.flatMap((trackUris, rating) => trackUris.map(trackUri => [trackUri, rating] as const))),
-        pMchain(
-            a.reduce({} as Record<string, number>, (acc, [trackUri, rating]) =>
-                Object.assign(acc, {
-                    [trackUri]: Math.max(rating, acc[trackUri] ?? 0),
-                }),
-            ),
-        ),
-    )
-}
-
-export let tracksRatings: Record<SpotifyURI, number> = {}
 loadRatings()
+
 // TRACKLISTS
 
-export const updateTrackList = f(
+export const updateTrackListStars = f(
     getTrackLists,
     a.map(trackList => {
-        const trackListHeader = getTrackListHeader(trackList)
         const trackListTracks = getTrackListTracks(trackList)
+        const locationUri = URI.from(Spicetify.Platform.History.location.pathname)
+
         let lastColIndex: number
-        if (trackListHeader) {
+        if (URI.isArtist(locationUri!)) {
+            ;[lastColIndex] = getLastColIndex(trackListTracks[0])
+        } else {
+            const trackListHeader = getTrackListHeader(trackList)
             ;[lastColIndex] = getLastColIndex(trackListHeader)
 
             const newTrackListColCss = customTrackListColCss[lastColIndex]
             if (newTrackListColCss) trackListHeader.style.gridTemplateColumns = newTrackListColCss
-        } else {
-            ;[lastColIndex] = getLastColIndex(trackListTracks[0])
         }
 
         p(
@@ -138,7 +91,10 @@ export const updateTrackList = f(
                 const trackUri = getTrackListTrackUri(track)
                 const uri = URI.from(trackUri)
 
-                if (!URI.isTrack(uri!)) Spicetify.showNotification("me out the streets")
+                if (!URI.isTrack(uri!)) {
+                    Spicetify.showNotification(`${trackUri} is an invalid track uri`)
+                    debugger
+                }
 
                 const [starsContainer, starsConstructs] = createStars(uri!.id!, STAR_SIZE)
                 ratingColumn.appendChild(starsContainer)
@@ -166,13 +122,12 @@ export const updateTrackList = f(
 )
 
 let mainElement: HTMLElement
-const mainElementObserver = new MutationObserver(() => (CONFIG.showInTrackLists ? updateTrackList : undefined))
+const mainElementObserver = new MutationObserver(() => (CONFIG.showInTrackLists ? updateTrackListStars() : undefined))
 
 new MutationObserver(() => {
     const oldMainElement = mainElement
     mainElement = document.querySelector("main") as HTMLElement
     if (mainElement && !mainElement.isEqualNode(oldMainElement)) {
-        Spicetify.showNotification("mainElement got replaced?!")
         if (oldMainElement) mainElementObserver.disconnect()
         mainElementObserver.observe(mainElement, {
             childList: true,
@@ -196,7 +151,7 @@ export const updateCollectionStars = async (pathname: SpotifyURI, starsStops?: S
         uris = p(await fetchGQLAlbum(`${uri}`), identity, get("tracks.items"), a.map(f(identity, get("track.uri"))))
     else if (URI.isArtist(uri)) uris = p(await fetchPlatArtistLikedTracks(`${uri}`), a.map(get("uri")))
     else if (URI.isPlaylistV1OrV2(uri)) uris = p(await fetchPlatPlaylistContents(`${uri}`), a.map(get("uri")))
-    else return void Spicetify.showNotification("me out the window")
+    else throw "me out the window"
 
     setStarsGradientByRating(aggregateRatings(uris))(starsStops)
 }
@@ -205,14 +160,20 @@ Spicetify.Platform.History.listen(async ({ pathname }: { pathname: string }) => 
     const pageHasHeart = anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2])
     if (!pageHasHeart(pathname)) return
 
-    const generalCollectionPlayButton = document.querySelector(".main-actionBar-ActionBar .main-playButton-PlayButton")
-    const [collectionStarsContainer, collectionStarsConstructs] = createStars("collection", STAR_SIZE * 2)
-    generalCollectionPlayButton?.after(collectionStarsContainer)
+    await sleep(300)
+    let collectionStarsContainer = getStarsContainer("collection"),
+        collectionStarsStops: StarStops[]
+    if (!collectionStarsContainer) {
+        const collectionPlayButton = await waitForElement(".main-actionBar-ActionBar .main-playButton-PlayButton")
+        const [collectionStarsContainer, collectionStarsConstructs] = createStars("collection", STAR_SIZE * 2)
+        collectionPlayButton?.after(collectionStarsContainer)
 
-    updateCollectionStars(
-        pathname,
-        p(collectionStarsConstructs, a.unzip, ([_, starsStops]) => starsStops),
-    )
+        collectionStarsStops = p(collectionStarsConstructs, a.unzip, ([_, starsStops]) => starsStops)
+    } else {
+        collectionStarsStops = p(collectionStarsContainer, getStarsStopsFromStarsContainer)
+    }
+
+    updateCollectionStars(pathname, collectionStarsStops)
 })
 
 // NOW PLAYING
@@ -251,12 +212,7 @@ export const updateNowPlayingStars = () => {
 
     nowPlayingStarsContainer.style.display = Spicetify.URI.isTrack(trackUri) ? "flex" : "none"
 
-    p(
-        nowPlayingStarsContainer,
-        getStarsFromStarsContainer,
-        a.map(getStarStopsFromStar),
-        setStarsGradientByRating(tracksRatings[trackUri] ?? 0),
-    )
+    p(nowPlayingStarsContainer, setStarsGradientFromContainerByRating(tracksRatings[trackUri] ?? 0))
 }
 
 Spicetify.Player.addEventListener("songchange", () => {
@@ -269,3 +225,4 @@ Spicetify.Player.addEventListener("songchange", () => {
 
     updateNowPlayingStars()
 })
+updateNowPlayingStars()

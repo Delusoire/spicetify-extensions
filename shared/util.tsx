@@ -3,22 +3,24 @@
 // export interface SpotifyURI
 //     extends Newtype<{ readonly SpotifyURI: unique symbol }, string> {}
 
+export const mustLoadForApi = ["CosmosAsync", "GraphQL", "Platform"]
 export const mustLoadForUtil = ["URI"]
+export const mustLoadForSettings = ["React", "ReactDOM"]
 
 export type SpotifyID = string
 export type SpotifyURI = string
 
 export type SpotifyLoc = {
-    before?: "start" | SpotifyURI
-    after?: "end" | SpotifyURI
+    before?: "start" | { uri: SpotifyURI }
+    after?: "end" | { uri: SpotifyURI }
 }
 
 export namespace SpotifyLoc {
     export const before = (uri: SpotifyURI) => ({
-        before: uri,
+        before: { uri },
     })
     export const after = (uri: SpotifyURI) => ({
-        after: uri,
+        after: { uri },
     })
 }
 

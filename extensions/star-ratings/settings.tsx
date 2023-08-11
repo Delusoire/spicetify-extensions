@@ -1,17 +1,22 @@
 import { task } from "fp-ts"
 import { createPlatFolder } from "../../shared/api"
 import { SettingsSection } from "../../shared/settings"
-import { RATINGS_FOLDER_NAME } from "./app"
-import { loadRatings } from "./app"
+import { loadRatings } from "./ratings"
+import { RATINGS_FOLDER_NAME } from "./util"
 
-const settings = new SettingsSection("Star ratings", "star-ratings")
+const settings = new SettingsSection("Star Ratings", "star-ratings")
     .addToggle("hideHearts", "Hide Hearts")
     .addToggle("halfStarRatings", "Half star ratings")
     .addToggle("showInTrackLists", "Show in tracklists")
     .addToggle("nowPlayingStarsOnRight", "Place the stars for now playing track on the right")
     .addInput("heartThreshold", "Threshold for liking trakcs", task.of("3.5"))
     .addInput("skipThreshold", "Threshold for skipping trakcs", task.of("1.5"))
-    .addInput("ratingsFolderUri", "Rarings folder uri", () => createPlatFolder(RATINGS_FOLDER_NAME), loadRatings)
+    .addInput(
+        "ratingsFolderUri",
+        "Ratings folder uri",
+        async () => (await createPlatFolder(RATINGS_FOLDER_NAME)).uri,
+        loadRatings,
+    )
 
 settings.pushSettings()
 

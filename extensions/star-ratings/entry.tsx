@@ -1,9 +1,7 @@
 import { option as o } from "fp-ts"
 import { lookup } from "fp-ts/Record"
 import { flow as f, flip } from "fp-ts/function"
-import { mustLoadForApi } from "../../shared/api"
-import { mustLoadForSettings } from "../../shared/settings"
-import { mustLoadForUtil, sleep } from "../../shared/util"
+import { mustLoadForApi, mustLoadForSettings, mustLoadForUtil, sleep } from "../../shared/util"
 ;(async () => {
     const mustLoad = ["Player", "showNotification", ...mustLoadForApi, ...mustLoadForSettings, ...mustLoadForUtil]
 

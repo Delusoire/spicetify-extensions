@@ -1,7 +1,7 @@
 import { task } from "fp-ts"
 import { SettingsSection } from "../../shared/settings"
 
-const settings = new SettingsSection("Show on youtube", "show-on-youtube").addInput(
+const settings = new SettingsSection("Search On YouTube", "search-on-youtube").addInput(
     "YouTubeApiKey",
     "YouTube API Key",
     task.of("000000000000000000000000000000000000000"),
