@@ -7,7 +7,7 @@ import {
     createPlatFolder,
     createSPPlaylistFromTracks,
     fetchPlatPlaylistContents,
-    fetchPlatPlaylists,
+    fetchPlatRootFolder,
     likePlatPlaylist,
 } from "../../shared/api"
 import { guard2, is, pMchain } from "../../shared/fp"
@@ -28,22 +28,32 @@ const extractLikedPlaylistTreeRecur = (leaf: PoF) =>
         [
             isType("folder"),
             async (folder): Promise<{}> => ({
-                [folder.name]: await p(folder.items, map(extractLikedPlaylistTreeRecur), x => Promise.all(x)),
+                [folder.name]: await p(folder.items, map(extractLikedPlaylistTreeRecur), ps => Promise.all(ps)),
             }),
         ],
     ])(task.of({}))(leaf)
 
-type LikedPlaylist = SpotifyURI
-type PersonalPlaylist = SpotifyURI[]
-type PersonalFolder = Array<LikedPlaylist | PersonalPlaylist | PersonalFolder>
+type SpotifyTrackUri = SpotifyURI & { _: "track" }
+type SpotifyPlaylistUri = SpotifyURI & { _: "playlist" }
 
-const restorePlaylistseRecur = async (leaf: any) => {
+type name = string
+type namedProp<A> = Record<name, A>
+type LikedPlaylist = namedProp<SpotifyPlaylistUri>
+type PersonalPlaylist = namedProp<SpotifyTrackUri[]>
+type PersonalFolder = namedProp<Array<LikedPlaylist | PersonalPlaylist | PersonalFolder>>
+
+const isContentOfPersonalPlaylist = (
+    subleaf: PersonalFolder[""] | PersonalPlaylist[""],
+): subleaf is PersonalPlaylist[""] => typeof subleaf[0] === "string" && Spicetify.URI.isTrack(subleaf[0])
+
+const restorePlaylistseRecur = async (leaf: PersonalFolder | PersonalPlaylist | LikedPlaylist) => {
     Object.keys(leaf).forEach(name => {
         const subleaf = leaf[name]
 
-        if (!Array.isArray(subleaf)) return void likePlatPlaylist(subleaf as string)
+        if (!Array.isArray(subleaf)) return void likePlatPlaylist(subleaf)
+        if (subleaf.length === 0) return
 
-        if (subleaf.length && Spicetify.URI.isTrack(subleaf[0])) return void createSPPlaylistFromTracks(name, subleaf)
+        if (isContentOfPersonalPlaylist(subleaf)) return void createSPPlaylistFromTracks(name, subleaf)
 
         createPlatFolder(name)
         subleaf.forEach(restorePlaylistseRecur)
@@ -51,7 +61,7 @@ const restorePlaylistseRecur = async (leaf: any) => {
 }
 
 export const backup = async () => {
-    const playlistData = await p(await fetchPlatPlaylists(), extractLikedPlaylistTreeRecur)
+    const playlistData = await p((await fetchPlatRootFolder()) as any, extractLikedPlaylistTreeRecur)
 
     const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)/
     const appData = toUnfoldable(array)(localStorage).filter(([key]) => allowedAppDataRegex.test(key))

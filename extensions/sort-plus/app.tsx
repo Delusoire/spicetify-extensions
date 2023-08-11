@@ -80,7 +80,7 @@ async function getArtistTracks(uri: SpotifyURI) {
 
     const parseTracksFromAggregates = f(
         a.map(f(Lens.fromPath<agg>()(["releases", "items", 0, "uri"]).get, getAlbumTracks)),
-        x => Promise.all(x),
+        ps => Promise.all(ps),
         pMchain(a.flatten),
     )
 
@@ -137,7 +137,7 @@ const fetchAlbumTracksFromTracks: TracksPopulater = f(
         )
     }),
     values,
-    x => Promise.all(x),
+    ps => Promise.all(ps),
     pMchain(a.flatten),
 )
 
@@ -174,7 +174,7 @@ export const fetchTracks = guard([
 
 export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
     [startsWith("Spotify"), populateTracksSpot],
-    [startsWith("LastFM"), constant(f(a.map(populateTrackLastFM), x => Promise.all(x)))],
+    [startsWith("LastFM"), constant(f(a.map(populateTrackLastFM), ps => Promise.all(ps)))],
 ])(constant(task.of([])))
 
 let queue = new Array<TrackData>()

@@ -6110,7 +6110,7 @@ var sort;
       objConcat = () => Array_exports.reduce({}, objConcat2());
       pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      chunckify = (n) => (g) => (0, import_function24.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
+      chunckify = (n) => (g) => (0, import_function24.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
     }
   });
 
@@ -6246,6 +6246,7 @@ var sort;
       import_react_dom = __toESM(require_react_dom(), 1);
       init_fp();
       init_util();
+      init_es6();
       SettingsSection = class _SettingsSection {
         constructor(name, sectionId, sectionFields = {}) {
           this.name = name;
@@ -6311,7 +6312,7 @@ var sort;
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue, onChange = import_function26.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function26.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
@@ -6336,7 +6337,7 @@ var sort;
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function26.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function26.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
@@ -6378,9 +6379,9 @@ var sort;
         static setFieldValue = (id6, newValue) => {
           Spicetify.LocalStorage.set(id6, JSON.stringify(newValue));
         };
-        static setDefaultFieldValue = (id6, defaultValue) => {
+        static setDefaultFieldValue = async (id6, defaultValue) => {
           if (_SettingsSection.getFieldValue(id6) === void 0)
-            _SettingsSection.setFieldValue(id6, defaultValue);
+            _SettingsSection.setFieldValue(id6, await defaultValue());
         };
         FieldsContainer = () => {
           const [rerender, setRerender] = (0, import_react.useState)(0);
@@ -6470,12 +6471,9 @@ var sort;
   var init_settings2 = __esm({
     "extensions/sort-plus/settings.tsx"() {
       "use strict";
+      init_es6();
       init_settings();
-      settings = new SettingsSection("Sort+", "sort-plus").addToggle("ascending", "Ascending", false).addToggle("artistTopTracks", "Top Tracks", true).addToggle("artistPopularReleases", "Popular Releases", false).addToggle("artistSingles", "Singles", true).addToggle("artistAlbums", "Albums", true).addToggle("artistCompilations", "Compilations", true).addToggle("artistLikedTracks", "Liked Tracks", false).addInput("lastFmUsername", "Last.fm Username", "Delusoire").addInput(
-        "LFMApiKey",
-        "Last.fm API Key",
-        "44654ea047786d90338c17331a5f5d95"
-      );
+      settings = new SettingsSection("Sort+", "sort-plus").addToggle("ascending", "Ascending", Task_exports.of(false)).addToggle("artistTopTracks", "Top Tracks").addToggle("artistPopularReleases", "Popular Releases", Task_exports.of(false)).addToggle("artistSingles", "Singles").addToggle("artistAlbums", "Albums").addToggle("artistCompilations", "Compilations").addToggle("artistLikedTracks", "Liked Tracks", Task_exports.of(false)).addInput("lastFmUsername", "Last.fm Username", Task_exports.of("Delusoire")).addInput("LFMApiKey", "Last.fm API Key", Task_exports.of("44654ea047786d90338c17331a5f5d95"));
       settings.pushSettings();
       CONFIG = settings.toObject();
     }
@@ -6495,7 +6493,7 @@ var sort;
   async function getArtistTracks(uri) {
     const parseTracksFromAggregates = (0, import_function27.flow)(
       Array_exports.map((0, import_function27.flow)(Lens.fromPath()(["releases", "items", 0, "uri"]).get, getAlbumTracks)),
-      (x) => Promise.all(x),
+      (ps) => Promise.all(ps),
       pMchain(Array_exports.flatten)
     );
     const disc = (await fetchArtistGQL(uri)).discography;
@@ -6597,7 +6595,7 @@ var sort;
           );
         }),
         values,
-        (x) => Promise.all(x),
+        (ps) => Promise.all(ps),
         pMchain(Array_exports.flatten)
       );
       populateTracksSpot = (propName) => (tracks) => (0, import_function27.pipe)(
@@ -6625,7 +6623,7 @@ var sort;
       ])(Task_exports.of([]));
       populateTracks = guard4([
         [startsWith("Spotify"), populateTracksSpot],
-        [startsWith("LastFM"), (0, import_function27.constant)((0, import_function27.flow)(Array_exports.map(populateTrackLastFM), (x) => Promise.all(x)))]
+        [startsWith("LastFM"), (0, import_function27.constant)((0, import_function27.flow)(Array_exports.map(populateTrackLastFM), (ps) => Promise.all(ps)))]
       ])((0, import_function27.constant)(Task_exports.of([])));
       queue = new Array();
       sortByProp = (name) => async (uri) => {

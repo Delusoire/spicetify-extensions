@@ -1,8 +1,9 @@
-import { array as a } from "fp-ts"
+import { array as a, task, taskOption } from "fp-ts"
 import { playlistUris, tracksRatings } from "./app"
-import { fetchPlatPlaylistContents, fetchWebPlaylistRes } from "../../shared/api"
+import { fetchPlatFolder, fetchPlatPlaylistContents, fetchWebPlaylistRes } from "../../shared/api"
 import { flow, pipe as p } from "fp-ts/lib/function"
 import { StarStops } from "./stars"
+import { CONFIG } from "./settings"
 
 export const starsS2N = (S: string) => Number(S) * 2
 export const starsN2S = (N: number) => (N * 2).toFixed(1)
@@ -39,24 +40,9 @@ export const getFirstHeart = (parent: HTMLElement) =>
 export const getTrackListTrackUri = (track: HTMLDivElement) =>
     Object.values(track)[0].child.child.child.child.child.pendingProps.uri
 
-// TODO: when removing a track from one of the rating playlists, check also if it exists in any lower rating playlist
-// TODO: read ratedFolderURI from settings, if not available, create a new folder
-// TODO: get playlistUris by reading contents of ratedFolder
-export const loadRatings = async () => {
-    const ratingPlaylists = await p(
-        playlistUris,
-        a.map<string, Promise<fetchWebPlaylistRes>>(fetchPlatPlaylistContents),
-        ps => Promise.all(ps),
-    )
-
-    return p(
-        ratingPlaylists,
-        a.map(a.map(t => t.uri)),
-        a.flatMap((trackUris, rating) => trackUris.map(trackUri => [trackUri, rating] as const)),
-        a.reduce({} as Record<string, number>, (acc, [trackUri, rating]) =>
-            Object.assign(acc, {
-                [trackUri]: Math.max(rating, acc[trackUri] ?? 0),
-            }),
-        ),
-    )
-}
+export const getRatingsFolder = () =>
+    flow(
+        () => () => fetchPlatFolder(CONFIG.ratingsFolderUri),
+        taskOption.tryCatch,
+        taskOption.getOrElse(() => fetchPlatFolder),
+    )()()

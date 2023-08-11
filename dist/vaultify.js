@@ -4319,12 +4319,12 @@ var vaultify = (() => {
       );
       pMchain = (f3) => async (fa) => f3(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      chunckify = (n) => (g) => (0, import_function13.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
+      chunckify = (n) => (g) => (0, import_function13.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
     }
   });
 
   // shared/api.tsx
-  var fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, likePlatPlaylist, createSPPlaylistFromTracks, fetchPlatPlaylists;
+  var fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, likePlatPlaylist, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -4337,15 +4337,16 @@ var vaultify = (() => {
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
       );
       fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
-      createPlatFolder = (name, location = {}) => Spicetify.Platform.RootlistAPI.createFolder(name, location);
-      likePlatPlaylist = (uri) => Spicetify.Platform.RootlistAPI.add([uri]);
+      createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
+      likePlatPlaylist = async (uri) => await Spicetify.Platform.RootlistAPI.add([uri]);
       createSPPlaylistFromTracks = (name, tracks) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
         operation: "create",
         playlist: true,
         uris: tracks,
         name
       });
-      fetchPlatPlaylists = () => Spicetify.Platform.RootlistAPI.getContents();
+      fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
+      fetchPlatRootFolder = () => fetchPlatFolder(void 0);
     }
   });
 
@@ -4373,6 +4374,7 @@ var vaultify = (() => {
       import_react_dom = __toESM(require_react_dom(), 1);
       init_fp();
       init_util();
+      init_es6();
       SettingsSection = class _SettingsSection {
         constructor(name, sectionId, sectionFields = {}) {
           this.name = name;
@@ -4438,7 +4440,7 @@ var vaultify = (() => {
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue, onChange = import_function14.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function14.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4463,7 +4465,7 @@ var vaultify = (() => {
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function14.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function14.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4505,9 +4507,9 @@ var vaultify = (() => {
         static setFieldValue = (id, newValue) => {
           Spicetify.LocalStorage.set(id, JSON.stringify(newValue));
         };
-        static setDefaultFieldValue = (id, defaultValue) => {
+        static setDefaultFieldValue = async (id, defaultValue) => {
           if (_SettingsSection.getFieldValue(id) === void 0)
-            _SettingsSection.setFieldValue(id, defaultValue);
+            _SettingsSection.setFieldValue(id, await defaultValue());
         };
         FieldsContainer = () => {
           const [rerender, setRerender] = (0, import_react.useState)(0);
@@ -4627,7 +4629,7 @@ var vaultify = (() => {
     default: () => app_default,
     restore: () => restore
   });
-  var import_function15, app_default, isType, extractLikedPlaylistTreeRecur, restorePlaylistseRecur, backup, restore;
+  var import_function15, app_default, isType, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, backup, restore;
   var init_app = __esm({
     "extensions/vaultify/app.tsx"() {
       "use strict";
@@ -4649,23 +4651,26 @@ var vaultify = (() => {
         [
           isType("folder"),
           async (folder) => ({
-            [folder.name]: await (0, import_function15.pipe)(folder.items, map(extractLikedPlaylistTreeRecur), (x) => Promise.all(x))
+            [folder.name]: await (0, import_function15.pipe)(folder.items, map(extractLikedPlaylistTreeRecur), (ps) => Promise.all(ps))
           })
         ]
       ])(Task_exports.of({}))(leaf);
+      isContentOfPersonalPlaylist = (subleaf) => typeof subleaf[0] === "string" && Spicetify.URI.isTrack(subleaf[0]);
       restorePlaylistseRecur = async (leaf) => {
         Object.keys(leaf).forEach((name) => {
           const subleaf = leaf[name];
           if (!Array.isArray(subleaf))
             return void likePlatPlaylist(subleaf);
-          if (subleaf.length && Spicetify.URI.isTrack(subleaf[0]))
+          if (subleaf.length === 0)
+            return;
+          if (isContentOfPersonalPlaylist(subleaf))
             return void createSPPlaylistFromTracks(name, subleaf);
           createPlatFolder(name);
           subleaf.forEach(restorePlaylistseRecur);
         });
       };
       backup = async () => {
-        const playlistData = await (0, import_function15.pipe)(await fetchPlatPlaylists(), extractLikedPlaylistTreeRecur);
+        const playlistData = await (0, import_function15.pipe)(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur);
         const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)/;
         const appData = toUnfoldable(Array_exports)(localStorage).filter(([key]) => allowedAppDataRegex.test(key));
         await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({ playlistData, appData }));

@@ -26,7 +26,7 @@ const updateGenreContainer = async (genres: string[]) => {
                 uri === null ? `href="#" onclick="genrePopup()"` : `href="${uri}"`
             } style="color: var(--spice-subtext); font-size: 12px">${titleCase(genre)}</a>`
         }),
-        x => Promise.all(x),
+        ps => Promise.all(ps),
         pMchain(a.intercalate(str.Monoid)(`<span>, </span>`)),
     )
     return genreContainer

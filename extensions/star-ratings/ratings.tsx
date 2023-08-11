@@ -1,4 +1,4 @@
-import { array as a, array, readonlyArray, record } from "fp-ts"
+import { array as a, array, nonEmptyArray, readonlyArray, record } from "fp-ts"
 import { flip, identity, pipe as p, flow as f } from "fp-ts/function"
 import { fetchGQLAlbumRes, fetchPlatPlaylistContents, movePlatPlaylistTracks } from "../../shared/api"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util"
@@ -11,9 +11,7 @@ export const aggregateRatings = (uris: SpotifyURI[]) =>
     p(
         uris,
         a.map(uri => tracksRatings[uri]),
-        x => x,
         a.filter(Boolean),
-        x => x,
         a.map(r => [r, w(r)] as const),
         readonlyArray.unzip<number, number>,
         ([rs, wrs]) =>
@@ -33,7 +31,7 @@ export const sortPlaylistByRating = async (playlist: SpotifyURI) => {
     )
 
     p(
-        a.makeBy(11, identity),
+        nonEmptyArray.range(0, 10),
         a.map(i => urisGroupedByRating[i] ?? []),
         a.reduce(["first" as SpotifyURI], (lastUris, currUris) => {
             if (currUris.length) movePlatPlaylistTracks(playlist, currUris, SpotifyLoc.before(lastUris[0]))

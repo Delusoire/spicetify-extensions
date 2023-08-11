@@ -4450,7 +4450,7 @@ var show;
       );
       pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      chunckify = (n) => (g) => (0, import_function13.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
+      chunckify = (n) => (g) => (0, import_function13.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
     }
   });
 
@@ -4600,7 +4600,7 @@ var show;
             const uri2 = await fetchWebSoundOfSpotifyPlaylist(genre);
             return `<a class="main-entityHeader-genreLink" ${uri2 === null ? `href="#" data-value="${genre}" onclick="searchPlaylist(this.getAttribute('data-value'))` : `href="${uri2}"`} style="color: var(--spice-subtext); font-size: 1rem">${titleCase(genre)}</a>`;
           }),
-          (x) => Promise.all(x),
+          (ps) => Promise.all(ps),
           pMchain(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`)),
           pMchain(prepend4(`<span>Artist Genres : </span>`))
         );
@@ -4718,6 +4718,7 @@ var show;
       import_react_dom = __toESM(require_react_dom(), 1);
       init_fp();
       init_util();
+      init_es6();
       SettingsSection = class _SettingsSection {
         constructor(name, sectionId, sectionFields = {}) {
           this.name = name;
@@ -4783,7 +4784,7 @@ var show;
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue, onChange = import_function18.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function18.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4808,7 +4809,7 @@ var show;
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function18.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function18.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4850,9 +4851,9 @@ var show;
         static setFieldValue = (id, newValue) => {
           Spicetify.LocalStorage.set(id, JSON.stringify(newValue));
         };
-        static setDefaultFieldValue = (id, defaultValue) => {
+        static setDefaultFieldValue = async (id, defaultValue) => {
           if (_SettingsSection.getFieldValue(id) === void 0)
-            _SettingsSection.setFieldValue(id, defaultValue);
+            _SettingsSection.setFieldValue(id, await defaultValue());
         };
         FieldsContainer = () => {
           const [rerender, setRerender] = (0, import_react2.useState)(0);
@@ -4942,11 +4943,13 @@ var show;
   var init_settings2 = __esm({
     "extensions/show-the-genres/settings.tsx"() {
       "use strict";
+      init_es6();
       init_settings();
-      settings = new SettingsSection(
-        "Show The Genre",
-        "show-the-genre"
-      ).addInput("LFMApiKey", "Last.fm API Key", "44654ea047786d90338c17331a5f5d95");
+      settings = new SettingsSection("Show The Genre", "show-the-genre").addInput(
+        "LFMApiKey",
+        "Last.fm API Key",
+        Task_exports.of("44654ea047786d90338c17331a5f5d95")
+      );
       settings.pushSettings();
       CONFIG = settings.toObject();
     }
@@ -4984,7 +4987,7 @@ var show;
             const uri = await fetchWebSoundOfSpotifyPlaylist(genre);
             return `<a ${uri === null ? `href="#" onclick="genrePopup()"` : `href="${uri}"`} style="color: var(--spice-subtext); font-size: 12px">${titleCase(genre)}</a>`;
           }),
-          (x) => Promise.all(x),
+          (ps) => Promise.all(ps),
           pMchain(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`))
         );
         return genreContainer;

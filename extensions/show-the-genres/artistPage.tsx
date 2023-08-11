@@ -27,7 +27,7 @@ export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
                     : `href="${uri}"`
             } style="color: var(--spice-subtext); font-size: 1rem">${titleCase(genre)}</a>`
         }),
-        x => Promise.all(x),
+        ps => Promise.all(ps),
         pMchain(a.intercalate(str.Monoid)(`<span>, </span>`)),
         pMchain(prepend(`<span>Artist Genres : </span>`)),
     )

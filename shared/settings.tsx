@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import ReactDOM from "react-dom"
 import { guard4, is } from "./fp"
 import { sleep } from "./util"
+import { task } from "fp-ts"
 
 export const mustLoadForSettings = ["React", "ReactDOM"]
 
@@ -90,7 +91,7 @@ export class SettingsSection {
     addToggle = (
         nameId: string,
         description: string,
-        defaultValue: boolean,
+        defaultValue = task.of(true),
         onChange: (e: React.ChangeEvent<HTMLInputElement>) => void = constVoid,
         events: ToggleField["events"] = {},
     ) => {
@@ -111,7 +112,7 @@ export class SettingsSection {
     addInput = (
         nameId: string,
         description: string,
-        defaultValue: string,
+        defaultValue: task.Task<string>,
         onChange: (e: React.ChangeEvent<HTMLInputElement>) => void = constVoid,
         inputType = "text",
         events: InputField["events"] = {},
@@ -136,7 +137,7 @@ export class SettingsSection {
         nameId: string,
         description: string,
         options: string[],
-        defaultValue = 0,
+        defaultValue = task.of(0),
         onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void = constVoid,
         events: DropdownField["events"] = {},
     ) => {
@@ -192,8 +193,8 @@ export class SettingsSection {
         Spicetify.LocalStorage.set(id, JSON.stringify(newValue))
     }
 
-    private static setDefaultFieldValue = (id: string, defaultValue: any) => {
-        if (SettingsSection.getFieldValue(id) === undefined) SettingsSection.setFieldValue(id, defaultValue)
+    private static setDefaultFieldValue = async (id: string, defaultValue: task.Task<any>) => {
+        if (SettingsSection.getFieldValue(id) === undefined) SettingsSection.setFieldValue(id, await defaultValue())
     }
 
     private FieldsContainer = () => {

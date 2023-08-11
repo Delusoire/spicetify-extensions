@@ -1,5 +1,5 @@
-import { array as a } from "fp-ts"
-import { increment, pipe as p } from "fp-ts/lib/function"
+import { array as a, nonEmptyArray } from "fp-ts"
+import { pipe as p } from "fp-ts/lib/function"
 import {
     addPlatPlaylistTracks,
     createPlatPlaylist,
@@ -7,12 +7,16 @@ import {
     setPlatPlaylistVisibility,
 } from "../../shared/api"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util"
-import { playlistUris, tracksRatings, updateCollectionStars, updateNowPlayingStars, updateTrackList } from "./app"
+import {
+    HALF_STAR_LENGTH,
+    playlistUris,
+    tracksRatings,
+    updateCollectionStars,
+    updateNowPlayingStars,
+    updateTrackList,
+} from "./app"
 import { CONFIG } from "./settings"
 import { getStarStopsFromStar, getStarsContainer, getStarsFromStarsContainer, starsN2S, starsS2N } from "./util"
-
-export const STAR_SIZE = 16
-export const HALF_STAR_LENGTH = STAR_SIZE / 2
 
 export type StarStops = [SVGStopElement, SVGStopElement]
 
@@ -68,7 +72,7 @@ export const createStars = (idSuffix: string, size: number) => {
         starsContainer.style.display = "flex"
     }
 
-    const starsConstructs = a.makeBy(5, increment).map(i => createStar(id, i, size))
+    const starsConstructs = nonEmptyArray.range(1, 5).map(i => createStar(id, i, size))
     p(starsConstructs, a.unzip, ([star]) => star, a.map(starsContainer.append))
     return [starsContainer, starsConstructs] as [HTMLSpanElement, ReturnType<typeof createStar>[]]
 }
@@ -82,7 +86,7 @@ export const setStarsGradientByRating = (rating: number) => (starsSVGStops: Star
         )
 
     p(
-        a.makeBy(10, increment),
+        nonEmptyArray.range(0, 9),
         a.spanLeft(hi => hi <= rating),
         ({ init, rest }) => {
             init.map(setHalfStarLit(true))
@@ -116,17 +120,19 @@ export const onStarClick =
 
         if (oldRating === newRating) newRating = 0
 
-        if (oldRating) {
-            const playlistUri = playlistUris[oldRating]
-            removePlatPlaylistTracks(playlistUri, [trackUri])
-        }
+        if (oldRating)
+            p(
+                playlistUris.slice(0, oldRating + 1),
+                a.filter(Boolean),
+                a.map(playlistUri => removePlatPlaylistTracks(playlistUri, [trackUri])),
+            )
 
         tracksRatings[trackUri] = newRating
 
         if (newRating) {
             let playlistUri = playlistUris[newRating]
             if (!playlistUri) {
-                playlistUri = await createPlatPlaylist(starsN2S(newRating), SpotifyLoc.after(CONFIG.ratedFolderUri))
+                playlistUri = await createPlatPlaylist(starsN2S(newRating), SpotifyLoc.after(CONFIG.ratingsFolderUri))
                 setPlatPlaylistVisibility(playlistUri, false)
                 playlistUris[newRating] = playlistUri
             }

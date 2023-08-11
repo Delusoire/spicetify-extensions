@@ -1,16 +1,23 @@
-import { array as a } from "fp-ts"
+import { array as a, record } from "fp-ts"
 import { anyPass } from "fp-ts-std/Predicate"
 import { flow as f, identity, pipe as p } from "fp-ts/lib/function"
 import { get } from "spectacles-ts"
-import { fetchGQLAlbum, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents } from "../../shared/api"
+import {
+    fetchGQLAlbum,
+    fetchPlatArtistLikedTracks,
+    fetchPlatFolder,
+    fetchPlatPlaylistContents,
+    fetchWebPlaylistRes,
+} from "../../shared/api"
 import { SpotifyURI } from "../../shared/util"
 import { addRatingsListenersToStars, aggregateRatings } from "./ratings"
 import { CONFIG } from "./settings"
-import { STAR_SIZE, StarStops, createStars, setStarsGradientByRating } from "./stars"
+import { StarStops, createStars, setStarsGradientByRating } from "./stars"
 import {
     getFirstHeart,
     getLastColIndex,
     getNowPlayingHeart,
+    getRatingsFolder,
     getStarStopsFromStar,
     getStarsContainer,
     getStarsFromStarsContainer,
@@ -19,11 +26,18 @@ import {
     getTrackListTrackUri,
     getTrackListTracks,
     getTrackLists,
-    loadRatings,
+    starsN2S,
     starsS2N,
 } from "./util"
+import { range } from "fp-ts/lib/NonEmptyArray"
+import { pMchain } from "../../shared/fp"
 
 const { URI } = Spicetify
+
+export const RATINGS_FOLDER_NAME = "Ratings"
+
+export const STAR_SIZE = 16
+export const HALF_STAR_LENGTH = STAR_SIZE / 2
 
 export let playlistUris: SpotifyURI[] = []
 
@@ -37,12 +51,52 @@ const customTrackListColCss = [
     "[index] 16px [first] 6fr [var1] 4fr [var2] 3fr [var3] minmax(120px,2fr) [var3] 2fr [last] minmax(120px,1fr)",
 ]
 
+// TODO: read ratedFolderURI from settings, if not available, create a new folder
+// TODO: get playlistUris by reading contents of ratedFolder
+export const loadRatings = async () => {
+    const ratingsFolder = await getRatingsFolder()
+
+    const starsS2Narray = p(
+        range(0, 10),
+        a.map(s => [starsN2S(s), s] as [string, number]),
+        record.fromEntries,
+    )
+
+    const playlistUris = p(
+        ratingsFolder!.items!,
+        a.map(p => [p.type, p.uri, starsS2Narray[p.name as string]] as [string, SpotifyURI, number]),
+        a.reduce(
+            [] as SpotifyURI[],
+            (acc, [type, uri, starsN]) => (type === "playlis" && starsN ? (acc[starsN] = uri) : [], acc),
+        ),
+    )
+
+    tracksRatings = await p(
+        playlistUris,
+        a.map<string, Promise<fetchWebPlaylistRes>>(fetchPlatPlaylistContents),
+        ps => Promise.all(ps),
+        pMchain(a.map(a.map(t => t.uri))),
+        pMchain(a.flatMap((trackUris, rating) => trackUris.map(trackUri => [trackUri, rating] as const))),
+        pMchain(
+            a.reduce({} as Record<string, number>, (acc, [trackUri, rating]) =>
+                Object.assign(acc, {
+                    [trackUri]: Math.max(rating, acc[trackUri] ?? 0),
+                }),
+            ),
+        ),
+    )
+}
+
+export let tracksRatings: Record<SpotifyURI, number> = {}
+loadRatings()
+// TRACKLISTS
+
 export const updateTrackList = f(
     getTrackLists,
     a.map(trackList => {
         const trackListHeader = getTrackListHeader(trackList)
         const trackListTracks = getTrackListTracks(trackList)
-        let lastColIndex: number = -1
+        let lastColIndex: number
         if (trackListHeader) {
             ;[lastColIndex] = getLastColIndex(trackListHeader)
 
@@ -110,11 +164,8 @@ export const updateTrackList = f(
     }),
 )
 
-export let tracksRatings: Record<SpotifyURI, number> = {}
-loadRatings().then(v => (tracksRatings = v))
-
 let mainElement: HTMLElement
-const mainElementObserver = new MutationObserver(() => (CONFIG.showInTrackList ? updateTrackList : undefined))
+const mainElementObserver = new MutationObserver(() => (CONFIG.showInTrackLists ? updateTrackList : undefined))
 
 new MutationObserver(() => {
     const oldMainElement = mainElement
@@ -209,7 +260,10 @@ export const updateNowPlayingStars = () => {
 
 Spicetify.Player.addEventListener("songchange", () => {
     const trackUri = Spicetify.Player.data.track?.uri as string
-    if (CONFIG.skipThreshold && tracksRatings[trackUri] <= starsS2N(CONFIG.skipThreshold))
+    if (
+        Number(CONFIG.skipThreshold) &&
+        (tracksRatings[trackUri] || Number.MAX_SAFE_INTEGER) <= starsS2N(CONFIG.skipThreshold)
+    )
         return Spicetify.Player.next()
 
     updateNowPlayingStars()

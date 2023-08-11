@@ -3226,7 +3226,7 @@ var play;
       init_es6();
       import_function9 = __toESM(require_function(), 1);
       pMchain = (f3) => async (fa) => f3(await fa);
-      chunckify = (n) => (g) => (0, import_function9.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
+      chunckify = (n) => (g) => (0, import_function9.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
     }
   });
 
