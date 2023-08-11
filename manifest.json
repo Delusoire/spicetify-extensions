@@ -87,6 +87,24 @@
         ]
     },
     {
+        "name": "star-ratings",
+        "description": "Rate your songs with stars! And show aggregated Show album/playlist/artist stars.",
+        "preview": "extensions/star-ratings/assets/preview.png",
+        "main": "dist/star-ratings.prism.js",
+        "readme": "extensions/star-ratings/assets/README.md",
+        "authors": [
+            {
+                "name": "Delusoire",
+                "url": "https://github.com/Delusoire"
+            }
+        ],
+        "tags": [
+            "heart",
+            "star",
+            "rating"
+        ]
+    },
+    {
         "name": "vaultify",
         "description": "Vault for your playlists and settings (Backup/Restore)",
         "preview": "extensions/vaultify/assets/preview.png",
