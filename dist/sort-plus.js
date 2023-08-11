@@ -111,7 +111,7 @@ var sort;
       }
     }
   }
-  var __spreadArray, unsafeCoerce, constTrue, constNull, constUndefined, dual;
+  var __spreadArray, unsafeCoerce, constTrue, constFalse, constNull, constUndefined, dual;
   var init_function = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/function.js"() {
       __spreadArray = function(to, from, pack) {
@@ -127,6 +127,7 @@ var sort;
       };
       unsafeCoerce = identity;
       constTrue = /* @__PURE__ */ constant(true);
+      constFalse = /* @__PURE__ */ constant(false);
       constNull = /* @__PURE__ */ constant(null);
       constUndefined = /* @__PURE__ */ constant(void 0);
       dual = function(arity, body) {
@@ -2421,12 +2422,33 @@ var sort;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Predicate.js
-  var not;
+  var getSemigroupAny, getMonoidAny, not, or;
   var init_Predicate = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Predicate.js"() {
+      init_function();
+      getSemigroupAny = function() {
+        return {
+          concat: function(first4, second) {
+            return pipe(first4, or(second));
+          }
+        };
+      };
+      getMonoidAny = function() {
+        return {
+          concat: getSemigroupAny().concat,
+          empty: constFalse
+        };
+      };
       not = function(predicate) {
         return function(a) {
           return !predicate(a);
+        };
+      };
+      or = function(second) {
+        return function(first4) {
+          return function(a) {
+            return first4(a) || second(a);
+          };
         };
       };
     }
@@ -3811,7 +3833,7 @@ var sort;
       exports.constNull = constant5(null);
       exports.constUndefined = constant5(void 0);
       exports.constVoid = exports.constUndefined;
-      function flip4(f4) {
+      function flip3(f4) {
         return function() {
           var args = [];
           for (var _i = 0; _i < arguments.length; _i++) {
@@ -3825,7 +3847,7 @@ var sort;
           };
         };
       }
-      exports.flip = flip4;
+      exports.flip = flip3;
       function flow3(ab, bc, cd, de, ef, fg, gh, hi, ij) {
         switch (arguments.length) {
           case 1:
@@ -3971,12 +3993,18 @@ var sort;
   });
 
   // shared/util.tsx
-  var spotUriRe, parseUri, sleep;
+  var SpotifyLoc, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
-      spotUriRe = /^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$/;
-      parseUri = (uri) => uri.match(spotUriRe)?.groups;
+      ((SpotifyLoc3) => {
+        SpotifyLoc3.before = (uri) => ({
+          before: uri
+        });
+        SpotifyLoc3.after = (uri) => ({
+          after: uri
+        });
+      })(SpotifyLoc || (SpotifyLoc = {}));
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
   });
@@ -4615,12 +4643,12 @@ var sort;
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function16, import_Semigroup2, URI7, map7, Functor5, of6, ap6, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var import_function17, import_Semigroup2, URI7, map7, Functor5, of6, ap6, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
       init_Option();
       init_Array();
-      import_function16 = __toESM(require_function());
+      import_function17 = __toESM(require_function());
       init_Predicate();
       init_Endomorphism();
       init_Monoid();
@@ -4629,12 +4657,12 @@ var sort;
       init_Apply();
       init_Chain();
       URI7 = "Function";
-      map7 = (f4) => (g) => (0, import_function16.flow)(g, f4);
+      map7 = (f4) => (g) => (0, import_function17.flow)(g, f4);
       Functor5 = {
         URI: URI7,
         map: (f4, g) => map7(g)(f4)
       };
-      of6 = import_function16.constant;
+      of6 = import_function17.constant;
       ap6 = (f4) => (g) => (x) => g(x)(f4(x));
       Applicative3 = {
         ...Functor5,
@@ -4653,21 +4681,31 @@ var sort;
       bind5 = bind(Monad4);
       apS5 = apS(Applicative3);
       let_5 = let_(Functor5);
-      unary = import_function16.tupled;
-      guard4 = (branches) => (fallback) => (input) => (0, import_function16.pipe)(branches, map(([f4, g]) => (0, import_function16.flow)(fromPredicate2(f4), map2(g))), concatAll4((0, import_function16.getMonoid)(getMonoid3((0, import_Semigroup2.first)()))()), (0, import_function16.apply)(input), getOrElse(() => fallback(input)));
+      unary = import_function17.tupled;
+      guard4 = (branches) => (fallback) => (input) => (0, import_function17.pipe)(branches, map(([f4, g]) => (0, import_function17.flow)(fromPredicate2(f4), map2(g))), concatAll4((0, import_function17.getMonoid)(getMonoid3((0, import_Semigroup2.first)()))()), (0, import_function17.apply)(input), getOrElse(() => fallback(input)));
       unless = (f4) => (onFalse) => (x) => f4(x) ? x : onFalse(x);
-      when = (0, import_function16.flow)(not, unless);
+      when = (0, import_function17.flow)(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function16.flip)(invoke)([]);
+      invokeNullary = (0, import_function17.flip)(invoke)([]);
       curry2T = (f4) => (a) => (b) => f4([a, b]);
-      curry2 = (0, import_function16.flow)(unary, curry2T);
+      curry2 = (0, import_function17.flow)(unary, curry2T);
       curry3T = (f4) => (a) => (b) => (c) => f4([a, b, c]);
-      curry3 = (0, import_function16.flow)(unary, curry3T);
+      curry3 = (0, import_function17.flow)(unary, curry3T);
       curry4T = (f4) => (a) => (b) => (c) => (d) => f4([a, b, c, d]);
-      curry4 = (0, import_function16.flow)(unary, curry4T);
+      curry4 = (0, import_function17.flow)(unary, curry4T);
       curry5T = (f4) => (a) => (b) => (c) => (d) => (e) => f4([a, b, c, d, e]);
-      curry5 = (0, import_function16.flow)(unary, curry5T);
+      curry5 = (0, import_function17.flow)(unary, curry5T);
       applyEvery = concatAll4(getMonoid4());
+    }
+  });
+
+  // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Predicate.js
+  var anyPass;
+  var init_Predicate2 = __esm({
+    ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Predicate.js"() {
+      init_Predicate();
+      init_Monoid();
+      anyPass = (fs) => concatAll4(getMonoidAny())(fs);
     }
   });
 
@@ -6056,12 +6094,12 @@ var sort;
   });
 
   // shared/fp.tsx
-  var import_function23, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, chunckify;
+  var import_function24, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, chunckify;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function23 = __toESM(require_function(), 1);
+      import_function24 = __toESM(require_function(), 1);
       init_Function();
       init_Record();
       import_Semigroup3 = __toESM(require_Semigroup(), 1);
@@ -6072,51 +6110,42 @@ var sort;
       objConcat = () => Array_exports.reduce({}, objConcat2());
       pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      chunckify = (n) => (g) => (0, import_function23.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
+      chunckify = (n) => (g) => (0, import_function24.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
     }
   });
 
   // shared/api.tsx
-  var import_function24, fetchAlbumGQL, fetchArtistGQL, fetchArtistsSpotAPI, fetchTracksSpotAPI, fetchPlaylistAPI, fetchArtistLikedTracksSP, fetchTrackLFMAPI;
+  var import_function25, fetchGQLAlbum, fetchArtistGQL, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, fetchTrackLFMAPI;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_Function();
-      import_function24 = __toESM(require_function(), 1);
+      import_function25 = __toESM(require_function(), 1);
       init_fp();
       init_util();
-      fetchAlbumGQL = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions.getAlbum,
-        { uri, locale: Spicetify.Locale.getLocale(), offset, limit }
-      )).data.albumUnion;
-      fetchArtistGQL = async (uri) => (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions.queryArtistOverview,
-        {
-          uri,
-          locale: Spicetify.Locale.getLocale(),
-          includePrerelease: true
-        }
-      )).data.artistUnion;
-      fetchArtistsSpotAPI = chunckify(50)(
-        async (ids) => (await Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`
-        )).artists
+      fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.getAlbum, {
+        uri,
+        locale: Spicetify.Locale.getLocale(),
+        offset,
+        limit
+      })).data.albumUnion;
+      fetchArtistGQL = async (uri) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistOverview, {
+        uri,
+        locale: Spicetify.Locale.getLocale(),
+        includePrerelease: true
+      })).data.artistUnion;
+      fetchWebArtistsSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );
-      fetchTracksSpotAPI = chunckify(50)(
-        async (ids) => (await Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-        )).tracks
+      fetchWebTracksSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
       );
-      fetchPlaylistAPI = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
-      fetchArtistLikedTracksSP = async (id6) => (await Spicetify.CosmosAsync.get(
-        `sp://core-collection/unstable/@/list/tracks/artist/${id6}`
-      )).items;
-      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function24.pipe)(
+      fetchPlatArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items;
+      fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
+      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function25.pipe)(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
           artist
-        )}&track=${encodeURIComponent(
-          trackName
-        )}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
+        )}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
         fetch,
         pMchain(invokeNullary("json"))
       );
@@ -6124,13 +6153,11 @@ var sort;
   });
 
   // shared/parse.tsx
-  var parseTrackFromAlbum, parseTopTrackFromArtist, parseTrackFromArtistLikedTracksSP, parseTrackFromPlaylistAPI, parseTrackFromSpotifyAPI;
+  var parseTrackFromAlbum, parseTopTrackFromArtist, parsePlatTrackFromArtistLikedTracks, parseAPITrackFromPlaylist, parseAPITrackFromSpotify;
   var init_parse = __esm({
     "shared/parse.tsx"() {
       "use strict";
-      parseTrackFromAlbum = ({
-        track
-      }) => ({
+      parseTrackFromAlbum = ({ track }) => ({
         albumName: void 0,
         // gets filled in later
         albumUri: void 0,
@@ -6156,19 +6183,7 @@ var sort;
         releaseDate: void 0,
         uri: track.uri
       });
-      parseTrackFromArtistLikedTracksSP = (track) => ({
-        albumName: track.album.name,
-        albumUri: track.album.link,
-        artistName: track.artists[0].name,
-        artistUri: track.artists[0].link,
-        durationMilis: track.length * 1e3,
-        name: track.name,
-        playcount: void 0,
-        popularity: track.popularity,
-        releaseDate: new Date(track.album.year).getTime(),
-        uri: track.link
-      });
-      parseTrackFromPlaylistAPI = (track) => ({
+      parsePlatTrackFromArtistLikedTracks = (track) => ({
         albumName: track.album.name,
         albumUri: track.album.uri,
         artistName: track.artists[0].name,
@@ -6180,7 +6195,19 @@ var sort;
         releaseDate: void 0,
         uri: track.uri
       });
-      parseTrackFromSpotifyAPI = (track) => ({
+      parseAPITrackFromPlaylist = (track) => ({
+        albumName: track.album.name,
+        albumUri: track.album.uri,
+        artistName: track.artists[0].name,
+        artistUri: track.artists[0].uri,
+        durationMilis: track.duration.milliseconds,
+        name: track.name,
+        playcount: void 0,
+        popularity: void 0,
+        releaseDate: void 0,
+        uri: track.uri
+      });
+      parseAPITrackFromSpotify = (track) => ({
         albumName: track.album.name,
         albumUri: track.album.uri,
         artistName: track.artists[0].name,
@@ -6210,11 +6237,11 @@ var sort;
   });
 
   // shared/settings.tsx
-  var import_function25, import_react, import_react_dom, SettingsSection;
+  var import_function26, import_react, import_react_dom, SettingsSection;
   var init_settings = __esm({
     "shared/settings.tsx"() {
       "use strict";
-      import_function25 = __toESM(require_function(), 1);
+      import_function26 = __toESM(require_function(), 1);
       import_react = __toESM(require_react(), 1);
       import_react_dom = __toESM(require_react_dom(), 1);
       init_fp();
@@ -6237,12 +6264,10 @@ var sort;
             await sleep(100);
           if (this.stopHistoryListener)
             this.stopHistoryListener();
-          this.stopHistoryListener = Spicetify.Platform.History.listen(
-            ({ pathname = "" }) => {
-              if (pathname === "/preferences")
-                this.render();
-            }
-          );
+          this.stopHistoryListener = Spicetify.Platform.History.listen(({ pathname = "" }) => {
+            if (pathname === "/preferences")
+              this.render();
+          });
           if (Spicetify.Platform.History.location.pathname === "/preferences")
             await this.render();
         };
@@ -6262,14 +6287,10 @@ var sort;
               return;
             await sleep(100);
           }
-          const allSettingsContainer = document.querySelector(
-            ".main-view-container__scroll-node-child main div"
-          );
+          const allSettingsContainer = document.querySelector(".main-view-container__scroll-node-child main div");
           if (!allSettingsContainer)
             return console.error("[settings] container not found");
-          let pluginSettingsContainer = Array.from(
-            allSettingsContainer.children
-          ).find(({ id: id6 }) => id6 === this.sectionId);
+          let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id: id6 }) => id6 === this.sectionId);
           if (!pluginSettingsContainer) {
             pluginSettingsContainer = document.createElement("div");
             pluginSettingsContainer.id = this.sectionId;
@@ -6278,7 +6299,7 @@ var sort;
           }
           import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
         };
-        addButton = (nameId, description, text, onClick = import_function25.constVoid, events = {}) => {
+        addButton = (nameId, description, text, onClick = import_function26.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
           events.onClick = onClick;
           this.sectionFields[nameId] = {
@@ -6290,7 +6311,7 @@ var sort;
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue, onChange = import_function25.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue, onChange = import_function26.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
@@ -6302,7 +6323,7 @@ var sort;
           };
           return this;
         };
-        addInput = (nameId, description, defaultValue, onChange = import_function25.constVoid, inputType = "text", events = {}) => {
+        addInput = (nameId, description, defaultValue, onChange = import_function26.constVoid, inputType = "text", events = {}) => {
           const id6 = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
@@ -6315,7 +6336,7 @@ var sort;
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function25.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function26.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
@@ -6340,9 +6361,7 @@ var sort;
         };
         getId = (nameId) => `extensions:${this.sectionId}:${nameId}`;
         useStateFor = (id6) => {
-          const [value, setValueState] = (0, import_react.useState)(
-            _SettingsSection.getFieldValue(id6)
-          );
+          const [value, setValueState] = (0, import_react.useState)(_SettingsSection.getFieldValue(id6));
           return [
             value,
             (newValue) => {
@@ -6372,33 +6391,14 @@ var sort;
         };
         Field = ({ field }) => {
           const isType = is("type");
-          return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(
-            this.SettingDescription,
-            {
-              id: field.id,
-              description: field.description
-            }
-          ), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
-            [
-              isType("input" /* INPUT */),
-              this.SettingInputField
-            ],
+          return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(this.SettingDescription, { id: field.id, description: field.description }), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
+            [isType("input" /* INPUT */), this.SettingInputField],
             [isType("button" /* BUTTON */), this.SettingButtonField],
             [isType("toggle" /* TOGGLE */), this.SettingToggleField],
             [isType("dropdown" /* DROPDOWN */), this.SettingDropdownField]
           ])(this.SettingHidden)(field)));
         };
-        SettingDescription = ({
-          id: id6,
-          description
-        }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement(
-          "label",
-          {
-            className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
-            htmlFor: id6
-          },
-          description
-        ));
+        SettingDescription = ({ id: id6, description }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement("label", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type", htmlFor: id6 }, description));
         SettingButtonField = (field) => /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
           "button",
           {
@@ -6457,14 +6457,7 @@ var sort;
                 field.events.onChange?.(e);
               }
             },
-            field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement(
-              "option",
-              {
-                selected: i === _SettingsSection.getFieldValue(field.id),
-                value: i + 1
-              },
-              option2
-            ))
+            field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement("option", { selected: i === _SettingsSection.getFieldValue(field.id), value: i + 1 }, option2))
           );
         };
         SettingHidden = () => /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null);
@@ -6500,13 +6493,8 @@ var sort;
     sortByProp: () => sortByProp
   });
   async function getArtistTracks(uri) {
-    const parseTracksFromAggregates = (0, import_function26.flow)(
-      Array_exports.map(
-        (0, import_function26.flow)(
-          Lens.fromPath()(["releases", "items", 0, "uri"]).get,
-          getAlbumTracks
-        )
-      ),
+    const parseTracksFromAggregates = (0, import_function27.flow)(
+      Array_exports.map((0, import_function27.flow)(Lens.fromPath()(["releases", "items", 0, "uri"]).get, getAlbumTracks)),
       (x) => Promise.all(x),
       pMchain(Array_exports.flatten)
     );
@@ -6516,30 +6504,22 @@ var sort;
     const artistAlbums = disc.albums.items;
     const artistSingles = disc.singles.items;
     const artistCompilations = disc.compilations.items;
-    const formatUrisAsAggregates = Array_exports.map(
-      ({ uri: uri2 }) => ({
-        releases: { items: [{ uri: uri2 }] }
-      })
-    );
+    const formatUrisAsAggregates = Array_exports.map(({ uri: uri2 }) => ({
+      releases: { items: [{ uri: uri2 }] }
+    }));
     const allTracks = new Array();
     const add = (tracks) => void Array.prototype.push.apply(allTracks, tracks);
     if (CONFIG.artistTopTracks)
       add(
-        (0, import_function26.pipe)(
+        (0, import_function27.pipe)(
           artistTopTracks,
-          Array_exports.map((0, import_function26.flow)(lookup4("track"), Option_exports.map(parseTopTrackFromArtist))),
+          Array_exports.map((0, import_function27.flow)(lookup4("track"), Option_exports.map(parseTopTrackFromArtist))),
           Array_exports.sequence(Option_exports.Applicative),
-          Option_exports.getOrElse((0, import_function26.constant)([]))
+          Option_exports.getOrElse((0, import_function27.constant)([]))
         )
       );
     if (CONFIG.artistPopularReleases)
-      add(
-        await (0, import_function26.pipe)(
-          artistPopularReleases,
-          formatUrisAsAggregates,
-          parseTracksFromAggregates
-        )
-      );
+      add(await (0, import_function27.pipe)(artistPopularReleases, formatUrisAsAggregates, parseTracksFromAggregates));
     if (CONFIG.artistSingles)
       add(await parseTracksFromAggregates(artistSingles));
     if (CONFIG.artistAlbums)
@@ -6547,33 +6527,28 @@ var sort;
     if (CONFIG.artistCompilations)
       add(await parseTracksFromAggregates(artistCompilations));
     if (CONFIG.artistLikedTracks)
-      add(
-        await (0, import_function26.pipe)(
-          parseUri(uri).id,
-          fetchArtistLikedTracksSP,
-          pMchain(Array_exports.map(parseTrackFromArtistLikedTracksSP))
-        )
-      );
+      add(await (0, import_function27.pipe)(uri, fetchPlatArtistLikedTracks, pMchain(Array_exports.map(parsePlatTrackFromArtistLikedTracks))));
     return allTracks;
   }
-  var import_function26, app_default, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, queue, sortByProp, showIn, showAlways, createSortByPropSubmenu;
+  var import_function27, app_default, URI13, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, queue, sortByProp, createSortByPropSubmenu;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
       init_es6();
       init_Function();
+      init_Predicate2();
       init_Record2();
       init_NonEmptyArray();
       init_Record();
-      import_function26 = __toESM(require_function(), 1);
+      import_function27 = __toESM(require_function(), 1);
       init_string();
       init_es62();
       init_api();
       init_fp();
       init_parse();
-      init_util();
       init_settings2();
       app_default = {};
+      ({ URI: URI13 } = Spicetify);
       SortBy = /* @__PURE__ */ ((SortBy2) => {
         SortBy2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
         SortBy2["SPOTIFY_POPULARITY"] = "Spotify - Popularity";
@@ -6593,12 +6568,12 @@ var sort;
         return SortProp2;
       })(SortProp || {});
       getAlbumTracks = async (uri) => {
-        const albumRes = await fetchAlbumGQL(uri);
+        const albumRes = await fetchGQLAlbum(uri);
         const releaseDate = new Date(albumRes.date.isoString).getTime();
-        return (0, import_function26.pipe)(
+        return (0, import_function27.pipe)(
           albumRes.tracks.items,
           Array_exports.map(
-            (0, import_function26.flow)(
+            (0, import_function27.flow)(
               parseTrackFromAlbum,
               Lens.fromProp()("albumUri").set(albumRes.uri),
               Lens.fromProp()("albumName").set(albumRes.name),
@@ -6607,96 +6582,74 @@ var sort;
           )
         );
       };
-      getPlaylistTracks = (0, import_function26.flow)(
-        fetchPlaylistAPI,
-        pMchain(Array_exports.map(parseTrackFromPlaylistAPI))
+      getPlaylistTracks = (0, import_function27.flow)(fetchPlatPlaylistContents, pMchain(Array_exports.map(parseAPITrackFromPlaylist)));
+      fetchAPITracksFromTracks = (0, import_function27.flow)(
+        Array_exports.map(({ uri }) => URI13.from(uri).id),
+        fetchWebTracksSpot,
+        pMchain(Array_exports.map(parseAPITrackFromSpotify))
       );
-      fetchAPITracksFromTracks = (0, import_function26.flow)(
-        Array_exports.map((track) => parseUri(track.uri).id),
-        fetchTracksSpotAPI,
-        pMchain(Array_exports.map(parseTrackFromSpotifyAPI))
-      );
-      fetchAlbumTracksFromTracks = (0, import_function26.flow)(
+      fetchAlbumTracksFromTracks = (0, import_function27.flow)(
         groupBy((track) => track.albumUri),
         mapWithIndex3(async (albumUri, tracks) => {
           const albumTracks = await getAlbumTracks(albumUri);
-          return Array_exports.filter(
-            (albumTrack) => Array_exports.some((track) => albumTrack.uri === track.uri)(tracks)
-          )(albumTracks);
+          return Array_exports.filter((albumTrack) => Array_exports.some((track) => albumTrack.uri === track.uri)(tracks))(
+            albumTracks
+          );
         }),
         values,
         (x) => Promise.all(x),
         pMchain(Array_exports.flatten)
       );
-      populateTracksSpot = (propName) => (tracks) => (0, import_function26.pipe)(
+      populateTracksSpot = (propName) => (tracks) => (0, import_function27.pipe)(
         tracks,
-        Array_exports.filter(
-          (0, import_function26.flow)(
-            Optional.fromNullableProp()(SortProp[propName]).getOption,
-            Option_exports.isNone
-          )
-        ),
-        guard4([
-          [
-            startsWith("Spotify - Play Count" /* SPOTIFY_PLAYCOUNT */),
-            (0, import_function26.constant)(fetchAlbumTracksFromTracks)
-          ]
-        ])((0, import_function26.constant)(fetchAPITracksFromTracks))(propName),
+        Array_exports.filter((0, import_function27.flow)(Optional.fromNullableProp()(SortProp[propName]).getOption, Option_exports.isNone)),
+        guard4([[startsWith("Spotify - Play Count" /* SPOTIFY_PLAYCOUNT */), (0, import_function27.constant)(fetchAlbumTracksFromTracks)]])(
+          (0, import_function27.constant)(fetchAPITracksFromTracks)
+        )(propName),
         pMchain(Array_exports.concat(tracks)),
         pMchain(groupBy(Lens.fromProp()("uri").get)),
         pMchain(values),
         pMchain(Array_exports.map(objConcat()))
       );
       populateTrackLastFM = async (track) => {
-        const lastfmTrack = (await fetchTrackLFMAPI(
-          track.artistName,
-          track.name,
-          CONFIG.lastFmUserName
-        )).track;
+        const lastfmTrack = (await fetchTrackLFMAPI(track.artistName, track.name, CONFIG.lastFmUserName)).track;
         track.lastfmPlaycount = Number(lastfmTrack.listeners);
         track.scrobbles = Number(lastfmTrack.playcount);
         track.personalScrobbles = Number(lastfmTrack.userplaycount);
         return track;
       };
       fetchTracks = guard4([
-        [startsWith("spotify:album" /* ALBUM */), getAlbumTracks],
-        [startsWith("spotify:artist" /* ARTIST */), getArtistTracks],
-        [startsWith("spotify:playlist" /* PLAYLIST */), getPlaylistTracks]
+        [URI13.isAlbum, getAlbumTracks],
+        [URI13.isArtist, getArtistTracks],
+        [URI13.isPlaylistV1OrV2, getPlaylistTracks]
       ])(Task_exports.of([]));
       populateTracks = guard4([
         [startsWith("Spotify"), populateTracksSpot],
-        [
-          startsWith("LastFM"),
-          (0, import_function26.constant)((0, import_function26.flow)(Array_exports.map(populateTrackLastFM), (x) => Promise.all(x)))
-        ]
-      ])((0, import_function26.constant)(Task_exports.of([])));
+        [startsWith("LastFM"), (0, import_function27.constant)((0, import_function27.flow)(Array_exports.map(populateTrackLastFM), (x) => Promise.all(x)))]
+      ])((0, import_function27.constant)(Task_exports.of([])));
       queue = new Array();
       sortByProp = (name) => async (uri) => {
         const prop2 = SortProp[name];
         const toProp = Optional.fromNullableProp()(prop2).getOption;
-        queue = await (0, import_function26.pipe)(
+        queue = await (0, import_function27.pipe)(
           uri,
           fetchTracks,
           pMchain(populateTracks(name)),
-          pMchain(
-            Array_exports.map(
-              (x) => (0, import_function26.pipe)(x, toProp, Option_exports.isSome) ? Option_exports.some(x) : Option_exports.none
-            )
-          ),
+          pMchain(Array_exports.map((x) => (0, import_function27.pipe)(x, toProp, Option_exports.isSome) ? Option_exports.some(x) : Option_exports.none)),
           pMchain(Array_exports.sequence(Option_exports.Applicative)),
           pMchain(
             Option_exports.map(
               Array_exports.sort(
-                (0, import_function26.pipe)(
+                (0, import_function27.pipe)(
                   number_exports.Ord,
                   Ord_exports.contramap((x) => x[prop2])
                 )
               )
             )
           ),
-          pMchain(Option_exports.map(CONFIG.ascending ? import_function26.identity : Array_exports.reverse)),
+          pMchain(Option_exports.map(CONFIG.ascending ? import_function27.identity : Array_exports.reverse)),
           pMchain(Option_exports.map(Array_exports.append({ uri: "spotify:delimiter" }))),
-          pMchain(Option_exports.getOrElse((0, import_function26.constant)([])))
+          pMchain(Option_exports.getOrElse((0, import_function27.constant)([])))
         );
         if (queue.length <= 1)
           return Spicetify.showNotification("Data not available");
@@ -6704,27 +6657,11 @@ var sort;
         await Spicetify.Platform.PlayerAPI.addToQueue(queue);
         Spicetify.Player.next();
       };
-      showIn = (allowedTypes) => ([uri]) => (0, import_function26.pipe)(allowedTypes, Array_exports.some((0, import_function26.flip)(startsWith)(uri)));
-      showAlways = showIn([
-        "spotify:album" /* ALBUM */,
-        "spotify:artist" /* ARTIST */,
-        "spotify:playlist" /* PLAYLIST */
-      ]);
-      createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(
-        name,
-        (0, import_function26.tupled)(sortByProp(name)),
-        showAlways,
-        icon,
-        false
-      );
+      createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, (0, import_function27.tupled)(sortByProp(name)), import_function27.constTrue, icon, false);
       new Spicetify.ContextMenu.SubMenu(
         "Sort by",
-        Array_exports.zipWith(
-          values(SortBy),
-          ["play", "heart", "list-view", "volume", "artist", "subtitles"],
-          createSortByPropSubmenu
-        ),
-        showAlways
+        Array_exports.zipWith(values(SortBy), ["play", "heart", "list-view", "volume", "artist", "subtitles"], createSortByPropSubmenu),
+        (0, import_function27.tupled)(anyPass([URI13.isAlbum, URI13.isArtist, URI13.isPlaylistV1OrV2]))
       ).register();
     }
   });
@@ -6732,7 +6669,7 @@ var sort;
   // extensions/sort-plus/entry.tsx
   init_es6();
   init_Record();
-  var import_function27 = __toESM(require_function(), 1);
+  var import_function28 = __toESM(require_function(), 1);
   init_util();
   (async () => {
     const mustLoad = [
@@ -6748,8 +6685,8 @@ var sort;
     ];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function27.flow)(
-        (0, import_function27.flip)(lookup4)(
+      (0, import_function28.flow)(
+        (0, import_function28.flip)(lookup4)(
           Spicetify
         ),
         Option_exports.isNone

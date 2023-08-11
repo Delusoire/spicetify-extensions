@@ -3710,13 +3710,18 @@ var show;
   });
 
   // shared/util.tsx
-  var spotUriRe, isUri, parseUri, escapeRegex, titleCase, normalizeStr, waitForElement, sleep;
+  var SpotifyLoc, escapeRegex, titleCase, normalizeStr, waitForElement, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
-      spotUriRe = /^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$/;
-      isUri = (possibleUri) => spotUriRe.test(possibleUri);
-      parseUri = (uri) => uri.match(spotUriRe)?.groups;
+      ((SpotifyLoc3) => {
+        SpotifyLoc3.before = (uri) => ({
+          before: uri
+        });
+        SpotifyLoc3.after = (uri) => ({
+          after: uri
+        });
+      })(SpotifyLoc || (SpotifyLoc = {}));
       escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
       titleCase = (str) => str.replace(/\b\w/g, (l) => l.toUpperCase());
       normalizeStr = (str) => str.replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase().trim();
@@ -4450,7 +4455,7 @@ var show;
   });
 
   // shared/api.tsx
-  var import_function14, fetchArtistRelatedGQL, fetchArtistsSpotAPI, fetchTracksSpotAPI, searchItemSpotAPI, fetchSoundOfSpotifyPlaylist, fetchTrackLFMAPI;
+  var import_function14, fetchGQLArtistRelated, fetchWebArtistsSpot, fetchWebTracksSpot, searchWebItemSpot, fetchWebSoundOfSpotifyPlaylist, fetchTrackLFMAPI;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -4458,41 +4463,28 @@ var show;
       import_function14 = __toESM(require_function(), 1);
       init_fp();
       init_util();
-      fetchArtistRelatedGQL = async (uri) => (await Spicetify.GraphQL.Request(
-        Spicetify.GraphQL.Definitions.queryArtistRelated,
-        {
-          uri,
-          locale: Spicetify.Locale.getLocale()
-        }
-      )).data.artistUnion.relatedContent.relatedArtists.items;
-      fetchArtistsSpotAPI = chunckify(50)(
-        async (ids) => (await Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`
-        )).artists
+      fetchGQLArtistRelated = async (uri) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistRelated, {
+        uri,
+        locale: Spicetify.Locale.getLocale()
+      })).data.artistUnion.relatedContent.relatedArtists.items;
+      fetchWebArtistsSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );
-      fetchTracksSpotAPI = chunckify(50)(
-        async (ids) => (await Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-        )).tracks
+      fetchWebTracksSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
       );
-      searchItemSpotAPI = async (q, type) => Spicetify.CosmosAsync.get(
-        `https://api.spotify.com/v1/search?q=${encodeURIComponent(
-          q
-        )}&type=${type.join(",")}`
-      );
-      fetchSoundOfSpotifyPlaylist = async (genre) => {
+      searchWebItemSpot = async (q, type) => Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q=${encodeURIComponent(q)}&type=${type.join(",")}`);
+      fetchWebSoundOfSpotifyPlaylist = async (genre) => {
         const name = `The Sound Of ${genre}`;
         const re = new RegExp(`^${escapeRegex(name)}$`, "i");
-        const res = await searchItemSpotAPI(name, ["playlist"]);
+        const res = await searchWebItemSpot(name, ["playlist"]);
         const item = res.playlists.items[0];
         return item?.owner.id === "thesoundsofspotify" && re.test(item.name) ? item.uri : null;
       };
       fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function14.pipe)(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
           artist
-        )}&track=${encodeURIComponent(
-          trackName
-        )}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
+        )}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
         fetch,
         pMchain(invokeNullary("json"))
       );
@@ -4583,7 +4575,7 @@ var show;
   });
 
   // extensions/show-the-genres/artistPage.tsx
-  var import_function17, updateArtistPage, getArtistsGenresOrRelated;
+  var import_function17, URI5, updateArtistPage, getArtistsGenresOrRelated;
   var init_artistPage = __esm({
     "extensions/show-the-genres/artistPage.tsx"() {
       "use strict";
@@ -4594,48 +4586,39 @@ var show;
       init_fp();
       init_util();
       init_popup();
+      ({ URI: URI5 } = Spicetify);
       updateArtistPage = async ({ pathname }) => {
-        const uri = pathname.replaceAll("/", ":");
-        if (!isUri(uri))
-          return;
-        let { type, id } = parseUri(uri);
-        if (type !== "spotify:artist" /* ARTIST */)
+        const uri = URI5.from(pathname);
+        if (!URI5.isArtist(uri))
           return;
         const genreContainer2 = document.createElement("div");
         genreContainer2.className = "main-entityHeader-detailsText genre-container";
         genreContainer2.innerHTML = await (0, import_function17.pipe)(
-          await getArtistsGenresOrRelated([uri]),
+          await getArtistsGenresOrRelated([`${uri}`]),
           Array_exports.takeLeft(5),
           Array_exports.map(async (genre) => {
-            const uri2 = await fetchSoundOfSpotifyPlaylist(genre);
-            return `<a class="main-entityHeader-genreLink" ${uri2 === null ? `href="#" data-value="${genre}" onclick="searchPlaylist(this.getAttribute('data-value'))` : `href="${uri2}"`} style="color: var(--spice-subtext); font-size: 1rem">${titleCase(
-              genre
-            )}</a>`;
+            const uri2 = await fetchWebSoundOfSpotifyPlaylist(genre);
+            return `<a class="main-entityHeader-genreLink" ${uri2 === null ? `href="#" data-value="${genre}" onclick="searchPlaylist(this.getAttribute('data-value'))` : `href="${uri2}"`} style="color: var(--spice-subtext); font-size: 1rem">${titleCase(genre)}</a>`;
           }),
           (x) => Promise.all(x),
           pMchain(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`)),
           pMchain(prepend4(`<span>Artist Genres : </span>`))
         );
         document.querySelector(".genre-container")?.remove();
-        const entityHeaderText = await waitForElement(
-          "div.main-entityHeader-headerText"
-        );
-        entityHeaderText?.insertBefore(
-          genreContainer2,
-          await waitForElement("span.main-entityHeader-detailsText")
-        );
+        const entityHeaderText = await waitForElement("div.main-entityHeader-headerText");
+        entityHeaderText?.insertBefore(genreContainer2, await waitForElement("span.main-entityHeader-detailsText"));
       };
       getArtistsGenresOrRelated = async (artistsUris, src = null) => {
         const getArtistsGenres = (0, import_function17.flow)(
-          Array_exports.map((uri) => parseUri(uri).id),
-          fetchArtistsSpotAPI,
+          Array_exports.map((uri) => URI5.from(uri).id),
+          fetchWebArtistsSpot,
           pMchain(Array_exports.flatMap((artist) => artist.genres)),
           pMchain(Array_exports.uniq(string_exports.Eq))
         );
         const allGenres = await getArtistsGenres(artistsUris);
         return allGenres.length ? allGenres : await (0, import_function17.pipe)(
           artistsUris[0],
-          fetchArtistRelatedGQL,
+          fetchGQLArtistRelated,
           pMchain(Array_exports.map((a) => a.uri)),
           pMchain(Array_exports.chunksOf(5)),
           pMchain(
@@ -4669,10 +4652,7 @@ var show;
       init_popup();
       genrePopup = () => {
         Spicetify.PopupModal.display({
-          title: `Genres of "${normalizeStr(
-            Spicetify.Player.data.track?.metadata?.title
-          )}"`,
-          //<style>{css}</style>
+          title: `Genres of "${normalizeStr(Spicetify.Player.data.track?.metadata?.title)}"`,
           content: /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("div", { className: "popup-row" }, /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" })), /* @__PURE__ */ import_react.default.createElement(GenreItem, null), /* @__PURE__ */ import_react.default.createElement(LastFmTagItem, null)),
           isLarge: true
         });
@@ -4680,18 +4660,12 @@ var show;
         const titleGenresOf = document.querySelector("h1.main-type-alto");
         if (titleGenresOf) {
           container.appendChild(titleGenresOf);
-          const headerSection = document.querySelector(
-            ".main-trackCreditsModal-header"
-          );
+          const headerSection = document.querySelector(".main-trackCreditsModal-header");
           headerSection?.prepend(container);
         }
       };
       window.genrePopup = genrePopup;
-      ButtonElement = ({
-        name = "",
-        color = "",
-        onClick = Task_exports.of(void 0)
-      }) => /* @__PURE__ */ import_react.default.createElement("button", { className: `login-button${color}`, onClick }, name);
+      ButtonElement = ({ name = "", color = "", onClick = Task_exports.of(void 0) }) => /* @__PURE__ */ import_react.default.createElement("button", { className: `login-button${color}`, onClick }, name);
       GenreItem = () => {
         let [value, setValue] = (0, import_react.useState)(spotifyGenres);
         Spicetify.Player.addEventListener("songchange", () => {
@@ -4700,7 +4674,7 @@ var show;
           }, 500);
         });
         const onClick = (query) => async () => {
-          let uri = await fetchSoundOfSpotifyPlaylist(query);
+          let uri = await fetchWebSoundOfSpotifyPlaylist(query);
           if (uri === null)
             Spicetify.Platform.History.push(`/search/${query}/playlists`);
           else
@@ -4762,12 +4736,10 @@ var show;
             await sleep(100);
           if (this.stopHistoryListener)
             this.stopHistoryListener();
-          this.stopHistoryListener = Spicetify.Platform.History.listen(
-            ({ pathname = "" }) => {
-              if (pathname === "/preferences")
-                this.render();
-            }
-          );
+          this.stopHistoryListener = Spicetify.Platform.History.listen(({ pathname = "" }) => {
+            if (pathname === "/preferences")
+              this.render();
+          });
           if (Spicetify.Platform.History.location.pathname === "/preferences")
             await this.render();
         };
@@ -4787,14 +4759,10 @@ var show;
               return;
             await sleep(100);
           }
-          const allSettingsContainer = document.querySelector(
-            ".main-view-container__scroll-node-child main div"
-          );
+          const allSettingsContainer = document.querySelector(".main-view-container__scroll-node-child main div");
           if (!allSettingsContainer)
             return console.error("[settings] container not found");
-          let pluginSettingsContainer = Array.from(
-            allSettingsContainer.children
-          ).find(({ id }) => id === this.sectionId);
+          let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.sectionId);
           if (!pluginSettingsContainer) {
             pluginSettingsContainer = document.createElement("div");
             pluginSettingsContainer.id = this.sectionId;
@@ -4865,9 +4833,7 @@ var show;
         };
         getId = (nameId) => `extensions:${this.sectionId}:${nameId}`;
         useStateFor = (id) => {
-          const [value, setValueState] = (0, import_react2.useState)(
-            _SettingsSection.getFieldValue(id)
-          );
+          const [value, setValueState] = (0, import_react2.useState)(_SettingsSection.getFieldValue(id));
           return [
             value,
             (newValue) => {
@@ -4897,33 +4863,14 @@ var show;
         };
         Field = ({ field }) => {
           const isType = is("type");
-          return /* @__PURE__ */ import_react2.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react2.default.createElement(
-            this.SettingDescription,
-            {
-              id: field.id,
-              description: field.description
-            }
-          ), /* @__PURE__ */ import_react2.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
-            [
-              isType("input" /* INPUT */),
-              this.SettingInputField
-            ],
+          return /* @__PURE__ */ import_react2.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react2.default.createElement(this.SettingDescription, { id: field.id, description: field.description }), /* @__PURE__ */ import_react2.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
+            [isType("input" /* INPUT */), this.SettingInputField],
             [isType("button" /* BUTTON */), this.SettingButtonField],
             [isType("toggle" /* TOGGLE */), this.SettingToggleField],
             [isType("dropdown" /* DROPDOWN */), this.SettingDropdownField]
           ])(this.SettingHidden)(field)));
         };
-        SettingDescription = ({
-          id,
-          description
-        }) => /* @__PURE__ */ import_react2.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react2.default.createElement(
-          "label",
-          {
-            className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
-            htmlFor: id
-          },
-          description
-        ));
+        SettingDescription = ({ id, description }) => /* @__PURE__ */ import_react2.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react2.default.createElement("label", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type", htmlFor: id }, description));
         SettingButtonField = (field) => /* @__PURE__ */ import_react2.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react2.default.createElement(
           "button",
           {
@@ -4982,14 +4929,7 @@ var show;
                 field.events.onChange?.(e);
               }
             },
-            field.options.map((option2, i) => /* @__PURE__ */ import_react2.default.createElement(
-              "option",
-              {
-                selected: i === _SettingsSection.getFieldValue(field.id),
-                value: i + 1
-              },
-              option2
-            ))
+            field.options.map((option2, i) => /* @__PURE__ */ import_react2.default.createElement("option", { selected: i === _SettingsSection.getFieldValue(field.id), value: i + 1 }, option2))
           );
         };
         SettingHidden = () => /* @__PURE__ */ import_react2.default.createElement(import_react2.default.Fragment, null);
@@ -5041,10 +4981,8 @@ var show;
         genreContainer.innerHTML = await (0, import_function19.pipe)(
           genres,
           Array_exports.map(async (genre) => {
-            const uri = await fetchSoundOfSpotifyPlaylist(genre);
-            return `<a ${uri === null ? `href="#" onclick="genrePopup()"` : `href="${uri}"`} style="color: var(--spice-subtext); font-size: 12px">${titleCase(
-              genre
-            )}</a>`;
+            const uri = await fetchWebSoundOfSpotifyPlaylist(genre);
+            return `<a ${uri === null ? `href="#" onclick="genrePopup()"` : `href="${uri}"`} style="color: var(--spice-subtext); font-size: 12px">${titleCase(genre)}</a>`;
           }),
           (x) => Promise.all(x),
           pMchain(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`))
@@ -5052,18 +4990,12 @@ var show;
         return genreContainer;
       };
       updateGenresUI = async (genres) => {
-        const trackInfoContainer = await waitForElement(
-          "div.main-trackInfo-container"
-        );
+        const trackInfoContainer = await waitForElement("div.main-trackInfo-container");
         const { uri, metadata } = Spicetify.Player.data.track;
-        if (metadata && !metadata.is_local && isUri(uri) && parseUri(uri).type === "spotify:track" /* TRACK */ && genres.length) {
+        if (metadata && !metadata.is_local && Spicetify.URI.isTrack(uri) && genres.length) {
           trackInfoContainer?.appendChild(await updateGenreContainer(genres));
           lastFmTags = (0, import_function19.pipe)(
-            await fetchTrackLFMAPI(
-              CONFIG.LFMApiKey,
-              metadata.artist_name,
-              metadata.title
-            ),
+            await fetchTrackLFMAPI(CONFIG.LFMApiKey, metadata.artist_name, metadata.title),
             ({ track }) => track.toptags.tag,
             Array_exports.map(({ name }) => name)
           );
@@ -5095,25 +5027,9 @@ var show;
   var import_function20 = __toESM(require_function(), 1);
   init_util();
   (async () => {
-    const mustLoad = [
-      "CosmosAsync",
-      "GraphQL",
-      "Locale",
-      "Platform",
-      "Player",
-      "PopupModal",
-      "React",
-      "ReactDOM"
-    ];
+    const mustLoad = ["CosmosAsync", "GraphQL", "Locale", "Platform", "Player", "PopupModal", "React", "ReactDOM"];
     let timer = 0;
-    while (mustLoad.some(
-      (0, import_function20.flow)(
-        (0, import_function20.flip)(lookup4)(
-          Spicetify
-        ),
-        Option_exports.isNone
-      )
-    ))
+    while (mustLoad.some((0, import_function20.flow)((0, import_function20.flip)(lookup4)(Spicetify), Option_exports.isNone)))
       await sleep(timer += 100);
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();

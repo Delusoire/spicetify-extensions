@@ -2,17 +2,17 @@ export default {}
 import { array as a, array, task } from "fp-ts"
 import { map } from "fp-ts/Array"
 import { toUnfoldable } from "fp-ts/Record"
-import { constant, pipe as p, tupled } from "fp-ts/function"
+import { pipe as p, tupled } from "fp-ts/function"
 import {
     createPlatFolder,
     createSPPlaylistFromTracks,
-    fetchPlatPlaylists,
     fetchPlatPlaylistContents,
+    fetchPlatPlaylists,
     likePlatPlaylist,
 } from "../../shared/api"
-import { guard2, guard3, is, pMchain } from "../../shared/fp"
-import { Folder, Playlist, PoF, SpotifyURI } from "./util"
-import { SpotifyID, SpotifyURIType, parseUri } from "../../shared/util"
+import { guard2, is, pMchain } from "../../shared/fp"
+import { SpotifyURI } from "../../shared/util"
+import { Folder, Playlist, PoF } from "./util"
 
 const isType = is<PoF>("type")
 const extractLikedPlaylistTreeRecur = (leaf: PoF) =>
@@ -43,8 +43,7 @@ const restorePlaylistseRecur = async (leaf: any) => {
 
         if (!Array.isArray(subleaf)) return void likePlatPlaylist(subleaf as string)
 
-        if (subleaf.length && parseUri(subleaf[0]).type === SpotifyURIType.TRACK)
-            return void createSPPlaylistFromTracks(name, subleaf)
+        if (subleaf.length && Spicetify.URI.isTrack(subleaf[0])) return void createSPPlaylistFromTracks(name, subleaf)
 
         createPlatFolder(name)
         subleaf.forEach(restorePlaylistseRecur)

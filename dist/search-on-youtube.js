@@ -111,7 +111,7 @@ var search;
       }
     }
   }
-  var __spreadArray, constNull, constUndefined, dual;
+  var __spreadArray, constFalse, constNull, constUndefined, dual;
   var init_function = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/function.js"() {
       __spreadArray = function(to, from, pack) {
@@ -125,6 +125,7 @@ var search;
           }
         return to.concat(ar || Array.prototype.slice.call(from));
       };
+      constFalse = /* @__PURE__ */ constant(false);
       constNull = /* @__PURE__ */ constant(null);
       constUndefined = /* @__PURE__ */ constant(void 0);
       dual = function(arity, body) {
@@ -2216,12 +2217,33 @@ var search;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Predicate.js
-  var not;
+  var getSemigroupAny, getMonoidAny, not, or;
   var init_Predicate = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Predicate.js"() {
+      init_function();
+      getSemigroupAny = function() {
+        return {
+          concat: function(first3, second) {
+            return pipe(first3, or(second));
+          }
+        };
+      };
+      getMonoidAny = function() {
+        return {
+          concat: getSemigroupAny().concat,
+          empty: constFalse
+        };
+      };
       not = function(predicate) {
         return function(a) {
           return !predicate(a);
+        };
+      };
+      or = function(second) {
+        return function(first3) {
+          return function(a) {
+            return first3(a) || second(a);
+          };
         };
       };
     }
@@ -2866,39 +2888,6 @@ var search;
     }
   });
 
-  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js
-  var Eq2, Semigroup, empty3, Monoid, Ord2, startsWith;
-  var init_string = __esm({
-    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js"() {
-      Eq2 = {
-        equals: function(first3, second) {
-          return first3 === second;
-        }
-      };
-      Semigroup = {
-        concat: function(first3, second) {
-          return first3 + second;
-        }
-      };
-      empty3 = "";
-      Monoid = {
-        concat: Semigroup.concat,
-        empty: empty3
-      };
-      Ord2 = {
-        equals: Eq2.equals,
-        compare: function(first3, second) {
-          return first3 < second ? -1 : first3 > second ? 1 : 0;
-        }
-      };
-      startsWith = function(searchString, position) {
-        return function(s) {
-          return s.startsWith(searchString, position);
-        };
-      };
-    }
-  });
-
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyRecord.js
   function lookup3(k, r) {
     if (r === void 0) {
@@ -3224,12 +3213,18 @@ var search;
   });
 
   // shared/util.tsx
-  var spotUriRe, parseUri, normalizeStr, sleep;
+  var SpotifyLoc, normalizeStr, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
-      spotUriRe = /^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$/;
-      parseUri = (uri) => uri.match(spotUriRe)?.groups;
+      ((SpotifyLoc3) => {
+        SpotifyLoc3.before = (uri) => ({
+          before: uri
+        });
+        SpotifyLoc3.after = (uri) => ({
+          after: uri
+        });
+      })(SpotifyLoc || (SpotifyLoc = {}));
       normalizeStr = (str) => str.replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase().trim();
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
@@ -3490,7 +3485,7 @@ var search;
           return a === b;
         }
       };
-      var empty4 = {
+      var empty3 = {
         equals: function() {
           return true;
         }
@@ -3508,7 +3503,7 @@ var search;
       var getMonoid6 = function() {
         return {
           concat: (0, exports.getSemigroup)().concat,
-          empty: empty4
+          empty: empty3
         };
       };
       exports.getMonoid = getMonoid6;
@@ -3869,12 +3864,12 @@ var search;
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function9, import_Semigroup2, URI3, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, guard4, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var import_function10, import_Semigroup2, URI3, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, guard4, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
       init_Option();
       init_Array();
-      import_function9 = __toESM(require_function());
+      import_function10 = __toESM(require_function());
       init_Predicate();
       init_Endomorphism();
       init_Monoid();
@@ -3883,12 +3878,12 @@ var search;
       init_Apply();
       init_Chain();
       URI3 = "Function";
-      map4 = (f3) => (g) => (0, import_function9.flow)(g, f3);
+      map4 = (f3) => (g) => (0, import_function10.flow)(g, f3);
       Functor3 = {
         URI: URI3,
         map: (f3, g) => map4(g)(f3)
       };
-      of5 = import_function9.constant;
+      of5 = import_function10.constant;
       ap4 = (f3) => (g) => (x) => g(x)(f3(x));
       Applicative3 = {
         ...Functor3,
@@ -3907,57 +3902,63 @@ var search;
       bind4 = bind(Monad3);
       apS4 = apS(Applicative3);
       let_4 = let_(Functor3);
-      unary = import_function9.tupled;
-      guard4 = (branches) => (fallback) => (input) => (0, import_function9.pipe)(branches, map(([f3, g]) => (0, import_function9.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function9.getMonoid)(getMonoid3((0, import_Semigroup2.first)()))()), (0, import_function9.apply)(input), getOrElse(() => fallback(input)));
+      unary = import_function10.tupled;
+      guard4 = (branches) => (fallback) => (input) => (0, import_function10.pipe)(branches, map(([f3, g]) => (0, import_function10.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function10.getMonoid)(getMonoid3((0, import_Semigroup2.first)()))()), (0, import_function10.apply)(input), getOrElse(() => fallback(input)));
       unless = (f3) => (onFalse) => (x) => f3(x) ? x : onFalse(x);
-      when = (0, import_function9.flow)(not, unless);
+      when = (0, import_function10.flow)(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function9.flip)(invoke)([]);
+      invokeNullary = (0, import_function10.flip)(invoke)([]);
       curry2T = (f3) => (a) => (b) => f3([a, b]);
-      curry2 = (0, import_function9.flow)(unary, curry2T);
+      curry2 = (0, import_function10.flow)(unary, curry2T);
       curry3T = (f3) => (a) => (b) => (c) => f3([a, b, c]);
-      curry3 = (0, import_function9.flow)(unary, curry3T);
+      curry3 = (0, import_function10.flow)(unary, curry3T);
       curry4T = (f3) => (a) => (b) => (c) => (d) => f3([a, b, c, d]);
-      curry4 = (0, import_function9.flow)(unary, curry4T);
+      curry4 = (0, import_function10.flow)(unary, curry4T);
       curry5T = (f3) => (a) => (b) => (c) => (d) => (e) => f3([a, b, c, d, e]);
-      curry5 = (0, import_function9.flow)(unary, curry5T);
+      curry5 = (0, import_function10.flow)(unary, curry5T);
       applyEvery = concatAll4(getMonoid4());
     }
   });
 
+  // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Predicate.js
+  var anyPass;
+  var init_Predicate2 = __esm({
+    ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Predicate.js"() {
+      init_Predicate();
+      init_Monoid();
+      anyPass = (fs) => concatAll4(getMonoidAny())(fs);
+    }
+  });
+
   // shared/fp.tsx
-  var import_function10, guard42, pMchain, is, chunckify;
+  var import_function11, guard42, pMchain, is, chunckify;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function10 = __toESM(require_function(), 1);
+      import_function11 = __toESM(require_function(), 1);
       init_Function();
       guard42 = (branches) => guard4(
         branches
       );
       pMchain = (f3) => async (fa) => f3(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      chunckify = (n) => (g) => (0, import_function10.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
+      chunckify = (n) => (g) => (0, import_function11.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
     }
   });
 
   // shared/api.tsx
-  var fetchArtistsSpotAPI, fetchTracksSpotAPI, searchYoutube;
+  var fetchWebArtistsSpot, fetchWebTracksSpot, searchYoutube;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_fp();
       init_util();
-      fetchArtistsSpotAPI = chunckify(50)(
-        async (ids) => (await Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`
-        )).artists
+      fetchWebArtistsSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );
-      fetchTracksSpotAPI = chunckify(50)(
-        async (ids) => (await Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-        )).tracks
+      fetchWebTracksSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
       );
       searchYoutube = async (YouTubeApiKey, searchString) => (await (await fetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(
@@ -3968,11 +3969,11 @@ var search;
   });
 
   // shared/parse.tsx
-  var parseTrackFromSpotifyAPI;
+  var parseAPITrackFromSpotify;
   var init_parse = __esm({
     "shared/parse.tsx"() {
       "use strict";
-      parseTrackFromSpotifyAPI = (track) => ({
+      parseAPITrackFromSpotify = (track) => ({
         albumName: track.album.name,
         albumUri: track.album.uri,
         artistName: track.artists[0].name,
@@ -4002,11 +4003,11 @@ var search;
   });
 
   // shared/settings.tsx
-  var import_function11, import_react, import_react_dom, SettingsSection;
+  var import_function12, import_react, import_react_dom, SettingsSection;
   var init_settings = __esm({
     "shared/settings.tsx"() {
       "use strict";
-      import_function11 = __toESM(require_function(), 1);
+      import_function12 = __toESM(require_function(), 1);
       import_react = __toESM(require_react(), 1);
       import_react_dom = __toESM(require_react_dom(), 1);
       init_fp();
@@ -4029,12 +4030,10 @@ var search;
             await sleep(100);
           if (this.stopHistoryListener)
             this.stopHistoryListener();
-          this.stopHistoryListener = Spicetify.Platform.History.listen(
-            ({ pathname = "" }) => {
-              if (pathname === "/preferences")
-                this.render();
-            }
-          );
+          this.stopHistoryListener = Spicetify.Platform.History.listen(({ pathname = "" }) => {
+            if (pathname === "/preferences")
+              this.render();
+          });
           if (Spicetify.Platform.History.location.pathname === "/preferences")
             await this.render();
         };
@@ -4054,14 +4053,10 @@ var search;
               return;
             await sleep(100);
           }
-          const allSettingsContainer = document.querySelector(
-            ".main-view-container__scroll-node-child main div"
-          );
+          const allSettingsContainer = document.querySelector(".main-view-container__scroll-node-child main div");
           if (!allSettingsContainer)
             return console.error("[settings] container not found");
-          let pluginSettingsContainer = Array.from(
-            allSettingsContainer.children
-          ).find(({ id }) => id === this.sectionId);
+          let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.sectionId);
           if (!pluginSettingsContainer) {
             pluginSettingsContainer = document.createElement("div");
             pluginSettingsContainer.id = this.sectionId;
@@ -4070,7 +4065,7 @@ var search;
           }
           import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
         };
-        addButton = (nameId, description, text, onClick = import_function11.constVoid, events = {}) => {
+        addButton = (nameId, description, text, onClick = import_function12.constVoid, events = {}) => {
           const id = this.getId(nameId);
           events.onClick = onClick;
           this.sectionFields[nameId] = {
@@ -4082,7 +4077,7 @@ var search;
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue, onChange = import_function11.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue, onChange = import_function12.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4094,7 +4089,7 @@ var search;
           };
           return this;
         };
-        addInput = (nameId, description, defaultValue, onChange = import_function11.constVoid, inputType = "text", events = {}) => {
+        addInput = (nameId, description, defaultValue, onChange = import_function12.constVoid, inputType = "text", events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4107,7 +4102,7 @@ var search;
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function11.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function12.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4132,9 +4127,7 @@ var search;
         };
         getId = (nameId) => `extensions:${this.sectionId}:${nameId}`;
         useStateFor = (id) => {
-          const [value, setValueState] = (0, import_react.useState)(
-            _SettingsSection.getFieldValue(id)
-          );
+          const [value, setValueState] = (0, import_react.useState)(_SettingsSection.getFieldValue(id));
           return [
             value,
             (newValue) => {
@@ -4164,33 +4157,14 @@ var search;
         };
         Field = ({ field }) => {
           const isType = is("type");
-          return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(
-            this.SettingDescription,
-            {
-              id: field.id,
-              description: field.description
-            }
-          ), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
-            [
-              isType("input" /* INPUT */),
-              this.SettingInputField
-            ],
+          return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(this.SettingDescription, { id: field.id, description: field.description }), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
+            [isType("input" /* INPUT */), this.SettingInputField],
             [isType("button" /* BUTTON */), this.SettingButtonField],
             [isType("toggle" /* TOGGLE */), this.SettingToggleField],
             [isType("dropdown" /* DROPDOWN */), this.SettingDropdownField]
           ])(this.SettingHidden)(field)));
         };
-        SettingDescription = ({
-          id,
-          description
-        }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement(
-          "label",
-          {
-            className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
-            htmlFor: id
-          },
-          description
-        ));
+        SettingDescription = ({ id, description }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement("label", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type", htmlFor: id }, description));
         SettingButtonField = (field) => /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
           "button",
           {
@@ -4249,14 +4223,7 @@ var search;
                 field.events.onChange?.(e);
               }
             },
-            field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement(
-              "option",
-              {
-                selected: i === _SettingsSection.getFieldValue(field.id),
-                value: i + 1
-              },
-              option2
-            ))
+            field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement("option", { selected: i === _SettingsSection.getFieldValue(field.id), value: i + 1 }, option2))
           );
         };
         SettingHidden = () => /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null);
@@ -4288,25 +4255,23 @@ var search;
   __export(app_exports, {
     default: () => app_default
   });
-  var import_function12, app_default, YTVidIDCache, showOnYouTube, showIn;
+  var import_function13, app_default, URI4, YTVidIDCache, showOnYouTube;
   var init_app = __esm({
     "extensions/search-on-youtube/app.tsx"() {
       "use strict";
-      init_es6();
-      import_function12 = __toESM(require_function(), 1);
-      init_string();
+      import_function13 = __toESM(require_function(), 1);
+      init_Predicate2();
       init_api();
-      init_util();
       init_parse();
+      init_util();
       init_settings2();
       app_default = {};
+      ({ URI: URI4 } = Spicetify);
       YTVidIDCache = /* @__PURE__ */ new Map();
       showOnYouTube = async (uri) => {
-        const id = parseUri(uri).id;
+        const id = URI4.from(uri).id;
         if (!YTVidIDCache.get(id)) {
-          const track = parseTrackFromSpotifyAPI(
-            (await fetchTracksSpotAPI([id]))[0]
-          );
+          const track = parseAPITrackFromSpotify((await fetchWebTracksSpot([id]))[0]);
           const searchString = `${track.artistName} - ${track.name} music video`;
           let videos = [];
           if (CONFIG.YouTubeApiKey)
@@ -4315,11 +4280,7 @@ var search;
             } catch (_) {
             }
           if (!videos?.length)
-            return void window.open(
-              `https://www.youtube.com/results?search_query=${encodeURIComponent(
-                searchString
-              )}`
-            );
+            return void window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(searchString)}`);
           const normalizedTrackName = normalizeStr(track.name);
           YTVidIDCache.set(
             id,
@@ -4330,11 +4291,10 @@ var search;
         }
         window.open(`https://www.youtube.com/watch?v=${YTVidIDCache.get(id)}`);
       };
-      showIn = (allowedTypes) => ([uri]) => (0, import_function12.pipe)(allowedTypes, Array_exports.some((0, import_function12.flip)(startsWith)(uri)));
       new Spicetify.ContextMenu.Item(
         "Search on YouTube",
-        (0, import_function12.tupled)(showOnYouTube),
-        showIn(["spotify:track" /* TRACK */]),
+        (0, import_function13.tupled)(showOnYouTube),
+        (0, import_function13.tupled)(anyPass([URI4.isTrack])),
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="19px" height="19px"><path fill="currentColor" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"/><path fill="var(--spice-main)" d="M20 31L20 17 32 24z"/></svg>`
       ).register();
     }
@@ -4343,14 +4303,14 @@ var search;
   // extensions/search-on-youtube/entry.tsx
   init_es6();
   init_Record();
-  var import_function13 = __toESM(require_function(), 1);
+  var import_function14 = __toESM(require_function(), 1);
   init_util();
   (async () => {
     const mustLoad = ["ContextMenu", "CosmosAsync", "React", "ReactDOM"];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function13.flow)(
-        (0, import_function13.flip)(lookup4)(
+      (0, import_function14.flow)(
+        (0, import_function14.flip)(lookup4)(
           Spicetify
         ),
         Option_exports.isNone

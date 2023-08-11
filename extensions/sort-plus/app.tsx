@@ -1,15 +1,16 @@
 export default {}
 import { array as a, number, option as o, ord, task } from "fp-ts"
 import { guard } from "fp-ts-std/Function"
+import { anyPass } from "fp-ts-std/Predicate"
 import { values } from "fp-ts-std/Record"
 import { groupBy } from "fp-ts/NonEmptyArray"
 import { lookup, mapWithIndex } from "fp-ts/Record"
-import { constant, flow as f, flip, identity, pipe as p, tupled } from "fp-ts/function"
+import { constTrue, constant, flow as f, identity, pipe as p, tupled } from "fp-ts/function"
 import { startsWith } from "fp-ts/string"
 import { Lens, Optional } from "monocle-ts"
 import {
-    fetchGQLAlbum,
     fetchArtistGQL,
+    fetchGQLAlbum,
     fetchPlatArtistLikedTracks,
     fetchPlatPlaylistContents,
     fetchTrackLFMAPI,
@@ -20,14 +21,16 @@ import {
     TrackData,
     TracksPopulater,
     UnparsedTrack,
-    parseTopTrackFromArtist,
-    parseTrackFromAlbum,
-    parsePlatTrackFromArtistLikedTracks,
     parseAPITrackFromPlaylist,
     parseAPITrackFromSpotify,
+    parsePlatTrackFromArtistLikedTracks,
+    parseTopTrackFromArtist,
+    parseTrackFromAlbum,
 } from "../../shared/parse"
-import { SpotifyURI, SpotifyURIType, parseUri } from "../../shared/util"
+import { SpotifyURI } from "../../shared/util"
 import { CONFIG } from "./settings"
+
+const { URI } = Spicetify
 
 export enum SortBy {
     SPOTIFY_PLAYCOUNT = "Spotify - Play Count",
@@ -120,7 +123,7 @@ async function getArtistTracks(uri: SpotifyURI) {
 // Populating Tracks For Spotify
 
 const fetchAPITracksFromTracks: TracksPopulater = f(
-    a.map(track => parseUri(track.uri).id),
+    a.map(({ uri }) => URI.from(uri)!.id!),
     fetchWebTracksSpot,
     pMchain(a.map(parseAPITrackFromSpotify)),
 )
@@ -164,9 +167,9 @@ const populateTrackLastFM = async (track: TrackData) => {
 // Fetching, Sorting and Playing
 
 export const fetchTracks = guard([
-    [startsWith(SpotifyURIType.ALBUM), getAlbumTracks],
-    [startsWith(SpotifyURIType.ARTIST), getArtistTracks],
-    [startsWith(SpotifyURIType.PLAYLIST), getPlaylistTracks],
+    [URI.isAlbum, getAlbumTracks],
+    [URI.isArtist, getArtistTracks],
+    [URI.isPlaylistV1OrV2, getPlaylistTracks],
 ])(task.of([]))
 
 export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
@@ -209,18 +212,11 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
 
 // Menu
 
-const showIn =
-    (allowedTypes: string[]) =>
-    ([uri]: SpotifyURI[]) =>
-        p(allowedTypes, a.some(flip(startsWith)(uri)))
-
-const showAlways = showIn([SpotifyURIType.ALBUM, SpotifyURIType.ARTIST, SpotifyURIType.PLAYLIST])
-
 const createSortByPropSubmenu = (name: keyof typeof SortProp, icon: any) =>
-    new Spicetify.ContextMenu.Item(name, tupled(sortByProp(name)) as any, showAlways, icon, false)
+    new Spicetify.ContextMenu.Item(name, tupled(sortByProp(name)) as any, constTrue, icon, false)
 
 new Spicetify.ContextMenu.SubMenu(
     "Sort by",
     a.zipWith(values(SortBy), ["play", "heart", "list-view", "volume", "artist", "subtitles"], createSortByPropSubmenu),
-    showAlways,
+    tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2])) as any,
 ).register()

@@ -3297,11 +3297,13 @@ var keyboard;
         };
         const createSneakKey = (target, key, top, left) => {
           const sneakKey = document.createElement("span");
-          sneakKey.classList.add("sneak-key");
-          sneakKey.innerText = key;
-          sneakKey.style.top = top + "px";
-          sneakKey.style.left = left + "px";
-          sneakKey.target = target;
+          {
+            sneakKey.classList.add("sneak-key");
+            sneakKey.innerText = key;
+            sneakKey.style.top = top + "px";
+            sneakKey.style.left = left + "px";
+            sneakKey.target = target;
+          }
           return sneakKey;
         };
         const sneakKeysFragment = document.createDocumentFragment();
@@ -3313,9 +3315,7 @@ var keyboard;
           Array_exports.filter(isElementInViewPort),
           Array_exports.reduce([0, 0], ([k1, k2], e) => {
             const { x, y } = e.getBoundingClientRect();
-            sneakKeysFragment.append(
-              createSneakKey(e, keyList[k1] + keyList[k2++], y, x)
-            );
+            sneakKeysFragment.append(createSneakKey(e, keyList[k1] + keyList[k2++], y, x));
             return k2 >= keyList.length ? [++k1, 0] : [k1, k2];
           }),
           (acc) => acc[0] + acc[1] !== 0
@@ -3383,8 +3383,8 @@ font-size: 14px;
 font-weight: 500;
 }
 </style>`;
-        document.body.append(sneakOverlay);
       }
+      document.body.append(sneakOverlay);
     }
   });
 
@@ -3572,6 +3572,15 @@ font-weight: 500;
   var import_function14 = __toESM(require_function(), 1);
 
   // shared/util.tsx
+  var SpotifyLoc;
+  ((SpotifyLoc2) => {
+    SpotifyLoc2.before = (uri) => ({
+      before: uri
+    });
+    SpotifyLoc2.after = (uri) => ({
+      after: uri
+    });
+  })(SpotifyLoc || (SpotifyLoc = {}));
   var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   // extensions/keyboard-shortcuts/entry.tsx

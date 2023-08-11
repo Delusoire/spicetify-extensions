@@ -309,7 +309,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monocle-ts@npm:^2.3.13":
+"monocle-ts@npm:^2.3.13, monocle-ts@npm:^2.3.5":
   version: 2.3.13
   resolution: "monocle-ts@npm:2.3.13"
   peerDependencies:
@@ -341,9 +341,21 @@ __metadata:
     fp-ts-std: ^0.17.1
     monocle-ts: ^2.3.13
     newtype-ts: ^0.3.5
+    spectacles-ts: ^1.0.7
     typescript: ^5.1.6
   languageName: unknown
   linkType: soft
+
+"spectacles-ts@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "spectacles-ts@npm:1.0.7"
+  dependencies:
+    monocle-ts: ^2.3.5
+  peerDependencies:
+    fp-ts: ^2.11.1
+  checksum: 690b8ad9c23cc52609f80ed77556b33d3101aebb7aa486adbfef6f004d361b85c6c10ffa668b9b8ec1d2d2b0626080ce6fa6fdf9e07e7de762c7ca4c649d2708
+  languageName: node
+  linkType: hard
 
 "typescript@npm:^5.1.6":
   version: 5.1.6

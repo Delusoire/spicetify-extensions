@@ -4,6 +4,8 @@ import ReactDOM from "react-dom"
 import { guard4, is } from "./fp"
 import { sleep } from "./util"
 
+export const mustLoadForSettings = ["React", "ReactDOM"]
+
 export class SettingsSection {
     private stopHistoryListener: any
     private setRerender: Function | null = null

@@ -3,6 +3,8 @@
 // export interface SpotifyURI
 //     extends Newtype<{ readonly SpotifyURI: unique symbol }, string> {}
 
+export const mustLoadForUtil = ["URI"]
+
 export type SpotifyID = string
 export type SpotifyURI = string
 
@@ -19,19 +21,6 @@ export namespace SpotifyLoc {
         after: uri,
     })
 }
-
-export const enum SpotifyURIType {
-    TRACK = "spotify:track",
-    ALBUM = "spotify:album",
-    ARTIST = "spotify:artist",
-    PLAYLIST = "spotify:playlist",
-}
-
-const spotUriRe = /^(?<type>spotify:(?:artist|track|album|playlist))(?:_v2)?:(?<id>[a-zA-Z0-9_]{22})$/
-
-export const isUri = (possibleUri?: string | null): possibleUri is SpotifyURI => spotUriRe.test(possibleUri as string)
-
-export const parseUri = (uri: SpotifyURI) => uri.match(spotUriRe)?.groups as { type: SpotifyURIType; id: SpotifyID }
 
 export const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`)
 

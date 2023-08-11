@@ -1,10 +1,11 @@
 export default {}
 
-import { array as a } from "fp-ts"
-import { pipe as p, tupled, flip } from "fp-ts/function"
-import { startsWith } from "fp-ts/string"
+import { anyPass } from "fp-ts-std/Predicate"
+import { tupled } from "fp-ts/function"
 import { fetchPlatPlaylistEnhancedSongs } from "../../shared/api"
-import { SpotifyURI, SpotifyURIType } from "../../shared/util"
+import { SpotifyURI } from "../../shared/util"
+
+const { URI } = Spicetify
 
 let queue = new Array<any>()
 const playEnhancedSongs = async (uri: SpotifyURI) => {
@@ -15,14 +16,9 @@ const playEnhancedSongs = async (uri: SpotifyURI) => {
 
 // Menu
 
-const showIn =
-    (allowedTypes: string[]) =>
-    ([uri]: SpotifyURI[]) =>
-        p(allowedTypes, a.some(flip(startsWith)(uri)))
-
 new Spicetify.ContextMenu.Item(
     "Play enhanced songs",
     tupled(playEnhancedSongs) as any,
-    showIn([SpotifyURIType.PLAYLIST]),
+    tupled(anyPass([URI.isPlaylistV1OrV2])) as any,
     "enhance",
 ).register()

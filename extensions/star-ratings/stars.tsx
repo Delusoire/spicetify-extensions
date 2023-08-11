@@ -1,17 +1,20 @@
-import { array as a, option as o, readonlyArray } from "fp-ts"
-import { CONFIG } from "./settings"
+import { array as a } from "fp-ts"
 import { increment, pipe as p } from "fp-ts/lib/function"
+import {
+    addPlatPlaylistTracks,
+    createPlatPlaylist,
+    removePlatPlaylistTracks,
+    setPlatPlaylistVisibility,
+} from "../../shared/api"
+import { SpotifyLoc, SpotifyURI } from "../../shared/util"
+import { playlistUris, tracksRatings, updateCollectionStars, updateNowPlayingStars, updateTrackList } from "./app"
+import { CONFIG } from "./settings"
+import { getStarStopsFromStar, getStarsContainer, getStarsFromStarsContainer, starsN2S, starsS2N } from "./util"
 
 export const STAR_SIZE = 16
 export const HALF_STAR_LENGTH = STAR_SIZE / 2
 
-export type StarSVGStops = [SVGStopElement, SVGStopElement]
-
-export const findStarsContainer = (idSuffix: string) => document.getElementById(`stars-${idSuffix}`) as HTMLSpanElement
-export const getStarsContainerStars = (starsContainer: HTMLSpanElement) =>
-    Array.from(starsContainer.children) as SVGSVGElement[]
-export const getStarSVGStops = (star: SVGSVGElement) =>
-    Array.from((star?.firstChild?.firstChild as SVGLinearGradientElement).children) as StarSVGStops
+export type StarStops = [SVGStopElement, SVGStopElement]
 
 const createStar = (starsId: string, nth: number, size: number) => {
     const xmlns = "http://www.w3.org/2000/svg"
@@ -52,7 +55,7 @@ const createStar = (starsId: string, nth: number, size: number) => {
         "M20.388,10.918L32,12.118l-8.735,7.749L25.914,31.4l-9.893-6.088L6.127,31.4l2.695-11.533L0,12.118l11.547-1.2L16.026,0.6L20.388,10.918z",
     )
 
-    return [star, [stop1, stop2]] as const
+    return [star, [stop1, stop2]] as [SVGElement, StarStops]
 }
 export const createStars = (idSuffix: string, size: number) => {
     const id = `stars-${idSuffix}`
@@ -65,17 +68,12 @@ export const createStars = (idSuffix: string, size: number) => {
         starsContainer.style.display = "flex"
     }
 
-    const starConstruct = a.makeBy(5, increment).map(i => createStar(id, i, size))
-    p(
-        starConstruct,
-        readonlyArray.unzip,
-        readonlyArray.lookup(0),
-        o.map(star => starsContainer.append(star as unknown as SVGSVGElement)),
-    )
-    return [starsContainer, starConstruct] as const
+    const starsConstructs = a.makeBy(5, increment).map(i => createStar(id, i, size))
+    p(starsConstructs, a.unzip, ([star]) => star, a.map(starsContainer.append))
+    return [starsContainer, starsConstructs] as [HTMLSpanElement, ReturnType<typeof createStar>[]]
 }
 
-export const setStarsGradientByRating = (rating: number) => (starsSVGStops: StarSVGStops[]) => {
+export const setStarsGradientByRating = (rating: number) => (starsSVGStops: StarStops[]) => {
     const setHalfStarLit = (lit: boolean) => (nth: number) =>
         starsSVGStops[Math.floor(nth / 2)][nth % 2].setAttributeNS(
             null,
@@ -99,3 +97,49 @@ export const calculateRatingFromMouseEvent = (starElement: SVGSVGElement, nth: n
     const isHalf = CONFIG.halfStarRatings && leftOffsetFromHeart < HALF_STAR_LENGTH
     return 2 * (nth + 1) - Number(isHalf)
 }
+
+export const onStarClick =
+    (nth: number, starElement: SVGSVGElement, getTrackUri: () => SpotifyURI, getHeart: () => HTMLButtonElement) =>
+    async (e: MouseEvent) => {
+        const trackUri = getTrackUri()
+        const oldRating = tracksRatings[trackUri]
+        let newRating = calculateRatingFromMouseEvent(starElement, nth)(e)
+
+        const heart = getHeart()
+        const heartThreshold = starsS2N(CONFIG.heartThreshold)
+        if (heartThreshold) {
+            const shouldBeHearted = newRating >= heartThreshold
+            const isHearted = heart.ariaChecked === "true"
+
+            if (isHearted !== shouldBeHearted) heart.click()
+        }
+
+        if (oldRating === newRating) newRating = 0
+
+        if (oldRating) {
+            const playlistUri = playlistUris[oldRating]
+            removePlatPlaylistTracks(playlistUri, [trackUri])
+        }
+
+        tracksRatings[trackUri] = newRating
+
+        if (newRating) {
+            let playlistUri = playlistUris[newRating]
+            if (!playlistUri) {
+                playlistUri = await createPlatPlaylist(starsN2S(newRating), SpotifyLoc.after(CONFIG.ratedFolderUri))
+                setPlatPlaylistVisibility(playlistUri, false)
+                playlistUris[newRating] = playlistUri
+            }
+
+            addPlatPlaylistTracks(playlistUri, [trackUri])
+        }
+
+        const starsContainer = getStarsContainer(Spicetify.URI.from(trackUri)!.id!)
+        const starsSVGStops = p(starsContainer, getStarsFromStarsContainer, a.map(getStarStopsFromStar))
+        setStarsGradientByRating(newRating)(starsSVGStops)
+        starsContainer.style.visibility = newRating ? "visible" : "hidden"
+
+        updateNowPlayingStars()
+        updateCollectionStars(Spicetify.Platform.History.location.pathname)
+        updateTrackList()
+    }

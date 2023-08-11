@@ -3,23 +3,21 @@ import { prepend } from "fp-ts-std/String"
 import { flow as f, pipe as p } from "fp-ts/function"
 import { fetchGQLArtistRelated, fetchWebArtistsSpot, fetchWebSoundOfSpotifyPlaylist } from "../../shared/api"
 import { pMchain } from "../../shared/fp"
-import { SpotifyURI, SpotifyURIType, isUri, parseUri, titleCase, waitForElement } from "../../shared/util"
+import { SpotifyURI, titleCase, waitForElement } from "../../shared/util"
 import "./popup.css"
 
+const { URI } = Spicetify
+
 export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
-    const uri = pathname.replaceAll("/", ":")
+    const uri = URI.from(pathname)
 
-    if (!isUri(uri)) return
-
-    let { type, id } = parseUri(uri)
-
-    if (type !== SpotifyURIType.ARTIST) return
+    if (!URI.isArtist(uri!)) return
 
     // prepare new genreContainer
     const genreContainer = document.createElement("div")
     genreContainer.className = "main-entityHeader-detailsText genre-container"
     genreContainer.innerHTML = await p(
-        await getArtistsGenresOrRelated([uri]),
+        await getArtistsGenresOrRelated([`${uri}`]),
         a.takeLeft(5),
         a.map(async genre => {
             const uri = await fetchWebSoundOfSpotifyPlaylist(genre)
@@ -45,7 +43,7 @@ export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
 
 export const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[], src = null) => {
     const getArtistsGenres: (artistsUris: SpotifyURI[]) => Promise<string[]> = f(
-        a.map(uri => parseUri(uri).id),
+        a.map(uri => URI.from(uri)!.id!),
         fetchWebArtistsSpot,
         pMchain(a.flatMap(artist => artist.genres)),
         pMchain(a.uniq(str.Eq)),

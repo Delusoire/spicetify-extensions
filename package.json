@@ -10,7 +10,8 @@
         "fp-ts": "^2.16.1",
         "fp-ts-std": "^0.17.1",
         "monocle-ts": "^2.3.13",
-        "newtype-ts": "^0.3.5"
+        "newtype-ts": "^0.3.5",
+        "spectacles-ts": "^1.0.7"
     },
     "devDependencies": {
         "@types/mousetrap": "^1.6.11",

@@ -144,9 +144,10 @@ var vaultify = (() => {
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/internal.js
-  var __spreadArray2, isNone, isSome, none, some, isLeft, isNonEmpty, head, tail, emptyReadonlyArray, emptyRecord, has, fromReadonlyNonEmptyArray;
+  var __spreadArray2, isNone, isSome, none, some, isLeft, singleton, isNonEmpty, head, tail, emptyReadonlyArray, emptyRecord, has, fromReadonlyNonEmptyArray, flatMapIO;
   var init_internal = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/internal.js"() {
+      init_function();
       __spreadArray2 = function(to, from, pack) {
         if (pack || arguments.length === 2)
           for (var i = 0, l = from.length, ar; i < l; i++) {
@@ -171,20 +172,30 @@ var vaultify = (() => {
       isLeft = function(ma) {
         return ma._tag === "Left";
       };
-      isNonEmpty = function(as3) {
-        return as3.length > 0;
+      singleton = function(a) {
+        return [a];
       };
-      head = function(as3) {
-        return as3[0];
+      isNonEmpty = function(as4) {
+        return as4.length > 0;
       };
-      tail = function(as3) {
-        return as3.slice(1);
+      head = function(as4) {
+        return as4[0];
+      };
+      tail = function(as4) {
+        return as4.slice(1);
       };
       emptyReadonlyArray = [];
       emptyRecord = {};
       has = Object.prototype.hasOwnProperty;
-      fromReadonlyNonEmptyArray = function(as3) {
-        return __spreadArray2([as3[0]], as3.slice(1), true);
+      fromReadonlyNonEmptyArray = function(as4) {
+        return __spreadArray2([as4[0]], as4.slice(1), true);
+      };
+      flatMapIO = function(F, M) {
+        return dual(2, function(self, f3) {
+          return M.flatMap(self, function(a) {
+            return F.fromIO(f3(a));
+          });
+        });
       };
     }
   });
@@ -246,8 +257,8 @@ var vaultify = (() => {
   function flap(F) {
     return function(a) {
       return function(fab) {
-        return F.map(fab, function(f4) {
-          return f4(a);
+        return F.map(fab, function(f3) {
+          return f3(a);
         });
       };
     };
@@ -263,11 +274,11 @@ var vaultify = (() => {
     };
   }
   function let_(F) {
-    return function(name, f4) {
+    return function(name, f3) {
       return function(fa) {
         return F.map(fa, function(a) {
           var _a;
-          return Object.assign({}, a, (_a = {}, _a[name] = f4(a), _a));
+          return Object.assign({}, a, (_a = {}, _a[name] = f3(a), _a));
         });
       };
     };
@@ -292,10 +303,10 @@ var vaultify = (() => {
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Applicative.js
   function getApplicativeMonoid(F) {
-    var f4 = getApplySemigroup(F);
+    var f3 = getApplySemigroup(F);
     return function(M) {
       return {
-        concat: f4(M).concat,
+        concat: f3(M).concat,
         empty: F.of(M.empty)
       };
     };
@@ -309,26 +320,26 @@ var vaultify = (() => {
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Chain.js
   function chainFirst(M) {
     var tapM = tap(M);
-    return function(f4) {
+    return function(f3) {
       return function(first3) {
-        return tapM(first3, f4);
+        return tapM(first3, f3);
       };
     };
   }
   function tap(M) {
-    return function(first3, f4) {
+    return function(first3, f3) {
       return M.chain(first3, function(a) {
-        return M.map(f4(a), function() {
+        return M.map(f3(a), function() {
           return a;
         });
       });
     };
   }
   function bind(M) {
-    return function(name, f4) {
+    return function(name, f3) {
       return function(ma) {
         return M.chain(ma, function(a) {
-          return M.map(f4(a), function(b) {
+          return M.map(f3(a), function(b) {
             var _a;
             return Object.assign({}, a, (_a = {}, _a[name] = b, _a));
           });
@@ -343,23 +354,23 @@ var vaultify = (() => {
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/FromEither.js
   function fromEitherK(F) {
-    return function(f4) {
-      return flow(f4, F.fromEither);
+    return function(f3) {
+      return flow(f3, F.fromEither);
     };
   }
   function chainEitherK(F, M) {
     var fromEitherKF = fromEitherK(F);
-    return function(f4) {
+    return function(f3) {
       return function(ma) {
-        return M.chain(ma, fromEitherKF(f4));
+        return M.chain(ma, fromEitherKF(f3));
       };
     };
   }
   function tapEither(F, M) {
     var fromEither3 = fromEitherK(F);
     var tapM = tap(M);
-    return function(self, f4) {
-      return tapM(self, fromEither3(f4));
+    return function(self, f3) {
+      return tapM(self, fromEither3(f3));
     };
   }
   var init_FromEither = __esm({
@@ -441,8 +452,8 @@ var vaultify = (() => {
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Magma.js"() {
       concatAll = function(M) {
         return function(startWith) {
-          return function(as3) {
-            return as3.reduce(function(a, acc) {
+          return function(as4) {
+            return as4.reduce(function(a, acc) {
               return M.concat(a, acc);
             }, startWith);
           };
@@ -520,8 +531,8 @@ var vaultify = (() => {
         return to.concat(ar || Array.prototype.slice.call(from));
       };
       isNonEmpty2 = isNonEmpty;
-      isOutOfBound = function(i, as3) {
-        return i < 0 || i >= as3.length;
+      isOutOfBound = function(i, as4) {
+        return i < 0 || i >= as4.length;
       };
       prependW = function(head6) {
         return function(tail5) {
@@ -530,29 +541,29 @@ var vaultify = (() => {
       };
       prepend = prependW;
       prependAll = function(middle) {
-        return function(as3) {
-          var out = [middle, as3[0]];
-          for (var i = 1; i < as3.length; i++) {
-            out.push(middle, as3[i]);
+        return function(as4) {
+          var out = [middle, as4[0]];
+          for (var i = 1; i < as4.length; i++) {
+            out.push(middle, as4[i]);
           }
           return out;
         };
       };
       intersperse = function(middle) {
-        return function(as3) {
-          var rest = tail2(as3);
-          return isNonEmpty2(rest) ? pipe(rest, prependAll(middle), prepend(head2(as3))) : as3;
+        return function(as4) {
+          var rest = tail2(as4);
+          return isNonEmpty2(rest) ? pipe(rest, prependAll(middle), prepend(head2(as4))) : as4;
         };
       };
       extract = head;
       head2 = extract;
       tail2 = tail;
-      last2 = function(as3) {
-        return as3[as3.length - 1];
+      last2 = function(as4) {
+        return as4[as4.length - 1];
       };
       concatAll3 = function(S) {
-        return function(as3) {
-          return as3.reduce(S.concat);
+        return function(as4) {
+          return as4.reduce(S.concat);
         };
       };
       intercalate = function(S) {
@@ -591,11 +602,11 @@ var vaultify = (() => {
           }
         return to.concat(ar || Array.prototype.slice.call(from));
       };
-      isNonEmpty3 = function(as3) {
-        return as3.length > 0;
+      isNonEmpty3 = function(as4) {
+        return as4.length > 0;
       };
-      isOutOfBound2 = function(i, as3) {
-        return i < 0 || i >= as3.length;
+      isOutOfBound2 = function(i, as4) {
+        return i < 0 || i >= as4.length;
       };
       prependW2 = function(head6) {
         return function(tail5) {
@@ -609,26 +620,26 @@ var vaultify = (() => {
         };
       };
       append = appendW;
-      unsafeInsertAt = function(i, a, as3) {
-        if (isNonEmpty3(as3)) {
-          var xs = fromReadonlyNonEmptyArray2(as3);
+      unsafeInsertAt = function(i, a, as4) {
+        if (isNonEmpty3(as4)) {
+          var xs = fromReadonlyNonEmptyArray2(as4);
           xs.splice(i, 0, a);
           return xs;
         }
         return [a];
       };
-      unsafeUpdateAt = function(i, a, as3) {
-        var xs = fromReadonlyNonEmptyArray2(as3);
+      unsafeUpdateAt = function(i, a, as4) {
+        var xs = fromReadonlyNonEmptyArray2(as4);
         xs[i] = a;
         return xs;
       };
       uniq = function(E) {
-        return function(as3) {
-          if (as3.length === 1) {
-            return copy(as3);
+        return function(as4) {
+          if (as4.length === 1) {
+            return copy(as4);
           }
-          var out = [head3(as3)];
-          var rest = tail3(as3);
+          var out = [head3(as4)];
+          var rest = tail3(as4);
           var _loop_1 = function(a2) {
             if (out.every(function(o) {
               return !E.equals(o, a2);
@@ -659,27 +670,27 @@ var vaultify = (() => {
         };
       };
       rotate = function(n) {
-        return function(as3) {
-          var len = as3.length;
+        return function(as4) {
+          var len = as4.length;
           var m = Math.round(n) % len;
-          if (isOutOfBound2(Math.abs(m), as3) || m === 0) {
-            return copy(as3);
+          if (isOutOfBound2(Math.abs(m), as4) || m === 0) {
+            return copy(as4);
           }
           if (m < 0) {
-            var _a = splitAt(-m)(as3), f4 = _a[0], s = _a[1];
-            return pipe(s, concat(f4));
+            var _a = splitAt(-m)(as4), f3 = _a[0], s = _a[1];
+            return pipe(s, concat(f3));
           } else {
-            return rotate(m - len)(as3);
+            return rotate(m - len)(as4);
           }
         };
       };
       fromReadonlyNonEmptyArray2 = fromReadonlyNonEmptyArray;
-      makeBy = function(f4) {
+      makeBy = function(f3) {
         return function(n) {
           var j = Math.max(0, Math.floor(n));
-          var out = [f4(0)];
+          var out = [f3(0)];
           for (var i = 1; i < j; i++) {
-            out.push(f4(i));
+            out.push(f3(i));
           }
           return out;
         };
@@ -690,8 +701,8 @@ var vaultify = (() => {
         })(end - start + 1) : [start];
       };
       sort = function(O) {
-        return function(as3) {
-          return as3.slice().sort(O.compare);
+        return function(as4) {
+          return as4.slice().sort(O.compare);
         };
       };
       copy = fromReadonlyNonEmptyArray2;
@@ -699,27 +710,27 @@ var vaultify = (() => {
         return [a];
       };
       prependAll2 = function(middle) {
-        return function(as3) {
-          var out = [middle, as3[0]];
-          for (var i = 1; i < as3.length; i++) {
-            out.push(middle, as3[i]);
+        return function(as4) {
+          var out = [middle, as4[0]];
+          for (var i = 1; i < as4.length; i++) {
+            out.push(middle, as4[i]);
           }
           return out;
         };
       };
       intersperse2 = function(middle) {
-        return function(as3) {
-          var rest = tail3(as3);
-          return isNonEmpty3(rest) ? pipe(rest, prependAll2(middle), prepend2(head3(as3))) : copy(as3);
+        return function(as4) {
+          var rest = tail3(as4);
+          return isNonEmpty3(rest) ? pipe(rest, prependAll2(middle), prepend2(head3(as4))) : copy(as4);
         };
       };
-      chop = function(f4) {
-        return function(as3) {
-          var _a = f4(as3), b = _a[0], rest = _a[1];
+      chop = function(f3) {
+        return function(as4) {
+          var _a = f3(as4), b = _a[0], rest = _a[1];
           var out = [b];
           var next = rest;
           while (isNonEmpty3(next)) {
-            var _b = f4(next), b_1 = _b[0], rest_2 = _b[1];
+            var _b = f3(next), b_1 = _b[0], rest_2 = _b[1];
             out.push(b_1);
             next = rest_2;
           }
@@ -727,21 +738,21 @@ var vaultify = (() => {
         };
       };
       splitAt = function(n) {
-        return function(as3) {
+        return function(as4) {
           var m = Math.max(1, n);
-          return m >= as3.length ? [copy(as3), []] : [pipe(as3.slice(1, m), prepend2(head3(as3))), as3.slice(m)];
+          return m >= as4.length ? [copy(as4), []] : [pipe(as4.slice(1, m), prepend2(head3(as4))), as4.slice(m)];
         };
       };
       chunksOf = function(n) {
         return chop(splitAt(n));
       };
       head3 = head2;
-      tail3 = function(as3) {
-        return as3.slice(1);
+      tail3 = function(as4) {
+        return as4.slice(1);
       };
       last3 = last2;
-      init = function(as3) {
-        return as3.slice(0, -1);
+      init = function(as4) {
+        return as4.slice(0, -1);
       };
       snoc = function(init4, end) {
         return pipe(init4, append(end));
@@ -826,16 +837,16 @@ var vaultify = (() => {
   function wiltDefault(T, C) {
     return function(F) {
       var traverseF = T.traverse(F);
-      return function(wa, f4) {
-        return F.map(traverseF(wa, f4), C.separate);
+      return function(wa, f3) {
+        return F.map(traverseF(wa, f3), C.separate);
       };
     };
   }
   function witherDefault(T, C) {
     return function(F) {
       var traverseF = T.traverse(F);
-      return function(wa, f4) {
-        return F.map(traverseF(wa, f4), C.compact);
+      return function(wa, f3) {
+        return F.map(traverseF(wa, f3), C.compact);
       };
     };
   }
@@ -871,45 +882,45 @@ var vaultify = (() => {
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyArray.js
-  function lookup(i, as3) {
-    return as3 === void 0 ? function(as4) {
-      return lookup(i, as4);
-    } : isOutOfBound3(i, as3) ? none : some(as3[i]);
+  function lookup(i, as4) {
+    return as4 === void 0 ? function(as5) {
+      return lookup(i, as5);
+    } : isOutOfBound3(i, as4) ? none : some(as4[i]);
   }
   function findFirst(predicate) {
-    return function(as3) {
-      for (var i = 0; i < as3.length; i++) {
-        if (predicate(as3[i])) {
-          return some(as3[i]);
+    return function(as4) {
+      for (var i = 0; i < as4.length; i++) {
+        if (predicate(as4[i])) {
+          return some(as4[i]);
         }
       }
       return none;
     };
   }
   function findLast(predicate) {
-    return function(as3) {
-      for (var i = as3.length - 1; i >= 0; i--) {
-        if (predicate(as3[i])) {
-          return some(as3[i]);
+    return function(as4) {
+      for (var i = as4.length - 1; i >= 0; i--) {
+        if (predicate(as4[i])) {
+          return some(as4[i]);
         }
       }
       return none;
     };
   }
   function elem(E) {
-    return function(a, as3) {
-      if (as3 === void 0) {
+    return function(a, as4) {
+      if (as4 === void 0) {
         var elemE_1 = elem(E);
-        return function(as4) {
-          return elemE_1(a, as4);
+        return function(as5) {
+          return elemE_1(a, as5);
         };
       }
       var predicate = function(element) {
         return E.equals(element, a);
       };
       var i = 0;
-      for (; i < as3.length; i++) {
-        if (predicate(as3[i])) {
+      for (; i < as4.length; i++) {
+        if (predicate(as4[i])) {
           return true;
         }
       }
@@ -917,8 +928,8 @@ var vaultify = (() => {
     };
   }
   function every(predicate) {
-    return function(as3) {
-      return as3.every(predicate);
+    return function(as4) {
+      return as4.every(predicate);
     };
   }
   var __spreadArray5, isNonEmpty4, matchW, match, isOutOfBound3, head4, last4, findIndex, findFirstMap, findLastMap, findLastIndex, _chainRecDepthFirst, _chainRecBreadthFirst, foldMapWithIndex2, reduce2, foldMap2, reduceWithIndex2, reduceRight2, reduceRightWithIndex2, getShow2, getEq2, getOrd, chainRecDepthFirst, chainRecBreadthFirst, intercalate2;
@@ -943,32 +954,32 @@ var vaultify = (() => {
       };
       isNonEmpty4 = isNonEmpty2;
       matchW = function(onEmpty, onNonEmpty) {
-        return function(as3) {
-          return isNonEmpty4(as3) ? onNonEmpty(as3) : onEmpty();
+        return function(as4) {
+          return isNonEmpty4(as4) ? onNonEmpty(as4) : onEmpty();
         };
       };
       match = matchW;
       isOutOfBound3 = isOutOfBound;
-      head4 = function(as3) {
-        return isNonEmpty4(as3) ? some(head2(as3)) : none;
+      head4 = function(as4) {
+        return isNonEmpty4(as4) ? some(head2(as4)) : none;
       };
-      last4 = function(as3) {
-        return isNonEmpty4(as3) ? some(last2(as3)) : none;
+      last4 = function(as4) {
+        return isNonEmpty4(as4) ? some(last2(as4)) : none;
       };
       findIndex = function(predicate) {
-        return function(as3) {
-          for (var i = 0; i < as3.length; i++) {
-            if (predicate(as3[i])) {
+        return function(as4) {
+          for (var i = 0; i < as4.length; i++) {
+            if (predicate(as4[i])) {
               return some(i);
             }
           }
           return none;
         };
       };
-      findFirstMap = function(f4) {
-        return function(as3) {
-          for (var i = 0; i < as3.length; i++) {
-            var out = f4(as3[i]);
+      findFirstMap = function(f3) {
+        return function(as4) {
+          for (var i = 0; i < as4.length; i++) {
+            var out = f3(as4[i]);
             if (isSome(out)) {
               return out;
             }
@@ -976,10 +987,10 @@ var vaultify = (() => {
           return none;
         };
       };
-      findLastMap = function(f4) {
-        return function(as3) {
-          for (var i = as3.length - 1; i >= 0; i--) {
-            var out = f4(as3[i]);
+      findLastMap = function(f3) {
+        return function(as4) {
+          for (var i = as4.length - 1; i >= 0; i--) {
+            var out = f3(as4[i]);
             if (isSome(out)) {
               return out;
             }
@@ -988,69 +999,69 @@ var vaultify = (() => {
         };
       };
       findLastIndex = function(predicate) {
-        return function(as3) {
-          for (var i = as3.length - 1; i >= 0; i--) {
-            if (predicate(as3[i])) {
+        return function(as4) {
+          for (var i = as4.length - 1; i >= 0; i--) {
+            if (predicate(as4[i])) {
               return some(i);
             }
           }
           return none;
         };
       };
-      _chainRecDepthFirst = function(a, f4) {
-        return pipe(a, chainRecDepthFirst(f4));
+      _chainRecDepthFirst = function(a, f3) {
+        return pipe(a, chainRecDepthFirst(f3));
       };
-      _chainRecBreadthFirst = function(a, f4) {
-        return pipe(a, chainRecBreadthFirst(f4));
+      _chainRecBreadthFirst = function(a, f3) {
+        return pipe(a, chainRecBreadthFirst(f3));
       };
       foldMapWithIndex2 = function(M) {
-        return function(f4) {
+        return function(f3) {
           return function(fa) {
             return fa.reduce(function(b, a, i) {
-              return M.concat(b, f4(i, a));
+              return M.concat(b, f3(i, a));
             }, M.empty);
           };
         };
       };
-      reduce2 = function(b, f4) {
+      reduce2 = function(b, f3) {
         return reduceWithIndex2(b, function(_, b2, a) {
-          return f4(b2, a);
+          return f3(b2, a);
         });
       };
       foldMap2 = function(M) {
         var foldMapWithIndexM = foldMapWithIndex2(M);
-        return function(f4) {
+        return function(f3) {
           return foldMapWithIndexM(function(_, a) {
-            return f4(a);
+            return f3(a);
           });
         };
       };
-      reduceWithIndex2 = function(b, f4) {
+      reduceWithIndex2 = function(b, f3) {
         return function(fa) {
           var len = fa.length;
           var out = b;
           for (var i = 0; i < len; i++) {
-            out = f4(i, out, fa[i]);
+            out = f3(i, out, fa[i]);
           }
           return out;
         };
       };
-      reduceRight2 = function(b, f4) {
+      reduceRight2 = function(b, f3) {
         return reduceRightWithIndex2(b, function(_, a, b2) {
-          return f4(a, b2);
+          return f3(a, b2);
         });
       };
-      reduceRightWithIndex2 = function(b, f4) {
+      reduceRightWithIndex2 = function(b, f3) {
         return function(fa) {
           return fa.reduceRight(function(b2, a, i) {
-            return f4(i, a, b2);
+            return f3(i, a, b2);
           }, b);
         };
       };
       getShow2 = function(S) {
         return {
-          show: function(as3) {
-            return "[".concat(as3.map(S.show).join(", "), "]");
+          show: function(as4) {
+            return "[".concat(as4.map(S.show).join(", "), "]");
           }
         };
       };
@@ -1075,14 +1086,14 @@ var vaultify = (() => {
           return Ord.compare(aLen, bLen);
         });
       };
-      chainRecDepthFirst = function(f4) {
+      chainRecDepthFirst = function(f3) {
         return function(a) {
-          var todo = __spreadArray5([], f4(a), true);
+          var todo = __spreadArray5([], f3(a), true);
           var out = [];
           while (todo.length > 0) {
             var e = todo.shift();
             if (isLeft(e)) {
-              todo.unshift.apply(todo, f4(e.left));
+              todo.unshift.apply(todo, f3(e.left));
             } else {
               out.push(e.right);
             }
@@ -1090,14 +1101,14 @@ var vaultify = (() => {
           return out;
         };
       };
-      chainRecBreadthFirst = function(f4) {
+      chainRecBreadthFirst = function(f3) {
         return function(a) {
-          var initial = f4(a);
+          var initial = f3(a);
           var todo = [];
           var out = [];
           function go(e2) {
             if (isLeft(e2)) {
-              f4(e2.left).forEach(function(v) {
+              f3(e2.left).forEach(function(v) {
                 return todo.push(v);
               });
             } else {
@@ -1299,9 +1310,9 @@ var vaultify = (() => {
     };
   }
   function takeLeftWhile(predicate) {
-    return function(as3) {
+    return function(as4) {
       var out = [];
-      for (var _i = 0, as_1 = as3; _i < as_1.length; _i++) {
+      for (var _i = 0, as_1 = as4; _i < as_1.length; _i++) {
         var a = as_1[_i];
         if (!predicate(a)) {
           break;
@@ -1312,14 +1323,14 @@ var vaultify = (() => {
     };
   }
   function spanLeft(predicate) {
-    return function(as3) {
-      var _a = splitAt3(spanLeftIndex(as3, predicate))(as3), init4 = _a[0], rest = _a[1];
+    return function(as4) {
+      var _a = splitAt3(spanLeftIndex(as4, predicate))(as4), init4 = _a[0], rest = _a[1];
       return { init: init4, rest };
     };
   }
   function dropLeftWhile(predicate) {
-    return function(as3) {
-      return as3.slice(spanLeftIndex(as3, predicate));
+    return function(as4) {
+      return as4.slice(spanLeftIndex(as4, predicate));
     };
   }
   function findFirst2(predicate) {
@@ -1328,17 +1339,17 @@ var vaultify = (() => {
   function findLast2(predicate) {
     return findLast(predicate);
   }
-  function zip(as3, bs) {
+  function zip(as4, bs) {
     if (bs === void 0) {
       return function(bs2) {
-        return zip(bs2, as3);
+        return zip(bs2, as4);
       };
     }
-    return zipWith(as3, bs, function(a, b) {
+    return zipWith(as4, bs, function(a, b) {
       return [a, b];
     });
   }
-  function comprehension(input, f4, g) {
+  function comprehension(input, f3, g) {
     if (g === void 0) {
       g = function() {
         return true;
@@ -1347,7 +1358,7 @@ var vaultify = (() => {
     var go = function(scope, input2) {
       return isNonEmpty5(input2) ? flatMap(head3(input2), function(a) {
         return go(pipe(scope, append3(a)), tail3(input2));
-      }) : g.apply(void 0, scope) ? [f4.apply(void 0, scope)] : [];
+      }) : g.apply(void 0, scope) ? [f3.apply(void 0, scope)] : [];
     };
     return go([], input);
   }
@@ -1405,16 +1416,16 @@ var vaultify = (() => {
       init_Separated();
       init_Witherable();
       init_Zero();
-      isEmpty = function(as3) {
-        return as3.length === 0;
+      isEmpty = function(as4) {
+        return as4.length === 0;
       };
       isNonEmpty5 = isNonEmpty3;
       prepend3 = prepend2;
       prependW3 = prependW2;
       append3 = append;
       appendW3 = appendW;
-      makeBy3 = function(n, f4) {
-        return n <= 0 ? [] : makeBy(f4)(n);
+      makeBy3 = function(n, f3) {
+        return n <= 0 ? [] : makeBy(f3)(n);
       };
       replicate = function(n, a) {
         return makeBy3(n, function() {
@@ -1428,109 +1439,109 @@ var vaultify = (() => {
         return isLeft(e) ? [] : [e.right];
       };
       matchW2 = function(onEmpty, onNonEmpty) {
-        return function(as3) {
-          return isNonEmpty5(as3) ? onNonEmpty(as3) : onEmpty();
+        return function(as4) {
+          return isNonEmpty5(as4) ? onNonEmpty(as4) : onEmpty();
         };
       };
       match2 = matchW2;
       matchLeftW = function(onEmpty, onNonEmpty) {
-        return function(as3) {
-          return isNonEmpty5(as3) ? onNonEmpty(head3(as3), tail3(as3)) : onEmpty();
+        return function(as4) {
+          return isNonEmpty5(as4) ? onNonEmpty(head3(as4), tail3(as4)) : onEmpty();
         };
       };
       matchLeft = matchLeftW;
       foldLeft = matchLeft;
       matchRightW = function(onEmpty, onNonEmpty) {
-        return function(as3) {
-          return isNonEmpty5(as3) ? onNonEmpty(init(as3), last3(as3)) : onEmpty();
+        return function(as4) {
+          return isNonEmpty5(as4) ? onNonEmpty(init(as4), last3(as4)) : onEmpty();
         };
       };
       matchRight = matchRightW;
       foldRight = matchRight;
-      chainWithIndex = function(f4) {
-        return function(as3) {
+      chainWithIndex = function(f3) {
+        return function(as4) {
           var out = [];
-          for (var i = 0; i < as3.length; i++) {
-            out.push.apply(out, f4(i, as3[i]));
+          for (var i = 0; i < as4.length; i++) {
+            out.push.apply(out, f3(i, as4[i]));
           }
           return out;
         };
       };
-      scanLeft = function(b, f4) {
-        return function(as3) {
-          var len = as3.length;
+      scanLeft = function(b, f3) {
+        return function(as4) {
+          var len = as4.length;
           var out = new Array(len + 1);
           out[0] = b;
           for (var i = 0; i < len; i++) {
-            out[i + 1] = f4(out[i], as3[i]);
+            out[i + 1] = f3(out[i], as4[i]);
           }
           return out;
         };
       };
-      scanRight = function(b, f4) {
-        return function(as3) {
-          var len = as3.length;
+      scanRight = function(b, f3) {
+        return function(as4) {
+          var len = as4.length;
           var out = new Array(len + 1);
           out[len] = b;
           for (var i = len - 1; i >= 0; i--) {
-            out[i] = f4(as3[i], out[i + 1]);
+            out[i] = f3(as4[i], out[i + 1]);
           }
           return out;
         };
       };
-      size = function(as3) {
-        return as3.length;
+      size = function(as4) {
+        return as4.length;
       };
       isOutOfBound4 = isOutOfBound2;
       lookup2 = lookup;
       head5 = head4;
       last5 = last4;
-      tail4 = function(as3) {
-        return isNonEmpty5(as3) ? some(tail3(as3)) : none;
+      tail4 = function(as4) {
+        return isNonEmpty5(as4) ? some(tail3(as4)) : none;
       };
-      init3 = function(as3) {
-        return isNonEmpty5(as3) ? some(init(as3)) : none;
+      init3 = function(as4) {
+        return isNonEmpty5(as4) ? some(init(as4)) : none;
       };
       takeLeft = function(n) {
-        return function(as3) {
-          return isOutOfBound4(n, as3) ? copy2(as3) : as3.slice(0, n);
+        return function(as4) {
+          return isOutOfBound4(n, as4) ? copy2(as4) : as4.slice(0, n);
         };
       };
       takeRight = function(n) {
-        return function(as3) {
-          return isOutOfBound4(n, as3) ? copy2(as3) : n === 0 ? [] : as3.slice(-n);
+        return function(as4) {
+          return isOutOfBound4(n, as4) ? copy2(as4) : n === 0 ? [] : as4.slice(-n);
         };
       };
-      spanLeftIndex = function(as3, predicate) {
-        var l = as3.length;
+      spanLeftIndex = function(as4, predicate) {
+        var l = as4.length;
         var i = 0;
         for (; i < l; i++) {
-          if (!predicate(as3[i])) {
+          if (!predicate(as4[i])) {
             break;
           }
         }
         return i;
       };
       dropLeft = function(n) {
-        return function(as3) {
-          return n <= 0 || isEmpty(as3) ? copy2(as3) : n >= as3.length ? [] : as3.slice(n, as3.length);
+        return function(as4) {
+          return n <= 0 || isEmpty(as4) ? copy2(as4) : n >= as4.length ? [] : as4.slice(n, as4.length);
         };
       };
       dropRight = function(n) {
-        return function(as3) {
-          return n <= 0 || isEmpty(as3) ? copy2(as3) : n >= as3.length ? [] : as3.slice(0, as3.length - n);
+        return function(as4) {
+          return n <= 0 || isEmpty(as4) ? copy2(as4) : n >= as4.length ? [] : as4.slice(0, as4.length - n);
         };
       };
       findIndex2 = findIndex;
       findFirstMap2 = findFirstMap;
       findLastMap2 = findLastMap;
       findLastIndex2 = findLastIndex;
-      copy2 = function(as3) {
-        return as3.slice();
+      copy2 = function(as4) {
+        return as4.slice();
       };
       insertAt = function(i, a) {
-        return function(as3) {
-          return i < 0 || i > as3.length ? none : some(unsafeInsertAt3(i, a, as3));
+        return function(as4) {
+          return i < 0 || i > as4.length ? none : some(unsafeInsertAt3(i, a, as4));
         };
       };
       updateAt = function(i, a) {
@@ -1539,32 +1550,32 @@ var vaultify = (() => {
         });
       };
       deleteAt = function(i) {
-        return function(as3) {
-          return isOutOfBound4(i, as3) ? none : some(unsafeDeleteAt(i, as3));
+        return function(as4) {
+          return isOutOfBound4(i, as4) ? none : some(unsafeDeleteAt(i, as4));
         };
       };
-      modifyAt = function(i, f4) {
-        return function(as3) {
-          return isOutOfBound4(i, as3) ? none : some(unsafeUpdateAt3(i, f4(as3[i]), as3));
+      modifyAt = function(i, f3) {
+        return function(as4) {
+          return isOutOfBound4(i, as4) ? none : some(unsafeUpdateAt3(i, f3(as4[i]), as4));
         };
       };
-      reverse2 = function(as3) {
-        return isEmpty(as3) ? [] : as3.slice().reverse();
+      reverse2 = function(as4) {
+        return isEmpty(as4) ? [] : as4.slice().reverse();
       };
-      rights = function(as3) {
+      rights = function(as4) {
         var r = [];
-        for (var i = 0; i < as3.length; i++) {
-          var a = as3[i];
+        for (var i = 0; i < as4.length; i++) {
+          var a = as4[i];
           if (a._tag === "Right") {
             r.push(a.right);
           }
         }
         return r;
       };
-      lefts = function(as3) {
+      lefts = function(as4) {
         var r = [];
-        for (var i = 0; i < as3.length; i++) {
-          var a = as3[i];
+        for (var i = 0; i < as4.length; i++) {
+          var a = as4[i];
           if (a._tag === "Left") {
             r.push(a.left);
           }
@@ -1572,82 +1583,82 @@ var vaultify = (() => {
         return r;
       };
       sort2 = function(O) {
-        return function(as3) {
-          return as3.length <= 1 ? copy2(as3) : as3.slice().sort(O.compare);
+        return function(as4) {
+          return as4.length <= 1 ? copy2(as4) : as4.slice().sort(O.compare);
         };
       };
-      zipWith = function(fa, fb, f4) {
+      zipWith = function(fa, fb, f3) {
         var fc = [];
         var len = Math.min(fa.length, fb.length);
         for (var i = 0; i < len; i++) {
-          fc[i] = f4(fa[i], fb[i]);
+          fc[i] = f3(fa[i], fb[i]);
         }
         return fc;
       };
-      unzip = function(as3) {
+      unzip = function(as4) {
         var fa = [];
         var fb = [];
-        for (var i = 0; i < as3.length; i++) {
-          fa[i] = as3[i][0];
-          fb[i] = as3[i][1];
+        for (var i = 0; i < as4.length; i++) {
+          fa[i] = as4[i][0];
+          fb[i] = as4[i][1];
         }
         return [fa, fb];
       };
       prependAll3 = function(middle) {
-        var f4 = prependAll2(middle);
-        return function(as3) {
-          return isNonEmpty5(as3) ? f4(as3) : [];
+        var f3 = prependAll2(middle);
+        return function(as4) {
+          return isNonEmpty5(as4) ? f3(as4) : [];
         };
       };
       intersperse3 = function(middle) {
-        var f4 = intersperse2(middle);
-        return function(as3) {
-          return isNonEmpty5(as3) ? f4(as3) : copy2(as3);
+        var f3 = intersperse2(middle);
+        return function(as4) {
+          return isNonEmpty5(as4) ? f3(as4) : copy2(as4);
         };
       };
       rotate3 = function(n) {
-        var f4 = rotate(n);
-        return function(as3) {
-          return isNonEmpty5(as3) ? f4(as3) : copy2(as3);
+        var f3 = rotate(n);
+        return function(as4) {
+          return isNonEmpty5(as4) ? f3(as4) : copy2(as4);
         };
       };
       elem2 = elem;
       uniq3 = function(E) {
-        var f4 = uniq(E);
-        return function(as3) {
-          return isNonEmpty5(as3) ? f4(as3) : copy2(as3);
+        var f3 = uniq(E);
+        return function(as4) {
+          return isNonEmpty5(as4) ? f3(as4) : copy2(as4);
         };
       };
       sortBy3 = function(ords) {
-        var f4 = sortBy(ords);
-        return function(as3) {
-          return isNonEmpty5(as3) ? f4(as3) : copy2(as3);
+        var f3 = sortBy(ords);
+        return function(as4) {
+          return isNonEmpty5(as4) ? f3(as4) : copy2(as4);
         };
       };
-      chop3 = function(f4) {
-        var g = chop(f4);
-        return function(as3) {
-          return isNonEmpty5(as3) ? g(as3) : [];
+      chop3 = function(f3) {
+        var g = chop(f3);
+        return function(as4) {
+          return isNonEmpty5(as4) ? g(as4) : [];
         };
       };
       splitAt3 = function(n) {
-        return function(as3) {
-          return n >= 1 && isNonEmpty5(as3) ? splitAt(n)(as3) : isEmpty(as3) ? [copy2(as3), []] : [[], copy2(as3)];
+        return function(as4) {
+          return n >= 1 && isNonEmpty5(as4) ? splitAt(n)(as4) : isEmpty(as4) ? [copy2(as4), []] : [[], copy2(as4)];
         };
       };
       chunksOf3 = function(n) {
-        var f4 = chunksOf(n);
-        return function(as3) {
-          return isNonEmpty5(as3) ? f4(as3) : [];
+        var f3 = chunksOf(n);
+        return function(as4) {
+          return isNonEmpty5(as4) ? f3(as4) : [];
         };
       };
-      fromOptionK = function(f4) {
+      fromOptionK = function(f3) {
         return function() {
           var a = [];
           for (var _i = 0; _i < arguments.length; _i++) {
             a[_i] = arguments[_i];
           }
-          return fromOption(f4.apply(void 0, a));
+          return fromOption(f3.apply(void 0, a));
         };
       };
       concatW = function(second) {
@@ -1656,11 +1667,11 @@ var vaultify = (() => {
         };
       };
       concat2 = concatW;
-      _map = function(fa, f4) {
-        return pipe(fa, map(f4));
+      _map = function(fa, f3) {
+        return pipe(fa, map(f3));
       };
-      _mapWithIndex = function(fa, f4) {
-        return pipe(fa, mapWithIndex(f4));
+      _mapWithIndex = function(fa, f3) {
+        return pipe(fa, mapWithIndex(f3));
       };
       _ap = function(fab, fa) {
         return pipe(fab, ap2(fa));
@@ -1668,67 +1679,67 @@ var vaultify = (() => {
       _filter = function(fa, predicate) {
         return pipe(fa, filter(predicate));
       };
-      _filterMap = function(fa, f4) {
-        return pipe(fa, filterMap(f4));
+      _filterMap = function(fa, f3) {
+        return pipe(fa, filterMap(f3));
       };
       _partition = function(fa, predicate) {
         return pipe(fa, partition(predicate));
       };
-      _partitionMap = function(fa, f4) {
-        return pipe(fa, partitionMap(f4));
+      _partitionMap = function(fa, f3) {
+        return pipe(fa, partitionMap(f3));
       };
       _partitionWithIndex = function(fa, predicateWithIndex) {
         return pipe(fa, partitionWithIndex(predicateWithIndex));
       };
-      _partitionMapWithIndex = function(fa, f4) {
-        return pipe(fa, partitionMapWithIndex(f4));
+      _partitionMapWithIndex = function(fa, f3) {
+        return pipe(fa, partitionMapWithIndex(f3));
       };
       _alt = function(fa, that) {
         return pipe(fa, alt(that));
       };
-      _reduce = function(fa, b, f4) {
-        return pipe(fa, reduce3(b, f4));
+      _reduce = function(fa, b, f3) {
+        return pipe(fa, reduce3(b, f3));
       };
       _foldMap = function(M) {
         var foldMapM = foldMap3(M);
-        return function(fa, f4) {
-          return pipe(fa, foldMapM(f4));
+        return function(fa, f3) {
+          return pipe(fa, foldMapM(f3));
         };
       };
-      _reduceRight = function(fa, b, f4) {
-        return pipe(fa, reduceRight3(b, f4));
+      _reduceRight = function(fa, b, f3) {
+        return pipe(fa, reduceRight3(b, f3));
       };
-      _reduceWithIndex = function(fa, b, f4) {
-        return pipe(fa, reduceWithIndex3(b, f4));
+      _reduceWithIndex = function(fa, b, f3) {
+        return pipe(fa, reduceWithIndex3(b, f3));
       };
       _foldMapWithIndex = function(M) {
         var foldMapWithIndexM = foldMapWithIndex3(M);
-        return function(fa, f4) {
-          return pipe(fa, foldMapWithIndexM(f4));
+        return function(fa, f3) {
+          return pipe(fa, foldMapWithIndexM(f3));
         };
       };
-      _reduceRightWithIndex = function(fa, b, f4) {
-        return pipe(fa, reduceRightWithIndex3(b, f4));
+      _reduceRightWithIndex = function(fa, b, f3) {
+        return pipe(fa, reduceRightWithIndex3(b, f3));
       };
-      _filterMapWithIndex = function(fa, f4) {
-        return pipe(fa, filterMapWithIndex(f4));
+      _filterMapWithIndex = function(fa, f3) {
+        return pipe(fa, filterMapWithIndex(f3));
       };
       _filterWithIndex = function(fa, predicateWithIndex) {
         return pipe(fa, filterWithIndex(predicateWithIndex));
       };
-      _extend = function(fa, f4) {
-        return pipe(fa, extend(f4));
+      _extend = function(fa, f3) {
+        return pipe(fa, extend(f3));
       };
       _traverse = function(F) {
         var traverseF = traverse(F);
-        return function(ta, f4) {
-          return pipe(ta, traverseF(f4));
+        return function(ta, f3) {
+          return pipe(ta, traverseF(f3));
         };
       };
       _traverseWithIndex = function(F) {
         var traverseWithIndexF = traverseWithIndex(F);
-        return function(ta, f4) {
-          return pipe(ta, traverseWithIndexF(f4));
+        return function(ta, f3) {
+          return pipe(ta, traverseWithIndexF(f3));
         };
       };
       _chainRecDepthFirst2 = _chainRecDepthFirst;
@@ -1737,36 +1748,36 @@ var vaultify = (() => {
       zero = function() {
         return [];
       };
-      map = function(f4) {
+      map = function(f3) {
         return function(fa) {
           return fa.map(function(a) {
-            return f4(a);
+            return f3(a);
           });
         };
       };
       ap2 = function(fa) {
-        return flatMap(function(f4) {
-          return pipe(fa, map(f4));
+        return flatMap(function(f3) {
+          return pipe(fa, map(f3));
         });
       };
-      flatMap = /* @__PURE__ */ dual(2, function(ma, f4) {
+      flatMap = /* @__PURE__ */ dual(2, function(ma, f3) {
         return pipe(ma, chainWithIndex(function(i, a) {
-          return f4(a, i);
+          return f3(a, i);
         }));
       });
       flatten = /* @__PURE__ */ flatMap(identity);
-      mapWithIndex = function(f4) {
+      mapWithIndex = function(f3) {
         return function(fa) {
           return fa.map(function(a, i) {
-            return f4(i, a);
+            return f3(i, a);
           });
         };
       };
-      filterMapWithIndex = function(f4) {
+      filterMapWithIndex = function(f3) {
         return function(fa) {
           var out = [];
           for (var i = 0; i < fa.length; i++) {
-            var optionB = f4(i, fa[i]);
+            var optionB = f3(i, fa[i]);
             if (isSome(optionB)) {
               out.push(optionB.value);
             }
@@ -1774,9 +1785,9 @@ var vaultify = (() => {
           return out;
         };
       };
-      filterMap = function(f4) {
+      filterMap = function(f3) {
         return filterMapWithIndex(function(_, a) {
-          return f4(a);
+          return f3(a);
         });
       };
       compact = /* @__PURE__ */ filterMap(identity);
@@ -1794,8 +1805,8 @@ var vaultify = (() => {
         return separated(left, right);
       };
       filter = function(predicate) {
-        return function(as3) {
-          return as3.filter(predicate);
+        return function(as4) {
+          return as4.filter(predicate);
         };
       };
       partition = function(predicate) {
@@ -1804,11 +1815,11 @@ var vaultify = (() => {
         });
       };
       partitionWithIndex = function(predicateWithIndex) {
-        return function(as3) {
+        return function(as4) {
           var left = [];
           var right = [];
-          for (var i = 0; i < as3.length; i++) {
-            var b = as3[i];
+          for (var i = 0; i < as4.length; i++) {
+            var b = as4[i];
             if (predicateWithIndex(i, b)) {
               right.push(b);
             } else {
@@ -1818,17 +1829,17 @@ var vaultify = (() => {
           return separated(left, right);
         };
       };
-      partitionMap = function(f4) {
+      partitionMap = function(f3) {
         return partitionMapWithIndex(function(_, a) {
-          return f4(a);
+          return f3(a);
         });
       };
-      partitionMapWithIndex = function(f4) {
+      partitionMapWithIndex = function(f3) {
         return function(fa) {
           var left = [];
           var right = [];
           for (var i = 0; i < fa.length; i++) {
-            var e = f4(i, fa[i]);
+            var e = f3(i, fa[i]);
             if (e._tag === "Left") {
               left.push(e.left);
             } else {
@@ -1845,16 +1856,16 @@ var vaultify = (() => {
       };
       alt = altW;
       filterWithIndex = function(predicateWithIndex) {
-        return function(as3) {
-          return as3.filter(function(b, i) {
+        return function(as4) {
+          return as4.filter(function(b, i) {
             return predicateWithIndex(i, b);
           });
         };
       };
-      extend = function(f4) {
+      extend = function(f3) {
         return function(wa) {
           return wa.map(function(_, i) {
-            return f4(wa.slice(i));
+            return f3(wa.slice(i));
           });
         };
       };
@@ -1867,55 +1878,55 @@ var vaultify = (() => {
       reduceRightWithIndex3 = reduceRightWithIndex2;
       traverse = function(F) {
         var traverseWithIndexF = traverseWithIndex(F);
-        return function(f4) {
+        return function(f3) {
           return traverseWithIndexF(function(_, a) {
-            return f4(a);
+            return f3(a);
           });
         };
       };
       sequence = function(F) {
         return function(ta) {
           return _reduce(ta, F.of(zero()), function(fas, fa) {
-            return F.ap(F.map(fas, function(as3) {
+            return F.ap(F.map(fas, function(as4) {
               return function(a) {
-                return pipe(as3, append3(a));
+                return pipe(as4, append3(a));
               };
             }), fa);
           });
         };
       };
       traverseWithIndex = function(F) {
-        return function(f4) {
+        return function(f3) {
           return reduceWithIndex3(F.of(zero()), function(i, fbs, a) {
             return F.ap(F.map(fbs, function(bs) {
               return function(b) {
                 return pipe(bs, append3(b));
               };
-            }), f4(i, a));
+            }), f3(i, a));
           });
         };
       };
       wither = function(F) {
         var _witherF = _wither(F);
-        return function(f4) {
+        return function(f3) {
           return function(fa) {
-            return _witherF(fa, f4);
+            return _witherF(fa, f3);
           };
         };
       };
       wilt = function(F) {
         var _wiltF = _wilt(F);
-        return function(f4) {
+        return function(f3) {
           return function(fa) {
-            return _wiltF(fa, f4);
+            return _wiltF(fa, f3);
           };
         };
       };
-      unfold = function(b, f4) {
+      unfold = function(b, f3) {
         var out = [];
         var bb = b;
         while (true) {
-          var mt = f4(bb);
+          var mt = f3(bb);
           if (isSome(mt)) {
             var _a = mt.value, a = _a[0], b_1 = _a[1];
             out.push(a);
@@ -2151,18 +2162,18 @@ var vaultify = (() => {
       };
       fromEitherK2 = /* @__PURE__ */ fromEitherK(FromEither);
       unsafeInsertAt3 = unsafeInsertAt;
-      unsafeUpdateAt3 = function(i, a, as3) {
-        return isNonEmpty5(as3) ? unsafeUpdateAt(i, a, as3) : [];
+      unsafeUpdateAt3 = function(i, a, as4) {
+        return isNonEmpty5(as4) ? unsafeUpdateAt(i, a, as4) : [];
       };
-      unsafeDeleteAt = function(i, as3) {
-        var xs = as3.slice();
+      unsafeDeleteAt = function(i, as4) {
+        var xs = as4.slice();
         xs.splice(i, 1);
         return xs;
       };
       every2 = every;
       some2 = function(predicate) {
-        return function(as3) {
-          return as3.some(predicate);
+        return function(as4) {
+          return as4.some(predicate);
         };
       };
       exists = some2;
@@ -2375,28 +2386,28 @@ var vaultify = (() => {
       getRight = function(ma) {
         return ma._tag === "Left" ? none2 : some3(ma.right);
       };
-      _map2 = function(fa, f4) {
-        return pipe(fa, map2(f4));
+      _map2 = function(fa, f3) {
+        return pipe(fa, map2(f3));
       };
       _ap2 = function(fab, fa) {
         return pipe(fab, ap3(fa));
       };
-      _reduce2 = function(fa, b, f4) {
-        return pipe(fa, reduce4(b, f4));
+      _reduce2 = function(fa, b, f3) {
+        return pipe(fa, reduce4(b, f3));
       };
       _foldMap2 = function(M) {
         var foldMapM = foldMap4(M);
-        return function(fa, f4) {
-          return pipe(fa, foldMapM(f4));
+        return function(fa, f3) {
+          return pipe(fa, foldMapM(f3));
         };
       };
-      _reduceRight2 = function(fa, b, f4) {
-        return pipe(fa, reduceRight4(b, f4));
+      _reduceRight2 = function(fa, b, f3) {
+        return pipe(fa, reduceRight4(b, f3));
       };
       _traverse2 = function(F) {
         var traverseF = traverse2(F);
-        return function(ta, f4) {
-          return pipe(ta, traverseF(f4));
+        return function(ta, f3) {
+          return pipe(ta, traverseF(f3));
         };
       };
       _alt2 = function(fa, that) {
@@ -2405,17 +2416,17 @@ var vaultify = (() => {
       _filter2 = function(fa, predicate) {
         return pipe(fa, filter2(predicate));
       };
-      _filterMap2 = function(fa, f4) {
-        return pipe(fa, filterMap2(f4));
+      _filterMap2 = function(fa, f3) {
+        return pipe(fa, filterMap2(f3));
       };
-      _extend2 = function(wa, f4) {
-        return pipe(wa, extend2(f4));
+      _extend2 = function(wa, f3) {
+        return pipe(wa, extend2(f3));
       };
       _partition2 = function(fa, predicate) {
         return pipe(fa, partition2(predicate));
       };
-      _partitionMap2 = function(fa, f4) {
-        return pipe(fa, partitionMap2(f4));
+      _partitionMap2 = function(fa, f3) {
+        return pipe(fa, partitionMap2(f3));
       };
       URI2 = "Option";
       getShow4 = function(S) {
@@ -2448,9 +2459,9 @@ var vaultify = (() => {
           empty: none2
         };
       };
-      map2 = function(f4) {
+      map2 = function(f3) {
         return function(fa) {
-          return isNone2(fa) ? none2 : some3(f4(fa.value));
+          return isNone2(fa) ? none2 : some3(f3(fa.value));
         };
       };
       Functor2 = {
@@ -2480,8 +2491,8 @@ var vaultify = (() => {
         ap: _ap2,
         of: of4
       };
-      flatMap2 = /* @__PURE__ */ dual(2, function(ma, f4) {
-        return isNone2(ma) ? none2 : f4(ma.value);
+      flatMap2 = /* @__PURE__ */ dual(2, function(ma, f3) {
+        return isNone2(ma) ? none2 : f3(ma.value);
       });
       Chain2 = {
         URI: URI2,
@@ -2496,21 +2507,21 @@ var vaultify = (() => {
         of: of4,
         chain: flatMap2
       };
-      reduce4 = function(b, f4) {
+      reduce4 = function(b, f3) {
         return function(fa) {
-          return isNone2(fa) ? b : f4(b, fa.value);
+          return isNone2(fa) ? b : f3(b, fa.value);
         };
       };
       foldMap4 = function(M) {
-        return function(f4) {
+        return function(f3) {
           return function(fa) {
-            return isNone2(fa) ? M.empty : f4(fa.value);
+            return isNone2(fa) ? M.empty : f3(fa.value);
           };
         };
       };
-      reduceRight4 = function(b, f4) {
+      reduceRight4 = function(b, f3) {
         return function(fa) {
-          return isNone2(fa) ? b : f4(fa.value, b);
+          return isNone2(fa) ? b : f3(fa.value, b);
         };
       };
       Foldable2 = {
@@ -2545,9 +2556,9 @@ var vaultify = (() => {
         alt: _alt2,
         zero: zero2
       };
-      extend2 = function(f4) {
+      extend2 = function(f3) {
         return function(wa) {
-          return isNone2(wa) ? none2 : some3(f4(wa));
+          return isNone2(wa) ? none2 : some3(f3(wa));
         };
       };
       Extend2 = {
@@ -2570,9 +2581,9 @@ var vaultify = (() => {
           return isNone2(fa) ? none2 : predicate(fa.value) ? fa : none2;
         };
       };
-      filterMap2 = function(f4) {
+      filterMap2 = function(f3) {
         return function(fa) {
-          return isNone2(fa) ? none2 : f4(fa.value);
+          return isNone2(fa) ? none2 : f3(fa.value);
         };
       };
       partition2 = function(predicate) {
@@ -2580,8 +2591,8 @@ var vaultify = (() => {
           return separated(_filter2(fa, not(predicate)), _filter2(fa, predicate));
         };
       };
-      partitionMap2 = function(f4) {
-        return flow(map2(f4), separate2);
+      partitionMap2 = function(f3) {
+        return flow(map2(f3), separate2);
       };
       Filterable2 = {
         URI: URI2,
@@ -2594,9 +2605,9 @@ var vaultify = (() => {
         partitionMap: _partitionMap2
       };
       traverse2 = function(F) {
-        return function(f4) {
+        return function(f3) {
           return function(ta) {
-            return isNone2(ta) ? F.of(none2) : F.map(f4(ta.value), some3);
+            return isNone2(ta) ? F.of(none2) : F.map(f3(ta.value), some3);
           };
         };
       };
@@ -2618,17 +2629,17 @@ var vaultify = (() => {
       _wilt2 = /* @__PURE__ */ wiltDefault(Traversable2, Compactable2);
       wither2 = function(F) {
         var _witherF = _wither2(F);
-        return function(f4) {
+        return function(f3) {
           return function(fa) {
-            return _witherF(fa, f4);
+            return _witherF(fa, f3);
           };
         };
       };
       wilt2 = function(F) {
         var _wiltF = _wilt2(F);
-        return function(f4) {
+        return function(f3) {
           return function(fa) {
-            return _wiltF(fa, f4);
+            return _wiltF(fa, f3);
           };
         };
       };
@@ -2696,30 +2707,30 @@ var vaultify = (() => {
       fromNullable = function(a) {
         return a == null ? none2 : some3(a);
       };
-      tryCatch = function(f4) {
+      tryCatch = function(f3) {
         try {
-          return some3(f4());
+          return some3(f3());
         } catch (e) {
           return none2;
         }
       };
-      tryCatchK = function(f4) {
+      tryCatchK = function(f3) {
         return function() {
           var a = [];
           for (var _i = 0; _i < arguments.length; _i++) {
             a[_i] = arguments[_i];
           }
           return tryCatch(function() {
-            return f4.apply(void 0, a);
+            return f3.apply(void 0, a);
           });
         };
       };
-      fromNullableK = function(f4) {
-        return flow(f4, fromNullable);
+      fromNullableK = function(f3) {
+        return flow(f3, fromNullable);
       };
-      chainNullableK = function(f4) {
+      chainNullableK = function(f3) {
         return function(ma) {
-          return isNone2(ma) ? none2 : fromNullable(f4(ma.value));
+          return isNone2(ma) ? none2 : fromNullable(f3(ma.value));
         };
       };
       toNullable = /* @__PURE__ */ match3(constNull, identity);
@@ -2735,15 +2746,15 @@ var vaultify = (() => {
       bind3 = /* @__PURE__ */ bind(Chain2);
       apS3 = /* @__PURE__ */ apS(Apply2);
       ApT = /* @__PURE__ */ of4(emptyReadonlyArray);
-      traverseReadonlyNonEmptyArrayWithIndex = function(f4) {
-        return function(as3) {
-          var o = f4(0, head(as3));
+      traverseReadonlyNonEmptyArrayWithIndex = function(f3) {
+        return function(as4) {
+          var o = f3(0, head(as4));
           if (isNone2(o)) {
             return none2;
           }
           var out = [o.value];
-          for (var i = 1; i < as3.length; i++) {
-            var o_1 = f4(i, as3[i]);
+          for (var i = 1; i < as4.length; i++) {
+            var o_1 = f3(i, as4[i]);
             if (isNone2(o_1)) {
               return none2;
             }
@@ -2752,16 +2763,16 @@ var vaultify = (() => {
           return some3(out);
         };
       };
-      traverseReadonlyArrayWithIndex = function(f4) {
-        var g = traverseReadonlyNonEmptyArrayWithIndex(f4);
-        return function(as3) {
-          return isNonEmpty(as3) ? g(as3) : ApT;
+      traverseReadonlyArrayWithIndex = function(f3) {
+        var g = traverseReadonlyNonEmptyArrayWithIndex(f3);
+        return function(as4) {
+          return isNonEmpty(as4) ? g(as4) : ApT;
         };
       };
       traverseArrayWithIndex = traverseReadonlyArrayWithIndex;
-      traverseArray = function(f4) {
+      traverseArray = function(f3) {
         return traverseReadonlyArrayWithIndex(function(_, a) {
-          return f4(a);
+          return f3(a);
         });
       };
       sequenceArray = /* @__PURE__ */ traverseArray(identity);
@@ -2824,6 +2835,25 @@ var vaultify = (() => {
     }
   });
 
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/FromIO.js
+  function fromIOK(F) {
+    return function(f3) {
+      return flow(f3, F.fromIO);
+    };
+  }
+  function tapIO(F, M) {
+    var chainFirstM = tap(M);
+    return function(self, f3) {
+      return chainFirstM(self, flow(f3, F.fromIO));
+    };
+  }
+  var init_FromIO = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/FromIO.js"() {
+      init_Chain();
+      init_function();
+    }
+  });
+
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/HKT/index.js
   var init_HKT = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/HKT/index.js"() {
@@ -2862,6 +2892,318 @@ var vaultify = (() => {
         concat: semigroupProduct.concat,
         empty: 1
       };
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Task.js
+  var Task_exports = {};
+  __export(Task_exports, {
+    ApT: () => ApT2,
+    ApplicativePar: () => ApplicativePar,
+    ApplicativeSeq: () => ApplicativeSeq,
+    ApplyPar: () => ApplyPar,
+    ApplySeq: () => ApplySeq,
+    Chain: () => Chain3,
+    Do: () => Do3,
+    FromIO: () => FromIO,
+    FromTask: () => FromTask,
+    Functor: () => Functor3,
+    Monad: () => Monad3,
+    MonadIO: () => MonadIO,
+    MonadTask: () => MonadTask,
+    Pointed: () => Pointed3,
+    URI: () => URI3,
+    ap: () => ap4,
+    apFirst: () => apFirst4,
+    apS: () => apS4,
+    apSecond: () => apSecond4,
+    as: () => as3,
+    asUnit: () => asUnit3,
+    bind: () => bind4,
+    bindTo: () => bindTo4,
+    chain: () => chain3,
+    chainFirst: () => chainFirst4,
+    chainFirstIOK: () => chainFirstIOK,
+    chainIOK: () => chainIOK,
+    delay: () => delay,
+    flap: () => flap4,
+    flatMap: () => flatMap3,
+    flatMapIO: () => flatMapIO2,
+    flatten: () => flatten3,
+    fromIO: () => fromIO,
+    fromIOK: () => fromIOK2,
+    fromTask: () => fromTask,
+    getMonoid: () => getMonoid5,
+    getRaceMonoid: () => getRaceMonoid,
+    getSemigroup: () => getSemigroup5,
+    let: () => let_4,
+    map: () => map3,
+    never: () => never,
+    of: () => of5,
+    sequenceArray: () => sequenceArray2,
+    sequenceSeqArray: () => sequenceSeqArray,
+    tap: () => tap3,
+    tapIO: () => tapIO2,
+    task: () => task,
+    taskSeq: () => taskSeq,
+    traverseArray: () => traverseArray2,
+    traverseArrayWithIndex: () => traverseArrayWithIndex2,
+    traverseReadonlyArrayWithIndex: () => traverseReadonlyArrayWithIndex2,
+    traverseReadonlyArrayWithIndexSeq: () => traverseReadonlyArrayWithIndexSeq,
+    traverseReadonlyNonEmptyArrayWithIndex: () => traverseReadonlyNonEmptyArrayWithIndex2,
+    traverseReadonlyNonEmptyArrayWithIndexSeq: () => traverseReadonlyNonEmptyArrayWithIndexSeq,
+    traverseSeqArray: () => traverseSeqArray,
+    traverseSeqArrayWithIndex: () => traverseSeqArrayWithIndex
+  });
+  function delay(millis) {
+    return function(ma) {
+      return function() {
+        return new Promise(function(resolve) {
+          setTimeout(function() {
+            Promise.resolve().then(ma).then(resolve);
+          }, millis);
+        });
+      };
+    };
+  }
+  function getRaceMonoid() {
+    return {
+      concat: function(x, y) {
+        return function() {
+          return Promise.race([Promise.resolve().then(x), Promise.resolve().then(y)]);
+        };
+      },
+      empty: never
+    };
+  }
+  var fromIO, _map3, _apPar, _apSeq, map3, ap4, of5, flatMap3, flatten3, URI3, Functor3, as3, asUnit3, flap4, Pointed3, ApplyPar, apFirst4, apSecond4, ApplicativePar, ApplySeq, ApplicativeSeq, Chain3, Monad3, MonadIO, fromTask, MonadTask, FromIO, _FlatMap, _FromIO, flatMapIO2, tap3, tapIO2, fromIOK2, chainIOK, chainFirstIOK, FromTask, never, Do3, bindTo4, let_4, bind4, apS4, ApT2, traverseReadonlyNonEmptyArrayWithIndex2, traverseReadonlyArrayWithIndex2, traverseReadonlyNonEmptyArrayWithIndexSeq, traverseReadonlyArrayWithIndexSeq, traverseArrayWithIndex2, traverseArray2, sequenceArray2, traverseSeqArrayWithIndex, traverseSeqArray, sequenceSeqArray, chain3, chainFirst4, task, taskSeq, getSemigroup5, getMonoid5;
+  var init_Task = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Task.js"() {
+      init_Applicative();
+      init_Apply();
+      init_Chain();
+      init_FromIO();
+      init_function();
+      init_Functor();
+      init_internal();
+      fromIO = function(ma) {
+        return function() {
+          return Promise.resolve().then(ma);
+        };
+      };
+      _map3 = function(fa, f3) {
+        return pipe(fa, map3(f3));
+      };
+      _apPar = function(fab, fa) {
+        return pipe(fab, ap4(fa));
+      };
+      _apSeq = function(fab, fa) {
+        return flatMap3(fab, function(f3) {
+          return pipe(fa, map3(f3));
+        });
+      };
+      map3 = function(f3) {
+        return function(fa) {
+          return function() {
+            return Promise.resolve().then(fa).then(f3);
+          };
+        };
+      };
+      ap4 = function(fa) {
+        return function(fab) {
+          return function() {
+            return Promise.all([Promise.resolve().then(fab), Promise.resolve().then(fa)]).then(function(_a) {
+              var f3 = _a[0], a = _a[1];
+              return f3(a);
+            });
+          };
+        };
+      };
+      of5 = function(a) {
+        return function() {
+          return Promise.resolve(a);
+        };
+      };
+      flatMap3 = /* @__PURE__ */ dual(2, function(ma, f3) {
+        return function() {
+          return Promise.resolve().then(ma).then(function(a) {
+            return f3(a)();
+          });
+        };
+      });
+      flatten3 = /* @__PURE__ */ flatMap3(identity);
+      URI3 = "Task";
+      Functor3 = {
+        URI: URI3,
+        map: _map3
+      };
+      as3 = dual(2, as(Functor3));
+      asUnit3 = asUnit(Functor3);
+      flap4 = /* @__PURE__ */ flap(Functor3);
+      Pointed3 = {
+        URI: URI3,
+        of: of5
+      };
+      ApplyPar = {
+        URI: URI3,
+        map: _map3,
+        ap: _apPar
+      };
+      apFirst4 = /* @__PURE__ */ apFirst(ApplyPar);
+      apSecond4 = /* @__PURE__ */ apSecond(ApplyPar);
+      ApplicativePar = {
+        URI: URI3,
+        map: _map3,
+        ap: _apPar,
+        of: of5
+      };
+      ApplySeq = {
+        URI: URI3,
+        map: _map3,
+        ap: _apSeq
+      };
+      ApplicativeSeq = {
+        URI: URI3,
+        map: _map3,
+        ap: _apSeq,
+        of: of5
+      };
+      Chain3 = {
+        URI: URI3,
+        map: _map3,
+        ap: _apPar,
+        chain: flatMap3
+      };
+      Monad3 = {
+        URI: URI3,
+        map: _map3,
+        of: of5,
+        ap: _apPar,
+        chain: flatMap3
+      };
+      MonadIO = {
+        URI: URI3,
+        map: _map3,
+        of: of5,
+        ap: _apPar,
+        chain: flatMap3,
+        fromIO
+      };
+      fromTask = identity;
+      MonadTask = {
+        URI: URI3,
+        map: _map3,
+        of: of5,
+        ap: _apPar,
+        chain: flatMap3,
+        fromIO,
+        fromTask
+      };
+      FromIO = {
+        URI: URI3,
+        fromIO
+      };
+      _FlatMap = {
+        flatMap: flatMap3
+      };
+      _FromIO = {
+        fromIO: FromIO.fromIO
+      };
+      flatMapIO2 = flatMapIO(_FromIO, _FlatMap);
+      tap3 = /* @__PURE__ */ dual(2, tap(Chain3));
+      tapIO2 = /* @__PURE__ */ dual(2, tapIO(FromIO, Chain3));
+      fromIOK2 = /* @__PURE__ */ fromIOK(FromIO);
+      chainIOK = flatMapIO2;
+      chainFirstIOK = tapIO2;
+      FromTask = {
+        URI: URI3,
+        fromIO,
+        fromTask
+      };
+      never = function() {
+        return new Promise(function(_) {
+          return void 0;
+        });
+      };
+      Do3 = /* @__PURE__ */ of5(emptyRecord);
+      bindTo4 = /* @__PURE__ */ bindTo(Functor3);
+      let_4 = /* @__PURE__ */ let_(Functor3);
+      bind4 = /* @__PURE__ */ bind(Chain3);
+      apS4 = /* @__PURE__ */ apS(ApplyPar);
+      ApT2 = /* @__PURE__ */ of5(emptyReadonlyArray);
+      traverseReadonlyNonEmptyArrayWithIndex2 = function(f3) {
+        return function(as4) {
+          return function() {
+            return Promise.all(as4.map(function(a, i) {
+              return Promise.resolve().then(function() {
+                return f3(i, a)();
+              });
+            }));
+          };
+        };
+      };
+      traverseReadonlyArrayWithIndex2 = function(f3) {
+        var g = traverseReadonlyNonEmptyArrayWithIndex2(f3);
+        return function(as4) {
+          return isNonEmpty(as4) ? g(as4) : ApT2;
+        };
+      };
+      traverseReadonlyNonEmptyArrayWithIndexSeq = function(f3) {
+        return function(as4) {
+          return function() {
+            return tail(as4).reduce(function(acc, a, i) {
+              return acc.then(function(bs) {
+                return Promise.resolve().then(f3(i + 1, a)).then(function(b) {
+                  bs.push(b);
+                  return bs;
+                });
+              });
+            }, Promise.resolve().then(f3(0, head(as4))).then(singleton));
+          };
+        };
+      };
+      traverseReadonlyArrayWithIndexSeq = function(f3) {
+        var g = traverseReadonlyNonEmptyArrayWithIndexSeq(f3);
+        return function(as4) {
+          return isNonEmpty(as4) ? g(as4) : ApT2;
+        };
+      };
+      traverseArrayWithIndex2 = traverseReadonlyArrayWithIndex2;
+      traverseArray2 = function(f3) {
+        return traverseReadonlyArrayWithIndex2(function(_, a) {
+          return f3(a);
+        });
+      };
+      sequenceArray2 = /* @__PURE__ */ traverseArray2(identity);
+      traverseSeqArrayWithIndex = traverseReadonlyArrayWithIndexSeq;
+      traverseSeqArray = function(f3) {
+        return traverseReadonlyArrayWithIndexSeq(function(_, a) {
+          return f3(a);
+        });
+      };
+      sequenceSeqArray = /* @__PURE__ */ traverseSeqArray(identity);
+      chain3 = flatMap3;
+      chainFirst4 = tap3;
+      task = {
+        URI: URI3,
+        map: _map3,
+        of: of5,
+        ap: _apPar,
+        chain: flatMap3,
+        fromIO,
+        fromTask
+      };
+      taskSeq = {
+        URI: URI3,
+        map: _map3,
+        of: of5,
+        ap: _apSeq,
+        chain: flatMap3,
+        fromIO,
+        fromTask
+      };
+      getSemigroup5 = /* @__PURE__ */ getApplySemigroup(ApplySeq);
+      getMonoid5 = /* @__PURE__ */ getApplicativeMonoid(ApplicativeSeq);
     }
   });
 
@@ -2914,12 +3256,12 @@ var vaultify = (() => {
       return collect(Ord2)(O);
     }
     var keysO = keys_(O);
-    return function(f4) {
+    return function(f3) {
       return function(r) {
         var out = [];
         for (var _i = 0, _a = keysO(r); _i < _a.length; _i++) {
           var key = _a[_i];
-          out.push(f4(key, r[key]));
+          out.push(f3(key, r[key]));
         }
         return out;
       };
@@ -2961,6 +3303,7 @@ var vaultify = (() => {
       init_Array();
       init_HKT();
       init_Option();
+      init_Task();
     }
   });
 
@@ -3014,19 +3357,19 @@ var vaultify = (() => {
         };
       };
       exports.getBooleanAlgebra = getBooleanAlgebra;
-      var getSemigroup5 = function(S) {
+      var getSemigroup6 = function(S) {
         return function() {
           return {
-            concat: function(f4, g) {
+            concat: function(f3, g) {
               return function(a) {
-                return S.concat(f4(a), g(a));
+                return S.concat(f3(a), g(a));
               };
             }
           };
         };
       };
-      exports.getSemigroup = getSemigroup5;
-      var getMonoid6 = function(M) {
+      exports.getSemigroup = getSemigroup6;
+      var getMonoid7 = function(M) {
         var getSemigroupM = (0, exports.getSemigroup)(M);
         return function() {
           return {
@@ -3037,20 +3380,20 @@ var vaultify = (() => {
           };
         };
       };
-      exports.getMonoid = getMonoid6;
+      exports.getMonoid = getMonoid7;
       var getSemiring = function(S) {
         return {
-          add: function(f4, g) {
+          add: function(f3, g) {
             return function(x) {
-              return S.add(f4(x), g(x));
+              return S.add(f3(x), g(x));
             };
           },
           zero: function() {
             return S.zero;
           },
-          mul: function(f4, g) {
+          mul: function(f3, g) {
             return function(x) {
-              return S.mul(f4(x), g(x));
+              return S.mul(f3(x), g(x));
             };
           },
           one: function() {
@@ -3066,17 +3409,17 @@ var vaultify = (() => {
           mul: S.mul,
           one: S.one,
           zero: S.zero,
-          sub: function(f4, g) {
+          sub: function(f3, g) {
             return function(x) {
-              return R.sub(f4(x), g(x));
+              return R.sub(f3(x), g(x));
             };
           }
         };
       };
       exports.getRing = getRing;
       var apply2 = function(a) {
-        return function(f4) {
-          return f4(a);
+        return function(f3) {
+          return f3(a);
         };
       };
       exports.apply = apply2;
@@ -3085,28 +3428,28 @@ var vaultify = (() => {
       }
       exports.identity = identity2;
       exports.unsafeCoerce = identity2;
-      function constant5(a) {
+      function constant4(a) {
         return function() {
           return a;
         };
       }
-      exports.constant = constant5;
-      exports.constTrue = constant5(true);
-      exports.constFalse = constant5(false);
-      exports.constNull = constant5(null);
-      exports.constUndefined = constant5(void 0);
+      exports.constant = constant4;
+      exports.constTrue = constant4(true);
+      exports.constFalse = constant4(false);
+      exports.constNull = constant4(null);
+      exports.constUndefined = constant4(void 0);
       exports.constVoid = exports.constUndefined;
-      function flip3(f4) {
+      function flip3(f3) {
         return function() {
           var args = [];
           for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
           }
           if (args.length > 1) {
-            return f4(args[1], args[0]);
+            return f3(args[1], args[0]);
           }
           return function(a) {
-            return f4(a)(args[0]);
+            return f3(a)(args[0]);
           };
         };
       }
@@ -3171,19 +3514,19 @@ var vaultify = (() => {
         throw new Error("Called `absurd` function which should be uncallable");
       }
       exports.absurd = absurd;
-      function tupled3(f4) {
+      function tupled3(f3) {
         return function(a) {
-          return f4.apply(void 0, a);
+          return f3.apply(void 0, a);
         };
       }
       exports.tupled = tupled3;
-      function untupled(f4) {
+      function untupled(f3) {
         return function() {
           var a = [];
           for (var _i = 0; _i < arguments.length; _i++) {
             a[_i] = arguments[_i];
           }
-          return f4(a);
+          return f3(a);
         };
       }
       exports.untupled = untupled;
@@ -3256,10 +3599,18 @@ var vaultify = (() => {
   });
 
   // shared/util.tsx
-  var sleep;
+  var SpotifyLoc, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
+      ((SpotifyLoc3) => {
+        SpotifyLoc3.before = (uri) => ({
+          before: uri
+        });
+        SpotifyLoc3.after = (uri) => ({
+          after: uri
+        });
+      })(SpotifyLoc || (SpotifyLoc = {}));
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
   });
@@ -3315,91 +3666,91 @@ var vaultify = (() => {
         return [a];
       };
       exports.singleton = singleton3;
-      var isNonEmpty6 = function(as3) {
-        return as3.length > 0;
+      var isNonEmpty6 = function(as4) {
+        return as4.length > 0;
       };
       exports.isNonEmpty = isNonEmpty6;
-      var head6 = function(as3) {
-        return as3[0];
+      var head6 = function(as4) {
+        return as4[0];
       };
       exports.head = head6;
-      var tail5 = function(as3) {
-        return as3.slice(1);
+      var tail5 = function(as4) {
+        return as4.slice(1);
       };
       exports.tail = tail5;
       exports.emptyReadonlyArray = [];
       exports.emptyRecord = {};
       exports.has = Object.prototype.hasOwnProperty;
-      var fromReadonlyNonEmptyArray3 = function(as3) {
-        return __spreadArray6([as3[0]], as3.slice(1), true);
+      var fromReadonlyNonEmptyArray3 = function(as4) {
+        return __spreadArray6([as4[0]], as4.slice(1), true);
       };
       exports.fromReadonlyNonEmptyArray = fromReadonlyNonEmptyArray3;
       var liftNullable = function(F) {
-        return function(f4, onNullable) {
+        return function(f3, onNullable) {
           return function() {
             var a = [];
             for (var _i = 0; _i < arguments.length; _i++) {
               a[_i] = arguments[_i];
             }
-            var o = f4.apply(void 0, a);
+            var o = f3.apply(void 0, a);
             return F.fromEither(o == null ? (0, exports.left)(onNullable.apply(void 0, a)) : (0, exports.right)(o));
           };
         };
       };
       exports.liftNullable = liftNullable;
       var liftOption = function(F) {
-        return function(f4, onNone) {
+        return function(f3, onNone) {
           return function() {
             var a = [];
             for (var _i = 0; _i < arguments.length; _i++) {
               a[_i] = arguments[_i];
             }
-            var o = f4.apply(void 0, a);
+            var o = f3.apply(void 0, a);
             return F.fromEither((0, exports.isNone)(o) ? (0, exports.left)(onNone.apply(void 0, a)) : (0, exports.right)(o.value));
           };
         };
       };
       exports.liftOption = liftOption;
       var flatMapNullable = function(F, M) {
-        return (0, function_1.dual)(3, function(self, f4, onNullable) {
-          return M.flatMap(self, (0, exports.liftNullable)(F)(f4, onNullable));
+        return (0, function_1.dual)(3, function(self, f3, onNullable) {
+          return M.flatMap(self, (0, exports.liftNullable)(F)(f3, onNullable));
         });
       };
       exports.flatMapNullable = flatMapNullable;
       var flatMapOption = function(F, M) {
-        return (0, function_1.dual)(3, function(self, f4, onNone) {
-          return M.flatMap(self, (0, exports.liftOption)(F)(f4, onNone));
+        return (0, function_1.dual)(3, function(self, f3, onNone) {
+          return M.flatMap(self, (0, exports.liftOption)(F)(f3, onNone));
         });
       };
       exports.flatMapOption = flatMapOption;
       var flatMapEither = function(F, M) {
-        return (0, function_1.dual)(2, function(self, f4) {
+        return (0, function_1.dual)(2, function(self, f3) {
           return M.flatMap(self, function(a) {
-            return F.fromEither(f4(a));
+            return F.fromEither(f3(a));
           });
         });
       };
       exports.flatMapEither = flatMapEither;
-      var flatMapIO = function(F, M) {
-        return (0, function_1.dual)(2, function(self, f4) {
+      var flatMapIO3 = function(F, M) {
+        return (0, function_1.dual)(2, function(self, f3) {
           return M.flatMap(self, function(a) {
-            return F.fromIO(f4(a));
+            return F.fromIO(f3(a));
           });
         });
       };
-      exports.flatMapIO = flatMapIO;
+      exports.flatMapIO = flatMapIO3;
       var flatMapTask = function(F, M) {
-        return (0, function_1.dual)(2, function(self, f4) {
+        return (0, function_1.dual)(2, function(self, f3) {
           return M.flatMap(self, function(a) {
-            return F.fromTask(f4(a));
+            return F.fromTask(f3(a));
           });
         });
       };
       exports.flatMapTask = flatMapTask;
       var flatMapReader = function(F, M) {
-        return (0, function_1.dual)(2, function(self, f4) {
+        return (0, function_1.dual)(2, function(self, f3) {
           return M.flatMap(self, function(a) {
-            return F.fromReader(f4(a));
+            return F.fromReader(f3(a));
           });
         });
       };
@@ -3441,11 +3792,11 @@ var vaultify = (() => {
         };
       };
       exports.filterSecond = filterSecond;
-      var endo = function(f4) {
+      var endo = function(f3) {
         return function(M) {
           return {
             concat: function(first3, second) {
-              return M.concat(f4(first3), f4(second));
+              return M.concat(f3(first3), f3(second));
             }
           };
         };
@@ -3453,8 +3804,8 @@ var vaultify = (() => {
       exports.endo = endo;
       var concatAll5 = function(M) {
         return function(startWith) {
-          return function(as3) {
-            return as3.reduce(function(a, acc) {
+          return function(as4) {
+            return as4.reduce(function(a, acc) {
               return M.concat(a, acc);
             }, startWith);
           };
@@ -3502,13 +3853,13 @@ var vaultify = (() => {
         });
       };
       exports.tuple = tuple2;
-      var contramap_ = function(fa, f4) {
-        return (0, function_1.pipe)(fa, (0, exports.contramap)(f4));
+      var contramap_ = function(fa, f3) {
+        return (0, function_1.pipe)(fa, (0, exports.contramap)(f3));
       };
-      var contramap = function(f4) {
+      var contramap = function(f3) {
         return function(fa) {
           return (0, exports.fromEquals)(function(x, y) {
-            return fa.equals(f4(x), f4(y));
+            return fa.equals(f3(x), f3(y));
           });
         };
       };
@@ -3524,7 +3875,7 @@ var vaultify = (() => {
           return true;
         }
       };
-      var getSemigroup5 = function() {
+      var getSemigroup6 = function() {
         return {
           concat: function(x, y) {
             return (0, exports.fromEquals)(function(a, b) {
@@ -3533,14 +3884,14 @@ var vaultify = (() => {
           }
         };
       };
-      exports.getSemigroup = getSemigroup5;
-      var getMonoid6 = function() {
+      exports.getSemigroup = getSemigroup6;
+      var getMonoid7 = function() {
         return {
           concat: (0, exports.getSemigroup)().concat,
           empty: empty4
         };
       };
-      exports.getMonoid = getMonoid6;
+      exports.getMonoid = getMonoid7;
       exports.Contravariant = {
         URI: exports.URI,
         contramap: contramap_
@@ -3606,19 +3957,19 @@ var vaultify = (() => {
         });
       };
       exports.reverse = reverse4;
-      var contramap_ = function(fa, f4) {
-        return (0, function_1.pipe)(fa, (0, exports.contramap)(f4));
+      var contramap_ = function(fa, f3) {
+        return (0, function_1.pipe)(fa, (0, exports.contramap)(f3));
       };
-      var contramap = function(f4) {
+      var contramap = function(f3) {
         return function(fa) {
           return (0, exports.fromCompare)(function(first3, second) {
-            return fa.compare(f4(first3), f4(second));
+            return fa.compare(f3(first3), f3(second));
           });
         };
       };
       exports.contramap = contramap;
       exports.URI = "Ord";
-      var getSemigroup5 = function() {
+      var getSemigroup6 = function() {
         return {
           concat: function(first3, second) {
             return (0, exports.fromCompare)(function(a, b) {
@@ -3628,8 +3979,8 @@ var vaultify = (() => {
           }
         };
       };
-      exports.getSemigroup = getSemigroup5;
-      var getMonoid6 = function() {
+      exports.getSemigroup = getSemigroup6;
+      var getMonoid7 = function() {
         return {
           concat: (0, exports.getSemigroup)().concat,
           empty: (0, exports.fromCompare)(function() {
@@ -3637,7 +3988,7 @@ var vaultify = (() => {
           })
         };
       };
-      exports.getMonoid = getMonoid6;
+      exports.getMonoid = getMonoid7;
       exports.Contravariant = {
         URI: exports.URI,
         contramap: contramap_
@@ -3786,14 +4137,14 @@ var vaultify = (() => {
         };
       };
       exports.max = max3;
-      var constant5 = function(a) {
+      var constant4 = function(a) {
         return {
           concat: function() {
             return a;
           }
         };
       };
-      exports.constant = constant5;
+      exports.constant = constant4;
       exports.reverse = M.reverse;
       var struct2 = function(semigroups) {
         return {
@@ -3863,8 +4214,8 @@ var vaultify = (() => {
       exports.getIntercalateSemigroup = exports.intercalate;
       function fold2(S) {
         var concatAllS = (0, exports.concatAll)(S);
-        return function(startWith, as3) {
-          return as3 === void 0 ? concatAllS(startWith) : concatAllS(startWith)(as3);
+        return function(startWith, as4) {
+          return as4 === void 0 ? concatAllS(startWith) : concatAllS(startWith)(as4);
         };
       }
       exports.fold = fold2;
@@ -3898,12 +4249,12 @@ var vaultify = (() => {
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function9, import_Semigroup2, URI3, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, guard4, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var import_function12, import_Semigroup2, URI4, map5, Functor4, of6, ap5, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
       init_Option();
       init_Array();
-      import_function9 = __toESM(require_function());
+      import_function12 = __toESM(require_function());
       init_Predicate();
       init_Endomorphism();
       init_Monoid();
@@ -3911,97 +4262,90 @@ var vaultify = (() => {
       init_Functor();
       init_Apply();
       init_Chain();
-      URI3 = "Function";
-      map4 = (f4) => (g) => (0, import_function9.flow)(g, f4);
-      Functor3 = {
-        URI: URI3,
-        map: (f4, g) => map4(g)(f4)
+      URI4 = "Function";
+      map5 = (f3) => (g) => (0, import_function12.flow)(g, f3);
+      Functor4 = {
+        URI: URI4,
+        map: (f3, g) => map5(g)(f3)
       };
-      of5 = import_function9.constant;
-      ap4 = (f4) => (g) => (x) => g(x)(f4(x));
+      of6 = import_function12.constant;
+      ap5 = (f3) => (g) => (x) => g(x)(f3(x));
       Applicative3 = {
-        ...Functor3,
-        of: of5,
-        ap: (f4, g) => ap4(g)(f4)
+        ...Functor4,
+        of: of6,
+        ap: (f3, g) => ap5(g)(f3)
       };
-      apFirst4 = apFirst(Applicative3);
-      apSecond4 = apSecond(Applicative3);
-      chain3 = (f4) => (g) => (x) => f4(g(x))(x);
-      Monad3 = {
+      apFirst5 = apFirst(Applicative3);
+      apSecond5 = apSecond(Applicative3);
+      chain4 = (f3) => (g) => (x) => f3(g(x))(x);
+      Monad4 = {
         ...Applicative3,
-        chain: (f4, g) => chain3(g)(f4)
+        chain: (f3, g) => chain4(g)(f3)
       };
-      Do3 = of5({});
-      bindTo4 = bindTo(Functor3);
-      bind4 = bind(Monad3);
-      apS4 = apS(Applicative3);
-      let_4 = let_(Functor3);
-      unary = import_function9.tupled;
-      guard4 = (branches) => (fallback) => (input) => (0, import_function9.pipe)(branches, map(([f4, g]) => (0, import_function9.flow)(fromPredicate2(f4), map2(g))), concatAll4((0, import_function9.getMonoid)(getMonoid3((0, import_Semigroup2.first)()))()), (0, import_function9.apply)(input), getOrElse(() => fallback(input)));
-      unless = (f4) => (onFalse) => (x) => f4(x) ? x : onFalse(x);
-      when = (0, import_function9.flow)(not, unless);
+      Do4 = of6({});
+      bindTo5 = bindTo(Functor4);
+      bind5 = bind(Monad4);
+      apS5 = apS(Applicative3);
+      let_5 = let_(Functor4);
+      unary = import_function12.tupled;
+      guard4 = (branches) => (fallback) => (input) => (0, import_function12.pipe)(branches, map(([f3, g]) => (0, import_function12.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function12.getMonoid)(getMonoid3((0, import_Semigroup2.first)()))()), (0, import_function12.apply)(input), getOrElse(() => fallback(input)));
+      unless = (f3) => (onFalse) => (x) => f3(x) ? x : onFalse(x);
+      when = (0, import_function12.flow)(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function9.flip)(invoke)([]);
-      curry2T = (f4) => (a) => (b) => f4([a, b]);
-      curry2 = (0, import_function9.flow)(unary, curry2T);
-      curry3T = (f4) => (a) => (b) => (c) => f4([a, b, c]);
-      curry3 = (0, import_function9.flow)(unary, curry3T);
-      curry4T = (f4) => (a) => (b) => (c) => (d) => f4([a, b, c, d]);
-      curry4 = (0, import_function9.flow)(unary, curry4T);
-      curry5T = (f4) => (a) => (b) => (c) => (d) => (e) => f4([a, b, c, d, e]);
-      curry5 = (0, import_function9.flow)(unary, curry5T);
+      invokeNullary = (0, import_function12.flip)(invoke)([]);
+      curry2T = (f3) => (a) => (b) => f3([a, b]);
+      curry2 = (0, import_function12.flow)(unary, curry2T);
+      curry3T = (f3) => (a) => (b) => (c) => f3([a, b, c]);
+      curry3 = (0, import_function12.flow)(unary, curry3T);
+      curry4T = (f3) => (a) => (b) => (c) => (d) => f3([a, b, c, d]);
+      curry4 = (0, import_function12.flow)(unary, curry4T);
+      curry5T = (f3) => (a) => (b) => (c) => (d) => (e) => f3([a, b, c, d, e]);
+      curry5 = (0, import_function12.flow)(unary, curry5T);
       applyEvery = concatAll4(getMonoid4());
     }
   });
 
   // shared/fp.tsx
-  var import_function10, guard22, guard32, guard42, pMchain, is, chunckify;
+  var import_function13, guard22, guard42, pMchain, is, chunckify;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function10 = __toESM(require_function(), 1);
+      import_function13 = __toESM(require_function(), 1);
       init_Function();
       guard22 = (branches) => guard4(branches);
-      guard32 = (branches) => guard4(
-        branches
-      );
       guard42 = (branches) => guard4(
         branches
       );
-      pMchain = (f4) => async (fa) => f4(await fa);
+      pMchain = (f3) => async (fa) => f3(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      chunckify = (n) => (g) => (0, import_function10.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
+      chunckify = (n) => (g) => (0, import_function13.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
     }
   });
 
   // shared/api.tsx
-  var fetchArtistsSpotAPI, fetchTracksSpotAPI, fetchPlaylistAPI, createFolder, likePlaylist, fetchLikedPlaylistsSP, createPlaylist;
+  var fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, likePlatPlaylist, createSPPlaylistFromTracks, fetchPlatPlaylists;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_fp();
       init_util();
-      fetchArtistsSpotAPI = chunckify(50)(
-        async (ids) => (await Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`
-        )).artists
+      fetchWebArtistsSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );
-      fetchTracksSpotAPI = chunckify(50)(
-        async (ids) => (await Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-        )).tracks
+      fetchWebTracksSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
       );
-      fetchPlaylistAPI = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
-      createFolder = (name) => Spicetify.Platform.RootlistAPI.createFolder(name);
-      likePlaylist = (uri) => Spicetify.Platform.RootlistAPI.add([uri]);
-      fetchLikedPlaylistsSP = () => Spicetify.CosmosAsync.get("sp://core-playlist/v1/rootlist");
-      createPlaylist = (name, uris) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
+      fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
+      createPlatFolder = (name, location = {}) => Spicetify.Platform.RootlistAPI.createFolder(name, location);
+      likePlatPlaylist = (uri) => Spicetify.Platform.RootlistAPI.add([uri]);
+      createSPPlaylistFromTracks = (name, tracks) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
         operation: "create",
         playlist: true,
-        uris,
+        uris: tracks,
         name
       });
+      fetchPlatPlaylists = () => Spicetify.Platform.RootlistAPI.getContents();
     }
   });
 
@@ -4020,11 +4364,11 @@ var vaultify = (() => {
   });
 
   // shared/settings.tsx
-  var import_function11, import_react, import_react_dom, SettingsSection;
+  var import_function14, import_react, import_react_dom, SettingsSection;
   var init_settings = __esm({
     "shared/settings.tsx"() {
       "use strict";
-      import_function11 = __toESM(require_function(), 1);
+      import_function14 = __toESM(require_function(), 1);
       import_react = __toESM(require_react(), 1);
       import_react_dom = __toESM(require_react_dom(), 1);
       init_fp();
@@ -4047,12 +4391,10 @@ var vaultify = (() => {
             await sleep(100);
           if (this.stopHistoryListener)
             this.stopHistoryListener();
-          this.stopHistoryListener = Spicetify.Platform.History.listen(
-            ({ pathname = "" }) => {
-              if (pathname === "/preferences")
-                this.render();
-            }
-          );
+          this.stopHistoryListener = Spicetify.Platform.History.listen(({ pathname = "" }) => {
+            if (pathname === "/preferences")
+              this.render();
+          });
           if (Spicetify.Platform.History.location.pathname === "/preferences")
             await this.render();
         };
@@ -4072,14 +4414,10 @@ var vaultify = (() => {
               return;
             await sleep(100);
           }
-          const allSettingsContainer = document.querySelector(
-            ".main-view-container__scroll-node-child main div"
-          );
+          const allSettingsContainer = document.querySelector(".main-view-container__scroll-node-child main div");
           if (!allSettingsContainer)
             return console.error("[settings] container not found");
-          let pluginSettingsContainer = Array.from(
-            allSettingsContainer.children
-          ).find(({ id }) => id === this.sectionId);
+          let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.sectionId);
           if (!pluginSettingsContainer) {
             pluginSettingsContainer = document.createElement("div");
             pluginSettingsContainer.id = this.sectionId;
@@ -4088,7 +4426,7 @@ var vaultify = (() => {
           }
           import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
         };
-        addButton = (nameId, description, text, onClick = import_function11.constVoid, events = {}) => {
+        addButton = (nameId, description, text, onClick = import_function14.constVoid, events = {}) => {
           const id = this.getId(nameId);
           events.onClick = onClick;
           this.sectionFields[nameId] = {
@@ -4100,7 +4438,7 @@ var vaultify = (() => {
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue, onChange = import_function11.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue, onChange = import_function14.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4112,7 +4450,7 @@ var vaultify = (() => {
           };
           return this;
         };
-        addInput = (nameId, description, defaultValue, onChange = import_function11.constVoid, inputType = "text", events = {}) => {
+        addInput = (nameId, description, defaultValue, onChange = import_function14.constVoid, inputType = "text", events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4125,7 +4463,7 @@ var vaultify = (() => {
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function11.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = 0, onChange = import_function14.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4150,9 +4488,7 @@ var vaultify = (() => {
         };
         getId = (nameId) => `extensions:${this.sectionId}:${nameId}`;
         useStateFor = (id) => {
-          const [value, setValueState] = (0, import_react.useState)(
-            _SettingsSection.getFieldValue(id)
-          );
+          const [value, setValueState] = (0, import_react.useState)(_SettingsSection.getFieldValue(id));
           return [
             value,
             (newValue) => {
@@ -4182,33 +4518,14 @@ var vaultify = (() => {
         };
         Field = ({ field }) => {
           const isType2 = is("type");
-          return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(
-            this.SettingDescription,
-            {
-              id: field.id,
-              description: field.description
-            }
-          ), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
-            [
-              isType2("input" /* INPUT */),
-              this.SettingInputField
-            ],
+          return /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-row" }, /* @__PURE__ */ import_react.default.createElement(this.SettingDescription, { id: field.id, description: field.description }), /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-secondColumn" }, guard42([
+            [isType2("input" /* INPUT */), this.SettingInputField],
             [isType2("button" /* BUTTON */), this.SettingButtonField],
             [isType2("toggle" /* TOGGLE */), this.SettingToggleField],
             [isType2("dropdown" /* DROPDOWN */), this.SettingDropdownField]
           ])(this.SettingHidden)(field)));
         };
-        SettingDescription = ({
-          id,
-          description
-        }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement(
-          "label",
-          {
-            className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
-            htmlFor: id
-          },
-          description
-        ));
+        SettingDescription = ({ id, description }) => /* @__PURE__ */ import_react.default.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ import_react.default.createElement("label", { className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type", htmlFor: id }, description));
         SettingButtonField = (field) => /* @__PURE__ */ import_react.default.createElement("span", { className: "" }, /* @__PURE__ */ import_react.default.createElement(
           "button",
           {
@@ -4267,14 +4584,7 @@ var vaultify = (() => {
                 field.events.onChange?.(e);
               }
             },
-            field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement(
-              "option",
-              {
-                selected: i === _SettingsSection.getFieldValue(field.id),
-                value: i + 1
-              },
-              option2
-            ))
+            field.options.map((option2, i) => /* @__PURE__ */ import_react.default.createElement("option", { selected: i === _SettingsSection.getFieldValue(field.id), value: i + 1 }, option2))
           );
         };
         SettingHidden = () => /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null);
@@ -4317,15 +4627,14 @@ var vaultify = (() => {
     default: () => app_default,
     restore: () => restore
   });
-  var import_function12, app_default, isType, extractLikedPlaylistTreeRecur, restorePlaylistseRecur, backup, restore;
+  var import_function15, app_default, isType, extractLikedPlaylistTreeRecur, restorePlaylistseRecur, backup, restore;
   var init_app = __esm({
     "extensions/vaultify/app.tsx"() {
       "use strict";
       init_es6();
       init_Array();
-      init_Option();
       init_Record();
-      import_function12 = __toESM(require_function(), 1);
+      import_function15 = __toESM(require_function(), 1);
       init_api();
       init_fp();
       app_default = {};
@@ -4333,68 +4642,33 @@ var vaultify = (() => {
       extractLikedPlaylistTreeRecur = (leaf) => guard22([
         [
           isType("playlist"),
-          async (playlist) => playlist.ownedBySelf ? {
-            type: "playlist personal",
-            name: playlist.name,
-            uris: await (0, import_function12.pipe)(
-              playlist.link,
-              fetchPlaylistAPI,
-              async (x) => (0, import_function12.pipe)(
-                await x,
-                map((0, import_function12.flow)(lookup4("uri"))),
-                Array_exports.sequence(Option_exports.Applicative),
-                getOrElse(() => [])
-              )
-            )
-          } : {
-            type: "playlist liked",
-            name: playlist.name,
-            uri: playlist.link
-          }
+          async (playlist) => ({
+            [playlist.name]: playlist.isOwnedBySelf ? await (0, import_function15.pipe)(playlist.uri, fetchPlatPlaylistContents, pMchain(Array_exports.map((x) => x.uri))) : playlist.uri
+          })
         ],
         [
           isType("folder"),
           async (folder) => ({
-            type: folder.type,
-            name: folder.name,
-            uris: folder.rows ? await (0, import_function12.pipe)(
-              folder.rows,
-              map(extractLikedPlaylistTreeRecur),
-              (x) => Promise.all(x)
-            ) : []
+            [folder.name]: await (0, import_function15.pipe)(folder.items, map(extractLikedPlaylistTreeRecur), (x) => Promise.all(x))
           })
         ]
-      ])((0, import_function12.constant)(Promise.resolve({})))(leaf);
+      ])(Task_exports.of({}))(leaf);
       restorePlaylistseRecur = async (leaf) => {
-        const isType2 = is("type");
-        guard32([
-          [
-            isType2("playlist personal"),
-            (playlist) => createPlaylist(playlist.name, playlist.uris)
-          ],
-          [isType2("playlist liked"), ({ uri }) => likePlaylist(uri)],
-          [
-            isType2("folder"),
-            (folder) => (0, import_function12.pipe)(
-              createFolder(folder.name),
-              (0, import_function12.constant)(folder.uris),
-              map(restorePlaylistseRecur)
-            )
-          ]
-        ])((0, import_function12.constant)(void 0))(leaf);
+        Object.keys(leaf).forEach((name) => {
+          const subleaf = leaf[name];
+          if (!Array.isArray(subleaf))
+            return void likePlatPlaylist(subleaf);
+          if (subleaf.length && Spicetify.URI.isTrack(subleaf[0]))
+            return void createSPPlaylistFromTracks(name, subleaf);
+          createPlatFolder(name);
+          subleaf.forEach(restorePlaylistseRecur);
+        });
       };
       backup = async () => {
-        const playlistData = await (0, import_function12.pipe)(
-          await fetchLikedPlaylistsSP(),
-          extractLikedPlaylistTreeRecur
-        );
+        const playlistData = await (0, import_function15.pipe)(await fetchPlatPlaylists(), extractLikedPlaylistTreeRecur);
         const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)/;
-        const appData = toUnfoldable(Array_exports)(localStorage).filter(
-          ([key]) => allowedAppDataRegex.test(key)
-        );
-        await Spicetify.Platform.ClipboardAPI.copy(
-          JSON.stringify({ playlistData, appData })
-        );
+        const appData = toUnfoldable(Array_exports)(localStorage).filter(([key]) => allowedAppDataRegex.test(key));
+        await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({ playlistData, appData }));
         Spicetify.showNotification("Backed up Playlists and Settings");
       };
       restore = (mode) => async () => {
@@ -4404,7 +4678,7 @@ var vaultify = (() => {
           Spicetify.showNotification("Restored Playlists");
         }
         if (mode === "appData") {
-          map((0, import_function12.tupled)(Spicetify.LocalStorage.set))(vault.appData);
+          map((0, import_function15.tupled)(Spicetify.LocalStorage.set))(vault.appData);
           Spicetify.showNotification("Restored Settings");
         }
       };
@@ -4415,7 +4689,7 @@ var vaultify = (() => {
   // extensions/vaultify/entry.tsx
   init_es6();
   init_Record();
-  var import_function13 = __toESM(require_function(), 1);
+  var import_function16 = __toESM(require_function(), 1);
   init_util();
   (async () => {
     const mustLoad = [
@@ -4428,8 +4702,8 @@ var vaultify = (() => {
     ];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function13.flow)(
-        (0, import_function13.flip)(lookup4)(
+      (0, import_function16.flow)(
+        (0, import_function16.flip)(lookup4)(
           Spicetify
         ),
         Option_exports.isNone

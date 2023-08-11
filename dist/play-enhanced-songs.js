@@ -111,7 +111,7 @@ var play;
       }
     }
   }
-  var __spreadArray, constNull, constUndefined, dual;
+  var __spreadArray, constFalse, constNull, constUndefined, dual;
   var init_function = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/function.js"() {
       __spreadArray = function(to, from, pack) {
@@ -125,6 +125,7 @@ var play;
           }
         return to.concat(ar || Array.prototype.slice.call(from));
       };
+      constFalse = /* @__PURE__ */ constant(false);
       constNull = /* @__PURE__ */ constant(null);
       constUndefined = /* @__PURE__ */ constant(void 0);
       dual = function(arity, body) {
@@ -436,11 +437,28 @@ var play;
     }
   });
 
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Magma.js
+  var concatAll;
+  var init_Magma = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Magma.js"() {
+      concatAll = function(M) {
+        return function(startWith) {
+          return function(as3) {
+            return as3.reduce(function(a, acc) {
+              return M.concat(a, acc);
+            }, startWith);
+          };
+        };
+      };
+    }
+  });
+
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Semigroup.js
-  var constant2, first, last, semigroupVoid;
+  var constant2, first, last, concatAll2, semigroupVoid, semigroupAll, semigroupAny, semigroupString, semigroupSum, semigroupProduct;
   var init_Semigroup = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Semigroup.js"() {
       init_function();
+      init_Magma();
       constant2 = function(a) {
         return {
           concat: function() {
@@ -456,12 +474,38 @@ var play;
           return y;
         } };
       };
+      concatAll2 = concatAll;
       semigroupVoid = constant2(void 0);
+      semigroupAll = {
+        concat: function(x, y) {
+          return x && y;
+        }
+      };
+      semigroupAny = {
+        concat: function(x, y) {
+          return x || y;
+        }
+      };
+      semigroupString = {
+        concat: function(x, y) {
+          return x + y;
+        }
+      };
+      semigroupSum = {
+        concat: function(x, y) {
+          return x + y;
+        }
+      };
+      semigroupProduct = {
+        concat: function(x, y) {
+          return x * y;
+        }
+      };
     }
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyNonEmptyArray.js
-  var __spreadArray3, isNonEmpty2, isOutOfBound, prependW, prepend, prependAll, intersperse, extract, head2, tail2, last2, concatAll, intercalate;
+  var __spreadArray3, isNonEmpty2, isOutOfBound, prependW, prepend, prependAll, intersperse, extract, head2, tail2, last2, concatAll3, intercalate;
   var init_ReadonlyNonEmptyArray = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyNonEmptyArray.js"() {
       init_function();
@@ -508,13 +552,13 @@ var play;
       last2 = function(as3) {
         return as3[as3.length - 1];
       };
-      concatAll = function(S) {
+      concatAll3 = function(S) {
         return function(as3) {
           return as3.reduce(S.concat);
         };
       };
       intercalate = function(S) {
-        var concatAllS = concatAll(S);
+        var concatAllS = concatAll3(S);
         return function(middle) {
           return flow(intersperse(middle), concatAllS);
         };
@@ -1217,7 +1261,7 @@ var play;
     reduceRightWithIndex: () => reduceRightWithIndex3,
     reduceWithIndex: () => reduceWithIndex3,
     replicate: () => replicate,
-    reverse: () => reverse,
+    reverse: () => reverse2,
     rights: () => rights,
     rotate: () => rotate3,
     scanLeft: () => scanLeft,
@@ -1349,7 +1393,7 @@ var play;
       });
     };
   }
-  var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last5, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt, updateAt, deleteAt, modifyAt, reverse, rights, lefts, sort2, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI, getShow3, getSemigroup3, getMonoid2, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, chainFirst2, Monad, Unfoldable, Alt, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty2, cons3, snoc3, prependToAll, array;
+  var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last5, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt, updateAt, deleteAt, modifyAt, reverse2, rights, lefts, sort2, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI, getShow3, getSemigroup3, getMonoid2, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, chainFirst2, Monad, Unfoldable, Alt, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty2, cons3, snoc3, prependToAll, array;
   var init_Array = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Array.js"() {
       init_Apply();
@@ -1506,7 +1550,7 @@ var play;
           return isOutOfBound4(i, as3) ? none : some(unsafeUpdateAt3(i, f3(as3[i]), as3));
         };
       };
-      reverse = function(as3) {
+      reverse2 = function(as3) {
         return isEmpty(as3) ? [] : as3.slice().reverse();
       };
       rights = function(as3) {
@@ -2173,12 +2217,33 @@ var play;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Predicate.js
-  var not;
+  var getSemigroupAny, getMonoidAny, not, or;
   var init_Predicate = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Predicate.js"() {
+      init_function();
+      getSemigroupAny = function() {
+        return {
+          concat: function(first2, second) {
+            return pipe(first2, or(second));
+          }
+        };
+      };
+      getMonoidAny = function() {
+        return {
+          concat: getSemigroupAny().concat,
+          empty: constFalse
+        };
+      };
       not = function(predicate) {
         return function(a) {
           return !predicate(a);
+        };
+      };
+      or = function(second) {
+        return function(first2) {
+          return function(a) {
+            return first2(a) || second(a);
+          };
         };
       };
     }
@@ -2767,35 +2832,37 @@ var play;
     }
   });
 
-  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js
-  var Eq2, Semigroup, empty3, Monoid, Ord2, startsWith;
-  var init_string = __esm({
-    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js"() {
-      Eq2 = {
-        equals: function(first2, second) {
-          return first2 === second;
-        }
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Monoid.js
+  var concatAll4, monoidVoid, monoidAll, monoidAny, monoidString, monoidSum, monoidProduct;
+  var init_Monoid = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Monoid.js"() {
+      init_Semigroup();
+      concatAll4 = function(M) {
+        return concatAll2(M)(M.empty);
       };
-      Semigroup = {
-        concat: function(first2, second) {
-          return first2 + second;
-        }
+      monoidVoid = {
+        concat: semigroupVoid.concat,
+        empty: void 0
       };
-      empty3 = "";
-      Monoid = {
-        concat: Semigroup.concat,
-        empty: empty3
+      monoidAll = {
+        concat: semigroupAll.concat,
+        empty: true
       };
-      Ord2 = {
-        equals: Eq2.equals,
-        compare: function(first2, second) {
-          return first2 < second ? -1 : first2 > second ? 1 : 0;
-        }
+      monoidAny = {
+        concat: semigroupAny.concat,
+        empty: false
       };
-      startsWith = function(searchString, position) {
-        return function(s) {
-          return s.startsWith(searchString, position);
-        };
+      monoidString = {
+        concat: semigroupString.concat,
+        empty: ""
+      };
+      monoidSum = {
+        concat: semigroupSum.concat,
+        empty: 0
+      };
+      monoidProduct = {
+        concat: semigroupProduct.concat,
+        empty: 1
       };
     }
   });
@@ -2965,7 +3032,7 @@ var play;
       exports.constNull = constant3(null);
       exports.constUndefined = constant3(void 0);
       exports.constVoid = exports.constUndefined;
-      function flip3(f3) {
+      function flip2(f3) {
         return function() {
           var args = [];
           for (var _i = 0; _i < arguments.length; _i++) {
@@ -2979,7 +3046,7 @@ var play;
           };
         };
       }
-      exports.flip = flip3;
+      exports.flip = flip2;
       function flow2(ab, bc, cd, de, ef, fg, gh, hi, ij) {
         switch (arguments.length) {
           case 1:
@@ -3020,14 +3087,14 @@ var play;
         return;
       }
       exports.flow = flow2;
-      function tuple() {
+      function tuple2() {
         var t = [];
         for (var _i = 0; _i < arguments.length; _i++) {
           t[_i] = arguments[_i];
         }
         return t;
       }
-      exports.tuple = tuple;
+      exports.tuple = tuple2;
       function increment(n) {
         return n + 1;
       }
@@ -3125,52 +3192,72 @@ var play;
   });
 
   // shared/util.tsx
-  var sleep;
+  var SpotifyLoc, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
+      ((SpotifyLoc3) => {
+        SpotifyLoc3.before = (uri) => ({
+          before: uri
+        });
+        SpotifyLoc3.after = (uri) => ({
+          after: uri
+        });
+      })(SpotifyLoc || (SpotifyLoc = {}));
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
   });
 
+  // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Predicate.js
+  var anyPass;
+  var init_Predicate2 = __esm({
+    ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Predicate.js"() {
+      init_Predicate();
+      init_Monoid();
+      anyPass = (fs) => concatAll4(getMonoidAny())(fs);
+    }
+  });
+
   // shared/fp.tsx
-  var import_function8, pMchain, chunckify;
+  var import_function9, pMchain, chunckify;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function8 = __toESM(require_function(), 1);
+      import_function9 = __toESM(require_function(), 1);
       pMchain = (f3) => async (fa) => f3(await fa);
-      chunckify = (n) => (g) => (0, import_function8.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
+      chunckify = (n) => (g) => (0, import_function9.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (x) => Promise.all(x), pMchain(Array_exports.flatten));
     }
   });
 
   // shared/api.tsx
-  var fetchArtistsSpotAPI, fetchTracksSpotAPI, fetchPlaylistEnhancedSongs100, fetchPlaylistEnhancedSongs;
+  var fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatPlaylistEnhancedSongs300, fetchPlatPlaylistEnhancedSongs;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_fp();
       init_util();
-      fetchArtistsSpotAPI = chunckify(50)(
-        async (ids) => (await Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/artists?ids=${ids.join(",")}`
-        )).artists
+      fetchWebArtistsSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );
-      fetchTracksSpotAPI = chunckify(50)(
-        async (ids) => (await Spicetify.CosmosAsync.get(
-          `https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`
-        )).tracks
+      fetchWebTracksSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
       );
-      fetchPlaylistEnhancedSongs100 = async (uri, offset = 0) => (await Spicetify.CosmosAsync.get(
-        `https://spclient.wg.spotify.com/enhanced-view/v1/context/${uri}?&offset=${offset}&format=json`
-      )).pageItems;
-      fetchPlaylistEnhancedSongs = async (uri, offset = 0) => {
-        const nextPageItems = await fetchPlaylistEnhancedSongs100(uri, offset);
-        if (nextPageItems?.length < 100)
+      fetchPlatPlaylistEnhancedSongs300 = async (uri, offset = 0, limit = 300) => (await Spicetify.Platform.EnhanceAPI.getPage(
+        uri,
+        /* iteration */
+        0,
+        /* sessionId */
+        0,
+        offset,
+        limit
+      )).enhancePage.pageItems;
+      fetchPlatPlaylistEnhancedSongs = async (uri, offset = 0) => {
+        const nextPageItems = await fetchPlatPlaylistEnhancedSongs300(uri, offset);
+        if (nextPageItems?.length < 300)
           return nextPageItems;
         else
-          return nextPageItems.concat(fetch);
+          return nextPageItems.concat(fetchPlatPlaylistEnhancedSongs(uri, offset + 300));
       };
     }
   });
@@ -3180,27 +3267,25 @@ var play;
   __export(app_exports, {
     default: () => app_default
   });
-  var import_function9, app_default, queue, playEnhancedSongs, showIn;
+  var import_function10, app_default, URI3, queue, playEnhancedSongs;
   var init_app = __esm({
     "extensions/play-enhanced-songs/app.tsx"() {
       "use strict";
-      init_es6();
-      import_function9 = __toESM(require_function(), 1);
-      init_string();
+      init_Predicate2();
+      import_function10 = __toESM(require_function(), 1);
       init_api();
-      init_util();
       app_default = {};
+      ({ URI: URI3 } = Spicetify);
       queue = new Array();
       playEnhancedSongs = async (uri) => {
-        queue = await fetchPlaylistEnhancedSongs(uri);
+        queue = await fetchPlatPlaylistEnhancedSongs(uri);
         Spicetify.Platform.PlayerAPI.clearQueue();
         Spicetify.Platform.PlayerAPI.addToQueue(queue);
       };
-      showIn = (allowedTypes) => ([uri]) => (0, import_function9.pipe)(allowedTypes, Array_exports.some((0, import_function9.flip)(startsWith)(uri)));
       new Spicetify.ContextMenu.Item(
         "Play enhanced songs",
-        (0, import_function9.tupled)(playEnhancedSongs),
-        showIn(["spotify:playlist" /* PLAYLIST */]),
+        (0, import_function10.tupled)(playEnhancedSongs),
+        (0, import_function10.tupled)(anyPass([URI3.isPlaylistV1OrV2])),
         "enhance"
       ).register();
     }
@@ -3209,14 +3294,14 @@ var play;
   // extensions/play-enhanced-songs/entry.tsx
   init_es6();
   init_Record();
-  var import_function10 = __toESM(require_function(), 1);
+  var import_function11 = __toESM(require_function(), 1);
   init_util();
   (async () => {
     const mustLoad = ["ContextMenu", "CosmosAsync", "Platform"];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function10.flow)(
-        (0, import_function10.flip)(lookup4)(
+      (0, import_function11.flow)(
+        (0, import_function11.flip)(lookup4)(
           Spicetify
         ),
         Option_exports.isNone

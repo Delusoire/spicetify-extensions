@@ -2,9 +2,9 @@ export default {}
 
 import { array as a, string as str } from "fp-ts"
 import { pipe as p } from "fp-ts/function"
-import { fetchWebSoundOfSpotifyPlaylist, fetchTrackLFMAPI } from "../../shared/api"
+import { fetchTrackLFMAPI, fetchWebSoundOfSpotifyPlaylist } from "../../shared/api"
 import { pMchain } from "../../shared/fp"
-import { SpotifyURIType, isUri, parseUri, titleCase, waitForElement } from "../../shared/util"
+import { titleCase, waitForElement } from "../../shared/util"
 import { getArtistsGenresOrRelated, updateArtistPage } from "./artistPage"
 import { genrePopup } from "./popup"
 import "./popup.css"
@@ -37,7 +37,7 @@ const updateGenresUI = async (genres: string[]) => {
 
     const { uri, metadata } = Spicetify.Player.data.track as Spicetify.ProvidedTrack
 
-    if (metadata && !metadata.is_local && isUri(uri) && parseUri(uri).type === SpotifyURIType.TRACK && genres.length) {
+    if (metadata && !metadata.is_local && Spicetify.URI.isTrack(uri) && genres.length) {
         trackInfoContainer?.appendChild(await updateGenreContainer(genres))
 
         lastFmTags = p(
