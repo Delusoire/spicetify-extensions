@@ -1,14 +1,17 @@
+export default {}
+
 import { array as a, record } from "fp-ts"
 import { anyPass } from "fp-ts-std/Predicate"
+import { range } from "fp-ts/lib/NonEmptyArray"
 import { flow as f, identity, pipe as p } from "fp-ts/lib/function"
 import { get } from "spectacles-ts"
 import {
     fetchGQLAlbum,
     fetchPlatArtistLikedTracks,
-    fetchPlatFolder,
     fetchPlatPlaylistContents,
     fetchWebPlaylistRes,
 } from "../../shared/api"
+import { pMchain } from "../../shared/fp"
 import { SpotifyURI } from "../../shared/util"
 import { addRatingsListenersToStars, aggregateRatings } from "./ratings"
 import { CONFIG } from "./settings"
@@ -29,8 +32,6 @@ import {
     starsN2S,
     starsS2N,
 } from "./util"
-import { range } from "fp-ts/lib/NonEmptyArray"
-import { pMchain } from "../../shared/fp"
 
 const { URI } = Spicetify
 
