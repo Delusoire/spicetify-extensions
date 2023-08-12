@@ -193,8 +193,10 @@ const setQueue = async (queue: TrackData[]) => {
 }
 
 let lastSortedUri: SpotifyURI = ""
+let lastSortedName: keyof typeof SortProp
 export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
     lastSortedUri = uri
+    lastSortedName = name
     const prop: `${SortProp}` = SortProp[name]
     const toProp: (s: TrackData) => o.Option<string | number> = Optional.fromNullableProp<TrackData>()(prop).getOption
 
@@ -248,8 +250,6 @@ new Spicetify.ContextMenu.SubMenu(
 ).register()
 
 new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
-    "spotify:user:yblp9ylse3i4cdx2klsq1xnlx:folder:c4b216d69bee10e6"
-
     if (lastSortedQueue.length === 0) return void Spicetify.showNotification("Must sort to queue beforehand")
 
     const rootFolder = await fetchPlatRootFolder()
@@ -260,11 +260,13 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
         pMchain((x: any) => x.uri),
     )
 
-    createSPPlaylistFromTracks(
+    await createSPPlaylistFromTracks(
         lastSortedUri,
         lastSortedQueue.map(t => t.uri),
         sortedPlaylistsFolderUri,
     )
+
+    Spicetify.showNotification(`Playlist ${lastSortedUri} created`)
 })
 
-// TODO: add sort by rating, and sort inside playlist's custom order
+// TODO: add sort inside playlist's custom order

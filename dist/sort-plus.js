@@ -6561,7 +6561,7 @@ var sort;
     }
     return allTracks;
   }
-  var import_function27, app_default, URI14, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, lastSortedUri, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
+  var import_function27, app_default, URI14, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6671,6 +6671,7 @@ var sort;
       lastSortedUri = "";
       sortByProp = (name) => async (uri) => {
         lastSortedUri = uri;
+        lastSortedName = name;
         const prop2 = SortProp[name];
         const toProp = Optional.fromNullableProp()(prop2).getOption;
         (0, import_function27.pipe)(
@@ -6713,7 +6714,6 @@ var sort;
         (0, import_function27.tupled)(anyPass([URI14.isAlbum, URI14.isArtist, URI14.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")]))
       ).register();
       new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
-        "spotify:user:yblp9ylse3i4cdx2klsq1xnlx:folder:c4b216d69bee10e6";
         if (lastSortedQueue.length === 0)
           return void Spicetify.showNotification("Must sort to queue beforehand");
         const rootFolder = await fetchPlatRootFolder();
@@ -6723,11 +6723,12 @@ var sort;
           Option_exports.getOrElseW(() => createPlatFolder("Sorted Playlists")),
           pMchain((x) => x.uri)
         );
-        createSPPlaylistFromTracks(
+        await createSPPlaylistFromTracks(
           lastSortedUri,
           lastSortedQueue.map((t) => t.uri),
           sortedPlaylistsFolderUri
         );
+        Spicetify.showNotification(`Playlist ${lastSortedUri} created`);
       });
     }
   });
