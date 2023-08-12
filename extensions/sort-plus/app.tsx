@@ -21,7 +21,7 @@ import {
     fetchTrackLFMAPI,
     fetchWebTracksSpot,
 } from "../../shared/api"
-import { objConcat, pMchain } from "../../shared/fp"
+import { objConcat, pMchain, tapAny } from "../../shared/fp"
 import {
     TrackData,
     TracksPopulater,
@@ -190,6 +190,7 @@ const setQueue = async (queue: TrackData[]) => {
     p(
         queue,
         a.concat([{ uri: "spotify:delimiter" } as TrackData]),
+        tapAny(x => console.log(x)),
         Spicetify.Platform.PlayerAPI.addToQueue,
         pMchain(Spicetify.Player.next),
     )

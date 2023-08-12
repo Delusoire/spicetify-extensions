@@ -6094,7 +6094,7 @@ var sort;
   });
 
   // shared/fp.tsx
-  var import_function24, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, chunckify;
+  var import_function24, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, tapAny, chunckify;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
@@ -6110,6 +6110,10 @@ var sort;
       objConcat = () => Array_exports.reduce({}, objConcat2());
       pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
+      tapAny = (f4) => (fa) => {
+        f4(fa);
+        return fa;
+      };
       chunckify = (n) => (g) => (0, import_function24.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
     }
   });
@@ -6668,6 +6672,7 @@ var sort;
         (0, import_function27.pipe)(
           queue,
           Array_exports.concat([{ uri: "spotify:delimiter" }]),
+          tapAny((x) => console.log(x)),
           Spicetify.Platform.PlayerAPI.addToQueue,
           pMchain(Spicetify.Player.next)
         );
