@@ -98,3 +98,16 @@ export const parseAPITrackFromSpotify = (track: SpotApiTrack) => ({
     releaseDate: new Date(track.album.release_date).getTime(),
     uri: track.uri,
 })
+
+export const parsePlatLikedTracks = (track: UnparsedTrack) => ({
+    albumName: track.album.name,
+    albumUri: track.album.uri,
+    artistName: track.artists[0].name,
+    artistUri: track.artists[0].uri,
+    durationMilis: track.duration.milliseconds,
+    name: track.name,
+    playcount: undefined,
+    popularity: undefined,
+    releaseDate: undefined,
+    uri: track.uri,
+})

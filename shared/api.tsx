@@ -116,6 +116,8 @@ export const fetchPlatPlaylistEnhancedSongs = async (uri: SpotifyURI, offset = 0
     else return nextPageItems.concat(fetchPlatPlaylistEnhancedSongs(uri, offset + 300))
 }
 
+export const fetchLocalTracks = async () => await Spicetify.Platform.LocalFilesAPI.getTracks()
+
 /*                          Non Spotify                                       */
 
 export const fetchTrackLFMAPI = async (LFMApiKey: string, artist: string, trackName: string, lastFmUsername = "") =>

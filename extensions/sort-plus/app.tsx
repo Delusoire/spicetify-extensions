@@ -12,6 +12,7 @@ import {
     fetchArtistGQL,
     fetchGQLAlbum,
     fetchPlatArtistLikedTracks,
+    fetchPlatLikedTracks,
     fetchPlatPlaylistContents,
     fetchTrackLFMAPI,
     fetchWebTracksSpot,
@@ -23,6 +24,7 @@ import {
     UnparsedTrack,
     parseAPITrackFromPlaylist,
     parseAPITrackFromSpotify,
+    parsePlatLikedTracks,
     parsePlatTrackFromArtistLikedTracks,
     parseTopTrackFromArtist,
     parseTrackFromAlbum,
@@ -170,6 +172,7 @@ export const fetchTracks = guard([
     [URI.isAlbum, getAlbumTracks],
     [URI.isArtist, getArtistTracks],
     [URI.isPlaylistV1OrV2, getPlaylistTracks],
+    [startsWith("spotify:collection:tracks"), f(fetchPlatLikedTracks, pMchain(a.map(parsePlatLikedTracks)))],
 ])(task.of([]))
 
 export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
@@ -177,12 +180,19 @@ export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
     [startsWith("LastFM"), constant(f(a.map(populateTrackLastFM), ps => Promise.all(ps)))],
 ])(constant(task.of([])))
 
-let queue = new Array<TrackData>()
+const setQueue = async (queue: TrackData[]) => {
+    if (queue.length <= 1) return Spicetify.showNotification("Data not available")
+
+    await Spicetify.Platform.PlayerAPI.clearQueue()
+    await Spicetify.Platform.PlayerAPI.addToQueue(queue)
+    Spicetify.Player.next()
+}
+
 export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
     const prop: `${SortProp}` = SortProp[name]
     const toProp: (s: TrackData) => o.Option<string | number> = Optional.fromNullableProp<TrackData>()(prop).getOption
 
-    queue = await p(
+    p(
         uri,
         fetchTracks,
         pMchain(populateTracks(name)),
@@ -193,7 +203,7 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
                 a.sort(
                     p(
                         number.Ord,
-                        ord.contramap((x: Required<TrackData>) => x[prop]),
+                        ord.contramap((t: Required<TrackData>) => t[prop]),
                     ),
                 ),
             ),
@@ -201,13 +211,8 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         pMchain(o.map(CONFIG.ascending ? identity : a.reverse)),
         pMchain(o.map(a.append({ uri: "spotify:delimiter" } as TrackData))),
         pMchain(o.getOrElse(constant([] as TrackData[]))),
+        pMchain(setQueue),
     )
-
-    if (queue.length <= 1) return Spicetify.showNotification("Data not available")
-
-    await Spicetify.Platform.PlayerAPI.clearQueue()
-    await Spicetify.Platform.PlayerAPI.addToQueue(queue)
-    Spicetify.Player.next()
 }
 
 // Menu
@@ -215,8 +220,24 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
 const createSortByPropSubmenu = (name: keyof typeof SortProp, icon: any) =>
     new Spicetify.ContextMenu.Item(name, tupled(sortByProp(name)) as any, constTrue, icon, false)
 
+const shuffle = <A,>(array: A[], l = array.length): A[] =>
+    l == 0 ? [] : [array.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array)]
+const shuffleSubmenu = new Spicetify.ContextMenu.Item(
+    "True shuffle",
+    tupled(f(fetchTracks, pMchain(shuffle), pMchain(setQueue))) as any,
+    constTrue,
+    "shuffle",
+    false,
+)
+
 new Spicetify.ContextMenu.SubMenu(
     "Sort by",
-    a.zipWith(values(SortBy), ["play", "heart", "list-view", "volume", "artist", "subtitles"], createSortByPropSubmenu),
-    tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2])) as any,
+    a
+        .zipWith(
+            values(SortBy),
+            ["play", "heart", "list-view", "volume", "artist", "subtitles"],
+            createSortByPropSubmenu,
+        )
+        .concat([shuffleSubmenu]),
+    tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isCollection])) as any,
 ).register()

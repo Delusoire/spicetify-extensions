@@ -6115,7 +6115,7 @@ var sort;
   });
 
   // shared/api.tsx
-  var import_function25, fetchGQLAlbum, fetchArtistGQL, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, fetchTrackLFMAPI;
+  var import_function25, fetchGQLAlbum, fetchArtistGQL, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, fetchTrackLFMAPI;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -6140,6 +6140,9 @@ var sort;
       fetchWebTracksSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
       );
+      fetchPlatLikedTracks = async () => (await Spicetify.Platform.LibraryAPI.getTracks({
+        limit: Number.MAX_SAFE_INTEGER
+      })).items;
       fetchPlatArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items;
       fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
       fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function25.pipe)(
@@ -6153,7 +6156,7 @@ var sort;
   });
 
   // shared/parse.tsx
-  var parseTrackFromAlbum, parseTopTrackFromArtist, parsePlatTrackFromArtistLikedTracks, parseAPITrackFromPlaylist, parseAPITrackFromSpotify;
+  var parseTrackFromAlbum, parseTopTrackFromArtist, parsePlatTrackFromArtistLikedTracks, parseAPITrackFromPlaylist, parseAPITrackFromSpotify, parsePlatLikedTracks;
   var init_parse = __esm({
     "shared/parse.tsx"() {
       "use strict";
@@ -6217,6 +6220,18 @@ var sort;
         playcount: void 0,
         popularity: track.popularity,
         releaseDate: new Date(track.album.release_date).getTime(),
+        uri: track.uri
+      });
+      parsePlatLikedTracks = (track) => ({
+        albumName: track.album.name,
+        albumUri: track.album.uri,
+        artistName: track.artists[0].name,
+        artistUri: track.artists[0].uri,
+        durationMilis: track.duration.milliseconds,
+        name: track.name,
+        playcount: void 0,
+        popularity: void 0,
+        releaseDate: void 0,
         uri: track.uri
       });
     }
@@ -6528,7 +6543,7 @@ var sort;
       add(await (0, import_function27.pipe)(uri, fetchPlatArtistLikedTracks, pMchain(Array_exports.map(parsePlatTrackFromArtistLikedTracks))));
     return allTracks;
   }
-  var import_function27, app_default, URI13, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, queue, sortByProp, createSortByPropSubmenu;
+  var import_function27, app_default, URI13, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, setQueue, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6619,17 +6634,24 @@ var sort;
       fetchTracks = guard4([
         [URI13.isAlbum, getAlbumTracks],
         [URI13.isArtist, getArtistTracks],
-        [URI13.isPlaylistV1OrV2, getPlaylistTracks]
+        [URI13.isPlaylistV1OrV2, getPlaylistTracks],
+        [startsWith("spotify:collection:tracks"), (0, import_function27.flow)(fetchPlatLikedTracks, pMchain(Array_exports.map(parsePlatLikedTracks)))]
       ])(Task_exports.of([]));
       populateTracks = guard4([
         [startsWith("Spotify"), populateTracksSpot],
         [startsWith("LastFM"), (0, import_function27.constant)((0, import_function27.flow)(Array_exports.map(populateTrackLastFM), (ps) => Promise.all(ps)))]
       ])((0, import_function27.constant)(Task_exports.of([])));
-      queue = new Array();
+      setQueue = async (queue) => {
+        if (queue.length <= 1)
+          return Spicetify.showNotification("Data not available");
+        await Spicetify.Platform.PlayerAPI.clearQueue();
+        await Spicetify.Platform.PlayerAPI.addToQueue(queue);
+        Spicetify.Player.next();
+      };
       sortByProp = (name) => async (uri) => {
         const prop2 = SortProp[name];
         const toProp = Optional.fromNullableProp()(prop2).getOption;
-        queue = await (0, import_function27.pipe)(
+        (0, import_function27.pipe)(
           uri,
           fetchTracks,
           pMchain(populateTracks(name)),
@@ -6640,26 +6662,34 @@ var sort;
               Array_exports.sort(
                 (0, import_function27.pipe)(
                   number_exports.Ord,
-                  Ord_exports.contramap((x) => x[prop2])
+                  Ord_exports.contramap((t) => t[prop2])
                 )
               )
             )
           ),
           pMchain(Option_exports.map(CONFIG.ascending ? import_function27.identity : Array_exports.reverse)),
           pMchain(Option_exports.map(Array_exports.append({ uri: "spotify:delimiter" }))),
-          pMchain(Option_exports.getOrElse((0, import_function27.constant)([])))
+          pMchain(Option_exports.getOrElse((0, import_function27.constant)([]))),
+          pMchain(setQueue)
         );
-        if (queue.length <= 1)
-          return Spicetify.showNotification("Data not available");
-        await Spicetify.Platform.PlayerAPI.clearQueue();
-        await Spicetify.Platform.PlayerAPI.addToQueue(queue);
-        Spicetify.Player.next();
       };
       createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, (0, import_function27.tupled)(sortByProp(name)), import_function27.constTrue, icon, false);
+      shuffle = (array2, l = array2.length) => l == 0 ? [] : [array2.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array2)];
+      shuffleSubmenu = new Spicetify.ContextMenu.Item(
+        "True shuffle",
+        (0, import_function27.tupled)((0, import_function27.flow)(fetchTracks, pMchain(shuffle), pMchain(setQueue))),
+        import_function27.constTrue,
+        void 0,
+        false
+      );
       new Spicetify.ContextMenu.SubMenu(
         "Sort by",
-        Array_exports.zipWith(values(SortBy), ["play", "heart", "list-view", "volume", "artist", "subtitles"], createSortByPropSubmenu),
-        (0, import_function27.tupled)(anyPass([URI13.isAlbum, URI13.isArtist, URI13.isPlaylistV1OrV2]))
+        Array_exports.zipWith(
+          values(SortBy),
+          ["play", "heart", "list-view", "volume", "artist", "subtitles"],
+          createSortByPropSubmenu
+        ).concat([shuffleSubmenu]),
+        (0, import_function27.tupled)(anyPass([URI13.isAlbum, URI13.isArtist, URI13.isPlaylistV1OrV2, URI13.isCollection]))
       ).register();
     }
   });
