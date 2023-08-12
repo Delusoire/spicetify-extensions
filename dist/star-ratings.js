@@ -16715,17 +16715,19 @@ var star;
           if (trackListTracks.length === 0)
             return;
           const locationUri = URI11.from(Spicetify.Platform.History.location.pathname);
-          let lastColIndex;
+          let newTrackListColCss;
           if (URI11.isArtist(locationUri)) {
-            ;
-            [lastColIndex] = getLastColIndex(trackListTracks[0]);
+            const [lastColIndex] = getLastColIndex(trackListTracks[0]);
+            newTrackListColCss = customTrackListColCss[lastColIndex];
           } else {
             const trackListHeader = getTrackListHeader(trackList);
-            [lastColIndex] = getLastColIndex(trackListHeader);
-            const newTrackListColCss = customTrackListColCss[lastColIndex];
+            const [lastColIndex] = getLastColIndex(trackListHeader);
+            newTrackListColCss = customTrackListColCss[lastColIndex];
             if (newTrackListColCss)
               trackListHeader.style.gridTemplateColumns = newTrackListColCss;
           }
+          if (!newTrackListColCss)
+            return;
           (0, import_function25.pipe)(
             trackListTracks,
             Array_exports.map((track) => {
@@ -16749,7 +16751,7 @@ var star;
                 track.insertBefore(ratingColumn, lastColumn);
                 const newTrackListTrackColumnCss = customTrackListColCss[colIndex];
                 if (newTrackListTrackColumnCss)
-                  track.style.gridTemplateColumns = customTrackListColCss[lastColIndex] ?? newTrackListTrackColumnCss;
+                  track.style.gridTemplateColumns = newTrackListColCss ?? newTrackListTrackColumnCss;
               }
               const trackUri = getTrackListTrackUri(track);
               const uri = URI11.from(trackUri);

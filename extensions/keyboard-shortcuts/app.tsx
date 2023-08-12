@@ -1,5 +1,5 @@
 import { enterSneak, keyList, listenSneakKeys, mousetrap, quitSneak } from "./sneak"
-import { appScroll, appScrollBottom, appScrollTop, appScrollY, openPage, registerBind, rotateSidebar } from "./util"
+import { appScroll, appScrollY, openPage, registerBind, rotateSidebar } from "./util"
 
 const { KEYS } = Spicetify.Keyboard
 

@@ -49,16 +49,19 @@ export const updateTrackListStars = f(
 
         const locationUri = URI.from(Spicetify.Platform.History.location.pathname)
 
-        let lastColIndex: number
+        let newTrackListColCss: string | null
         if (URI.isArtist(locationUri!)) {
-            ;[lastColIndex] = getLastColIndex(trackListTracks[0])
+            const [lastColIndex] = getLastColIndex(trackListTracks[0])
+            newTrackListColCss = customTrackListColCss[lastColIndex]
         } else {
             const trackListHeader = getTrackListHeader(trackList)
-            ;[lastColIndex] = getLastColIndex(trackListHeader)
+            const [lastColIndex] = getLastColIndex(trackListHeader)
 
-            const newTrackListColCss = customTrackListColCss[lastColIndex]
+            newTrackListColCss = customTrackListColCss[lastColIndex]
             if (newTrackListColCss) trackListHeader.style.gridTemplateColumns = newTrackListColCss
         }
+
+        if (!newTrackListColCss) return
 
         p(
             trackListTracks,
@@ -85,8 +88,7 @@ export const updateTrackListStars = f(
 
                     const newTrackListTrackColumnCss = customTrackListColCss[colIndex]
                     if (newTrackListTrackColumnCss)
-                        track.style.gridTemplateColumns =
-                            customTrackListColCss[lastColIndex] ?? newTrackListTrackColumnCss
+                        track.style.gridTemplateColumns = newTrackListColCss ?? newTrackListTrackColumnCss
                 }
 
                 const trackUri = getTrackListTrackUri(track)
