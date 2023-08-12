@@ -45,6 +45,8 @@ export const updateTrackListStars = f(
     getTrackLists,
     a.map(trackList => {
         const trackListTracks = getTrackListTracks(trackList)
+        if (trackListTracks.length === 0) return
+
         const locationUri = URI.from(Spicetify.Platform.History.location.pathname)
 
         let lastColIndex: number

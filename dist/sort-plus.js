@@ -6537,16 +6537,19 @@ var sort;
       const artistSingles = disc.singles.items;
       const artistCompilations = disc.compilations.items;
       if (CONFIG.artistTopTracks)
-        add(
-          (0, import_function27.pipe)(
-            artistTopTracks,
-            Array_exports.map((0, import_function27.flow)(lookup4("track"), Option_exports.map(parseTopTrackFromArtist))),
-            Array_exports.sequence(Option_exports.Applicative),
-            Option_exports.getOrElse((0, import_function27.constant)([]))
-          )
+        (0, import_function27.pipe)(
+          artistTopTracks,
+          Array_exports.map((i) => i.track),
+          Array_exports.map(parseTopTrackFromArtist),
+          add
         );
       if (CONFIG.artistPopularReleases)
-        (0, import_function27.pipe)(artistPopularReleases, getTracksFromAlbum, pMchain(add));
+        (0, import_function27.pipe)(
+          artistPopularReleases,
+          Array_exports.map((r) => r.uri),
+          getTracksFromAlbum,
+          pMchain(add)
+        );
       if (CONFIG.artistSingles)
         (0, import_function27.pipe)(artistSingles, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
       if (CONFIG.artistAlbums)

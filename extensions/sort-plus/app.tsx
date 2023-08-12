@@ -98,15 +98,19 @@ async function getArtistTracks(uri: SpotifyURI) {
         const artistCompilations: UnparsedTrack[] = disc.compilations.items
 
         if (CONFIG.artistTopTracks)
-            add(
-                p(
-                    artistTopTracks,
-                    a.map(f(lookup("track"), o.map(parseTopTrackFromArtist))),
-                    a.sequence(o.Applicative),
-                    o.getOrElse(constant([] as TrackData[])),
-                ),
+            p(
+                artistTopTracks,
+                a.map(i => i.track),
+                a.map(parseTopTrackFromArtist),
+                add,
             )
-        if (CONFIG.artistPopularReleases) p(artistPopularReleases, getTracksFromAlbum, pMchain(add))
+        if (CONFIG.artistPopularReleases)
+            p(
+                artistPopularReleases,
+                a.map(r => r.uri),
+                getTracksFromAlbum,
+                pMchain(add),
+            )
         if (CONFIG.artistSingles) p(artistSingles, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
         if (CONFIG.artistAlbums) p(artistAlbums, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
         if (CONFIG.artistCompilations)

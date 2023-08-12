@@ -16712,6 +16712,8 @@ var star;
         getTrackLists,
         Array_exports.map((trackList) => {
           const trackListTracks = getTrackListTracks(trackList);
+          if (trackListTracks.length === 0)
+            return;
           const locationUri = URI11.from(Spicetify.Platform.History.location.pathname);
           let lastColIndex;
           if (URI11.isArtist(locationUri)) {
