@@ -189,12 +189,7 @@ const setQueue = async (queue: TrackData[]) => {
 
     await Spicetify.Platform.PlayerAPI.clearQueue()
     await Spicetify.Platform.PlayerAPI.addToQueue(queue.concat([{ uri: "spotify:delimiter" } as TrackData]))
-    // p(
-    //     queue,
-    //     a.concat([{ uri: "spotify:delimiter" } as TrackData]),
-    //     Spicetify.Platform.PlayerAPI.addToQueue,
-    //     pMchain(Spicetify.Player.next),
-    // )
+    await Spicetify.Player.next()
 }
 
 let lastSortedUri: SpotifyURI = ""
@@ -261,9 +256,8 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
     const sortedPlaylistsFolderUri = await p(
         rootFolder.items!,
         a.findFirst(item => item.type === "folder" && item.name === "Sorted Playlists"),
-        o.map(Promise.resolve),
-        o.getOrElse(() => createPlatFolder("Sorted Playlists")),
-        pMchain(x => x.uri),
+        o.getOrElseW<any>(() => createPlatFolder("Sorted Playlists")),
+        pMchain((x: any) => x.uri),
     )
 
     createSPPlaylistFromTracks(

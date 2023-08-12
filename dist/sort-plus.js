@@ -6666,6 +6666,7 @@ var sort;
           return Spicetify.showNotification("Data not available");
         await Spicetify.Platform.PlayerAPI.clearQueue();
         await Spicetify.Platform.PlayerAPI.addToQueue(queue.concat([{ uri: "spotify:delimiter" }]));
+        await Spicetify.Player.next();
       };
       lastSortedUri = "";
       sortByProp = (name) => async (uri) => {
@@ -6719,8 +6720,7 @@ var sort;
         const sortedPlaylistsFolderUri = await (0, import_function27.pipe)(
           rootFolder.items,
           Array_exports.findFirst((item) => item.type === "folder" && item.name === "Sorted Playlists"),
-          Option_exports.map(Promise.resolve),
-          Option_exports.getOrElse(() => createPlatFolder("Sorted Playlists")),
+          Option_exports.getOrElseW(() => createPlatFolder("Sorted Playlists")),
           pMchain((x) => x.uri)
         );
         createSPPlaylistFromTracks(
