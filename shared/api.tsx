@@ -105,7 +105,7 @@ export const movePlatPlaylistTracks = async (playlist: SpotifyURI, tracks: Spoti
     await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location)
 
 export const removePlatPlaylistTracks = async (playlist: SpotifyURI, tracks: SpotifyURI[]) =>
-    await Spicetify.Platform.PlaylistAPI.move(playlist, tracks)
+    await Spicetify.Platform.PlaylistAPI.remove(playlist, tracks)
 
 export const fetchPlatPlaylistEnhancedSongs300 = async (uri: SpotifyURI, offset = 0, limit = 300) =>
     (await Spicetify.Platform.EnhanceAPI.getPage(uri, /* iteration */ 0, /* sessionId */ 0, offset, limit)).enhancePage

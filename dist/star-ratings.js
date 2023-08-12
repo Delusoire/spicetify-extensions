@@ -15434,7 +15434,7 @@ var star;
       setPlatPlaylistVisibility = async (playlist, visibleForAll) => await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
       fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
       addPlatPlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location);
-      removePlatPlaylistTracks = async (playlist, tracks) => await Spicetify.Platform.PlaylistAPI.move(playlist, tracks);
+      removePlatPlaylistTracks = async (playlist, tracks) => await Spicetify.Platform.PlaylistAPI.remove(playlist, tracks);
     }
   });
 
