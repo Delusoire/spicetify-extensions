@@ -1,12 +1,11 @@
 import { array as a, nonEmptyArray, readonlyArray, record } from "fp-ts"
 import { flow as f, flip, pipe as p } from "fp-ts/function"
-import { groupBy } from "fp-ts/lib/NonEmptyArray"
-import { fetchPlatPlaylistContents, fetchWebPlaylistRes, movePlatPlaylistTracks } from "../../shared/api"
+import { groupBy, range } from "fp-ts/lib/NonEmptyArray"
+import { fetchPlatPlaylistContents, movePlatPlaylistTracks } from "../../shared/api"
+import { pMchain } from "../../shared/fp"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util"
 import { StarStops, calculateRatingFromMouseEvent, createStars, onStarClick, setStarsGradientByRating } from "./stars"
 import { getRatingsFolder, starsN2S } from "./util"
-import { range } from "fp-ts/lib/NonEmptyArray"
-import { pMchain, tapAny } from "../../shared/fp"
 
 const w = (n: number) => Math.exp(n)
 export const aggregateRatings = (uris: SpotifyURI[]) =>
@@ -98,8 +97,10 @@ export const loadRatings = async () => {
                 }),
             ),
         ),
-        tapAny(x => console.log(x)),
     )
+
+    // @ts-ignore
+    globalThis.tracksRatings = tracksRatings
 }
 
 export let playlistUris: SpotifyURI[] = []

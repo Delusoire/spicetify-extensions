@@ -9563,7 +9563,7 @@ var star;
         };
       }
       exports.group = group2;
-      var groupBy2 = function(f5) {
+      var groupBy3 = function(f5) {
         return function(as5) {
           var out = {};
           for (var _i = 0, as_1 = as5; _i < as_1.length; _i++) {
@@ -9578,7 +9578,7 @@ var star;
           return out;
         };
       };
-      exports.groupBy = groupBy2;
+      exports.groupBy = groupBy3;
       var sort5 = function(O2) {
         return function(as5) {
           return as5.length === 1 ? as5 : as5.slice().sort(O2.compare);
@@ -15392,7 +15392,7 @@ var star;
   });
 
   // shared/fp.tsx
-  var import_function20, guard42, pMchain, is, tapAny, chunckify;
+  var import_function20, guard42, pMchain, is, chunckify;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
@@ -15404,10 +15404,6 @@ var star;
       );
       pMchain = (f5) => async (fa) => f5(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      tapAny = (f5) => (fa) => {
-        f5(fa);
-        return fa;
-      };
       chunckify = (n) => (g) => (0, import_function20.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
     }
   });
@@ -15668,7 +15664,7 @@ var star;
         };
       }
       exports.group = group2;
-      var groupBy2 = function(f5) {
+      var groupBy3 = function(f5) {
         return function(as5) {
           var out = {};
           for (var _i = 0, as_1 = as5; _i < as_1.length; _i++) {
@@ -15683,7 +15679,7 @@ var star;
           return out;
         };
       };
-      exports.groupBy = groupBy2;
+      exports.groupBy = groupBy3;
       var sort5 = function(O2) {
         return function(as5) {
           return as5.slice().sort(O2.compare);
@@ -16601,12 +16597,12 @@ var star;
       "use strict";
       init_es6();
       import_function24 = __toESM(require_function(), 1);
+      import_NonEmptyArray = __toESM(require_NonEmptyArray(), 1);
       init_api();
+      init_fp();
       init_util();
       init_stars();
       init_util2();
-      import_NonEmptyArray = __toESM(require_NonEmptyArray(), 1);
-      init_fp();
       w = (n) => Math.exp(n);
       aggregateRatings = (uris) => (0, import_function24.pipe)(
         uris,
@@ -16663,9 +16659,9 @@ var star;
                 [trackUri]: Math.max(rating, acc[trackUri] ?? 0)
               })
             )
-          ),
-          tapAny((x) => console.log(x))
+          )
         );
+        globalThis.tracksRatings = tracksRatings;
       };
       playlistUris = [];
       tracksRatings = {};

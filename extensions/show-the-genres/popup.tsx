@@ -33,7 +33,7 @@ export const genrePopup = () => {
 }
 
 // @ts-ignore
-window.genrePopup = genrePopup
+globalThis.genrePopup = genrePopup
 
 const ButtonElement = ({ name = "", color = "", onClick = task.of(undefined) as task.Task<any> }) => (
     <button className={`login-button${color}`} onClick={onClick}>

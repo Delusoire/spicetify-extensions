@@ -241,3 +241,5 @@ new Spicetify.ContextMenu.SubMenu(
         .concat([shuffleSubmenu]),
     tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")])) as any,
 ).register()
+
+// TODO: add sort by rating, and sort inside playlist's custom order

@@ -12,7 +12,7 @@ import { CONFIG } from "./settings"
 
 const searchPlaylist = (query: string) => Spicetify.Platform.History.push(`/search/${query}/playlists`)
 // @ts-ignore
-window.searchPlaylist = searchPlaylist
+globalThis.searchPlaylist = searchPlaylist
 
 export let spotifyGenres = new Array<string>()
 export let lastFmTags = new Array<string>()

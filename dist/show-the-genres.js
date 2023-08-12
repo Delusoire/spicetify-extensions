@@ -4664,7 +4664,7 @@ var show;
           headerSection?.prepend(container);
         }
       };
-      window.genrePopup = genrePopup;
+      globalThis.genrePopup = genrePopup;
       ButtonElement = ({ name = "", color = "", onClick = Task_exports.of(void 0) }) => /* @__PURE__ */ import_react.default.createElement("button", { className: `login-button${color}`, onClick }, name);
       GenreItem = () => {
         let [value, setValue] = (0, import_react.useState)(spotifyGenres);
@@ -4977,7 +4977,7 @@ var show;
       init_settings2();
       app_default = {};
       searchPlaylist = (query) => Spicetify.Platform.History.push(`/search/${query}/playlists`);
-      window.searchPlaylist = searchPlaylist;
+      globalThis.searchPlaylist = searchPlaylist;
       spotifyGenres = new Array();
       lastFmTags = new Array();
       updateGenreContainer = async (genres) => {

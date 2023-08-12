@@ -1,7 +1,6 @@
 import { array as a } from "fp-ts"
 import { flow, pipe } from "fp-ts/function"
 import { MousetrapInstance } from "mousetrap"
-import { tapAny } from "../../shared/fp"
 
 type SneakKey = HTMLSpanElement & { target: HTMLElement }
 
@@ -15,7 +14,10 @@ const clearSomeSneakKeys = (sneakKeys: SneakKey[]) => {
     if (sneakKeys.length === 0) return false
 
     sneakOverlay.remove()
-    pipe(sneakKeys, a.map(tapAny(e => e.remove())))
+    pipe(
+        sneakKeys,
+        a.map(e => e.remove()),
+    )
     document.body.append(sneakOverlay)
     return true
 }
