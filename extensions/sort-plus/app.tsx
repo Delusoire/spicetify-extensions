@@ -188,13 +188,13 @@ const setQueue = async (queue: TrackData[]) => {
     if (queue.length === 0) return Spicetify.showNotification("Data not available")
 
     await Spicetify.Platform.PlayerAPI.clearQueue()
-    p(
-        queue,
-        a.concat([{ uri: "spotify:delimiter" } as TrackData]),
-        tapAny(x => console.log(x)),
-        Spicetify.Platform.PlayerAPI.addToQueue,
-        pMchain(Spicetify.Player.next),
-    )
+    await Spicetify.Platform.PlayerAPI.addToQueue(queue.concat([{ uri: "spotify:delimiter" } as TrackData]))
+    // p(
+    //     queue,
+    //     a.concat([{ uri: "spotify:delimiter" } as TrackData]),
+    //     Spicetify.Platform.PlayerAPI.addToQueue,
+    //     pMchain(Spicetify.Player.next),
+    // )
 }
 
 let lastSortedUri: SpotifyURI = ""
