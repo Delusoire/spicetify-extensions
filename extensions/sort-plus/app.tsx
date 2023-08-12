@@ -87,7 +87,7 @@ async function getArtistTracks(uri: SpotifyURI) {
 
     if (CONFIG.artistAllDiscography) {
         const allDisc = await fetchGQLArtistDiscography(uri)
-        p(allDisc, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
+        await p(allDisc, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
     } else {
         const disc = (await fetchGQLArtistOverview(uri)).discography
 
@@ -98,25 +98,26 @@ async function getArtistTracks(uri: SpotifyURI) {
         const artistCompilations: UnparsedTrack[] = disc.compilations.items
 
         if (CONFIG.artistTopTracks)
-            p(
+            await p(
                 artistTopTracks,
                 a.map(i => i.track),
                 a.map(parseTopTrackFromArtist),
                 add,
             )
         if (CONFIG.artistPopularReleases)
-            p(
+            await p(
                 artistPopularReleases,
                 a.map(r => r.uri),
                 getTracksFromAlbum,
                 pMchain(add),
             )
-        if (CONFIG.artistSingles) p(artistSingles, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
-        if (CONFIG.artistAlbums) p(artistAlbums, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
+        if (CONFIG.artistSingles)
+            await p(artistSingles, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
+        if (CONFIG.artistAlbums) await p(artistAlbums, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
         if (CONFIG.artistCompilations)
-            p(artistCompilations, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
+            await p(artistCompilations, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
         if (CONFIG.artistLikedTracks)
-            p(uri, fetchPlatArtistLikedTracks, pMchain(a.map(parsePlatTrackFromArtistLikedTracks)), pMchain(add))
+            await p(uri, fetchPlatArtistLikedTracks, pMchain(a.map(parsePlatTrackFromArtistLikedTracks)), pMchain(add))
     }
 
     return allTracks

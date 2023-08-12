@@ -6532,7 +6532,7 @@ var sort;
     const add = (tracks) => void Array.prototype.push.apply(allTracks, tracks);
     if (CONFIG.artistAllDiscography) {
       const allDisc = await fetchGQLArtistDiscography(uri);
-      (0, import_function27.pipe)(allDisc, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+      await (0, import_function27.pipe)(allDisc, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
     } else {
       const disc = (await fetchGQLArtistOverview(uri)).discography;
       const artistTopTracks = disc.topTracks.items;
@@ -6541,27 +6541,27 @@ var sort;
       const artistSingles = disc.singles.items;
       const artistCompilations = disc.compilations.items;
       if (CONFIG.artistTopTracks)
-        (0, import_function27.pipe)(
+        await (0, import_function27.pipe)(
           artistTopTracks,
           Array_exports.map((i) => i.track),
           Array_exports.map(parseTopTrackFromArtist),
           add
         );
       if (CONFIG.artistPopularReleases)
-        (0, import_function27.pipe)(
+        await (0, import_function27.pipe)(
           artistPopularReleases,
           Array_exports.map((r) => r.uri),
           getTracksFromAlbum,
           pMchain(add)
         );
       if (CONFIG.artistSingles)
-        (0, import_function27.pipe)(artistSingles, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+        await (0, import_function27.pipe)(artistSingles, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
       if (CONFIG.artistAlbums)
-        (0, import_function27.pipe)(artistAlbums, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+        await (0, import_function27.pipe)(artistAlbums, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
       if (CONFIG.artistCompilations)
-        (0, import_function27.pipe)(artistCompilations, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+        await (0, import_function27.pipe)(artistCompilations, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
       if (CONFIG.artistLikedTracks)
-        (0, import_function27.pipe)(uri, fetchPlatArtistLikedTracks, pMchain(Array_exports.map(parsePlatTrackFromArtistLikedTracks)), pMchain(add));
+        await (0, import_function27.pipe)(uri, fetchPlatArtistLikedTracks, pMchain(Array_exports.map(parsePlatTrackFromArtistLikedTracks)), pMchain(add));
     }
     return allTracks;
   }
