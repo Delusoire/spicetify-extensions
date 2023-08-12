@@ -6679,7 +6679,7 @@ var sort;
         "True shuffle",
         (0, import_function27.tupled)((0, import_function27.flow)(fetchTracks, pMchain(shuffle), pMchain(setQueue))),
         import_function27.constTrue,
-        void 0,
+        "shuffle",
         false
       );
       new Spicetify.ContextMenu.SubMenu(
@@ -6689,7 +6689,7 @@ var sort;
           ["play", "heart", "list-view", "volume", "artist", "subtitles"],
           createSortByPropSubmenu
         ).concat([shuffleSubmenu]),
-        (0, import_function27.tupled)(anyPass([URI13.isAlbum, URI13.isArtist, URI13.isPlaylistV1OrV2, URI13.isCollection]))
+        (0, import_function27.tupled)(anyPass([URI13.isAlbum, URI13.isArtist, URI13.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")]))
       ).register();
     }
   });

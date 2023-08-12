@@ -239,5 +239,5 @@ new Spicetify.ContextMenu.SubMenu(
             createSortByPropSubmenu,
         )
         .concat([shuffleSubmenu]),
-    tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isCollection])) as any,
+    tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")])) as any,
 ).register()
