@@ -1,22 +1,5 @@
-import {
-    enterSneak,
-    keyList,
-    listenSneakKeys,
-    mousetrap,
-    quitSneak,
-} from "./sneak"
-import {
-    appScroll,
-    appScrollBottom,
-    appScrollTop,
-    decVolume,
-    incVolume,
-    nextSong,
-    openPage,
-    prevSong,
-    registerBind,
-    rotateSidebar,
-} from "./util"
+import { enterSneak, keyList, listenSneakKeys, mousetrap, quitSneak } from "./sneak"
+import { appScroll, appScrollBottom, appScrollTop, appScrollY, openPage, registerBind, rotateSidebar } from "./util"
 
 const { KEYS } = Spicetify.Keyboard
 
@@ -37,8 +20,8 @@ registerBind("J", false, false, false, () => appScroll(1))
 registerBind("K", false, false, false, () => appScroll(-1))
 
 // G and Shift + G to scroll to top and to bottom
-registerBind("G", false, false, false, appScrollTop)
-registerBind("G", false, true, false, appScrollBottom)
+registerBind("G", false, false, false, () => appScrollY(0))
+registerBind("G", false, true, false, () => appScrollY(Number.MAX_SAFE_INTEGER))
 
 // M to Like/Unlike track
 registerBind("M", false, false, false, Spicetify.Player.toggleHeart)
@@ -51,12 +34,12 @@ registerBind("/", false, false, false, e => {
 
 if (window.navigator.userAgent.indexOf("Win") === -1) {
     // CTRL + Arrow Left Next and CTRL + Arrow Right  Previous Song
-    registerBind("ARROW_RIGHT", true, false, false, nextSong)
-    registerBind("ARROW_LEFT", true, false, false, prevSong)
+    registerBind("ARROW_RIGHT", true, false, false, Spicetify.Player.next)
+    registerBind("ARROW_LEFT", true, false, false, Spicetify.Player.back)
 
     // CTRL + Arrow Up Increase Volume CTRL + Arrow Down Decrease Volume
-    registerBind("ARROW_UP", true, false, false, incVolume)
-    registerBind("ARROW_DOWN", true, false, false, decVolume)
+    registerBind("ARROW_UP", true, false, false, Spicetify.Player.increaseVolume)
+    registerBind("ARROW_DOWN", true, false, false, Spicetify.Player.decreaseVolume)
 }
 
 mousetrap.bind(keyList, listenSneakKeys, "keypress")

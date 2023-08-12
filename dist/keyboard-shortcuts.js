@@ -3177,7 +3177,7 @@ font-weight: 500;
   });
 
   // extensions/keyboard-shortcuts/util.tsx
-  var SCROLL_STEP, focusOnApp, appScroll, appScrollY, appScrollTop, appScrollBottom, nextSong, prevSong, incVolume, decVolume, openPage, rotateSidebar, registerBind;
+  var SCROLL_STEP, focusOnApp, appScroll, appScrollY, openPage, rotateSidebar, registerBind;
   var init_util = __esm({
     "extensions/keyboard-shortcuts/util.tsx"() {
       "use strict";
@@ -3188,31 +3188,17 @@ font-weight: 500;
       focusOnApp = () => document.querySelector(".Root__main-view .os-viewport");
       appScroll = (s) => {
         const app = focusOnApp();
-        const scrollIntervalId = setInterval(
-          () => app.scrollTop += s * SCROLL_STEP,
-          10
-        );
+        const scrollIntervalId = setInterval(() => app.scrollTop += s * SCROLL_STEP, 10);
         document.addEventListener("keyup", () => clearInterval(scrollIntervalId));
       };
       appScrollY = (y) => focusOnApp().scroll(0, y);
-      appScrollTop = () => appScrollY(0);
-      appScrollBottom = () => appScrollY(Number.MAX_SAFE_INTEGER);
-      nextSong = Spicetify.Player.next;
-      prevSong = Spicetify.Player.back;
-      incVolume = Spicetify.Player.increaseVolume;
-      decVolume = Spicetify.Player.decreaseVolume;
       openPage = (page) => Spicetify.Platform.History.push({ pathname: page });
       rotateSidebar = (offset) => {
-        const navLinks = Array.from(
-          document.querySelectorAll(".main-yourLibraryX-navLink").values()
-        );
+        const navLinks = Array.from(document.querySelectorAll(".main-yourLibraryX-navLink").values());
         pipe(
           document.querySelector(".main-yourLibraryX-navLinkActive"),
           (active) => navLinks.findIndex((e) => e === active),
-          (x) => pipe(
-            x === -1 && offset <= 0 ? offset : x + offset,
-            mod(navLinks.length)
-          ),
+          (x) => pipe(x === -1 && offset <= 0 ? offset : x + offset, mod(navLinks.length)),
           (x) => navLinks[x].click()
         );
       };
@@ -3242,18 +3228,18 @@ font-weight: 500;
       registerBind("L", false, true, false, History.goForward);
       registerBind("J", false, false, false, () => appScroll(1));
       registerBind("K", false, false, false, () => appScroll(-1));
-      registerBind("G", false, false, false, appScrollTop);
-      registerBind("G", false, true, false, appScrollBottom);
+      registerBind("G", false, false, false, () => appScrollY(0));
+      registerBind("G", false, true, false, () => appScrollY(Number.MAX_SAFE_INTEGER));
       registerBind("M", false, false, false, Spicetify.Player.toggleHeart);
       registerBind("/", false, false, false, (e) => {
         e.preventDefault();
         openPage("/search");
       });
       if (window.navigator.userAgent.indexOf("Win") === -1) {
-        registerBind("ARROW_RIGHT", true, false, false, nextSong);
-        registerBind("ARROW_LEFT", true, false, false, prevSong);
-        registerBind("ARROW_UP", true, false, false, incVolume);
-        registerBind("ARROW_DOWN", true, false, false, decVolume);
+        registerBind("ARROW_RIGHT", true, false, false, Spicetify.Player.next);
+        registerBind("ARROW_LEFT", true, false, false, Spicetify.Player.back);
+        registerBind("ARROW_UP", true, false, false, Spicetify.Player.increaseVolume);
+        registerBind("ARROW_DOWN", true, false, false, Spicetify.Player.decreaseVolume);
       }
       mousetrap.bind(keyList, listenSneakKeys, "keypress");
       registerBind("S", false, false, false, enterSneak);
