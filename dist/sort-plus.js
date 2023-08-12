@@ -6115,7 +6115,7 @@ var sort;
   });
 
   // shared/api.tsx
-  var import_function25, URI13, fetchGQLAlbum, fetchGQLArtistOverview, fetchGQLArtistDiscography, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, fetchTrackLFMAPI;
+  var import_function25, URI13, fetchGQLAlbum, fetchGQLArtistOverview, fetchGQLArtistDiscography, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, fetchTrackLFMAPI;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -6151,6 +6151,16 @@ var sort;
       })).items;
       fetchPlatArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items;
       fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
+      createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
+      createSPPlaylistFromTracks = (name, tracks, folder = "") => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
+        operation: "create",
+        playlist: true,
+        uris: tracks,
+        name,
+        after: folder
+      });
+      fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
+      fetchPlatRootFolder = () => fetchPlatFolder(void 0);
       fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function25.pipe)(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
           artist
@@ -6548,7 +6558,7 @@ var sort;
     }
     return allTracks;
   }
-  var import_function27, app_default, URI14, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, setQueue, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
+  var import_function27, app_default, URI14, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, lastSortedUri, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6646,14 +6656,22 @@ var sort;
         [startsWith("Spotify"), populateTracksSpot],
         [startsWith("LastFM"), (0, import_function27.constant)((0, import_function27.flow)(Array_exports.map(populateTrackLastFM), (ps) => Promise.all(ps)))]
       ])((0, import_function27.constant)(Task_exports.of([])));
+      lastSortedQueue = [];
       setQueue = async (queue) => {
-        if (queue.length <= 1)
+        lastSortedQueue = queue;
+        if (queue.length === 0)
           return Spicetify.showNotification("Data not available");
         await Spicetify.Platform.PlayerAPI.clearQueue();
-        await Spicetify.Platform.PlayerAPI.addToQueue(queue);
-        Spicetify.Player.next();
+        (0, import_function27.pipe)(
+          queue,
+          Array_exports.concat([{ uri: "spotify:delimiter" }]),
+          Spicetify.Platform.PlayerAPI.addToQueue,
+          pMchain(Spicetify.Player.next)
+        );
       };
+      lastSortedUri = "";
       sortByProp = (name) => async (uri) => {
+        lastSortedUri = uri;
         const prop2 = SortProp[name];
         const toProp = Optional.fromNullableProp()(prop2).getOption;
         (0, import_function27.pipe)(
@@ -6673,7 +6691,6 @@ var sort;
             )
           ),
           pMchain(Option_exports.map(CONFIG.ascending ? import_function27.identity : Array_exports.reverse)),
-          pMchain(Option_exports.map(Array_exports.append({ uri: "spotify:delimiter" }))),
           pMchain(Option_exports.getOrElse((0, import_function27.constant)([]))),
           pMchain(setQueue)
         );
@@ -6696,6 +6713,24 @@ var sort;
         ).concat([shuffleSubmenu]),
         (0, import_function27.tupled)(anyPass([URI14.isAlbum, URI14.isArtist, URI14.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")]))
       ).register();
+      new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
+        "spotify:user:yblp9ylse3i4cdx2klsq1xnlx:folder:c4b216d69bee10e6";
+        if (lastSortedQueue.length === 0)
+          return void Spicetify.showNotification("Must sort to queue beforehand");
+        const rootFolder = await fetchPlatRootFolder();
+        const sortedPlaylistsFolderUri = await (0, import_function27.pipe)(
+          rootFolder.items,
+          Array_exports.findFirst((item) => item.type === "folder" && item.name === "Sorted Playlists"),
+          Option_exports.map(Promise.resolve),
+          Option_exports.getOrElse(() => createPlatFolder("Sorted Playlists")),
+          pMchain((x) => x.uri)
+        );
+        createSPPlaylistFromTracks(
+          lastSortedUri,
+          lastSortedQueue.map((t) => t.uri),
+          sortedPlaylistsFolderUri
+        );
+      });
     }
   });
 

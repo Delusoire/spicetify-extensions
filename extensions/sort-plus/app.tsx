@@ -9,14 +9,17 @@ import { constTrue, constant, flow as f, identity, pipe as p, tupled } from "fp-
 import { startsWith } from "fp-ts/string"
 import { Lens, Optional } from "monocle-ts"
 import {
-    fetchGQLArtistOverview,
+    createPlatFolder,
+    createSPPlaylistFromTracks,
     fetchGQLAlbum,
+    fetchGQLArtistDiscography,
+    fetchGQLArtistOverview,
     fetchPlatArtistLikedTracks,
     fetchPlatLikedTracks,
     fetchPlatPlaylistContents,
+    fetchPlatRootFolder,
     fetchTrackLFMAPI,
     fetchWebTracksSpot,
-    fetchGQLArtistDiscography,
 } from "../../shared/api"
 import { objConcat, pMchain } from "../../shared/fp"
 import {
@@ -32,7 +35,6 @@ import {
 } from "../../shared/parse"
 import { SpotifyURI } from "../../shared/util"
 import { CONFIG } from "./settings"
-import { get } from "spectacles-ts"
 
 const { URI } = Spicetify
 
@@ -174,15 +176,24 @@ export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
     [startsWith("LastFM"), constant(f(a.map(populateTrackLastFM), ps => Promise.all(ps)))],
 ])(constant(task.of([])))
 
+let lastSortedQueue: TrackData[] = []
 const setQueue = async (queue: TrackData[]) => {
-    if (queue.length <= 1) return Spicetify.showNotification("Data not available")
+    lastSortedQueue = queue
+
+    if (queue.length === 0) return Spicetify.showNotification("Data not available")
 
     await Spicetify.Platform.PlayerAPI.clearQueue()
-    await Spicetify.Platform.PlayerAPI.addToQueue(queue)
-    Spicetify.Player.next()
+    p(
+        queue,
+        a.concat([{ uri: "spotify:delimiter" } as TrackData]),
+        Spicetify.Platform.PlayerAPI.addToQueue,
+        pMchain(Spicetify.Player.next),
+    )
 }
 
+let lastSortedUri: SpotifyURI = ""
 export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
+    lastSortedUri = uri
     const prop: `${SortProp}` = SortProp[name]
     const toProp: (s: TrackData) => o.Option<string | number> = Optional.fromNullableProp<TrackData>()(prop).getOption
 
@@ -203,7 +214,6 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
             ),
         ),
         pMchain(o.map(CONFIG.ascending ? identity : a.reverse)),
-        pMchain(o.map(a.append({ uri: "spotify:delimiter" } as TrackData))),
         pMchain(o.getOrElse(constant([] as TrackData[]))),
         pMchain(setQueue),
     )
@@ -235,5 +245,26 @@ new Spicetify.ContextMenu.SubMenu(
         .concat([shuffleSubmenu]),
     tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")])) as any,
 ).register()
+
+new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
+    "spotify:user:yblp9ylse3i4cdx2klsq1xnlx:folder:c4b216d69bee10e6"
+
+    if (lastSortedQueue.length === 0) return void Spicetify.showNotification("Must sort to queue beforehand")
+
+    const rootFolder = await fetchPlatRootFolder()
+    const sortedPlaylistsFolderUri = await p(
+        rootFolder.items!,
+        a.findFirst(item => item.type === "folder" && item.name === "Sorted Playlists"),
+        o.map(Promise.resolve),
+        o.getOrElse(() => createPlatFolder("Sorted Playlists")),
+        pMchain(x => x.uri),
+    )
+
+    createSPPlaylistFromTracks(
+        lastSortedUri,
+        lastSortedQueue.map(t => t.uri),
+        sortedPlaylistsFolderUri,
+    )
+})
 
 // TODO: add sort by rating, and sort inside playlist's custom order

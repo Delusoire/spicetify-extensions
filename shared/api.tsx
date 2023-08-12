@@ -93,12 +93,13 @@ export const likePlatPlaylist = async (uri: SpotifyURI) => await Spicetify.Platf
 export const createPlatPlaylist = async (name: string, location: SpotifyLoc = {}) =>
     await Spicetify.Platform.RootlistAPI.createPlaylist(name, location)
 
-export const createSPPlaylistFromTracks = (name: string, tracks: SpotifyURI[]) =>
+export const createSPPlaylistFromTracks = (name: string, tracks: SpotifyURI[], folder: SpotifyURI = "") =>
     Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
         operation: "create",
         playlist: true,
         uris: tracks,
         name,
+        after: folder,
     })
 
 export const setPlatPlaylistVisibility = async (playlist: SpotifyURI, visibleForAll: boolean) =>

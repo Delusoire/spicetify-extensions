@@ -4340,11 +4340,12 @@ var vaultify = (() => {
       fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
       createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
       likePlatPlaylist = async (uri) => await Spicetify.Platform.RootlistAPI.add([uri]);
-      createSPPlaylistFromTracks = (name, tracks) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
+      createSPPlaylistFromTracks = (name, tracks, folder = "") => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
         operation: "create",
         playlist: true,
         uris: tracks,
-        name
+        name,
+        after: folder
       });
       fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
       fetchPlatRootFolder = () => fetchPlatFolder(void 0);
