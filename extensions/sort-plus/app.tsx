@@ -260,13 +260,15 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
         pMchain((x: any) => x.uri),
     )
 
+    const playlistName = `${lastSortedName} - ${lastSortedUri}`
+
     await createSPPlaylistFromTracks(
-        lastSortedUri,
+        playlistName,
         lastSortedQueue.map(t => t.uri),
         sortedPlaylistsFolderUri,
     )
 
-    Spicetify.showNotification(`Playlist ${lastSortedUri} created`)
+    Spicetify.showNotification(`Playlist ${playlistName} created`)
 })
 
 // TODO: add sort inside playlist's custom order

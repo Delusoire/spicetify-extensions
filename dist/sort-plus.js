@@ -6723,12 +6723,13 @@ var sort;
           Option_exports.getOrElseW(() => createPlatFolder("Sorted Playlists")),
           pMchain((x) => x.uri)
         );
+        const playlistName = `${lastSortedName} - ${lastSortedUri}`;
         await createSPPlaylistFromTracks(
-          lastSortedUri,
+          playlistName,
           lastSortedQueue.map((t) => t.uri),
           sortedPlaylistsFolderUri
         );
-        Spicetify.showNotification(`Playlist ${lastSortedUri} created`);
+        Spicetify.showNotification(`Playlist ${playlistName} created`);
       });
     }
   });
