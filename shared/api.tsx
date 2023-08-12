@@ -18,7 +18,7 @@ export const fetchGQLAlbum = async (uri: SpotifyURI, offset = 0, limit = 487) =>
     ).data.albumUnion as fetchGQLAlbumRes
 
 type fetchArtistGQLRes = any
-export const fetchArtistGQL = async (uri: SpotifyURI) =>
+export const fetchGQLArtistOverview = async (uri: SpotifyURI) =>
     (
         await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistOverview, {
             uri,
@@ -26,6 +26,16 @@ export const fetchArtistGQL = async (uri: SpotifyURI) =>
             includePrerelease: true,
         })
     ).data.artistUnion as fetchArtistGQLRes
+
+type fetchGQLArtistDiscographyRes = any
+export const fetchGQLArtistDiscography = async (uri: SpotifyURI, offset = 0, limit = 116) =>
+    (
+        await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistDiscographyAll, {
+            uri,
+            offset,
+            limit,
+        })
+    ).data.artistUnion.discography.all.items as fetchGQLArtistDiscographyRes
 
 export const fetchGQLArtistRelated = async (uri: SpotifyURI) =>
     (

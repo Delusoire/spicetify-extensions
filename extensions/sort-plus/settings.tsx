@@ -3,6 +3,7 @@ import { SettingsSection } from "../../shared/settings"
 
 const settings = new SettingsSection("Sort+", "sort-plus")
     .addToggle("ascending", "Ascending", task.of(false))
+    .addToggle("artistAllDiscography", "All of the artist's Discography", task.of(false))
     .addToggle("artistTopTracks", "Top Tracks")
     .addToggle("artistPopularReleases", "Popular Releases", task.of(false))
     .addToggle("artistSingles", "Singles")
@@ -16,6 +17,7 @@ settings.pushSettings()
 
 export const CONFIG = settings.toObject() as {
     ascending: boolean
+    artistAllDiscography: boolean
     artistTopTracks: boolean
     artistPopularReleases: boolean
     artistSingles: boolean

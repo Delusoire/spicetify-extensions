@@ -6115,7 +6115,7 @@ var sort;
   });
 
   // shared/api.tsx
-  var import_function25, URI13, fetchGQLAlbum, fetchArtistGQL, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, fetchTrackLFMAPI;
+  var import_function25, URI13, fetchGQLAlbum, fetchGQLArtistOverview, fetchGQLArtistDiscography, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, fetchTrackLFMAPI;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -6130,11 +6130,16 @@ var sort;
         offset,
         limit
       })).data.albumUnion;
-      fetchArtistGQL = async (uri) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistOverview, {
+      fetchGQLArtistOverview = async (uri) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistOverview, {
         uri,
         locale: Spicetify.Locale.getLocale(),
         includePrerelease: true
       })).data.artistUnion;
+      fetchGQLArtistDiscography = async (uri, offset = 0, limit = 116) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistDiscographyAll, {
+        uri,
+        offset,
+        limit
+      })).data.artistUnion.discography.all.items;
       fetchWebArtistsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );
@@ -6489,7 +6494,7 @@ var sort;
       "use strict";
       init_es6();
       init_settings();
-      settings = new SettingsSection("Sort+", "sort-plus").addToggle("ascending", "Ascending", Task_exports.of(false)).addToggle("artistTopTracks", "Top Tracks").addToggle("artistPopularReleases", "Popular Releases", Task_exports.of(false)).addToggle("artistSingles", "Singles").addToggle("artistAlbums", "Albums").addToggle("artistCompilations", "Compilations").addToggle("artistLikedTracks", "Liked Tracks", Task_exports.of(false)).addInput("lastFmUsername", "Last.fm Username", Task_exports.of("Delusoire")).addInput("LFMApiKey", "Last.fm API Key", Task_exports.of("44654ea047786d90338c17331a5f5d95"));
+      settings = new SettingsSection("Sort+", "sort-plus").addToggle("ascending", "Ascending", Task_exports.of(false)).addToggle("artistAllDiscography", "All of the artist's Discography", Task_exports.of(false)).addToggle("artistTopTracks", "Top Tracks").addToggle("artistPopularReleases", "Popular Releases", Task_exports.of(false)).addToggle("artistSingles", "Singles").addToggle("artistAlbums", "Albums").addToggle("artistCompilations", "Compilations").addToggle("artistLikedTracks", "Liked Tracks", Task_exports.of(false)).addInput("lastFmUsername", "Last.fm Username", Task_exports.of("Delusoire")).addInput("LFMApiKey", "Last.fm API Key", Task_exports.of("44654ea047786d90338c17331a5f5d95"));
       settings.pushSettings();
       CONFIG = settings.toObject();
     }
@@ -6507,41 +6512,40 @@ var sort;
     sortByProp: () => sortByProp
   });
   async function getArtistTracks(uri) {
-    const parseTracksFromAggregates = (0, import_function27.flow)(
-      Array_exports.map((0, import_function27.flow)(Lens.fromPath()(["releases", "items", 0, "uri"]).get, getAlbumTracks)),
-      (ps) => Promise.all(ps),
-      pMchain(Array_exports.flatten)
-    );
-    const disc = (await fetchArtistGQL(uri)).discography;
-    const artistTopTracks = disc.topTracks.items;
-    const artistPopularReleases = disc.popularReleasesAlbums.items;
-    const artistAlbums = disc.albums.items;
-    const artistSingles = disc.singles.items;
-    const artistCompilations = disc.compilations.items;
-    const formatUrisAsAggregates = Array_exports.map(({ uri: uri2 }) => ({
-      releases: { items: [{ uri: uri2 }] }
-    }));
+    const extractUriFromReleases = (x) => x.releases.items[0].uri;
+    const getTracksFromAlbum = (0, import_function27.flow)(Array_exports.map(getAlbumTracks), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
     const allTracks = new Array();
     const add = (tracks) => void Array.prototype.push.apply(allTracks, tracks);
-    if (CONFIG.artistTopTracks)
-      add(
-        (0, import_function27.pipe)(
-          artistTopTracks,
-          Array_exports.map((0, import_function27.flow)(lookup4("track"), Option_exports.map(parseTopTrackFromArtist))),
-          Array_exports.sequence(Option_exports.Applicative),
-          Option_exports.getOrElse((0, import_function27.constant)([]))
-        )
-      );
-    if (CONFIG.artistPopularReleases)
-      add(await (0, import_function27.pipe)(artistPopularReleases, formatUrisAsAggregates, parseTracksFromAggregates));
-    if (CONFIG.artistSingles)
-      add(await parseTracksFromAggregates(artistSingles));
-    if (CONFIG.artistAlbums)
-      add(await parseTracksFromAggregates(artistAlbums));
-    if (CONFIG.artistCompilations)
-      add(await parseTracksFromAggregates(artistCompilations));
-    if (CONFIG.artistLikedTracks)
-      add(await (0, import_function27.pipe)(uri, fetchPlatArtistLikedTracks, pMchain(Array_exports.map(parsePlatTrackFromArtistLikedTracks))));
+    if (CONFIG.artistAllDiscography) {
+      const allDisc = await fetchGQLArtistDiscography(uri);
+      (0, import_function27.pipe)(allDisc, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+    } else {
+      const disc = (await fetchGQLArtistOverview(uri)).discography;
+      const artistTopTracks = disc.topTracks.items;
+      const artistPopularReleases = disc.popularReleasesAlbums.items;
+      const artistAlbums = disc.albums.items;
+      const artistSingles = disc.singles.items;
+      const artistCompilations = disc.compilations.items;
+      if (CONFIG.artistTopTracks)
+        add(
+          (0, import_function27.pipe)(
+            artistTopTracks,
+            Array_exports.map((0, import_function27.flow)(lookup4("track"), Option_exports.map(parseTopTrackFromArtist))),
+            Array_exports.sequence(Option_exports.Applicative),
+            Option_exports.getOrElse((0, import_function27.constant)([]))
+          )
+        );
+      if (CONFIG.artistPopularReleases)
+        (0, import_function27.pipe)(artistPopularReleases, getTracksFromAlbum, pMchain(add));
+      if (CONFIG.artistSingles)
+        (0, import_function27.pipe)(artistSingles, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+      if (CONFIG.artistAlbums)
+        (0, import_function27.pipe)(artistAlbums, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+      if (CONFIG.artistCompilations)
+        (0, import_function27.pipe)(artistCompilations, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+      if (CONFIG.artistLikedTracks)
+        (0, import_function27.pipe)(uri, fetchPlatArtistLikedTracks, pMchain(Array_exports.map(parsePlatTrackFromArtistLikedTracks)), pMchain(add));
+    }
     return allTracks;
   }
   var import_function27, app_default, URI14, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, setQueue, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;

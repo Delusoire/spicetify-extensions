@@ -9,13 +9,14 @@ import { constTrue, constant, flow as f, identity, pipe as p, tupled } from "fp-
 import { startsWith } from "fp-ts/string"
 import { Lens, Optional } from "monocle-ts"
 import {
-    fetchArtistGQL,
+    fetchGQLArtistOverview,
     fetchGQLAlbum,
     fetchPlatArtistLikedTracks,
     fetchPlatLikedTracks,
     fetchPlatPlaylistContents,
     fetchTrackLFMAPI,
     fetchWebTracksSpot,
+    fetchGQLArtistDiscography,
 } from "../../shared/api"
 import { objConcat, pMchain } from "../../shared/fp"
 import {
@@ -31,6 +32,7 @@ import {
 } from "../../shared/parse"
 import { SpotifyURI } from "../../shared/util"
 import { CONFIG } from "./settings"
+import { get } from "spectacles-ts"
 
 const { URI } = Spicetify
 
@@ -74,50 +76,42 @@ const getAlbumTracks = async (uri: SpotifyURI) => {
 export const getPlaylistTracks = f(fetchPlatPlaylistContents, pMchain(a.map(parseAPITrackFromPlaylist)))
 
 async function getArtistTracks(uri: SpotifyURI) {
-    type agg = {
-        releases: {
-            items: { uri: SpotifyURI }[]
-        }
-    }
-
-    const parseTracksFromAggregates = f(
-        a.map(f(Lens.fromPath<agg>()(["releases", "items", 0, "uri"]).get, getAlbumTracks)),
-        ps => Promise.all(ps),
-        pMchain(a.flatten),
-    )
-
-    const disc = (await fetchArtistGQL(uri)).discography
-
-    const artistTopTracks: UnparsedTrack[] = disc.topTracks.items
-    const artistPopularReleases: UnparsedTrack[] = disc.popularReleasesAlbums.items
-    const artistAlbums: UnparsedTrack[] = disc.albums.items
-    const artistSingles: UnparsedTrack[] = disc.singles.items
-    const artistCompilations: UnparsedTrack[] = disc.compilations.items
-
-    const formatUrisAsAggregates = a.map<{ uri: SpotifyURI }, agg>(({ uri }) => ({
-        releases: { items: [{ uri }] },
-    }))
+    const extractUriFromReleases = (x: any) => x.releases.items[0].uri
+    const getTracksFromAlbum = f(a.map(getAlbumTracks), ps => Promise.all(ps), pMchain(a.flatten))
 
     const allTracks = new Array<TrackData>()
 
     const add = (tracks: TrackData[]): void => void Array.prototype.push.apply(allTracks, tracks)
 
-    if (CONFIG.artistTopTracks)
-        add(
-            p(
-                artistTopTracks,
-                a.map(f(lookup("track"), o.map(parseTopTrackFromArtist))),
-                a.sequence(o.Applicative),
-                o.getOrElse(constant([] as TrackData[])),
-            ),
-        )
-    if (CONFIG.artistPopularReleases)
-        add(await p(artistPopularReleases, formatUrisAsAggregates, parseTracksFromAggregates))
-    if (CONFIG.artistSingles) add(await parseTracksFromAggregates(artistSingles))
-    if (CONFIG.artistAlbums) add(await parseTracksFromAggregates(artistAlbums))
-    if (CONFIG.artistCompilations) add(await parseTracksFromAggregates(artistCompilations))
-    if (CONFIG.artistLikedTracks)
-        add(await p(uri, fetchPlatArtistLikedTracks, pMchain(a.map(parsePlatTrackFromArtistLikedTracks))))
+    if (CONFIG.artistAllDiscography) {
+        const allDisc = await fetchGQLArtistDiscography(uri)
+        p(allDisc, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
+    } else {
+        const disc = (await fetchGQLArtistOverview(uri)).discography
+
+        const artistTopTracks: UnparsedTrack[] = disc.topTracks.items
+        const artistPopularReleases: UnparsedTrack[] = disc.popularReleasesAlbums.items
+        const artistAlbums: UnparsedTrack[] = disc.albums.items
+        const artistSingles: UnparsedTrack[] = disc.singles.items
+        const artistCompilations: UnparsedTrack[] = disc.compilations.items
+
+        if (CONFIG.artistTopTracks)
+            add(
+                p(
+                    artistTopTracks,
+                    a.map(f(lookup("track"), o.map(parseTopTrackFromArtist))),
+                    a.sequence(o.Applicative),
+                    o.getOrElse(constant([] as TrackData[])),
+                ),
+            )
+        if (CONFIG.artistPopularReleases) p(artistPopularReleases, getTracksFromAlbum, pMchain(add))
+        if (CONFIG.artistSingles) p(artistSingles, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
+        if (CONFIG.artistAlbums) p(artistAlbums, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
+        if (CONFIG.artistCompilations)
+            p(artistCompilations, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
+        if (CONFIG.artistLikedTracks)
+            p(uri, fetchPlatArtistLikedTracks, pMchain(a.map(parsePlatTrackFromArtistLikedTracks)), pMchain(add))
+    }
 
     return allTracks
 }
