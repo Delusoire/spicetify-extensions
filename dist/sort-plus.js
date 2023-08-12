@@ -6676,7 +6676,7 @@ var sort;
       createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, (0, import_function27.tupled)(sortByProp(name)), import_function27.constTrue, icon, false);
       shuffle = (array2, l = array2.length) => l == 0 ? [] : [array2.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array2)];
       shuffleSubmenu = new Spicetify.ContextMenu.Item(
-        "True shuffle",
+        "True Shuffle",
         (0, import_function27.tupled)((0, import_function27.flow)(fetchTracks, pMchain(shuffle), pMchain(setQueue))),
         import_function27.constTrue,
         "shuffle",

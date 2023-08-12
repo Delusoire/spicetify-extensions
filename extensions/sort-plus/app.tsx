@@ -223,7 +223,7 @@ const createSortByPropSubmenu = (name: keyof typeof SortProp, icon: any) =>
 const shuffle = <A,>(array: A[], l = array.length): A[] =>
     l == 0 ? [] : [array.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array)]
 const shuffleSubmenu = new Spicetify.ContextMenu.Item(
-    "True shuffle",
+    "True Shuffle",
     tupled(f(fetchTracks, pMchain(shuffle), pMchain(setQueue))) as any,
     constTrue,
     "shuffle",
