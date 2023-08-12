@@ -47,21 +47,16 @@ export const updateTrackListStars = f(
         const trackListTracks = getTrackListTracks(trackList)
         if (trackListTracks.length === 0) return
 
+        const hasStars = (parent: HTMLElement) => parent.getElementsByClassName("stars").length > 0
         const locationUri = URI.from(Spicetify.Platform.History.location.pathname)
 
-        let newTrackListColCss: string | null
-        if (URI.isArtist(locationUri!)) {
-            const [lastColIndex] = getLastColIndex(trackListTracks[0])
-            newTrackListColCss = customTrackListColCss[lastColIndex]
-        } else {
-            const trackListHeader = getTrackListHeader(trackList)
-            const [lastColIndex] = getLastColIndex(trackListHeader)
+        const firstElement = URI.isArtist(locationUri!) ? trackListTracks[0] : getTrackListHeader(trackList)
 
-            newTrackListColCss = customTrackListColCss[lastColIndex]
-            if (newTrackListColCss) trackListHeader.style.gridTemplateColumns = newTrackListColCss
-        }
+        const [lastColIndex] = getLastColIndex(firstElement)
+        const newTrackListColCss = customTrackListColCss[lastColIndex - p(firstElement, hasStars, Number)]
 
         if (!newTrackListColCss) return
+        firstElement.style.gridTemplateColumns = newTrackListColCss
 
         p(
             trackListTracks,
@@ -69,8 +64,7 @@ export const updateTrackListStars = f(
                 const heart = getFirstHeart(track)
                 if (heart) heart.style.display = CONFIG.hideHearts ? "none" : "flex"
 
-                const alreadyHasStars = track.getElementsByClassName("stars").length > 0
-                if (alreadyHasStars) return
+                if (hasStars(track)) return
 
                 let ratingColumn: HTMLDivElement | null = track.querySelector(".starRatings")
                 if (!ratingColumn) {
@@ -85,10 +79,7 @@ export const updateTrackListStars = f(
                     ratingColumn.classList.add("main-trackList-rowSectionVariable")
                     ratingColumn.classList.add("starRatings")
                     track.insertBefore(ratingColumn, lastColumn)
-
-                    const newTrackListTrackColumnCss = customTrackListColCss[colIndex]
-                    if (newTrackListTrackColumnCss)
-                        track.style.gridTemplateColumns = newTrackListColCss ?? newTrackListTrackColumnCss
+                    track.style.gridTemplateColumns = newTrackListColCss!
                 }
 
                 const trackUri = getTrackListTrackUri(track)

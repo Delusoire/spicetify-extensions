@@ -16714,28 +16714,21 @@ var star;
           const trackListTracks = getTrackListTracks(trackList);
           if (trackListTracks.length === 0)
             return;
+          const hasStars = (parent) => parent.getElementsByClassName("stars").length > 0;
           const locationUri = URI11.from(Spicetify.Platform.History.location.pathname);
-          let newTrackListColCss;
-          if (URI11.isArtist(locationUri)) {
-            const [lastColIndex] = getLastColIndex(trackListTracks[0]);
-            newTrackListColCss = customTrackListColCss[lastColIndex];
-          } else {
-            const trackListHeader = getTrackListHeader(trackList);
-            const [lastColIndex] = getLastColIndex(trackListHeader);
-            newTrackListColCss = customTrackListColCss[lastColIndex];
-            if (newTrackListColCss)
-              trackListHeader.style.gridTemplateColumns = newTrackListColCss;
-          }
+          const firstElement = URI11.isArtist(locationUri) ? trackListTracks[0] : getTrackListHeader(trackList);
+          const [lastColIndex] = getLastColIndex(firstElement);
+          const newTrackListColCss = customTrackListColCss[lastColIndex - (0, import_function25.pipe)(firstElement, hasStars, Number)];
           if (!newTrackListColCss)
             return;
+          firstElement.style.gridTemplateColumns = newTrackListColCss;
           (0, import_function25.pipe)(
             trackListTracks,
             Array_exports.map((track) => {
               const heart = getFirstHeart(track);
               if (heart)
                 heart.style.display = CONFIG.hideHearts ? "none" : "flex";
-              const alreadyHasStars = track.getElementsByClassName("stars").length > 0;
-              if (alreadyHasStars)
+              if (hasStars(track))
                 return;
               let ratingColumn = track.querySelector(".starRatings");
               if (!ratingColumn) {
@@ -16749,9 +16742,7 @@ var star;
                 ratingColumn.classList.add("main-trackList-rowSectionVariable");
                 ratingColumn.classList.add("starRatings");
                 track.insertBefore(ratingColumn, lastColumn);
-                const newTrackListTrackColumnCss = customTrackListColCss[colIndex];
-                if (newTrackListTrackColumnCss)
-                  track.style.gridTemplateColumns = newTrackListColCss ?? newTrackListTrackColumnCss;
+                track.style.gridTemplateColumns = newTrackListColCss;
               }
               const trackUri = getTrackListTrackUri(track);
               const uri = URI11.from(trackUri);
