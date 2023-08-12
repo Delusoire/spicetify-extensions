@@ -4291,12 +4291,13 @@ var search;
   });
 
   // shared/api.tsx
-  var fetchWebArtistsSpot, fetchWebTracksSpot, searchYoutube;
+  var URI5, fetchWebArtistsSpot, fetchWebTracksSpot, searchYoutube;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_fp();
       init_util();
+      ({ URI: URI5 } = Spicetify);
       fetchWebArtistsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );
@@ -4597,7 +4598,7 @@ var search;
   __export(app_exports, {
     default: () => app_default
   });
-  var import_function16, app_default, URI5, YTVidIDCache, showOnYouTube;
+  var import_function16, app_default, URI6, YTVidIDCache, showOnYouTube;
   var init_app = __esm({
     "extensions/search-on-youtube/app.tsx"() {
       "use strict";
@@ -4608,10 +4609,10 @@ var search;
       init_util();
       init_settings2();
       app_default = {};
-      ({ URI: URI5 } = Spicetify);
+      ({ URI: URI6 } = Spicetify);
       YTVidIDCache = /* @__PURE__ */ new Map();
       showOnYouTube = async (uri) => {
-        const id = URI5.from(uri).id;
+        const id = URI6.from(uri).id;
         if (!YTVidIDCache.get(id)) {
           const track = parseAPITrackFromSpotify((await fetchWebTracksSpot([id]))[0]);
           const searchString = `${track.artistName} - ${track.name} music video`;
@@ -4636,7 +4637,7 @@ var search;
       new Spicetify.ContextMenu.Item(
         "Search on YouTube",
         (0, import_function16.tupled)(showOnYouTube),
-        (0, import_function16.tupled)(anyPass([URI5.isTrack])),
+        (0, import_function16.tupled)(anyPass([URI6.isTrack])),
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="19px" height="19px"><path fill="currentColor" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"/><path fill="var(--spice-main)" d="M20 31L20 17 32 24z"/></svg>`
       ).register();
     }

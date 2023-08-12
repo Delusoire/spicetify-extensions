@@ -4455,7 +4455,7 @@ var show;
   });
 
   // shared/api.tsx
-  var import_function14, fetchGQLArtistRelated, fetchWebArtistsSpot, fetchWebTracksSpot, searchWebItemSpot, fetchWebSoundOfSpotifyPlaylist, fetchTrackLFMAPI;
+  var import_function14, URI5, fetchGQLArtistRelated, fetchWebArtistsSpot, fetchWebTracksSpot, searchWebItemSpot, fetchWebSoundOfSpotifyPlaylist, fetchTrackLFMAPI;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -4463,6 +4463,7 @@ var show;
       import_function14 = __toESM(require_function(), 1);
       init_fp();
       init_util();
+      ({ URI: URI5 } = Spicetify);
       fetchGQLArtistRelated = async (uri) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistRelated, {
         uri,
         locale: Spicetify.Locale.getLocale()
@@ -4575,7 +4576,7 @@ var show;
   });
 
   // extensions/show-the-genres/artistPage.tsx
-  var import_function17, URI5, updateArtistPage, getArtistsGenresOrRelated;
+  var import_function17, URI6, updateArtistPage, getArtistsGenresOrRelated;
   var init_artistPage = __esm({
     "extensions/show-the-genres/artistPage.tsx"() {
       "use strict";
@@ -4586,10 +4587,10 @@ var show;
       init_fp();
       init_util();
       init_popup();
-      ({ URI: URI5 } = Spicetify);
+      ({ URI: URI6 } = Spicetify);
       updateArtistPage = async ({ pathname }) => {
-        const uri = URI5.from(pathname);
-        if (!URI5.isArtist(uri))
+        const uri = URI6.from(pathname);
+        if (!URI6.isArtist(uri))
           return;
         const genreContainer2 = document.createElement("div");
         genreContainer2.className = "main-entityHeader-detailsText genre-container";
@@ -4610,7 +4611,7 @@ var show;
       };
       getArtistsGenresOrRelated = async (artistsUris, src = null) => {
         const getArtistsGenres = (0, import_function17.flow)(
-          Array_exports.map((uri) => URI5.from(uri).id),
+          Array_exports.map((uri) => URI6.from(uri).id),
           fetchWebArtistsSpot,
           pMchain(Array_exports.flatMap((artist) => artist.genres)),
           pMchain(Array_exports.uniq(string_exports.Eq))

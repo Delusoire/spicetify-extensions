@@ -3231,12 +3231,13 @@ var play;
   });
 
   // shared/api.tsx
-  var fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatPlaylistEnhancedSongs300, fetchPlatPlaylistEnhancedSongs;
+  var URI3, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatPlaylistEnhancedSongs300, fetchPlatPlaylistEnhancedSongs;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_fp();
       init_util();
+      ({ URI: URI3 } = Spicetify);
       fetchWebArtistsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );
@@ -3267,7 +3268,7 @@ var play;
   __export(app_exports, {
     default: () => app_default
   });
-  var import_function10, app_default, URI3, queue, playEnhancedSongs;
+  var import_function10, app_default, URI4, queue, playEnhancedSongs;
   var init_app = __esm({
     "extensions/play-enhanced-songs/app.tsx"() {
       "use strict";
@@ -3275,7 +3276,7 @@ var play;
       import_function10 = __toESM(require_function(), 1);
       init_api();
       app_default = {};
-      ({ URI: URI3 } = Spicetify);
+      ({ URI: URI4 } = Spicetify);
       queue = new Array();
       playEnhancedSongs = async (uri) => {
         queue = await fetchPlatPlaylistEnhancedSongs(uri);
@@ -3285,7 +3286,7 @@ var play;
       new Spicetify.ContextMenu.Item(
         "Play enhanced songs",
         (0, import_function10.tupled)(playEnhancedSongs),
-        (0, import_function10.tupled)(anyPass([URI3.isPlaylistV1OrV2])),
+        (0, import_function10.tupled)(anyPass([URI4.isPlaylistV1OrV2])),
         "enhance"
       ).register();
     }

@@ -15409,12 +15409,13 @@ var star;
   });
 
   // shared/api.tsx
-  var fetchGQLAlbum, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createPlatPlaylist, setPlatPlaylistVisibility, fetchPlatFolder, addPlatPlaylistTracks, removePlatPlaylistTracks;
+  var URI9, fetchGQLAlbum, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createPlatPlaylist, setPlatPlaylistVisibility, fetchPlatFolder, addPlatPlaylistTracks, removePlatPlaylistTracks;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_fp();
       init_util();
+      ({ URI: URI9 } = Spicetify);
       fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.getAlbum, {
         uri,
         locale: Spicetify.Locale.getLocale(),
@@ -15434,7 +15435,11 @@ var star;
       setPlatPlaylistVisibility = async (playlist, visibleForAll) => await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
       fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
       addPlatPlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location);
-      removePlatPlaylistTracks = async (playlist, tracks) => await Spicetify.Platform.PlaylistAPI.remove(playlist, tracks);
+      removePlatPlaylistTracks = async (playlist, tracks) => Spicetify.CosmosAsync.del(`https://api.spotify.com/v1/playlists/${URI9.from(playlist).id}/tracks`, {
+        tracks: tracks.map((uri) => ({
+          uri
+        }))
+      });
     }
   });
 
@@ -16462,7 +16467,7 @@ var star;
   });
 
   // extensions/star-ratings/stars.tsx
-  var import_function23, URI9, createStar, createStars, setStarsGradientByRating, calculateRatingFromMouseEvent, onStarClick;
+  var import_function23, URI10, createStar, createStars, setStarsGradientByRating, calculateRatingFromMouseEvent, onStarClick;
   var init_stars = __esm({
     "extensions/star-ratings/stars.tsx"() {
       "use strict";
@@ -16474,7 +16479,7 @@ var star;
       init_settings2();
       init_util2();
       init_app();
-      ({ URI: URI9 } = Spicetify);
+      ({ URI: URI10 } = Spicetify);
       createStar = (starsId, nth, size5) => {
         const xmlns = "http://www.w3.org/2000/svg";
         const star = document.createElementNS(xmlns, "svg");
@@ -16581,7 +16586,7 @@ var star;
           addPlatPlaylistTracks(playlistUri, [trackUri]);
         }
         updateNowPlayingStars();
-        const trackStarsContainer = getStarsContainer(`${URI9.from(trackUri).id}`);
+        const trackStarsContainer = getStarsContainer(`${URI10.from(trackUri).id}`);
         if (trackStarsContainer) {
           (0, import_function23.pipe)(trackStarsContainer, setStarsGradientFromContainerByRating(newRating));
           trackStarsContainer.style.visibility = newRating ? "visible" : "hidden";
@@ -16677,7 +16682,7 @@ var star;
     updateNowPlayingStars: () => updateNowPlayingStars,
     updateTrackListStars: () => updateTrackListStars
   });
-  var import_function25, import_spectacles_ts, app_default, URI10, customTrackListColCss, updateTrackListStars, mainElement, mainElementObserver, updateCollectionStars, createNowPlayingStars, nowPlayingHeart, updateNowPlayingStars;
+  var import_function25, import_spectacles_ts, app_default, URI11, customTrackListColCss, updateTrackListStars, mainElement, mainElementObserver, updateCollectionStars, createNowPlayingStars, nowPlayingHeart, updateNowPlayingStars;
   var init_app = __esm({
     "extensions/star-ratings/app.tsx"() {
       "use strict";
@@ -16692,7 +16697,7 @@ var star;
       init_stars();
       init_util2();
       app_default = {};
-      ({ URI: URI10 } = Spicetify);
+      ({ URI: URI11 } = Spicetify);
       customTrackListColCss = [
         null,
         null,
@@ -16707,9 +16712,9 @@ var star;
         getTrackLists,
         Array_exports.map((trackList) => {
           const trackListTracks = getTrackListTracks(trackList);
-          const locationUri = URI10.from(Spicetify.Platform.History.location.pathname);
+          const locationUri = URI11.from(Spicetify.Platform.History.location.pathname);
           let lastColIndex;
-          if (URI10.isArtist(locationUri)) {
+          if (URI11.isArtist(locationUri)) {
             ;
             [lastColIndex] = getLastColIndex(trackListTracks[0]);
           } else {
@@ -16745,8 +16750,8 @@ var star;
                   track.style.gridTemplateColumns = customTrackListColCss[lastColIndex] ?? newTrackListTrackColumnCss;
               }
               const trackUri = getTrackListTrackUri(track);
-              const uri = URI10.from(trackUri);
-              if (!URI10.isTrack(uri)) {
+              const uri = URI11.from(trackUri);
+              if (!URI11.isTrack(uri)) {
                 Spicetify.showNotification(`${trackUri} is an invalid track uri`);
                 debugger;
               }
@@ -16788,22 +16793,22 @@ var star;
         subtree: true
       });
       updateCollectionStars = async (pathname, starsStops) => {
-        const uri = URI10.from(pathname);
+        const uri = URI11.from(pathname);
         if (!starsStops)
           starsStops = getStarsStops("collection");
         let uris;
-        if (URI10.isAlbum(uri))
+        if (URI11.isAlbum(uri))
           uris = (0, import_function25.pipe)(await fetchGQLAlbum(`${uri}`), import_function25.identity, (0, import_spectacles_ts.get)("tracks.items"), Array_exports.map((0, import_function25.flow)(import_function25.identity, (0, import_spectacles_ts.get)("track.uri"))));
-        else if (URI10.isArtist(uri))
+        else if (URI11.isArtist(uri))
           uris = (0, import_function25.pipe)(await fetchPlatArtistLikedTracks(`${uri}`), Array_exports.map((0, import_spectacles_ts.get)("uri")));
-        else if (URI10.isPlaylistV1OrV2(uri))
+        else if (URI11.isPlaylistV1OrV2(uri))
           uris = (0, import_function25.pipe)(await fetchPlatPlaylistContents(`${uri}`), Array_exports.map((0, import_spectacles_ts.get)("uri")));
         else
           throw "me out the window";
         setStarsGradientByRating(aggregateRatings(uris))(starsStops);
       };
       Spicetify.Platform.History.listen(async ({ pathname }) => {
-        const pageHasHeart = anyPass([URI10.isAlbum, URI10.isArtist, URI10.isPlaylistV1OrV2]);
+        const pageHasHeart = anyPass([URI11.isAlbum, URI11.isArtist, URI11.isPlaylistV1OrV2]);
         if (!pageHasHeart(pathname))
           return;
         await sleep(300);

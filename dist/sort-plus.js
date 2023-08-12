@@ -6115,7 +6115,7 @@ var sort;
   });
 
   // shared/api.tsx
-  var import_function25, fetchGQLAlbum, fetchArtistGQL, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, fetchTrackLFMAPI;
+  var import_function25, URI13, fetchGQLAlbum, fetchArtistGQL, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, fetchTrackLFMAPI;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -6123,6 +6123,7 @@ var sort;
       import_function25 = __toESM(require_function(), 1);
       init_fp();
       init_util();
+      ({ URI: URI13 } = Spicetify);
       fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.getAlbum, {
         uri,
         locale: Spicetify.Locale.getLocale(),
@@ -6543,7 +6544,7 @@ var sort;
       add(await (0, import_function27.pipe)(uri, fetchPlatArtistLikedTracks, pMchain(Array_exports.map(parsePlatTrackFromArtistLikedTracks))));
     return allTracks;
   }
-  var import_function27, app_default, URI13, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, setQueue, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
+  var import_function27, app_default, URI14, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, setQueue, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6561,7 +6562,7 @@ var sort;
       init_parse();
       init_settings2();
       app_default = {};
-      ({ URI: URI13 } = Spicetify);
+      ({ URI: URI14 } = Spicetify);
       SortBy = /* @__PURE__ */ ((SortBy2) => {
         SortBy2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
         SortBy2["SPOTIFY_POPULARITY"] = "Spotify - Popularity";
@@ -6597,7 +6598,7 @@ var sort;
       };
       getPlaylistTracks = (0, import_function27.flow)(fetchPlatPlaylistContents, pMchain(Array_exports.map(parseAPITrackFromPlaylist)));
       fetchAPITracksFromTracks = (0, import_function27.flow)(
-        Array_exports.map(({ uri }) => URI13.from(uri).id),
+        Array_exports.map(({ uri }) => URI14.from(uri).id),
         fetchWebTracksSpot,
         pMchain(Array_exports.map(parseAPITrackFromSpotify))
       );
@@ -6632,9 +6633,9 @@ var sort;
         return track;
       };
       fetchTracks = guard4([
-        [URI13.isAlbum, getAlbumTracks],
-        [URI13.isArtist, getArtistTracks],
-        [URI13.isPlaylistV1OrV2, getPlaylistTracks],
+        [URI14.isAlbum, getAlbumTracks],
+        [URI14.isArtist, getArtistTracks],
+        [URI14.isPlaylistV1OrV2, getPlaylistTracks],
         [startsWith("spotify:collection:tracks"), (0, import_function27.flow)(fetchPlatLikedTracks, pMchain(Array_exports.map(parsePlatLikedTracks)))]
       ])(Task_exports.of([]));
       populateTracks = guard4([
@@ -6689,7 +6690,7 @@ var sort;
           ["play", "heart", "list-view", "volume", "artist", "subtitles"],
           createSortByPropSubmenu
         ).concat([shuffleSubmenu]),
-        (0, import_function27.tupled)(anyPass([URI13.isAlbum, URI13.isArtist, URI13.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")]))
+        (0, import_function27.tupled)(anyPass([URI14.isAlbum, URI14.isArtist, URI14.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")]))
       ).register();
     }
   });

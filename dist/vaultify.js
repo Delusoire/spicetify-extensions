@@ -4324,12 +4324,13 @@ var vaultify = (() => {
   });
 
   // shared/api.tsx
-  var fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, likePlatPlaylist, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder;
+  var URI5, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, likePlatPlaylist, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_fp();
       init_util();
+      ({ URI: URI5 } = Spicetify);
       fetchWebArtistsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );

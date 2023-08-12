@@ -3,6 +3,8 @@ import { pipe as p } from "fp-ts/function"
 import { pMchain as as, chunckify } from "./fp"
 import { SpotifyID, SpotifyLoc, SpotifyURI, escapeRegex } from "./util"
 
+const { URI } = Spicetify
+
 /*                          GraphQL                                           */
 
 export const fetchGQLAlbum = async (uri: SpotifyURI, offset = 0, limit = 487) =>
@@ -105,7 +107,11 @@ export const movePlatPlaylistTracks = async (playlist: SpotifyURI, tracks: Spoti
     await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location)
 
 export const removePlatPlaylistTracks = async (playlist: SpotifyURI, tracks: SpotifyURI[]) =>
-    await Spicetify.Platform.PlaylistAPI.remove(playlist, tracks)
+    Spicetify.CosmosAsync.del(`https://api.spotify.com/v1/playlists/${URI.from(playlist)!.id}/tracks`, {
+        tracks: tracks.map(uri => ({
+            uri,
+        })),
+    })
 
 export const fetchPlatPlaylistEnhancedSongs300 = async (uri: SpotifyURI, offset = 0, limit = 300) =>
     (await Spicetify.Platform.EnhanceAPI.getPage(uri, /* iteration */ 0, /* sessionId */ 0, offset, limit)).enhancePage
