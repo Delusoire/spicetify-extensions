@@ -76,7 +76,7 @@ export const loadRatings = async () => {
 
     playlistUris = p(
         ratingsFolder!.items!,
-        a.map(p => [p.type, p.uri, starsS2Narray[p.name as string]] as [string, SpotifyURI, number]),
+        a.map(p => [p.type, p.uri, starsS2Narray[p.name!]] as [string, SpotifyURI, number]),
         a.reduce(
             [] as SpotifyURI[],
             (acc, [type, uri, starsN]) => (type === "playlist" && starsN ? (acc[starsN] = uri) : [], acc),

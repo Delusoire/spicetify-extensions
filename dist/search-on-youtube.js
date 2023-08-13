@@ -3568,7 +3568,7 @@ var search;
           after: { uri }
         });
       })(SpotifyLoc || (SpotifyLoc = {}));
-      normalizeStr = (str) => str.replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase().trim();
+      normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
   });

@@ -30,9 +30,12 @@ export const titleCase = (str: string) => str.replace(/\b\w/g, l => l.toUpperCas
 
 export const normalizeStr = (str: string) =>
     str
+        .normalize("NFKD")
         .replace(/\(.*\)/g, "")
         .replace(/\[.*\]/g, "")
+        .replace(/-_,/g, " ")
         .replace(/[^a-zA-Z0-9 ]/g, "")
+        .replace(/\s+/g, " ")
         .toLowerCase()
         .trim()
 

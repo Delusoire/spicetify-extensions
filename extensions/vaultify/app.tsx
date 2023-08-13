@@ -21,8 +21,8 @@ const extractLikedPlaylistTreeRecur = (leaf: PoF) =>
             isType("playlist"),
             async playlist => ({
                 [playlist.name]: playlist.isOwnedBySelf
-                    ? ((await p(playlist.uri, fetchPlatPlaylistContents, pMchain(a.map(x => x.uri)))) as string[])
-                    : (playlist.uri as string),
+                    ? await p(playlist.uri, fetchPlatPlaylistContents, pMchain(a.map(x => x.uri)))
+                    : playlist.uri,
             }),
         ],
         [

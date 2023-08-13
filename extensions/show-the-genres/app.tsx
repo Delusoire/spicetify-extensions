@@ -35,13 +35,13 @@ const updateGenreContainer = async (genres: string[]) => {
 const updateGenresUI = async (genres: string[]) => {
     const trackInfoContainer = await waitForElement("div.main-trackInfo-container")
 
-    const { uri, metadata } = Spicetify.Player.data.track as Spicetify.ProvidedTrack
+    const { uri, metadata } = Spicetify.Player.data.track!
 
     if (metadata && !metadata.is_local && Spicetify.URI.isTrack(uri) && genres.length) {
         trackInfoContainer?.appendChild(await updateGenreContainer(genres))
 
         lastFmTags = p(
-            await fetchTrackLFMAPI(CONFIG.LFMApiKey, metadata.artist_name as string, metadata.title as string),
+            await fetchTrackLFMAPI(CONFIG.LFMApiKey, metadata.artist_name!, metadata.title!),
             ({ track }) => track.toptags.tag,
             a.map(({ name }) => name),
         )

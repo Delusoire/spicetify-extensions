@@ -201,7 +201,7 @@ const nowPlayingHeart = getNowPlayingHeart()
 if (nowPlayingHeart) nowPlayingHeart.style.display = CONFIG.hideHearts ? "none" : "flex"
 
 export const updateNowPlayingStars = () => {
-    const trackUri = Spicetify.Player.data.track?.uri as string
+    const trackUri = Spicetify.Player.data.track?.uri!
     const nowPlayingStarsContainer = getStarsContainer("now-playing")
 
     nowPlayingStarsContainer.style.display = Spicetify.URI.isTrack(trackUri) ? "flex" : "none"
@@ -210,7 +210,7 @@ export const updateNowPlayingStars = () => {
 }
 
 Spicetify.Player.addEventListener("songchange", () => {
-    const trackUri = Spicetify.Player.data.track?.uri as string
+    const trackUri = Spicetify.Player.data.track?.uri!
     if (
         Number(CONFIG.skipThreshold) &&
         (tracksRatings[trackUri] || Number.MAX_SAFE_INTEGER) <= starsS2N(CONFIG.skipThreshold)
