@@ -181,14 +181,32 @@ export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
     [startsWith("LastFM"), constant(f(a.map(populateTrackLastFM), ps => Promise.all(ps)))],
 ])(constant(task.of([])))
 
+const Spicetify_setQueue = (queue: { uri: SpotifyURI }[]) => {
+    const { _queue, _client, createQueueItem } = Spicetify.Platform.PlayerAPI._queue
+    const { prevTracks, queueRevision } = _queue
+
+    const providerIsQueue = true
+
+    const nextTracks = queue
+        .concat([{ uri: "spotify:delimiter" } as TrackData])
+        .map(track => createQueueItem(track, providerIsQueue))
+
+    return _client.setQueue({
+        nextTracks,
+        prevTracks,
+        queueRevision,
+    })
+}
+
 let lastSortedQueue: TrackData[] = []
 const setQueue = async (queue: TrackData[]) => {
     lastSortedQueue = queue
 
     if (queue.length === 0) return Spicetify.showNotification("Data not available")
 
-    await Spicetify.Platform.PlayerAPI.clearQueue()
-    await Spicetify.Platform.PlayerAPI.addToQueue(queue.concat([{ uri: "spotify:delimiter" } as TrackData]))
+    // await Spicetify.Platform.PlayerAPI.clearQueue()
+    // await Spicetify.Platform.PlayerAPI.addToQueue(queue)
+    await Spicetify_setQueue(queue)
     await Spicetify.Player.next()
 }
 

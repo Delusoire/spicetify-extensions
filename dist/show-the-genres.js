@@ -4946,7 +4946,7 @@ var show;
       "use strict";
       init_es6();
       init_settings();
-      settings = new SettingsSection("Show The Genre", "show-the-genre").addInput(
+      settings = new SettingsSection("Show The Genres", "show-the-genres").addInput(
         "LFMApiKey",
         "Last.fm API Key",
         Task_exports.of("44654ea047786d90338c17331a5f5d95")

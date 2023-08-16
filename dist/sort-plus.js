@@ -6561,7 +6561,7 @@ var sort;
     }
     return allTracks;
   }
-  var import_function27, app_default, URI14, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
+  var import_function27, app_default, URI14, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, Spicetify_setQueue, lastSortedQueue, setQueue, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6659,13 +6659,23 @@ var sort;
         [startsWith("Spotify"), populateTracksSpot],
         [startsWith("LastFM"), (0, import_function27.constant)((0, import_function27.flow)(Array_exports.map(populateTrackLastFM), (ps) => Promise.all(ps)))]
       ])((0, import_function27.constant)(Task_exports.of([])));
+      Spicetify_setQueue = (queue) => {
+        const { _queue, _client, createQueueItem } = Spicetify.Platform.PlayerAPI._queue;
+        const { prevTracks, queueRevision } = _queue;
+        const providerIsQueue = true;
+        const nextTracks = queue.concat([{ uri: "spotify:delimiter" }]).map((track) => createQueueItem(track, providerIsQueue));
+        return _client.setQueue({
+          nextTracks,
+          prevTracks,
+          queueRevision
+        });
+      };
       lastSortedQueue = [];
       setQueue = async (queue) => {
         lastSortedQueue = queue;
         if (queue.length === 0)
           return Spicetify.showNotification("Data not available");
-        await Spicetify.Platform.PlayerAPI.clearQueue();
-        await Spicetify.Platform.PlayerAPI.addToQueue(queue.concat([{ uri: "spotify:delimiter" }]));
+        await Spicetify_setQueue(queue);
         await Spicetify.Player.next();
       };
       lastSortedUri = "";
