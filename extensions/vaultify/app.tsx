@@ -1,5 +1,5 @@
 export default {}
-import { array as a, array, task } from "fp-ts"
+import { array as a, array, set, task } from "fp-ts"
 import { map } from "fp-ts/Array"
 import { toUnfoldable } from "fp-ts/Record"
 import { pipe as p, tupled } from "fp-ts/function"
@@ -61,25 +61,59 @@ const restorePlaylistseRecur = async (leaf: PersonalFolder | PersonalPlaylist | 
 }
 
 export const backup = async () => {
-    const playlistData = await p((await fetchPlatRootFolder()) as any, extractLikedPlaylistTreeRecur)
+    const playlists = await p((await fetchPlatRootFolder()) as any, extractLikedPlaylistTreeRecur)
 
     const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)/
-    const appData = toUnfoldable(array)(localStorage).filter(([key]) => allowedAppDataRegex.test(key))
+    const extensions = toUnfoldable(array)(localStorage).filter(([key]) => allowedAppDataRegex.test(key))
 
-    await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({ playlistData, appData }))
+    const settings = p(
+        document.querySelectorAll(`[id^="settings."],[id^="desktop."],[class^="network."]`) as NodeListOf<HTMLElement>,
+        Array.from<HTMLElement>,
+        a.flatMap(setting => {
+            const id = setting.getAttribute("id")
+
+            if (setting instanceof HTMLInputElement) {
+                const type = setting.getAttribute("type")
+
+                if (type === "checkbox") return [[id, "checkbox", setting.checked]]
+                else if (type === "text") return [[id, "text", setting.value]]
+            } else if (setting instanceof HTMLSelectElement) return [[id, "select", setting.value]]
+
+            return []
+        }),
+    )
+
+    await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({ playlists, extensions, settings }))
     Spicetify.showNotification("Backed up Playlists and Settings")
 }
 
-export const restore = (mode: "playlistData" | "appData") => async () => {
-    let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste())
+type Vault = {
+    playlists: PersonalFolder
+    extensions: Array<[string, string]>
+    settings: Array<[string, string, any]>
+}
+export const restore = (mode: "playlists" | "extensions" | "settings") => async () => {
+    let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste()) as Vault
 
-    if (mode === "playlistData") {
-        await restorePlaylistseRecur(vault.playlistData)
+    if (mode === "playlists") {
+        await restorePlaylistseRecur(vault.playlists)
         Spicetify.showNotification("Restored Playlists")
     }
-    if (mode === "appData") {
-        map(tupled(Spicetify.LocalStorage.set))(vault.appData)
+    if (mode === "extensions") {
+        map(tupled(Spicetify.LocalStorage.set))(vault.extensions)
         Spicetify.showNotification("Restored Settings")
+    }
+    if (mode === "settings") {
+        vault.settings.map(([id, type, value]) => {
+            const setting = document.querySelector(`[id="${id}"]`)! as any
+            if (type === "text") setting.value = value
+            else if (type === "checkbox") setting.checked = value
+            else if (type === "select") setting.value = value
+            else return
+
+            const settingReactProps = Object.values(setting)[1] as any
+            settingReactProps.onChange({ target: setting })
+        })
     }
 }
 

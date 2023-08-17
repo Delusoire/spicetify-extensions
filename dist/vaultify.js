@@ -4604,22 +4604,7 @@ var vaultify = (() => {
       "use strict";
       init_settings();
       init_app();
-      settings = new SettingsSection("Vaultify", "vaultify").addButton(
-        "backup",
-        "Backup Playlists and Settings",
-        "Backup to clipboard",
-        backup
-      ).addButton(
-        "restorePlaylistData",
-        "Restore Playlists",
-        "Restore from clipboard",
-        restore("playlistData")
-      ).addButton(
-        "restoreAppData",
-        "Restore Settings",
-        "Restore from clipboard",
-        restore("appData")
-      );
+      settings = new SettingsSection("Vaultify", "vaultify").addButton("backup", "Backup Playlists and Settings", "Backup to clipboard", backup).addButton("restorePlaylists", "Restore Playlists", "Restore from clipboard", restore("playlists")).addButton("restoreExtensions", "Restore Extensions", "Restore from clipboard", restore("extensions")).addButton("restoreSettings", "Restore Settings", "Restore from clipboard", restore("settings"));
       settings.pushSettings();
     }
   });
@@ -4672,21 +4657,52 @@ var vaultify = (() => {
         });
       };
       backup = async () => {
-        const playlistData = await (0, import_function15.pipe)(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur);
+        const playlists = await (0, import_function15.pipe)(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur);
         const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)/;
-        const appData = toUnfoldable(Array_exports)(localStorage).filter(([key]) => allowedAppDataRegex.test(key));
-        await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({ playlistData, appData }));
+        const extensions = toUnfoldable(Array_exports)(localStorage).filter(([key]) => allowedAppDataRegex.test(key));
+        const settings2 = (0, import_function15.pipe)(
+          document.querySelectorAll(`[id^="settings."],[id^="desktop."],[class^="network."]`),
+          Array.from,
+          Array_exports.flatMap((setting) => {
+            const id = setting.getAttribute("id");
+            if (setting instanceof HTMLInputElement) {
+              const type = setting.getAttribute("type");
+              if (type === "checkbox")
+                return [[id, "checkbox", setting.checked]];
+              else if (type === "text")
+                return [[id, "text", setting.value]];
+            } else if (setting instanceof HTMLSelectElement)
+              return [[id, "select", setting.value]];
+            return [];
+          })
+        );
+        await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({ playlists, extensions, settings: settings2 }));
         Spicetify.showNotification("Backed up Playlists and Settings");
       };
       restore = (mode) => async () => {
         let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
-        if (mode === "playlistData") {
-          await restorePlaylistseRecur(vault.playlistData);
+        if (mode === "playlists") {
+          await restorePlaylistseRecur(vault.playlists);
           Spicetify.showNotification("Restored Playlists");
         }
-        if (mode === "appData") {
-          map((0, import_function15.tupled)(Spicetify.LocalStorage.set))(vault.appData);
+        if (mode === "extensions") {
+          map((0, import_function15.tupled)(Spicetify.LocalStorage.set))(vault.extensions);
           Spicetify.showNotification("Restored Settings");
+        }
+        if (mode === "settings") {
+          vault.settings.map(([id, type, value]) => {
+            const setting = document.querySelector(`[id="${id}"]`);
+            if (type === "text")
+              setting.value = value;
+            else if (type === "checkbox")
+              setting.checked = value;
+            else if (type === "select")
+              setting.value = value;
+            else
+              return;
+            const settingReactProps = Object.values(setting)[1];
+            settingReactProps.onChange({ target: setting });
+          });
         }
       };
       Promise.resolve().then(() => init_settings2());
