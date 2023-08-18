@@ -27,6 +27,12 @@ export const rotateSidebar = (offset: number) => {
     )
 }
 
+export const resizeLeftSidebar = (pxs: number) => {
+    const html = document.firstElementChild! as HTMLHtmlElement,
+        htmlStyle = html.style
+    htmlStyle.cssText = htmlStyle.cssText.replace(/(--left-sidebar-width: )[^;]+/, `$1${pxs}px`)
+}
+
 export const registerBind = (
     keyName: Spicetify.Keyboard.ValidKey,
     ctrl: boolean,

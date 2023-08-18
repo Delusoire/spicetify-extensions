@@ -1,7 +1,10 @@
 import { enterSneak, keyList, listenSneakKeys, mousetrap, quitSneak } from "./sneak"
-import { appScroll, appScrollY, openPage, registerBind, rotateSidebar } from "./util"
+import { appScroll, appScrollY, openPage, registerBind, resizeLeftSidebar, rotateSidebar } from "./util"
 
 const { KEYS } = Spicetify.Keyboard
+
+resizeLeftSidebar(200)
+registerBind("S", false, true, false, () => resizeLeftSidebar(200))
 
 // Ctrl + Tab and Ctrl + Shift + Tab to switch sidebar items
 registerBind("TAB", true, false, false, () => rotateSidebar(1))

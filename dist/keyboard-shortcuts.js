@@ -3177,7 +3177,7 @@ font-weight: 500;
   });
 
   // extensions/keyboard-shortcuts/util.tsx
-  var SCROLL_STEP, focusOnApp, appScroll, appScrollY, openPage, rotateSidebar, registerBind;
+  var SCROLL_STEP, focusOnApp, appScroll, appScrollY, openPage, rotateSidebar, resizeLeftSidebar, registerBind;
   var init_util = __esm({
     "extensions/keyboard-shortcuts/util.tsx"() {
       "use strict";
@@ -3202,6 +3202,10 @@ font-weight: 500;
           (x) => navLinks[x].click()
         );
       };
+      resizeLeftSidebar = (pxs) => {
+        const html = document.firstElementChild, htmlStyle = html.style;
+        htmlStyle.cssText = htmlStyle.cssText.replace(/(--left-sidebar-width: )[^;]+/, `$1${pxs}px`);
+      };
       registerBind = (keyName, ctrl, shift, alt3, callback) => {
         const key = Spicetify.Keyboard.KEYS[keyName];
         Spicetify.Keyboard.registerShortcut({ key, ctrl, shift, alt: alt3 }, (event) => {
@@ -3221,6 +3225,8 @@ font-weight: 500;
       init_sneak();
       init_util();
       ({ KEYS } = Spicetify.Keyboard);
+      resizeLeftSidebar(200);
+      registerBind("S", false, true, false, () => resizeLeftSidebar(200));
       registerBind("TAB", true, false, false, () => rotateSidebar(1));
       registerBind("TAB", true, true, false, () => rotateSidebar(-1));
       ({ History } = Spicetify.Platform);
