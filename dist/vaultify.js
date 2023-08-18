@@ -4677,7 +4677,7 @@ var vaultify = (() => {
           })
         );
         await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({ playlists, extensions, settings: settings2 }));
-        Spicetify.showNotification("Backed up Playlists and Settings");
+        Spicetify.showNotification("Backed up Playlists, Extensions and Settings");
       };
       restore = (mode) => async () => {
         let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
@@ -4687,7 +4687,7 @@ var vaultify = (() => {
         }
         if (mode === "extensions") {
           map((0, import_function15.tupled)(Spicetify.LocalStorage.set))(vault.extensions);
-          Spicetify.showNotification("Restored Settings");
+          Spicetify.showNotification("Restored Extensions");
         }
         if (mode === "settings") {
           vault.settings.map(([id, type, value]) => {
@@ -4703,6 +4703,7 @@ var vaultify = (() => {
             const settingReactProps = Object.values(setting)[1];
             settingReactProps.onChange({ target: setting });
           });
+          Spicetify.showNotification("Restored Settings");
         }
       };
       Promise.resolve().then(() => init_settings2());

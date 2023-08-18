@@ -84,7 +84,7 @@ export const backup = async () => {
     )
 
     await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({ playlists, extensions, settings }))
-    Spicetify.showNotification("Backed up Playlists and Settings")
+    Spicetify.showNotification("Backed up Playlists, Extensions and Settings")
 }
 
 type Vault = {
@@ -101,7 +101,7 @@ export const restore = (mode: "playlists" | "extensions" | "settings") => async 
     }
     if (mode === "extensions") {
         map(tupled(Spicetify.LocalStorage.set))(vault.extensions)
-        Spicetify.showNotification("Restored Settings")
+        Spicetify.showNotification("Restored Extensions")
     }
     if (mode === "settings") {
         vault.settings.map(([id, type, value]) => {
@@ -114,6 +114,7 @@ export const restore = (mode: "playlists" | "extensions" | "settings") => async 
             const settingReactProps = Object.values(setting)[1] as any
             settingReactProps.onChange({ target: setting })
         })
+        Spicetify.showNotification("Restored Settings")
     }
 }
 
