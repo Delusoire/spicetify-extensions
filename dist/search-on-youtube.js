@@ -4279,7 +4279,7 @@ var search;
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function14 = __toESM(require_function(), 1);
+      import_function14 = __toESM(require_function());
       init_Function();
       guard42 = (branches) => guard4(
         branches
@@ -4352,9 +4352,9 @@ var search;
     "shared/settings.tsx"() {
       "use strict";
       init_es6();
-      import_function15 = __toESM(require_function(), 1);
-      import_react = __toESM(require_react(), 1);
-      import_react_dom = __toESM(require_react_dom(), 1);
+      import_function15 = __toESM(require_function());
+      import_react = __toESM(require_react());
+      import_react_dom = __toESM(require_react_dom());
       init_fp();
       init_util();
       SettingsSection = class _SettingsSection {
@@ -4600,7 +4600,7 @@ var search;
   var init_app = __esm({
     "extensions/search-on-youtube/app.tsx"() {
       "use strict";
-      import_function16 = __toESM(require_function(), 1);
+      import_function16 = __toESM(require_function());
       init_Predicate2();
       init_api();
       init_parse();
@@ -4644,7 +4644,7 @@ var search;
   // extensions/search-on-youtube/entry.tsx
   init_es6();
   init_Record();
-  var import_function17 = __toESM(require_function(), 1);
+  var import_function17 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = ["ContextMenu", "CosmosAsync", "React", "ReactDOM"];

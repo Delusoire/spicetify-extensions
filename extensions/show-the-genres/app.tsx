@@ -9,7 +9,7 @@ import { getArtistsGenresOrRelated, updateArtistPage } from "./artistPage"
 import { genrePopup } from "./popup"
 import { CONFIG } from "./settings"
 
-import "./assets/styles"
+import "./assets/styles.scss"
 
 const searchPlaylist = (query: string) => Spicetify.Platform.History.push(`/search/${query}/playlists`)
 // @ts-ignore

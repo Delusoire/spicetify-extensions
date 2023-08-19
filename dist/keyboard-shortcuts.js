@@ -2902,12 +2902,6 @@ var keyboard;
     }
   });
 
-  // extensions/keyboard-shortcuts/assets/styles.css
-  var init_styles = __esm({
-    "extensions/keyboard-shortcuts/assets/styles.css"() {
-    }
-  });
-
   // extensions/keyboard-shortcuts/sneak.tsx
   var mousetrap, keyList, getSneakKeys, clearSomeSneakKeys, clearSneakKeys, enterSneak, quitSneak, clickElement, listenSneakKeys, shouldListenToSneakBinds, listeningToSneakBinds, sneakOverlay;
   var init_sneak = __esm({
@@ -2915,7 +2909,6 @@ var keyboard;
       "use strict";
       init_es6();
       init_function();
-      init_styles();
       mousetrap = Spicetify.Mousetrap();
       keyList = "abcdefghijklmnopqrstuvwxyz".split("");
       getSneakKeys = () => Array.from(sneakOverlay.getElementsByClassName("sneak-key"));
@@ -3199,6 +3192,19 @@ var keyboard;
     }
   });
 
+  // temp_stylePlugin:ni:sha-256;QL9DDk7W4Cvd3SZxYVftCFUYJ34OOOMYJhq3PLAu-LA
+  var init_ni_sha_256_QL9DDk7W4Cvd3SZxYVftCFUYJ34OOOMYJhq3PLAu_LA = __esm({
+    "temp_stylePlugin:ni:sha-256;QL9DDk7W4Cvd3SZxYVftCFUYJ34OOOMYJhq3PLAu-LA"() {
+    }
+  });
+
+  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\keyboard-shortcuts\assets\styles.scss
+  var init_styles = __esm({
+    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\keyboard-shortcuts\\assets\\styles.scss"() {
+      init_ni_sha_256_QL9DDk7W4Cvd3SZxYVftCFUYJ34OOOMYJhq3PLAu_LA();
+    }
+  });
+
   // extensions/keyboard-shortcuts/app.tsx
   var app_exports = {};
   var KEYS, History;
@@ -3274,9 +3280,9 @@ var keyboard;
     if (!document.getElementById(`keyboard-shortcuts-css`)) {
         const el = document.createElement("style")
         el.id = `keyboard-shortcuts-css`
-        el.textContent = `/* extensions/keyboard-shortcuts/assets/styles.css */
+        el.textContent = `/* temp_stylePlugin:ni:sha-256;QL9DDk7W4Cvd3SZxYVftCFUYJ34OOOMYJhq3PLAu-LA */
 #sneak-overlay {
-  z-index: 1e5;
+  z-index: 100000;
   position: absolute;
   width: 100%;
   height: 100%;

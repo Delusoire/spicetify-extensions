@@ -15397,7 +15397,7 @@ var star;
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function20 = __toESM(require_function(), 1);
+      import_function20 = __toESM(require_function());
       init_Function();
       guard42 = (branches) => guard6(
         branches
@@ -16180,9 +16180,9 @@ var star;
     "shared/settings.tsx"() {
       "use strict";
       init_es6();
-      import_function21 = __toESM(require_function(), 1);
-      import_react = __toESM(require_react(), 1);
-      import_react_dom = __toESM(require_react_dom(), 1);
+      import_function21 = __toESM(require_function());
+      import_react = __toESM(require_react());
+      import_react_dom = __toESM(require_react_dom());
       init_fp();
       init_util();
       SettingsSection = class _SettingsSection {
@@ -16408,7 +16408,7 @@ var star;
     "extensions/star-ratings/util.tsx"() {
       "use strict";
       init_es6();
-      import_function22 = __toESM(require_function(), 1);
+      import_function22 = __toESM(require_function());
       init_api();
       init_settings2();
       init_stars();
@@ -16470,7 +16470,7 @@ var star;
     "extensions/star-ratings/stars.tsx"() {
       "use strict";
       init_es6();
-      import_function23 = __toESM(require_function(), 1);
+      import_function23 = __toESM(require_function());
       init_api();
       init_util();
       init_ratings();
@@ -16599,8 +16599,8 @@ var star;
     "extensions/star-ratings/ratings.tsx"() {
       "use strict";
       init_es6();
-      import_function24 = __toESM(require_function(), 1);
-      import_NonEmptyArray = __toESM(require_NonEmptyArray(), 1);
+      import_function24 = __toESM(require_function());
+      import_NonEmptyArray = __toESM(require_NonEmptyArray());
       init_api();
       init_fp();
       init_util();
@@ -16686,8 +16686,8 @@ var star;
       "use strict";
       init_es6();
       init_Predicate2();
-      import_function25 = __toESM(require_function(), 1);
-      import_spectacles_ts = __toESM(require_dist(), 1);
+      import_function25 = __toESM(require_function());
+      import_spectacles_ts = __toESM(require_dist());
       init_api();
       init_util();
       init_ratings();
@@ -16860,7 +16860,7 @@ var star;
   // extensions/star-ratings/entry.tsx
   init_es6();
   init_Record();
-  var import_function26 = __toESM(require_function(), 1);
+  var import_function26 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = ["Player", "showNotification", ...mustLoadForApi, ...mustLoadForSettings, ...mustLoadForUtil];

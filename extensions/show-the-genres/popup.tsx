@@ -8,26 +8,15 @@ export const genrePopup = () => {
     Spicetify.PopupModal.display({
         title: `Genres of "${normalizeStr(Spicetify.Player.data.track?.metadata?.title!)}"`,
         content: (
-            <div>
-                <div className="popup-row">
-                    <hr className="space"></hr>
-                </div>
+            <div className="genres-popup">
+                <hr className="space"></hr>
                 <SpotifyGenresContainer />
-                <LastFmTagsContainer />
+                <hr className="space" />
+                {lastFmTags.length === 0 ? <></> : [<LastFmTagsContainer />, <hr className="space" />]}
             </div>
         ) as any,
+        isLarge: true,
     })
-
-    // Title gets added after the rest is loaded
-    // const container = document.createElement("div")
-    // const titleGenresOf = document.querySelector("h1.main-type-alto")
-    // if (titleGenresOf) {
-    //     container.appendChild(titleGenresOf)
-
-    //     const headerSection = document.querySelector(".main-trackCreditsModal-header")
-
-    //     headerSection?.prepend(container)
-    // }
 }
 
 // @ts-ignore
@@ -68,12 +57,7 @@ const LastFmTagsContainer = () => {
 
     return (
         <div>
-            <div className="popup-row">
-                <hr className="space" />
-            </div>
-            <div className="popup-row">
-                <h1 className="div-title">Last FM Tags</h1>
-            </div>
+            <h1 className="div-title">Last FM Tags</h1>
             {value.map(n => (
                 <ButtonElement name={titleCase(n)} onClick={openPlaylistSearchResults(n)} />
             ))}

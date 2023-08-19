@@ -3224,7 +3224,7 @@ var play;
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function9 = __toESM(require_function(), 1);
+      import_function9 = __toESM(require_function());
       pMchain = (f3) => async (fa) => f3(await fa);
       chunckify = (n) => (g) => (0, import_function9.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
     }
@@ -3273,7 +3273,7 @@ var play;
     "extensions/play-enhanced-songs/app.tsx"() {
       "use strict";
       init_Predicate2();
-      import_function10 = __toESM(require_function(), 1);
+      import_function10 = __toESM(require_function());
       init_api();
       app_default = {};
       ({ URI: URI4 } = Spicetify);
@@ -3295,7 +3295,7 @@ var play;
   // extensions/play-enhanced-songs/entry.tsx
   init_es6();
   init_Record();
-  var import_function11 = __toESM(require_function(), 1);
+  var import_function11 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = ["ContextMenu", "CosmosAsync", "Platform"];

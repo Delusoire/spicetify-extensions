@@ -4311,7 +4311,7 @@ var vaultify = (() => {
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function13 = __toESM(require_function(), 1);
+      import_function13 = __toESM(require_function());
       init_Function();
       guard22 = (branches) => guard4(branches);
       guard42 = (branches) => guard4(
@@ -4372,9 +4372,9 @@ var vaultify = (() => {
     "shared/settings.tsx"() {
       "use strict";
       init_es6();
-      import_function14 = __toESM(require_function(), 1);
-      import_react = __toESM(require_react(), 1);
-      import_react_dom = __toESM(require_react_dom(), 1);
+      import_function14 = __toESM(require_function());
+      import_react = __toESM(require_react());
+      import_react_dom = __toESM(require_react_dom());
       init_fp();
       init_util();
       SettingsSection = class _SettingsSection {
@@ -4621,7 +4621,7 @@ var vaultify = (() => {
       init_es6();
       init_Array();
       init_Record();
-      import_function15 = __toESM(require_function(), 1);
+      import_function15 = __toESM(require_function());
       init_api();
       init_fp();
       app_default = {};
@@ -4711,7 +4711,7 @@ var vaultify = (() => {
   // extensions/vaultify/entry.tsx
   init_es6();
   init_Record();
-  var import_function16 = __toESM(require_function(), 1);
+  var import_function16 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = [

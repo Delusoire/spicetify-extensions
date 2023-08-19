@@ -6099,10 +6099,10 @@ var sort;
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function24 = __toESM(require_function(), 1);
+      import_function24 = __toESM(require_function());
       init_Function();
       init_Record();
-      import_Semigroup3 = __toESM(require_Semigroup(), 1);
+      import_Semigroup3 = __toESM(require_Semigroup());
       guard42 = (branches) => guard4(
         branches
       );
@@ -6120,7 +6120,7 @@ var sort;
     "shared/api.tsx"() {
       "use strict";
       init_Function();
-      import_function25 = __toESM(require_function(), 1);
+      import_function25 = __toESM(require_function());
       init_fp();
       init_util();
       ({ URI: URI13 } = Spicetify);
@@ -6273,9 +6273,9 @@ var sort;
     "shared/settings.tsx"() {
       "use strict";
       init_es6();
-      import_function26 = __toESM(require_function(), 1);
-      import_react = __toESM(require_react(), 1);
-      import_react_dom = __toESM(require_react_dom(), 1);
+      import_function26 = __toESM(require_function());
+      import_react = __toESM(require_react());
+      import_react_dom = __toESM(require_react_dom());
       init_fp();
       init_util();
       SettingsSection = class _SettingsSection {
@@ -6569,7 +6569,7 @@ var sort;
       init_Record2();
       init_NonEmptyArray();
       init_Record();
-      import_function27 = __toESM(require_function(), 1);
+      import_function27 = __toESM(require_function());
       init_string();
       init_es62();
       init_api();
@@ -6745,7 +6745,7 @@ var sort;
   // extensions/sort-plus/entry.tsx
   init_es6();
   init_Record();
-  var import_function28 = __toESM(require_function(), 1);
+  var import_function28 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = [

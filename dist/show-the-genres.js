@@ -4443,7 +4443,7 @@ var show;
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function13 = __toESM(require_function(), 1);
+      import_function13 = __toESM(require_function());
       init_Function();
       guard42 = (branches) => guard4(
         branches
@@ -4460,7 +4460,7 @@ var show;
     "shared/api.tsx"() {
       "use strict";
       init_Function();
-      import_function14 = __toESM(require_function(), 1);
+      import_function14 = __toESM(require_function());
       init_fp();
       init_util();
       ({ URI: URI5 } = Spicetify);
@@ -4576,7 +4576,7 @@ var show;
       "use strict";
       init_es6();
       init_String();
-      import_function17 = __toESM(require_function(), 1);
+      import_function17 = __toESM(require_function());
       init_api();
       init_fp();
       init_util();
@@ -4633,27 +4633,21 @@ var show;
     }
   });
 
-  // extensions/show-the-genres/assets/styles.css
-  var init_styles = __esm({
-    "extensions/show-the-genres/assets/styles.css"() {
-    }
-  });
-
   // extensions/show-the-genres/popup.tsx
   var import_react, genrePopup, ButtonElement, SpotifyGenresContainer, LastFmTagsContainer;
   var init_popup = __esm({
     "extensions/show-the-genres/popup.tsx"() {
       "use strict";
       init_es6();
-      import_react = __toESM(require_react(), 1);
+      import_react = __toESM(require_react());
       init_api();
       init_util();
       init_app();
-      init_styles();
       genrePopup = () => {
         Spicetify.PopupModal.display({
           title: `Genres of "${normalizeStr(Spicetify.Player.data.track?.metadata?.title)}"`,
-          content: /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("div", { className: "popup-row" }, /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" })), /* @__PURE__ */ import_react.default.createElement(SpotifyGenresContainer, null), /* @__PURE__ */ import_react.default.createElement(LastFmTagsContainer, null))
+          content: /* @__PURE__ */ import_react.default.createElement("div", { className: "genres-popup" }, /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" }), /* @__PURE__ */ import_react.default.createElement(SpotifyGenresContainer, null), /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" }), lastFmTags.length === 0 ? /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null) : [/* @__PURE__ */ import_react.default.createElement(LastFmTagsContainer, null), /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" })]),
+          isLarge: true
         });
       };
       globalThis.genrePopup = genrePopup;
@@ -4680,7 +4674,7 @@ var show;
           Spicetify.Platform.History.push(`/search/${query}/playlists`);
           Spicetify.PopupModal.hide();
         };
-        return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("div", { className: "popup-row" }, /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" })), /* @__PURE__ */ import_react.default.createElement("div", { className: "popup-row" }, /* @__PURE__ */ import_react.default.createElement("h1", { className: "div-title" }, "Last FM Tags")), value.map((n) => /* @__PURE__ */ import_react.default.createElement(ButtonElement, { name: titleCase(n), onClick: openPlaylistSearchResults(n) })));
+        return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("h1", { className: "div-title" }, "Last FM Tags"), value.map((n) => /* @__PURE__ */ import_react.default.createElement(ButtonElement, { name: titleCase(n), onClick: openPlaylistSearchResults(n) })));
       };
     }
   });
@@ -4698,9 +4692,9 @@ var show;
     "shared/settings.tsx"() {
       "use strict";
       init_es6();
-      import_function18 = __toESM(require_function(), 1);
-      import_react2 = __toESM(require_react(), 1);
-      import_react_dom = __toESM(require_react_dom(), 1);
+      import_function18 = __toESM(require_function());
+      import_react2 = __toESM(require_react());
+      import_react_dom = __toESM(require_react_dom());
       init_fp();
       init_util();
       SettingsSection = class _SettingsSection {
@@ -4937,6 +4931,19 @@ var show;
     }
   });
 
+  // temp_stylePlugin:ni:sha-256;haf94KKzXo8rIBNfWRsolhPvhOA6Csn7htjoUcaw1pE
+  var init_ni_sha_256_haf94KKzXo8rIBNfWRsolhPvhOA6Csn7htjoUcaw1pE = __esm({
+    "temp_stylePlugin:ni:sha-256;haf94KKzXo8rIBNfWRsolhPvhOA6Csn7htjoUcaw1pE"() {
+    }
+  });
+
+  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\show-the-genres\assets\styles.scss
+  var init_styles = __esm({
+    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\show-the-genres\\assets\\styles.scss"() {
+      init_ni_sha_256_haf94KKzXo8rIBNfWRsolhPvhOA6Csn7htjoUcaw1pE();
+    }
+  });
+
   // extensions/show-the-genres/app.tsx
   var app_exports = {};
   __export(app_exports, {
@@ -4949,7 +4956,7 @@ var show;
     "extensions/show-the-genres/app.tsx"() {
       "use strict";
       init_es6();
-      import_function19 = __toESM(require_function(), 1);
+      import_function19 = __toESM(require_function());
       init_api();
       init_fp();
       init_util();
@@ -5009,7 +5016,7 @@ var show;
   // extensions/show-the-genres/entry.tsx
   init_es6();
   init_Record();
-  var import_function20 = __toESM(require_function(), 1);
+  var import_function20 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = ["CosmosAsync", "GraphQL", "Locale", "Platform", "Player", "PopupModal", "React", "ReactDOM"];
@@ -5023,76 +5030,20 @@ var show;
     if (!document.getElementById(`show-the-genres-css`)) {
         const el = document.createElement("style")
         el.id = `show-the-genres-css`
-        el.textContent = `/* extensions/show-the-genres/assets/styles.css */
-.popup-row::after {
+        el.textContent = `/* temp_stylePlugin:ni:sha-256;haf94KKzXo8rIBNfWRsolhPvhOA6Csn7htjoUcaw1pE */
+.genres-popup ::after {
   content: "";
   display: table;
   clear: both;
 }
-.popup-row .col {
-  display: flex;
-  padding: 10px 0;
-  align-items: center;
-}
-.popup-row .col.description {
-  float: left;
-  padding-right: 15px;
-}
-.popup-row .col.action {
-  float: right;
-  text-align: right;
-}
-.popup-row .div-title {
+.genres-popup .div-title {
   color: var(--spice-text);
 }
-.popup-row .divider {
-  height: 2px;
-  border-width: 0;
-  background-color: var(--spice-button-disabled);
-}
-.popup-row .space {
+.genres-popup .space {
   margin-bottom: 20px;
   visibility: hidden;
 }
-.popup-row .info {
-}
-.popup-row .red {
-  font-size: 13px;
-  color: #59CE8F;
-}
-.popup-row .demo {
-  font-size: 13px;
-  color: #59CE8F;
-}
-.popup-row .little-space {
-  margin-bottom: 10px;
-}
-.popup-row .inputbox {
-  padding: 10px;
-  border-radius: 15px;
-  border: 0;
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.06);
-}
-button.checkbox {
-  align-items: center;
-  color: var(--spice-text);
-  cursor: pointer;
-  display: flex;
-  margin-inline-start: 12px;
-}
-button.checkbox.disabled {
-  color: rgba(var(--spice-rgb-text), 0.3);
-}
-select {
-  color: var(--spice-text);
-  background: rgba(var(--spice-rgb-shadow), 0.7);
-  border: 0;
-  height: 32px;
-}
-::-webkit-scrollbar {
-  width: 8px;
-}
-.login-button {
+.genres-popup .login-button {
   background-color: var(--spice-button);
   border-radius: 8px;
   border-style: none;
@@ -5103,59 +5054,6 @@ select {
   margin: 10px;
   padding: 5px 10px;
   text-align: center;
-}
-.green {
-  background-color: #76ba99;
-  color: #25316D;
-}
-.red {
-  background-color: #A9555E;
-}
-.small-button.red {
-  background-color: #A9555E !important;
-}
-input.small-input {
-  padding: 5px !important;
-  border-radius: 6px !important;
-  right: 0px !important;
-  margin: 5px;
-}
-.small-button {
-  margin-right: 20px;
-}
-.popup-row .inputbox[type=color] {
-  background-color: var(--spice-custom-main-secondary) !important;
-  padding: 0px;
-  border-radius: 5px !important;
-  border: none;
-  margin-right: 10px;
-}
-.popup-row .inputbox[type=color]::-webkit-color-swatch {
-  border-radius: 5px !important;
-  border: none;
-}
-.popup-row.search-div .col {
-  position: relative;
-}
-.popup-row .nord-search-container {
-  width: 100%;
-}
-.popup-row .nord-search-icon {
-  position: absolute;
-  margin: 10px;
-}
-.popup-row .nord-search {
-  padding: 10px 36px !important;
-  width: 100%;
-}
-.popup-row .display-none {
-  display: none !important;
-}
-.GenericModal[aria-label*="Genres of"] .main-trackCreditsModal-header .tetrax-settings-discord-link {
-  color: var(--spice-custom-success);
-}
-.GenericModal[aria-label*="Genres of"] .main-trackCreditsModal-header .tetrax-settings-discord-link:hover {
-  color: var(--spice-custom-link-hover);
 }`
         document.head.appendChild(el)
     }
