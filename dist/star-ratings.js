@@ -16226,9 +16226,7 @@ var star;
               return;
             await sleep(100);
           }
-          const allSettingsContainer = document.querySelector(".main-view-container__scroll-node-child main div");
-          if (!allSettingsContainer)
-            return console.error("[settings] container not found");
+          const allSettingsContainer = document.querySelector(".x-settings-container");
           let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.sectionId);
           if (!pluginSettingsContainer) {
             pluginSettingsContainer = document.createElement("div");

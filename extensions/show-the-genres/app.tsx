@@ -7,8 +7,9 @@ import { pMchain } from "../../shared/fp"
 import { titleCase, waitForElement } from "../../shared/util"
 import { getArtistsGenresOrRelated, updateArtistPage } from "./artistPage"
 import { genrePopup } from "./popup"
-import "./popup.css"
 import { CONFIG } from "./settings"
+
+import "./assets/styles"
 
 const searchPlaylist = (query: string) => Spicetify.Platform.History.push(`/search/${query}/playlists`)
 // @ts-ignore
@@ -21,10 +22,8 @@ const updateGenreContainer = async (genres: string[]) => {
     genreContainer.innerHTML = await p(
         genres,
         a.map(async genre => {
-            const uri = await fetchWebSoundOfSpotifyPlaylist(genre)
-            return `<a ${
-                uri === null ? `href="#" onclick="genrePopup()"` : `href="${uri}"`
-            } style="color: var(--spice-subtext); font-size: 12px">${titleCase(genre)}</a>`
+            const uri = (await fetchWebSoundOfSpotifyPlaylist(genre)) ?? "#"
+            return `<a href="${uri}" style="color: var(--spice-subtext); font-size: 12px">${titleCase(genre)}</a>`
         }),
         ps => Promise.all(ps),
         pMchain(a.intercalate(str.Monoid)(`<span>, </span>`)),

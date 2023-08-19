@@ -1,6 +1,8 @@
 import { enterSneak, keyList, listenSneakKeys, mousetrap, quitSneak } from "./sneak"
 import { appScroll, appScrollY, openPage, registerBind, resizeLeftSidebar, rotateSidebar } from "./util"
 
+import "./assets/styles"
+
 const { KEYS } = Spicetify.Keyboard
 
 resizeLeftSidebar(200)

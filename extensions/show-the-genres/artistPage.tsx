@@ -4,7 +4,6 @@ import { flow as f, pipe as p } from "fp-ts/function"
 import { fetchGQLArtistRelated, fetchWebArtistsSpot, fetchWebSoundOfSpotifyPlaylist } from "../../shared/api"
 import { pMchain } from "../../shared/fp"
 import { SpotifyURI, titleCase, waitForElement } from "../../shared/util"
-import "./popup.css"
 
 const { URI } = Spicetify
 

@@ -4569,12 +4569,6 @@ var show;
     }
   });
 
-  // extensions/show-the-genres/popup.css
-  var init_popup = __esm({
-    "extensions/show-the-genres/popup.css"() {
-    }
-  });
-
   // extensions/show-the-genres/artistPage.tsx
   var import_function17, URI6, updateArtistPage, getArtistsGenresOrRelated;
   var init_artistPage = __esm({
@@ -4586,7 +4580,6 @@ var show;
       init_api();
       init_fp();
       init_util();
-      init_popup();
       ({ URI: URI6 } = Spicetify);
       updateArtistPage = async ({ pathname }) => {
         const uri = URI6.from(pathname);
@@ -4640,9 +4633,15 @@ var show;
     }
   });
 
+  // extensions/show-the-genres/assets/styles.css
+  var init_styles = __esm({
+    "extensions/show-the-genres/assets/styles.css"() {
+    }
+  });
+
   // extensions/show-the-genres/popup.tsx
-  var import_react, genrePopup, ButtonElement, GenreItem, LastFmTagItem;
-  var init_popup2 = __esm({
+  var import_react, genrePopup, ButtonElement, SpotifyGenresContainer, LastFmTagsContainer;
+  var init_popup = __esm({
     "extensions/show-the-genres/popup.tsx"() {
       "use strict";
       init_es6();
@@ -4650,31 +4649,19 @@ var show;
       init_api();
       init_util();
       init_app();
-      init_popup();
+      init_styles();
       genrePopup = () => {
         Spicetify.PopupModal.display({
           title: `Genres of "${normalizeStr(Spicetify.Player.data.track?.metadata?.title)}"`,
-          content: /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("div", { className: "popup-row" }, /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" })), /* @__PURE__ */ import_react.default.createElement(GenreItem, null), /* @__PURE__ */ import_react.default.createElement(LastFmTagItem, null)),
-          isLarge: true
+          content: /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("div", { className: "popup-row" }, /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" })), /* @__PURE__ */ import_react.default.createElement(SpotifyGenresContainer, null), /* @__PURE__ */ import_react.default.createElement(LastFmTagsContainer, null))
         });
-        const container = document.createElement("div");
-        const titleGenresOf = document.querySelector("h1.main-type-alto");
-        if (titleGenresOf) {
-          container.appendChild(titleGenresOf);
-          const headerSection = document.querySelector(".main-trackCreditsModal-header");
-          headerSection?.prepend(container);
-        }
       };
       globalThis.genrePopup = genrePopup;
       ButtonElement = ({ name = "", color = "", onClick = Task_exports.of(void 0) }) => /* @__PURE__ */ import_react.default.createElement("button", { className: `login-button${color}`, onClick }, name);
-      GenreItem = () => {
+      SpotifyGenresContainer = () => {
         let [value, setValue] = (0, import_react.useState)(spotifyGenres);
-        Spicetify.Player.addEventListener("songchange", () => {
-          setTimeout(() => {
-            setValue(spotifyGenres);
-          }, 500);
-        });
-        const onClick = (query) => async () => {
+        Spicetify.Player.addEventListener("songchange", () => setTimeout(() => setValue(spotifyGenres), 500));
+        const openSoundOfPlaylistOrSearchResults = (query) => async () => {
           let uri = await fetchWebSoundOfSpotifyPlaylist(query);
           if (uri === null)
             Spicetify.Platform.History.push(`/search/${query}/playlists`);
@@ -4682,22 +4669,18 @@ var show;
             Spicetify.Platform.History.push(`/playlist/${uri.split(":")[2]}`);
           Spicetify.PopupModal.hide();
         };
-        return value.map((n) => /* @__PURE__ */ import_react.default.createElement(ButtonElement, { name: titleCase(n), onClick: onClick(n) }));
+        return value.map((n) => /* @__PURE__ */ import_react.default.createElement(ButtonElement, { name: titleCase(n), onClick: openSoundOfPlaylistOrSearchResults(n) }));
       };
-      LastFmTagItem = () => {
+      LastFmTagsContainer = () => {
         if (lastFmTags.length == 0)
-          return /* @__PURE__ */ import_react.default.createElement("div", null);
+          return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null);
         let [value, setValue] = (0, import_react.useState)(lastFmTags);
-        Spicetify.Player.addEventListener("songchange", () => {
-          setTimeout(() => {
-            setValue(lastFmTags);
-          }, 100);
-        });
-        const onClick = (query) => async () => {
+        Spicetify.Player.addEventListener("songchange", () => setTimeout(() => setValue(lastFmTags), 100));
+        const openPlaylistSearchResults = (query) => async () => {
           Spicetify.Platform.History.push(`/search/${query}/playlists`);
           Spicetify.PopupModal.hide();
         };
-        return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("div", { className: "popup-row" }, /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" })), /* @__PURE__ */ import_react.default.createElement("div", { className: "popup-row" }, /* @__PURE__ */ import_react.default.createElement("h1", { className: "div-title" }, "Last FM Tags")), value.map((n) => /* @__PURE__ */ import_react.default.createElement(ButtonElement, { name: titleCase(n), onClick: onClick(n) })));
+        return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("div", { className: "popup-row" }, /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" })), /* @__PURE__ */ import_react.default.createElement("div", { className: "popup-row" }, /* @__PURE__ */ import_react.default.createElement("h1", { className: "div-title" }, "Last FM Tags")), value.map((n) => /* @__PURE__ */ import_react.default.createElement(ButtonElement, { name: titleCase(n), onClick: openPlaylistSearchResults(n) })));
       };
     }
   });
@@ -4761,9 +4744,7 @@ var show;
               return;
             await sleep(100);
           }
-          const allSettingsContainer = document.querySelector(".main-view-container__scroll-node-child main div");
-          if (!allSettingsContainer)
-            return console.error("[settings] container not found");
+          const allSettingsContainer = document.querySelector(".x-settings-container");
           let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.sectionId);
           if (!pluginSettingsContainer) {
             pluginSettingsContainer = document.createElement("div");
@@ -4973,9 +4954,9 @@ var show;
       init_fp();
       init_util();
       init_artistPage();
-      init_popup2();
       init_popup();
       init_settings2();
+      init_styles();
       app_default = {};
       searchPlaylist = (query) => Spicetify.Platform.History.push(`/search/${query}/playlists`);
       globalThis.searchPlaylist = searchPlaylist;
@@ -4985,8 +4966,8 @@ var show;
         genreContainer.innerHTML = await (0, import_function19.pipe)(
           genres,
           Array_exports.map(async (genre) => {
-            const uri = await fetchWebSoundOfSpotifyPlaylist(genre);
-            return `<a ${uri === null ? `href="#" onclick="genrePopup()"` : `href="${uri}"`} style="color: var(--spice-subtext); font-size: 12px">${titleCase(genre)}</a>`;
+            const uri = await fetchWebSoundOfSpotifyPlaylist(genre) ?? "#";
+            return `<a href="${uri}" style="color: var(--spice-subtext); font-size: 12px">${titleCase(genre)}</a>`;
           }),
           (ps) => Promise.all(ps),
           pMchain(Array_exports.intercalate(string_exports.Monoid)(`<span>, </span>`))
@@ -5042,7 +5023,7 @@ var show;
     if (!document.getElementById(`show-the-genres-css`)) {
         const el = document.createElement("style")
         el.id = `show-the-genres-css`
-        el.textContent = `/* extensions/show-the-genres/popup.css */
+        el.textContent = `/* extensions/show-the-genres/assets/styles.css */
 .popup-row::after {
   content: "";
   display: table;

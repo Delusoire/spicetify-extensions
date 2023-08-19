@@ -2902,6 +2902,12 @@ var keyboard;
     }
   });
 
+  // extensions/keyboard-shortcuts/assets/styles.css
+  var init_styles = __esm({
+    "extensions/keyboard-shortcuts/assets/styles.css"() {
+    }
+  });
+
   // extensions/keyboard-shortcuts/sneak.tsx
   var mousetrap, keyList, getSneakKeys, clearSomeSneakKeys, clearSneakKeys, enterSneak, quitSneak, clickElement, listenSneakKeys, shouldListenToSneakBinds, listeningToSneakBinds, sneakOverlay;
   var init_sneak = __esm({
@@ -2909,6 +2915,7 @@ var keyboard;
       "use strict";
       init_es6();
       init_function();
+      init_styles();
       mousetrap = Spicetify.Mousetrap();
       keyList = "abcdefghijklmnopqrstuvwxyz".split("");
       getSneakKeys = () => Array.from(sneakOverlay.getElementsByClassName("sneak-key"));
@@ -2929,9 +2936,8 @@ var keyboard;
         if (clearSneakKeys())
           return;
         const isElementVisible = ({ style }) => style.opacity !== "0" && style.display !== "none" && style.visibility !== "hidden";
-        const isElementInViewPort = (e) => {
+        const isElementInViewPort = (e, { clientHeight, clientWidth } = document.body) => {
           const bound = e.getBoundingClientRect();
-          const { clientHeight, clientWidth } = document.body;
           const mid = (a, b) => (a + b) / 2;
           const clamp = (m, M) => (x) => Math.max(Math.min(x, M), m);
           const within = (m, M) => (x) => x === clamp(m, M)(x);
@@ -2939,13 +2945,11 @@ var keyboard;
         };
         const createSneakKey = (target, key, top, left) => {
           const sneakKey = document.createElement("span");
-          {
-            sneakKey.classList.add("sneak-key");
-            sneakKey.innerText = key;
-            sneakKey.style.top = top + "px";
-            sneakKey.style.left = left + "px";
-            sneakKey.target = target;
-          }
+          sneakKey.classList.add("sneak-key");
+          sneakKey.innerText = key;
+          sneakKey.style.top = top + "px";
+          sneakKey.style.left = left + "px";
+          sneakKey.target = target;
           return sneakKey;
         };
         const sneakKeysFragment = document.createDocumentFragment();
@@ -3004,28 +3008,7 @@ var keyboard;
       shouldListenToSneakBinds = false;
       listeningToSneakBinds = false;
       sneakOverlay = document.createElement("div");
-      {
-        sneakOverlay.id = "sneak-overlay";
-        sneakOverlay.style.zIndex = `${Number.MAX_SAFE_INTEGER}`;
-        sneakOverlay.style.position = "absolute";
-        sneakOverlay.style.width = "100%";
-        sneakOverlay.style.height = "100%";
-        sneakOverlay.style.display = "none";
-        sneakOverlay.innerHTML = `<style>
-.sneak-key {
-position: fixed;
-padding: 3px 6px;
-background-color: black;
-border-radius: 3px;
-border: solid 2px white;
-color: white;
-text-transform: lowercase;
-line-height: normal;
-font-size: 14px;
-font-weight: 500;
-}
-</style>`;
-      }
+      sneakOverlay.id = "sneak-overlay";
       document.body.append(sneakOverlay);
     }
   });
@@ -3224,6 +3207,7 @@ font-weight: 500;
       "use strict";
       init_sneak();
       init_util();
+      init_styles();
       ({ KEYS } = Spicetify.Keyboard);
       resizeLeftSidebar(200);
       registerBind("S", false, true, false, () => resizeLeftSidebar(200));
@@ -3286,3 +3270,30 @@ font-weight: 500;
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();
 })();
+(async () => {
+    if (!document.getElementById(`keyboard-shortcuts-css`)) {
+        const el = document.createElement("style")
+        el.id = `keyboard-shortcuts-css`
+        el.textContent = `/* extensions/keyboard-shortcuts/assets/styles.css */
+#sneak-overlay {
+  z-index: 1e5;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+#sneak-overlay > .sneak-key {
+  position: fixed;
+  padding: 3px 6px;
+  background-color: black;
+  border-radius: 3px;
+  border: solid 2px white;
+  color: white;
+  text-transform: lowercase;
+  line-height: normal;
+  font-size: 14px;
+  font-weight: 500;
+}`
+        document.head.appendChild(el)
+    }
+})()
