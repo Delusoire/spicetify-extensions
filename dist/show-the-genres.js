@@ -4646,7 +4646,7 @@ var show;
       genrePopup = () => {
         Spicetify.PopupModal.display({
           title: `Genres of "${normalizeStr(Spicetify.Player.data.track?.metadata?.title)}"`,
-          content: /* @__PURE__ */ import_react.default.createElement("div", { className: "genres-popup" }, /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" }), /* @__PURE__ */ import_react.default.createElement(SpotifyGenresContainer, null), /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" }), lastFmTags.length === 0 ? /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null) : [/* @__PURE__ */ import_react.default.createElement(LastFmTagsContainer, null), /* @__PURE__ */ import_react.default.createElement("hr", { className: "space" })]),
+          content: /* @__PURE__ */ import_react.default.createElement("div", { className: "genres-popup" }, spotifyGenres.length === 0 ? /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null) : /* @__PURE__ */ import_react.default.createElement(SpotifyGenresContainer, null), lastFmTags.length === 0 ? /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null) : /* @__PURE__ */ import_react.default.createElement(LastFmTagsContainer, null)),
           isLarge: true
         });
       };
@@ -4663,7 +4663,7 @@ var show;
             Spicetify.Platform.History.push(`/playlist/${uri.split(":")[2]}`);
           Spicetify.PopupModal.hide();
         };
-        return value.map((n) => /* @__PURE__ */ import_react.default.createElement(ButtonElement, { name: titleCase(n), onClick: openSoundOfPlaylistOrSearchResults(n) }));
+        return /* @__PURE__ */ import_react.default.createElement("div", { className: "spaced-down" }, /* @__PURE__ */ import_react.default.createElement("h1", { className: "title" }, "Spotify Genres"), value.map((n) => /* @__PURE__ */ import_react.default.createElement(ButtonElement, { name: titleCase(n), onClick: openSoundOfPlaylistOrSearchResults(n) })));
       };
       LastFmTagsContainer = () => {
         if (lastFmTags.length == 0)
@@ -4674,7 +4674,7 @@ var show;
           Spicetify.Platform.History.push(`/search/${query}/playlists`);
           Spicetify.PopupModal.hide();
         };
-        return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("h1", { className: "div-title" }, "Last FM Tags"), value.map((n) => /* @__PURE__ */ import_react.default.createElement(ButtonElement, { name: titleCase(n), onClick: openPlaylistSearchResults(n) })));
+        return /* @__PURE__ */ import_react.default.createElement("div", { className: "spaced-down" }, /* @__PURE__ */ import_react.default.createElement("h1", { className: "title" }, "Last FM Tags"), value.map((n) => /* @__PURE__ */ import_react.default.createElement(ButtonElement, { name: titleCase(n), onClick: openPlaylistSearchResults(n) })));
       };
     }
   });
@@ -4931,16 +4931,16 @@ var show;
     }
   });
 
-  // temp_stylePlugin:ni:sha-256;haf94KKzXo8rIBNfWRsolhPvhOA6Csn7htjoUcaw1pE
-  var init_ni_sha_256_haf94KKzXo8rIBNfWRsolhPvhOA6Csn7htjoUcaw1pE = __esm({
-    "temp_stylePlugin:ni:sha-256;haf94KKzXo8rIBNfWRsolhPvhOA6Csn7htjoUcaw1pE"() {
+  // temp_stylePlugin:ni:sha-256;ecqffHUQx-RTPp1MF0lfm1g3km7_eMmW78ldU9g87Ig
+  var init_ni_sha_256_ecqffHUQx_RTPp1MF0lfm1g3km7_eMmW78ldU9g87Ig = __esm({
+    "temp_stylePlugin:ni:sha-256;ecqffHUQx-RTPp1MF0lfm1g3km7_eMmW78ldU9g87Ig"() {
     }
   });
 
   // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\show-the-genres\assets\styles.scss
   var init_styles = __esm({
     "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\show-the-genres\\assets\\styles.scss"() {
-      init_ni_sha_256_haf94KKzXo8rIBNfWRsolhPvhOA6Csn7htjoUcaw1pE();
+      init_ni_sha_256_ecqffHUQx_RTPp1MF0lfm1g3km7_eMmW78ldU9g87Ig();
     }
   });
 
@@ -5030,18 +5030,17 @@ var show;
     if (!document.getElementById(`show-the-genres-css`)) {
         const el = document.createElement("style")
         el.id = `show-the-genres-css`
-        el.textContent = `/* temp_stylePlugin:ni:sha-256;haf94KKzXo8rIBNfWRsolhPvhOA6Csn7htjoUcaw1pE */
+        el.textContent = `/* temp_stylePlugin:ni:sha-256;ecqffHUQx-RTPp1MF0lfm1g3km7_eMmW78ldU9g87Ig */
 .genres-popup ::after {
   content: "";
   display: table;
   clear: both;
 }
-.genres-popup .div-title {
+.genres-popup .title {
   color: var(--spice-text);
 }
-.genres-popup .space {
+.genres-popup .spaced-down {
   margin-bottom: 20px;
-  visibility: hidden;
 }
 .genres-popup .login-button {
   background-color: var(--spice-button);
@@ -5054,6 +5053,9 @@ var show;
   margin: 10px;
   padding: 5px 10px;
   text-align: center;
+}
+.genres-popup .login-button:hover {
+  background-color: var(--spice-button-active);
 }`
         document.head.appendChild(el)
     }

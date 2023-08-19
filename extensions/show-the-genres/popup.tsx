@@ -9,10 +9,8 @@ export const genrePopup = () => {
         title: `Genres of "${normalizeStr(Spicetify.Player.data.track?.metadata?.title!)}"`,
         content: (
             <div className="genres-popup">
-                <hr className="space"></hr>
-                <SpotifyGenresContainer />
-                <hr className="space" />
-                {lastFmTags.length === 0 ? <></> : [<LastFmTagsContainer />, <hr className="space" />]}
+                {spotifyGenres.length === 0 ? <></> : <SpotifyGenresContainer />}
+                {lastFmTags.length === 0 ? <></> : <LastFmTagsContainer />}
             </div>
         ) as any,
         isLarge: true,
@@ -41,7 +39,14 @@ const SpotifyGenresContainer = () => {
         Spicetify.PopupModal.hide()
     }
 
-    return value.map(n => <ButtonElement name={titleCase(n)} onClick={openSoundOfPlaylistOrSearchResults(n)} />)
+    return (
+        <div className="spaced-down">
+            <h1 className="title">Spotify Genres</h1>
+            {value.map(n => (
+                <ButtonElement name={titleCase(n)} onClick={openSoundOfPlaylistOrSearchResults(n)} />
+            ))}
+        </div>
+    )
 }
 
 const LastFmTagsContainer = () => {
@@ -56,8 +61,8 @@ const LastFmTagsContainer = () => {
     }
 
     return (
-        <div>
-            <h1 className="div-title">Last FM Tags</h1>
+        <div className="spaced-down">
+            <h1 className="title">Last FM Tags</h1>
             {value.map(n => (
                 <ButtonElement name={titleCase(n)} onClick={openPlaylistSearchResults(n)} />
             ))}
