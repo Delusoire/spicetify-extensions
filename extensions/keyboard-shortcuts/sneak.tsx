@@ -30,9 +30,8 @@ export const enterSneak = (event: KeyboardEvent) => {
 
     const isElementVisible = ({ style }: HTMLElement) =>
         style.opacity !== "0" && style.display !== "none" && style.visibility !== "hidden"
-    const isElementInViewPort = (e: HTMLElement) => {
+    const isElementInViewPort = (e: HTMLElement, { clientHeight, clientWidth } = document.body) => {
         const bound = e.getBoundingClientRect()
-        const { clientHeight, clientWidth } = document.body
         const mid = (a: number, b: number) => (a + b) / 2
         const clamp = (m: number, M: number) => (x: number) => Math.max(Math.min(x, M), m)
         const within = (m: number, M: number) => (x: number) => x === clamp(m, M)(x)
@@ -44,13 +43,11 @@ export const enterSneak = (event: KeyboardEvent) => {
 
     const createSneakKey = (target: HTMLElement, key: string, top: string | number, left: string | number) => {
         const sneakKey = document.createElement("span") as SneakKey
-        {
-            sneakKey.classList.add("sneak-key")
-            sneakKey.innerText = key
-            sneakKey.style.top = top + "px"
-            sneakKey.style.left = left + "px"
-            sneakKey.target = target
-        }
+        sneakKey.classList.add("sneak-key")
+        sneakKey.innerText = key
+        sneakKey.style.top = top + "px"
+        sneakKey.style.left = left + "px"
+        sneakKey.target = target
         return sneakKey
     }
 
@@ -117,26 +114,5 @@ let shouldListenToSneakBinds = false
 export let listeningToSneakBinds = false
 
 const sneakOverlay = document.createElement("div")
-{
-    sneakOverlay.id = "sneak-overlay"
-    sneakOverlay.style.zIndex = `${Number.MAX_SAFE_INTEGER}`
-    sneakOverlay.style.position = "absolute"
-    sneakOverlay.style.width = "100%"
-    sneakOverlay.style.height = "100%"
-    sneakOverlay.style.display = "none"
-    sneakOverlay.innerHTML = `<style>
-.sneak-key {
-position: fixed;
-padding: 3px 6px;
-background-color: black;
-border-radius: 3px;
-border: solid 2px white;
-color: white;
-text-transform: lowercase;
-line-height: normal;
-font-size: 14px;
-font-weight: 500;
-}
-</style>`
-}
+sneakOverlay.id = "sneak-overlay"
 document.body.append(sneakOverlay)
