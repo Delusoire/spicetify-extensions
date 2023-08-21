@@ -1,5 +1,5 @@
 export default {}
-import { array as a, number, option as o, ord, task } from "fp-ts"
+import { array as a, number, option as o, ord, string, task } from "fp-ts"
 import { guard } from "fp-ts-std/Function"
 import { anyPass } from "fp-ts-std/Predicate"
 import { values } from "fp-ts-std/Record"
@@ -202,8 +202,6 @@ let lastSortedQueue: TrackData[] = []
 const setQueue = async (queue: TrackData[]) => {
     lastSortedQueue = queue
 
-    if (queue.length === 0) return Spicetify.showNotification("Data not available")
-
     // await Spicetify.Platform.PlayerAPI.clearQueue()
     // await Spicetify.Platform.PlayerAPI.addToQueue(queue)
     await Spicetify_setQueue(queue)
@@ -217,6 +215,14 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
     lastSortedName = name
     const prop: `${SortProp}` = SortProp[name]
     const toProp: (s: TrackData) => o.Option<string | number> = Optional.fromNullableProp<TrackData>()(prop).getOption
+    const propOrd = p(
+        number.Ord,
+        ord.contramap((t: Required<TrackData>) => t[prop]),
+    )
+    const uriOrd = p(
+        string.Ord,
+        ord.contramap((t: TrackData) => t.uri),
+    )
 
     p(
         uri,
@@ -224,19 +230,10 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         pMchain(populateTracks(name)),
         pMchain(a.map(x => (p(x, toProp, o.isSome) ? o.some(x as Required<TrackData>) : o.none))),
         pMchain(a.sequence(o.Applicative)),
-        pMchain(
-            o.map(
-                a.sort(
-                    p(
-                        number.Ord,
-                        ord.contramap((t: Required<TrackData>) => t[prop]),
-                    ),
-                ),
-            ),
-        ),
+        pMchain(o.map(a.sort(propOrd))),
+        pMchain(o.map(a.uniq(uriOrd))),
         pMchain(o.map(CONFIG.ascending ? identity : a.reverse)),
-        pMchain(o.getOrElse(constant([] as TrackData[]))),
-        pMchain(setQueue),
+        pMchain(o.map(setQueue)),
     )
 }
 

@@ -31,12 +31,9 @@ export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
         pMchain(prepend(`<span>Artist Genres : </span>`)),
     )
 
-    // remove old genreContainer
     document.querySelector(".genre-container")?.remove()
 
-    // insert new genreContainer
     const entityHeaderText = await waitForElement("div.main-entityHeader-headerText")
-
     entityHeaderText?.insertBefore(genreContainer, await waitForElement("span.main-entityHeader-detailsText"))
 }
 

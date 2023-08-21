@@ -3527,9 +3527,33 @@ var sort;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js
-  var Eq2, Semigroup, empty3, Monoid, Ord2, startsWith;
+  var string_exports = {};
+  __export(string_exports, {
+    Eq: () => Eq2,
+    Monoid: () => Monoid,
+    Ord: () => Ord2,
+    Semigroup: () => Semigroup,
+    Show: () => Show2,
+    empty: () => empty3,
+    endsWith: () => endsWith,
+    includes: () => includes,
+    isEmpty: () => isEmpty2,
+    isString: () => isString,
+    replace: () => replace,
+    size: () => size2,
+    slice: () => slice,
+    split: () => split,
+    startsWith: () => startsWith,
+    toLowerCase: () => toLowerCase,
+    toUpperCase: () => toUpperCase,
+    trim: () => trim,
+    trimLeft: () => trimLeft,
+    trimRight: () => trimRight
+  });
+  var Eq2, Semigroup, empty3, Monoid, Ord2, Show2, isString, toUpperCase, toLowerCase, replace, trim, trimLeft, trimRight, slice, isEmpty2, size2, split, includes, startsWith, endsWith;
   var init_string = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js"() {
+      init_ReadonlyNonEmptyArray();
       Eq2 = {
         equals: function(first4, second) {
           return first4 === second;
@@ -3551,9 +3575,64 @@ var sort;
           return first4 < second ? -1 : first4 > second ? 1 : 0;
         }
       };
+      Show2 = {
+        show: function(s) {
+          return JSON.stringify(s);
+        }
+      };
+      isString = function(u) {
+        return typeof u === "string";
+      };
+      toUpperCase = function(s) {
+        return s.toUpperCase();
+      };
+      toLowerCase = function(s) {
+        return s.toLowerCase();
+      };
+      replace = function(searchValue, replaceValue) {
+        return function(s) {
+          return s.replace(searchValue, replaceValue);
+        };
+      };
+      trim = function(s) {
+        return s.trim();
+      };
+      trimLeft = function(s) {
+        return s.trimLeft();
+      };
+      trimRight = function(s) {
+        return s.trimRight();
+      };
+      slice = function(start, end) {
+        return function(s) {
+          return s.slice(start, end);
+        };
+      };
+      isEmpty2 = function(s) {
+        return s.length === 0;
+      };
+      size2 = function(s) {
+        return s.length;
+      };
+      split = function(separator) {
+        return function(s) {
+          var out = s.split(separator);
+          return isNonEmpty2(out) ? out : [s];
+        };
+      };
+      includes = function(searchString, position) {
+        return function(s) {
+          return s.includes(searchString, position);
+        };
+      };
       startsWith = function(searchString, position) {
         return function(s) {
           return s.startsWith(searchString, position);
+        };
+      };
+      endsWith = function(searchString, position) {
+        return function(s) {
+          return s.endsWith(searchString, position);
         };
       };
     }
@@ -3589,11 +3668,11 @@ var sort;
       return out;
     };
   }
-  var isEmpty2, upsertAt, has2, union4, insertAt2;
+  var isEmpty3, upsertAt, has2, union4, insertAt2;
   var init_ReadonlyRecord = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyRecord.js"() {
       init_internal();
-      isEmpty2 = function(r) {
+      isEmpty3 = function(r) {
         for (var k in r) {
           if (has.call(r, k)) {
             return false;
@@ -3617,10 +3696,10 @@ var sort;
       union4 = function(M) {
         return function(second) {
           return function(first4) {
-            if (isEmpty2(first4)) {
+            if (isEmpty3(first4)) {
               return second;
             }
-            if (isEmpty2(second)) {
+            if (isEmpty3(second)) {
               return first4;
             }
             var out = {};
@@ -3645,7 +3724,7 @@ var sort;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Record.js
-  var __assign, isEmpty3, lookup4, mapWithIndex3, union5, getUnionSemigroup2;
+  var __assign, isEmpty4, lookup4, mapWithIndex3, union5, getUnionSemigroup2;
   var init_Record = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Record.js"() {
       init_ReadonlyRecord();
@@ -3661,17 +3740,17 @@ var sort;
         };
         return __assign.apply(this, arguments);
       };
-      isEmpty3 = isEmpty2;
+      isEmpty4 = isEmpty3;
       lookup4 = lookup3;
       mapWithIndex3 = mapWithIndex2;
       union5 = function(M) {
         var unionM = union4(M);
         return function(second) {
           return function(first4) {
-            if (isEmpty3(first4)) {
+            if (isEmpty4(first4)) {
               return __assign({}, second);
             }
-            if (isEmpty3(second)) {
+            if (isEmpty4(second)) {
               return __assign({}, first4);
             }
             return unionM(second)(first4);
@@ -3697,6 +3776,7 @@ var sort;
       init_number();
       init_Option();
       init_Ord();
+      init_string();
       init_Task();
     }
   });
@@ -6671,8 +6751,6 @@ var sort;
       lastSortedQueue = [];
       setQueue = async (queue) => {
         lastSortedQueue = queue;
-        if (queue.length === 0)
-          return Spicetify.showNotification("Data not available");
         await Spicetify_setQueue(queue);
         await Spicetify.Player.next();
       };
@@ -6682,25 +6760,24 @@ var sort;
         lastSortedName = name;
         const prop2 = SortProp[name];
         const toProp = Optional.fromNullableProp()(prop2).getOption;
+        const propOrd = (0, import_function27.pipe)(
+          number_exports.Ord,
+          Ord_exports.contramap((t) => t[prop2])
+        );
+        const uriOrd = (0, import_function27.pipe)(
+          string_exports.Ord,
+          Ord_exports.contramap((t) => t.uri)
+        );
         (0, import_function27.pipe)(
           uri,
           fetchTracks,
           pMchain(populateTracks(name)),
           pMchain(Array_exports.map((x) => (0, import_function27.pipe)(x, toProp, Option_exports.isSome) ? Option_exports.some(x) : Option_exports.none)),
           pMchain(Array_exports.sequence(Option_exports.Applicative)),
-          pMchain(
-            Option_exports.map(
-              Array_exports.sort(
-                (0, import_function27.pipe)(
-                  number_exports.Ord,
-                  Ord_exports.contramap((t) => t[prop2])
-                )
-              )
-            )
-          ),
+          pMchain(Option_exports.map(Array_exports.sort(propOrd))),
+          pMchain(Option_exports.map(Array_exports.uniq(uriOrd))),
           pMchain(Option_exports.map(CONFIG.ascending ? import_function27.identity : Array_exports.reverse)),
-          pMchain(Option_exports.getOrElse((0, import_function27.constant)([]))),
-          pMchain(setQueue)
+          pMchain(Option_exports.map(setQueue))
         );
       };
       createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, (0, import_function27.tupled)(sortByProp(name)), import_function27.constTrue, icon, false);
