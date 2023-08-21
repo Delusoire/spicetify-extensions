@@ -6823,7 +6823,7 @@ var sort;
         pMchain(Array_exports.map(objConcat()))
       );
       populateTrackLastFM = async (track) => {
-        const lastfmTrack = (await fetchTrackLFMAPI(track.artistName, track.name, CONFIG.lastFmUserName)).track;
+        const lastfmTrack = (await fetchTrackLFMAPI(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUserName)).track;
         track.lastfmPlaycount = Number(lastfmTrack.listeners);
         track.scrobbles = Number(lastfmTrack.playcount);
         track.personalScrobbles = Number(lastfmTrack.userplaycount);
@@ -6839,7 +6839,7 @@ var sort;
         [startsWith("Spotify"), populateTracksSpot],
         [
           startsWith("LastFM"),
-          (0, import_function28.constant)((0, import_function28.flow)(withProgress(Array_exports.map)(populateTrackLastFM), (ps) => Promise.all(ps)))
+          (0, import_function28.constant)((0, import_function28.flow)((0, import_function28.pipe)(withProgress(Array_exports.map)(populateTrackLastFM)), (ps) => Promise.all(ps)))
         ]
       ])((0, import_function28.constant)(Task_exports.of([])));
       lastSortedQueue = [];
