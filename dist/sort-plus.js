@@ -6263,7 +6263,7 @@ var sort;
   });
 
   // shared/fp.tsx
-  var import_function25, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, chunckify, withProgress2;
+  var import_function25, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, chunckify;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
@@ -6280,11 +6280,6 @@ var sort;
       pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
       chunckify = (n) => (g) => (0, import_function25.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
-      withProgress2 = (map8) => (f4, i = 0) => (...fa) => map8((...a) => {
-        const progress = Math.round(i++ / Object.values(fa).length * 100);
-        Spicetify.showNotification(`Loading: ${progress}%`);
-        return f4(...a);
-      })(fa);
     }
   });
 
@@ -6793,7 +6788,7 @@ var sort;
       );
       fetchAlbumTracksFromTracks = (0, import_function28.flow)(
         groupBy((track) => track.albumUri),
-        withProgress2(mapWithIndex3)(
+        (0, import_function28.identity)(mapWithIndex3)(
           async (albumUri, tracks) => {
             const uriEq = (0, import_function28.pipe)(
               string_exports.Eq,

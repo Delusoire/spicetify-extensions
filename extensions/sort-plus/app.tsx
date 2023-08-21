@@ -21,7 +21,7 @@ import {
     fetchTrackLFMAPI,
     fetchWebTracksSpot,
 } from "../../shared/api"
-import { objConcat, pMchain, withProgress, withProgress2 } from "../../shared/fp"
+import { objConcat, pMchain, withProgress } from "../../shared/fp"
 import {
     TrackData,
     TracksPopulater,
@@ -133,7 +133,7 @@ const fetchAPITracksFromTracks: TracksPopulater = f(
 
 const fetchAlbumTracksFromTracks: TracksPopulater = f(
     groupBy(track => track.albumUri!),
-    withProgress2(mapWithIndex<SpotifyURI, TrackData[], Promise<TrackData[]>>)(
+    identity(mapWithIndex<SpotifyURI, TrackData[], Promise<TrackData[]>>)(
         async (albumUri: SpotifyURI, tracks: TrackData[]) => {
             const uriEq = p(
                 string.Eq,
