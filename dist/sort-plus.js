@@ -6837,7 +6837,10 @@ var sort;
       ])(Task_exports.of([]));
       populateTracks = guard4([
         [startsWith("Spotify"), populateTracksSpot],
-        [startsWith("LastFM"), (0, import_function28.constant)((0, import_function28.flow)(Array_exports.map(populateTrackLastFM), (ps) => Promise.all(ps)))]
+        [
+          startsWith("LastFM"),
+          (0, import_function28.constant)((0, import_function28.flow)(withProgress(Array_exports.map)(populateTrackLastFM), (ps) => Promise.all(ps)))
+        ]
       ])((0, import_function28.constant)(Task_exports.of([])));
       lastSortedQueue = [];
       setQueue = async (queue) => {

@@ -184,7 +184,10 @@ export const fetchTracks = guard([
 
 export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
     [startsWith("Spotify"), populateTracksSpot],
-    [startsWith("LastFM"), constant(f(a.map(populateTrackLastFM), ps => Promise.all(ps)))],
+    [
+        startsWith("LastFM"),
+        constant(f(p(withProgress(a.map<TrackData, Promise<TrackData>>)(populateTrackLastFM)), ps => Promise.all(ps))),
+    ],
 ])(constant(task.of([])))
 
 const Spicetify_setQueue = (queue: { uri: SpotifyURI }[]) => {
