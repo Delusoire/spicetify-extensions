@@ -6280,12 +6280,15 @@ var sort;
       pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
       chunckify = (n) => (g) => (0, import_function25.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
-      withProgress = (map8) => (f4, i = 0) => (fa) => map8((...a) => {
-        const progress = Math.round(i++ / Object.values(fa).length * 100);
-        Spicetify.showNotification(`Loading: ${progress}%`);
-        console.log(`Loading: ${progress}%`);
-        return f4(...a);
-      })(fa);
+      withProgress = (map8) => (f4) => (fa) => {
+        let i = 0;
+        return map8(async (...a) => {
+          const ret = await f4(...a);
+          const progress = Math.round(i++ / Object.values(fa).length * 100);
+          Spicetify.showNotification(`Loading: ${progress}%`, false, 200);
+          return ret;
+        })(fa);
+      };
     }
   });
 
@@ -6734,7 +6737,7 @@ var sort;
     }
     return allTracks;
   }
-  var import_function28, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, Spicetify_setQueue, lastSortedQueue, setQueue, toOptProp, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
+  var import_function28, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6836,21 +6839,11 @@ var sort;
         [startsWith("Spotify"), populateTracksSpot],
         [startsWith("LastFM"), (0, import_function28.constant)((0, import_function28.flow)(Array_exports.map(populateTrackLastFM), (ps) => Promise.all(ps)))]
       ])((0, import_function28.constant)(Task_exports.of([])));
-      Spicetify_setQueue = (queue) => {
-        const { _queue, _client, createQueueItem } = Spicetify.Platform.PlayerAPI._queue;
-        const { prevTracks, queueRevision } = _queue;
-        const providerIsQueue = true;
-        const nextTracks = queue.concat([{ uri: "spotify:delimiter" }]).map((track) => createQueueItem(track, providerIsQueue));
-        return _client.setQueue({
-          nextTracks,
-          prevTracks,
-          queueRevision
-        });
-      };
       lastSortedQueue = [];
       setQueue = async (queue) => {
         lastSortedQueue = queue;
-        await Spicetify_setQueue(queue);
+        await Spicetify.Platform.PlayerAPI.clearQueue();
+        await Spicetify.Platform.PlayerAPI.addToQueue(queue);
         await Spicetify.Player.next();
       };
       toOptProp = (prop2) => Optional.fromNullableProp()(SortProp[prop2]).getOption;

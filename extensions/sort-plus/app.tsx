@@ -21,7 +21,7 @@ import {
     fetchTrackLFMAPI,
     fetchWebTracksSpot,
 } from "../../shared/api"
-import { objConcat, pMchain, withProgress } from "../../shared/fp"
+import { objConcat, pMchain, tapAny, withProgress } from "../../shared/fp"
 import {
     TrackData,
     TracksPopulater,
@@ -208,9 +208,9 @@ let lastSortedQueue: TrackData[] = []
 const setQueue = async (queue: TrackData[]) => {
     lastSortedQueue = queue
 
-    // await Spicetify.Platform.PlayerAPI.clearQueue()
-    // await Spicetify.Platform.PlayerAPI.addToQueue(queue)
-    await Spicetify_setQueue(queue)
+    await Spicetify.Platform.PlayerAPI.clearQueue()
+    await Spicetify.Platform.PlayerAPI.addToQueue(queue)
+    // await Spicetify_setQueue(queue)
     await Spicetify.Player.next()
 }
 
