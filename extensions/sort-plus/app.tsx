@@ -1,10 +1,10 @@
 export default {}
-import { array as a, number, option as o, ord, string, task } from "fp-ts"
+import { array as a, eq, number, option as o, ord, string, task } from "fp-ts"
 import { guard } from "fp-ts-std/Function"
 import { anyPass } from "fp-ts-std/Predicate"
 import { values } from "fp-ts-std/Record"
 import { groupBy } from "fp-ts/NonEmptyArray"
-import { lookup, mapWithIndex } from "fp-ts/Record"
+import { mapWithIndex } from "fp-ts/Record"
 import { constTrue, constant, flow as f, identity, pipe as p, tupled } from "fp-ts/function"
 import { startsWith } from "fp-ts/string"
 import { Lens, Optional } from "monocle-ts"
@@ -21,7 +21,7 @@ import {
     fetchTrackLFMAPI,
     fetchWebTracksSpot,
 } from "../../shared/api"
-import { objConcat, pMchain, tapAny } from "../../shared/fp"
+import { objConcat, pMchain, withProgress, withProgress2 } from "../../shared/fp"
 import {
     TrackData,
     TracksPopulater,
@@ -133,12 +133,18 @@ const fetchAPITracksFromTracks: TracksPopulater = f(
 
 const fetchAlbumTracksFromTracks: TracksPopulater = f(
     groupBy(track => track.albumUri!),
-    mapWithIndex(async (albumUri: SpotifyURI, tracks: TrackData[]) => {
-        const albumTracks = await getAlbumTracks(albumUri)
-        return a.filter<TrackData>(albumTrack => a.some<TrackData>(track => albumTrack.uri === track.uri)(tracks))(
-            albumTracks,
-        )
-    }),
+    withProgress2(mapWithIndex<SpotifyURI, TrackData[], Promise<TrackData[]>>)(
+        async (albumUri: SpotifyURI, tracks: TrackData[]) => {
+            const uriEq = p(
+                string.Eq,
+                eq.contramap((t: TrackData) => t.uri),
+            )
+
+            const albumTracks = await getAlbumTracks(albumUri)
+
+            return a.intersection(uriEq)(albumTracks, tracks)
+        },
+    ),
     values,
     ps => Promise.all(ps),
     pMchain(a.flatten),
@@ -147,7 +153,7 @@ const fetchAlbumTracksFromTracks: TracksPopulater = f(
 const populateTracksSpot = (propName: keyof typeof SortProp) => (tracks: TrackData[]) =>
     p(
         tracks,
-        a.filter(f(Optional.fromNullableProp<TrackData>()(SortProp[propName]).getOption, o.isNone)),
+        a.filter(f(toOptProp(propName), o.isNone)),
         guard([[startsWith(SortBy.SPOTIFY_PLAYCOUNT), constant(fetchAlbumTracksFromTracks)]])(
             constant(fetchAPITracksFromTracks),
         )(propName),
@@ -208,16 +214,16 @@ const setQueue = async (queue: TrackData[]) => {
     await Spicetify.Player.next()
 }
 
+const toOptProp = (prop: keyof typeof SortProp) => Optional.fromNullableProp<TrackData>()(SortProp[prop]).getOption
+
 let lastSortedUri: SpotifyURI = ""
 let lastSortedName: keyof typeof SortProp
 export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
     lastSortedUri = uri
     lastSortedName = name
-    const prop: `${SortProp}` = SortProp[name]
-    const toProp: (s: TrackData) => o.Option<string | number> = Optional.fromNullableProp<TrackData>()(prop).getOption
     const propOrd = p(
         number.Ord,
-        ord.contramap((t: Required<TrackData>) => t[prop]),
+        ord.contramap((t: Required<TrackData>) => t[SortProp[name]]),
     )
     const uriOrd = p(
         string.Ord,
@@ -228,7 +234,7 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         uri,
         fetchTracks,
         pMchain(populateTracks(name)),
-        pMchain(a.map(x => (p(x, toProp, o.isSome) ? o.some(x as Required<TrackData>) : o.none))),
+        pMchain(a.map(x => (p(x, toOptProp(name), o.isSome) ? o.some(x as Required<TrackData>) : o.none))),
         pMchain(a.sequence(o.Applicative)),
         pMchain(o.map(a.sort(propOrd))),
         pMchain(o.map(a.uniq(uriOrd))),

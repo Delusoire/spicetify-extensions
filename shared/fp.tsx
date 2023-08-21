@@ -4,6 +4,7 @@ import { guard } from "fp-ts-std/Function"
 import { getUnionSemigroup } from "fp-ts/Record"
 import { Refinement } from "fp-ts/Refinement"
 import { first } from "fp-ts/lib/Semigroup"
+import { HKT } from "fp-ts/HKT"
 
 type refineBranch<A, B extends A, R> = [Refinement<A, B>, (x: B) => R]
 export const guard2 = <A, A1 extends A, A2 extends A, R>(branches: [refineBranch<A, A1, R>, refineBranch<A, A2, R>]) =>
@@ -70,3 +71,27 @@ export const chunckify =
     (n: number) =>
     <A, R>(g: (a: A[]) => Promise<R[]>) =>
         f(a.chunksOf(n)<A>, a.map(g), ps => Promise.all(ps), pMchain(a.flatten))
+
+export const withProgress =
+    <K extends string | number | symbol, A, R>(map: (f: (i: K, a: A) => R) => (fa: Record<K, A>) => Record<K, R>) =>
+    (fp: (i: K, a: A) => R, i = 0) =>
+    (fa: Record<K, A>) =>
+        map((...a) => {
+            const progress = Math.round((i++ / Object.values(fa).length) * 100)
+            Spicetify.showNotification(`Loading: ${progress}%`)
+            return fp(...a)
+        })(fa)
+
+type aze = (f: (...a: number[]) => string) => (fa: {}) => any
+type t = Parameters<Parameters<aze>[0]>
+
+export const withProgress2 =
+    <F extends (f: (...a: any) => any) => (fa: any) => any>(map: F) =>
+    (f: Parameters<F>[0], i = 0) =>
+    (...fa: Parameters<ReturnType<F>>): ReturnType<ReturnType<F>> =>
+        map((...a: Parameters<Parameters<F>[0]>) => {
+            const progress = Math.round((i++ / Object.values(fa).length) * 100)
+            Spicetify.showNotification(`Loading: ${progress}%`)
+            // @ts-ignore
+            return f(...a)
+        })(fa)
