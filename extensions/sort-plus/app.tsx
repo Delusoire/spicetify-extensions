@@ -133,7 +133,7 @@ const fetchAPITracksFromTracks: TracksPopulater = f(
 
 const fetchAlbumTracksFromTracks: TracksPopulater = f(
     groupBy(track => track.albumUri!),
-    identity(mapWithIndex<SpotifyURI, TrackData[], Promise<TrackData[]>>)(
+    withProgress(mapWithIndex<SpotifyURI, TrackData[], Promise<TrackData[]>>)(
         async (albumUri: SpotifyURI, tracks: TrackData[]) => {
             const uriEq = p(
                 string.Eq,
