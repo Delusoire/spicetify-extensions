@@ -75,7 +75,7 @@ export const chunckify =
 export const withProgress =
     <F extends (f: (...a: any) => any) => (fa: any) => any>(map: F) =>
     (f: Parameters<F>[0], i = 0) =>
-    (...fa: Parameters<ReturnType<F>>): ReturnType<ReturnType<F>> =>
+    (fa: Parameters<ReturnType<F>>[0]): ReturnType<ReturnType<F>> =>
         map((...a: Parameters<Parameters<F>[0]>) => {
             const progress = Math.round((i++ / Object.values(fa).length) * 100)
             Spicetify.showNotification(`Loading: ${progress}%`)
