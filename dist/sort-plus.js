@@ -6283,6 +6283,7 @@ var sort;
       withProgress = (map8) => (f4, i = 0) => (fa) => map8((...a) => {
         const progress = Math.round(i++ / Object.values(fa).length * 100);
         Spicetify.showNotification(`Loading: ${progress}%`);
+        console.log(`Loading: ${progress}%`);
         return f4(...a);
       })(fa);
     }

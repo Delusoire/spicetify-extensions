@@ -79,6 +79,7 @@ export const withProgress =
         map((...a: Parameters<Parameters<F>[0]>) => {
             const progress = Math.round((i++ / Object.values(fa).length) * 100)
             Spicetify.showNotification(`Loading: ${progress}%`)
+            console.log(`Loading: ${progress}%`)
             // @ts-ignore
             return f(...a)
         })(fa)
