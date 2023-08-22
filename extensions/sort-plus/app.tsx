@@ -123,8 +123,7 @@ async function getArtistTracks(uri: SpotifyURI) {
     return allTracks
 }
 
-// Populating Tracks For Spotify
-
+// ------------- For populateTracksSpot -------------
 const fetchAPITracksFromTracks: TracksPopulater = f(
     a.map(({ uri }) => URI.from(uri)!.id!),
     fetchWebTracksSpot,
@@ -149,6 +148,7 @@ const fetchAlbumTracksFromTracks: TracksPopulater = f(
     ps => Promise.all(ps),
     pMchain(a.flatten),
 )
+// --------------------------------------------------
 
 const populateTracksSpot = (propName: keyof typeof SortProp) => (tracks: TrackData[]) =>
     p(
@@ -162,8 +162,6 @@ const populateTracksSpot = (propName: keyof typeof SortProp) => (tracks: TrackDa
         pMchain(values<TrackData[]>),
         pMchain(a.map(objConcat<TrackData>())),
     )
-
-// Populating Tracks For LastFM
 
 const populateTrackLastFM = async (track: TrackData) => {
     const lastfmTrack = (await fetchTrackLFMAPI(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUserName))
@@ -242,7 +240,7 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         pMchain(a.sequence(o.Applicative)),
         pMchain(o.map(a.sort(propOrd))),
         pMchain(o.map(a.uniq(uriOrd))),
-        pMchain(o.map(CONFIG.ascending ? identity : a.reverse)),
+        pMchain(o.map(invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)),
         pMchain(o.map(setQueue)),
     )
 }
@@ -294,6 +292,15 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
     )
 
     Spicetify.showNotification(`Playlist ${playlistName} created`)
+})
+
+let invertAscending = 0
+window.addEventListener("keydown", event => {
+    if (!event.repeat && event.key == "Control") invertAscending = 1
+})
+
+window.addEventListener("keyup", event => {
+    if (!event.repeat && event.key == "Control") invertAscending = 0
 })
 
 // TODO: add sort inside playlist's custom order

@@ -6737,7 +6737,7 @@ var sort;
     }
     return allTracks;
   }
-  var import_function28, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu;
+  var import_function28, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu, invertAscending;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6870,7 +6870,7 @@ var sort;
           pMchain(Array_exports.sequence(Option_exports.Applicative)),
           pMchain(Option_exports.map(Array_exports.sort(propOrd))),
           pMchain(Option_exports.map(Array_exports.uniq(uriOrd))),
-          pMchain(Option_exports.map(CONFIG.ascending ? import_function28.identity : Array_exports.reverse)),
+          pMchain(Option_exports.map(invertAscending ^ Number(CONFIG.ascending) ? import_function28.identity : Array_exports.reverse)),
           pMchain(Option_exports.map(setQueue))
         );
       };
@@ -6909,6 +6909,15 @@ var sort;
           sortedPlaylistsFolderUri
         );
         Spicetify.showNotification(`Playlist ${playlistName} created`);
+      });
+      invertAscending = 0;
+      window.addEventListener("keydown", (event) => {
+        if (!event.repeat && event.key == "Control")
+          invertAscending = 1;
+      });
+      window.addEventListener("keyup", (event) => {
+        if (!event.repeat && event.key == "Control")
+          invertAscending = 0;
       });
     }
   });
