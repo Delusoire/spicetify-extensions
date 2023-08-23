@@ -4656,7 +4656,7 @@ var vaultify = (() => {
       };
       backup = async () => {
         const playlists = await (0, import_function15.pipe)(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur);
-        const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)/;
+        const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify-exp-features$)/;
         const extensions = toUnfoldable(Array_exports)(localStorage).filter(([key]) => allowedAppDataRegex.test(key));
         const settings2 = (0, import_function15.pipe)(
           document.querySelectorAll(`[id^="settings."],[id^="desktop."],[class^="network."]`),

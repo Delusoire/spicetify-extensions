@@ -63,7 +63,7 @@ const restorePlaylistseRecur = async (leaf: PersonalFolder | PersonalPlaylist | 
 export const backup = async () => {
     const playlists = await p((await fetchPlatRootFolder()) as any, extractLikedPlaylistTreeRecur)
 
-    const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)/
+    const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify-exp-features$)/
     const extensions = toUnfoldable(array)(localStorage).filter(([key]) => allowedAppDataRegex.test(key))
 
     const settings = p(
