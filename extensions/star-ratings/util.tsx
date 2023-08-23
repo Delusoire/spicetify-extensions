@@ -42,9 +42,9 @@ export const getLastColIndex = (parent: HTMLElement) => {
 }
 
 export const getFirstHeart = (parent: HTMLElement) =>
-    parent.getElementsByClassName(
+    parent.querySelector(
         ".Button-textSubdued-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle, .Button-textBrightAccent-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle",
-    )[0] as HTMLButtonElement
+    ) as HTMLButtonElement
 
 export const getTrackListTrackUri = (track: HTMLDivElement) => (
     (track = Object.values(track)[0].child.child.child.child),

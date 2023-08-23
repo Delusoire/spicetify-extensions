@@ -16433,9 +16433,9 @@ var star;
         const lastColIndex = Number(lastCol.getAttribute("aria-colindex"));
         return [lastColIndex, lastCol];
       };
-      getFirstHeart = (parent) => parent.getElementsByClassName(
+      getFirstHeart = (parent) => parent.querySelector(
         ".Button-textSubdued-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle, .Button-textBrightAccent-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle"
-      )[0];
+      );
       getTrackListTrackUri = (track) => (track = Object.values(track)[0].child.child.child.child, track.pendingProps.uri ?? track.child.pendingProps.uri);
       getRatingsFolder = () => (0, import_function22.flow)(
         () => () => fetchPlatFolder(CONFIG.ratingsFolderUri),
