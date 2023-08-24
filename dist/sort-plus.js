@@ -6263,7 +6263,7 @@ var sort;
   });
 
   // shared/fp.tsx
-  var import_function25, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, chunckify, withProgress;
+  var import_function25, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, tapAny, chunckify, withProgress;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
@@ -6279,6 +6279,10 @@ var sort;
       objConcat = () => Array_exports.reduce({}, objConcat2());
       pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
+      tapAny = (f4) => (fa) => {
+        f4(fa);
+        return fa;
+      };
       chunckify = (n) => (g) => (0, import_function25.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
       withProgress = (map8) => (f4) => (fa) => {
         let i = 0;
@@ -6293,7 +6297,7 @@ var sort;
   });
 
   // shared/api.tsx
-  var import_function26, URI14, fetchGQLAlbum, fetchGQLArtistOverview, fetchGQLArtistDiscography, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, fetchTrackLFMAPI;
+  var import_function26, URI14, fetchGQLAlbum, fetchGQLArtistOverview, fetchGQLArtistDiscography, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, fetchTrackLFMAPI;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -6320,6 +6324,13 @@ var sort;
       })).data.artistUnion.discography.all.items;
       fetchWebArtistsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
+      );
+      fetchWebPlaylistsSpot = chunckify(1)(
+        // @ts-ignore chunkify will never call with empty array
+        async ([id6]) => await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id6}`)
+      );
+      fetchWebAlbumsSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums
       );
       fetchWebTracksSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
@@ -6844,7 +6855,6 @@ var sort;
       ])((0, import_function28.constant)(Task_exports.of([])));
       lastSortedQueue = [];
       setQueue = async (queue) => {
-        lastSortedQueue = queue;
         await Spicetify.Platform.PlayerAPI.clearQueue();
         await Spicetify.Platform.PlayerAPI.addToQueue(queue);
         await Spicetify.Player.next();
@@ -6871,6 +6881,7 @@ var sort;
           pMchain(Option_exports.map(Array_exports.sort(propOrd))),
           pMchain(Option_exports.map(Array_exports.uniq(uriOrd))),
           pMchain(Option_exports.map(invertAscending ^ Number(CONFIG.ascending) ? import_function28.identity : Array_exports.reverse)),
+          pMchain(Option_exports.map(tapAny((queue) => void (lastSortedQueue = queue)))),
           pMchain(Option_exports.map(setQueue))
         );
       };
@@ -6902,9 +6913,18 @@ var sort;
           Option_exports.getOrElseW(() => createPlatFolder("Sorted Playlists")),
           pMchain((x) => x.uri)
         );
-        const playlistName = `${lastSortedName} - ${lastSortedUri}`;
+        const uriToId = (uri) => URI15.from(uri).id;
+        const getNameFromAlbumId = async (id6) => (await fetchWebAlbumsSpot([id6]))[0].name;
+        const getNameFromArtistId = async (id6) => (await fetchWebArtistsSpot([id6]))[0].name;
+        const getNameFromPlaylistId = async (id6) => (await fetchWebPlaylistsSpot([id6]))[0].name;
+        const playlistName = await guard4([
+          [URI15.isAlbum, (0, import_function28.flow)(uriToId, getNameFromAlbumId)],
+          [URI15.isArtist, (0, import_function28.flow)(uriToId, getNameFromArtistId)],
+          [URI15.isPlaylistV1OrV2, (0, import_function28.flow)(uriToId, getNameFromPlaylistId)],
+          [startsWith("spotify:collection:tracks"), Task_exports.of("Liked Teacks")]
+        ])(Task_exports.of("Unresolved"))(lastSortedUri);
         await createSPPlaylistFromTracks(
-          playlistName,
+          `${playlistName} - ${lastSortedName}`,
           lastSortedQueue.map((t) => t.uri),
           sortedPlaylistsFolderUri
         );

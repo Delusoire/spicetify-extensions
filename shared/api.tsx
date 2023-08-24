@@ -53,6 +53,17 @@ export const fetchWebArtistsSpot = chunckify(50)(
             .artists as SpotApiArtist[],
 )
 
+export const fetchWebPlaylistsSpot = chunckify(1)(
+    // @ts-ignore chunkify will never call with empty array
+    async ([id]: [SpotifyID]) =>
+        (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)) as SpotApiPlaylist[],
+)
+export const fetchWebAlbumsSpot = chunckify(50)(
+    async (ids: SpotifyID[]) =>
+        (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`))
+            .albums as SpotApiAlbum[],
+)
+
 export const fetchWebTracksSpot = chunckify(50)(
     async (ids: SpotifyID[]) =>
         (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`))
@@ -513,6 +524,52 @@ export interface SpotApiFollowers {
 }
 export interface SpotApiDuration {
     milliseconds: number
+}
+export interface SpotApiPlaylist {
+    collaborative: boolean
+    description: string
+    external_urls: SpotApiEUrls
+    followers: {
+        href: string
+        total: number
+    }
+    href: string
+    id: SpotifyID
+    images: SpotApiImage[]
+    name: string
+    owner: SpotApiOwner
+    public: boolean
+    snapshot_id: string
+    tracks: {
+        href: string
+        limit: number
+        next: string
+        offset: number
+        previous: string
+        total: number
+        items: Array<{
+            added_at: string
+            added_by: SpotApiOwner
+            is_local: boolean
+            track: SpotApiTrack
+        }>
+    }
+    type: string
+    uri: SpotifyURI
+}
+
+export interface SpotApiOwner {
+    external_urls: SpotApiEUrls
+    followers?: {
+        href: string
+        total: number
+    }
+    href: string
+    id: SpotifyID
+    type: string
+    uri: SpotifyURI
+    display_name?: string
+    name?: string
 }
 
 // TODO: Better TS interface for recursive fetchPlatFolderRes

@@ -4291,7 +4291,7 @@ var search;
   });
 
   // shared/api.tsx
-  var URI5, fetchWebArtistsSpot, fetchWebTracksSpot, searchYoutube;
+  var URI5, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, searchYoutube;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -4300,6 +4300,13 @@ var search;
       ({ URI: URI5 } = Spicetify);
       fetchWebArtistsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
+      );
+      fetchWebPlaylistsSpot = chunckify(1)(
+        // @ts-ignore chunkify will never call with empty array
+        async ([id]) => await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
+      );
+      fetchWebAlbumsSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums
       );
       fetchWebTracksSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks

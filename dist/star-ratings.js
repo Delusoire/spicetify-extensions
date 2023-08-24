@@ -15409,7 +15409,7 @@ var star;
   });
 
   // shared/api.tsx
-  var URI9, fetchGQLAlbum, fetchWebArtistsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createPlatPlaylist, setPlatPlaylistVisibility, fetchPlatFolder, addPlatPlaylistTracks, removePlatPlaylistTracks;
+  var URI9, fetchGQLAlbum, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createPlatPlaylist, setPlatPlaylistVisibility, fetchPlatFolder, addPlatPlaylistTracks, removePlatPlaylistTracks;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -15424,6 +15424,13 @@ var star;
       })).data.albumUnion;
       fetchWebArtistsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
+      );
+      fetchWebPlaylistsSpot = chunckify(1)(
+        // @ts-ignore chunkify will never call with empty array
+        async ([id]) => await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
+      );
+      fetchWebAlbumsSpot = chunckify(50)(
+        async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums
       );
       fetchWebTracksSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks

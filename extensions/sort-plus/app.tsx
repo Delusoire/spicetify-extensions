@@ -19,6 +19,9 @@ import {
     fetchPlatPlaylistContents,
     fetchPlatRootFolder,
     fetchTrackLFMAPI,
+    fetchWebAlbumsSpot,
+    fetchWebArtistsSpot,
+    fetchWebPlaylistsSpot,
     fetchWebTracksSpot,
 } from "../../shared/api"
 import { objConcat, pMchain, tapAny, withProgress } from "../../shared/fp"
@@ -33,7 +36,7 @@ import {
     parseTopTrackFromArtist,
     parseTrackFromAlbum,
 } from "../../shared/parse"
-import { SpotifyURI } from "../../shared/util"
+import { SpotifyID, SpotifyURI } from "../../shared/util"
 import { CONFIG } from "./settings"
 
 const { URI } = Spicetify
@@ -208,8 +211,6 @@ const Spicetify_setQueue = (queue: { uri: SpotifyURI }[]) => {
 
 let lastSortedQueue: TrackData[] = []
 const setQueue = async (queue: TrackData[]) => {
-    lastSortedQueue = queue
-
     await Spicetify.Platform.PlayerAPI.clearQueue()
     await Spicetify.Platform.PlayerAPI.addToQueue(queue)
     // await Spicetify_setQueue(queue)
@@ -241,6 +242,7 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         pMchain(o.map(a.sort(propOrd))),
         pMchain(o.map(a.uniq(uriOrd))),
         pMchain(o.map(invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)),
+        pMchain(o.map(tapAny(queue => void (lastSortedQueue = queue)))),
         pMchain(o.map(setQueue)),
     )
 }
@@ -283,10 +285,20 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
         pMchain((x: any) => x.uri),
     )
 
-    const playlistName = `${lastSortedName} - ${lastSortedUri}`
+    const uriToId = (uri: SpotifyURI) => URI.from(uri)!.id!
+    const getNameFromAlbumId = async (id: SpotifyID) => (await fetchWebAlbumsSpot([id]))[0].name
+    const getNameFromArtistId = async (id: SpotifyID) => (await fetchWebArtistsSpot([id]))[0].name
+    const getNameFromPlaylistId = async (id: SpotifyID) => (await fetchWebPlaylistsSpot([id]))[0].name
+
+    const playlistName = await guard([
+        [URI.isAlbum, f(uriToId, getNameFromAlbumId)],
+        [URI.isArtist, f(uriToId, getNameFromArtistId)],
+        [URI.isPlaylistV1OrV2, f(uriToId, getNameFromPlaylistId)],
+        [startsWith("spotify:collection:tracks"), task.of("Liked Teacks")],
+    ])(task.of("Unresolved"))(lastSortedUri)
 
     await createSPPlaylistFromTracks(
-        playlistName,
+        `${playlistName} - ${lastSortedName}`,
         lastSortedQueue.map(t => t.uri),
         sortedPlaylistsFolderUri,
     )
