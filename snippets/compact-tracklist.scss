@@ -1,0 +1,121 @@
+$color_1: black;
+$color_2: var(--spice-text);
+$background-color_1: rgba(255, 255, 255, 0.05);
+$background-color_2: rgba(255, 255, 255, 0.1);
+
+:root:root:root {
+    .main-buddyFeed-content.queue-panel {
+        padding: 10px;
+    }
+    .queue-queuePage-subHeader {
+        margin-top: 8px;
+    }
+    .queue-panel .queue-queuePage-queuePage {
+        margin-top: 10px !important;
+        .main-trackList-trackListRowGrid {
+            padding: 0px 4px;
+        }
+        .main-trackList-trackListRow > .main-trackList-rowSectionIndex {
+            left: 4px !important;
+        }
+    }
+
+    .main-trackList-trackListRowGrid {
+        border-radius: var(--border-radius);
+        border: none;
+        transition: 200ms background-color;
+
+        .main-type-mesto {
+            transition: 300ms color;
+        }
+        .main-type-ballad {
+            transition: 300ms color;
+        }
+        &:hover {
+            background-color: $background-color_1;
+        }
+    }
+    .main-trackList-trackListRowGrid.main-trackList-selected {
+        background-color: $background-color_2;
+    }
+    .uCHqQ74vvHOnctGg0X0B,
+    .queue-queuePage-queuePage,
+    section:not(.album-albumPage-sectionWrapper):not(.search-searchResult-tracklistContainer)
+        .contentSpacing:not(.artist-artistDiscography-tracklist) {
+        .main-trackList-trackListHeader {
+            display: none;
+        }
+        .main-trackList-trackListRow {
+            > .main-trackList-rowSectionIndex {
+                position: absolute;
+                z-index: 1000;
+                top: 8px;
+                left: 16px;
+                width: 40px;
+                height: 40px;
+                justify-content: center;
+                text-indent: -1000px;
+            }
+            &:hover,
+            &:focus-within {
+                .main-trackList-rowSectionIndex {
+                    background: rgba(var(--spice-rgb-play-button));
+                    border-radius: var(--border-radius);
+                }
+                button.main-trackList-rowImagePlayButton {
+                    opacity: 1;
+                    color: $color_1;
+                }
+            }
+        }
+        .main-trackList-trackList[aria-colcount="3"] .main-trackList-trackListRow {
+            grid-template-columns: [first] 4fr [last] minmax(70px, 1fr) !important;
+            &:has(.starRatings) {
+                grid-template-columns: [first] 4fr [var1] 1fr [last] minmax(70px, 1fr) !important;
+            }
+        }
+
+        .main-trackList-trackList[aria-colcount="4"] .main-trackList-trackListRow {
+            grid-template-columns: [first] 4fr [var1] 2fr [last] minmax(120px, 1fr) !important;
+            &:has(.starRatings) {
+                grid-template-columns: [first] 4fr [var1] 2fr [var2] 1fr [last] minmax(120px, 1fr) !important;
+            }
+        }
+
+        .main-trackList-trackList[aria-colcount="5"] .main-trackList-trackListRow {
+            grid-template-columns: [first] 6fr [var1] 4fr [var2] 3fr [last] minmax(120px, 1fr) !important;
+            &:has(.starRatings) {
+                grid-template-columns: [first] 6fr [var1] 4fr [var2] 3fr [var3] 2fr [last] minmax(120px, 1fr) !important;
+            }
+        }
+
+        .main-trackList-trackList[aria-colcount="6"] .main-trackList-trackListRow {
+            grid-template-columns: [first] 6fr [var1] 4fr [var2] 3fr [var3] minmax(120px, 2fr) [last] minmax(120px, 1fr) !important;
+            &:has(.starRatings) {
+                grid-template-columns: [first] 6fr [var1] 4fr [var2] 3fr [var3] minmax(120px, 2fr) [var3] 2fr [last] minmax(
+                        120px,
+                        1fr
+                    ) !important;
+            }
+        }
+
+        .main-trackList-rowImageFallback {
+            border-radius: var(--border-radius);
+        }
+        .main-trackList-active {
+            .main-trackList-rowTitle {
+                color: $color_2;
+                text-shadow: 0px 0px 6px var(--spice-text);
+                -webkit-text-stroke: thin;
+            }
+            .main-trackList-rowSectionIndex {
+                background: rgba(var(--spice-rgb-play-button));
+                border-radius: var(--border-radius);
+            }
+            button.main-trackList-rowImagePlayButton {
+                opacity: 1;
+                color: $color_1;
+            }
+        }
+    }
+}
