@@ -2947,7 +2947,7 @@ var keyboard;
           return sneakKey;
         };
         const sneakKeysFragment = document.createDocumentFragment();
-        const linkSelector = `[href],button,[role="button"]`;
+        const linkSelector = `[href]:not(link),button,[role="button"]`;
         shouldListenToSneakBinds = pipe(
           document.querySelectorAll(linkSelector),
           (x) => Array.from(x),

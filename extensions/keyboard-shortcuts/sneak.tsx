@@ -54,7 +54,7 @@ export const enterSneak = (event: KeyboardEvent) => {
     }
 
     const sneakKeysFragment = document.createDocumentFragment()
-    const linkSelector = `[href],button,[role="button"]`
+    const linkSelector = `[href]:not(link),button,[role="button"]`
 
     shouldListenToSneakBinds = pipe(
         document.querySelectorAll(linkSelector),
