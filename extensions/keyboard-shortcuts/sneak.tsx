@@ -31,7 +31,8 @@ export const enterSneak = (event: KeyboardEvent) => {
 
     const isElementVisible = ({ style }: HTMLElement) =>
         style.opacity !== "0" && style.display !== "none" && style.visibility !== "hidden"
-    const isElementInViewPort = (e: HTMLElement, c = document.body) => {
+    const isElementInViewPort = (e: HTMLElement, c?: HTMLElement) => {
+        c = c || document.documentElement
         const bound = e.getBoundingClientRect()
         const mid = (a: number, b: number) => (a + b) / 2
         const clamp = (m: number, M: number) => (x: number) => Math.max(Math.min(x, M), m)

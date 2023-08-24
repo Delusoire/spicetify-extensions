@@ -3290,7 +3290,8 @@ var keyboard;
         if (clearSneakKeys())
           return;
         const isElementVisible = ({ style }) => style.opacity !== "0" && style.display !== "none" && style.visibility !== "hidden";
-        const isElementInViewPort = (e, c = document.body) => {
+        const isElementInViewPort = (e, c) => {
+          c = c || document.documentElement;
           const bound = e.getBoundingClientRect();
           const mid = (a, b) => (a + b) / 2;
           const clamp = (m, M) => (x) => Math.max(Math.min(x, M), m);
