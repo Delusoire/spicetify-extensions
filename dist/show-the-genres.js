@@ -4940,16 +4940,16 @@ var show;
     }
   });
 
-  // temp_stylePlugin:ni:sha-256;hU4LHxhQQeemN0Ha6QNjveNCASQRRASzAyoWNHkrfIM
-  var init_ni_sha_256_hU4LHxhQQeemN0Ha6QNjveNCASQRRASzAyoWNHkrfIM = __esm({
-    "temp_stylePlugin:ni:sha-256;hU4LHxhQQeemN0Ha6QNjveNCASQRRASzAyoWNHkrfIM"() {
+  // temp_stylePlugin:ni:sha-256;F3zgswjydEILy2a_6lHDIyhG7Flt8-wqcPTy_caaMyI
+  var init_ni_sha_256_F3zgswjydEILy2a_6lHDIyhG7Flt8_wqcPTy_caaMyI = __esm({
+    "temp_stylePlugin:ni:sha-256;F3zgswjydEILy2a_6lHDIyhG7Flt8-wqcPTy_caaMyI"() {
     }
   });
 
   // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\show-the-genres\assets\styles.scss
   var init_styles = __esm({
     "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\show-the-genres\\assets\\styles.scss"() {
-      init_ni_sha_256_hU4LHxhQQeemN0Ha6QNjveNCASQRRASzAyoWNHkrfIM();
+      init_ni_sha_256_F3zgswjydEILy2a_6lHDIyhG7Flt8_wqcPTy_caaMyI();
     }
   });
 
@@ -5040,7 +5040,7 @@ var show;
     if (!document.getElementById(`show-the-genres-css`)) {
         const el = document.createElement("style")
         el.id = `show-the-genres-css`
-        el.textContent = `/* temp_stylePlugin:ni:sha-256;hU4LHxhQQeemN0Ha6QNjveNCASQRRASzAyoWNHkrfIM */
+        el.textContent = `/* temp_stylePlugin:ni:sha-256;F3zgswjydEILy2a_6lHDIyhG7Flt8-wqcPTy_caaMyI */
 .genres-popup::after {
   content: "";
   display: table;
@@ -5067,7 +5067,7 @@ var show;
 .genres-popup .login-button:hover {
   background-color: var(--spice-button-active);
 }
-.main-nowPlayingWidget-trackInfo .main-trackInfo-container {
+.main-nowPlayingWidget-trackInfo.main-trackInfo-container {
   grid-template: "title title" "badges subtitle" "genres genres"/auto 1fr auto;
 }`
         document.head.appendChild(el)
