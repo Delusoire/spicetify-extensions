@@ -31,14 +31,14 @@ export const enterSneak = (event: KeyboardEvent) => {
 
     const isElementVisible = ({ style }: HTMLElement) =>
         style.opacity !== "0" && style.display !== "none" && style.visibility !== "hidden"
-    const isElementInViewPort = (e: HTMLElement, { clientHeight, clientWidth } = document.body) => {
+    const isElementInViewPort = (e: HTMLElement, c = document.body) => {
         const bound = e.getBoundingClientRect()
         const mid = (a: number, b: number) => (a + b) / 2
         const clamp = (m: number, M: number) => (x: number) => Math.max(Math.min(x, M), m)
         const within = (m: number, M: number) => (x: number) => x === clamp(m, M)(x)
         return (
-            pipe(mid(bound.top, bound.bottom), within(0, clientHeight)) &&
-            pipe(mid(bound.left, bound.right), within(0, clientWidth))
+            pipe(mid(bound.top, bound.bottom), within(0, c.clientHeight)) &&
+            pipe(mid(bound.left, bound.right), within(0, c.clientWidth))
         )
     }
 
@@ -58,9 +58,7 @@ export const enterSneak = (event: KeyboardEvent) => {
     shouldListenToSneakBinds = pipe(
         document.querySelectorAll(linkSelector),
         x => Array.from(x) as HTMLElement[],
-        tapAny(x => console.log(x)),
         a.filter(isElementVisible),
-        tapAny(x => console.log(x)),
         a.filter(isElementInViewPort),
         tapAny(x => console.log(x)),
         a.reduce<HTMLElement, [number, number]>([0, 0], ([k1, k2], e) => {

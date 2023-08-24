@@ -3290,12 +3290,12 @@ var keyboard;
         if (clearSneakKeys())
           return;
         const isElementVisible = ({ style }) => style.opacity !== "0" && style.display !== "none" && style.visibility !== "hidden";
-        const isElementInViewPort = (e, { clientHeight, clientWidth } = document.body) => {
+        const isElementInViewPort = (e, c = document.body) => {
           const bound = e.getBoundingClientRect();
           const mid = (a, b) => (a + b) / 2;
           const clamp = (m, M) => (x) => Math.max(Math.min(x, M), m);
           const within = (m, M) => (x) => x === clamp(m, M)(x);
-          return (0, import_function10.pipe)(mid(bound.top, bound.bottom), within(0, clientHeight)) && (0, import_function10.pipe)(mid(bound.left, bound.right), within(0, clientWidth));
+          return (0, import_function10.pipe)(mid(bound.top, bound.bottom), within(0, c.clientHeight)) && (0, import_function10.pipe)(mid(bound.left, bound.right), within(0, c.clientWidth));
         };
         const createSneakKey = (target, key, top, left) => {
           const sneakKey = document.createElement("span");
@@ -3311,9 +3311,7 @@ var keyboard;
         shouldListenToSneakBinds = (0, import_function10.pipe)(
           document.querySelectorAll(linkSelector),
           (x) => Array.from(x),
-          tapAny((x) => console.log(x)),
           Array_exports.filter(isElementVisible),
-          tapAny((x) => console.log(x)),
           Array_exports.filter(isElementInViewPort),
           tapAny((x) => console.log(x)),
           Array_exports.reduce([0, 0], ([k1, k2], e) => {
