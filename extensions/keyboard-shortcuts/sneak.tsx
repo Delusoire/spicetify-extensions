@@ -31,8 +31,8 @@ export const enterSneak = (event: KeyboardEvent) => {
 
     const isElementVisible = ({ style }: HTMLElement) =>
         style.opacity !== "0" && style.display !== "none" && style.visibility !== "hidden"
-    const isElementInViewPort = (e: HTMLElement, c?: HTMLElement) => {
-        c = c || document.documentElement
+    const isElementInViewPort = (e: HTMLElement) => {
+        const c = document.body
         const bound = e.getBoundingClientRect()
         const mid = (a: number, b: number) => (a + b) / 2
         const clamp = (m: number, M: number) => (x: number) => Math.max(Math.min(x, M), m)
@@ -61,7 +61,6 @@ export const enterSneak = (event: KeyboardEvent) => {
         x => Array.from(x) as HTMLElement[],
         a.filter(isElementVisible),
         a.filter(isElementInViewPort),
-        tapAny(x => console.log(x)),
         a.reduce<HTMLElement, [number, number]>([0, 0], ([k1, k2], e) => {
             const { x, y } = e.getBoundingClientRect()
             sneakKeysFragment.append(createSneakKey(e, keyList[k1] + keyList[k2++], y, x))
