@@ -30,3 +30,10 @@
         }
     }
 }
+
+.main-nowPlayingWidget-trackInfo .main-trackInfo-container {
+    grid-template:
+        "title title"
+        "badges subtitle"
+        "genres genres" / auto 1fr auto;
+}

@@ -62,6 +62,7 @@ const updateGenres = async () => {
 
 const genreContainer = document.createElement("div")
 genreContainer.className = "main-trackInfo-genres ellipsis-one-line main-type-finale"
+genreContainer.style.gridArea = "genres"
 genreContainer.addEventListener("contextmenu", genrePopup)
 
 Spicetify.Player.addEventListener("songchange", updateGenres)

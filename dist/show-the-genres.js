@@ -4940,16 +4940,16 @@ var show;
     }
   });
 
-  // temp_stylePlugin:ni:sha-256;Q8HLFSIjQqlEZ_t6NsRfqKtzKZVryR-T5H837MS7w1o
-  var init_ni_sha_256_Q8HLFSIjQqlEZ_t6NsRfqKtzKZVryR_T5H837MS7w1o = __esm({
-    "temp_stylePlugin:ni:sha-256;Q8HLFSIjQqlEZ_t6NsRfqKtzKZVryR-T5H837MS7w1o"() {
+  // temp_stylePlugin:ni:sha-256;hU4LHxhQQeemN0Ha6QNjveNCASQRRASzAyoWNHkrfIM
+  var init_ni_sha_256_hU4LHxhQQeemN0Ha6QNjveNCASQRRASzAyoWNHkrfIM = __esm({
+    "temp_stylePlugin:ni:sha-256;hU4LHxhQQeemN0Ha6QNjveNCASQRRASzAyoWNHkrfIM"() {
     }
   });
 
   // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\show-the-genres\assets\styles.scss
   var init_styles = __esm({
     "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\show-the-genres\\assets\\styles.scss"() {
-      init_ni_sha_256_Q8HLFSIjQqlEZ_t6NsRfqKtzKZVryR_T5H837MS7w1o();
+      init_ni_sha_256_hU4LHxhQQeemN0Ha6QNjveNCASQRRASzAyoWNHkrfIM();
     }
   });
 
@@ -5014,6 +5014,7 @@ var show;
       };
       genreContainer = document.createElement("div");
       genreContainer.className = "main-trackInfo-genres ellipsis-one-line main-type-finale";
+      genreContainer.style.gridArea = "genres";
       genreContainer.addEventListener("contextmenu", genrePopup);
       Spicetify.Player.addEventListener("songchange", updateGenres);
       updateGenres();
@@ -5039,7 +5040,7 @@ var show;
     if (!document.getElementById(`show-the-genres-css`)) {
         const el = document.createElement("style")
         el.id = `show-the-genres-css`
-        el.textContent = `/* temp_stylePlugin:ni:sha-256;Q8HLFSIjQqlEZ_t6NsRfqKtzKZVryR-T5H837MS7w1o */
+        el.textContent = `/* temp_stylePlugin:ni:sha-256;hU4LHxhQQeemN0Ha6QNjveNCASQRRASzAyoWNHkrfIM */
 .genres-popup::after {
   content: "";
   display: table;
@@ -5065,6 +5066,9 @@ var show;
 }
 .genres-popup .login-button:hover {
   background-color: var(--spice-button-active);
+}
+.main-nowPlayingWidget-trackInfo .main-trackInfo-container {
+  grid-template: "title title" "badges subtitle" "genres genres"/auto 1fr auto;
 }`
         document.head.appendChild(el)
     }
