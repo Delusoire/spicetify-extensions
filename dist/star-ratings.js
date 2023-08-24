@@ -16435,7 +16435,7 @@ var star;
       getStars = (0, import_function22.flow)(getStarsContainer, getStarsFromStarsContainer);
       getStarsStops = (0, import_function22.flow)(getStarsContainer, getStarsStopsFromStarsContainer);
       getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-indexable"));
-      getTrackListHeader = (trackList) => trackList.querySelector(".main-trackList-trackListHeader").firstChild;
+      getTrackListHeader = (trackList) => trackList.querySelector(".main-trackList-trackListHeader")?.firstChild;
       getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
       getLastColIndex = (parent) => {
         const lastCol = parent.querySelector(".main-trackList-rowSectionEnd");
@@ -16725,7 +16725,7 @@ var star;
             return;
           const hasStars = (parent) => parent.getElementsByClassName("stars").length > 0;
           const locationUri = URI11.from(Spicetify.Platform.History.location.pathname);
-          const firstElement = URI11.isArtist(locationUri) ? trackListTracks[0] : getTrackListHeader(trackList);
+          const firstElement = URI11.isArtist(locationUri) ? trackListTracks[0] : getTrackListHeader(trackList) ?? trackListTracks[0];
           const [lastColIndex] = getLastColIndex(firstElement);
           const newTrackListColCss = customTrackListColCss[lastColIndex - (0, import_function25.pipe)(firstElement, hasStars, Number)];
           if (!newTrackListColCss)

@@ -50,7 +50,9 @@ export const updateTrackListStars = f(
         const hasStars = (parent: HTMLElement) => parent.getElementsByClassName("stars").length > 0
         const locationUri = URI.from(Spicetify.Platform.History.location.pathname)
 
-        const firstElement = URI.isArtist(locationUri!) ? trackListTracks[0] : getTrackListHeader(trackList)
+        const firstElement = URI.isArtist(locationUri!)
+            ? trackListTracks[0]
+            : getTrackListHeader(trackList) ?? trackListTracks[0]
 
         const [lastColIndex] = getLastColIndex(firstElement)
         const newTrackListColCss = customTrackListColCss[lastColIndex - p(firstElement, hasStars, Number)]

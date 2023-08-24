@@ -31,7 +31,7 @@ export const getStarsStops = flow(getStarsContainer, getStarsStopsFromStarsConta
 export const getTrackLists = () =>
     Array.from(document.querySelectorAll(".main-trackList-indexable")) as HTMLDivElement[]
 export const getTrackListHeader = (trackList: HTMLDivElement) =>
-    trackList.querySelector(".main-trackList-trackListHeader")!.firstChild as HTMLDivElement
+    trackList.querySelector(".main-trackList-trackListHeader")?.firstChild as HTMLDivElement
 export const getTrackListTracks = (trackList: HTMLDivElement) =>
     Array.from(trackList.querySelectorAll(".main-trackList-trackListRow")) as HTMLDivElement[]
 
