@@ -3,12 +3,19 @@ import _externalGlobalPlugin from "esbuild-plugin-external-global"
 const { externalGlobalPlugin } = _externalGlobalPlugin
 import fs from "fs"
 import path from "path"
-import postCssPlugin from "esbuild-style-plugin"
+import _postCssPlugin from "esbuild-style-plugin"
 import tailwindcss from "tailwindcss"
 import autoprefixer from "autoprefixer"
 
-const wrapInTag = (id, tag, content) =>
-    `(async () => {
+const postCssPlugin = _postCssPlugin({
+    postcss: {
+        plugins: [tailwindcss, autoprefixer],
+    },
+})
+
+const buildExtension = async name => {
+    const wrapInTag = (id, tag, content) =>
+        `(async () => {
     if (!document.getElementById(\`${id}\`)) {
         const el = document.createElement("${tag}")
         el.id = \`${id}\`
@@ -17,7 +24,6 @@ const wrapInTag = (id, tag, content) =>
     }
 })()`
 
-const buildExtension = async name => {
     const entryJs = path.join("extensions", name, `entry.tsx`),
         outJs = path.join("dist", `${name}.js`),
         outCss = path.join("dist", `${name}.css`),
@@ -25,8 +31,6 @@ const buildExtension = async name => {
 
     const bundleCss = () => {
         if (fs.existsSync(outCss)) {
-            console.log("Bundling css with js...")
-
             const css = fs.readFileSync(outCss, "utf-8")
             fs.rmSync(outCss)
 
@@ -56,15 +60,33 @@ const buildExtension = async name => {
                 react: "Spicetify.React",
                 "react-dom": "Spicetify.ReactDOM",
             }),
-            postCssPlugin({
-                postcss: {
-                    plugins: [tailwindcss, autoprefixer],
-                },
-            }),
+            postCssPlugin,
         ],
     })
 
     bundleCss()
 }
 
+const buildSnippet = async name => {
+    const entryCss = path.join("snippets", name)
+    const outJs = path.join("dist", name)
+
+    const removeJs = () => {
+        if (fs.existsSync(outJs)) fs.rmSync(outJs)
+    }
+
+    await esbuild.build({
+        entryPoints: [entryCss],
+        minify: false,
+        outfile: outJs,
+        target: "es2022",
+        bundle: true,
+        globalName: name.replaceAll("-", "."),
+        plugins: [postCssPlugin],
+    })
+
+    removeJs()
+}
+
 fs.readdirSync("extensions").map(buildExtension)
+fs.readdirSync("snippets").map(buildSnippet)

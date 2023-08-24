@@ -1,0 +1,10 @@
+/* temp_stylePlugin:ni:sha-256;TIToPfYDC6JzYM00yDqe9sQY3dWZha1_7UWEU0r3bqA */
+#spicetify-sticky-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+#spicetify-sticky-list span {
+  display: none;
+}
