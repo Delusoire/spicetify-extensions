@@ -1,7 +1,6 @@
 import { array as a } from "fp-ts"
 import { flow, pipe } from "fp-ts/function"
 import { MousetrapInstance } from "mousetrap"
-import { tapAny } from "../../shared/fp"
 
 type SneakKey = HTMLSpanElement & { target: HTMLElement }
 
@@ -54,7 +53,7 @@ export const enterSneak = (event: KeyboardEvent) => {
     }
 
     const sneakKeysFragment = document.createDocumentFragment()
-    const linkSelector = `[href]:not(link),button,[role="button"]`
+    const linkSelector = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`
 
     shouldListenToSneakBinds = pipe(
         document.querySelectorAll(linkSelector),
