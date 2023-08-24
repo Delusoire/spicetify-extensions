@@ -15427,7 +15427,9 @@ var star;
       );
       fetchWebPlaylistsSpot = chunckify(1)(
         // @ts-ignore chunkify will never call with empty array
-        async ([id]) => await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
+        async ([id]) => [
+          await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
+        ]
       );
       fetchWebAlbumsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums

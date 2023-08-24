@@ -55,8 +55,9 @@ export const fetchWebArtistsSpot = chunckify(50)(
 
 export const fetchWebPlaylistsSpot = chunckify(1)(
     // @ts-ignore chunkify will never call with empty array
-    async ([id]: [SpotifyID]) =>
-        (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)) as SpotApiPlaylist[],
+    async ([id]: [SpotifyID]) => [
+        (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)) as SpotApiPlaylist,
+    ],
 )
 export const fetchWebAlbumsSpot = chunckify(50)(
     async (ids: SpotifyID[]) =>

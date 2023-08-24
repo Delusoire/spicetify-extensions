@@ -6327,7 +6327,9 @@ var sort;
       );
       fetchWebPlaylistsSpot = chunckify(1)(
         // @ts-ignore chunkify will never call with empty array
-        async ([id6]) => await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id6}`)
+        async ([id6]) => [
+          await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id6}`)
+        ]
       );
       fetchWebAlbumsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums
@@ -6921,7 +6923,7 @@ var sort;
           [URI15.isAlbum, (0, import_function28.flow)(uriToId, getNameFromAlbumId)],
           [URI15.isArtist, (0, import_function28.flow)(uriToId, getNameFromArtistId)],
           [URI15.isPlaylistV1OrV2, (0, import_function28.flow)(uriToId, getNameFromPlaylistId)],
-          [startsWith("spotify:collection:tracks"), Task_exports.of("Liked Teacks")]
+          [startsWith("spotify:collection:tracks"), Task_exports.of("Liked Tracks")]
         ])(Task_exports.of("Unresolved"))(lastSortedUri);
         await createSPPlaylistFromTracks(
           `${playlistName} - ${lastSortedName}`,

@@ -294,7 +294,7 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
         [URI.isAlbum, f(uriToId, getNameFromAlbumId)],
         [URI.isArtist, f(uriToId, getNameFromArtistId)],
         [URI.isPlaylistV1OrV2, f(uriToId, getNameFromPlaylistId)],
-        [startsWith("spotify:collection:tracks"), task.of("Liked Teacks")],
+        [startsWith("spotify:collection:tracks"), task.of("Liked Tracks")],
     ])(task.of("Unresolved"))(lastSortedUri)
 
     await createSPPlaylistFromTracks(
