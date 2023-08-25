@@ -1,4 +1,4 @@
-/* temp_stylePlugin:ni:sha-256;wnpXdax2oJiVt2UvntZScQmi2QgBgugSL514SkfsHXg */
+/* temp_stylePlugin:ni:sha-256;t8b1qi4KVh14Bko287_P7zdP8TuPJodqTvHYtZfkX4s */
 :root:root:root .main-buddyFeed-content.queue-panel {
   padding: 10px;
 }
@@ -15,7 +15,7 @@
   left: 4px !important;
 }
 :root:root:root .main-trackList-trackListRowGrid {
-  border-radius: var(--border-radius);
+  border-radius: 3px;
   border: none;
   transition: 200ms background-color;
 }
@@ -26,10 +26,10 @@
   transition: 300ms color;
 }
 :root:root:root .main-trackList-trackListRowGrid:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.05) !important;
 }
 :root:root:root .main-trackList-trackListRowGrid.main-trackList-selected {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 :root:root:root .uCHqQ74vvHOnctGg0X0B .main-trackList-trackListHeader,
 :root:root:root .queue-queuePage-queuePage .main-trackList-trackListHeader,
@@ -54,8 +54,8 @@
 :root:root:root .queue-queuePage-queuePage .main-trackList-trackListRow:focus-within .main-trackList-rowSectionIndex,
 :root:root:root section:not(.album-albumPage-sectionWrapper):not(.search-searchResult-tracklistContainer) .contentSpacing:not(.artist-artistDiscography-tracklist) .main-trackList-trackListRow:hover .main-trackList-rowSectionIndex,
 :root:root:root section:not(.album-albumPage-sectionWrapper):not(.search-searchResult-tracklistContainer) .contentSpacing:not(.artist-artistDiscography-tracklist) .main-trackList-trackListRow:focus-within .main-trackList-rowSectionIndex {
-  background: rgba(var(--spice-rgb-play-button));
-  border-radius: var(--border-radius);
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 3px;
 }
 :root:root:root .uCHqQ74vvHOnctGg0X0B .main-trackList-trackListRow:hover button.main-trackList-rowImagePlayButton,
 :root:root:root .uCHqQ74vvHOnctGg0X0B .main-trackList-trackListRow:focus-within button.main-trackList-rowImagePlayButton,
@@ -109,7 +109,7 @@
 :root:root:root .uCHqQ74vvHOnctGg0X0B .main-trackList-rowImageFallback,
 :root:root:root .queue-queuePage-queuePage .main-trackList-rowImageFallback,
 :root:root:root section:not(.album-albumPage-sectionWrapper):not(.search-searchResult-tracklistContainer) .contentSpacing:not(.artist-artistDiscography-tracklist) .main-trackList-rowImageFallback {
-  border-radius: var(--border-radius);
+  border-radius: 3px;
 }
 :root:root:root .uCHqQ74vvHOnctGg0X0B .main-trackList-active .main-trackList-rowTitle,
 :root:root:root .queue-queuePage-queuePage .main-trackList-active .main-trackList-rowTitle,
@@ -121,8 +121,8 @@
 :root:root:root .uCHqQ74vvHOnctGg0X0B .main-trackList-active .main-trackList-rowSectionIndex,
 :root:root:root .queue-queuePage-queuePage .main-trackList-active .main-trackList-rowSectionIndex,
 :root:root:root section:not(.album-albumPage-sectionWrapper):not(.search-searchResult-tracklistContainer) .contentSpacing:not(.artist-artistDiscography-tracklist) .main-trackList-active .main-trackList-rowSectionIndex {
-  background: rgba(var(--spice-rgb-play-button));
-  border-radius: var(--border-radius);
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 3px;
 }
 :root:root:root .uCHqQ74vvHOnctGg0X0B .main-trackList-active button.main-trackList-rowImagePlayButton,
 :root:root:root .queue-queuePage-queuePage .main-trackList-active button.main-trackList-rowImagePlayButton,
