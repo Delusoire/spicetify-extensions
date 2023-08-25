@@ -273,6 +273,19 @@ new Spicetify.ContextMenu.SubMenu(
     tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")])) as any,
 ).register()
 
+const generatePlaylistName = async () => {
+    const uriToId = (uri: SpotifyURI) => URI.from(uri)!.id!
+    const getName = (fn: Function) => async (id: SpotifyID) => (await fn([id]))[0].name
+
+    const collectionName = await guard([
+        [URI.isAlbum, f(uriToId, getName(fetchWebAlbumsSpot))],
+        [URI.isArtist, f(uriToId, getName(fetchWebArtistsSpot))],
+        [URI.isPlaylistV1OrV2, f(uriToId, getName(fetchWebPlaylistsSpot))],
+        [startsWith("spotify:collection:tracks"), task.of("Liked Tracks")],
+    ])(task.of("Unresolved"))(lastSortedUri)
+
+    return `${collectionName} - ${lastSortedName}`
+}
 new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
     if (lastSortedQueue.length === 0) return void Spicetify.showNotification("Must sort to queue beforehand")
 
@@ -283,21 +296,10 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
         o.getOrElseW<any>(() => createPlatFolder("Sorted Playlists")),
         pMchain((x: any) => x.uri),
     )
-
-    const uriToId = (uri: SpotifyURI) => URI.from(uri)!.id!
-    const getNameFromAlbumId = async (id: SpotifyID) => (await fetchWebAlbumsSpot([id]))[0].name
-    const getNameFromArtistId = async (id: SpotifyID) => (await fetchWebArtistsSpot([id]))[0].name
-    const getNameFromPlaylistId = async (id: SpotifyID) => (await fetchWebPlaylistsSpot([id]))[0].name
-
-    const playlistName = await guard([
-        [URI.isAlbum, f(uriToId, getNameFromAlbumId)],
-        [URI.isArtist, f(uriToId, getNameFromArtistId)],
-        [URI.isPlaylistV1OrV2, f(uriToId, getNameFromPlaylistId)],
-        [startsWith("spotify:collection:tracks"), task.of("Liked Tracks")],
-    ])(task.of("Unresolved"))(lastSortedUri)
+    const playlistName = await generatePlaylistName()
 
     await createSPPlaylistFromTracks(
-        `${playlistName} - ${lastSortedName}`,
+        playlistName,
         lastSortedQueue.map(t => t.uri),
         sortedPlaylistsFolderUri,
     )
@@ -306,6 +308,7 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
 })
 
 new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
+    if (lastSortedQueue.length === 0) return void Spicetify.showNotification("Must sort to queue beforehand")
     if (!URI.isPlaylistV1OrV2(lastSortedUri))
         return void Spicetify.showNotification("Last sorted queue must be a playlist")
 
