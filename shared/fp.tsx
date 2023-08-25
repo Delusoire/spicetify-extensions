@@ -1,6 +1,6 @@
-import { array as a } from "fp-ts"
-import { flow as f } from "fp-ts/function"
-import { guard } from "fp-ts-std/Function"
+import { array as a, eq, string } from "fp-ts"
+import { flow as f, pipe as p, tupled, untupled } from "fp-ts/function"
+import { guard, memoize } from "fp-ts-std/Function"
 import { getUnionSemigroup } from "fp-ts/Record"
 import { Refinement } from "fp-ts/Refinement"
 import { first } from "fp-ts/lib/Semigroup"
@@ -85,3 +85,6 @@ export const withProgress =
             return ret
         })(fa)
     }
+
+export const memoize2 = <A extends any[], R>(fn: (...args: A) => R) =>
+    p(fn, tupled, memoize<A>(eq.contramap(JSON.stringify)(string.Eq)), untupled)

@@ -23,6 +23,7 @@ import {
     fetchWebArtistsSpot,
     fetchWebPlaylistsSpot,
     fetchWebTracksSpot,
+    movePlatPlaylistTracks,
 } from "../../shared/api"
 import { objConcat, pMchain, tapAny, withProgress } from "../../shared/fp"
 import {
@@ -36,7 +37,7 @@ import {
     parseTopTrackFromArtist,
     parseTrackFromAlbum,
 } from "../../shared/parse"
-import { SpotifyID, SpotifyURI } from "../../shared/util"
+import { SpotifyID, SpotifyLoc, SpotifyURI } from "../../shared/util"
 import { CONFIG } from "./settings"
 
 const { URI } = Spicetify
@@ -304,6 +305,17 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
     )
 
     Spicetify.showNotification(`Playlist ${playlistName} created`)
+})
+
+new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-up", async () => {
+    if (!URI.isPlaylistV1OrV2(lastSortedUri))
+        return void Spicetify.showNotification("Last sorted queue must be a playlist")
+
+    movePlatPlaylistTracks(
+        lastSortedUri,
+        lastSortedQueue.map(t => t.uri),
+        SpotifyLoc.before("first"),
+    )
 })
 
 let invertAscending = 0

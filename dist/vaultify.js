@@ -381,9 +381,30 @@ var vaultify = (() => {
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Eq.js
-  var fromEquals, eqStrict, strictEqual;
+  var Eq_exports = {};
+  __export(Eq_exports, {
+    Contravariant: () => Contravariant,
+    URI: () => URI,
+    contramap: () => contramap,
+    eq: () => eq,
+    eqBoolean: () => eqBoolean,
+    eqDate: () => eqDate,
+    eqNumber: () => eqNumber,
+    eqStrict: () => eqStrict,
+    eqString: () => eqString,
+    fromEquals: () => fromEquals,
+    getMonoid: () => getMonoid,
+    getSemigroup: () => getSemigroup,
+    getStructEq: () => getStructEq,
+    getTupleEq: () => getTupleEq,
+    strictEqual: () => strictEqual,
+    struct: () => struct,
+    tuple: () => tuple
+  });
+  var fromEquals, struct, tuple, contramap_, contramap, URI, eqStrict, empty, getSemigroup, getMonoid, Contravariant, getTupleEq, getStructEq, strictEqual, eq, eqBoolean, eqString, eqNumber, eqDate;
   var init_Eq = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Eq.js"() {
+      init_function();
       fromEquals = function(equals) {
         return {
           equals: function(x, y) {
@@ -391,12 +412,79 @@ var vaultify = (() => {
           }
         };
       };
+      struct = function(eqs) {
+        return fromEquals(function(first3, second) {
+          for (var key in eqs) {
+            if (!eqs[key].equals(first3[key], second[key])) {
+              return false;
+            }
+          }
+          return true;
+        });
+      };
+      tuple = function() {
+        var eqs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          eqs[_i] = arguments[_i];
+        }
+        return fromEquals(function(first3, second) {
+          return eqs.every(function(E, i) {
+            return E.equals(first3[i], second[i]);
+          });
+        });
+      };
+      contramap_ = function(fa, f3) {
+        return pipe(fa, contramap(f3));
+      };
+      contramap = function(f3) {
+        return function(fa) {
+          return fromEquals(function(x, y) {
+            return fa.equals(f3(x), f3(y));
+          });
+        };
+      };
+      URI = "Eq";
       eqStrict = {
         equals: function(a, b) {
           return a === b;
         }
       };
+      empty = {
+        equals: function() {
+          return true;
+        }
+      };
+      getSemigroup = function() {
+        return {
+          concat: function(x, y) {
+            return fromEquals(function(a, b) {
+              return x.equals(a, b) && y.equals(a, b);
+            });
+          }
+        };
+      };
+      getMonoid = function() {
+        return {
+          concat: getSemigroup().concat,
+          empty
+        };
+      };
+      Contravariant = {
+        URI,
+        contramap: contramap_
+      };
+      getTupleEq = tuple;
+      getStructEq = struct;
       strictEqual = eqStrict.equals;
+      eq = Contravariant;
+      eqBoolean = eqStrict;
+      eqString = eqStrict;
+      eqNumber = eqStrict;
+      eqDate = {
+        equals: function(first3, second) {
+          return first3.valueOf() === second.valueOf();
+        }
+      };
     }
   });
 
@@ -404,7 +492,7 @@ var vaultify = (() => {
   function compare(first3, second) {
     return first3 < second ? -1 : first3 > second ? 1 : 0;
   }
-  var equalsDefault, fromCompare, getSemigroup, getMonoid, strictOrd;
+  var equalsDefault, fromCompare, getSemigroup2, getMonoid2, strictOrd;
   var init_Ord = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Ord.js"() {
       init_Eq();
@@ -421,7 +509,7 @@ var vaultify = (() => {
           }
         };
       };
-      getSemigroup = function() {
+      getSemigroup2 = function() {
         return {
           concat: function(first3, second) {
             return fromCompare(function(a, b) {
@@ -431,9 +519,9 @@ var vaultify = (() => {
           }
         };
       };
-      getMonoid = function() {
+      getMonoid2 = function() {
         return {
-          concat: getSemigroup().concat,
+          concat: getSemigroup2().concat,
           empty: fromCompare(function() {
             return 0;
           })
@@ -656,7 +744,7 @@ var vaultify = (() => {
       };
       sortBy = function(ords) {
         if (isNonEmpty3(ords)) {
-          var M = getMonoid();
+          var M = getMonoid2();
           return sort(ords.reduce(M.concat, M.empty));
         }
         return copy;
@@ -1160,7 +1248,7 @@ var vaultify = (() => {
     Pointed: () => Pointed,
     Traversable: () => Traversable,
     TraversableWithIndex: () => TraversableWithIndex,
-    URI: () => URI,
+    URI: () => URI2,
     Unfoldable: () => Unfoldable,
     Witherable: () => Witherable,
     Zero: () => Zero,
@@ -1195,7 +1283,7 @@ var vaultify = (() => {
     dropRight: () => dropRight,
     duplicate: () => duplicate,
     elem: () => elem2,
-    empty: () => empty2,
+    empty: () => empty3,
     every: () => every2,
     exists: () => exists,
     extend: () => extend,
@@ -1225,9 +1313,9 @@ var vaultify = (() => {
     getDifferenceMagma: () => getDifferenceMagma,
     getEq: () => getEq3,
     getIntersectionSemigroup: () => getIntersectionSemigroup,
-    getMonoid: () => getMonoid2,
+    getMonoid: () => getMonoid3,
     getOrd: () => getOrd2,
-    getSemigroup: () => getSemigroup3,
+    getSemigroup: () => getSemigroup4,
     getShow: () => getShow3,
     getUnionMonoid: () => getUnionMonoid,
     getUnionSemigroup: () => getUnionSemigroup,
@@ -1402,7 +1490,7 @@ var vaultify = (() => {
       });
     };
   }
-  var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last5, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt, updateAt, deleteAt, modifyAt, reverse2, rights, lefts, sort2, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI, getShow3, getSemigroup3, getMonoid2, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, chainFirst2, Monad, Unfoldable, Alt, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty2, cons3, snoc3, prependToAll, array;
+  var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last5, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt, updateAt, deleteAt, modifyAt, reverse2, rights, lefts, sort2, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI2, getShow3, getSemigroup4, getMonoid3, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, chainFirst2, Monad, Unfoldable, Alt, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty3, cons3, snoc3, prependToAll, array;
   var init_Array = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Array.js"() {
       init_Apply();
@@ -1937,18 +2025,18 @@ var vaultify = (() => {
         }
         return out;
       };
-      URI = "Array";
+      URI2 = "Array";
       getShow3 = getShow2;
-      getSemigroup3 = function() {
+      getSemigroup4 = function() {
         return {
           concat: function(first3, second) {
             return first3.concat(second);
           }
         };
       };
-      getMonoid2 = function() {
+      getMonoid3 = function() {
         return {
-          concat: getSemigroup3().concat,
+          concat: getSemigroup4().concat,
           empty: []
         };
       };
@@ -1985,62 +2073,62 @@ var vaultify = (() => {
         };
       };
       Functor = {
-        URI,
+        URI: URI2,
         map: _map
       };
       flap2 = /* @__PURE__ */ flap(Functor);
       Pointed = {
-        URI,
+        URI: URI2,
         of: of3
       };
       FunctorWithIndex = {
-        URI,
+        URI: URI2,
         map: _map,
         mapWithIndex: _mapWithIndex
       };
       Apply = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap
       };
       apFirst2 = /* @__PURE__ */ apFirst(Apply);
       apSecond2 = /* @__PURE__ */ apSecond(Apply);
       Applicative = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         of: of3
       };
       Chain = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         chain: flatMap
       };
       chainFirst2 = /* @__PURE__ */ chainFirst(Chain);
       Monad = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         of: of3,
         chain: flatMap
       };
       Unfoldable = {
-        URI,
+        URI: URI2,
         unfold
       };
       Alt = {
-        URI,
+        URI: URI2,
         map: _map,
         alt: _alt
       };
       Zero = {
-        URI,
+        URI: URI2,
         zero
       };
       guard2 = /* @__PURE__ */ guard(Zero, Pointed);
       Alternative = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         of: of3,
@@ -2048,17 +2136,17 @@ var vaultify = (() => {
         zero
       };
       Extend = {
-        URI,
+        URI: URI2,
         map: _map,
         extend: _extend
       };
       Compactable = {
-        URI,
+        URI: URI2,
         compact,
         separate
       };
       Filterable = {
-        URI,
+        URI: URI2,
         map: _map,
         compact,
         separate,
@@ -2068,7 +2156,7 @@ var vaultify = (() => {
         partitionMap: _partitionMap
       };
       FilterableWithIndex = {
-        URI,
+        URI: URI2,
         map: _map,
         mapWithIndex: _mapWithIndex,
         compact,
@@ -2083,13 +2171,13 @@ var vaultify = (() => {
         filterWithIndex: _filterWithIndex
       };
       Foldable = {
-        URI,
+        URI: URI2,
         reduce: _reduce,
         foldMap: _foldMap,
         reduceRight: _reduceRight
       };
       FoldableWithIndex = {
-        URI,
+        URI: URI2,
         reduce: _reduce,
         foldMap: _foldMap,
         reduceRight: _reduceRight,
@@ -2098,7 +2186,7 @@ var vaultify = (() => {
         reduceRightWithIndex: _reduceRightWithIndex
       };
       Traversable = {
-        URI,
+        URI: URI2,
         map: _map,
         reduce: _reduce,
         foldMap: _foldMap,
@@ -2107,7 +2195,7 @@ var vaultify = (() => {
         sequence
       };
       TraversableWithIndex = {
-        URI,
+        URI: URI2,
         map: _map,
         mapWithIndex: _mapWithIndex,
         reduce: _reduce,
@@ -2123,7 +2211,7 @@ var vaultify = (() => {
       _wither = /* @__PURE__ */ witherDefault(Traversable, Compactable);
       _wilt = /* @__PURE__ */ wiltDefault(Traversable, Compactable);
       Witherable = {
-        URI,
+        URI: URI2,
         map: _map,
         compact,
         separate,
@@ -2141,7 +2229,7 @@ var vaultify = (() => {
       };
       chainRecDepthFirst2 = chainRecDepthFirst;
       ChainRecDepthFirst = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         chain: flatMap,
@@ -2149,7 +2237,7 @@ var vaultify = (() => {
       };
       chainRecBreadthFirst2 = chainRecBreadthFirst;
       ChainRecBreadthFirst = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         chain: flatMap,
@@ -2157,7 +2245,7 @@ var vaultify = (() => {
       };
       filterE2 = /* @__PURE__ */ filterE(Witherable);
       FromEither = {
-        URI,
+        URI: URI2,
         fromEither
       };
       fromEitherK2 = /* @__PURE__ */ fromEitherK(FromEither);
@@ -2185,12 +2273,12 @@ var vaultify = (() => {
       apS2 = /* @__PURE__ */ apS(Apply);
       chain = flatMap;
       range3 = range;
-      empty2 = [];
+      empty3 = [];
       cons3 = cons;
       snoc3 = snoc;
       prependToAll = prependAll3;
       array = {
-        URI,
+        URI: URI2,
         compact,
         separate,
         map: _map,
@@ -2257,7 +2345,7 @@ var vaultify = (() => {
     MonadThrow: () => MonadThrow,
     Pointed: () => Pointed2,
     Traversable: () => Traversable2,
-    URI: () => URI2,
+    URI: () => URI3,
     Witherable: () => Witherable2,
     Zero: () => Zero2,
     alt: () => alt2,
@@ -2299,7 +2387,7 @@ var vaultify = (() => {
     getFirstMonoid: () => getFirstMonoid,
     getLastMonoid: () => getLastMonoid,
     getLeft: () => getLeft,
-    getMonoid: () => getMonoid3,
+    getMonoid: () => getMonoid4,
     getOrElse: () => getOrElse,
     getOrElseW: () => getOrElseW,
     getOrd: () => getOrd3,
@@ -2363,7 +2451,7 @@ var vaultify = (() => {
       return isSome2(getOption(a));
     };
   }
-  var none2, some3, getLeft, getRight, _map2, _ap2, _reduce2, _foldMap2, _reduceRight2, _traverse2, _alt2, _filter2, _filterMap2, _extend2, _partition2, _partitionMap2, URI2, getShow4, getEq4, getOrd3, getMonoid3, map2, Functor2, as2, asUnit2, of4, Pointed2, ap3, Apply2, Applicative2, flatMap2, Chain2, Monad2, reduce4, foldMap4, reduceRight4, Foldable2, orElse, altW2, alt2, Alt2, zero2, Zero2, guard3, Alternative2, extend2, Extend2, compact2, defaultSeparated, separate2, Compactable2, filter2, filterMap2, partition2, partitionMap2, Filterable2, traverse2, sequence2, Traversable2, _wither2, _wilt2, wither2, wilt2, Witherable2, throwError, MonadThrow, fromEither2, FromEither2, isSome2, isNone2, matchW3, foldW, match3, fold, getOrElseW, getOrElse, flap3, apFirst3, apSecond3, flatten2, tap2, tapEither2, duplicate2, fromEitherK3, chainEitherK2, chainFirstEitherK, fromNullable, tryCatch, tryCatchK, fromNullableK, chainNullableK, toNullable, toUndefined, exists2, Do2, bindTo3, let_3, bind3, apS3, ApT, traverseReadonlyNonEmptyArrayWithIndex, traverseReadonlyArrayWithIndex, traverseArrayWithIndex, traverseArray, sequenceArray, chain2, chainFirst3, mapNullable, option, getApplySemigroup2, getApplyMonoid, getFirstMonoid, getLastMonoid;
+  var none2, some3, getLeft, getRight, _map2, _ap2, _reduce2, _foldMap2, _reduceRight2, _traverse2, _alt2, _filter2, _filterMap2, _extend2, _partition2, _partitionMap2, URI3, getShow4, getEq4, getOrd3, getMonoid4, map2, Functor2, as2, asUnit2, of4, Pointed2, ap3, Apply2, Applicative2, flatMap2, Chain2, Monad2, reduce4, foldMap4, reduceRight4, Foldable2, orElse, altW2, alt2, Alt2, zero2, Zero2, guard3, Alternative2, extend2, Extend2, compact2, defaultSeparated, separate2, Compactable2, filter2, filterMap2, partition2, partitionMap2, Filterable2, traverse2, sequence2, Traversable2, _wither2, _wilt2, wither2, wilt2, Witherable2, throwError, MonadThrow, fromEither2, FromEither2, isSome2, isNone2, matchW3, foldW, match3, fold, getOrElseW, getOrElse, flap3, apFirst3, apSecond3, flatten2, tap2, tapEither2, duplicate2, fromEitherK3, chainEitherK2, chainFirstEitherK, fromNullable, tryCatch, tryCatchK, fromNullableK, chainNullableK, toNullable, toUndefined, exists2, Do2, bindTo3, let_3, bind3, apS3, ApT, traverseReadonlyNonEmptyArrayWithIndex, traverseReadonlyArrayWithIndex, traverseArrayWithIndex, traverseArray, sequenceArray, chain2, chainFirst3, mapNullable, option, getApplySemigroup2, getApplyMonoid, getFirstMonoid, getLastMonoid;
   var init_Option = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Option.js"() {
       init_Applicative();
@@ -2428,7 +2516,7 @@ var vaultify = (() => {
       _partitionMap2 = function(fa, f3) {
         return pipe(fa, partitionMap2(f3));
       };
-      URI2 = "Option";
+      URI3 = "Option";
       getShow4 = function(S) {
         return {
           show: function(ma) {
@@ -2451,7 +2539,7 @@ var vaultify = (() => {
           }
         };
       };
-      getMonoid3 = function(S) {
+      getMonoid4 = function(S) {
         return {
           concat: function(x, y) {
             return isNone2(x) ? y : isNone2(y) ? x : some3(S.concat(x.value, y.value));
@@ -2465,14 +2553,14 @@ var vaultify = (() => {
         };
       };
       Functor2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2
       };
       as2 = dual(2, as(Functor2));
       asUnit2 = asUnit(Functor2);
       of4 = some3;
       Pointed2 = {
-        URI: URI2,
+        URI: URI3,
         of: of4
       };
       ap3 = function(fa) {
@@ -2481,12 +2569,12 @@ var vaultify = (() => {
         };
       };
       Apply2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2
       };
       Applicative2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2,
         of: of4
@@ -2495,13 +2583,13 @@ var vaultify = (() => {
         return isNone2(ma) ? none2 : f3(ma.value);
       });
       Chain2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2,
         chain: flatMap2
       };
       Monad2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2,
         of: of4,
@@ -2525,7 +2613,7 @@ var vaultify = (() => {
         };
       };
       Foldable2 = {
-        URI: URI2,
+        URI: URI3,
         reduce: _reduce2,
         foldMap: _foldMap2,
         reduceRight: _reduceRight2
@@ -2536,7 +2624,7 @@ var vaultify = (() => {
       altW2 = orElse;
       alt2 = orElse;
       Alt2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         alt: _alt2
       };
@@ -2544,12 +2632,12 @@ var vaultify = (() => {
         return none2;
       };
       Zero2 = {
-        URI: URI2,
+        URI: URI3,
         zero: zero2
       };
       guard3 = /* @__PURE__ */ guard(Zero2, Pointed2);
       Alternative2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2,
         of: of4,
@@ -2562,7 +2650,7 @@ var vaultify = (() => {
         };
       };
       Extend2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         extend: _extend2
       };
@@ -2572,7 +2660,7 @@ var vaultify = (() => {
         return isNone2(ma) ? defaultSeparated : separated(getLeft(ma.value), getRight(ma.value));
       };
       Compactable2 = {
-        URI: URI2,
+        URI: URI3,
         compact: compact2,
         separate: separate2
       };
@@ -2595,7 +2683,7 @@ var vaultify = (() => {
         return flow(map2(f3), separate2);
       };
       Filterable2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         compact: compact2,
         separate: separate2,
@@ -2617,7 +2705,7 @@ var vaultify = (() => {
         };
       };
       Traversable2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         reduce: _reduce2,
         foldMap: _foldMap2,
@@ -2644,7 +2732,7 @@ var vaultify = (() => {
         };
       };
       Witherable2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         reduce: _reduce2,
         foldMap: _foldMap2,
@@ -2664,7 +2752,7 @@ var vaultify = (() => {
         return none2;
       };
       MonadThrow = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2,
         of: of4,
@@ -2673,7 +2761,7 @@ var vaultify = (() => {
       };
       fromEither2 = getRight;
       FromEither2 = {
-        URI: URI2,
+        URI: URI3,
         fromEither: fromEither2
       };
       isSome2 = isSome;
@@ -2780,7 +2868,7 @@ var vaultify = (() => {
       chainFirst3 = tap2;
       mapNullable = chainNullableK;
       option = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         of: of4,
         ap: _ap2,
@@ -2806,29 +2894,29 @@ var vaultify = (() => {
       getApplySemigroup2 = /* @__PURE__ */ getApplySemigroup(Apply2);
       getApplyMonoid = /* @__PURE__ */ getApplicativeMonoid(Applicative2);
       getFirstMonoid = function() {
-        return getMonoid3(first());
+        return getMonoid4(first());
       };
       getLastMonoid = function() {
-        return getMonoid3(last());
+        return getMonoid4(last());
       };
     }
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Endomorphism.js
-  var getSemigroup4, getMonoid4;
+  var getSemigroup5, getMonoid5;
   var init_Endomorphism = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Endomorphism.js"() {
       init_function();
-      getSemigroup4 = function() {
+      getSemigroup5 = function() {
         return {
           concat: function(first3, second) {
             return flow(first3, second);
           }
         };
       };
-      getMonoid4 = function() {
+      getMonoid5 = function() {
         return {
-          concat: getSemigroup4().concat,
+          concat: getSemigroup5().concat,
           empty: identity
         };
       };
@@ -2857,6 +2945,58 @@ var vaultify = (() => {
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/HKT/index.js
   var init_HKT = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/HKT/index.js"() {
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyMap.js
+  function lookupWithKey(E) {
+    return function(k, m) {
+      if (m === void 0) {
+        var lookupWithKeyE_1 = lookupWithKey(E);
+        return function(m2) {
+          return lookupWithKeyE_1(k, m2);
+        };
+      }
+      var entries = m.entries();
+      var e;
+      while (!(e = entries.next()).done) {
+        var _a = e.value, ka = _a[0], a = _a[1];
+        if (E.equals(ka, k)) {
+          return some([ka, a]);
+        }
+      }
+      return none;
+    };
+  }
+  function lookup3(E) {
+    var lookupWithKeyE = lookupWithKey(E);
+    return function(k, m) {
+      if (m === void 0) {
+        var lookupE_1 = lookup3(E);
+        return function(m2) {
+          return lookupE_1(k, m2);
+        };
+      }
+      return pipe(lookupWithKeyE(k, m), map2(function(_a) {
+        var _ = _a[0], a = _a[1];
+        return a;
+      }));
+    };
+  }
+  var init_ReadonlyMap = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyMap.js"() {
+      init_function();
+      init_internal();
+      init_Option();
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Map.js
+  var lookup4;
+  var init_Map = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Map.js"() {
+      init_ReadonlyMap();
+      lookup4 = lookup3;
     }
   });
 
@@ -2912,7 +3052,7 @@ var vaultify = (() => {
     MonadIO: () => MonadIO,
     MonadTask: () => MonadTask,
     Pointed: () => Pointed3,
-    URI: () => URI3,
+    URI: () => URI4,
     ap: () => ap4,
     apFirst: () => apFirst4,
     apS: () => apS4,
@@ -2933,9 +3073,9 @@ var vaultify = (() => {
     fromIO: () => fromIO,
     fromIOK: () => fromIOK2,
     fromTask: () => fromTask,
-    getMonoid: () => getMonoid5,
+    getMonoid: () => getMonoid6,
     getRaceMonoid: () => getRaceMonoid,
-    getSemigroup: () => getSemigroup5,
+    getSemigroup: () => getSemigroup6,
     let: () => let_4,
     map: () => map3,
     never: () => never,
@@ -2976,7 +3116,7 @@ var vaultify = (() => {
       empty: never
     };
   }
-  var fromIO, _map3, _apPar, _apSeq, map3, ap4, of5, flatMap3, flatten3, URI3, Functor3, as3, asUnit3, flap4, Pointed3, ApplyPar, apFirst4, apSecond4, ApplicativePar, ApplySeq, ApplicativeSeq, Chain3, Monad3, MonadIO, fromTask, MonadTask, FromIO, _FlatMap, _FromIO, flatMapIO2, tap3, tapIO2, fromIOK2, chainIOK, chainFirstIOK, FromTask, never, Do3, bindTo4, let_4, bind4, apS4, ApT2, traverseReadonlyNonEmptyArrayWithIndex2, traverseReadonlyArrayWithIndex2, traverseReadonlyNonEmptyArrayWithIndexSeq, traverseReadonlyArrayWithIndexSeq, traverseArrayWithIndex2, traverseArray2, sequenceArray2, traverseSeqArrayWithIndex, traverseSeqArray, sequenceSeqArray, chain3, chainFirst4, task, taskSeq, getSemigroup5, getMonoid5;
+  var fromIO, _map3, _apPar, _apSeq, map3, ap4, of5, flatMap3, flatten3, URI4, Functor3, as3, asUnit3, flap4, Pointed3, ApplyPar, apFirst4, apSecond4, ApplicativePar, ApplySeq, ApplicativeSeq, Chain3, Monad3, MonadIO, fromTask, MonadTask, FromIO, _FlatMap, _FromIO, flatMapIO2, tap3, tapIO2, fromIOK2, chainIOK, chainFirstIOK, FromTask, never, Do3, bindTo4, let_4, bind4, apS4, ApT2, traverseReadonlyNonEmptyArrayWithIndex2, traverseReadonlyArrayWithIndex2, traverseReadonlyNonEmptyArrayWithIndexSeq, traverseReadonlyArrayWithIndexSeq, traverseArrayWithIndex2, traverseArray2, sequenceArray2, traverseSeqArrayWithIndex, traverseSeqArray, sequenceSeqArray, chain3, chainFirst4, task, taskSeq, getSemigroup6, getMonoid6;
   var init_Task = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Task.js"() {
       init_Applicative();
@@ -3032,57 +3172,57 @@ var vaultify = (() => {
         };
       });
       flatten3 = /* @__PURE__ */ flatMap3(identity);
-      URI3 = "Task";
+      URI4 = "Task";
       Functor3 = {
-        URI: URI3,
+        URI: URI4,
         map: _map3
       };
       as3 = dual(2, as(Functor3));
       asUnit3 = asUnit(Functor3);
       flap4 = /* @__PURE__ */ flap(Functor3);
       Pointed3 = {
-        URI: URI3,
+        URI: URI4,
         of: of5
       };
       ApplyPar = {
-        URI: URI3,
+        URI: URI4,
         map: _map3,
         ap: _apPar
       };
       apFirst4 = /* @__PURE__ */ apFirst(ApplyPar);
       apSecond4 = /* @__PURE__ */ apSecond(ApplyPar);
       ApplicativePar = {
-        URI: URI3,
+        URI: URI4,
         map: _map3,
         ap: _apPar,
         of: of5
       };
       ApplySeq = {
-        URI: URI3,
+        URI: URI4,
         map: _map3,
         ap: _apSeq
       };
       ApplicativeSeq = {
-        URI: URI3,
+        URI: URI4,
         map: _map3,
         ap: _apSeq,
         of: of5
       };
       Chain3 = {
-        URI: URI3,
+        URI: URI4,
         map: _map3,
         ap: _apPar,
         chain: flatMap3
       };
       Monad3 = {
-        URI: URI3,
+        URI: URI4,
         map: _map3,
         of: of5,
         ap: _apPar,
         chain: flatMap3
       };
       MonadIO = {
-        URI: URI3,
+        URI: URI4,
         map: _map3,
         of: of5,
         ap: _apPar,
@@ -3091,7 +3231,7 @@ var vaultify = (() => {
       };
       fromTask = identity;
       MonadTask = {
-        URI: URI3,
+        URI: URI4,
         map: _map3,
         of: of5,
         ap: _apPar,
@@ -3100,7 +3240,7 @@ var vaultify = (() => {
         fromTask
       };
       FromIO = {
-        URI: URI3,
+        URI: URI4,
         fromIO
       };
       _FlatMap = {
@@ -3116,7 +3256,7 @@ var vaultify = (() => {
       chainIOK = flatMapIO2;
       chainFirstIOK = tapIO2;
       FromTask = {
-        URI: URI3,
+        URI: URI4,
         fromIO,
         fromTask
       };
@@ -3185,7 +3325,7 @@ var vaultify = (() => {
       chain3 = flatMap3;
       chainFirst4 = tap3;
       task = {
-        URI: URI3,
+        URI: URI4,
         map: _map3,
         of: of5,
         ap: _apPar,
@@ -3194,7 +3334,7 @@ var vaultify = (() => {
         fromTask
       };
       taskSeq = {
-        URI: URI3,
+        URI: URI4,
         map: _map3,
         of: of5,
         ap: _apSeq,
@@ -3202,15 +3342,39 @@ var vaultify = (() => {
         fromIO,
         fromTask
       };
-      getSemigroup5 = /* @__PURE__ */ getApplySemigroup(ApplySeq);
-      getMonoid5 = /* @__PURE__ */ getApplicativeMonoid(ApplicativeSeq);
+      getSemigroup6 = /* @__PURE__ */ getApplySemigroup(ApplySeq);
+      getMonoid6 = /* @__PURE__ */ getApplicativeMonoid(ApplicativeSeq);
     }
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js
-  var Eq2, Semigroup, empty3, Monoid, Ord2;
+  var string_exports = {};
+  __export(string_exports, {
+    Eq: () => Eq2,
+    Monoid: () => Monoid,
+    Ord: () => Ord2,
+    Semigroup: () => Semigroup,
+    Show: () => Show,
+    empty: () => empty4,
+    endsWith: () => endsWith,
+    includes: () => includes,
+    isEmpty: () => isEmpty3,
+    isString: () => isString,
+    replace: () => replace,
+    size: () => size3,
+    slice: () => slice,
+    split: () => split,
+    startsWith: () => startsWith,
+    toLowerCase: () => toLowerCase,
+    toUpperCase: () => toUpperCase,
+    trim: () => trim,
+    trimLeft: () => trimLeft,
+    trimRight: () => trimRight
+  });
+  var Eq2, Semigroup, empty4, Monoid, Ord2, Show, isString, toUpperCase, toLowerCase, replace, trim, trimLeft, trimRight, slice, isEmpty3, size3, split, includes, startsWith, endsWith;
   var init_string = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js"() {
+      init_ReadonlyNonEmptyArray();
       Eq2 = {
         equals: function(first3, second) {
           return first3 === second;
@@ -3221,10 +3385,10 @@ var vaultify = (() => {
           return first3 + second;
         }
       };
-      empty3 = "";
+      empty4 = "";
       Monoid = {
         concat: Semigroup.concat,
-        empty: empty3
+        empty: empty4
       };
       Ord2 = {
         equals: Eq2.equals,
@@ -3232,14 +3396,74 @@ var vaultify = (() => {
           return first3 < second ? -1 : first3 > second ? 1 : 0;
         }
       };
+      Show = {
+        show: function(s) {
+          return JSON.stringify(s);
+        }
+      };
+      isString = function(u) {
+        return typeof u === "string";
+      };
+      toUpperCase = function(s) {
+        return s.toUpperCase();
+      };
+      toLowerCase = function(s) {
+        return s.toLowerCase();
+      };
+      replace = function(searchValue, replaceValue) {
+        return function(s) {
+          return s.replace(searchValue, replaceValue);
+        };
+      };
+      trim = function(s) {
+        return s.trim();
+      };
+      trimLeft = function(s) {
+        return s.trimLeft();
+      };
+      trimRight = function(s) {
+        return s.trimRight();
+      };
+      slice = function(start, end) {
+        return function(s) {
+          return s.slice(start, end);
+        };
+      };
+      isEmpty3 = function(s) {
+        return s.length === 0;
+      };
+      size3 = function(s) {
+        return s.length;
+      };
+      split = function(separator) {
+        return function(s) {
+          var out = s.split(separator);
+          return isNonEmpty2(out) ? out : [s];
+        };
+      };
+      includes = function(searchString, position) {
+        return function(s) {
+          return s.includes(searchString, position);
+        };
+      };
+      startsWith = function(searchString, position) {
+        return function(s) {
+          return s.startsWith(searchString, position);
+        };
+      };
+      endsWith = function(searchString, position) {
+        return function(s) {
+          return s.endsWith(searchString, position);
+        };
+      };
     }
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyRecord.js
-  function lookup3(k, r) {
+  function lookup5(k, r) {
     if (r === void 0) {
       return function(r2) {
-        return lookup3(k, r2);
+        return lookup5(k, r2);
       };
     }
     return has.call(r, k) ? some(r[k]) : none;
@@ -3276,7 +3500,7 @@ var vaultify = (() => {
       });
     };
   }
-  var keys_, toArray, lookup4;
+  var keys_, toArray, lookup6;
   var init_Record = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Record.js"() {
       init_internal();
@@ -3293,7 +3517,7 @@ var vaultify = (() => {
           a
         ];
       });
-      lookup4 = lookup3;
+      lookup6 = lookup5;
     }
   });
 
@@ -3301,8 +3525,10 @@ var vaultify = (() => {
   var init_es6 = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/index.js"() {
       init_Array();
+      init_Eq();
       init_HKT();
       init_Option();
+      init_string();
       init_Task();
     }
   });
@@ -3357,7 +3583,7 @@ var vaultify = (() => {
         };
       };
       exports.getBooleanAlgebra = getBooleanAlgebra;
-      var getSemigroup6 = function(S) {
+      var getSemigroup7 = function(S) {
         return function() {
           return {
             concat: function(f3, g) {
@@ -3368,8 +3594,8 @@ var vaultify = (() => {
           };
         };
       };
-      exports.getSemigroup = getSemigroup6;
-      var getMonoid7 = function(M) {
+      exports.getSemigroup = getSemigroup7;
+      var getMonoid8 = function(M) {
         var getSemigroupM = (0, exports.getSemigroup)(M);
         return function() {
           return {
@@ -3380,7 +3606,7 @@ var vaultify = (() => {
           };
         };
       };
-      exports.getMonoid = getMonoid7;
+      exports.getMonoid = getMonoid8;
       var getSemiring = function(S) {
         return {
           add: function(f3, g) {
@@ -3494,14 +3720,14 @@ var vaultify = (() => {
         return;
       }
       exports.flow = flow3;
-      function tuple2() {
+      function tuple3() {
         var t = [];
         for (var _i = 0; _i < arguments.length; _i++) {
           t[_i] = arguments[_i];
         }
         return t;
       }
-      exports.tuple = tuple2;
+      exports.tuple = tuple3;
       function increment(n) {
         return n + 1;
       }
@@ -3514,13 +3740,13 @@ var vaultify = (() => {
         throw new Error("Called `absurd` function which should be uncallable");
       }
       exports.absurd = absurd;
-      function tupled3(f3) {
+      function tupled4(f3) {
         return function(a) {
           return f3.apply(void 0, a);
         };
       }
-      exports.tupled = tupled3;
-      function untupled(f3) {
+      exports.tupled = tupled4;
+      function untupled2(f3) {
         return function() {
           var a = [];
           for (var _i = 0; _i < arguments.length; _i++) {
@@ -3529,7 +3755,7 @@ var vaultify = (() => {
           return f3(a);
         };
       }
-      exports.untupled = untupled;
+      exports.untupled = untupled2;
       function pipe3(a, ab, bc, cd, de, ef, fg, gh, hi) {
         switch (arguments.length) {
           case 1:
@@ -3830,7 +4056,7 @@ var vaultify = (() => {
         };
       };
       exports.fromEquals = fromEquals2;
-      var struct2 = function(eqs) {
+      var struct3 = function(eqs) {
         return (0, exports.fromEquals)(function(first3, second) {
           for (var key in eqs) {
             if (!eqs[key].equals(first3[key], second[key])) {
@@ -3840,8 +4066,8 @@ var vaultify = (() => {
           return true;
         });
       };
-      exports.struct = struct2;
-      var tuple2 = function() {
+      exports.struct = struct3;
+      var tuple3 = function() {
         var eqs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
           eqs[_i] = arguments[_i];
@@ -3852,30 +4078,30 @@ var vaultify = (() => {
           });
         });
       };
-      exports.tuple = tuple2;
-      var contramap_ = function(fa, f3) {
+      exports.tuple = tuple3;
+      var contramap_2 = function(fa, f3) {
         return (0, function_1.pipe)(fa, (0, exports.contramap)(f3));
       };
-      var contramap = function(f3) {
+      var contramap2 = function(f3) {
         return function(fa) {
           return (0, exports.fromEquals)(function(x, y) {
             return fa.equals(f3(x), f3(y));
           });
         };
       };
-      exports.contramap = contramap;
+      exports.contramap = contramap2;
       exports.URI = "Eq";
       exports.eqStrict = {
         equals: function(a, b) {
           return a === b;
         }
       };
-      var empty4 = {
+      var empty5 = {
         equals: function() {
           return true;
         }
       };
-      var getSemigroup6 = function() {
+      var getSemigroup7 = function() {
         return {
           concat: function(x, y) {
             return (0, exports.fromEquals)(function(a, b) {
@@ -3884,17 +4110,17 @@ var vaultify = (() => {
           }
         };
       };
-      exports.getSemigroup = getSemigroup6;
-      var getMonoid7 = function() {
+      exports.getSemigroup = getSemigroup7;
+      var getMonoid8 = function() {
         return {
           concat: (0, exports.getSemigroup)().concat,
-          empty: empty4
+          empty: empty5
         };
       };
-      exports.getMonoid = getMonoid7;
+      exports.getMonoid = getMonoid8;
       exports.Contravariant = {
         URI: exports.URI,
-        contramap: contramap_
+        contramap: contramap_2
       };
       exports.getTupleEq = exports.tuple;
       exports.getStructEq = exports.struct;
@@ -3934,7 +4160,7 @@ var vaultify = (() => {
         };
       };
       exports.fromCompare = fromCompare2;
-      var tuple2 = function() {
+      var tuple3 = function() {
         var ords = [];
         for (var _i = 0; _i < arguments.length; _i++) {
           ords[_i] = arguments[_i];
@@ -3950,26 +4176,26 @@ var vaultify = (() => {
           return ords[i].compare(first3[i], second[i]);
         });
       };
-      exports.tuple = tuple2;
+      exports.tuple = tuple3;
       var reverse4 = function(O) {
         return (0, exports.fromCompare)(function(first3, second) {
           return O.compare(second, first3);
         });
       };
       exports.reverse = reverse4;
-      var contramap_ = function(fa, f3) {
+      var contramap_2 = function(fa, f3) {
         return (0, function_1.pipe)(fa, (0, exports.contramap)(f3));
       };
-      var contramap = function(f3) {
+      var contramap2 = function(f3) {
         return function(fa) {
           return (0, exports.fromCompare)(function(first3, second) {
             return fa.compare(f3(first3), f3(second));
           });
         };
       };
-      exports.contramap = contramap;
+      exports.contramap = contramap2;
       exports.URI = "Ord";
-      var getSemigroup6 = function() {
+      var getSemigroup7 = function() {
         return {
           concat: function(first3, second) {
             return (0, exports.fromCompare)(function(a, b) {
@@ -3979,8 +4205,8 @@ var vaultify = (() => {
           }
         };
       };
-      exports.getSemigroup = getSemigroup6;
-      var getMonoid7 = function() {
+      exports.getSemigroup = getSemigroup7;
+      var getMonoid8 = function() {
         return {
           concat: (0, exports.getSemigroup)().concat,
           empty: (0, exports.fromCompare)(function() {
@@ -3988,10 +4214,10 @@ var vaultify = (() => {
           })
         };
       };
-      exports.getMonoid = getMonoid7;
+      exports.getMonoid = getMonoid8;
       exports.Contravariant = {
         URI: exports.URI,
-        contramap: contramap_
+        contramap: contramap_2
       };
       exports.trivial = {
         equals: function_1.constTrue,
@@ -4146,7 +4372,7 @@ var vaultify = (() => {
       };
       exports.constant = constant4;
       exports.reverse = M.reverse;
-      var struct2 = function(semigroups) {
+      var struct3 = function(semigroups) {
         return {
           concat: function(first4, second) {
             var r = {};
@@ -4159,8 +4385,8 @@ var vaultify = (() => {
           }
         };
       };
-      exports.struct = struct2;
-      var tuple2 = function() {
+      exports.struct = struct3;
+      var tuple3 = function() {
         var semigroups = [];
         for (var _i = 0; _i < arguments.length; _i++) {
           semigroups[_i] = arguments[_i];
@@ -4173,7 +4399,7 @@ var vaultify = (() => {
           }
         };
       };
-      exports.tuple = tuple2;
+      exports.tuple = tuple3;
       var intercalate4 = function(middle) {
         return function(S) {
           return {
@@ -4249,12 +4475,13 @@ var vaultify = (() => {
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function12, import_Semigroup2, URI4, map5, Functor4, of6, ap5, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var import_function14, import_Semigroup2, URI5, map5, Functor4, of6, ap5, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
       init_Option();
+      init_Map();
       init_Array();
-      import_function12 = __toESM(require_function());
+      import_function14 = __toESM(require_function());
       init_Predicate();
       init_Endomorphism();
       init_Monoid();
@@ -4262,13 +4489,13 @@ var vaultify = (() => {
       init_Functor();
       init_Apply();
       init_Chain();
-      URI4 = "Function";
-      map5 = (f3) => (g) => (0, import_function12.flow)(g, f3);
+      URI5 = "Function";
+      map5 = (f3) => (g) => (0, import_function14.flow)(g, f3);
       Functor4 = {
-        URI: URI4,
+        URI: URI5,
         map: (f3, g) => map5(g)(f3)
       };
-      of6 = import_function12.constant;
+      of6 = import_function14.constant;
       ap5 = (f3) => (g) => (x) => g(x)(f3(x));
       Applicative3 = {
         ...Functor4,
@@ -4287,31 +4514,42 @@ var vaultify = (() => {
       bind5 = bind(Monad4);
       apS5 = apS(Applicative3);
       let_5 = let_(Functor4);
-      unary = import_function12.tupled;
-      guard4 = (branches) => (fallback) => (input) => (0, import_function12.pipe)(branches, map(([f3, g]) => (0, import_function12.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function12.getMonoid)(getMonoid3((0, import_Semigroup2.first)()))()), (0, import_function12.apply)(input), getOrElse(() => fallback(input)));
+      unary = import_function14.tupled;
+      guard4 = (branches) => (fallback) => (input) => (0, import_function14.pipe)(branches, map(([f3, g]) => (0, import_function14.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function14.getMonoid)(getMonoid4((0, import_Semigroup2.first)()))()), (0, import_function14.apply)(input), getOrElse(() => fallback(input)));
       unless = (f3) => (onFalse) => (x) => f3(x) ? x : onFalse(x);
-      when = (0, import_function12.flow)(not, unless);
+      when = (0, import_function14.flow)(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function12.flip)(invoke)([]);
+      invokeNullary = (0, import_function14.flip)(invoke)([]);
+      memoize = (eq2) => (f3) => {
+        const cache = /* @__PURE__ */ new Map();
+        return (k) => {
+          const cached = lookup4(eq2)(k)(cache);
+          if (isSome2(cached))
+            return cached.value;
+          const val = f3(k);
+          cache.set(k, val);
+          return val;
+        };
+      };
       curry2T = (f3) => (a) => (b) => f3([a, b]);
-      curry2 = (0, import_function12.flow)(unary, curry2T);
+      curry2 = (0, import_function14.flow)(unary, curry2T);
       curry3T = (f3) => (a) => (b) => (c) => f3([a, b, c]);
-      curry3 = (0, import_function12.flow)(unary, curry3T);
+      curry3 = (0, import_function14.flow)(unary, curry3T);
       curry4T = (f3) => (a) => (b) => (c) => (d) => f3([a, b, c, d]);
-      curry4 = (0, import_function12.flow)(unary, curry4T);
+      curry4 = (0, import_function14.flow)(unary, curry4T);
       curry5T = (f3) => (a) => (b) => (c) => (d) => (e) => f3([a, b, c, d, e]);
-      curry5 = (0, import_function12.flow)(unary, curry5T);
-      applyEvery = concatAll4(getMonoid4());
+      curry5 = (0, import_function14.flow)(unary, curry5T);
+      applyEvery = concatAll4(getMonoid5());
     }
   });
 
   // shared/fp.tsx
-  var import_function13, guard22, guard42, pMchain, is, chunckify;
+  var import_function15, guard22, guard42, pMchain, is, chunckify, memoize2;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function13 = __toESM(require_function());
+      import_function15 = __toESM(require_function());
       init_Function();
       guard22 = (branches) => guard4(branches);
       guard42 = (branches) => guard4(
@@ -4319,18 +4557,21 @@ var vaultify = (() => {
       );
       pMchain = (f3) => async (fa) => f3(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      chunckify = (n) => (g) => (0, import_function13.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
+      chunckify = (n) => (g) => (0, import_function15.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
+      memoize2 = (fn) => (0, import_function15.pipe)(fn, import_function15.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function15.untupled);
     }
   });
 
   // shared/api.tsx
-  var URI5, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, likePlatPlaylist, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder;
+  var import_function16, URI6, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, likePlatPlaylist, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
+      init_Function();
+      import_function16 = __toESM(require_function());
       init_fp();
       init_util();
-      ({ URI: URI5 } = Spicetify);
+      ({ URI: URI6 } = Spicetify);
       fetchWebArtistsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );
@@ -4358,6 +4599,14 @@ var vaultify = (() => {
       });
       fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
       fetchPlatRootFolder = () => fetchPlatFolder(void 0);
+      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function16.pipe)(
+        `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
+          artist
+        )}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
+        fetch,
+        pMchain(invokeNullary("json"))
+      );
+      fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
     }
   });
 
@@ -4376,12 +4625,12 @@ var vaultify = (() => {
   });
 
   // shared/settings.tsx
-  var import_function14, import_react, import_react_dom, SettingsSection;
+  var import_function17, import_react, import_react_dom, SettingsSection;
   var init_settings = __esm({
     "shared/settings.tsx"() {
       "use strict";
       init_es6();
-      import_function14 = __toESM(require_function());
+      import_function17 = __toESM(require_function());
       import_react = __toESM(require_react());
       import_react_dom = __toESM(require_react_dom());
       init_fp();
@@ -4437,7 +4686,7 @@ var vaultify = (() => {
           }
           import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
         };
-        addButton = (nameId, description, text, onClick = import_function14.constVoid, events = {}) => {
+        addButton = (nameId, description, text, onClick = import_function17.constVoid, events = {}) => {
           const id = this.getId(nameId);
           events.onClick = onClick;
           this.sectionFields[nameId] = {
@@ -4449,7 +4698,7 @@ var vaultify = (() => {
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function14.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function17.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4461,7 +4710,7 @@ var vaultify = (() => {
           };
           return this;
         };
-        addInput = (nameId, description, defaultValue, onChange = import_function14.constVoid, inputType = "text", events = {}) => {
+        addInput = (nameId, description, defaultValue, onChange = import_function17.constVoid, inputType = "text", events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4474,7 +4723,7 @@ var vaultify = (() => {
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function14.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function17.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4623,14 +4872,14 @@ var vaultify = (() => {
     default: () => app_default,
     restore: () => restore
   });
-  var import_function15, app_default, isType, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, backup, restore;
+  var import_function18, app_default, isType, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, backup, restore;
   var init_app = __esm({
     "extensions/vaultify/app.tsx"() {
       "use strict";
       init_es6();
       init_Array();
       init_Record();
-      import_function15 = __toESM(require_function());
+      import_function18 = __toESM(require_function());
       init_api();
       init_fp();
       app_default = {};
@@ -4639,13 +4888,13 @@ var vaultify = (() => {
         [
           isType("playlist"),
           async (playlist) => ({
-            [playlist.name]: playlist.isOwnedBySelf ? await (0, import_function15.pipe)(playlist.uri, fetchPlatPlaylistContents, pMchain(Array_exports.map((x) => x.uri))) : playlist.uri
+            [playlist.name]: playlist.isOwnedBySelf ? await (0, import_function18.pipe)(playlist.uri, fetchPlatPlaylistContents, pMchain(Array_exports.map((x) => x.uri))) : playlist.uri
           })
         ],
         [
           isType("folder"),
           async (folder) => ({
-            [folder.name]: await (0, import_function15.pipe)(folder.items, map(extractLikedPlaylistTreeRecur), (ps) => Promise.all(ps))
+            [folder.name]: await (0, import_function18.pipe)(folder.items, map(extractLikedPlaylistTreeRecur), (ps) => Promise.all(ps))
           })
         ]
       ])(Task_exports.of({}))(leaf);
@@ -4664,10 +4913,10 @@ var vaultify = (() => {
         });
       };
       backup = async () => {
-        const playlists = await (0, import_function15.pipe)(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur);
+        const playlists = await (0, import_function18.pipe)(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur);
         const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify-exp-features$)/;
         const extensions = toUnfoldable(Array_exports)(localStorage).filter(([key]) => allowedAppDataRegex.test(key));
-        const settings2 = (0, import_function15.pipe)(
+        const settings2 = (0, import_function18.pipe)(
           document.querySelectorAll(`[id^="settings."],[id^="desktop."],[class^="network."]`),
           Array.from,
           Array_exports.flatMap((setting) => {
@@ -4693,7 +4942,7 @@ var vaultify = (() => {
           Spicetify.showNotification("Restored Playlists");
         }
         if (mode === "extensions") {
-          map((0, import_function15.tupled)(Spicetify.LocalStorage.set))(vault.extensions);
+          map((0, import_function18.tupled)(Spicetify.LocalStorage.set))(vault.extensions);
           Spicetify.showNotification("Restored Extensions");
         }
         if (mode === "settings") {
@@ -4720,7 +4969,7 @@ var vaultify = (() => {
   // extensions/vaultify/entry.tsx
   init_es6();
   init_Record();
-  var import_function16 = __toESM(require_function());
+  var import_function19 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = [
@@ -4733,8 +4982,8 @@ var vaultify = (() => {
     ];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function16.flow)(
-        (0, import_function16.flip)(lookup4)(
+      (0, import_function19.flow)(
+        (0, import_function19.flip)(lookup6)(
           Spicetify
         ),
         Option_exports.isNone

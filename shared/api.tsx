@@ -1,6 +1,6 @@
 import { invokeNullary } from "fp-ts-std/Function"
 import { pipe as p } from "fp-ts/function"
-import { pMchain as as, chunckify } from "./fp"
+import { pMchain as as, chunckify, memoize2 } from "./fp"
 import { SpotifyID, SpotifyLoc, SpotifyURI, escapeRegex } from "./util"
 
 const { URI } = Spicetify
@@ -157,6 +157,8 @@ export const fetchTrackLFMAPI = async (LFMApiKey: string, artist: string, trackN
         fetch,
         as<Response, fetchTrackLFMAPIRes>(invokeNullary("json")),
     )
+
+export const fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI)
 
 export const searchYoutube = async (YouTubeApiKey: string, searchString: string) =>
     (

@@ -1,6 +1,8 @@
-import { array as a } from "fp-ts"
+import { array as a, number } from "fp-ts"
 import { flow, pipe } from "fp-ts/function"
 import { MousetrapInstance } from "mousetrap"
+import { mean } from "fp-ts-std/Array"
+import { clamp } from "fp-ts/lib/Ord"
 
 type SneakKey = HTMLSpanElement & { target: HTMLElement }
 
@@ -32,12 +34,10 @@ export const enterSneak = (event: KeyboardEvent) => {
     const isElementInViewPort = (e: HTMLElement) => {
         const c = document.body
         const bound = e.getBoundingClientRect()
-        const mid = (a: number, b: number) => (a + b) / 2
-        const clamp = (m: number, M: number) => (x: number) => Math.max(Math.min(x, M), m)
-        const within = (m: number, M: number) => (x: number) => x === clamp(m, M)(x)
+        const within = (m: number, M: number) => (x: number) => x === clamp(number.Ord)(m, M)(x)
         return (
-            pipe(mid(bound.top, bound.bottom), within(0, c.clientHeight)) &&
-            pipe(mid(bound.left, bound.right), within(0, c.clientWidth))
+            pipe(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) &&
+            pipe(mean([bound.left, bound.right]), within(0, c.clientWidth))
         )
     }
 
@@ -64,7 +64,7 @@ export const enterSneak = (event: KeyboardEvent) => {
             sneakKeysFragment.append(createSneakKey(e, keyList[k1] + keyList[k2++], y, x))
             return k2 >= keyList.length ? [++k1, 0] : [k1, k2]
         }),
-        acc => acc[0] + acc[1] !== 0,
+        ([k1, k2]) => k1 + k2 > 0,
     )
 
     if (shouldListenToSneakBinds) sneakOverlay.append(sneakKeysFragment)

@@ -372,9 +372,30 @@ var play;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Eq.js
-  var fromEquals, eqStrict, strictEqual;
+  var Eq_exports = {};
+  __export(Eq_exports, {
+    Contravariant: () => Contravariant,
+    URI: () => URI,
+    contramap: () => contramap,
+    eq: () => eq,
+    eqBoolean: () => eqBoolean,
+    eqDate: () => eqDate,
+    eqNumber: () => eqNumber,
+    eqStrict: () => eqStrict,
+    eqString: () => eqString,
+    fromEquals: () => fromEquals,
+    getMonoid: () => getMonoid,
+    getSemigroup: () => getSemigroup,
+    getStructEq: () => getStructEq,
+    getTupleEq: () => getTupleEq,
+    strictEqual: () => strictEqual,
+    struct: () => struct,
+    tuple: () => tuple
+  });
+  var fromEquals, struct, tuple, contramap_, contramap, URI, eqStrict, empty, getSemigroup, getMonoid, Contravariant, getTupleEq, getStructEq, strictEqual, eq, eqBoolean, eqString, eqNumber, eqDate;
   var init_Eq = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Eq.js"() {
+      init_function();
       fromEquals = function(equals) {
         return {
           equals: function(x, y) {
@@ -382,12 +403,79 @@ var play;
           }
         };
       };
+      struct = function(eqs) {
+        return fromEquals(function(first2, second) {
+          for (var key in eqs) {
+            if (!eqs[key].equals(first2[key], second[key])) {
+              return false;
+            }
+          }
+          return true;
+        });
+      };
+      tuple = function() {
+        var eqs = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          eqs[_i] = arguments[_i];
+        }
+        return fromEquals(function(first2, second) {
+          return eqs.every(function(E, i) {
+            return E.equals(first2[i], second[i]);
+          });
+        });
+      };
+      contramap_ = function(fa, f3) {
+        return pipe(fa, contramap(f3));
+      };
+      contramap = function(f3) {
+        return function(fa) {
+          return fromEquals(function(x, y) {
+            return fa.equals(f3(x), f3(y));
+          });
+        };
+      };
+      URI = "Eq";
       eqStrict = {
         equals: function(a, b) {
           return a === b;
         }
       };
+      empty = {
+        equals: function() {
+          return true;
+        }
+      };
+      getSemigroup = function() {
+        return {
+          concat: function(x, y) {
+            return fromEquals(function(a, b) {
+              return x.equals(a, b) && y.equals(a, b);
+            });
+          }
+        };
+      };
+      getMonoid = function() {
+        return {
+          concat: getSemigroup().concat,
+          empty
+        };
+      };
+      Contravariant = {
+        URI,
+        contramap: contramap_
+      };
+      getTupleEq = tuple;
+      getStructEq = struct;
       strictEqual = eqStrict.equals;
+      eq = Contravariant;
+      eqBoolean = eqStrict;
+      eqString = eqStrict;
+      eqNumber = eqStrict;
+      eqDate = {
+        equals: function(first2, second) {
+          return first2.valueOf() === second.valueOf();
+        }
+      };
     }
   });
 
@@ -395,7 +483,7 @@ var play;
   function compare(first2, second) {
     return first2 < second ? -1 : first2 > second ? 1 : 0;
   }
-  var equalsDefault, fromCompare, getSemigroup, getMonoid, strictOrd;
+  var equalsDefault, fromCompare, getSemigroup2, getMonoid2, strictOrd;
   var init_Ord = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Ord.js"() {
       init_Eq();
@@ -412,7 +500,7 @@ var play;
           }
         };
       };
-      getSemigroup = function() {
+      getSemigroup2 = function() {
         return {
           concat: function(first2, second) {
             return fromCompare(function(a, b) {
@@ -422,9 +510,9 @@ var play;
           }
         };
       };
-      getMonoid = function() {
+      getMonoid2 = function() {
         return {
-          concat: getSemigroup().concat,
+          concat: getSemigroup2().concat,
           empty: fromCompare(function() {
             return 0;
           })
@@ -647,7 +735,7 @@ var play;
       };
       sortBy = function(ords) {
         if (isNonEmpty3(ords)) {
-          var M = getMonoid();
+          var M = getMonoid2();
           return sort(ords.reduce(M.concat, M.empty));
         }
         return copy;
@@ -1151,7 +1239,7 @@ var play;
     Pointed: () => Pointed,
     Traversable: () => Traversable,
     TraversableWithIndex: () => TraversableWithIndex,
-    URI: () => URI,
+    URI: () => URI2,
     Unfoldable: () => Unfoldable,
     Witherable: () => Witherable,
     Zero: () => Zero,
@@ -1186,7 +1274,7 @@ var play;
     dropRight: () => dropRight,
     duplicate: () => duplicate,
     elem: () => elem2,
-    empty: () => empty2,
+    empty: () => empty3,
     every: () => every2,
     exists: () => exists,
     extend: () => extend,
@@ -1216,9 +1304,9 @@ var play;
     getDifferenceMagma: () => getDifferenceMagma,
     getEq: () => getEq3,
     getIntersectionSemigroup: () => getIntersectionSemigroup,
-    getMonoid: () => getMonoid2,
+    getMonoid: () => getMonoid3,
     getOrd: () => getOrd2,
-    getSemigroup: () => getSemigroup3,
+    getSemigroup: () => getSemigroup4,
     getShow: () => getShow3,
     getUnionMonoid: () => getUnionMonoid,
     getUnionSemigroup: () => getUnionSemigroup,
@@ -1393,7 +1481,7 @@ var play;
       });
     };
   }
-  var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last5, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt, updateAt, deleteAt, modifyAt, reverse2, rights, lefts, sort2, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI, getShow3, getSemigroup3, getMonoid2, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, chainFirst2, Monad, Unfoldable, Alt, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty2, cons3, snoc3, prependToAll, array;
+  var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last5, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt, updateAt, deleteAt, modifyAt, reverse2, rights, lefts, sort2, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI2, getShow3, getSemigroup4, getMonoid3, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, chainFirst2, Monad, Unfoldable, Alt, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty3, cons3, snoc3, prependToAll, array;
   var init_Array = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Array.js"() {
       init_Apply();
@@ -1928,18 +2016,18 @@ var play;
         }
         return out;
       };
-      URI = "Array";
+      URI2 = "Array";
       getShow3 = getShow2;
-      getSemigroup3 = function() {
+      getSemigroup4 = function() {
         return {
           concat: function(first2, second) {
             return first2.concat(second);
           }
         };
       };
-      getMonoid2 = function() {
+      getMonoid3 = function() {
         return {
-          concat: getSemigroup3().concat,
+          concat: getSemigroup4().concat,
           empty: []
         };
       };
@@ -1976,62 +2064,62 @@ var play;
         };
       };
       Functor = {
-        URI,
+        URI: URI2,
         map: _map
       };
       flap2 = /* @__PURE__ */ flap(Functor);
       Pointed = {
-        URI,
+        URI: URI2,
         of: of3
       };
       FunctorWithIndex = {
-        URI,
+        URI: URI2,
         map: _map,
         mapWithIndex: _mapWithIndex
       };
       Apply = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap
       };
       apFirst2 = /* @__PURE__ */ apFirst(Apply);
       apSecond2 = /* @__PURE__ */ apSecond(Apply);
       Applicative = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         of: of3
       };
       Chain = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         chain: flatMap
       };
       chainFirst2 = /* @__PURE__ */ chainFirst(Chain);
       Monad = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         of: of3,
         chain: flatMap
       };
       Unfoldable = {
-        URI,
+        URI: URI2,
         unfold
       };
       Alt = {
-        URI,
+        URI: URI2,
         map: _map,
         alt: _alt
       };
       Zero = {
-        URI,
+        URI: URI2,
         zero
       };
       guard2 = /* @__PURE__ */ guard(Zero, Pointed);
       Alternative = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         of: of3,
@@ -2039,17 +2127,17 @@ var play;
         zero
       };
       Extend = {
-        URI,
+        URI: URI2,
         map: _map,
         extend: _extend
       };
       Compactable = {
-        URI,
+        URI: URI2,
         compact,
         separate
       };
       Filterable = {
-        URI,
+        URI: URI2,
         map: _map,
         compact,
         separate,
@@ -2059,7 +2147,7 @@ var play;
         partitionMap: _partitionMap
       };
       FilterableWithIndex = {
-        URI,
+        URI: URI2,
         map: _map,
         mapWithIndex: _mapWithIndex,
         compact,
@@ -2074,13 +2162,13 @@ var play;
         filterWithIndex: _filterWithIndex
       };
       Foldable = {
-        URI,
+        URI: URI2,
         reduce: _reduce,
         foldMap: _foldMap,
         reduceRight: _reduceRight
       };
       FoldableWithIndex = {
-        URI,
+        URI: URI2,
         reduce: _reduce,
         foldMap: _foldMap,
         reduceRight: _reduceRight,
@@ -2089,7 +2177,7 @@ var play;
         reduceRightWithIndex: _reduceRightWithIndex
       };
       Traversable = {
-        URI,
+        URI: URI2,
         map: _map,
         reduce: _reduce,
         foldMap: _foldMap,
@@ -2098,7 +2186,7 @@ var play;
         sequence
       };
       TraversableWithIndex = {
-        URI,
+        URI: URI2,
         map: _map,
         mapWithIndex: _mapWithIndex,
         reduce: _reduce,
@@ -2114,7 +2202,7 @@ var play;
       _wither = /* @__PURE__ */ witherDefault(Traversable, Compactable);
       _wilt = /* @__PURE__ */ wiltDefault(Traversable, Compactable);
       Witherable = {
-        URI,
+        URI: URI2,
         map: _map,
         compact,
         separate,
@@ -2132,7 +2220,7 @@ var play;
       };
       chainRecDepthFirst2 = chainRecDepthFirst;
       ChainRecDepthFirst = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         chain: flatMap,
@@ -2140,7 +2228,7 @@ var play;
       };
       chainRecBreadthFirst2 = chainRecBreadthFirst;
       ChainRecBreadthFirst = {
-        URI,
+        URI: URI2,
         map: _map,
         ap: _ap,
         chain: flatMap,
@@ -2148,7 +2236,7 @@ var play;
       };
       filterE2 = /* @__PURE__ */ filterE(Witherable);
       FromEither = {
-        URI,
+        URI: URI2,
         fromEither
       };
       fromEitherK2 = /* @__PURE__ */ fromEitherK(FromEither);
@@ -2176,12 +2264,12 @@ var play;
       apS2 = /* @__PURE__ */ apS(Apply);
       chain = flatMap;
       range3 = range;
-      empty2 = [];
+      empty3 = [];
       cons3 = cons;
       snoc3 = snoc;
       prependToAll = prependAll3;
       array = {
-        URI,
+        URI: URI2,
         compact,
         separate,
         map: _map,
@@ -2269,7 +2357,7 @@ var play;
     MonadThrow: () => MonadThrow,
     Pointed: () => Pointed2,
     Traversable: () => Traversable2,
-    URI: () => URI2,
+    URI: () => URI3,
     Witherable: () => Witherable2,
     Zero: () => Zero2,
     alt: () => alt2,
@@ -2311,7 +2399,7 @@ var play;
     getFirstMonoid: () => getFirstMonoid,
     getLastMonoid: () => getLastMonoid,
     getLeft: () => getLeft,
-    getMonoid: () => getMonoid3,
+    getMonoid: () => getMonoid4,
     getOrElse: () => getOrElse,
     getOrElseW: () => getOrElseW,
     getOrd: () => getOrd3,
@@ -2375,7 +2463,7 @@ var play;
       return isSome2(getOption(a));
     };
   }
-  var none2, some3, getLeft, getRight, _map2, _ap2, _reduce2, _foldMap2, _reduceRight2, _traverse2, _alt2, _filter2, _filterMap2, _extend2, _partition2, _partitionMap2, URI2, getShow4, getEq4, getOrd3, getMonoid3, map2, Functor2, as2, asUnit2, of4, Pointed2, ap3, Apply2, Applicative2, flatMap2, Chain2, Monad2, reduce4, foldMap4, reduceRight4, Foldable2, orElse, altW2, alt2, Alt2, zero2, Zero2, guard3, Alternative2, extend2, Extend2, compact2, defaultSeparated, separate2, Compactable2, filter2, filterMap2, partition2, partitionMap2, Filterable2, traverse2, sequence2, Traversable2, _wither2, _wilt2, wither2, wilt2, Witherable2, throwError, MonadThrow, fromEither2, FromEither2, isSome2, isNone2, matchW3, foldW, match3, fold, getOrElseW, getOrElse, flap3, apFirst3, apSecond3, flatten2, tap2, tapEither2, duplicate2, fromEitherK3, chainEitherK2, chainFirstEitherK, fromNullable, tryCatch, tryCatchK, fromNullableK, chainNullableK, toNullable, toUndefined, exists2, Do2, bindTo3, let_3, bind3, apS3, ApT, traverseReadonlyNonEmptyArrayWithIndex, traverseReadonlyArrayWithIndex, traverseArrayWithIndex, traverseArray, sequenceArray, chain2, chainFirst3, mapNullable, option, getApplySemigroup2, getApplyMonoid, getFirstMonoid, getLastMonoid;
+  var none2, some3, getLeft, getRight, _map2, _ap2, _reduce2, _foldMap2, _reduceRight2, _traverse2, _alt2, _filter2, _filterMap2, _extend2, _partition2, _partitionMap2, URI3, getShow4, getEq4, getOrd3, getMonoid4, map2, Functor2, as2, asUnit2, of4, Pointed2, ap3, Apply2, Applicative2, flatMap2, Chain2, Monad2, reduce4, foldMap4, reduceRight4, Foldable2, orElse, altW2, alt2, Alt2, zero2, Zero2, guard3, Alternative2, extend2, Extend2, compact2, defaultSeparated, separate2, Compactable2, filter2, filterMap2, partition2, partitionMap2, Filterable2, traverse2, sequence2, Traversable2, _wither2, _wilt2, wither2, wilt2, Witherable2, throwError, MonadThrow, fromEither2, FromEither2, isSome2, isNone2, matchW3, foldW, match3, fold, getOrElseW, getOrElse, flap3, apFirst3, apSecond3, flatten2, tap2, tapEither2, duplicate2, fromEitherK3, chainEitherK2, chainFirstEitherK, fromNullable, tryCatch, tryCatchK, fromNullableK, chainNullableK, toNullable, toUndefined, exists2, Do2, bindTo3, let_3, bind3, apS3, ApT, traverseReadonlyNonEmptyArrayWithIndex, traverseReadonlyArrayWithIndex, traverseArrayWithIndex, traverseArray, sequenceArray, chain2, chainFirst3, mapNullable, option, getApplySemigroup2, getApplyMonoid, getFirstMonoid, getLastMonoid;
   var init_Option = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Option.js"() {
       init_Applicative();
@@ -2440,7 +2528,7 @@ var play;
       _partitionMap2 = function(fa, f3) {
         return pipe(fa, partitionMap2(f3));
       };
-      URI2 = "Option";
+      URI3 = "Option";
       getShow4 = function(S) {
         return {
           show: function(ma) {
@@ -2463,7 +2551,7 @@ var play;
           }
         };
       };
-      getMonoid3 = function(S) {
+      getMonoid4 = function(S) {
         return {
           concat: function(x, y) {
             return isNone2(x) ? y : isNone2(y) ? x : some3(S.concat(x.value, y.value));
@@ -2477,14 +2565,14 @@ var play;
         };
       };
       Functor2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2
       };
       as2 = dual(2, as(Functor2));
       asUnit2 = asUnit(Functor2);
       of4 = some3;
       Pointed2 = {
-        URI: URI2,
+        URI: URI3,
         of: of4
       };
       ap3 = function(fa) {
@@ -2493,12 +2581,12 @@ var play;
         };
       };
       Apply2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2
       };
       Applicative2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2,
         of: of4
@@ -2507,13 +2595,13 @@ var play;
         return isNone2(ma) ? none2 : f3(ma.value);
       });
       Chain2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2,
         chain: flatMap2
       };
       Monad2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2,
         of: of4,
@@ -2537,7 +2625,7 @@ var play;
         };
       };
       Foldable2 = {
-        URI: URI2,
+        URI: URI3,
         reduce: _reduce2,
         foldMap: _foldMap2,
         reduceRight: _reduceRight2
@@ -2548,7 +2636,7 @@ var play;
       altW2 = orElse;
       alt2 = orElse;
       Alt2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         alt: _alt2
       };
@@ -2556,12 +2644,12 @@ var play;
         return none2;
       };
       Zero2 = {
-        URI: URI2,
+        URI: URI3,
         zero: zero2
       };
       guard3 = /* @__PURE__ */ guard(Zero2, Pointed2);
       Alternative2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2,
         of: of4,
@@ -2574,7 +2662,7 @@ var play;
         };
       };
       Extend2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         extend: _extend2
       };
@@ -2584,7 +2672,7 @@ var play;
         return isNone2(ma) ? defaultSeparated : separated(getLeft(ma.value), getRight(ma.value));
       };
       Compactable2 = {
-        URI: URI2,
+        URI: URI3,
         compact: compact2,
         separate: separate2
       };
@@ -2607,7 +2695,7 @@ var play;
         return flow(map2(f3), separate2);
       };
       Filterable2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         compact: compact2,
         separate: separate2,
@@ -2629,7 +2717,7 @@ var play;
         };
       };
       Traversable2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         reduce: _reduce2,
         foldMap: _foldMap2,
@@ -2656,7 +2744,7 @@ var play;
         };
       };
       Witherable2 = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         reduce: _reduce2,
         foldMap: _foldMap2,
@@ -2676,7 +2764,7 @@ var play;
         return none2;
       };
       MonadThrow = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         ap: _ap2,
         of: of4,
@@ -2685,7 +2773,7 @@ var play;
       };
       fromEither2 = getRight;
       FromEither2 = {
-        URI: URI2,
+        URI: URI3,
         fromEither: fromEither2
       };
       isSome2 = isSome;
@@ -2792,7 +2880,7 @@ var play;
       chainFirst3 = tap2;
       mapNullable = chainNullableK;
       option = {
-        URI: URI2,
+        URI: URI3,
         map: _map2,
         of: of4,
         ap: _ap2,
@@ -2818,10 +2906,31 @@ var play;
       getApplySemigroup2 = /* @__PURE__ */ getApplySemigroup(Apply2);
       getApplyMonoid = /* @__PURE__ */ getApplicativeMonoid(Applicative2);
       getFirstMonoid = function() {
-        return getMonoid3(first());
+        return getMonoid4(first());
       };
       getLastMonoid = function() {
-        return getMonoid3(last());
+        return getMonoid4(last());
+      };
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Endomorphism.js
+  var getSemigroup5, getMonoid5;
+  var init_Endomorphism = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Endomorphism.js"() {
+      init_function();
+      getSemigroup5 = function() {
+        return {
+          concat: function(first2, second) {
+            return flow(first2, second);
+          }
+        };
+      };
+      getMonoid5 = function() {
+        return {
+          concat: getSemigroup5().concat,
+          empty: identity
+        };
       };
     }
   });
@@ -2829,6 +2938,58 @@ var play;
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/HKT/index.js
   var init_HKT = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/HKT/index.js"() {
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyMap.js
+  function lookupWithKey(E) {
+    return function(k, m) {
+      if (m === void 0) {
+        var lookupWithKeyE_1 = lookupWithKey(E);
+        return function(m2) {
+          return lookupWithKeyE_1(k, m2);
+        };
+      }
+      var entries = m.entries();
+      var e;
+      while (!(e = entries.next()).done) {
+        var _a = e.value, ka = _a[0], a = _a[1];
+        if (E.equals(ka, k)) {
+          return some([ka, a]);
+        }
+      }
+      return none;
+    };
+  }
+  function lookup3(E) {
+    var lookupWithKeyE = lookupWithKey(E);
+    return function(k, m) {
+      if (m === void 0) {
+        var lookupE_1 = lookup3(E);
+        return function(m2) {
+          return lookupE_1(k, m2);
+        };
+      }
+      return pipe(lookupWithKeyE(k, m), map2(function(_a) {
+        var _ = _a[0], a = _a[1];
+        return a;
+      }));
+    };
+  }
+  var init_ReadonlyMap = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyMap.js"() {
+      init_function();
+      init_internal();
+      init_Option();
+    }
+  });
+
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Map.js
+  var lookup4;
+  var init_Map = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Map.js"() {
+      init_ReadonlyMap();
+      lookup4 = lookup3;
     }
   });
 
@@ -2867,11 +3028,123 @@ var play;
     }
   });
 
+  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js
+  var string_exports = {};
+  __export(string_exports, {
+    Eq: () => Eq2,
+    Monoid: () => Monoid,
+    Ord: () => Ord2,
+    Semigroup: () => Semigroup,
+    Show: () => Show,
+    empty: () => empty4,
+    endsWith: () => endsWith,
+    includes: () => includes,
+    isEmpty: () => isEmpty3,
+    isString: () => isString,
+    replace: () => replace,
+    size: () => size3,
+    slice: () => slice,
+    split: () => split,
+    startsWith: () => startsWith,
+    toLowerCase: () => toLowerCase,
+    toUpperCase: () => toUpperCase,
+    trim: () => trim,
+    trimLeft: () => trimLeft,
+    trimRight: () => trimRight
+  });
+  var Eq2, Semigroup, empty4, Monoid, Ord2, Show, isString, toUpperCase, toLowerCase, replace, trim, trimLeft, trimRight, slice, isEmpty3, size3, split, includes, startsWith, endsWith;
+  var init_string = __esm({
+    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/string.js"() {
+      init_ReadonlyNonEmptyArray();
+      Eq2 = {
+        equals: function(first2, second) {
+          return first2 === second;
+        }
+      };
+      Semigroup = {
+        concat: function(first2, second) {
+          return first2 + second;
+        }
+      };
+      empty4 = "";
+      Monoid = {
+        concat: Semigroup.concat,
+        empty: empty4
+      };
+      Ord2 = {
+        equals: Eq2.equals,
+        compare: function(first2, second) {
+          return first2 < second ? -1 : first2 > second ? 1 : 0;
+        }
+      };
+      Show = {
+        show: function(s) {
+          return JSON.stringify(s);
+        }
+      };
+      isString = function(u) {
+        return typeof u === "string";
+      };
+      toUpperCase = function(s) {
+        return s.toUpperCase();
+      };
+      toLowerCase = function(s) {
+        return s.toLowerCase();
+      };
+      replace = function(searchValue, replaceValue) {
+        return function(s) {
+          return s.replace(searchValue, replaceValue);
+        };
+      };
+      trim = function(s) {
+        return s.trim();
+      };
+      trimLeft = function(s) {
+        return s.trimLeft();
+      };
+      trimRight = function(s) {
+        return s.trimRight();
+      };
+      slice = function(start, end) {
+        return function(s) {
+          return s.slice(start, end);
+        };
+      };
+      isEmpty3 = function(s) {
+        return s.length === 0;
+      };
+      size3 = function(s) {
+        return s.length;
+      };
+      split = function(separator) {
+        return function(s) {
+          var out = s.split(separator);
+          return isNonEmpty2(out) ? out : [s];
+        };
+      };
+      includes = function(searchString, position) {
+        return function(s) {
+          return s.includes(searchString, position);
+        };
+      };
+      startsWith = function(searchString, position) {
+        return function(s) {
+          return s.startsWith(searchString, position);
+        };
+      };
+      endsWith = function(searchString, position) {
+        return function(s) {
+          return s.endsWith(searchString, position);
+        };
+      };
+    }
+  });
+
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyRecord.js
-  function lookup3(k, r) {
+  function lookup5(k, r) {
     if (r === void 0) {
       return function(r2) {
-        return lookup3(k, r2);
+        return lookup5(k, r2);
       };
     }
     return has.call(r, k) ? some(r[k]) : none;
@@ -2883,11 +3156,11 @@ var play;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Record.js
-  var lookup4;
+  var lookup6;
   var init_Record = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Record.js"() {
       init_ReadonlyRecord();
-      lookup4 = lookup3;
+      lookup6 = lookup5;
     }
   });
 
@@ -2895,8 +3168,10 @@ var play;
   var init_es6 = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/index.js"() {
       init_Array();
+      init_Eq();
       init_HKT();
       init_Option();
+      init_string();
     }
   });
 
@@ -2950,7 +3225,7 @@ var play;
         };
       };
       exports.getBooleanAlgebra = getBooleanAlgebra;
-      var getSemigroup4 = function(S) {
+      var getSemigroup6 = function(S) {
         return function() {
           return {
             concat: function(f3, g) {
@@ -2961,8 +3236,8 @@ var play;
           };
         };
       };
-      exports.getSemigroup = getSemigroup4;
-      var getMonoid5 = function(M) {
+      exports.getSemigroup = getSemigroup6;
+      var getMonoid7 = function(M) {
         var getSemigroupM = (0, exports.getSemigroup)(M);
         return function() {
           return {
@@ -2973,7 +3248,7 @@ var play;
           };
         };
       };
-      exports.getMonoid = getMonoid5;
+      exports.getMonoid = getMonoid7;
       var getSemiring = function(S) {
         return {
           add: function(f3, g) {
@@ -3010,29 +3285,29 @@ var play;
         };
       };
       exports.getRing = getRing;
-      var apply = function(a) {
+      var apply2 = function(a) {
         return function(f3) {
           return f3(a);
         };
       };
-      exports.apply = apply;
+      exports.apply = apply2;
       function identity2(a) {
         return a;
       }
       exports.identity = identity2;
       exports.unsafeCoerce = identity2;
-      function constant3(a) {
+      function constant4(a) {
         return function() {
           return a;
         };
       }
-      exports.constant = constant3;
-      exports.constTrue = constant3(true);
-      exports.constFalse = constant3(false);
-      exports.constNull = constant3(null);
-      exports.constUndefined = constant3(void 0);
+      exports.constant = constant4;
+      exports.constTrue = constant4(true);
+      exports.constFalse = constant4(false);
+      exports.constNull = constant4(null);
+      exports.constUndefined = constant4(void 0);
       exports.constVoid = exports.constUndefined;
-      function flip2(f3) {
+      function flip3(f3) {
         return function() {
           var args = [];
           for (var _i = 0; _i < arguments.length; _i++) {
@@ -3046,8 +3321,8 @@ var play;
           };
         };
       }
-      exports.flip = flip2;
-      function flow2(ab, bc, cd, de, ef, fg, gh, hi, ij) {
+      exports.flip = flip3;
+      function flow3(ab, bc, cd, de, ef, fg, gh, hi, ij) {
         switch (arguments.length) {
           case 1:
             return ab;
@@ -3086,15 +3361,15 @@ var play;
         }
         return;
       }
-      exports.flow = flow2;
-      function tuple2() {
+      exports.flow = flow3;
+      function tuple3() {
         var t = [];
         for (var _i = 0; _i < arguments.length; _i++) {
           t[_i] = arguments[_i];
         }
         return t;
       }
-      exports.tuple = tuple2;
+      exports.tuple = tuple3;
       function increment(n) {
         return n + 1;
       }
@@ -3107,13 +3382,13 @@ var play;
         throw new Error("Called `absurd` function which should be uncallable");
       }
       exports.absurd = absurd;
-      function tupled2(f3) {
+      function tupled4(f3) {
         return function(a) {
           return f3.apply(void 0, a);
         };
       }
-      exports.tupled = tupled2;
-      function untupled(f3) {
+      exports.tupled = tupled4;
+      function untupled2(f3) {
         return function() {
           var a = [];
           for (var _i = 0; _i < arguments.length; _i++) {
@@ -3122,8 +3397,8 @@ var play;
           return f3(a);
         };
       }
-      exports.untupled = untupled;
-      function pipe2(a, ab, bc, cd, de, ef, fg, gh, hi) {
+      exports.untupled = untupled2;
+      function pipe3(a, ab, bc, cd, de, ef, fg, gh, hi) {
         switch (arguments.length) {
           case 1:
             return a;
@@ -3152,7 +3427,7 @@ var play;
           }
         }
       }
-      exports.pipe = pipe2;
+      exports.pipe = pipe3;
       exports.hole = absurd;
       var SK2 = function(_, b) {
         return b;
@@ -3167,7 +3442,7 @@ var play;
       var getEndomorphismMonoid = function() {
         return {
           concat: function(first2, second) {
-            return flow2(first2, second);
+            return flow3(first2, second);
           },
           empty: identity2
         };
@@ -3208,6 +3483,72 @@ var play;
     }
   });
 
+  // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
+  var import_function12, URI4, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var init_Function = __esm({
+    ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
+      init_Option();
+      init_Map();
+      import_function12 = __toESM(require_function());
+      init_Predicate();
+      init_Endomorphism();
+      init_Monoid();
+      init_Functor();
+      init_Apply();
+      init_Chain();
+      URI4 = "Function";
+      map4 = (f3) => (g) => (0, import_function12.flow)(g, f3);
+      Functor3 = {
+        URI: URI4,
+        map: (f3, g) => map4(g)(f3)
+      };
+      of5 = import_function12.constant;
+      ap4 = (f3) => (g) => (x) => g(x)(f3(x));
+      Applicative3 = {
+        ...Functor3,
+        of: of5,
+        ap: (f3, g) => ap4(g)(f3)
+      };
+      apFirst4 = apFirst(Applicative3);
+      apSecond4 = apSecond(Applicative3);
+      chain3 = (f3) => (g) => (x) => f3(g(x))(x);
+      Monad3 = {
+        ...Applicative3,
+        chain: (f3, g) => chain3(g)(f3)
+      };
+      Do3 = of5({});
+      bindTo4 = bindTo(Functor3);
+      bind4 = bind(Monad3);
+      apS4 = apS(Applicative3);
+      let_4 = let_(Functor3);
+      unary = import_function12.tupled;
+      unless = (f3) => (onFalse) => (x) => f3(x) ? x : onFalse(x);
+      when = (0, import_function12.flow)(not, unless);
+      invoke = (x) => (ys) => (z) => z[x](...ys);
+      invokeNullary = (0, import_function12.flip)(invoke)([]);
+      memoize = (eq2) => (f3) => {
+        const cache = /* @__PURE__ */ new Map();
+        return (k) => {
+          const cached = lookup4(eq2)(k)(cache);
+          if (isSome2(cached))
+            return cached.value;
+          const val = f3(k);
+          cache.set(k, val);
+          return val;
+        };
+      };
+      curry2T = (f3) => (a) => (b) => f3([a, b]);
+      curry2 = (0, import_function12.flow)(unary, curry2T);
+      curry3T = (f3) => (a) => (b) => (c) => f3([a, b, c]);
+      curry3 = (0, import_function12.flow)(unary, curry3T);
+      curry4T = (f3) => (a) => (b) => (c) => (d) => f3([a, b, c, d]);
+      curry4 = (0, import_function12.flow)(unary, curry4T);
+      curry5T = (f3) => (a) => (b) => (c) => (d) => (e) => f3([a, b, c, d, e]);
+      curry5 = (0, import_function12.flow)(unary, curry5T);
+      applyEvery = concatAll4(getMonoid5());
+    }
+  });
+
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Predicate.js
   var anyPass;
   var init_Predicate2 = __esm({
@@ -3219,25 +3560,29 @@ var play;
   });
 
   // shared/fp.tsx
-  var import_function9, pMchain, chunckify;
+  var import_function13, pMchain, chunckify, memoize2;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function9 = __toESM(require_function());
+      import_function13 = __toESM(require_function());
+      init_Function();
       pMchain = (f3) => async (fa) => f3(await fa);
-      chunckify = (n) => (g) => (0, import_function9.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
+      chunckify = (n) => (g) => (0, import_function13.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
+      memoize2 = (fn) => (0, import_function13.pipe)(fn, import_function13.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function13.untupled);
     }
   });
 
   // shared/api.tsx
-  var URI3, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistEnhancedSongs300, fetchPlatPlaylistEnhancedSongs;
+  var import_function14, URI5, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistEnhancedSongs300, fetchPlatPlaylistEnhancedSongs, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
+      init_Function();
+      import_function14 = __toESM(require_function());
       init_fp();
       init_util();
-      ({ URI: URI3 } = Spicetify);
+      ({ URI: URI5 } = Spicetify);
       fetchWebArtistsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );
@@ -3269,6 +3614,14 @@ var play;
         else
           return nextPageItems.concat(fetchPlatPlaylistEnhancedSongs(uri, offset + 300));
       };
+      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function14.pipe)(
+        `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
+          artist
+        )}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
+        fetch,
+        pMchain(invokeNullary("json"))
+      );
+      fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
     }
   });
 
@@ -3277,15 +3630,15 @@ var play;
   __export(app_exports, {
     default: () => app_default
   });
-  var import_function10, app_default, URI4, queue, playEnhancedSongs;
+  var import_function15, app_default, URI6, queue, playEnhancedSongs;
   var init_app = __esm({
     "extensions/play-enhanced-songs/app.tsx"() {
       "use strict";
       init_Predicate2();
-      import_function10 = __toESM(require_function());
+      import_function15 = __toESM(require_function());
       init_api();
       app_default = {};
-      ({ URI: URI4 } = Spicetify);
+      ({ URI: URI6 } = Spicetify);
       queue = new Array();
       playEnhancedSongs = async (uri) => {
         queue = await fetchPlatPlaylistEnhancedSongs(uri);
@@ -3294,8 +3647,8 @@ var play;
       };
       new Spicetify.ContextMenu.Item(
         "Play enhanced songs",
-        (0, import_function10.tupled)(playEnhancedSongs),
-        (0, import_function10.tupled)(anyPass([URI4.isPlaylistV1OrV2])),
+        (0, import_function15.tupled)(playEnhancedSongs),
+        (0, import_function15.tupled)(anyPass([URI6.isPlaylistV1OrV2])),
         "enhance"
       ).register();
     }
@@ -3304,14 +3657,14 @@ var play;
   // extensions/play-enhanced-songs/entry.tsx
   init_es6();
   init_Record();
-  var import_function11 = __toESM(require_function());
+  var import_function16 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = ["ContextMenu", "CosmosAsync", "Platform"];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function11.flow)(
-        (0, import_function11.flip)(lookup4)(
+      (0, import_function16.flow)(
+        (0, import_function16.flip)(lookup6)(
           Spicetify
         ),
         Option_exports.isNone
