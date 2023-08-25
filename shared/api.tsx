@@ -126,8 +126,11 @@ export const fetchPlatRootFolder = () => fetchPlatFolder(undefined)
 export const addPlatPlaylistTracks = async (playlist: SpotifyURI, tracks: SpotifyURI[], location: SpotifyLoc = {}) =>
     await Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location)
 
-export const movePlatPlaylistTracks = async (playlist: SpotifyURI, tracks: SpotifyURI[], location: SpotifyLoc = {}) =>
-    await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location)
+export const movePlatPlaylistTracks = async (
+    playlist: SpotifyURI,
+    tracks: Array<{ uid: string }>,
+    location: SpotifyLoc = {},
+) => await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location)
 
 export const removePlatPlaylistTracks = async (playlist: SpotifyURI, tracks: SpotifyURI[]) =>
     Spicetify.CosmosAsync.del(`https://api.spotify.com/v1/playlists/${URI.from(playlist)!.id}/tracks`, {

@@ -83,6 +83,7 @@ export const parseAPITrackFromPlaylist = (track: fetchWebPlaylistRes[0]) => ({
     playcount: undefined,
     popularity: undefined,
     releaseDate: undefined,
+    uid: track.uid,
     uri: track.uri,
 })
 

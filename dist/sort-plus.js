@@ -6482,6 +6482,7 @@ var sort;
         playcount: void 0,
         popularity: void 0,
         releaseDate: void 0,
+        uid: track.uid,
         uri: track.uri
       });
       parseAPITrackFromSpotify = (track) => ({
@@ -6833,7 +6834,6 @@ var sort;
       init_api();
       init_fp();
       init_parse();
-      init_util();
       init_settings2();
       app_default = {};
       ({ URI: URI15 } = Spicetify);
@@ -7000,14 +7000,11 @@ var sort;
         );
         Spicetify.showNotification(`Playlist ${playlistName} created`);
       });
-      new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-up", async () => {
+      new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
         if (!URI15.isPlaylistV1OrV2(lastSortedUri))
           return void Spicetify.showNotification("Last sorted queue must be a playlist");
-        movePlatPlaylistTracks(
-          lastSortedUri,
-          lastSortedQueue.map((t) => t.uri),
-          SpotifyLoc.before("first")
-        );
+        console.log(lastSortedUri, lastSortedQueue, { before: "start" });
+        movePlatPlaylistTracks(lastSortedUri, lastSortedQueue, { before: "start" });
       });
       invertAscending = 0;
       window.addEventListener("keydown", (event) => {

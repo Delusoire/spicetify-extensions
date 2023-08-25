@@ -307,15 +307,12 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
     Spicetify.showNotification(`Playlist ${playlistName} created`)
 })
 
-new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-up", async () => {
+new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
     if (!URI.isPlaylistV1OrV2(lastSortedUri))
         return void Spicetify.showNotification("Last sorted queue must be a playlist")
 
-    movePlatPlaylistTracks(
-        lastSortedUri,
-        lastSortedQueue.map(t => t.uri),
-        SpotifyLoc.before("first"),
-    )
+    console.log(lastSortedUri, lastSortedQueue, { before: "start" })
+    movePlatPlaylistTracks(lastSortedUri, lastSortedQueue as unknown as Array<{ uid: string }>, { before: "start" })
 })
 
 let invertAscending = 0
