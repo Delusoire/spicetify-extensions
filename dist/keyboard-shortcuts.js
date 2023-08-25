@@ -2928,7 +2928,7 @@ var keyboard;
         sneakOverlay.style.display = "block";
         if (clearSneakKeys())
           return;
-        const isElementVisible = ({ style }) => style.opacity !== "0" && style.display !== "none" && style.visibility !== "hidden";
+        const isElementVisible = (e) => Boolean(e.offsetWidth || e.offsetHeight || e.getClientRects().length);
         const isElementInViewPort = (e) => {
           const c = document.body;
           const bound = e.getBoundingClientRect();

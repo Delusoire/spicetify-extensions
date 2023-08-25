@@ -28,8 +28,7 @@ export const enterSneak = (event: KeyboardEvent) => {
 
     if (clearSneakKeys()) return
 
-    const isElementVisible = ({ style }: HTMLElement) =>
-        style.opacity !== "0" && style.display !== "none" && style.visibility !== "hidden"
+    const isElementVisible = (e: HTMLElement) => Boolean(e.offsetWidth || e.offsetHeight || e.getClientRects().length)
     const isElementInViewPort = (e: HTMLElement) => {
         const c = document.body
         const bound = e.getBoundingClientRect()
