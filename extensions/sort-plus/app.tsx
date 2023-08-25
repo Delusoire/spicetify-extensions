@@ -136,18 +136,16 @@ const fetchAPITracksFromTracks: TracksPopulater = f(
 
 const fetchAlbumTracksFromTracks: TracksPopulater = f(
     groupBy(track => track.albumUri!),
-    withProgress(mapWithIndex<SpotifyURI, TrackData[], Promise<TrackData[]>>)(
-        async (albumUri: SpotifyURI, tracks: TrackData[]) => {
-            const uriEq = p(
-                string.Eq,
-                eq.contramap((t: TrackData) => t.uri),
-            )
+    withProgress(mapWithIndex<SpotifyURI, TrackData[], Promise<TrackData[]>>)(async (albumUri, tracks) => {
+        const uriEq = p(
+            string.Eq,
+            eq.contramap((t: TrackData) => t.uri),
+        )
 
-            const albumTracks = await getAlbumTracks(albumUri)
+        const albumTracks = await getAlbumTracks(albumUri)
 
-            return a.intersection(uriEq)(albumTracks, tracks)
-        },
-    ),
+        return a.intersection(uriEq)(albumTracks, tracks)
+    }),
     values,
     ps => Promise.all(ps),
     pMchain(a.flatten),
@@ -311,8 +309,12 @@ new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", 
     if (!URI.isPlaylistV1OrV2(lastSortedUri))
         return void Spicetify.showNotification("Last sorted queue must be a playlist")
 
-    console.log(lastSortedUri, lastSortedQueue, { before: "start" })
-    movePlatPlaylistTracks(lastSortedUri, lastSortedQueue as unknown as Array<{ uid: string }>, { before: "start" })
+    p(
+        lastSortedQueue as unknown as Array<{ uid: string }>,
+        withProgress(a.map<{ uid: string }, void>)(
+            t => void movePlatPlaylistTracks(lastSortedUri, [t], SpotifyLoc.after.end()),
+        ),
+    )
 })
 
 let invertAscending = 0

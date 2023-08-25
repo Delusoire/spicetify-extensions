@@ -7355,16 +7355,16 @@ var star;
       }
       exports.identity = identity3;
       exports.unsafeCoerce = identity3;
-      function constant4(a) {
+      function constant5(a) {
         return function() {
           return a;
         };
       }
-      exports.constant = constant4;
-      exports.constTrue = constant4(true);
-      exports.constFalse = constant4(false);
-      exports.constNull = constant4(null);
-      exports.constUndefined = constant4(void 0);
+      exports.constant = constant5;
+      exports.constTrue = constant5(true);
+      exports.constFalse = constant5(false);
+      exports.constNull = constant5(null);
+      exports.constUndefined = constant5(void 0);
       exports.constVoid = exports.constUndefined;
       function flip4(f5) {
         return function() {
@@ -7526,20 +7526,35 @@ var star;
   });
 
   // shared/util.tsx
-  var mustLoadForApi, mustLoadForUtil, mustLoadForSettings, SpotifyLoc, waitForElement, sleep;
+  var import_function21, mustLoadForApi, mustLoadForUtil, mustLoadForSettings, SpotifyLoc, waitForElement, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
+      import_function21 = __toESM(require_function());
       mustLoadForApi = ["CosmosAsync", "GraphQL", "Platform"];
       mustLoadForUtil = ["URI"];
       mustLoadForSettings = ["React", "ReactDOM"];
       ((SpotifyLoc3) => {
-        SpotifyLoc3.before = (uri) => ({
-          before: { uri }
-        });
-        SpotifyLoc3.after = (uri) => ({
-          after: { uri }
-        });
+        let before;
+        ((before2) => {
+          before2.start = (0, import_function21.constant)({ before: "start" });
+          before2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          before2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(before = SpotifyLoc3.before || (SpotifyLoc3.before = {}));
+        let after;
+        ((after2) => {
+          after2.end = (0, import_function21.constant)({ after: "end" });
+          after2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          after2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(after = SpotifyLoc3.after || (SpotifyLoc3.after = {}));
       })(SpotifyLoc || (SpotifyLoc = {}));
       waitForElement = (selector, timeout = 1e3, location = document.body) => new Promise((resolve) => {
         if (document.querySelector(selector))
@@ -8688,14 +8703,14 @@ var star;
         };
       };
       exports.max = max5;
-      var constant4 = function(a) {
+      var constant5 = function(a) {
         return {
           concat: function() {
             return a;
           }
         };
       };
-      exports.constant = constant4;
+      exports.constant = constant5;
       exports.reverse = M.reverse;
       var struct3 = function(semigroups) {
         return {
@@ -9501,13 +9516,13 @@ var star;
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var O, import_function21, import_Predicate3, import_Semigroup2, import_Functor10, import_Apply9, import_Chain7, URI9, map12, Functor8, of8, ap9, Applicative5, apFirst8, apSecond8, chain8, Monad7, Do7, bindTo8, bind8, apS8, let_8, unary, guard6, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var O, import_function22, import_Predicate3, import_Semigroup2, import_Functor10, import_Apply9, import_Chain7, URI9, map12, Functor8, of8, ap9, Applicative5, apFirst8, apSecond8, chain8, Monad7, Do7, bindTo8, bind8, apS8, let_8, unary, guard6, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
       O = __toESM(require_Option());
       init_Map();
       init_Array();
-      import_function21 = __toESM(require_function());
+      import_function22 = __toESM(require_function());
       import_Predicate3 = __toESM(require_Predicate());
       init_Endomorphism();
       init_Monoid();
@@ -9516,12 +9531,12 @@ var star;
       import_Apply9 = __toESM(require_Apply());
       import_Chain7 = __toESM(require_Chain());
       URI9 = "Function";
-      map12 = (f5) => (g) => (0, import_function21.flow)(g, f5);
+      map12 = (f5) => (g) => (0, import_function22.flow)(g, f5);
       Functor8 = {
         URI: URI9,
         map: (f5, g) => map12(g)(f5)
       };
-      of8 = import_function21.constant;
+      of8 = import_function22.constant;
       ap9 = (f5) => (g) => (x) => g(x)(f5(x));
       Applicative5 = {
         ...Functor8,
@@ -9540,12 +9555,12 @@ var star;
       bind8 = (0, import_Chain7.bind)(Monad7);
       apS8 = (0, import_Apply9.apS)(Applicative5);
       let_8 = (0, import_Functor10.let)(Functor8);
-      unary = import_function21.tupled;
-      guard6 = (branches) => (fallback) => (input) => (0, import_function21.pipe)(branches, map4(([f5, g]) => (0, import_function21.flow)(O.fromPredicate(f5), O.map(g))), concatAll5((0, import_function21.getMonoid)(O.getMonoid((0, import_Semigroup2.first)()))()), (0, import_function21.apply)(input), O.getOrElse(() => fallback(input)));
+      unary = import_function22.tupled;
+      guard6 = (branches) => (fallback) => (input) => (0, import_function22.pipe)(branches, map4(([f5, g]) => (0, import_function22.flow)(O.fromPredicate(f5), O.map(g))), concatAll5((0, import_function22.getMonoid)(O.getMonoid((0, import_Semigroup2.first)()))()), (0, import_function22.apply)(input), O.getOrElse(() => fallback(input)));
       unless = (f5) => (onFalse) => (x) => f5(x) ? x : onFalse(x);
-      when = (0, import_function21.flow)(import_Predicate3.not, unless);
+      when = (0, import_function22.flow)(import_Predicate3.not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function21.flip)(invoke)([]);
+      invokeNullary = (0, import_function22.flip)(invoke)([]);
       memoize = (eq2) => (f5) => {
         const cache = /* @__PURE__ */ new Map();
         return (k) => {
@@ -9558,13 +9573,13 @@ var star;
         };
       };
       curry2T = (f5) => (a) => (b) => f5([a, b]);
-      curry2 = (0, import_function21.flow)(unary, curry2T);
+      curry2 = (0, import_function22.flow)(unary, curry2T);
       curry3T = (f5) => (a) => (b) => (c) => f5([a, b, c]);
-      curry3 = (0, import_function21.flow)(unary, curry3T);
+      curry3 = (0, import_function22.flow)(unary, curry3T);
       curry4T = (f5) => (a) => (b) => (c) => (d) => f5([a, b, c, d]);
-      curry4 = (0, import_function21.flow)(unary, curry4T);
+      curry4 = (0, import_function22.flow)(unary, curry4T);
       curry5T = (f5) => (a) => (b) => (c) => (d) => (e) => f5([a, b, c, d, e]);
-      curry5 = (0, import_function21.flow)(unary, curry5T);
+      curry5 = (0, import_function22.flow)(unary, curry5T);
       applyEvery = concatAll5(getMonoid6());
     }
   });
@@ -15630,30 +15645,30 @@ var star;
   });
 
   // shared/fp.tsx
-  var import_function22, guard42, pMchain, is, chunckify, memoize2;
+  var import_function23, guard42, pMchain, is, chunckify, memoize2;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function22 = __toESM(require_function());
+      import_function23 = __toESM(require_function());
       init_Function();
       guard42 = (branches) => guard6(
         branches
       );
       pMchain = (f5) => async (fa) => f5(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      chunckify = (n) => (g) => (0, import_function22.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
-      memoize2 = (fn) => (0, import_function22.pipe)(fn, import_function22.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function22.untupled);
+      chunckify = (n) => (g) => (0, import_function23.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
+      memoize2 = (fn) => (0, import_function23.pipe)(fn, import_function23.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function23.untupled);
     }
   });
 
   // shared/api.tsx
-  var import_function23, URI10, fetchGQLAlbum, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createPlatPlaylist, setPlatPlaylistVisibility, fetchPlatFolder, addPlatPlaylistTracks, removePlatPlaylistTracks, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
+  var import_function24, URI10, fetchGQLAlbum, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createPlatPlaylist, setPlatPlaylistVisibility, fetchPlatFolder, addPlatPlaylistTracks, removePlatPlaylistTracks, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_Function();
-      import_function23 = __toESM(require_function());
+      import_function24 = __toESM(require_function());
       init_fp();
       init_util();
       ({ URI: URI10 } = Spicetify);
@@ -15690,7 +15705,7 @@ var star;
           uri
         }))
       });
-      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function23.pipe)(
+      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function24.pipe)(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
           artist
         )}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
@@ -16433,12 +16448,12 @@ var star;
   });
 
   // shared/settings.tsx
-  var import_function24, import_react, import_react_dom, SettingsSection;
+  var import_function25, import_react, import_react_dom, SettingsSection;
   var init_settings = __esm({
     "shared/settings.tsx"() {
       "use strict";
       init_es6();
-      import_function24 = __toESM(require_function());
+      import_function25 = __toESM(require_function());
       import_react = __toESM(require_react());
       import_react_dom = __toESM(require_react_dom());
       init_fp();
@@ -16494,7 +16509,7 @@ var star;
           }
           import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
         };
-        addButton = (nameId, description, text, onClick = import_function24.constVoid, events = {}) => {
+        addButton = (nameId, description, text, onClick = import_function25.constVoid, events = {}) => {
           const id = this.getId(nameId);
           events.onClick = onClick;
           this.sectionFields[nameId] = {
@@ -16506,7 +16521,7 @@ var star;
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function24.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function25.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -16518,7 +16533,7 @@ var star;
           };
           return this;
         };
-        addInput = (nameId, description, defaultValue, onChange = import_function24.constVoid, inputType = "text", events = {}) => {
+        addInput = (nameId, description, defaultValue, onChange = import_function25.constVoid, inputType = "text", events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -16531,7 +16546,7 @@ var star;
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function24.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function25.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -16661,12 +16676,12 @@ var star;
   });
 
   // extensions/star-ratings/util.tsx
-  var import_function25, RATINGS_FOLDER_NAME, STAR_SIZE, HALF_STAR_LENGTH, starsS2N, starsN2S, getNowPlayingHeart, getStarsFromStarsContainer, getStarStopsFromStar, getStarsStopsFromStarsContainer, setStarsGradientFromContainerByRating, getStarsContainer, getStars, getStarsStops, getTrackLists, getTrackListHeader, getTrackListTracks, getLastColIndex, getFirstHeart, getTrackListTrackUri, getRatingsFolder;
+  var import_function26, RATINGS_FOLDER_NAME, STAR_SIZE, HALF_STAR_LENGTH, starsS2N, starsN2S, getNowPlayingHeart, getStarsFromStarsContainer, getStarStopsFromStar, getStarsStopsFromStarsContainer, setStarsGradientFromContainerByRating, getStarsContainer, getStars, getStarsStops, getTrackLists, getTrackListHeader, getTrackListTracks, getLastColIndex, getFirstHeart, getTrackListTrackUri, getRatingsFolder;
   var init_util2 = __esm({
     "extensions/star-ratings/util.tsx"() {
       "use strict";
       init_es6();
-      import_function25 = __toESM(require_function());
+      import_function26 = __toESM(require_function());
       init_api();
       init_settings2();
       init_stars();
@@ -16678,11 +16693,11 @@ var star;
       getNowPlayingHeart = () => document.querySelector(".main-nowPlayingWidget-nowPlaying .control-button-heart");
       getStarsFromStarsContainer = (starsElement) => Array.from(starsElement.children);
       getStarStopsFromStar = (star) => Array.from(star.firstChild.firstChild.childNodes);
-      getStarsStopsFromStarsContainer = (0, import_function25.flow)(getStarsFromStarsContainer, Array_exports.map(getStarStopsFromStar));
-      setStarsGradientFromContainerByRating = (rating) => (0, import_function25.flow)(getStarsStopsFromStarsContainer, setStarsGradientByRating(rating));
+      getStarsStopsFromStarsContainer = (0, import_function26.flow)(getStarsFromStarsContainer, Array_exports.map(getStarStopsFromStar));
+      setStarsGradientFromContainerByRating = (rating) => (0, import_function26.flow)(getStarsStopsFromStarsContainer, setStarsGradientByRating(rating));
       getStarsContainer = (idSuffix) => document.getElementById(`stars-${idSuffix}`);
-      getStars = (0, import_function25.flow)(getStarsContainer, getStarsFromStarsContainer);
-      getStarsStops = (0, import_function25.flow)(getStarsContainer, getStarsStopsFromStarsContainer);
+      getStars = (0, import_function26.flow)(getStarsContainer, getStarsFromStarsContainer);
+      getStarsStops = (0, import_function26.flow)(getStarsContainer, getStarsStopsFromStarsContainer);
       getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-indexable"));
       getTrackListHeader = (trackList) => trackList.querySelector(".main-trackList-trackListHeader")?.firstChild;
       getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
@@ -16695,7 +16710,7 @@ var star;
         ".Button-textSubdued-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle, .Button-textBrightAccent-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle"
       );
       getTrackListTrackUri = (track) => (track = Object.values(track)[0].child.child.child.child, track.pendingProps.uri ?? track.child.pendingProps.uri);
-      getRatingsFolder = () => (0, import_function25.flow)(
+      getRatingsFolder = () => (0, import_function26.flow)(
         () => () => fetchPlatFolder(CONFIG.ratingsFolderUri),
         TaskOption_exports.tryCatch,
         TaskOption_exports.getOrElse(() => fetchPlatFolder)
@@ -16725,12 +16740,12 @@ var star;
   });
 
   // extensions/star-ratings/stars.tsx
-  var import_function26, URI11, createStar, createStars, setStarsGradientByRating, calculateRatingFromMouseEvent, onStarClick;
+  var import_function27, URI11, createStar, createStars, setStarsGradientByRating, calculateRatingFromMouseEvent, onStarClick;
   var init_stars = __esm({
     "extensions/star-ratings/stars.tsx"() {
       "use strict";
       init_es6();
-      import_function26 = __toESM(require_function());
+      import_function27 = __toESM(require_function());
       init_api();
       init_util();
       init_ratings();
@@ -16784,7 +16799,7 @@ var star;
           starsContainer.style.display = "flex";
         }
         const starsConstructs = NonEmptyArray_exports.range(1, 5).map((i) => createStar(id, i, size7));
-        (0, import_function26.pipe)(
+        (0, import_function27.pipe)(
           starsConstructs,
           Array_exports.unzip,
           ([starElements]) => starElements,
@@ -16798,7 +16813,7 @@ var star;
           "stop-color",
           `var(--spice-button${lit ? "" : "-disabled"})`
         );
-        (0, import_function26.pipe)(
+        (0, import_function27.pipe)(
           NonEmptyArray_exports.range(0, 9),
           Array_exports.spanLeft((hi) => hi < rating),
           ({ init: init5, rest }) => {
@@ -16828,7 +16843,7 @@ var star;
         if (oldRating === newRating)
           newRating = 0;
         if (oldRating)
-          (0, import_function26.pipe)(
+          (0, import_function27.pipe)(
             playlistUris.slice(0, oldRating + 1),
             Array_exports.filter(Boolean),
             Array_exports.map((playlistUri) => removePlatPlaylistTracks(playlistUri, [trackUri]))
@@ -16846,7 +16861,7 @@ var star;
         updateNowPlayingStars();
         const trackStarsContainer = getStarsContainer(`${URI11.from(trackUri).id}`);
         if (trackStarsContainer) {
-          (0, import_function26.pipe)(trackStarsContainer, setStarsGradientFromContainerByRating(newRating));
+          (0, import_function27.pipe)(trackStarsContainer, setStarsGradientFromContainerByRating(newRating));
           trackStarsContainer.style.visibility = newRating ? "visible" : "hidden";
         }
       };
@@ -16854,12 +16869,12 @@ var star;
   });
 
   // extensions/star-ratings/ratings.tsx
-  var import_function27, import_NonEmptyArray, w, aggregateRatings, addRatingsListenersToStars, loadRatings, playlistUris, tracksRatings;
+  var import_function28, import_NonEmptyArray, w, aggregateRatings, addRatingsListenersToStars, loadRatings, playlistUris, tracksRatings;
   var init_ratings = __esm({
     "extensions/star-ratings/ratings.tsx"() {
       "use strict";
       init_es6();
-      import_function27 = __toESM(require_function());
+      import_function28 = __toESM(require_function());
       import_NonEmptyArray = __toESM(require_NonEmptyArray());
       init_api();
       init_fp();
@@ -16867,7 +16882,7 @@ var star;
       init_stars();
       init_util2();
       w = (n) => Math.exp(n);
-      aggregateRatings = (uris) => (0, import_function27.pipe)(
+      aggregateRatings = (uris) => (0, import_function28.pipe)(
         uris,
         Array_exports.map((uri) => tracksRatings[uri]),
         Array_exports.filter(Boolean),
@@ -16876,17 +16891,17 @@ var star;
         ([rs, wrs]) => ReadonlyArray_exports.reduceWithIndex(0, (i, s, r) => s + r * wrs[i])(rs) / ReadonlyArray_exports.reduce(0, (s, wr) => s + wr)(wrs) || 0
       );
       addRatingsListenersToStars = ([starsContainer, starsConstructs], getTrackUri, getHeart) => {
-        const [starsElements, starsSVGStops] = (0, import_function27.pipe)(starsConstructs, ReadonlyArray_exports.unzip);
+        const [starsElements, starsSVGStops] = (0, import_function28.pipe)(starsConstructs, ReadonlyArray_exports.unzip);
         starsContainer.addEventListener(
           "mouseout",
           () => setStarsGradientByRating(tracksRatings[getTrackUri()] ?? 0)(starsSVGStops)
         );
-        (0, import_function27.pipe)(
+        (0, import_function28.pipe)(
           starsElements,
           ReadonlyArray_exports.mapWithIndex((nth, starElement) => {
             starElement.addEventListener(
               "mousemove",
-              (0, import_function27.flow)(calculateRatingFromMouseEvent(starElement, nth), (0, import_function27.flip)(setStarsGradientByRating)(starsSVGStops))
+              (0, import_function28.flow)(calculateRatingFromMouseEvent(starElement, nth), (0, import_function28.flip)(setStarsGradientByRating)(starsSVGStops))
             );
             starElement.addEventListener("click", onStarClick(nth, starsElements[nth], getTrackUri, getHeart));
           })
@@ -16894,12 +16909,12 @@ var star;
       };
       loadRatings = async () => {
         const ratingsFolder = await getRatingsFolder();
-        const starsS2Narray = (0, import_function27.pipe)(
+        const starsS2Narray = (0, import_function28.pipe)(
           (0, import_NonEmptyArray.range)(0, 10),
           Array_exports.map((s) => [starsN2S(s), s]),
           Record_exports.fromEntries
         );
-        playlistUris = (0, import_function27.pipe)(
+        playlistUris = (0, import_function28.pipe)(
           ratingsFolder.items,
           Array_exports.map((p6) => [p6.type, p6.uri, starsS2Narray[p6.name]]),
           Array_exports.reduce(
@@ -16907,7 +16922,7 @@ var star;
             (acc, [type, uri, starsN]) => (type === "playlist" && starsN ? acc[starsN] = uri : [], acc)
           )
         );
-        tracksRatings = await (0, import_function27.pipe)(
+        tracksRatings = await (0, import_function28.pipe)(
           playlistUris,
           Array_exports.map(fetchPlatPlaylistContents),
           (ps) => Promise.all(ps),
@@ -16940,13 +16955,13 @@ var star;
     updateNowPlayingStars: () => updateNowPlayingStars,
     updateTrackListStars: () => updateTrackListStars
   });
-  var import_function28, import_spectacles_ts, app_default, URI12, customTrackListColCss, updateTrackListStars, mainElement, mainElementObserver, updateCollectionStars, createNowPlayingStars, nowPlayingHeart, updateNowPlayingStars;
+  var import_function29, import_spectacles_ts, app_default, URI12, customTrackListColCss, updateTrackListStars, mainElement, mainElementObserver, updateCollectionStars, createNowPlayingStars, nowPlayingHeart, updateNowPlayingStars;
   var init_app = __esm({
     "extensions/star-ratings/app.tsx"() {
       "use strict";
       init_es6();
       init_Predicate2();
-      import_function28 = __toESM(require_function());
+      import_function29 = __toESM(require_function());
       import_spectacles_ts = __toESM(require_dist());
       init_api();
       init_util();
@@ -16966,7 +16981,7 @@ var star;
         "[index] 16px [first] 6fr [var1] 4fr [var2] 3fr [var3] minmax(120px,2fr) [var3] 2fr [last] minmax(120px,1fr)"
       ];
       loadRatings();
-      updateTrackListStars = (0, import_function28.flow)(
+      updateTrackListStars = (0, import_function29.flow)(
         getTrackLists,
         Array_exports.map((trackList) => {
           const trackListTracks = getTrackListTracks(trackList);
@@ -16976,11 +16991,11 @@ var star;
           const locationUri = URI12.from(Spicetify.Platform.History.location.pathname);
           const firstElement = URI12.isArtist(locationUri) ? trackListTracks[0] : getTrackListHeader(trackList) ?? trackListTracks[0];
           const [lastColIndex] = getLastColIndex(firstElement);
-          const newTrackListColCss = customTrackListColCss[lastColIndex - (0, import_function28.pipe)(firstElement, hasStars, Number)];
+          const newTrackListColCss = customTrackListColCss[lastColIndex - (0, import_function29.pipe)(firstElement, hasStars, Number)];
           if (!newTrackListColCss)
             return;
           firstElement.style.gridTemplateColumns = newTrackListColCss;
-          (0, import_function28.pipe)(
+          (0, import_function29.pipe)(
             trackListTracks,
             Array_exports.map((track) => {
               const heart = getFirstHeart(track);
@@ -17010,7 +17025,7 @@ var star;
               }
               const [starsContainer, starsConstructs] = createStars(uri.id, STAR_SIZE);
               ratingColumn.appendChild(starsContainer);
-              (0, import_function28.pipe)(
+              (0, import_function29.pipe)(
                 starsConstructs,
                 Array_exports.unzip,
                 ([_, starsStops]) => starsStops,
@@ -17051,11 +17066,11 @@ var star;
           starsStops = getStarsStops("collection");
         let uris;
         if (URI12.isAlbum(uri))
-          uris = (0, import_function28.pipe)(await fetchGQLAlbum(`${uri}`), import_function28.identity, (0, import_spectacles_ts.get)("tracks.items"), Array_exports.map((0, import_function28.flow)(import_function28.identity, (0, import_spectacles_ts.get)("track.uri"))));
+          uris = (0, import_function29.pipe)(await fetchGQLAlbum(`${uri}`), import_function29.identity, (0, import_spectacles_ts.get)("tracks.items"), Array_exports.map((0, import_function29.flow)(import_function29.identity, (0, import_spectacles_ts.get)("track.uri"))));
         else if (URI12.isArtist(uri))
-          uris = (0, import_function28.pipe)(await fetchPlatArtistLikedTracks(`${uri}`), Array_exports.map((0, import_spectacles_ts.get)("uri")));
+          uris = (0, import_function29.pipe)(await fetchPlatArtistLikedTracks(`${uri}`), Array_exports.map((0, import_spectacles_ts.get)("uri")));
         else if (URI12.isPlaylistV1OrV2(uri))
-          uris = (0, import_function28.pipe)(await fetchPlatPlaylistContents(`${uri}`), Array_exports.map((0, import_spectacles_ts.get)("uri")));
+          uris = (0, import_function29.pipe)(await fetchPlatPlaylistContents(`${uri}`), Array_exports.map((0, import_spectacles_ts.get)("uri")));
         else
           throw "me out the window";
         setStarsGradientByRating(aggregateRatings(uris))(starsStops);
@@ -17070,9 +17085,9 @@ var star;
           const collectionPlayButton = await waitForElement(".main-actionBar-ActionBar .main-playButton-PlayButton");
           const [collectionStarsContainer2, collectionStarsConstructs] = createStars("collection", STAR_SIZE * 2);
           collectionPlayButton?.after(collectionStarsContainer2);
-          collectionStarsStops = (0, import_function28.pipe)(collectionStarsConstructs, Array_exports.unzip, ([_, starsStops]) => starsStops);
+          collectionStarsStops = (0, import_function29.pipe)(collectionStarsConstructs, Array_exports.unzip, ([_, starsStops]) => starsStops);
         } else {
-          collectionStarsStops = (0, import_function28.pipe)(collectionStarsContainer, getStarsStopsFromStarsContainer);
+          collectionStarsStops = (0, import_function29.pipe)(collectionStarsContainer, getStarsStopsFromStarsContainer);
         }
         updateCollectionStars(pathname, collectionStarsStops);
       });
@@ -17105,7 +17120,7 @@ var star;
         const trackUri = Spicetify.Player.data.track?.uri;
         const nowPlayingStarsContainer = getStarsContainer("now-playing");
         nowPlayingStarsContainer.style.display = Spicetify.URI.isTrack(trackUri) ? "flex" : "none";
-        (0, import_function28.pipe)(nowPlayingStarsContainer, setStarsGradientFromContainerByRating(tracksRatings[trackUri] ?? 0));
+        (0, import_function29.pipe)(nowPlayingStarsContainer, setStarsGradientFromContainerByRating(tracksRatings[trackUri] ?? 0));
       };
       Spicetify.Player.addEventListener("songchange", () => {
         const trackUri = Spicetify.Player.data.track?.uri;
@@ -17120,12 +17135,12 @@ var star;
   // extensions/star-ratings/entry.tsx
   init_es6();
   init_Record();
-  var import_function29 = __toESM(require_function());
+  var import_function30 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = ["Player", "showNotification", ...mustLoadForApi, ...mustLoadForSettings, ...mustLoadForUtil];
     let timer = 0;
-    while (mustLoad.some((0, import_function29.flow)((0, import_function29.flip)(lookup6)(Spicetify), Option_exports.isNone)))
+    while (mustLoad.some((0, import_function30.flow)((0, import_function30.flip)(lookup6)(Spicetify), Option_exports.isNone)))
       await sleep(timer += 100);
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();

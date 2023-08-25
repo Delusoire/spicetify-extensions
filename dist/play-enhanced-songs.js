@@ -3296,16 +3296,16 @@ var play;
       }
       exports.identity = identity2;
       exports.unsafeCoerce = identity2;
-      function constant4(a) {
+      function constant5(a) {
         return function() {
           return a;
         };
       }
-      exports.constant = constant4;
-      exports.constTrue = constant4(true);
-      exports.constFalse = constant4(false);
-      exports.constNull = constant4(null);
-      exports.constUndefined = constant4(void 0);
+      exports.constant = constant5;
+      exports.constTrue = constant5(true);
+      exports.constFalse = constant5(false);
+      exports.constNull = constant5(null);
+      exports.constUndefined = constant5(void 0);
       exports.constVoid = exports.constUndefined;
       function flip3(f3) {
         return function() {
@@ -3467,29 +3467,44 @@ var play;
   });
 
   // shared/util.tsx
-  var SpotifyLoc, sleep;
+  var import_function12, SpotifyLoc, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
+      import_function12 = __toESM(require_function());
       ((SpotifyLoc3) => {
-        SpotifyLoc3.before = (uri) => ({
-          before: { uri }
-        });
-        SpotifyLoc3.after = (uri) => ({
-          after: { uri }
-        });
+        let before;
+        ((before2) => {
+          before2.start = (0, import_function12.constant)({ before: "start" });
+          before2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          before2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(before = SpotifyLoc3.before || (SpotifyLoc3.before = {}));
+        let after;
+        ((after2) => {
+          after2.end = (0, import_function12.constant)({ after: "end" });
+          after2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          after2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(after = SpotifyLoc3.after || (SpotifyLoc3.after = {}));
       })(SpotifyLoc || (SpotifyLoc = {}));
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function12, URI4, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var import_function13, URI4, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
       init_Option();
       init_Map();
-      import_function12 = __toESM(require_function());
+      import_function13 = __toESM(require_function());
       init_Predicate();
       init_Endomorphism();
       init_Monoid();
@@ -3497,12 +3512,12 @@ var play;
       init_Apply();
       init_Chain();
       URI4 = "Function";
-      map4 = (f3) => (g) => (0, import_function12.flow)(g, f3);
+      map4 = (f3) => (g) => (0, import_function13.flow)(g, f3);
       Functor3 = {
         URI: URI4,
         map: (f3, g) => map4(g)(f3)
       };
-      of5 = import_function12.constant;
+      of5 = import_function13.constant;
       ap4 = (f3) => (g) => (x) => g(x)(f3(x));
       Applicative3 = {
         ...Functor3,
@@ -3521,11 +3536,11 @@ var play;
       bind4 = bind(Monad3);
       apS4 = apS(Applicative3);
       let_4 = let_(Functor3);
-      unary = import_function12.tupled;
+      unary = import_function13.tupled;
       unless = (f3) => (onFalse) => (x) => f3(x) ? x : onFalse(x);
-      when = (0, import_function12.flow)(not, unless);
+      when = (0, import_function13.flow)(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function12.flip)(invoke)([]);
+      invokeNullary = (0, import_function13.flip)(invoke)([]);
       memoize = (eq2) => (f3) => {
         const cache = /* @__PURE__ */ new Map();
         return (k) => {
@@ -3538,13 +3553,13 @@ var play;
         };
       };
       curry2T = (f3) => (a) => (b) => f3([a, b]);
-      curry2 = (0, import_function12.flow)(unary, curry2T);
+      curry2 = (0, import_function13.flow)(unary, curry2T);
       curry3T = (f3) => (a) => (b) => (c) => f3([a, b, c]);
-      curry3 = (0, import_function12.flow)(unary, curry3T);
+      curry3 = (0, import_function13.flow)(unary, curry3T);
       curry4T = (f3) => (a) => (b) => (c) => (d) => f3([a, b, c, d]);
-      curry4 = (0, import_function12.flow)(unary, curry4T);
+      curry4 = (0, import_function13.flow)(unary, curry4T);
       curry5T = (f3) => (a) => (b) => (c) => (d) => (e) => f3([a, b, c, d, e]);
-      curry5 = (0, import_function12.flow)(unary, curry5T);
+      curry5 = (0, import_function13.flow)(unary, curry5T);
       applyEvery = concatAll4(getMonoid5());
     }
   });
@@ -3560,26 +3575,26 @@ var play;
   });
 
   // shared/fp.tsx
-  var import_function13, pMchain, chunckify, memoize2;
+  var import_function14, pMchain, chunckify, memoize2;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function13 = __toESM(require_function());
+      import_function14 = __toESM(require_function());
       init_Function();
       pMchain = (f3) => async (fa) => f3(await fa);
-      chunckify = (n) => (g) => (0, import_function13.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
-      memoize2 = (fn) => (0, import_function13.pipe)(fn, import_function13.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function13.untupled);
+      chunckify = (n) => (g) => (0, import_function14.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
+      memoize2 = (fn) => (0, import_function14.pipe)(fn, import_function14.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function14.untupled);
     }
   });
 
   // shared/api.tsx
-  var import_function14, URI5, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistEnhancedSongs300, fetchPlatPlaylistEnhancedSongs, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
+  var import_function15, URI5, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistEnhancedSongs300, fetchPlatPlaylistEnhancedSongs, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_Function();
-      import_function14 = __toESM(require_function());
+      import_function15 = __toESM(require_function());
       init_fp();
       init_util();
       ({ URI: URI5 } = Spicetify);
@@ -3614,7 +3629,7 @@ var play;
         else
           return nextPageItems.concat(fetchPlatPlaylistEnhancedSongs(uri, offset + 300));
       };
-      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function14.pipe)(
+      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function15.pipe)(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
           artist
         )}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
@@ -3630,12 +3645,12 @@ var play;
   __export(app_exports, {
     default: () => app_default
   });
-  var import_function15, app_default, URI6, queue, playEnhancedSongs;
+  var import_function16, app_default, URI6, queue, playEnhancedSongs;
   var init_app = __esm({
     "extensions/play-enhanced-songs/app.tsx"() {
       "use strict";
       init_Predicate2();
-      import_function15 = __toESM(require_function());
+      import_function16 = __toESM(require_function());
       init_api();
       app_default = {};
       ({ URI: URI6 } = Spicetify);
@@ -3647,8 +3662,8 @@ var play;
       };
       new Spicetify.ContextMenu.Item(
         "Play enhanced songs",
-        (0, import_function15.tupled)(playEnhancedSongs),
-        (0, import_function15.tupled)(anyPass([URI6.isPlaylistV1OrV2])),
+        (0, import_function16.tupled)(playEnhancedSongs),
+        (0, import_function16.tupled)(anyPass([URI6.isPlaylistV1OrV2])),
         "enhance"
       ).register();
     }
@@ -3657,14 +3672,14 @@ var play;
   // extensions/play-enhanced-songs/entry.tsx
   init_es6();
   init_Record();
-  var import_function16 = __toESM(require_function());
+  var import_function17 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = ["ContextMenu", "CosmosAsync", "Platform"];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function16.flow)(
-        (0, import_function16.flip)(lookup6)(
+      (0, import_function17.flow)(
+        (0, import_function17.flip)(lookup6)(
           Spicetify
         ),
         Option_exports.isNone

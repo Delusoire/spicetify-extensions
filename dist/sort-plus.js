@@ -4043,16 +4043,16 @@ var sort;
       }
       exports.identity = identity3;
       exports.unsafeCoerce = identity3;
-      function constant5(a) {
+      function constant6(a) {
         return function() {
           return a;
         };
       }
-      exports.constant = constant5;
-      exports.constTrue = constant5(true);
-      exports.constFalse = constant5(false);
-      exports.constNull = constant5(null);
-      exports.constUndefined = constant5(void 0);
+      exports.constant = constant6;
+      exports.constTrue = constant6(true);
+      exports.constFalse = constant6(false);
+      exports.constNull = constant6(null);
+      exports.constUndefined = constant6(void 0);
       exports.constVoid = exports.constUndefined;
       function flip3(f4) {
         return function() {
@@ -4214,17 +4214,32 @@ var sort;
   });
 
   // shared/util.tsx
-  var SpotifyLoc, sleep;
+  var import_function19, SpotifyLoc, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
+      import_function19 = __toESM(require_function());
       ((SpotifyLoc3) => {
-        SpotifyLoc3.before = (uri) => ({
-          before: { uri }
-        });
-        SpotifyLoc3.after = (uri) => ({
-          after: { uri }
-        });
+        let before;
+        ((before2) => {
+          before2.start = (0, import_function19.constant)({ before: "start" });
+          before2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          before2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(before = SpotifyLoc3.before || (SpotifyLoc3.before = {}));
+        let after;
+        ((after2) => {
+          after2.end = (0, import_function19.constant)({ after: "end" });
+          after2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          after2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(after = SpotifyLoc3.after || (SpotifyLoc3.after = {}));
       })(SpotifyLoc || (SpotifyLoc = {}));
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
@@ -4752,14 +4767,14 @@ var sort;
         };
       };
       exports.max = max4;
-      var constant5 = function(a) {
+      var constant6 = function(a) {
         return {
           concat: function() {
             return a;
           }
         };
       };
-      exports.constant = constant5;
+      exports.constant = constant6;
       exports.reverse = M.reverse;
       var struct3 = function(semigroups) {
         return {
@@ -4864,13 +4879,13 @@ var sort;
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function19, import_Semigroup2, URI8, map7, Functor5, of6, ap6, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var import_function20, import_Semigroup2, URI8, map7, Functor5, of6, ap6, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
       init_Option();
       init_Map();
       init_Array();
-      import_function19 = __toESM(require_function());
+      import_function20 = __toESM(require_function());
       init_Predicate();
       init_Endomorphism();
       init_Monoid();
@@ -4879,12 +4894,12 @@ var sort;
       init_Apply();
       init_Chain();
       URI8 = "Function";
-      map7 = (f4) => (g) => (0, import_function19.flow)(g, f4);
+      map7 = (f4) => (g) => (0, import_function20.flow)(g, f4);
       Functor5 = {
         URI: URI8,
         map: (f4, g) => map7(g)(f4)
       };
-      of6 = import_function19.constant;
+      of6 = import_function20.constant;
       ap6 = (f4) => (g) => (x) => g(x)(f4(x));
       Applicative3 = {
         ...Functor5,
@@ -4903,12 +4918,12 @@ var sort;
       bind5 = bind(Monad4);
       apS5 = apS(Applicative3);
       let_5 = let_(Functor5);
-      unary = import_function19.tupled;
-      guard4 = (branches) => (fallback) => (input) => (0, import_function19.pipe)(branches, map(([f4, g]) => (0, import_function19.flow)(fromPredicate2(f4), map2(g))), concatAll4((0, import_function19.getMonoid)(getMonoid4((0, import_Semigroup2.first)()))()), (0, import_function19.apply)(input), getOrElse(() => fallback(input)));
+      unary = import_function20.tupled;
+      guard4 = (branches) => (fallback) => (input) => (0, import_function20.pipe)(branches, map(([f4, g]) => (0, import_function20.flow)(fromPredicate2(f4), map2(g))), concatAll4((0, import_function20.getMonoid)(getMonoid4((0, import_Semigroup2.first)()))()), (0, import_function20.apply)(input), getOrElse(() => fallback(input)));
       unless = (f4) => (onFalse) => (x) => f4(x) ? x : onFalse(x);
-      when = (0, import_function19.flow)(not, unless);
+      when = (0, import_function20.flow)(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function19.flip)(invoke)([]);
+      invokeNullary = (0, import_function20.flip)(invoke)([]);
       memoize = (eq2) => (f4) => {
         const cache = /* @__PURE__ */ new Map();
         return (k) => {
@@ -4921,13 +4936,13 @@ var sort;
         };
       };
       curry2T = (f4) => (a) => (b) => f4([a, b]);
-      curry2 = (0, import_function19.flow)(unary, curry2T);
+      curry2 = (0, import_function20.flow)(unary, curry2T);
       curry3T = (f4) => (a) => (b) => (c) => f4([a, b, c]);
-      curry3 = (0, import_function19.flow)(unary, curry3T);
+      curry3 = (0, import_function20.flow)(unary, curry3T);
       curry4T = (f4) => (a) => (b) => (c) => (d) => f4([a, b, c, d]);
-      curry4 = (0, import_function19.flow)(unary, curry4T);
+      curry4 = (0, import_function20.flow)(unary, curry4T);
       curry5T = (f4) => (a) => (b) => (c) => (d) => (e) => f4([a, b, c, d, e]);
-      curry5 = (0, import_function19.flow)(unary, curry5T);
+      curry5 = (0, import_function20.flow)(unary, curry5T);
       applyEvery = concatAll4(getMonoid5());
     }
   });
@@ -6327,12 +6342,12 @@ var sort;
   });
 
   // shared/fp.tsx
-  var import_function26, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, tapAny, chunckify, withProgress, memoize2;
+  var import_function27, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, tapAny, chunckify, withProgress, memoize2;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function26 = __toESM(require_function());
+      import_function27 = __toESM(require_function());
       init_Function();
       init_Record();
       import_Semigroup3 = __toESM(require_Semigroup());
@@ -6347,7 +6362,7 @@ var sort;
         f4(fa);
         return fa;
       };
-      chunckify = (n) => (g) => (0, import_function26.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
+      chunckify = (n) => (g) => (0, import_function27.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
       withProgress = (map8) => (f4) => (fa) => {
         let i = 0;
         return map8(async (...a) => {
@@ -6357,17 +6372,17 @@ var sort;
           return ret;
         })(fa);
       };
-      memoize2 = (fn) => (0, import_function26.pipe)(fn, import_function26.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function26.untupled);
+      memoize2 = (fn) => (0, import_function27.pipe)(fn, import_function27.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function27.untupled);
     }
   });
 
   // shared/api.tsx
-  var import_function27, URI14, fetchGQLAlbum, fetchGQLArtistOverview, fetchGQLArtistDiscography, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, movePlatPlaylistTracks, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
+  var import_function28, URI14, fetchGQLAlbum, fetchGQLArtistOverview, fetchGQLArtistDiscography, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, movePlatPlaylistTracks, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_Function();
-      import_function27 = __toESM(require_function());
+      import_function28 = __toESM(require_function());
       init_fp();
       init_util();
       ({ URI: URI14 } = Spicetify);
@@ -6418,7 +6433,7 @@ var sort;
       fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
       fetchPlatRootFolder = () => fetchPlatFolder(void 0);
       movePlatPlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location);
-      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function27.pipe)(
+      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function28.pipe)(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
           artist
         )}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
@@ -6527,12 +6542,12 @@ var sort;
   });
 
   // shared/settings.tsx
-  var import_function28, import_react, import_react_dom, SettingsSection;
+  var import_function29, import_react, import_react_dom, SettingsSection;
   var init_settings = __esm({
     "shared/settings.tsx"() {
       "use strict";
       init_es6();
-      import_function28 = __toESM(require_function());
+      import_function29 = __toESM(require_function());
       import_react = __toESM(require_react());
       import_react_dom = __toESM(require_react_dom());
       init_fp();
@@ -6588,7 +6603,7 @@ var sort;
           }
           import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
         };
-        addButton = (nameId, description, text, onClick = import_function28.constVoid, events = {}) => {
+        addButton = (nameId, description, text, onClick = import_function29.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
           events.onClick = onClick;
           this.sectionFields[nameId] = {
@@ -6600,7 +6615,7 @@ var sort;
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function28.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function29.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
@@ -6612,7 +6627,7 @@ var sort;
           };
           return this;
         };
-        addInput = (nameId, description, defaultValue, onChange = import_function28.constVoid, inputType = "text", events = {}) => {
+        addInput = (nameId, description, defaultValue, onChange = import_function29.constVoid, inputType = "text", events = {}) => {
           const id6 = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
@@ -6625,7 +6640,7 @@ var sort;
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function28.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function29.constVoid, events = {}) => {
           const id6 = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id6, defaultValue);
           events.onChange = onChange;
@@ -6780,12 +6795,12 @@ var sort;
   });
   async function getArtistTracks(uri) {
     const extractUriFromReleases = (x) => x.releases.items[0].uri;
-    const getTracksFromAlbum = (0, import_function29.flow)(Array_exports.map(getAlbumTracks), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
+    const getTracksFromAlbum = (0, import_function30.flow)(Array_exports.map(getAlbumTracks), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
     const allTracks = new Array();
     const add = (tracks) => void Array.prototype.push.apply(allTracks, tracks);
     if (CONFIG.artistAllDiscography) {
       const allDisc = await fetchGQLArtistDiscography(uri);
-      await (0, import_function29.pipe)(allDisc, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+      await (0, import_function30.pipe)(allDisc, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
     } else {
       const disc = (await fetchGQLArtistOverview(uri)).discography;
       const artistTopTracks = disc.topTracks.items;
@@ -6794,31 +6809,31 @@ var sort;
       const artistSingles = disc.singles.items;
       const artistCompilations = disc.compilations.items;
       if (CONFIG.artistTopTracks)
-        await (0, import_function29.pipe)(
+        await (0, import_function30.pipe)(
           artistTopTracks,
           Array_exports.map((i) => i.track),
           Array_exports.map(parseTopTrackFromArtist),
           add
         );
       if (CONFIG.artistPopularReleases)
-        await (0, import_function29.pipe)(
+        await (0, import_function30.pipe)(
           artistPopularReleases,
           Array_exports.map((r) => r.uri),
           getTracksFromAlbum,
           pMchain(add)
         );
       if (CONFIG.artistSingles)
-        await (0, import_function29.pipe)(artistSingles, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+        await (0, import_function30.pipe)(artistSingles, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
       if (CONFIG.artistAlbums)
-        await (0, import_function29.pipe)(artistAlbums, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+        await (0, import_function30.pipe)(artistAlbums, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
       if (CONFIG.artistCompilations)
-        await (0, import_function29.pipe)(artistCompilations, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
+        await (0, import_function30.pipe)(artistCompilations, Array_exports.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add));
       if (CONFIG.artistLikedTracks)
-        await (0, import_function29.pipe)(uri, fetchPlatArtistLikedTracks, pMchain(Array_exports.map(parsePlatTrackFromArtistLikedTracks)), pMchain(add));
+        await (0, import_function30.pipe)(uri, fetchPlatArtistLikedTracks, pMchain(Array_exports.map(parsePlatTrackFromArtistLikedTracks)), pMchain(add));
     }
     return allTracks;
   }
-  var import_function29, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu, invertAscending;
+  var import_function30, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu, invertAscending;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6828,12 +6843,13 @@ var sort;
       init_Record2();
       init_NonEmptyArray();
       init_Record();
-      import_function29 = __toESM(require_function());
+      import_function30 = __toESM(require_function());
       init_string();
       init_es62();
       init_api();
       init_fp();
       init_parse();
+      init_util();
       init_settings2();
       app_default = {};
       ({ URI: URI15 } = Spicetify);
@@ -6858,10 +6874,10 @@ var sort;
       getAlbumTracks = async (uri) => {
         const albumRes = await fetchGQLAlbum(uri);
         const releaseDate = new Date(albumRes.date.isoString).getTime();
-        return (0, import_function29.pipe)(
+        return (0, import_function30.pipe)(
           albumRes.tracks.items,
           Array_exports.map(
-            (0, import_function29.flow)(
+            (0, import_function30.flow)(
               parseTrackFromAlbum,
               Lens.fromProp()("albumUri").set(albumRes.uri),
               Lens.fromProp()("albumName").set(albumRes.name),
@@ -6870,33 +6886,31 @@ var sort;
           )
         );
       };
-      getPlaylistTracks = (0, import_function29.flow)(fetchPlatPlaylistContents, pMchain(Array_exports.map(parseAPITrackFromPlaylist)));
-      fetchAPITracksFromTracks = (0, import_function29.flow)(
+      getPlaylistTracks = (0, import_function30.flow)(fetchPlatPlaylistContents, pMchain(Array_exports.map(parseAPITrackFromPlaylist)));
+      fetchAPITracksFromTracks = (0, import_function30.flow)(
         Array_exports.map(({ uri }) => URI15.from(uri).id),
         fetchWebTracksSpot,
         pMchain(Array_exports.map(parseAPITrackFromSpotify))
       );
-      fetchAlbumTracksFromTracks = (0, import_function29.flow)(
+      fetchAlbumTracksFromTracks = (0, import_function30.flow)(
         groupBy((track) => track.albumUri),
-        withProgress(mapWithIndex3)(
-          async (albumUri, tracks) => {
-            const uriEq = (0, import_function29.pipe)(
-              string_exports.Eq,
-              Eq_exports.contramap((t) => t.uri)
-            );
-            const albumTracks = await getAlbumTracks(albumUri);
-            return Array_exports.intersection(uriEq)(albumTracks, tracks);
-          }
-        ),
+        withProgress(mapWithIndex3)(async (albumUri, tracks) => {
+          const uriEq = (0, import_function30.pipe)(
+            string_exports.Eq,
+            Eq_exports.contramap((t) => t.uri)
+          );
+          const albumTracks = await getAlbumTracks(albumUri);
+          return Array_exports.intersection(uriEq)(albumTracks, tracks);
+        }),
         values,
         (ps) => Promise.all(ps),
         pMchain(Array_exports.flatten)
       );
-      populateTracksSpot = (propName) => (tracks) => (0, import_function29.pipe)(
+      populateTracksSpot = (propName) => (tracks) => (0, import_function30.pipe)(
         tracks,
-        Array_exports.filter((0, import_function29.flow)(toOptProp(propName), Option_exports.isNone)),
-        guard4([[startsWith("Spotify - Play Count" /* SPOTIFY_PLAYCOUNT */), (0, import_function29.constant)(fetchAlbumTracksFromTracks)]])(
-          (0, import_function29.constant)(fetchAPITracksFromTracks)
+        Array_exports.filter((0, import_function30.flow)(toOptProp(propName), Option_exports.isNone)),
+        guard4([[startsWith("Spotify - Play Count" /* SPOTIFY_PLAYCOUNT */), (0, import_function30.constant)(fetchAlbumTracksFromTracks)]])(
+          (0, import_function30.constant)(fetchAPITracksFromTracks)
         )(propName),
         pMchain(Array_exports.concat(tracks)),
         pMchain(groupBy(Lens.fromProp()("uri").get)),
@@ -6914,15 +6928,15 @@ var sort;
         [URI15.isAlbum, getAlbumTracks],
         [URI15.isArtist, getArtistTracks],
         [URI15.isPlaylistV1OrV2, getPlaylistTracks],
-        [startsWith("spotify:collection:tracks"), (0, import_function29.flow)(fetchPlatLikedTracks, pMchain(Array_exports.map(parsePlatLikedTracks)))]
+        [startsWith("spotify:collection:tracks"), (0, import_function30.flow)(fetchPlatLikedTracks, pMchain(Array_exports.map(parsePlatLikedTracks)))]
       ])(Task_exports.of([]));
       populateTracks = guard4([
         [startsWith("Spotify"), populateTracksSpot],
         [
           startsWith("LastFM"),
-          (0, import_function29.constant)((0, import_function29.flow)((0, import_function29.pipe)(withProgress(Array_exports.map)(populateTrackLastFM)), (ps) => Promise.all(ps)))
+          (0, import_function30.constant)((0, import_function30.flow)((0, import_function30.pipe)(withProgress(Array_exports.map)(populateTrackLastFM)), (ps) => Promise.all(ps)))
         ]
-      ])((0, import_function29.constant)(Task_exports.of([])));
+      ])((0, import_function30.constant)(Task_exports.of([])));
       lastSortedQueue = [];
       setQueue = async (queue) => {
         await Spicetify.Platform.PlayerAPI.clearQueue();
@@ -6934,33 +6948,33 @@ var sort;
       sortByProp = (name) => async (uri) => {
         lastSortedUri = uri;
         lastSortedName = name;
-        const propOrd = (0, import_function29.pipe)(
+        const propOrd = (0, import_function30.pipe)(
           number_exports.Ord,
           Ord_exports.contramap((t) => t[SortProp[name]])
         );
-        const uriOrd = (0, import_function29.pipe)(
+        const uriOrd = (0, import_function30.pipe)(
           string_exports.Ord,
           Ord_exports.contramap((t) => t.uri)
         );
-        (0, import_function29.pipe)(
+        (0, import_function30.pipe)(
           uri,
           fetchTracks,
           pMchain(populateTracks(name)),
-          pMchain(Array_exports.map((x) => (0, import_function29.pipe)(x, toOptProp(name), Option_exports.isSome) ? Option_exports.some(x) : Option_exports.none)),
+          pMchain(Array_exports.map((x) => (0, import_function30.pipe)(x, toOptProp(name), Option_exports.isSome) ? Option_exports.some(x) : Option_exports.none)),
           pMchain(Array_exports.sequence(Option_exports.Applicative)),
           pMchain(Option_exports.map(Array_exports.sort(propOrd))),
           pMchain(Option_exports.map(Array_exports.uniq(uriOrd))),
-          pMchain(Option_exports.map(invertAscending ^ Number(CONFIG.ascending) ? import_function29.identity : Array_exports.reverse)),
+          pMchain(Option_exports.map(invertAscending ^ Number(CONFIG.ascending) ? import_function30.identity : Array_exports.reverse)),
           pMchain(Option_exports.map(tapAny((queue) => void (lastSortedQueue = queue)))),
           pMchain(Option_exports.map(setQueue))
         );
       };
-      createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, (0, import_function29.tupled)(sortByProp(name)), import_function29.constTrue, icon, false);
+      createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, (0, import_function30.tupled)(sortByProp(name)), import_function30.constTrue, icon, false);
       shuffle = (array2, l = array2.length) => l == 0 ? [] : [array2.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array2)];
       shuffleSubmenu = new Spicetify.ContextMenu.Item(
         "True Shuffle",
-        (0, import_function29.tupled)((0, import_function29.flow)(fetchTracks, pMchain(shuffle), pMchain(setQueue))),
-        import_function29.constTrue,
+        (0, import_function30.tupled)((0, import_function30.flow)(fetchTracks, pMchain(shuffle), pMchain(setQueue))),
+        import_function30.constTrue,
         "shuffle",
         false
       );
@@ -6971,13 +6985,13 @@ var sort;
           ["play", "heart", "list-view", "volume", "artist", "subtitles"],
           createSortByPropSubmenu
         ).concat([shuffleSubmenu]),
-        (0, import_function29.tupled)(anyPass([URI15.isAlbum, URI15.isArtist, URI15.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")]))
+        (0, import_function30.tupled)(anyPass([URI15.isAlbum, URI15.isArtist, URI15.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")]))
       ).register();
       new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
         if (lastSortedQueue.length === 0)
           return void Spicetify.showNotification("Must sort to queue beforehand");
         const rootFolder = await fetchPlatRootFolder();
-        const sortedPlaylistsFolderUri = await (0, import_function29.pipe)(
+        const sortedPlaylistsFolderUri = await (0, import_function30.pipe)(
           rootFolder.items,
           Array_exports.findFirst((item) => item.type === "folder" && item.name === "Sorted Playlists"),
           Option_exports.getOrElseW(() => createPlatFolder("Sorted Playlists")),
@@ -6988,9 +7002,9 @@ var sort;
         const getNameFromArtistId = async (id6) => (await fetchWebArtistsSpot([id6]))[0].name;
         const getNameFromPlaylistId = async (id6) => (await fetchWebPlaylistsSpot([id6]))[0].name;
         const playlistName = await guard4([
-          [URI15.isAlbum, (0, import_function29.flow)(uriToId, getNameFromAlbumId)],
-          [URI15.isArtist, (0, import_function29.flow)(uriToId, getNameFromArtistId)],
-          [URI15.isPlaylistV1OrV2, (0, import_function29.flow)(uriToId, getNameFromPlaylistId)],
+          [URI15.isAlbum, (0, import_function30.flow)(uriToId, getNameFromAlbumId)],
+          [URI15.isArtist, (0, import_function30.flow)(uriToId, getNameFromArtistId)],
+          [URI15.isPlaylistV1OrV2, (0, import_function30.flow)(uriToId, getNameFromPlaylistId)],
           [startsWith("spotify:collection:tracks"), Task_exports.of("Liked Tracks")]
         ])(Task_exports.of("Unresolved"))(lastSortedUri);
         await createSPPlaylistFromTracks(
@@ -7003,8 +7017,12 @@ var sort;
       new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
         if (!URI15.isPlaylistV1OrV2(lastSortedUri))
           return void Spicetify.showNotification("Last sorted queue must be a playlist");
-        console.log(lastSortedUri, lastSortedQueue, { before: "start" });
-        movePlatPlaylistTracks(lastSortedUri, lastSortedQueue, { before: "start" });
+        (0, import_function30.pipe)(
+          lastSortedQueue,
+          withProgress(Array_exports.map)(
+            (t) => void movePlatPlaylistTracks(lastSortedUri, [t], SpotifyLoc.after.end())
+          )
+        );
       });
       invertAscending = 0;
       window.addEventListener("keydown", (event) => {
@@ -7021,7 +7039,7 @@ var sort;
   // extensions/sort-plus/entry.tsx
   init_es6();
   init_Record();
-  var import_function30 = __toESM(require_function());
+  var import_function31 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = [
@@ -7037,8 +7055,8 @@ var sort;
     ];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function30.flow)(
-        (0, import_function30.flip)(lookup6)(
+      (0, import_function31.flow)(
+        (0, import_function31.flip)(lookup6)(
           Spicetify
         ),
         Option_exports.isNone

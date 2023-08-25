@@ -3076,16 +3076,16 @@ var keyboard;
       }
       exports.identity = identity4;
       exports.unsafeCoerce = identity4;
-      function constant6(a) {
+      function constant7(a) {
         return function() {
           return a;
         };
       }
-      exports.constant = constant6;
-      exports.constTrue = constant6(true);
-      exports.constFalse = constant6(false);
-      exports.constNull = constant6(null);
-      exports.constUndefined = constant6(void 0);
+      exports.constant = constant7;
+      exports.constTrue = constant7(true);
+      exports.constFalse = constant7(false);
+      exports.constNull = constant7(null);
+      exports.constUndefined = constant7(void 0);
       exports.constVoid = exports.constUndefined;
       function flip4(f2) {
         return function() {
@@ -3247,10 +3247,10 @@ var keyboard;
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function9, URI3, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var import_function10, URI3, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
-      import_function9 = __toESM(require_function());
+      import_function10 = __toESM(require_function());
       init_Predicate();
       init_Endomorphism();
       init_Monoid();
@@ -3258,12 +3258,12 @@ var keyboard;
       init_Apply();
       init_Chain();
       URI3 = "Function";
-      map4 = (f2) => (g) => (0, import_function9.flow)(g, f2);
+      map4 = (f2) => (g) => (0, import_function10.flow)(g, f2);
       Functor3 = {
         URI: URI3,
         map: (f2, g) => map4(g)(f2)
       };
-      of5 = import_function9.constant;
+      of5 = import_function10.constant;
       ap4 = (f2) => (g) => (x) => g(x)(f2(x));
       Applicative3 = {
         ...Functor3,
@@ -3282,28 +3282,28 @@ var keyboard;
       bind4 = bind(Monad3);
       apS4 = apS(Applicative3);
       let_4 = let_(Functor3);
-      unary = import_function9.tupled;
+      unary = import_function10.tupled;
       unless = (f2) => (onFalse) => (x) => f2(x) ? x : onFalse(x);
-      when = (0, import_function9.flow)(not, unless);
+      when = (0, import_function10.flow)(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function9.flip)(invoke)([]);
+      invokeNullary = (0, import_function10.flip)(invoke)([]);
       curry2T = (f2) => (a) => (b) => f2([a, b]);
-      curry2 = (0, import_function9.flow)(unary, curry2T);
+      curry2 = (0, import_function10.flow)(unary, curry2T);
       curry3T = (f2) => (a) => (b) => (c) => f2([a, b, c]);
-      curry3 = (0, import_function9.flow)(unary, curry3T);
+      curry3 = (0, import_function10.flow)(unary, curry3T);
       curry4T = (f2) => (a) => (b) => (c) => (d) => f2([a, b, c, d]);
-      curry4 = (0, import_function9.flow)(unary, curry4T);
+      curry4 = (0, import_function10.flow)(unary, curry4T);
       curry5T = (f2) => (a) => (b) => (c) => (d) => (e) => f2([a, b, c, d, e]);
-      curry5 = (0, import_function9.flow)(unary, curry5T);
+      curry5 = (0, import_function10.flow)(unary, curry5T);
       applyEvery = concatAll5(getMonoid4());
     }
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Array.js
-  var import_function10, none3, sum, product, mean, median, moveFrom, moveTo, minimum, maximum, fromIterable;
+  var import_function11, none3, sum, product, mean, median, moveFrom, moveTo, minimum, maximum, fromIterable;
   var init_Array2 = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Array.js"() {
-      import_function10 = __toESM(require_function());
+      import_function11 = __toESM(require_function());
       init_Predicate();
       init_number();
       init_NonEmptyArray();
@@ -3311,18 +3311,18 @@ var keyboard;
       init_Option();
       init_Monoid();
       init_Semigroup();
-      none3 = (0, import_function10.flow)(not, (p) => every2(p));
+      none3 = (0, import_function11.flow)(not, (p) => every2(p));
       sum = concatAll5(MonoidSum);
       product = concatAll5(MonoidProduct);
       mean = (xs) => sum(xs) / xs.length;
-      median = (0, import_function10.flow)(sort(Ord), (xs) => {
+      median = (0, import_function11.flow)(sort(Ord), (xs) => {
         const i = xs.length / 2;
         return i % 1 === 0 ? (xs[i - 1] + xs[i]) / 2 : xs[Math.floor(i)];
       });
-      moveFrom = (from) => (to) => (xs) => from >= xs.length || to >= xs.length ? none2 : from === to ? some3(xs) : (0, import_function10.pipe)(xs, lookup2(from), chain2((x) => (0, import_function10.pipe)(deleteAt(from)(xs), chain2(insertAt(to, x)))));
-      moveTo = (0, import_function10.flip)(moveFrom);
-      minimum = (0, import_function10.flow)(min2, concatAll4);
-      maximum = (0, import_function10.flow)(max2, concatAll4);
+      moveFrom = (from) => (to) => (xs) => from >= xs.length || to >= xs.length ? none2 : from === to ? some3(xs) : (0, import_function11.pipe)(xs, lookup2(from), chain2((x) => (0, import_function11.pipe)(deleteAt(from)(xs), chain2(insertAt(to, x)))));
+      moveTo = (0, import_function11.flip)(moveFrom);
+      minimum = (0, import_function11.flow)(min2, concatAll4);
+      maximum = (0, import_function11.flow)(max2, concatAll4);
       fromIterable = Array.from;
     }
   });
@@ -3596,12 +3596,12 @@ var keyboard;
   });
 
   // extensions/keyboard-shortcuts/sneak.tsx
-  var import_function11, import_Ord3, mousetrap, keyList, getSneakKeys, clearSomeSneakKeys, clearSneakKeys, enterSneak, quitSneak, clickElement, listenSneakKeys, shouldListenToSneakBinds, listeningToSneakBinds, sneakOverlay;
+  var import_function12, import_Ord3, mousetrap, keyList, getSneakKeys, clearSomeSneakKeys, clearSneakKeys, enterSneak, quitSneak, clickElement, listenSneakKeys, shouldListenToSneakBinds, listeningToSneakBinds, sneakOverlay;
   var init_sneak = __esm({
     "extensions/keyboard-shortcuts/sneak.tsx"() {
       "use strict";
       init_es6();
-      import_function11 = __toESM(require_function());
+      import_function12 = __toESM(require_function());
       init_Array2();
       import_Ord3 = __toESM(require_Ord());
       mousetrap = Spicetify.Mousetrap();
@@ -3611,14 +3611,14 @@ var keyboard;
         if (sneakKeys.length === 0)
           return false;
         sneakOverlay.remove();
-        (0, import_function11.pipe)(
+        (0, import_function12.pipe)(
           sneakKeys,
           Array_exports.map((e) => e.remove())
         );
         document.body.append(sneakOverlay);
         return true;
       };
-      clearSneakKeys = (0, import_function11.flow)(getSneakKeys, clearSomeSneakKeys);
+      clearSneakKeys = (0, import_function12.flow)(getSneakKeys, clearSomeSneakKeys);
       enterSneak = (event) => {
         sneakOverlay.style.display = "block";
         if (clearSneakKeys())
@@ -3628,7 +3628,7 @@ var keyboard;
           const c = document.body;
           const bound = e.getBoundingClientRect();
           const within = (m, M) => (x) => x === (0, import_Ord3.clamp)(number_exports.Ord)(m, M)(x);
-          return (0, import_function11.pipe)(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) && (0, import_function11.pipe)(mean([bound.left, bound.right]), within(0, c.clientWidth));
+          return (0, import_function12.pipe)(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) && (0, import_function12.pipe)(mean([bound.left, bound.right]), within(0, c.clientWidth));
         };
         const createSneakKey = (target, key, top, left) => {
           const sneakKey = document.createElement("span");
@@ -3641,7 +3641,7 @@ var keyboard;
         };
         const sneakKeysFragment = document.createDocumentFragment();
         const linkSelector = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`;
-        shouldListenToSneakBinds = (0, import_function11.pipe)(
+        shouldListenToSneakBinds = (0, import_function12.pipe)(
           document.querySelectorAll(linkSelector),
           (x) => Array.from(x),
           Array_exports.filter(isElementVisible),
@@ -3701,10 +3701,10 @@ var keyboard;
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Lazy.js
-  var import_function12, URI4, _map4, _ap3, _chain, of6, chain4, flatten3, Functor4, flap4, Apply3, apFirst5, apSecond5, Chain3, chainFirst4, Do4, bindTo5, bind5, apS5, let_5, ApT2, traverseReadonlyNonEmptyArrayWithIndex2, traverseReadonlyArrayWithIndex2, traverseArray2, sequenceArray2;
+  var import_function13, URI4, _map4, _ap3, _chain, of6, chain4, flatten3, Functor4, flap4, Apply3, apFirst5, apSecond5, Chain3, chainFirst4, Do4, bindTo5, bind5, apS5, let_5, ApT2, traverseReadonlyNonEmptyArrayWithIndex2, traverseReadonlyArrayWithIndex2, traverseArray2, sequenceArray2;
   var init_Lazy = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Lazy.js"() {
-      import_function12 = __toESM(require_function());
+      import_function13 = __toESM(require_function());
       init_Functor();
       init_Apply();
       init_Chain();
@@ -3714,9 +3714,9 @@ var keyboard;
       _map4 = (f2, g) => () => g(f2());
       _ap3 = (f2, g) => () => f2()(g());
       _chain = (f2, g) => g(f2());
-      of6 = import_function12.constant;
+      of6 = import_function13.constant;
       chain4 = (f2) => (ma) => _chain(ma, f2);
-      flatten3 = chain4(import_function12.identity);
+      flatten3 = chain4(import_function13.identity);
       Functor4 = {
         URI: URI4,
         map: _map4
@@ -3754,24 +3754,24 @@ var keyboard;
         return (as3) => isNonEmpty4(as3) ? g(as3) : ApT2;
       };
       traverseArray2 = (f2) => traverseReadonlyArrayWithIndex2((_, a) => f2(a));
-      sequenceArray2 = traverseArray2(import_function12.identity);
+      sequenceArray2 = traverseArray2(import_function13.identity);
     }
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Number.js
-  var import_function13, isValid, fromStringWithRadix, fromString, floatFromString, increment, decrement, mod, isFinite, toFinite, BoundedSafe, EnumInt;
+  var import_function14, isValid, fromStringWithRadix, fromString, floatFromString, increment, decrement, mod, isFinite, toFinite, BoundedSafe, EnumInt;
   var init_Number = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Number.js"() {
-      import_function13 = __toESM(require_function());
+      import_function14 = __toESM(require_function());
       init_Predicate();
       init_Option();
       init_Function();
       init_number();
       init_Lazy();
       isValid = not(Number.isNaN);
-      fromStringWithRadix = (radix) => (string) => (0, import_function13.pipe)(Number.parseInt(string, radix), fromPredicate2(isValid));
+      fromStringWithRadix = (radix) => (string) => (0, import_function14.pipe)(Number.parseInt(string, radix), fromPredicate2(isValid));
       fromString = fromStringWithRadix(10);
-      floatFromString = (0, import_function13.flow)(Number.parseFloat, fromPredicate2(isValid));
+      floatFromString = (0, import_function14.flow)(Number.parseFloat, fromPredicate2(isValid));
       increment = (x) => x + 1;
       decrement = (x) => x - 1;
       mod = (divisor) => (dividend) => (dividend % divisor + divisor) % divisor;
@@ -3784,21 +3784,21 @@ var keyboard;
       };
       EnumInt = {
         ...BoundedSafe,
-        succ: (0, import_function13.flow)(fromPredicate2(and((n) => n < Number.MAX_SAFE_INTEGER)(Number.isInteger)), map2(increment)),
-        pred: (0, import_function13.flow)(fromPredicate2(and((n) => n > Number.MIN_SAFE_INTEGER)(Number.isInteger)), map2(decrement)),
+        succ: (0, import_function14.flow)(fromPredicate2(and((n) => n < Number.MAX_SAFE_INTEGER)(Number.isInteger)), map2(increment)),
+        pred: (0, import_function14.flow)(fromPredicate2(and((n) => n > Number.MIN_SAFE_INTEGER)(Number.isInteger)), map2(decrement)),
         toEnum: some3,
-        fromEnum: import_function13.identity,
+        fromEnum: import_function14.identity,
         cardinality: of6(Infinity)
       };
     }
   });
 
   // extensions/keyboard-shortcuts/util.tsx
-  var import_function14, SCROLL_STEP, focusOnApp, appScroll, appScrollY, openPage, rotateSidebar, resizeLeftSidebar, registerBind;
+  var import_function15, SCROLL_STEP, focusOnApp, appScroll, appScrollY, openPage, rotateSidebar, resizeLeftSidebar, registerBind;
   var init_util = __esm({
     "extensions/keyboard-shortcuts/util.tsx"() {
       "use strict";
-      import_function14 = __toESM(require_function());
+      import_function15 = __toESM(require_function());
       init_sneak();
       init_Number();
       SCROLL_STEP = 25;
@@ -3812,10 +3812,10 @@ var keyboard;
       openPage = (page) => Spicetify.Platform.History.push({ pathname: page });
       rotateSidebar = (offset) => {
         const navLinks = Array.from(document.querySelectorAll(".main-yourLibraryX-navLink").values());
-        (0, import_function14.pipe)(
+        (0, import_function15.pipe)(
           document.querySelector(".main-yourLibraryX-navLinkActive"),
           (active) => navLinks.findIndex((e) => e === active),
-          (x) => (0, import_function14.pipe)(x === -1 && offset <= 0 ? offset : x + offset, mod(navLinks.length)),
+          (x) => (0, import_function15.pipe)(x === -1 && offset <= 0 ? offset : x + offset, mod(navLinks.length)),
           (x) => navLinks[x].click()
         );
       };
@@ -3887,17 +3887,32 @@ var keyboard;
   // extensions/keyboard-shortcuts/entry.tsx
   init_es6();
   init_Record();
-  var import_function15 = __toESM(require_function());
+  var import_function16 = __toESM(require_function());
 
   // shared/util.tsx
+  var import_function9 = __toESM(require_function());
   var SpotifyLoc;
   ((SpotifyLoc2) => {
-    SpotifyLoc2.before = (uri) => ({
-      before: { uri }
-    });
-    SpotifyLoc2.after = (uri) => ({
-      after: { uri }
-    });
+    let before;
+    ((before2) => {
+      before2.start = (0, import_function9.constant)({ before: "start" });
+      before2.fromUri = (uri) => ({
+        before: { uri }
+      });
+      before2.fromUid = (uid) => ({
+        before: { uid }
+      });
+    })(before = SpotifyLoc2.before || (SpotifyLoc2.before = {}));
+    let after;
+    ((after2) => {
+      after2.end = (0, import_function9.constant)({ after: "end" });
+      after2.fromUri = (uri) => ({
+        before: { uri }
+      });
+      after2.fromUid = (uid) => ({
+        before: { uid }
+      });
+    })(after = SpotifyLoc2.after || (SpotifyLoc2.after = {}));
   })(SpotifyLoc || (SpotifyLoc = {}));
   var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -3906,8 +3921,8 @@ var keyboard;
     const mustLoad = ["Keyboard", "Mousetrap", "Platform", "Player"];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function15.flow)(
-        (0, import_function15.flip)(lookup4)(
+      (0, import_function16.flow)(
+        (0, import_function16.flip)(lookup4)(
           Spicetify
         ),
         Option_exports.isNone

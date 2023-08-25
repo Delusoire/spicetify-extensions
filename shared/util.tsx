@@ -3,6 +3,8 @@
 // export interface SpotifyURI
 //     extends Newtype<{ readonly SpotifyURI: unique symbol }, string> {}
 
+import { constant } from "fp-ts/lib/function"
+
 export const mustLoadForApi = ["CosmosAsync", "GraphQL", "Platform"]
 export const mustLoadForUtil = ["URI"]
 export const mustLoadForSettings = ["React", "ReactDOM"]
@@ -11,17 +13,34 @@ export type SpotifyID = string
 export type SpotifyURI = string
 
 export type SpotifyLoc = {
-    before?: "start" | { uri: SpotifyURI }
-    after?: "end" | { uri: SpotifyURI }
+    before?: "start" | { uri: SpotifyURI } | { uid: string }
+    after?: "end" | { uri: SpotifyURI } | { uid: string }
 }
 
 export namespace SpotifyLoc {
-    export const before = (uri: SpotifyURI) => ({
-        before: { uri },
-    })
-    export const after = (uri: SpotifyURI) => ({
-        after: { uri },
-    })
+    export namespace before {
+        export const start = constant({ before: "start" } as SpotifyLoc)
+
+        export const fromUri = (uri: SpotifyURI) => ({
+            before: { uri },
+        })
+
+        export const fromUid = (uid: string) => ({
+            before: { uid },
+        })
+    }
+
+    export namespace after {
+        export const end = constant({ after: "end" } as SpotifyLoc)
+
+        export const fromUri = (uri: SpotifyURI) => ({
+            before: { uri },
+        })
+
+        export const fromUid = (uid: string) => ({
+            before: { uid },
+        })
+    }
 }
 
 export const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`)

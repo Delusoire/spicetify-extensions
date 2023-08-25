@@ -3639,16 +3639,16 @@ var search;
       }
       exports.identity = identity2;
       exports.unsafeCoerce = identity2;
-      function constant4(a) {
+      function constant5(a) {
         return function() {
           return a;
         };
       }
-      exports.constant = constant4;
-      exports.constTrue = constant4(true);
-      exports.constFalse = constant4(false);
-      exports.constNull = constant4(null);
-      exports.constUndefined = constant4(void 0);
+      exports.constant = constant5;
+      exports.constTrue = constant5(true);
+      exports.constFalse = constant5(false);
+      exports.constNull = constant5(null);
+      exports.constUndefined = constant5(void 0);
       exports.constVoid = exports.constUndefined;
       function flip4(f3) {
         return function() {
@@ -3810,17 +3810,32 @@ var search;
   });
 
   // shared/util.tsx
-  var SpotifyLoc, normalizeStr, sleep;
+  var import_function15, SpotifyLoc, normalizeStr, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
+      import_function15 = __toESM(require_function());
       ((SpotifyLoc3) => {
-        SpotifyLoc3.before = (uri) => ({
-          before: { uri }
-        });
-        SpotifyLoc3.after = (uri) => ({
-          after: { uri }
-        });
+        let before;
+        ((before2) => {
+          before2.start = (0, import_function15.constant)({ before: "start" });
+          before2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          before2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(before = SpotifyLoc3.before || (SpotifyLoc3.before = {}));
+        let after;
+        ((after2) => {
+          after2.end = (0, import_function15.constant)({ after: "end" });
+          after2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          after2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(after = SpotifyLoc3.after || (SpotifyLoc3.after = {}));
       })(SpotifyLoc || (SpotifyLoc = {}));
       normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -4349,14 +4364,14 @@ var search;
         };
       };
       exports.max = max3;
-      var constant4 = function(a) {
+      var constant5 = function(a) {
         return {
           concat: function() {
             return a;
           }
         };
       };
-      exports.constant = constant4;
+      exports.constant = constant5;
       exports.reverse = M.reverse;
       var struct3 = function(semigroups) {
         return {
@@ -4461,13 +4476,13 @@ var search;
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function15, import_Semigroup2, URI5, map5, Functor4, of6, ap5, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var import_function16, import_Semigroup2, URI5, map5, Functor4, of6, ap5, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
       init_Option();
       init_Map();
       init_Array();
-      import_function15 = __toESM(require_function());
+      import_function16 = __toESM(require_function());
       init_Predicate();
       init_Endomorphism();
       init_Monoid();
@@ -4476,12 +4491,12 @@ var search;
       init_Apply();
       init_Chain();
       URI5 = "Function";
-      map5 = (f3) => (g) => (0, import_function15.flow)(g, f3);
+      map5 = (f3) => (g) => (0, import_function16.flow)(g, f3);
       Functor4 = {
         URI: URI5,
         map: (f3, g) => map5(g)(f3)
       };
-      of6 = import_function15.constant;
+      of6 = import_function16.constant;
       ap5 = (f3) => (g) => (x) => g(x)(f3(x));
       Applicative3 = {
         ...Functor4,
@@ -4500,12 +4515,12 @@ var search;
       bind5 = bind(Monad4);
       apS5 = apS(Applicative3);
       let_5 = let_(Functor4);
-      unary = import_function15.tupled;
-      guard4 = (branches) => (fallback) => (input) => (0, import_function15.pipe)(branches, map(([f3, g]) => (0, import_function15.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function15.getMonoid)(getMonoid4((0, import_Semigroup2.first)()))()), (0, import_function15.apply)(input), getOrElse(() => fallback(input)));
+      unary = import_function16.tupled;
+      guard4 = (branches) => (fallback) => (input) => (0, import_function16.pipe)(branches, map(([f3, g]) => (0, import_function16.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function16.getMonoid)(getMonoid4((0, import_Semigroup2.first)()))()), (0, import_function16.apply)(input), getOrElse(() => fallback(input)));
       unless = (f3) => (onFalse) => (x) => f3(x) ? x : onFalse(x);
-      when = (0, import_function15.flow)(not, unless);
+      when = (0, import_function16.flow)(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function15.flip)(invoke)([]);
+      invokeNullary = (0, import_function16.flip)(invoke)([]);
       memoize = (eq2) => (f3) => {
         const cache = /* @__PURE__ */ new Map();
         return (k) => {
@@ -4518,13 +4533,13 @@ var search;
         };
       };
       curry2T = (f3) => (a) => (b) => f3([a, b]);
-      curry2 = (0, import_function15.flow)(unary, curry2T);
+      curry2 = (0, import_function16.flow)(unary, curry2T);
       curry3T = (f3) => (a) => (b) => (c) => f3([a, b, c]);
-      curry3 = (0, import_function15.flow)(unary, curry3T);
+      curry3 = (0, import_function16.flow)(unary, curry3T);
       curry4T = (f3) => (a) => (b) => (c) => (d) => f3([a, b, c, d]);
-      curry4 = (0, import_function15.flow)(unary, curry4T);
+      curry4 = (0, import_function16.flow)(unary, curry4T);
       curry5T = (f3) => (a) => (b) => (c) => (d) => (e) => f3([a, b, c, d, e]);
-      curry5 = (0, import_function15.flow)(unary, curry5T);
+      curry5 = (0, import_function16.flow)(unary, curry5T);
       applyEvery = concatAll4(getMonoid5());
     }
   });
@@ -4540,30 +4555,30 @@ var search;
   });
 
   // shared/fp.tsx
-  var import_function16, guard42, pMchain, is, chunckify, memoize2;
+  var import_function17, guard42, pMchain, is, chunckify, memoize2;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function16 = __toESM(require_function());
+      import_function17 = __toESM(require_function());
       init_Function();
       guard42 = (branches) => guard4(
         branches
       );
       pMchain = (f3) => async (fa) => f3(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      chunckify = (n) => (g) => (0, import_function16.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
-      memoize2 = (fn) => (0, import_function16.pipe)(fn, import_function16.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function16.untupled);
+      chunckify = (n) => (g) => (0, import_function17.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
+      memoize2 = (fn) => (0, import_function17.pipe)(fn, import_function17.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function17.untupled);
     }
   });
 
   // shared/api.tsx
-  var import_function17, URI6, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized, searchYoutube;
+  var import_function18, URI6, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized, searchYoutube;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_Function();
-      import_function17 = __toESM(require_function());
+      import_function18 = __toESM(require_function());
       init_fp();
       init_util();
       ({ URI: URI6 } = Spicetify);
@@ -4582,7 +4597,7 @@ var search;
       fetchWebTracksSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
       );
-      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function17.pipe)(
+      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function18.pipe)(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
           artist
         )}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
@@ -4633,12 +4648,12 @@ var search;
   });
 
   // shared/settings.tsx
-  var import_function18, import_react, import_react_dom, SettingsSection;
+  var import_function19, import_react, import_react_dom, SettingsSection;
   var init_settings = __esm({
     "shared/settings.tsx"() {
       "use strict";
       init_es6();
-      import_function18 = __toESM(require_function());
+      import_function19 = __toESM(require_function());
       import_react = __toESM(require_react());
       import_react_dom = __toESM(require_react_dom());
       init_fp();
@@ -4694,7 +4709,7 @@ var search;
           }
           import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
         };
-        addButton = (nameId, description, text, onClick = import_function18.constVoid, events = {}) => {
+        addButton = (nameId, description, text, onClick = import_function19.constVoid, events = {}) => {
           const id = this.getId(nameId);
           events.onClick = onClick;
           this.sectionFields[nameId] = {
@@ -4706,7 +4721,7 @@ var search;
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function18.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function19.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4718,7 +4733,7 @@ var search;
           };
           return this;
         };
-        addInput = (nameId, description, defaultValue, onChange = import_function18.constVoid, inputType = "text", events = {}) => {
+        addInput = (nameId, description, defaultValue, onChange = import_function19.constVoid, inputType = "text", events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4731,7 +4746,7 @@ var search;
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function18.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function19.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4882,11 +4897,11 @@ var search;
   __export(app_exports, {
     default: () => app_default
   });
-  var import_function19, app_default, URI7, YTVidIDCache, showOnYouTube;
+  var import_function20, app_default, URI7, YTVidIDCache, showOnYouTube;
   var init_app = __esm({
     "extensions/search-on-youtube/app.tsx"() {
       "use strict";
-      import_function19 = __toESM(require_function());
+      import_function20 = __toESM(require_function());
       init_Predicate2();
       init_api();
       init_parse();
@@ -4920,8 +4935,8 @@ var search;
       };
       new Spicetify.ContextMenu.Item(
         "Search on YouTube",
-        (0, import_function19.tupled)(showOnYouTube),
-        (0, import_function19.tupled)(anyPass([URI7.isTrack])),
+        (0, import_function20.tupled)(showOnYouTube),
+        (0, import_function20.tupled)(anyPass([URI7.isTrack])),
         `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="19px" height="19px"><path fill="currentColor" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"/><path fill="var(--spice-main)" d="M20 31L20 17 32 24z"/></svg>`
       ).register();
     }
@@ -4930,14 +4945,14 @@ var search;
   // extensions/search-on-youtube/entry.tsx
   init_es6();
   init_Record();
-  var import_function20 = __toESM(require_function());
+  var import_function21 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = ["ContextMenu", "CosmosAsync", "React", "ReactDOM"];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function20.flow)(
-        (0, import_function20.flip)(lookup6)(
+      (0, import_function21.flow)(
+        (0, import_function21.flip)(lookup6)(
           Spicetify
         ),
         Option_exports.isNone

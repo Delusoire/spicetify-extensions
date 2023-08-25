@@ -3654,16 +3654,16 @@ var vaultify = (() => {
       }
       exports.identity = identity2;
       exports.unsafeCoerce = identity2;
-      function constant4(a) {
+      function constant5(a) {
         return function() {
           return a;
         };
       }
-      exports.constant = constant4;
-      exports.constTrue = constant4(true);
-      exports.constFalse = constant4(false);
-      exports.constNull = constant4(null);
-      exports.constUndefined = constant4(void 0);
+      exports.constant = constant5;
+      exports.constTrue = constant5(true);
+      exports.constFalse = constant5(false);
+      exports.constNull = constant5(null);
+      exports.constUndefined = constant5(void 0);
       exports.constVoid = exports.constUndefined;
       function flip3(f3) {
         return function() {
@@ -3825,17 +3825,32 @@ var vaultify = (() => {
   });
 
   // shared/util.tsx
-  var SpotifyLoc, sleep;
+  var import_function14, SpotifyLoc, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
+      import_function14 = __toESM(require_function());
       ((SpotifyLoc3) => {
-        SpotifyLoc3.before = (uri) => ({
-          before: { uri }
-        });
-        SpotifyLoc3.after = (uri) => ({
-          after: { uri }
-        });
+        let before;
+        ((before2) => {
+          before2.start = (0, import_function14.constant)({ before: "start" });
+          before2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          before2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(before = SpotifyLoc3.before || (SpotifyLoc3.before = {}));
+        let after;
+        ((after2) => {
+          after2.end = (0, import_function14.constant)({ after: "end" });
+          after2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          after2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(after = SpotifyLoc3.after || (SpotifyLoc3.after = {}));
       })(SpotifyLoc || (SpotifyLoc = {}));
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     }
@@ -4363,14 +4378,14 @@ var vaultify = (() => {
         };
       };
       exports.max = max3;
-      var constant4 = function(a) {
+      var constant5 = function(a) {
         return {
           concat: function() {
             return a;
           }
         };
       };
-      exports.constant = constant4;
+      exports.constant = constant5;
       exports.reverse = M.reverse;
       var struct3 = function(semigroups) {
         return {
@@ -4475,13 +4490,13 @@ var vaultify = (() => {
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function14, import_Semigroup2, URI5, map5, Functor4, of6, ap5, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var import_function15, import_Semigroup2, URI5, map5, Functor4, of6, ap5, Applicative3, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
       init_Option();
       init_Map();
       init_Array();
-      import_function14 = __toESM(require_function());
+      import_function15 = __toESM(require_function());
       init_Predicate();
       init_Endomorphism();
       init_Monoid();
@@ -4490,12 +4505,12 @@ var vaultify = (() => {
       init_Apply();
       init_Chain();
       URI5 = "Function";
-      map5 = (f3) => (g) => (0, import_function14.flow)(g, f3);
+      map5 = (f3) => (g) => (0, import_function15.flow)(g, f3);
       Functor4 = {
         URI: URI5,
         map: (f3, g) => map5(g)(f3)
       };
-      of6 = import_function14.constant;
+      of6 = import_function15.constant;
       ap5 = (f3) => (g) => (x) => g(x)(f3(x));
       Applicative3 = {
         ...Functor4,
@@ -4514,12 +4529,12 @@ var vaultify = (() => {
       bind5 = bind(Monad4);
       apS5 = apS(Applicative3);
       let_5 = let_(Functor4);
-      unary = import_function14.tupled;
-      guard4 = (branches) => (fallback) => (input) => (0, import_function14.pipe)(branches, map(([f3, g]) => (0, import_function14.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function14.getMonoid)(getMonoid4((0, import_Semigroup2.first)()))()), (0, import_function14.apply)(input), getOrElse(() => fallback(input)));
+      unary = import_function15.tupled;
+      guard4 = (branches) => (fallback) => (input) => (0, import_function15.pipe)(branches, map(([f3, g]) => (0, import_function15.flow)(fromPredicate2(f3), map2(g))), concatAll4((0, import_function15.getMonoid)(getMonoid4((0, import_Semigroup2.first)()))()), (0, import_function15.apply)(input), getOrElse(() => fallback(input)));
       unless = (f3) => (onFalse) => (x) => f3(x) ? x : onFalse(x);
-      when = (0, import_function14.flow)(not, unless);
+      when = (0, import_function15.flow)(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function14.flip)(invoke)([]);
+      invokeNullary = (0, import_function15.flip)(invoke)([]);
       memoize = (eq2) => (f3) => {
         const cache = /* @__PURE__ */ new Map();
         return (k) => {
@@ -4532,24 +4547,24 @@ var vaultify = (() => {
         };
       };
       curry2T = (f3) => (a) => (b) => f3([a, b]);
-      curry2 = (0, import_function14.flow)(unary, curry2T);
+      curry2 = (0, import_function15.flow)(unary, curry2T);
       curry3T = (f3) => (a) => (b) => (c) => f3([a, b, c]);
-      curry3 = (0, import_function14.flow)(unary, curry3T);
+      curry3 = (0, import_function15.flow)(unary, curry3T);
       curry4T = (f3) => (a) => (b) => (c) => (d) => f3([a, b, c, d]);
-      curry4 = (0, import_function14.flow)(unary, curry4T);
+      curry4 = (0, import_function15.flow)(unary, curry4T);
       curry5T = (f3) => (a) => (b) => (c) => (d) => (e) => f3([a, b, c, d, e]);
-      curry5 = (0, import_function14.flow)(unary, curry5T);
+      curry5 = (0, import_function15.flow)(unary, curry5T);
       applyEvery = concatAll4(getMonoid5());
     }
   });
 
   // shared/fp.tsx
-  var import_function15, guard22, guard42, pMchain, is, chunckify, memoize2;
+  var import_function16, guard22, guard42, pMchain, is, chunckify, memoize2;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
       init_es6();
-      import_function15 = __toESM(require_function());
+      import_function16 = __toESM(require_function());
       init_Function();
       guard22 = (branches) => guard4(branches);
       guard42 = (branches) => guard4(
@@ -4557,18 +4572,18 @@ var vaultify = (() => {
       );
       pMchain = (f3) => async (fa) => f3(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      chunckify = (n) => (g) => (0, import_function15.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
-      memoize2 = (fn) => (0, import_function15.pipe)(fn, import_function15.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function15.untupled);
+      chunckify = (n) => (g) => (0, import_function16.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
+      memoize2 = (fn) => (0, import_function16.pipe)(fn, import_function16.tupled, memoize(Eq_exports.contramap(JSON.stringify)(string_exports.Eq)), import_function16.untupled);
     }
   });
 
   // shared/api.tsx
-  var import_function16, URI6, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, likePlatPlaylist, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
+  var import_function17, URI6, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, likePlatPlaylist, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
       init_Function();
-      import_function16 = __toESM(require_function());
+      import_function17 = __toESM(require_function());
       init_fp();
       init_util();
       ({ URI: URI6 } = Spicetify);
@@ -4599,7 +4614,7 @@ var vaultify = (() => {
       });
       fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
       fetchPlatRootFolder = () => fetchPlatFolder(void 0);
-      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function16.pipe)(
+      fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function17.pipe)(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
           artist
         )}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
@@ -4625,12 +4640,12 @@ var vaultify = (() => {
   });
 
   // shared/settings.tsx
-  var import_function17, import_react, import_react_dom, SettingsSection;
+  var import_function18, import_react, import_react_dom, SettingsSection;
   var init_settings = __esm({
     "shared/settings.tsx"() {
       "use strict";
       init_es6();
-      import_function17 = __toESM(require_function());
+      import_function18 = __toESM(require_function());
       import_react = __toESM(require_react());
       import_react_dom = __toESM(require_react_dom());
       init_fp();
@@ -4686,7 +4701,7 @@ var vaultify = (() => {
           }
           import_react_dom.default.render(/* @__PURE__ */ import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
         };
-        addButton = (nameId, description, text, onClick = import_function17.constVoid, events = {}) => {
+        addButton = (nameId, description, text, onClick = import_function18.constVoid, events = {}) => {
           const id = this.getId(nameId);
           events.onClick = onClick;
           this.sectionFields[nameId] = {
@@ -4698,7 +4713,7 @@ var vaultify = (() => {
           };
           return this;
         };
-        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function17.constVoid, events = {}) => {
+        addToggle = (nameId, description, defaultValue = Task_exports.of(true), onChange = import_function18.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4710,7 +4725,7 @@ var vaultify = (() => {
           };
           return this;
         };
-        addInput = (nameId, description, defaultValue, onChange = import_function17.constVoid, inputType = "text", events = {}) => {
+        addInput = (nameId, description, defaultValue, onChange = import_function18.constVoid, inputType = "text", events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4723,7 +4738,7 @@ var vaultify = (() => {
           };
           return this;
         };
-        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function17.constVoid, events = {}) => {
+        addDropDown = (nameId, description, options, defaultValue = Task_exports.of(0), onChange = import_function18.constVoid, events = {}) => {
           const id = this.getId(nameId);
           _SettingsSection.setDefaultFieldValue(id, defaultValue);
           events.onChange = onChange;
@@ -4872,14 +4887,14 @@ var vaultify = (() => {
     default: () => app_default,
     restore: () => restore
   });
-  var import_function18, app_default, isType, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, backup, restore;
+  var import_function19, app_default, isType, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, backup, restore;
   var init_app = __esm({
     "extensions/vaultify/app.tsx"() {
       "use strict";
       init_es6();
       init_Array();
       init_Record();
-      import_function18 = __toESM(require_function());
+      import_function19 = __toESM(require_function());
       init_api();
       init_fp();
       app_default = {};
@@ -4888,13 +4903,13 @@ var vaultify = (() => {
         [
           isType("playlist"),
           async (playlist) => ({
-            [playlist.name]: playlist.isOwnedBySelf ? await (0, import_function18.pipe)(playlist.uri, fetchPlatPlaylistContents, pMchain(Array_exports.map((x) => x.uri))) : playlist.uri
+            [playlist.name]: playlist.isOwnedBySelf ? await (0, import_function19.pipe)(playlist.uri, fetchPlatPlaylistContents, pMchain(Array_exports.map((x) => x.uri))) : playlist.uri
           })
         ],
         [
           isType("folder"),
           async (folder) => ({
-            [folder.name]: await (0, import_function18.pipe)(folder.items, map(extractLikedPlaylistTreeRecur), (ps) => Promise.all(ps))
+            [folder.name]: await (0, import_function19.pipe)(folder.items, map(extractLikedPlaylistTreeRecur), (ps) => Promise.all(ps))
           })
         ]
       ])(Task_exports.of({}))(leaf);
@@ -4913,10 +4928,10 @@ var vaultify = (() => {
         });
       };
       backup = async () => {
-        const playlists = await (0, import_function18.pipe)(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur);
+        const playlists = await (0, import_function19.pipe)(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur);
         const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify-exp-features$)/;
         const extensions = toUnfoldable(Array_exports)(localStorage).filter(([key]) => allowedAppDataRegex.test(key));
-        const settings2 = (0, import_function18.pipe)(
+        const settings2 = (0, import_function19.pipe)(
           document.querySelectorAll(`[id^="settings."],[id^="desktop."],[class^="network."]`),
           Array.from,
           Array_exports.flatMap((setting) => {
@@ -4942,7 +4957,7 @@ var vaultify = (() => {
           Spicetify.showNotification("Restored Playlists");
         }
         if (mode === "extensions") {
-          map((0, import_function18.tupled)(Spicetify.LocalStorage.set))(vault.extensions);
+          map((0, import_function19.tupled)(Spicetify.LocalStorage.set))(vault.extensions);
           Spicetify.showNotification("Restored Extensions");
         }
         if (mode === "settings") {
@@ -4969,7 +4984,7 @@ var vaultify = (() => {
   // extensions/vaultify/entry.tsx
   init_es6();
   init_Record();
-  var import_function19 = __toESM(require_function());
+  var import_function20 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = [
@@ -4982,8 +4997,8 @@ var vaultify = (() => {
     ];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function19.flow)(
-        (0, import_function19.flip)(lookup6)(
+      (0, import_function20.flow)(
+        (0, import_function20.flip)(lookup6)(
           Spicetify
         ),
         Option_exports.isNone
