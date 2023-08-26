@@ -329,4 +329,4 @@ window.addEventListener("keyup", event => {
     if (!event.repeat && event.key == "Control") invertAscending = 0
 })
 
-// TODO: add sort inside playlist's custom order
+//TODO: add sort inside playlist's custom order

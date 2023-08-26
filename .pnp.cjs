@@ -32,15 +32,25 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react", "npm:18.2.18"],\
             ["@types/react-dom", "npm:18.2.7"],\
             ["autoprefixer", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:10.4.15"],\
+            ["classnames", "npm:2.3.2"],\
+            ["cubic-spline", "npm:3.0.3"],\
+            ["curve-interpolator", "npm:3.1.1"],\
+            ["d3-ease", "npm:3.0.1"],\
             ["esbuild", "npm:0.19.2"],\
             ["esbuild-plugin-external-global", "npm:1.0.1"],\
             ["esbuild-style-plugin", "npm:1.6.2"],\
             ["fp-ts", "npm:2.16.1"],\
             ["fp-ts-std", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.17.1"],\
+            ["franc", "npm:6.1.0"],\
+            ["lodash.debounce", "npm:4.0.8"],\
+            ["lodash.defaultsdeep", "npm:4.6.1"],\
+            ["marked", "npm:7.0.4"],\
             ["monocle-ts", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:2.3.13"],\
             ["newtype-ts", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.3.5"],\
             ["postcss", "npm:8.4.28"],\
             ["sass", "npm:1.66.1"],\
+            ["semver", "npm:7.5.4"],\
+            ["simplebar", "npm:6.2.5"],\
             ["spectacles-ts", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:1.0.7"],\
             ["tailwindcss", "npm:3.3.3"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
@@ -397,6 +407,25 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@types/lodash", [\
+        ["npm:4.14.197", {\
+          "packageLocation": "./.yarn/cache/@types-lodash-npm-4.14.197-8db1555bb5-53d7567d17.zip/node_modules/@types/lodash/",\
+          "packageDependencies": [\
+            ["@types/lodash", "npm:4.14.197"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/lodash-es", [\
+        ["npm:4.17.8", {\
+          "packageLocation": "./.yarn/cache/@types-lodash-es-npm-4.17.8-0aba51d605-36356169a1.zip/node_modules/@types/lodash-es/",\
+          "packageDependencies": [\
+            ["@types/lodash-es", "npm:4.17.8"],\
+            ["@types/lodash", "npm:4.14.197"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@types/mousetrap", [\
         ["npm:1.6.11", {\
           "packageLocation": "./.yarn/cache/@types-mousetrap-npm-1.6.11-379be14158-4465d16b7c.zip/node_modules/@types/mousetrap/",\
@@ -715,6 +744,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["can-use-dom", [\
+        ["npm:0.1.0", {\
+          "packageLocation": "./.yarn/cache/can-use-dom-npm-0.1.0-48c60a9052-488fc94c40.zip/node_modules/can-use-dom/",\
+          "packageDependencies": [\
+            ["can-use-dom", "npm:0.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["caniuse-lite", [\
         ["npm:1.0.30001521", {\
           "packageLocation": "./.yarn/cache/caniuse-lite-npm-1.0.30001521-dc986950b0-be2a2b2cd3.zip/node_modules/caniuse-lite/",\
@@ -750,11 +788,29 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["classnames", [\
+        ["npm:2.3.2", {\
+          "packageLocation": "./.yarn/cache/classnames-npm-2.3.2-d2fdae468d-2c62199789.zip/node_modules/classnames/",\
+          "packageDependencies": [\
+            ["classnames", "npm:2.3.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["clean-stack", [\
         ["npm:2.2.0", {\
           "packageLocation": "./.yarn/cache/clean-stack-npm-2.2.0-a8ce435a5c-2ac8cd2b2f.zip/node_modules/clean-stack/",\
           "packageDependencies": [\
             ["clean-stack", "npm:2.2.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["collapse-white-space", [\
+        ["npm:2.1.0", {\
+          "packageLocation": "./.yarn/cache/collapse-white-space-npm-2.1.0-89651f51f3-c8978b1f4e.zip/node_modules/collapse-white-space/",\
+          "packageDependencies": [\
+            ["collapse-white-space", "npm:2.1.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -840,6 +896,33 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/csstype-npm-3.1.2-cead7d99b2-e1a52e6c25.zip/node_modules/csstype/",\
           "packageDependencies": [\
             ["csstype", "npm:3.1.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["cubic-spline", [\
+        ["npm:3.0.3", {\
+          "packageLocation": "./.yarn/cache/cubic-spline-npm-3.0.3-82372b4422-860170c5d4.zip/node_modules/cubic-spline/",\
+          "packageDependencies": [\
+            ["cubic-spline", "npm:3.0.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["curve-interpolator", [\
+        ["npm:3.1.1", {\
+          "packageLocation": "./.yarn/cache/curve-interpolator-npm-3.1.1-0ba0a1302a-6e0f39b930.zip/node_modules/curve-interpolator/",\
+          "packageDependencies": [\
+            ["curve-interpolator", "npm:3.1.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["d3-ease", [\
+        ["npm:3.0.1", {\
+          "packageLocation": "./.yarn/cache/d3-ease-npm-3.0.1-f8f3709dc7-06e2ee5326.zip/node_modules/d3-ease/",\
+          "packageDependencies": [\
+            ["d3-ease", "npm:3.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -1118,6 +1201,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/fraction.js-npm-4.2.0-28efe4afc7-8c76a6e21d.zip/node_modules/fraction.js/",\
           "packageDependencies": [\
             ["fraction.js", "npm:4.2.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["franc", [\
+        ["npm:6.1.0", {\
+          "packageLocation": "./.yarn/cache/franc-npm-6.1.0-8bf5e12982-33ba2ca48e.zip/node_modules/franc/",\
+          "packageDependencies": [\
+            ["franc", "npm:6.1.0"],\
+            ["trigram-utils", "npm:2.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -1533,11 +1626,47 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["lodash", [\
+        ["npm:4.17.21", {\
+          "packageLocation": "./.yarn/cache/lodash-npm-4.17.21-6382451519-eb835a2e51.zip/node_modules/lodash/",\
+          "packageDependencies": [\
+            ["lodash", "npm:4.17.21"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["lodash-es", [\
+        ["npm:4.17.21", {\
+          "packageLocation": "./.yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/",\
+          "packageDependencies": [\
+            ["lodash-es", "npm:4.17.21"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["lodash.camelcase", [\
         ["npm:4.3.0", {\
           "packageLocation": "./.yarn/cache/lodash.camelcase-npm-4.3.0-bf268e3bf0-cb9227612f.zip/node_modules/lodash.camelcase/",\
           "packageDependencies": [\
             ["lodash.camelcase", "npm:4.3.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["lodash.debounce", [\
+        ["npm:4.0.8", {\
+          "packageLocation": "./.yarn/cache/lodash.debounce-npm-4.0.8-f1d6e09799-a3f527d22c.zip/node_modules/lodash.debounce/",\
+          "packageDependencies": [\
+            ["lodash.debounce", "npm:4.0.8"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["lodash.defaultsdeep", [\
+        ["npm:4.6.1", {\
+          "packageLocation": "./.yarn/cache/lodash.defaultsdeep-npm-4.6.1-cf3ec4337e-1f346f1615.zip/node_modules/lodash.defaultsdeep/",\
+          "packageDependencies": [\
+            ["lodash.defaultsdeep", "npm:4.6.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -1586,6 +1715,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["promise-retry", "npm:2.0.1"],\
             ["socks-proxy-agent", "npm:7.0.0"],\
             ["ssri", "npm:10.0.5"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["marked", [\
+        ["npm:7.0.4", {\
+          "packageLocation": "./.yarn/cache/marked-npm-7.0.4-d6e7a89f55-e69cc5635d.zip/node_modules/marked/",\
+          "packageDependencies": [\
+            ["marked", "npm:7.0.4"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -1771,6 +1909,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["any-promise", "npm:1.3.0"],\
             ["object-assign", "npm:4.1.1"],\
             ["thenify-all", "npm:1.6.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["n-gram", [\
+        ["npm:2.0.2", {\
+          "packageLocation": "./.yarn/cache/n-gram-npm-2.0.2-33d06894c5-1acaf15587.zip/node_modules/n-gram/",\
+          "packageDependencies": [\
+            ["n-gram", "npm:2.0.2"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -2356,15 +2503,25 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react", "npm:18.2.18"],\
             ["@types/react-dom", "npm:18.2.7"],\
             ["autoprefixer", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:10.4.15"],\
+            ["classnames", "npm:2.3.2"],\
+            ["cubic-spline", "npm:3.0.3"],\
+            ["curve-interpolator", "npm:3.1.1"],\
+            ["d3-ease", "npm:3.0.1"],\
             ["esbuild", "npm:0.19.2"],\
             ["esbuild-plugin-external-global", "npm:1.0.1"],\
             ["esbuild-style-plugin", "npm:1.6.2"],\
             ["fp-ts", "npm:2.16.1"],\
             ["fp-ts-std", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.17.1"],\
+            ["franc", "npm:6.1.0"],\
+            ["lodash.debounce", "npm:4.0.8"],\
+            ["lodash.defaultsdeep", "npm:4.6.1"],\
+            ["marked", "npm:7.0.4"],\
             ["monocle-ts", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:2.3.13"],\
             ["newtype-ts", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.3.5"],\
             ["postcss", "npm:8.4.28"],\
             ["sass", "npm:1.66.1"],\
+            ["semver", "npm:7.5.4"],\
+            ["simplebar", "npm:6.2.5"],\
             ["spectacles-ts", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:1.0.7"],\
             ["tailwindcss", "npm:3.3.3"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
@@ -2462,6 +2619,30 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/signal-exit-npm-4.1.0-61fb957687-64c757b498.zip/node_modules/signal-exit/",\
           "packageDependencies": [\
             ["signal-exit", "npm:4.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["simplebar", [\
+        ["npm:6.2.5", {\
+          "packageLocation": "./.yarn/cache/simplebar-npm-6.2.5-06f4ef67c9-351b3757af.zip/node_modules/simplebar/",\
+          "packageDependencies": [\
+            ["simplebar", "npm:6.2.5"],\
+            ["can-use-dom", "npm:0.1.0"],\
+            ["simplebar-core", "npm:1.2.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["simplebar-core", [\
+        ["npm:1.2.4", {\
+          "packageLocation": "./.yarn/cache/simplebar-core-npm-1.2.4-2dd1c4c362-9bef0a29cc.zip/node_modules/simplebar-core/",\
+          "packageDependencies": [\
+            ["simplebar-core", "npm:1.2.4"],\
+            ["@types/lodash-es", "npm:4.17.8"],\
+            ["can-use-dom", "npm:0.1.0"],\
+            ["lodash", "npm:4.17.21"],\
+            ["lodash-es", "npm:4.17.21"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -2696,6 +2877,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["to-regex-range", "npm:5.0.1"],\
             ["is-number", "npm:7.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["trigram-utils", [\
+        ["npm:2.0.1", {\
+          "packageLocation": "./.yarn/cache/trigram-utils-npm-2.0.1-36eca2a6b3-0233cbd1eb.zip/node_modules/trigram-utils/",\
+          "packageDependencies": [\
+            ["trigram-utils", "npm:2.0.1"],\
+            ["collapse-white-space", "npm:2.1.0"],\
+            ["n-gram", "npm:2.0.2"]\
           ],\
           "linkType": "HARD"\
         }]\

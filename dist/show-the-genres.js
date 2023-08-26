@@ -3882,15 +3882,14 @@ var show;
       titleCase = (str) => str.replace(/\b\w/g, (l) => l.toUpperCase());
       normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
       waitForElement = (selector, timeout = 1e3, location = document.body) => new Promise((resolve) => {
-        if (document.querySelector(selector))
-          return resolve(document.querySelector(selector));
         const res = (v) => {
           observer.disconnect();
           resolve(v);
         };
-        let observer = new MutationObserver(async () => {
-          if (document.querySelector(selector))
-            return res(document.querySelector(selector));
+        const observer = new MutationObserver(() => {
+          const el = document.querySelector(selector);
+          if (el)
+            return res(el);
         });
         observer.observe(location, {
           childList: true,
@@ -5206,6 +5205,7 @@ var show;
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();
 })();
+//! Does location actually point to document.body?
 (async () => {
     if (!document.getElementById(`show-the-genres-css`)) {
         const el = document.createElement("style")

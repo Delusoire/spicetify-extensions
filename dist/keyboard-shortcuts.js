@@ -3932,6 +3932,7 @@ var keyboard;
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();
 })();
+//! Does location actually point to document.body?
 (async () => {
     if (!document.getElementById(`keyboard-shortcuts-css`)) {
         const el = document.createElement("style")

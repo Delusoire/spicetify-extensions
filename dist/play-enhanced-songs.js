@@ -3689,3 +3689,4 @@ var play;
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();
 })();
+//! Does location actually point to document.body?

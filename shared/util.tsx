@@ -58,17 +58,17 @@ export const normalizeStr = (str: string) =>
         .toLowerCase()
         .trim()
 
-export const waitForElement = (selector: string, timeout = 1000, location = document.body) =>
+//! Does location actually point to document.body?
+export const waitForElement = <E extends Element>(selector: string, timeout = 1000, location = document.body) =>
     new Promise((resolve: (value: Element | null) => void) => {
-        if (document.querySelector(selector)) return resolve(document.querySelector(selector))
-
         const res = (v: any) => {
             observer.disconnect()
             resolve(v)
         }
 
-        let observer = new MutationObserver(async () => {
-            if (document.querySelector(selector)) return res(document.querySelector(selector))
+        const observer = new MutationObserver(() => {
+            const el = document.querySelector(selector)
+            if (el) return res(el as E)
         })
 
         observer.observe(location, {
@@ -78,5 +78,24 @@ export const waitForElement = (selector: string, timeout = 1000, location = docu
 
         if (timeout) setTimeout(() => res(null), timeout)
     })
+
+export const trapElement = <E extends Element>(
+    selector: string,
+    callback: (el: E | null, lastEl: E | null) => void,
+    location = document.body,
+) => {
+    let lastEl: E | null = null
+
+    const observer = new MutationObserver(() => {
+        const el = document.querySelector<E>(selector)
+        if (el !== lastEl) callback(el, lastEl)
+        lastEl = el
+    })
+
+    observer.observe(location, {
+        childList: true,
+        subtree: true,
+    })
+}
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

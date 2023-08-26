@@ -6833,7 +6833,7 @@ var sort;
     }
     return allTracks;
   }
-  var import_function30, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu, invertAscending;
+  var import_function30, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu, generatePlaylistName, invertAscending;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6987,6 +6987,17 @@ var sort;
         ).concat([shuffleSubmenu]),
         (0, import_function30.tupled)(anyPass([URI15.isAlbum, URI15.isArtist, URI15.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")]))
       ).register();
+      generatePlaylistName = async () => {
+        const uriToId = (uri) => URI15.from(uri).id;
+        const getName = (fn) => async (id6) => (await fn([id6]))[0].name;
+        const collectionName = await guard4([
+          [URI15.isAlbum, (0, import_function30.flow)(uriToId, getName(fetchWebAlbumsSpot))],
+          [URI15.isArtist, (0, import_function30.flow)(uriToId, getName(fetchWebArtistsSpot))],
+          [URI15.isPlaylistV1OrV2, (0, import_function30.flow)(uriToId, getName(fetchWebPlaylistsSpot))],
+          [startsWith("spotify:collection:tracks"), Task_exports.of("Liked Tracks")]
+        ])(Task_exports.of("Unresolved"))(lastSortedUri);
+        return `${collectionName} - ${lastSortedName}`;
+      };
       new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
         if (lastSortedQueue.length === 0)
           return void Spicetify.showNotification("Must sort to queue beforehand");
@@ -6997,24 +7008,17 @@ var sort;
           Option_exports.getOrElseW(() => createPlatFolder("Sorted Playlists")),
           pMchain((x) => x.uri)
         );
-        const uriToId = (uri) => URI15.from(uri).id;
-        const getNameFromAlbumId = async (id6) => (await fetchWebAlbumsSpot([id6]))[0].name;
-        const getNameFromArtistId = async (id6) => (await fetchWebArtistsSpot([id6]))[0].name;
-        const getNameFromPlaylistId = async (id6) => (await fetchWebPlaylistsSpot([id6]))[0].name;
-        const playlistName = await guard4([
-          [URI15.isAlbum, (0, import_function30.flow)(uriToId, getNameFromAlbumId)],
-          [URI15.isArtist, (0, import_function30.flow)(uriToId, getNameFromArtistId)],
-          [URI15.isPlaylistV1OrV2, (0, import_function30.flow)(uriToId, getNameFromPlaylistId)],
-          [startsWith("spotify:collection:tracks"), Task_exports.of("Liked Tracks")]
-        ])(Task_exports.of("Unresolved"))(lastSortedUri);
+        const playlistName = await generatePlaylistName();
         await createSPPlaylistFromTracks(
-          `${playlistName} - ${lastSortedName}`,
+          playlistName,
           lastSortedQueue.map((t) => t.uri),
           sortedPlaylistsFolderUri
         );
         Spicetify.showNotification(`Playlist ${playlistName} created`);
       });
       new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
+        if (lastSortedQueue.length === 0)
+          return void Spicetify.showNotification("Must sort to queue beforehand");
         if (!URI15.isPlaylistV1OrV2(lastSortedUri))
           return void Spicetify.showNotification("Last sorted queue must be a playlist");
         (0, import_function30.pipe)(
@@ -7066,3 +7070,4 @@ var sort;
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();
 })();
+//! Does location actually point to document.body?

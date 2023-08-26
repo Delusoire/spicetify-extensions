@@ -7557,15 +7557,14 @@ var star;
         })(after = SpotifyLoc3.after || (SpotifyLoc3.after = {}));
       })(SpotifyLoc || (SpotifyLoc = {}));
       waitForElement = (selector, timeout = 1e3, location = document.body) => new Promise((resolve) => {
-        if (document.querySelector(selector))
-          return resolve(document.querySelector(selector));
         const res = (v) => {
           observer.disconnect();
           resolve(v);
         };
-        let observer = new MutationObserver(async () => {
-          if (document.querySelector(selector))
-            return res(document.querySelector(selector));
+        const observer = new MutationObserver(() => {
+          const el = document.querySelector(selector);
+          if (el)
+            return res(el);
         });
         observer.observe(location, {
           childList: true,
@@ -17145,3 +17144,4 @@ var star;
     await Promise.resolve().then(() => (init_app(), app_exports));
   })();
 })();
+//! Does location actually point to document.body?

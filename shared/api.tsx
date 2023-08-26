@@ -578,7 +578,7 @@ export interface SpotApiOwner {
     name?: string
 }
 
-// TODO: Better TS interface for recursive fetchPlatFolderRes
+//TODO: Better TS interface for recursive fetchPlatFolderRes
 export interface fetchPlatFolderRes {
     type: "folder" | "placeholder" | "playlist"
     addedAt: string

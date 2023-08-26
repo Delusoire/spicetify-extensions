@@ -1,8 +1,7 @@
-(async () => {
-    if (!document.getElementById(`vaultify-js`)) {
-        const el = document.createElement("script")
-        el.id = `vaultify-js`
-        el.textContent = `${await fetch(`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/vaultify.js`).then(res => res.json()).then(data => atob(data.content))}`
-        document.head.appendChild(el)
-    }
-})()
+if (!document.getElementById(`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/vaultify.js`)) {
+    const script = document.createElement("script")
+    script.id = `https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/vaultify.js`
+    script.src = `undefined`
+    script.defer = true
+    document.head.appendChild(script)
+}
