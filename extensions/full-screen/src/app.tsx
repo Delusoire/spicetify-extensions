@@ -1476,6 +1476,8 @@ async function main() {
         default:
             break;
     }
+
+    import("./beautiful-lyrics")
 }
 
 export default main;
