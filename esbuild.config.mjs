@@ -24,14 +24,15 @@ const buildExtension = async name => {
     }
 })()`
 
-    const toScript = (id, url) =>
-        `if (!document.getElementById(\`${id}\`)) {
-    const script = document.createElement("script")
-    script.id = \`${id}\`
-    script.src = \`${url}\`
-    script.defer = true
-    document.head.appendChild(script)
-}`
+    //     const toScript = (id, url) =>
+    // `if (!document.getElementById(\`${id}\`)) {
+    //     const script = document.createElement("script")
+    //     script.id = \`${id}\`
+    //     script.src = \`${url}\`
+    //     script.defer = true
+    //     script.type = "text/javascript"
+    //     document.head.appendChild(script)
+    // }`
 
     const entryJs = path.join("extensions", name, `entry.tsx`),
         outJs = path.join("dist", `${name}.js`),
@@ -48,12 +49,15 @@ const buildExtension = async name => {
 
         fs.writeFileSync(
             prism,
-            // wrapInTag(
+            wrapInTag(
+                `${name}-js`,
+                "script",
+                `\${await fetch(\`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/${name}.js\`).then(res => res.json()).then(data => atob(data.content))}`,
+            ),
+            // toScript(
             //     `${name}-js`,
-            //     "script",
-            //     `\${await fetch(\`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/${name}.js\`).then(res => res.json()).then(data => atob(data.content))}`,
+            //     `https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/${name}.js`,
             // ),
-            toScript(`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/${name}.js`),
         )
     }
 

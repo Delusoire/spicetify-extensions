@@ -1,7 +1,8 @@
-if (!document.getElementById(`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/play-enhanced-songs.js`)) {
-    const script = document.createElement("script")
-    script.id = `https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/play-enhanced-songs.js`
-    script.src = `undefined`
-    script.defer = true
-    document.head.appendChild(script)
-}
+(async () => {
+    if (!document.getElementById(`play-enhanced-songs-js`)) {
+        const el = document.createElement("script")
+        el.id = `play-enhanced-songs-js`
+        el.textContent = `${await fetch(`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/play-enhanced-songs.js`).then(res => res.json()).then(data => atob(data.content))}`
+        document.head.appendChild(el)
+    }
+})()

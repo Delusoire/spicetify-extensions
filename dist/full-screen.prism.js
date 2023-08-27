@@ -1,7 +1,8 @@
-if (!document.getElementById(`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/full-screen.js`)) {
-    const script = document.createElement("script")
-    script.id = `https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/full-screen.js`
-    script.src = `undefined`
-    script.defer = true
-    document.head.appendChild(script)
-}
+(async () => {
+    if (!document.getElementById(`full-screen-js`)) {
+        const el = document.createElement("script")
+        el.id = `full-screen-js`
+        el.textContent = `${await fetch(`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/full-screen.js`).then(res => res.json()).then(data => atob(data.content))}`
+        document.head.appendChild(el)
+    }
+})()
