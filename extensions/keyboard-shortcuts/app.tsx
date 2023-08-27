@@ -6,7 +6,10 @@ import "./assets/styles.scss"
 const { KEYS } = Spicetify.Keyboard
 
 resizeLeftSidebar(200)
-registerBind("S", false, true, false, () => resizeLeftSidebar(200))
+registerBind("S", false, true, false, async () => {
+    await Spicetify.Platform.UserAPI._product_state.putValues({ pairs: { "app-developer": "2" } })
+    Spicetify.Platform.UpdateAPI.applyUpdate()
+})
 
 // Ctrl + Tab and Ctrl + Shift + Tab to switch sidebar items
 registerBind("TAB", true, false, false, () => rotateSidebar(1))

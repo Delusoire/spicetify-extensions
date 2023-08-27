@@ -3857,7 +3857,10 @@ var keyboard;
       init_styles();
       ({ KEYS } = Spicetify.Keyboard);
       resizeLeftSidebar(200);
-      registerBind("S", false, true, false, () => resizeLeftSidebar(200));
+      registerBind("S", false, true, false, async () => {
+        await Spicetify.Platform.UserAPI._product_state.putValues({ pairs: { "app-developer": "2" } });
+        Spicetify.Platform.UpdateAPI.applyUpdate();
+      });
       registerBind("TAB", true, false, false, () => rotateSidebar(1));
       registerBind("TAB", true, true, false, () => rotateSidebar(-1));
       ({ History } = Spicetify.Platform);
