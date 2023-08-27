@@ -9,10 +9,12 @@ type DestroyedSignal = Lazy
 
 type Item = Disposable | Scheduled | MutationObserver | ResizeObserver | HTMLElement | Signal<any> | Lazy
 
-export abstract class Disposable {
-    abstract dispose(): void
-}
+// export abstract class Disposable {
+//     abstract dispose(): void
+// }
 
+export type DisposableOf<T> = T & { dispose: () => void }
+export type Disposable = DisposableOf<{}>
 const isDisposable = (item: any): item is Disposable => "dispose" in item
 
 export class Maid implements Disposable {

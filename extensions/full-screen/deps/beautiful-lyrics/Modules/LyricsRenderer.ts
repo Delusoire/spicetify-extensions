@@ -1,19 +1,17 @@
-import { string as str, array as a, readonlyArray } from "fp-ts"
+import { array as a, readonlyArray, string as str } from "fp-ts"
+import { guard } from "fp-ts-std/Function"
 import { pipe as p } from "fp-ts/function"
-// Packages
-import { Maid } from "../Packages/Maid"
+
+import { DisposableOf, Maid } from "../Packages/Maid"
 import { OnNextFrame } from "../Packages/Scheduler"
 
-// Modules
 import { LyricsScroller, VocalGroup, VocalGroups } from "./LyricsRenderer/LyricsScroller"
 
-// Components
 import InterludeVisual from "./LyricsRenderer/Components/Interlude"
 import LineVocals from "./LyricsRenderer/Components/LineVocals"
 import StaticVocals from "./LyricsRenderer/Components/StaticVocals"
 import SyllableVocals from "./LyricsRenderer/Components/SyllableVocals"
 
-// Imported Types
 import {
     Interlude,
     LineSynced,
@@ -26,9 +24,7 @@ import {
 import { Song } from "../Services/Player/Song"
 import { SyncedVocals } from "./LyricsRenderer/Types"
 
-// CSS
 import "../Stylings/Lyrics.scss"
-import { guard } from "fp-ts-std/Function"
 
 const parseStaticLyrics = (parsedLyrics: StaticSynced) => {
     return p(
@@ -46,8 +42,6 @@ const parseStaticLyrics = (parsedLyrics: StaticSynced) => {
         readonlyArray.unzip,
     )
 }
-
-export type Destoryable<T> = T & { Destroy: () => void }
 
 const parseNonStaticLyrics = (parsedLyrics: LineSynced | SyllableSynced) =>
     p(
@@ -90,7 +84,7 @@ const parseNonStaticLyrics = (parsedLyrics: LineSynced | SyllableSynced) =>
 export default (song: Song, parsedLyrics: ParsedLyrics) => {
     const maid = new Maid()
 
-    const scrollContainer = maid.handle(document.createElement("div")) as Destoryable<HTMLDivElement>
+    const scrollContainer = maid.handle(document.createElement("div")) as DisposableOf<HTMLDivElement>
     scrollContainer.classList.add("LyricsScrollContainer")
 
     const lyricsContainer = document.createElement("div")
@@ -179,6 +173,6 @@ export default (song: Song, parsedLyrics: ParsedLyrics) => {
         })
     }
 
-    scrollContainer.Destroy = () => maid.dispose()
+    scrollContainer.dispose = () => maid.dispose()
     return scrollContainer
 }

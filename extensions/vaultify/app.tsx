@@ -11,7 +11,7 @@ import {
     likePlatPlaylist,
 } from "../../shared/api"
 import { guard2, is, pMchain } from "../../shared/fp"
-import { SpotifyURI } from "../../shared/util"
+import { SpotifyURI, getReactProps } from "../../shared/util"
 import { Folder, Playlist, PoF } from "./util"
 
 const isType = is<PoF>("type")
@@ -111,7 +111,7 @@ export const restore = (mode: "playlists" | "extensions" | "settings") => async 
             else if (type === "select") setting.value = value
             else return
 
-            const settingReactProps = Object.values(setting)[1] as any
+            const settingReactProps = getReactProps(setting) as any
             settingReactProps.onChange({ target: setting })
         })
         Spicetify.showNotification("Restored Settings")

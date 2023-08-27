@@ -1,39 +1,37 @@
-// Types
-import { SpotifyTrackInformation } from "./Player/Song";
-import { ParsedLyrics, LyricsResult } from "./Player/LyricsParser";
+import { SpotifyTrackInformation } from "./Player/Song"
+import { ParsedLyrics, LyricsResult } from "./Player/LyricsParser"
+import { nonEmptyArray } from "fp-ts"
 
-// Cache Types
-type ExpirationSettings = {
-    Duration: number;
-    Unit: "Weeks" | "Months";
-};
+export type ExpirationSettings = {
+    Duration: number
+    Unit: "Weeks" | "Months"
+}
 
 type ExpireItem<C> = {
-    ExpiresAt: number;
-    CacheVersion: number;
+    ExpiresAt: number
+    CacheVersion: number
 
-    Content: C;
-};
+    Content: C
+}
 
 type ExpireCachesItemTypes = {
-    TrackInformation: SpotifyTrackInformation;
-    ProviderLyrics: LyricsResult | false; // This is for storing lyrics from the provider
-    ISRCLyrics: ParsedLyrics | false; // This is for storing the processed lyrics
-};
-type ExpireCacheName = keyof ExpireCachesItemTypes;
+    TrackInformation: SpotifyTrackInformation
+    ProviderLyrics: LyricsResult | false // This is for storing lyrics from the provider
+    ISRCLyrics: ParsedLyrics | false // This is for storing the processed lyrics
+}
+type ExpireCacheName = keyof ExpireCachesItemTypes
 type Store = {
     Analytics: {
-        LastVisitedAt?: number;
-    };
+        LastVisitedAt?: number
+    }
 
     LyricViews: {
-        CardLyricsVisible: boolean;
-        PlaybarDetailsHidden: boolean;
-    };
-};
-type StoreItemName = keyof Store;
+        CardLyricsVisible: boolean
+        PlaybarDetailsHidden: boolean
+    }
+}
+type StoreItemName = keyof Store
 
-// Define our store-templates
 const StoreTemplates: Store = {
     Analytics: {},
 
@@ -41,86 +39,64 @@ const StoreTemplates: Store = {
         CardLyricsVisible: false,
         PlaybarDetailsHidden: false,
     },
-};
+}
 
-// Define StoreItem Versions
-const ExpireCacheStoreItemVersions: Map<ExpireCacheName, number> = new Map();
-ExpireCacheStoreItemVersions.set("TrackInformation", 2);
-ExpireCacheStoreItemVersions.set("ProviderLyrics", 1);
-ExpireCacheStoreItemVersions.set("ISRCLyrics", 6);
+const ExpireCacheStoreItemVersions: Map<ExpireCacheName, number> = new Map()
+ExpireCacheStoreItemVersions.set("TrackInformation", 2)
+ExpireCacheStoreItemVersions.set("ProviderLyrics", 1)
+ExpireCacheStoreItemVersions.set("ISRCLyrics", 6)
 
-const StoreItemVersions: Map<StoreItemName, number> = new Map();
-StoreItemVersions.set("Analytics", 1);
-StoreItemVersions.set("LyricViews", 1);
+const StoreItemVersions: Map<StoreItemName, number> = new Map()
+StoreItemVersions.set("Analytics", 1)
+StoreItemVersions.set("LyricViews", 1)
 
-// Cache-Control Class
-class CacheManager {
-    // Private Properties
-    private readonly Store: Store;
+export const Cache = new (class {
+    private readonly Store: Store
 
-    // Constructor
     constructor() {
-        // Load our stores
-        const generalStore = this.LoadStore();
+        const generalStore = this.LoadStore()
 
-        // Define our stores
-        this.Store = generalStore;
+        this.Store = generalStore
 
-        // Handle removing our old cache-items
-        {
-            // Remove our old ExpireCache store items
-            const OldExpireCacheStoreItemVersions: Map<string, number> = new Map();
-            OldExpireCacheStoreItemVersions.set("TrackInformation", 1);
-            OldExpireCacheStoreItemVersions.set("ISRCLyrics", 11);
+        // Remove our old ExpireCache store items
+        const OldExpireCacheStoreItemVersions: Map<string, number> = new Map()
+        OldExpireCacheStoreItemVersions.set("TrackInformation", 1)
+        OldExpireCacheStoreItemVersions.set("ISRCLyrics", 11)
 
-            for (const [itemName, version] of OldExpireCacheStoreItemVersions) {
-                // Now remove our old-entries
-                localStorage.removeItem(`BeautifulLyrics:ExpireCache_${itemName}`);
-                for (let oldVersion = 1; oldVersion <= version; oldVersion += 1) {
-                    localStorage.removeItem(
-                        `BeautifulLyrics:ExpireCache_${itemName}_V${oldVersion}`
-                    );
-                }
-            }
+        for (const [itemName, version] of OldExpireCacheStoreItemVersions) {
+            localStorage.removeItem(`BeautifulLyrics:ExpireCache_${itemName}`)
+            nonEmptyArray
+                .range(1, version)
+                .map(oldVersion => localStorage.removeItem(`BeautifulLyrics:ExpireCache_${itemName}_V${oldVersion}`))
+        }
 
-            // Remove our old General store items (if it exists)
-            for (const [itemName, version] of StoreItemVersions) {
-                // Now remove our old-entries
-                localStorage.removeItem(this.GetItemLocation(itemName, false));
-                for (let oldVersion = 1; oldVersion < version; oldVersion += 1) {
-                    localStorage.removeItem(this.GetItemLocation(itemName, oldVersion));
-                }
-            }
+        // Remove our old General store items (if it exists)
+        for (const [itemName, version] of StoreItemVersions) {
+            localStorage.removeItem(this.GetItemLocation(itemName, false))
+            nonEmptyArray
+                .range(1, version)
+                .map(oldVersion => localStorage.removeItem(this.GetItemLocation(itemName, oldVersion)))
         }
     }
 
-    // Private methods
     private LoadStore() {
-        // Grab our templates
-        const templates = StoreTemplates;
+        const templates = StoreTemplates
 
-        // Attempt to grab our whole store
-        const temporaryStore: any = {};
-        const missingItems: Record<string, any> = {};
-        for (const key of Object.keys(templates) as StoreItemName[]) {
-            const serializedValue = localStorage.getItem(
-                this.GetItemLocation(key as StoreItemName)
-            );
+        const temporaryStore: any = {}
+        const missingItems: Record<string, any> = {}
 
-            if (serializedValue === null) {
-                missingItems[key] = templates[key];
-            } else {
-                temporaryStore[key] = JSON.parse(serializedValue);
-            }
-        }
+        Object.keys(templates).map(key => {
+            const serializedValue = localStorage.getItem(this.GetItemLocation(key as StoreItemName))
 
-        // Return our stores
+            if (serializedValue === null) missingItems[key] = templates[key as StoreItemName]
+            else temporaryStore[key] = JSON.parse(serializedValue)
+        })
+
         return {
             ...temporaryStore,
-
             // Deep-clone and ensures we are JSON-serializable
             ...JSON.parse(JSON.stringify(missingItems)),
-        };
+        }
     }
 
     private GetItemLocation(itemName: StoreItemName, versionOverride?: number | false) {
@@ -129,121 +105,92 @@ class CacheManager {
                 ? StoreItemVersions.get(itemName as StoreItemName)
                 : versionOverride === false
                 ? undefined
-                : versionOverride;
+                : versionOverride
 
-        return `BeautifulLyrics:General_${itemName}${versionNumber ? `_V${versionNumber}` : ""}`;
+        return `BeautifulLyrics:General_${itemName}${versionNumber ? `_V${versionNumber}` : ""}`
     }
 
     private SaveChanges(itemName: StoreItemName, item: string) {
-        localStorage.setItem(this.GetItemLocation(itemName), item);
+        localStorage.setItem(this.GetItemLocation(itemName), item)
     }
 
     private GetFromCacheAPI<C>(cacheName: string, itemName: string): Promise<C | undefined> {
         return caches
             .open("BeautifulLyrics")
-            .then((cache) => cache.match(`/${cacheName}/${itemName}`))
-            .then((response) => response?.json());
+            .then(cache => cache.match(`/${cacheName}/${itemName}`))
+            .then(response => response?.json())
     }
 
     private UpdateCacheAPI(cacheName: string, itemName: string, content: any) {
         return caches
             .open("BeautifulLyrics")
-            .then((cache) =>
+            .then(cache =>
                 cache.put(
                     `/${cacheName}/${itemName}`,
                     new Response(JSON.stringify(content), {
                         headers: {
                             "Content-Type": "application/json",
                         },
-                    })
-                )
+                    }),
+                ),
             )
-            .catch((error) => {
-                console.warn(`Failed to Update Cache API (${cacheName}/${itemName})`);
-                console.error(error);
-            });
+            .catch(error => {
+                console.warn(`Failed to Update Cache API (${cacheName}/${itemName})`)
+                console.error(error)
+            })
     }
 
-    // Public Dynamic Store Methods
     public GetDynamicItem<I>(itemName: string): I | undefined {
-        return (localStorage.getItem(itemName) as unknown as I) ?? undefined;
+        return (localStorage.getItem(itemName) as unknown as I) ?? undefined
     }
 
     public SetDynamicItem(itemName: string, item: string) {
-        localStorage.setItem(`BeautifulLyrics:Dynamic_${itemName}`, item);
+        localStorage.setItem(`BeautifulLyrics:Dynamic_${itemName}`, item)
     }
 
-    // Public Store Methods
     public GetItem<K extends StoreItemName>(itemName: K): Store[K] {
-        return this.Store[itemName];
+        return this.Store[itemName]
     }
 
     public SaveItemChanges<K extends StoreItemName>(itemName: K) {
-        this.SaveChanges(itemName, JSON.stringify(this.Store[itemName]));
+        this.SaveChanges(itemName, JSON.stringify(this.Store[itemName]))
     }
 
-    // Public Expire Cache Methods
-    public GetFromExpireCache<N extends ExpireCacheName>(
-        expireCacheName: N,
-        itemName: string
-    ): Promise<ExpireCachesItemTypes[N] | undefined> {
-        if (expireCacheName === "ISRCLyrics") {
-            // return Promise.resolve(undefined)
-        }
+    public GetFromExpireCache = <N extends ExpireCacheName>(expireCacheName: N, itemName: string) =>
+        this.GetFromCacheAPI<ExpireItem<ExpireCachesItemTypes[N]>>(`ExpireCache/${expireCacheName}`, itemName).then(
+            expireItem => {
+                if (expireItem === undefined) return
+                // Are we on the same version
+                if (expireItem.CacheVersion !== ExpireCacheStoreItemVersions.get(expireCacheName)) return
+                if (expireItem.ExpiresAt < Date.now()) return
 
-        return this.GetFromCacheAPI<ExpireItem<ExpireCachesItemTypes[N]>>(
-            `ExpireCache/${expireCacheName}`,
-            itemName
-        ).then((expireItem) => {
-            // If we don't have an item then just force-return
-            if (expireItem === undefined) {
-                return undefined;
-            }
-
-            // Check if we're on the same version
-            if (expireItem.CacheVersion !== ExpireCacheStoreItemVersions.get(expireCacheName)) {
-                return undefined;
-            }
-
-            // Check if we're expired
-            if (expireItem.ExpiresAt < Date.now()) {
-                return undefined;
-            }
-
-            // Otherwise, return our content
-            return expireItem.Content;
-        });
-    }
+                return expireItem.Content
+            },
+        )
 
     public SetExpireCacheItem<N extends ExpireCacheName>(
         expireCacheName: N,
         itemName: string,
         content: ExpireCachesItemTypes[N],
-        expiration: ExpirationSettings
+        expiration: ExpirationSettings,
     ) {
         // Determine when we expire
-        const expireAtDate = new Date();
-        expireAtDate.setHours(0, 0, 0, 0);
-        if (expiration.Unit == "Weeks") {
-            expireAtDate.setDate(expireAtDate.getDate() + expiration.Duration * 7);
-        } else {
-            expireAtDate.setMonth(expireAtDate.getMonth() + expiration.Duration);
-            expireAtDate.setDate(0);
+        const expireAtDate = new Date()
+        expireAtDate.setHours(0, 0, 0, 0)
+        if (expiration.Unit == "Weeks") expireAtDate.setDate(expireAtDate.getDate() + expiration.Duration * 7)
+        else {
+            expireAtDate.setMonth(expireAtDate.getMonth() + expiration.Duration)
+            expireAtDate.setDate(0)
         }
-        const expireAt = expireAtDate.getTime();
+        const expireAt = expireAtDate.getTime()
 
-        // Create our expire-item
         const expireItem: ExpireItem<ExpireCachesItemTypes[N]> = {
             ExpiresAt: expireAt,
             CacheVersion: ExpireCacheStoreItemVersions.get(expireCacheName)!,
 
             Content: content,
-        };
+        }
 
-        // Store ourselves
-        return this.UpdateCacheAPI(`ExpireCache/${expireCacheName}`, itemName, expireItem);
+        return this.UpdateCacheAPI(`ExpireCache/${expireCacheName}`, itemName, expireItem)
     }
-}
-
-export const Cache = new CacheManager();
-export type { ExpirationSettings };
+})()

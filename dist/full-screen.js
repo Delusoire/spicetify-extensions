@@ -397,7 +397,7 @@ var full;
   function compare(first2, second) {
     return first2 < second ? -1 : first2 > second ? 1 : 0;
   }
-  var equalsDefault, fromCompare, getSemigroup, getMonoid, strictOrd;
+  var equalsDefault, fromCompare, getSemigroup, getMonoid, min, max, strictOrd;
   var init_Ord = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Ord.js"() {
       init_Eq();
@@ -432,6 +432,16 @@ var full;
           })
         };
       };
+      min = function(O) {
+        return function(first2, second) {
+          return first2 === second || O.compare(first2, second) < 1 ? first2 : second;
+        };
+      };
+      max = function(O) {
+        return function(first2, second) {
+          return first2 === second || O.compare(first2, second) > -1 ? first2 : second;
+        };
+      };
       strictOrd = {
         equals: eqStrict.equals,
         compare
@@ -456,11 +466,22 @@ var full;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Semigroup.js
-  var constant2, first, last, concatAll2, semigroupVoid, semigroupAll, semigroupAny, semigroupString, semigroupSum, semigroupProduct;
+  var min2, max2, constant2, first, last, concatAll2, semigroupVoid, semigroupAll, semigroupAny, semigroupString, semigroupSum, semigroupProduct;
   var init_Semigroup = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Semigroup.js"() {
       init_function();
       init_Magma();
+      init_Ord();
+      min2 = function(O) {
+        return {
+          concat: min(O)
+        };
+      };
+      max2 = function(O) {
+        return {
+          concat: max(O)
+        };
+      };
       constant2 = function(a) {
         return {
           concat: function() {
@@ -515,12 +536,14 @@ var full;
   function cons(head6, tail6) {
     return tail6 === void 0 ? prepend(head6) : pipe(tail6, prepend(head6));
   }
-  var __spreadArray3, empty, isNonEmpty2, isOutOfBound, prependW, prepend, appendW, append, unsafeInsertAt, unsafeUpdateAt, uniq, sortBy, union, rotate, makeBy, range, sort, prependAll, intersperse, chop, splitAt, chunksOf, of, extract, head2, tail2, last2, init, concatAll3, intercalate, snoc;
+  var __spreadArray3, empty, isNonEmpty2, isOutOfBound, prependW, prepend, appendW, append, unsafeInsertAt, unsafeUpdateAt, uniq, sortBy, union, rotate, makeBy, range, sort, prependAll, intersperse, chop, splitAt, chunksOf, of, reduce, foldMap, reduceRight, reduceWithIndex, foldMapWithIndex, reduceRightWithIndex, extract, getShow, getEq, head2, tail2, last2, init, min3, max3, concatAll3, intercalate, snoc;
   var init_ReadonlyNonEmptyArray = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyNonEmptyArray.js"() {
+      init_Eq();
       init_function();
       init_internal();
       init_Ord();
+      init_Semigroup();
       __spreadArray3 = function(to, from, pack) {
         if (pack || arguments.length === 2)
           for (var i = 0, l = from.length, ar; i < l; i++) {
@@ -675,7 +698,63 @@ var full;
         return chop(splitAt(n));
       };
       of = singleton;
+      reduce = function(b, f2) {
+        return reduceWithIndex(b, function(_, b2, a) {
+          return f2(b2, a);
+        });
+      };
+      foldMap = function(S) {
+        return function(f2) {
+          return function(as3) {
+            return as3.slice(1).reduce(function(s, a) {
+              return S.concat(s, f2(a));
+            }, f2(as3[0]));
+          };
+        };
+      };
+      reduceRight = function(b, f2) {
+        return reduceRightWithIndex(b, function(_, b2, a) {
+          return f2(b2, a);
+        });
+      };
+      reduceWithIndex = function(b, f2) {
+        return function(as3) {
+          return as3.reduce(function(b2, a, i) {
+            return f2(i, b2, a);
+          }, b);
+        };
+      };
+      foldMapWithIndex = function(S) {
+        return function(f2) {
+          return function(as3) {
+            return as3.slice(1).reduce(function(s, a, i) {
+              return S.concat(s, f2(i + 1, a));
+            }, f2(0, as3[0]));
+          };
+        };
+      };
+      reduceRightWithIndex = function(b, f2) {
+        return function(as3) {
+          return as3.reduceRight(function(b2, a, i) {
+            return f2(i, a, b2);
+          }, b);
+        };
+      };
       extract = head;
+      getShow = function(S) {
+        return {
+          show: function(as3) {
+            return "[".concat(as3.map(S.show).join(", "), "]");
+          }
+        };
+      };
+      getEq = function(E) {
+        return fromEquals(function(xs, ys) {
+          return xs.length === ys.length && xs.every(function(x, i) {
+            return E.equals(x, ys[i]);
+          });
+        });
+      };
       head2 = extract;
       tail2 = tail;
       last2 = function(as3) {
@@ -683,6 +762,18 @@ var full;
       };
       init = function(as3) {
         return as3.slice(0, -1);
+      };
+      min3 = function(O) {
+        var S = min2(O);
+        return function(as3) {
+          return as3.reduce(S.concat);
+        };
+      };
+      max3 = function(O) {
+        var S = max2(O);
+        return function(as3) {
+          return as3.reduce(S.concat);
+        };
       };
       concatAll3 = function(S) {
         return function(as3) {
@@ -702,18 +793,184 @@ var full;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/NonEmptyArray.js
+  var NonEmptyArray_exports = {};
+  __export(NonEmptyArray_exports, {
+    Alt: () => Alt,
+    Applicative: () => Applicative,
+    Apply: () => Apply,
+    Chain: () => Chain,
+    Comonad: () => Comonad,
+    Do: () => Do,
+    Foldable: () => Foldable,
+    FoldableWithIndex: () => FoldableWithIndex,
+    Functor: () => Functor,
+    FunctorWithIndex: () => FunctorWithIndex,
+    Monad: () => Monad,
+    Pointed: () => Pointed,
+    Traversable: () => Traversable,
+    TraversableWithIndex: () => TraversableWithIndex,
+    URI: () => URI,
+    alt: () => alt,
+    altW: () => altW,
+    ap: () => ap2,
+    apFirst: () => apFirst2,
+    apS: () => apS2,
+    apSecond: () => apSecond2,
+    append: () => append2,
+    appendW: () => appendW2,
+    bind: () => bind2,
+    bindTo: () => bindTo2,
+    chain: () => chain,
+    chainFirst: () => chainFirst2,
+    chainWithIndex: () => chainWithIndex,
+    chop: () => chop2,
+    chunksOf: () => chunksOf2,
+    concat: () => concat2,
+    concatAll: () => concatAll4,
+    concatW: () => concatW,
+    cons: () => cons2,
+    copy: () => copy,
+    duplicate: () => duplicate,
+    extend: () => extend,
+    extract: () => extract2,
+    filter: () => filter,
+    filterWithIndex: () => filterWithIndex,
+    flap: () => flap2,
+    flatMap: () => flatMap,
+    flatten: () => flatten,
+    fold: () => fold,
+    foldMap: () => foldMap2,
+    foldMapWithIndex: () => foldMapWithIndex2,
+    fromArray: () => fromArray,
+    fromReadonlyNonEmptyArray: () => fromReadonlyNonEmptyArray2,
+    getEq: () => getEq2,
+    getSemigroup: () => getSemigroup3,
+    getShow: () => getShow2,
+    getUnionSemigroup: () => getUnionSemigroup,
+    group: () => group,
+    groupBy: () => groupBy,
+    groupSort: () => groupSort,
+    head: () => head3,
+    init: () => init2,
+    insertAt: () => insertAt,
+    intercalate: () => intercalate2,
+    intersperse: () => intersperse2,
+    isNonEmpty: () => isNonEmpty3,
+    isOutOfBound: () => isOutOfBound2,
+    last: () => last3,
+    let: () => let_2,
+    makeBy: () => makeBy2,
+    map: () => map,
+    mapWithIndex: () => mapWithIndex,
+    matchLeft: () => matchLeft,
+    matchRight: () => matchRight,
+    max: () => max4,
+    min: () => min4,
+    modifyAt: () => modifyAt,
+    modifyHead: () => modifyHead,
+    modifyLast: () => modifyLast,
+    nonEmptyArray: () => nonEmptyArray,
+    of: () => of2,
+    prepend: () => prepend2,
+    prependAll: () => prependAll2,
+    prependToAll: () => prependToAll,
+    prependW: () => prependW2,
+    range: () => range2,
+    reduce: () => reduce2,
+    reduceRight: () => reduceRight2,
+    reduceRightWithIndex: () => reduceRightWithIndex2,
+    reduceWithIndex: () => reduceWithIndex2,
+    replicate: () => replicate,
+    reverse: () => reverse2,
+    rotate: () => rotate2,
+    sequence: () => sequence,
+    snoc: () => snoc2,
+    sort: () => sort2,
+    sortBy: () => sortBy2,
+    splitAt: () => splitAt2,
+    tail: () => tail3,
+    traverse: () => traverse,
+    traverseWithIndex: () => traverseWithIndex,
+    unappend: () => unappend,
+    uncons: () => uncons,
+    union: () => union2,
+    uniq: () => uniq2,
+    unprepend: () => unprepend,
+    unsafeInsertAt: () => unsafeInsertAt2,
+    unsafeUpdateAt: () => unsafeUpdateAt2,
+    unsnoc: () => unsnoc,
+    unzip: () => unzip,
+    updateAt: () => updateAt,
+    updateHead: () => updateHead,
+    updateLast: () => updateLast,
+    zip: () => zip,
+    zipWith: () => zipWith
+  });
+  function concatW(second) {
+    return function(first2) {
+      return first2.concat(second);
+    };
+  }
   function concat2(x, y) {
     return y ? x.concat(y) : function(y2) {
       return y2.concat(x);
     };
   }
+  function group(E) {
+    return function(as3) {
+      var len = as3.length;
+      if (len === 0) {
+        return [];
+      }
+      var out = [];
+      var head6 = as3[0];
+      var nea = [head6];
+      for (var i = 1; i < len; i++) {
+        var a = as3[i];
+        if (E.equals(a, head6)) {
+          nea.push(a);
+        } else {
+          out.push(nea);
+          head6 = a;
+          nea = [head6];
+        }
+      }
+      out.push(nea);
+      return out;
+    };
+  }
+  function zip(as3, bs) {
+    if (bs === void 0) {
+      return function(bs2) {
+        return zip(bs2, as3);
+      };
+    }
+    return zipWith(as3, bs, function(a, b) {
+      return [a, b];
+    });
+  }
+  function groupSort(O) {
+    var sortO = sort2(O);
+    var groupO = group(O);
+    return function(as3) {
+      return isNonEmpty3(as3) ? groupO(sortO(as3)) : [];
+    };
+  }
+  function filter(predicate) {
+    return filterWithIndex(function(_, a) {
+      return predicate(a);
+    });
+  }
   function cons2(head6, tail6) {
     return tail6 === void 0 ? prepend2(head6) : pipe(tail6, prepend2(head6));
   }
-  var __spreadArray4, isNonEmpty3, isOutOfBound2, prependW2, prepend2, appendW2, append2, unsafeInsertAt2, unsafeUpdateAt2, uniq2, sortBy2, union2, rotate2, fromReadonlyNonEmptyArray2, makeBy2, range2, sort2, copy, of2, prependAll2, intersperse2, chop2, splitAt2, chunksOf2, head3, tail3, last3, init2, snoc2;
+  var __spreadArray4, isNonEmpty3, isOutOfBound2, prependW2, prepend2, appendW2, append2, unsafeInsertAt2, unsafeUpdateAt2, uniq2, sortBy2, union2, rotate2, fromReadonlyNonEmptyArray2, fromArray, makeBy2, replicate, range2, unprepend, unappend, reverse2, groupBy, sort2, insertAt, updateAt, modifyAt, copy, of2, zipWith, unzip, prependAll2, intersperse2, foldMapWithIndex2, foldMap2, chainWithIndex, chop2, splitAt2, chunksOf2, _map, _mapWithIndex, _ap, _extend, _reduce, _foldMap, _reduceRight, _traverse, _alt, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _traverseWithIndex, altW, alt, ap2, flatMap, extend, duplicate, flatten, map, mapWithIndex, reduce2, reduceWithIndex2, reduceRight2, reduceRightWithIndex2, traverse, sequence, traverseWithIndex, extract2, URI, getShow2, getSemigroup3, getEq2, getUnionSemigroup, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, chainFirst2, Monad, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, Alt, Comonad, Do, bindTo2, let_2, bind2, apS2, head3, tail3, last3, init2, min4, max4, concatAll4, matchLeft, matchRight, modifyHead, updateHead, modifyLast, updateLast, intercalate2, chain, filterWithIndex, uncons, unsnoc, snoc2, prependToAll, fold, nonEmptyArray;
   var init_NonEmptyArray = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/NonEmptyArray.js"() {
+      init_Apply();
+      init_Chain();
       init_function();
+      init_Functor();
       init_internal();
       init_Ord();
       init_ReadonlyNonEmptyArray();
@@ -811,6 +1068,9 @@ var full;
         };
       };
       fromReadonlyNonEmptyArray2 = fromReadonlyNonEmptyArray;
+      fromArray = function(as3) {
+        return isNonEmpty3(as3) ? some(as3) : none;
+      };
       makeBy2 = function(f2) {
         return function(n) {
           var j = Math.max(0, Math.floor(n));
@@ -821,19 +1081,80 @@ var full;
           return out;
         };
       };
+      replicate = function(a) {
+        return makeBy2(function() {
+          return a;
+        });
+      };
       range2 = function(start, end) {
         return start <= end ? makeBy2(function(i) {
           return start + i;
         })(end - start + 1) : [start];
+      };
+      unprepend = function(as3) {
+        return [head3(as3), tail3(as3)];
+      };
+      unappend = function(as3) {
+        return [init2(as3), last3(as3)];
+      };
+      reverse2 = function(as3) {
+        return __spreadArray4([last3(as3)], as3.slice(0, -1).reverse(), true);
+      };
+      groupBy = function(f2) {
+        return function(as3) {
+          var out = {};
+          for (var _i = 0, as_1 = as3; _i < as_1.length; _i++) {
+            var a = as_1[_i];
+            var k = f2(a);
+            if (has.call(out, k)) {
+              out[k].push(a);
+            } else {
+              out[k] = [a];
+            }
+          }
+          return out;
+        };
       };
       sort2 = function(O) {
         return function(as3) {
           return as3.slice().sort(O.compare);
         };
       };
+      insertAt = function(i, a) {
+        return function(as3) {
+          return i < 0 || i > as3.length ? none : some(unsafeInsertAt2(i, a, as3));
+        };
+      };
+      updateAt = function(i, a) {
+        return modifyAt(i, function() {
+          return a;
+        });
+      };
+      modifyAt = function(i, f2) {
+        return function(as3) {
+          return isOutOfBound2(i, as3) ? none : some(unsafeUpdateAt2(i, f2(as3[i]), as3));
+        };
+      };
       copy = fromReadonlyNonEmptyArray2;
       of2 = function(a) {
         return [a];
+      };
+      zipWith = function(as3, bs, f2) {
+        var cs = [f2(as3[0], bs[0])];
+        var len = Math.min(as3.length, bs.length);
+        for (var i = 1; i < len; i++) {
+          cs[i] = f2(as3[i], bs[i]);
+        }
+        return cs;
+      };
+      unzip = function(abs) {
+        var fa = [abs[0][0]];
+        var fb = [abs[0][1]];
+        for (var i = 1; i < abs.length; i++) {
+          fa[i] = abs[i][0];
+          fb[i] = abs[i][1];
+        }
+        return [fa, fb];
       };
       prependAll2 = function(middle) {
         return function(as3) {
@@ -848,6 +1169,17 @@ var full;
         return function(as3) {
           var rest = tail3(as3);
           return isNonEmpty3(rest) ? pipe(rest, prependAll2(middle), prepend2(head3(as3))) : copy(as3);
+        };
+      };
+      foldMapWithIndex2 = foldMapWithIndex;
+      foldMap2 = foldMap;
+      chainWithIndex = function(f2) {
+        return function(as3) {
+          var out = fromReadonlyNonEmptyArray2(f2(0, head3(as3)));
+          for (var i = 1; i < as3.length; i++) {
+            out.push.apply(out, f2(i, as3[i]));
+          }
+          return out;
         };
       };
       chop2 = function(f2) {
@@ -872,6 +1204,244 @@ var full;
       chunksOf2 = function(n) {
         return chop2(splitAt2(n));
       };
+      _map = function(fa, f2) {
+        return pipe(fa, map(f2));
+      };
+      _mapWithIndex = function(fa, f2) {
+        return pipe(fa, mapWithIndex(f2));
+      };
+      _ap = function(fab, fa) {
+        return pipe(fab, ap2(fa));
+      };
+      _extend = function(wa, f2) {
+        return pipe(wa, extend(f2));
+      };
+      _reduce = function(fa, b, f2) {
+        return pipe(fa, reduce2(b, f2));
+      };
+      _foldMap = function(M) {
+        var foldMapM = foldMap2(M);
+        return function(fa, f2) {
+          return pipe(fa, foldMapM(f2));
+        };
+      };
+      _reduceRight = function(fa, b, f2) {
+        return pipe(fa, reduceRight2(b, f2));
+      };
+      _traverse = function(F) {
+        var traverseF = traverse(F);
+        return function(ta, f2) {
+          return pipe(ta, traverseF(f2));
+        };
+      };
+      _alt = function(fa, that) {
+        return pipe(fa, alt(that));
+      };
+      _reduceWithIndex = function(fa, b, f2) {
+        return pipe(fa, reduceWithIndex2(b, f2));
+      };
+      _foldMapWithIndex = function(M) {
+        var foldMapWithIndexM = foldMapWithIndex2(M);
+        return function(fa, f2) {
+          return pipe(fa, foldMapWithIndexM(f2));
+        };
+      };
+      _reduceRightWithIndex = function(fa, b, f2) {
+        return pipe(fa, reduceRightWithIndex2(b, f2));
+      };
+      _traverseWithIndex = function(F) {
+        var traverseWithIndexF = traverseWithIndex(F);
+        return function(ta, f2) {
+          return pipe(ta, traverseWithIndexF(f2));
+        };
+      };
+      altW = function(that) {
+        return function(as3) {
+          return pipe(as3, concatW(that()));
+        };
+      };
+      alt = altW;
+      ap2 = function(as3) {
+        return flatMap(function(f2) {
+          return pipe(as3, map(f2));
+        });
+      };
+      flatMap = /* @__PURE__ */ dual(2, function(ma, f2) {
+        return pipe(ma, chainWithIndex(function(i, a) {
+          return f2(a, i);
+        }));
+      });
+      extend = function(f2) {
+        return function(as3) {
+          var next = tail3(as3);
+          var out = [f2(as3)];
+          while (isNonEmpty3(next)) {
+            out.push(f2(next));
+            next = tail3(next);
+          }
+          return out;
+        };
+      };
+      duplicate = /* @__PURE__ */ extend(identity);
+      flatten = /* @__PURE__ */ flatMap(identity);
+      map = function(f2) {
+        return mapWithIndex(function(_, a) {
+          return f2(a);
+        });
+      };
+      mapWithIndex = function(f2) {
+        return function(as3) {
+          var out = [f2(0, head3(as3))];
+          for (var i = 1; i < as3.length; i++) {
+            out.push(f2(i, as3[i]));
+          }
+          return out;
+        };
+      };
+      reduce2 = reduce;
+      reduceWithIndex2 = reduceWithIndex;
+      reduceRight2 = reduceRight;
+      reduceRightWithIndex2 = reduceRightWithIndex;
+      traverse = function(F) {
+        var traverseWithIndexF = traverseWithIndex(F);
+        return function(f2) {
+          return traverseWithIndexF(function(_, a) {
+            return f2(a);
+          });
+        };
+      };
+      sequence = function(F) {
+        return traverseWithIndex(F)(function(_, a) {
+          return a;
+        });
+      };
+      traverseWithIndex = function(F) {
+        return function(f2) {
+          return function(as3) {
+            var out = F.map(f2(0, head3(as3)), of2);
+            for (var i = 1; i < as3.length; i++) {
+              out = F.ap(F.map(out, function(bs) {
+                return function(b) {
+                  return pipe(bs, append2(b));
+                };
+              }), f2(i, as3[i]));
+            }
+            return out;
+          };
+        };
+      };
+      extract2 = head2;
+      URI = "NonEmptyArray";
+      getShow2 = getShow;
+      getSemigroup3 = function() {
+        return {
+          concat: concat2
+        };
+      };
+      getEq2 = getEq;
+      getUnionSemigroup = function(E) {
+        var unionE = union2(E);
+        return {
+          concat: function(first2, second) {
+            return unionE(second)(first2);
+          }
+        };
+      };
+      Functor = {
+        URI,
+        map: _map
+      };
+      flap2 = /* @__PURE__ */ flap(Functor);
+      Pointed = {
+        URI,
+        of: of2
+      };
+      FunctorWithIndex = {
+        URI,
+        map: _map,
+        mapWithIndex: _mapWithIndex
+      };
+      Apply = {
+        URI,
+        map: _map,
+        ap: _ap
+      };
+      apFirst2 = /* @__PURE__ */ apFirst(Apply);
+      apSecond2 = /* @__PURE__ */ apSecond(Apply);
+      Applicative = {
+        URI,
+        map: _map,
+        ap: _ap,
+        of: of2
+      };
+      Chain = {
+        URI,
+        map: _map,
+        ap: _ap,
+        chain: flatMap
+      };
+      chainFirst2 = /* @__PURE__ */ chainFirst(Chain);
+      Monad = {
+        URI,
+        map: _map,
+        ap: _ap,
+        of: of2,
+        chain: flatMap
+      };
+      Foldable = {
+        URI,
+        reduce: _reduce,
+        foldMap: _foldMap,
+        reduceRight: _reduceRight
+      };
+      FoldableWithIndex = {
+        URI,
+        reduce: _reduce,
+        foldMap: _foldMap,
+        reduceRight: _reduceRight,
+        reduceWithIndex: _reduceWithIndex,
+        foldMapWithIndex: _foldMapWithIndex,
+        reduceRightWithIndex: _reduceRightWithIndex
+      };
+      Traversable = {
+        URI,
+        map: _map,
+        reduce: _reduce,
+        foldMap: _foldMap,
+        reduceRight: _reduceRight,
+        traverse: _traverse,
+        sequence
+      };
+      TraversableWithIndex = {
+        URI,
+        map: _map,
+        mapWithIndex: _mapWithIndex,
+        reduce: _reduce,
+        foldMap: _foldMap,
+        reduceRight: _reduceRight,
+        traverse: _traverse,
+        sequence,
+        reduceWithIndex: _reduceWithIndex,
+        foldMapWithIndex: _foldMapWithIndex,
+        reduceRightWithIndex: _reduceRightWithIndex,
+        traverseWithIndex: _traverseWithIndex
+      };
+      Alt = {
+        URI,
+        map: _map,
+        alt: _alt
+      };
+      Comonad = {
+        URI,
+        map: _map,
+        extend: _extend,
+        extract: extract2
+      };
+      Do = /* @__PURE__ */ of2(emptyRecord);
+      bindTo2 = /* @__PURE__ */ bindTo(Functor);
+      let_2 = /* @__PURE__ */ let_(Functor);
+      bind2 = /* @__PURE__ */ bind(Chain);
+      apS2 = /* @__PURE__ */ apS(Apply);
       head3 = head2;
       tail3 = function(as3) {
         return as3.slice(1);
@@ -880,8 +1450,78 @@ var full;
       init2 = function(as3) {
         return as3.slice(0, -1);
       };
+      min4 = min3;
+      max4 = max3;
+      concatAll4 = function(S) {
+        return function(as3) {
+          return as3.reduce(S.concat);
+        };
+      };
+      matchLeft = function(f2) {
+        return function(as3) {
+          return f2(head3(as3), tail3(as3));
+        };
+      };
+      matchRight = function(f2) {
+        return function(as3) {
+          return f2(init2(as3), last3(as3));
+        };
+      };
+      modifyHead = function(f2) {
+        return function(as3) {
+          return __spreadArray4([f2(head3(as3))], tail3(as3), true);
+        };
+      };
+      updateHead = function(a) {
+        return modifyHead(function() {
+          return a;
+        });
+      };
+      modifyLast = function(f2) {
+        return function(as3) {
+          return pipe(init2(as3), append2(f2(last3(as3))));
+        };
+      };
+      updateLast = function(a) {
+        return modifyLast(function() {
+          return a;
+        });
+      };
+      intercalate2 = intercalate;
+      chain = flatMap;
+      filterWithIndex = function(predicate) {
+        return function(as3) {
+          return fromArray(as3.filter(function(a, i) {
+            return predicate(i, a);
+          }));
+        };
+      };
+      uncons = unprepend;
+      unsnoc = unappend;
       snoc2 = function(init5, end) {
         return pipe(init5, append2(end));
+      };
+      prependToAll = prependAll2;
+      fold = concatAll3;
+      nonEmptyArray = {
+        URI,
+        of: of2,
+        map: _map,
+        mapWithIndex: _mapWithIndex,
+        ap: _ap,
+        chain: flatMap,
+        extend: _extend,
+        extract: extract2,
+        reduce: _reduce,
+        foldMap: _foldMap,
+        reduceRight: _reduceRight,
+        traverse: _traverse,
+        sequence,
+        reduceWithIndex: _reduceWithIndex,
+        foldMapWithIndex: _foldMapWithIndex,
+        reduceRightWithIndex: _reduceRightWithIndex,
+        traverseWithIndex: _traverseWithIndex,
+        alt: _alt
       };
     }
   });
@@ -1010,104 +1650,104 @@ var full;
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyArray.js
   var ReadonlyArray_exports = {};
   __export(ReadonlyArray_exports, {
-    Alt: () => Alt,
+    Alt: () => Alt2,
     Alternative: () => Alternative,
-    Applicative: () => Applicative,
-    Apply: () => Apply,
-    Chain: () => Chain,
+    Applicative: () => Applicative2,
+    Apply: () => Apply2,
+    Chain: () => Chain2,
     ChainRecBreadthFirst: () => ChainRecBreadthFirst,
     ChainRecDepthFirst: () => ChainRecDepthFirst,
     Compactable: () => Compactable,
-    Do: () => Do,
+    Do: () => Do2,
     Extend: () => Extend,
     Filterable: () => Filterable,
     FilterableWithIndex: () => FilterableWithIndex,
-    Foldable: () => Foldable,
-    FoldableWithIndex: () => FoldableWithIndex,
+    Foldable: () => Foldable2,
+    FoldableWithIndex: () => FoldableWithIndex2,
     FromEither: () => FromEither,
-    Functor: () => Functor,
-    FunctorWithIndex: () => FunctorWithIndex,
-    Monad: () => Monad,
-    Pointed: () => Pointed,
-    Traversable: () => Traversable,
-    TraversableWithIndex: () => TraversableWithIndex,
-    URI: () => URI,
+    Functor: () => Functor2,
+    FunctorWithIndex: () => FunctorWithIndex2,
+    Monad: () => Monad2,
+    Pointed: () => Pointed2,
+    Traversable: () => Traversable2,
+    TraversableWithIndex: () => TraversableWithIndex2,
+    URI: () => URI2,
     Unfoldable: () => Unfoldable,
     Witherable: () => Witherable,
     Zero: () => Zero,
     _chainRecBreadthFirst: () => _chainRecBreadthFirst,
     _chainRecDepthFirst: () => _chainRecDepthFirst,
-    alt: () => alt,
-    altW: () => altW,
-    ap: () => ap2,
-    apFirst: () => apFirst2,
-    apS: () => apS2,
-    apSecond: () => apSecond2,
+    alt: () => alt2,
+    altW: () => altW2,
+    ap: () => ap3,
+    apFirst: () => apFirst3,
+    apS: () => apS3,
+    apSecond: () => apSecond3,
     append: () => append3,
     appendW: () => appendW3,
-    bind: () => bind2,
-    bindTo: () => bindTo2,
-    chain: () => chain,
-    chainFirst: () => chainFirst2,
+    bind: () => bind3,
+    bindTo: () => bindTo3,
+    chain: () => chain2,
+    chainFirst: () => chainFirst3,
     chainRecBreadthFirst: () => chainRecBreadthFirst,
     chainRecDepthFirst: () => chainRecDepthFirst,
-    chainWithIndex: () => chainWithIndex,
+    chainWithIndex: () => chainWithIndex2,
     chop: () => chop3,
     chunksOf: () => chunksOf3,
     compact: () => compact,
     comprehension: () => comprehension,
     concat: () => concat3,
-    concatW: () => concatW,
+    concatW: () => concatW2,
     cons: () => cons3,
     deleteAt: () => deleteAt,
     difference: () => difference,
     dropLeft: () => dropLeft,
     dropLeftWhile: () => dropLeftWhile,
     dropRight: () => dropRight,
-    duplicate: () => duplicate,
+    duplicate: () => duplicate2,
     elem: () => elem,
     empty: () => empty2,
     every: () => every,
     exists: () => exists,
-    extend: () => extend,
-    filter: () => filter,
+    extend: () => extend2,
+    filter: () => filter2,
     filterE: () => filterE2,
     filterMap: () => filterMap,
     filterMapWithIndex: () => filterMapWithIndex,
-    filterWithIndex: () => filterWithIndex,
+    filterWithIndex: () => filterWithIndex2,
     findFirst: () => findFirst,
     findFirstMap: () => findFirstMap,
     findIndex: () => findIndex,
     findLast: () => findLast,
     findLastIndex: () => findLastIndex,
     findLastMap: () => findLastMap,
-    flap: () => flap2,
-    flatMap: () => flatMap,
-    flatten: () => flatten,
+    flap: () => flap3,
+    flatMap: () => flatMap2,
+    flatten: () => flatten2,
     foldLeft: () => foldLeft,
-    foldMap: () => foldMap2,
-    foldMapWithIndex: () => foldMapWithIndex2,
+    foldMap: () => foldMap3,
+    foldMapWithIndex: () => foldMapWithIndex3,
     foldRight: () => foldRight,
-    fromArray: () => fromArray,
+    fromArray: () => fromArray2,
     fromEither: () => fromEither,
     fromEitherK: () => fromEitherK2,
     fromOption: () => fromOption,
     fromOptionK: () => fromOptionK,
     fromPredicate: () => fromPredicate,
     getDifferenceMagma: () => getDifferenceMagma,
-    getEq: () => getEq2,
+    getEq: () => getEq3,
     getIntersectionSemigroup: () => getIntersectionSemigroup,
     getMonoid: () => getMonoid2,
     getOrd: () => getOrd,
-    getSemigroup: () => getSemigroup3,
-    getShow: () => getShow2,
+    getSemigroup: () => getSemigroup4,
+    getShow: () => getShow3,
     getUnionMonoid: () => getUnionMonoid,
-    getUnionSemigroup: () => getUnionSemigroup,
+    getUnionSemigroup: () => getUnionSemigroup2,
     guard: () => guard2,
     head: () => head4,
     init: () => init3,
-    insertAt: () => insertAt,
-    intercalate: () => intercalate2,
+    insertAt: () => insertAt2,
+    intercalate: () => intercalate3,
     intersection: () => intersection,
     intersperse: () => intersperse3,
     isEmpty: () => isEmpty,
@@ -1115,18 +1755,18 @@ var full;
     isOutOfBound: () => isOutOfBound3,
     last: () => last4,
     lefts: () => lefts,
-    let: () => let_2,
+    let: () => let_3,
     lookup: () => lookup,
     makeBy: () => makeBy3,
-    map: () => map,
-    mapWithIndex: () => mapWithIndex,
+    map: () => map2,
+    mapWithIndex: () => mapWithIndex2,
     match: () => match,
-    matchLeft: () => matchLeft,
+    matchLeft: () => matchLeft2,
     matchLeftW: () => matchLeftW,
-    matchRight: () => matchRight,
+    matchRight: () => matchRight2,
     matchRightW: () => matchRightW,
     matchW: () => matchW,
-    modifyAt: () => modifyAt,
+    modifyAt: () => modifyAt2,
     of: () => of3,
     partition: () => partition,
     partitionMap: () => partitionMap,
@@ -1134,22 +1774,22 @@ var full;
     partitionWithIndex: () => partitionWithIndex,
     prepend: () => prepend3,
     prependAll: () => prependAll3,
-    prependToAll: () => prependToAll,
+    prependToAll: () => prependToAll2,
     prependW: () => prependW3,
     range: () => range3,
     readonlyArray: () => readonlyArray,
-    reduce: () => reduce2,
-    reduceRight: () => reduceRight2,
-    reduceRightWithIndex: () => reduceRightWithIndex2,
-    reduceWithIndex: () => reduceWithIndex2,
-    replicate: () => replicate,
-    reverse: () => reverse2,
+    reduce: () => reduce3,
+    reduceRight: () => reduceRight3,
+    reduceRightWithIndex: () => reduceRightWithIndex3,
+    reduceWithIndex: () => reduceWithIndex3,
+    replicate: () => replicate2,
+    reverse: () => reverse3,
     rights: () => rights,
     rotate: () => rotate3,
     scanLeft: () => scanLeft,
     scanRight: () => scanRight,
     separate: () => separate,
-    sequence: () => sequence,
+    sequence: () => sequence2,
     size: () => size,
     snoc: () => snoc3,
     some: () => some2,
@@ -1162,21 +1802,21 @@ var full;
     takeLeftWhile: () => takeLeftWhile,
     takeRight: () => takeRight,
     toArray: () => toArray,
-    traverse: () => traverse,
-    traverseWithIndex: () => traverseWithIndex,
+    traverse: () => traverse2,
+    traverseWithIndex: () => traverseWithIndex2,
     unfold: () => unfold,
     union: () => union3,
     uniq: () => uniq3,
     unsafeDeleteAt: () => unsafeDeleteAt,
     unsafeInsertAt: () => unsafeInsertAt3,
     unsafeUpdateAt: () => unsafeUpdateAt3,
-    unzip: () => unzip,
-    updateAt: () => updateAt,
+    unzip: () => unzip2,
+    updateAt: () => updateAt2,
     wilt: () => wilt,
     wither: () => wither,
     zero: () => zero,
-    zip: () => zip,
-    zipWith: () => zipWith
+    zip: () => zip2,
+    zipWith: () => zipWith2
   });
   function fromPredicate(predicate) {
     return function(a) {
@@ -1234,13 +1874,13 @@ var full;
       return none;
     };
   }
-  function zip(as3, bs) {
+  function zip2(as3, bs) {
     if (bs === void 0) {
       return function(bs2) {
-        return zip(bs2, as3);
+        return zip2(bs2, as3);
       };
     }
-    return zipWith(as3, bs, function(a, b) {
+    return zipWith2(as3, bs, function(a, b) {
       return [a, b];
     });
   }
@@ -1271,7 +1911,7 @@ var full;
       };
     }
     var go = function(scope, input2) {
-      return isNonEmpty4(input2) ? flatMap(head2(input2), function(a) {
+      return isNonEmpty4(input2) ? flatMap2(head2(input2), function(a) {
         return go(pipe(scope, append3(a)), tail2(input2));
       }) : g.apply(void 0, scope) ? [f2.apply(void 0, scope)] : empty2;
     };
@@ -1322,7 +1962,7 @@ var full;
       return as3.every(predicate);
     };
   }
-  var __spreadArray5, isEmpty, isNonEmpty4, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW, match, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound3, head4, last4, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex, findFirstMap, findLastMap, findLastIndex, insertAt, updateAt, deleteAt, modifyAt, reverse2, rights, lefts, sort3, zipWith, unzip, prependAll3, intersperse3, rotate3, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat3, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst, _chainRecBreadthFirst, of3, zero, altW, alt, ap2, flatMap, flatten, map, mapWithIndex, separate, filter, filterMapWithIndex, filterMap, compact, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, filterWithIndex, extend, duplicate, foldMapWithIndex2, reduce2, foldMap2, reduceWithIndex2, reduceRight2, reduceRightWithIndex2, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI, getShow2, getSemigroup3, getMonoid2, getEq2, getOrd, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor, flap2, Pointed, FunctorWithIndex, Apply, apFirst2, apSecond2, Applicative, Chain, Monad, chainFirst2, Unfoldable, Alt, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, chainRecDepthFirst, ChainRecDepthFirst, chainRecBreadthFirst, ChainRecBreadthFirst, _wither, _wilt, Witherable, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, toArray, fromArray, empty2, some2, exists, intercalate2, Do, bindTo2, let_2, bind2, apS2, chain, range3, cons3, snoc3, prependToAll, readonlyArray;
+  var __spreadArray5, isEmpty, isNonEmpty4, prepend3, prependW3, append3, appendW3, makeBy3, replicate2, fromOption, fromEither, matchW, match, matchLeftW, matchLeft2, foldLeft, matchRightW, matchRight2, foldRight, chainWithIndex2, scanLeft, scanRight, size, isOutOfBound3, head4, last4, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex, findFirstMap, findLastMap, findLastIndex, insertAt2, updateAt2, deleteAt, modifyAt2, reverse3, rights, lefts, sort3, zipWith2, unzip2, prependAll3, intersperse3, rotate3, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW2, concat3, _map2, _mapWithIndex2, _ap2, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt2, _reduce2, _foldMap2, _reduceRight2, _reduceWithIndex2, _foldMapWithIndex2, _reduceRightWithIndex2, _filterMapWithIndex, _filterWithIndex, _extend2, _traverse2, _traverseWithIndex2, _chainRecDepthFirst, _chainRecBreadthFirst, of3, zero, altW2, alt2, ap3, flatMap2, flatten2, map2, mapWithIndex2, separate, filter2, filterMapWithIndex, filterMap, compact, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, filterWithIndex2, extend2, duplicate2, foldMapWithIndex3, reduce3, foldMap3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse2, sequence2, traverseWithIndex2, wither, wilt, unfold, URI2, getShow3, getSemigroup4, getMonoid2, getEq3, getOrd, getUnionSemigroup2, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor2, flap3, Pointed2, FunctorWithIndex2, Apply2, apFirst3, apSecond3, Applicative2, Chain2, Monad2, chainFirst3, Unfoldable, Alt2, Zero, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable2, FoldableWithIndex2, Traversable2, TraversableWithIndex2, chainRecDepthFirst, ChainRecDepthFirst, chainRecBreadthFirst, ChainRecBreadthFirst, _wither, _wilt, Witherable, filterE2, FromEither, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, toArray, fromArray2, empty2, some2, exists, intercalate3, Do2, bindTo3, let_3, bind3, apS3, chain2, range3, cons3, snoc3, prependToAll2, readonlyArray;
   var init_ReadonlyArray = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/ReadonlyArray.js"() {
       init_Apply();
@@ -1360,7 +2000,7 @@ var full;
       makeBy3 = function(n, f2) {
         return n <= 0 ? empty2 : makeBy(f2)(n);
       };
-      replicate = function(n, a) {
+      replicate2 = function(n, a) {
         return makeBy3(n, function() {
           return a;
         });
@@ -1382,16 +2022,16 @@ var full;
           return isNonEmpty4(as3) ? onNonEmpty(head2(as3), tail2(as3)) : onEmpty();
         };
       };
-      matchLeft = matchLeftW;
-      foldLeft = matchLeft;
+      matchLeft2 = matchLeftW;
+      foldLeft = matchLeft2;
       matchRightW = function(onEmpty, onNonEmpty) {
         return function(as3) {
           return isNonEmpty4(as3) ? onNonEmpty(init(as3), last2(as3)) : onEmpty();
         };
       };
-      matchRight = matchRightW;
-      foldRight = matchRight;
-      chainWithIndex = function(f2) {
+      matchRight2 = matchRightW;
+      foldRight = matchRight2;
+      chainWithIndex2 = function(f2) {
         return function(as3) {
           if (isEmpty(as3)) {
             return empty2;
@@ -1513,13 +2153,13 @@ var full;
           return none;
         };
       };
-      insertAt = function(i, a) {
+      insertAt2 = function(i, a) {
         return function(as3) {
           return i < 0 || i > as3.length ? none : some(unsafeInsertAt(i, a, as3));
         };
       };
-      updateAt = function(i, a) {
-        return modifyAt(i, function() {
+      updateAt2 = function(i, a) {
+        return modifyAt2(i, function() {
           return a;
         });
       };
@@ -1528,12 +2168,12 @@ var full;
           return isOutOfBound3(i, as3) ? none : some(unsafeDeleteAt(i, as3));
         };
       };
-      modifyAt = function(i, f2) {
+      modifyAt2 = function(i, f2) {
         return function(as3) {
           return isOutOfBound3(i, as3) ? none : some(unsafeUpdateAt3(i, f2(as3[i]), as3));
         };
       };
-      reverse2 = function(as3) {
+      reverse3 = function(as3) {
         return as3.length <= 1 ? as3 : as3.slice().reverse();
       };
       rights = function(as3) {
@@ -1561,7 +2201,7 @@ var full;
           return as3.length <= 1 ? as3 : as3.slice().sort(O.compare);
         };
       };
-      zipWith = function(fa, fb, f2) {
+      zipWith2 = function(fa, fb, f2) {
         var fc = [];
         var len = Math.min(fa.length, fb.length);
         for (var i = 0; i < len; i++) {
@@ -1569,7 +2209,7 @@ var full;
         }
         return fc;
       };
-      unzip = function(as3) {
+      unzip2 = function(as3) {
         var fa = [];
         var fb = [];
         for (var i = 0; i < as3.length; i++) {
@@ -1634,23 +2274,23 @@ var full;
           return fromOption(f2.apply(void 0, a));
         };
       };
-      concatW = function(second) {
+      concatW2 = function(second) {
         return function(first2) {
           return isEmpty(first2) ? second : isEmpty(second) ? first2 : first2.concat(second);
         };
       };
-      concat3 = concatW;
-      _map = function(fa, f2) {
-        return pipe(fa, map(f2));
+      concat3 = concatW2;
+      _map2 = function(fa, f2) {
+        return pipe(fa, map2(f2));
       };
-      _mapWithIndex = function(fa, f2) {
-        return pipe(fa, mapWithIndex(f2));
+      _mapWithIndex2 = function(fa, f2) {
+        return pipe(fa, mapWithIndex2(f2));
       };
-      _ap = function(fab, fa) {
-        return pipe(fab, ap2(fa));
+      _ap2 = function(fab, fa) {
+        return pipe(fab, ap3(fa));
       };
       _filter = function(fa, predicate) {
-        return pipe(fa, filter(predicate));
+        return pipe(fa, filter2(predicate));
       };
       _filterMap = function(fa, f2) {
         return pipe(fa, filterMap(f2));
@@ -1667,50 +2307,50 @@ var full;
       _partitionMapWithIndex = function(fa, f2) {
         return pipe(fa, partitionMapWithIndex(f2));
       };
-      _alt = function(fa, that) {
-        return pipe(fa, alt(that));
+      _alt2 = function(fa, that) {
+        return pipe(fa, alt2(that));
       };
-      _reduce = function(fa, b, f2) {
-        return pipe(fa, reduce2(b, f2));
+      _reduce2 = function(fa, b, f2) {
+        return pipe(fa, reduce3(b, f2));
       };
-      _foldMap = function(M) {
-        var foldMapM = foldMap2(M);
+      _foldMap2 = function(M) {
+        var foldMapM = foldMap3(M);
         return function(fa, f2) {
           return pipe(fa, foldMapM(f2));
         };
       };
-      _reduceRight = function(fa, b, f2) {
-        return pipe(fa, reduceRight2(b, f2));
+      _reduceRight2 = function(fa, b, f2) {
+        return pipe(fa, reduceRight3(b, f2));
       };
-      _reduceWithIndex = function(fa, b, f2) {
-        return pipe(fa, reduceWithIndex2(b, f2));
+      _reduceWithIndex2 = function(fa, b, f2) {
+        return pipe(fa, reduceWithIndex3(b, f2));
       };
-      _foldMapWithIndex = function(M) {
-        var foldMapWithIndexM = foldMapWithIndex2(M);
+      _foldMapWithIndex2 = function(M) {
+        var foldMapWithIndexM = foldMapWithIndex3(M);
         return function(fa, f2) {
           return pipe(fa, foldMapWithIndexM(f2));
         };
       };
-      _reduceRightWithIndex = function(fa, b, f2) {
-        return pipe(fa, reduceRightWithIndex2(b, f2));
+      _reduceRightWithIndex2 = function(fa, b, f2) {
+        return pipe(fa, reduceRightWithIndex3(b, f2));
       };
       _filterMapWithIndex = function(fa, f2) {
         return pipe(fa, filterMapWithIndex(f2));
       };
       _filterWithIndex = function(fa, predicateWithIndex) {
-        return pipe(fa, filterWithIndex(predicateWithIndex));
+        return pipe(fa, filterWithIndex2(predicateWithIndex));
       };
-      _extend = function(fa, f2) {
-        return pipe(fa, extend(f2));
+      _extend2 = function(fa, f2) {
+        return pipe(fa, extend2(f2));
       };
-      _traverse = function(F) {
-        var traverseF = traverse(F);
+      _traverse2 = function(F) {
+        var traverseF = traverse2(F);
         return function(ta, f2) {
           return pipe(ta, traverseF(f2));
         };
       };
-      _traverseWithIndex = function(F) {
-        var traverseWithIndexF = traverseWithIndex(F);
+      _traverseWithIndex2 = function(F) {
+        var traverseWithIndexF = traverseWithIndex2(F);
         return function(ta, f2) {
           return pipe(ta, traverseWithIndexF(f2));
         };
@@ -1725,31 +2365,31 @@ var full;
       zero = function() {
         return empty2;
       };
-      altW = function(that) {
+      altW2 = function(that) {
         return function(fa) {
           return fa.concat(that());
         };
       };
-      alt = altW;
-      ap2 = function(fa) {
-        return flatMap(function(f2) {
-          return pipe(fa, map(f2));
+      alt2 = altW2;
+      ap3 = function(fa) {
+        return flatMap2(function(f2) {
+          return pipe(fa, map2(f2));
         });
       };
-      flatMap = /* @__PURE__ */ dual(2, function(ma, f2) {
-        return pipe(ma, chainWithIndex(function(i, a) {
+      flatMap2 = /* @__PURE__ */ dual(2, function(ma, f2) {
+        return pipe(ma, chainWithIndex2(function(i, a) {
           return f2(a, i);
         }));
       });
-      flatten = /* @__PURE__ */ flatMap(identity);
-      map = function(f2) {
+      flatten2 = /* @__PURE__ */ flatMap2(identity);
+      map2 = function(f2) {
         return function(fa) {
           return fa.map(function(a) {
             return f2(a);
           });
         };
       };
-      mapWithIndex = function(f2) {
+      mapWithIndex2 = function(f2) {
         return function(fa) {
           return fa.map(function(a, i) {
             return f2(i, a);
@@ -1769,7 +2409,7 @@ var full;
         }
         return separated(left, right);
       };
-      filter = function(predicate) {
+      filter2 = function(predicate) {
         return function(as3) {
           return as3.filter(predicate);
         };
@@ -1832,22 +2472,22 @@ var full;
           return separated(left, right);
         };
       };
-      filterWithIndex = function(predicateWithIndex) {
+      filterWithIndex2 = function(predicateWithIndex) {
         return function(as3) {
           return as3.filter(function(a, i) {
             return predicateWithIndex(i, a);
           });
         };
       };
-      extend = function(f2) {
+      extend2 = function(f2) {
         return function(wa) {
           return wa.map(function(_, i) {
             return f2(wa.slice(i));
           });
         };
       };
-      duplicate = /* @__PURE__ */ extend(identity);
-      foldMapWithIndex2 = function(M) {
+      duplicate2 = /* @__PURE__ */ extend2(identity);
+      foldMapWithIndex3 = function(M) {
         return function(f2) {
           return function(fa) {
             return fa.reduce(function(b, a, i) {
@@ -1856,20 +2496,20 @@ var full;
           };
         };
       };
-      reduce2 = function(b, f2) {
-        return reduceWithIndex2(b, function(_, b2, a) {
+      reduce3 = function(b, f2) {
+        return reduceWithIndex3(b, function(_, b2, a) {
           return f2(b2, a);
         });
       };
-      foldMap2 = function(M) {
-        var foldMapWithIndexM = foldMapWithIndex2(M);
+      foldMap3 = function(M) {
+        var foldMapWithIndexM = foldMapWithIndex3(M);
         return function(f2) {
           return foldMapWithIndexM(function(_, a) {
             return f2(a);
           });
         };
       };
-      reduceWithIndex2 = function(b, f2) {
+      reduceWithIndex3 = function(b, f2) {
         return function(fa) {
           var len = fa.length;
           var out = b;
@@ -1879,29 +2519,29 @@ var full;
           return out;
         };
       };
-      reduceRight2 = function(b, f2) {
-        return reduceRightWithIndex2(b, function(_, a, b2) {
+      reduceRight3 = function(b, f2) {
+        return reduceRightWithIndex3(b, function(_, a, b2) {
           return f2(a, b2);
         });
       };
-      reduceRightWithIndex2 = function(b, f2) {
+      reduceRightWithIndex3 = function(b, f2) {
         return function(fa) {
           return fa.reduceRight(function(b2, a, i) {
             return f2(i, a, b2);
           }, b);
         };
       };
-      traverse = function(F) {
-        var traverseWithIndexF = traverseWithIndex(F);
+      traverse2 = function(F) {
+        var traverseWithIndexF = traverseWithIndex2(F);
         return function(f2) {
           return traverseWithIndexF(function(_, a) {
             return f2(a);
           });
         };
       };
-      sequence = function(F) {
+      sequence2 = function(F) {
         return function(ta) {
-          return _reduce(ta, F.of(zero()), function(fas, fa) {
+          return _reduce2(ta, F.of(zero()), function(fas, fa) {
             return F.ap(F.map(fas, function(as3) {
               return function(a) {
                 return pipe(as3, append3(a));
@@ -1910,9 +2550,9 @@ var full;
           });
         };
       };
-      traverseWithIndex = function(F) {
+      traverseWithIndex2 = function(F) {
         return function(f2) {
-          return reduceWithIndex2(F.of(zero()), function(i, fbs, a) {
+          return reduceWithIndex3(F.of(zero()), function(i, fbs, a) {
             return F.ap(F.map(fbs, function(bs) {
               return function(b) {
                 return pipe(bs, append3(b));
@@ -1952,15 +2592,15 @@ var full;
         }
         return out;
       };
-      URI = "ReadonlyArray";
-      getShow2 = function(S) {
+      URI2 = "ReadonlyArray";
+      getShow3 = function(S) {
         return {
           show: function(as3) {
             return "[".concat(as3.map(S.show).join(", "), "]");
           }
         };
       };
-      getSemigroup3 = function() {
+      getSemigroup4 = function() {
         return {
           concat: function(first2, second) {
             return isEmpty(first2) ? second : isEmpty(second) ? first2 : first2.concat(second);
@@ -1969,11 +2609,11 @@ var full;
       };
       getMonoid2 = function() {
         return {
-          concat: getSemigroup3().concat,
+          concat: getSemigroup4().concat,
           empty: empty2
         };
       };
-      getEq2 = function(E) {
+      getEq3 = function(E) {
         return fromEquals(function(xs, ys) {
           return xs.length === ys.length && xs.every(function(x, i) {
             return E.equals(x, ys[i]);
@@ -1994,7 +2634,7 @@ var full;
           return Ord.compare(aLen, bLen);
         });
       };
-      getUnionSemigroup = function(E) {
+      getUnionSemigroup2 = function(E) {
         var unionE = union3(E);
         return {
           concat: function(first2, second) {
@@ -2004,7 +2644,7 @@ var full;
       };
       getUnionMonoid = function(E) {
         return {
-          concat: getUnionSemigroup(E).concat,
+          concat: getUnionSemigroup2(E).concat,
           empty: empty2
         };
       };
@@ -2024,82 +2664,82 @@ var full;
           }
         };
       };
-      Functor = {
-        URI,
-        map: _map
+      Functor2 = {
+        URI: URI2,
+        map: _map2
       };
-      flap2 = /* @__PURE__ */ flap(Functor);
-      Pointed = {
-        URI,
+      flap3 = /* @__PURE__ */ flap(Functor2);
+      Pointed2 = {
+        URI: URI2,
         of: of3
       };
-      FunctorWithIndex = {
-        URI,
-        map: _map,
-        mapWithIndex: _mapWithIndex
+      FunctorWithIndex2 = {
+        URI: URI2,
+        map: _map2,
+        mapWithIndex: _mapWithIndex2
       };
-      Apply = {
-        URI,
-        map: _map,
-        ap: _ap
+      Apply2 = {
+        URI: URI2,
+        map: _map2,
+        ap: _ap2
       };
-      apFirst2 = /* @__PURE__ */ apFirst(Apply);
-      apSecond2 = /* @__PURE__ */ apSecond(Apply);
-      Applicative = {
-        URI,
-        map: _map,
-        ap: _ap,
+      apFirst3 = /* @__PURE__ */ apFirst(Apply2);
+      apSecond3 = /* @__PURE__ */ apSecond(Apply2);
+      Applicative2 = {
+        URI: URI2,
+        map: _map2,
+        ap: _ap2,
         of: of3
       };
-      Chain = {
-        URI,
-        map: _map,
-        ap: _ap,
-        chain: flatMap
+      Chain2 = {
+        URI: URI2,
+        map: _map2,
+        ap: _ap2,
+        chain: flatMap2
       };
-      Monad = {
-        URI,
-        map: _map,
-        ap: _ap,
+      Monad2 = {
+        URI: URI2,
+        map: _map2,
+        ap: _ap2,
         of: of3,
-        chain: flatMap
+        chain: flatMap2
       };
-      chainFirst2 = /* @__PURE__ */ chainFirst(Chain);
+      chainFirst3 = /* @__PURE__ */ chainFirst(Chain2);
       Unfoldable = {
-        URI,
+        URI: URI2,
         unfold
       };
-      Alt = {
-        URI,
-        map: _map,
-        alt: _alt
+      Alt2 = {
+        URI: URI2,
+        map: _map2,
+        alt: _alt2
       };
       Zero = {
-        URI,
+        URI: URI2,
         zero
       };
-      guard2 = /* @__PURE__ */ guard(Zero, Pointed);
+      guard2 = /* @__PURE__ */ guard(Zero, Pointed2);
       Alternative = {
-        URI,
-        map: _map,
-        ap: _ap,
+        URI: URI2,
+        map: _map2,
+        ap: _ap2,
         of: of3,
-        alt: _alt,
+        alt: _alt2,
         zero
       };
       Extend = {
-        URI,
-        map: _map,
-        extend: _extend
+        URI: URI2,
+        map: _map2,
+        extend: _extend2
       };
       Compactable = {
-        URI,
+        URI: URI2,
         compact,
         separate
       };
       Filterable = {
-        URI,
-        map: _map,
+        URI: URI2,
+        map: _map2,
         compact,
         separate,
         filter: _filter,
@@ -2108,9 +2748,9 @@ var full;
         partitionMap: _partitionMap
       };
       FilterableWithIndex = {
-        URI,
-        map: _map,
-        mapWithIndex: _mapWithIndex,
+        URI: URI2,
+        map: _map2,
+        mapWithIndex: _mapWithIndex2,
         compact,
         separate,
         filter: _filter,
@@ -2122,43 +2762,43 @@ var full;
         filterMapWithIndex: _filterMapWithIndex,
         filterWithIndex: _filterWithIndex
       };
-      Foldable = {
-        URI,
-        reduce: _reduce,
-        foldMap: _foldMap,
-        reduceRight: _reduceRight
+      Foldable2 = {
+        URI: URI2,
+        reduce: _reduce2,
+        foldMap: _foldMap2,
+        reduceRight: _reduceRight2
       };
-      FoldableWithIndex = {
-        URI,
-        reduce: _reduce,
-        foldMap: _foldMap,
-        reduceRight: _reduceRight,
-        reduceWithIndex: _reduceWithIndex,
-        foldMapWithIndex: _foldMapWithIndex,
-        reduceRightWithIndex: _reduceRightWithIndex
+      FoldableWithIndex2 = {
+        URI: URI2,
+        reduce: _reduce2,
+        foldMap: _foldMap2,
+        reduceRight: _reduceRight2,
+        reduceWithIndex: _reduceWithIndex2,
+        foldMapWithIndex: _foldMapWithIndex2,
+        reduceRightWithIndex: _reduceRightWithIndex2
       };
-      Traversable = {
-        URI,
-        map: _map,
-        reduce: _reduce,
-        foldMap: _foldMap,
-        reduceRight: _reduceRight,
-        traverse: _traverse,
-        sequence
+      Traversable2 = {
+        URI: URI2,
+        map: _map2,
+        reduce: _reduce2,
+        foldMap: _foldMap2,
+        reduceRight: _reduceRight2,
+        traverse: _traverse2,
+        sequence: sequence2
       };
-      TraversableWithIndex = {
-        URI,
-        map: _map,
-        mapWithIndex: _mapWithIndex,
-        reduce: _reduce,
-        foldMap: _foldMap,
-        reduceRight: _reduceRight,
-        reduceWithIndex: _reduceWithIndex,
-        foldMapWithIndex: _foldMapWithIndex,
-        reduceRightWithIndex: _reduceRightWithIndex,
-        traverse: _traverse,
-        sequence,
-        traverseWithIndex: _traverseWithIndex
+      TraversableWithIndex2 = {
+        URI: URI2,
+        map: _map2,
+        mapWithIndex: _mapWithIndex2,
+        reduce: _reduce2,
+        foldMap: _foldMap2,
+        reduceRight: _reduceRight2,
+        reduceWithIndex: _reduceWithIndex2,
+        foldMapWithIndex: _foldMapWithIndex2,
+        reduceRightWithIndex: _reduceRightWithIndex2,
+        traverse: _traverse2,
+        sequence: sequence2,
+        traverseWithIndex: _traverseWithIndex2
       };
       chainRecDepthFirst = function(f2) {
         return function(a) {
@@ -2176,10 +2816,10 @@ var full;
         };
       };
       ChainRecDepthFirst = {
-        URI,
-        map: _map,
-        ap: _ap,
-        chain: flatMap,
+        URI: URI2,
+        map: _map2,
+        ap: _ap2,
+        chain: flatMap2,
         chainRec: _chainRecDepthFirst
       };
       chainRecBreadthFirst = function(f2) {
@@ -2207,34 +2847,34 @@ var full;
         };
       };
       ChainRecBreadthFirst = {
-        URI,
-        map: _map,
-        ap: _ap,
-        chain: flatMap,
+        URI: URI2,
+        map: _map2,
+        ap: _ap2,
+        chain: flatMap2,
         chainRec: _chainRecBreadthFirst
       };
-      _wither = /* @__PURE__ */ witherDefault(Traversable, Compactable);
-      _wilt = /* @__PURE__ */ wiltDefault(Traversable, Compactable);
+      _wither = /* @__PURE__ */ witherDefault(Traversable2, Compactable);
+      _wilt = /* @__PURE__ */ wiltDefault(Traversable2, Compactable);
       Witherable = {
-        URI,
-        map: _map,
+        URI: URI2,
+        map: _map2,
         compact,
         separate,
         filter: _filter,
         filterMap: _filterMap,
         partition: _partition,
         partitionMap: _partitionMap,
-        reduce: _reduce,
-        foldMap: _foldMap,
-        reduceRight: _reduceRight,
-        traverse: _traverse,
-        sequence,
+        reduce: _reduce2,
+        foldMap: _foldMap2,
+        reduceRight: _reduceRight2,
+        traverse: _traverse2,
+        sequence: sequence2,
         wither: _wither,
         wilt: _wilt
       };
       filterE2 = /* @__PURE__ */ filterE(Witherable);
       FromEither = {
-        URI,
+        URI: URI2,
         fromEither
       };
       fromEitherK2 = /* @__PURE__ */ fromEitherK(FromEither);
@@ -2250,7 +2890,7 @@ var full;
       toArray = function(as3) {
         return as3.slice();
       };
-      fromArray = function(as3) {
+      fromArray2 = function(as3) {
         return isEmpty(as3) ? empty2 : as3.slice();
       };
       empty2 = empty;
@@ -2260,7 +2900,7 @@ var full;
         };
       };
       exists = some2;
-      intercalate2 = function(M) {
+      intercalate3 = function(M) {
         var intercalateM = intercalate(M);
         return function(middle) {
           return match(function() {
@@ -2268,46 +2908,46 @@ var full;
           }, intercalateM(middle));
         };
       };
-      Do = /* @__PURE__ */ of3(emptyRecord);
-      bindTo2 = /* @__PURE__ */ bindTo(Functor);
-      let_2 = /* @__PURE__ */ let_(Functor);
-      bind2 = /* @__PURE__ */ bind(Chain);
-      apS2 = /* @__PURE__ */ apS(Apply);
-      chain = flatMap;
+      Do2 = /* @__PURE__ */ of3(emptyRecord);
+      bindTo3 = /* @__PURE__ */ bindTo(Functor2);
+      let_3 = /* @__PURE__ */ let_(Functor2);
+      bind3 = /* @__PURE__ */ bind(Chain2);
+      apS3 = /* @__PURE__ */ apS(Apply2);
+      chain2 = flatMap2;
       range3 = range;
       cons3 = cons;
       snoc3 = snoc;
-      prependToAll = prependAll3;
+      prependToAll2 = prependAll3;
       readonlyArray = {
-        URI,
+        URI: URI2,
         compact,
         separate,
-        map: _map,
-        ap: _ap,
+        map: _map2,
+        ap: _ap2,
         of: of3,
-        chain: flatMap,
+        chain: flatMap2,
         filter: _filter,
         filterMap: _filterMap,
         partition: _partition,
         partitionMap: _partitionMap,
-        mapWithIndex: _mapWithIndex,
+        mapWithIndex: _mapWithIndex2,
         partitionMapWithIndex: _partitionMapWithIndex,
         partitionWithIndex: _partitionWithIndex,
         filterMapWithIndex: _filterMapWithIndex,
         filterWithIndex: _filterWithIndex,
-        alt: _alt,
+        alt: _alt2,
         zero,
         unfold,
-        reduce: _reduce,
-        foldMap: _foldMap,
-        reduceRight: _reduceRight,
-        traverse: _traverse,
-        sequence,
-        reduceWithIndex: _reduceWithIndex,
-        foldMapWithIndex: _foldMapWithIndex,
-        reduceRightWithIndex: _reduceRightWithIndex,
-        traverseWithIndex: _traverseWithIndex,
-        extend: _extend,
+        reduce: _reduce2,
+        foldMap: _foldMap2,
+        reduceRight: _reduceRight2,
+        traverse: _traverse2,
+        sequence: sequence2,
+        reduceWithIndex: _reduceWithIndex2,
+        foldMapWithIndex: _foldMapWithIndex2,
+        reduceRightWithIndex: _reduceRightWithIndex2,
+        traverseWithIndex: _traverseWithIndex2,
+        extend: _extend2,
         wither: _wither,
         wilt: _wilt
       };
@@ -2317,53 +2957,53 @@ var full;
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Array.js
   var Array_exports = {};
   __export(Array_exports, {
-    Alt: () => Alt2,
+    Alt: () => Alt3,
     Alternative: () => Alternative2,
-    Applicative: () => Applicative2,
-    Apply: () => Apply2,
-    Chain: () => Chain2,
+    Applicative: () => Applicative3,
+    Apply: () => Apply3,
+    Chain: () => Chain3,
     ChainRecBreadthFirst: () => ChainRecBreadthFirst2,
     ChainRecDepthFirst: () => ChainRecDepthFirst2,
     Compactable: () => Compactable2,
-    Do: () => Do2,
+    Do: () => Do3,
     Extend: () => Extend2,
     Filterable: () => Filterable2,
     FilterableWithIndex: () => FilterableWithIndex2,
-    Foldable: () => Foldable2,
-    FoldableWithIndex: () => FoldableWithIndex2,
+    Foldable: () => Foldable3,
+    FoldableWithIndex: () => FoldableWithIndex3,
     FromEither: () => FromEither2,
-    Functor: () => Functor2,
-    FunctorWithIndex: () => FunctorWithIndex2,
-    Monad: () => Monad2,
-    Pointed: () => Pointed2,
-    Traversable: () => Traversable2,
-    TraversableWithIndex: () => TraversableWithIndex2,
-    URI: () => URI2,
+    Functor: () => Functor3,
+    FunctorWithIndex: () => FunctorWithIndex3,
+    Monad: () => Monad3,
+    Pointed: () => Pointed3,
+    Traversable: () => Traversable3,
+    TraversableWithIndex: () => TraversableWithIndex3,
+    URI: () => URI3,
     Unfoldable: () => Unfoldable2,
     Witherable: () => Witherable2,
     Zero: () => Zero2,
-    alt: () => alt2,
-    altW: () => altW2,
-    ap: () => ap3,
-    apFirst: () => apFirst3,
-    apS: () => apS3,
-    apSecond: () => apSecond3,
+    alt: () => alt3,
+    altW: () => altW3,
+    ap: () => ap4,
+    apFirst: () => apFirst4,
+    apS: () => apS4,
+    apSecond: () => apSecond4,
     append: () => append4,
     appendW: () => appendW4,
     array: () => array,
-    bind: () => bind3,
-    bindTo: () => bindTo3,
-    chain: () => chain2,
-    chainFirst: () => chainFirst3,
+    bind: () => bind4,
+    bindTo: () => bindTo4,
+    chain: () => chain3,
+    chainFirst: () => chainFirst4,
     chainRecBreadthFirst: () => chainRecBreadthFirst2,
     chainRecDepthFirst: () => chainRecDepthFirst2,
-    chainWithIndex: () => chainWithIndex2,
+    chainWithIndex: () => chainWithIndex3,
     chop: () => chop4,
     chunksOf: () => chunksOf4,
     compact: () => compact2,
     comprehension: () => comprehension2,
     concat: () => concat4,
-    concatW: () => concatW2,
+    concatW: () => concatW3,
     cons: () => cons4,
     copy: () => copy2,
     deleteAt: () => deleteAt2,
@@ -2371,29 +3011,29 @@ var full;
     dropLeft: () => dropLeft2,
     dropLeftWhile: () => dropLeftWhile2,
     dropRight: () => dropRight2,
-    duplicate: () => duplicate2,
+    duplicate: () => duplicate3,
     elem: () => elem2,
     empty: () => empty3,
     every: () => every2,
     exists: () => exists2,
-    extend: () => extend2,
-    filter: () => filter2,
+    extend: () => extend3,
+    filter: () => filter3,
     filterE: () => filterE3,
     filterMap: () => filterMap2,
     filterMapWithIndex: () => filterMapWithIndex2,
-    filterWithIndex: () => filterWithIndex2,
+    filterWithIndex: () => filterWithIndex3,
     findFirst: () => findFirst2,
     findFirstMap: () => findFirstMap2,
     findIndex: () => findIndex2,
     findLast: () => findLast2,
     findLastIndex: () => findLastIndex2,
     findLastMap: () => findLastMap2,
-    flap: () => flap3,
-    flatMap: () => flatMap2,
-    flatten: () => flatten2,
+    flap: () => flap4,
+    flatMap: () => flatMap3,
+    flatten: () => flatten3,
     foldLeft: () => foldLeft2,
-    foldMap: () => foldMap3,
-    foldMapWithIndex: () => foldMapWithIndex3,
+    foldMap: () => foldMap4,
+    foldMapWithIndex: () => foldMapWithIndex4,
     foldRight: () => foldRight2,
     fromEither: () => fromEither2,
     fromEitherK: () => fromEitherK3,
@@ -2401,19 +3041,19 @@ var full;
     fromOptionK: () => fromOptionK2,
     fromPredicate: () => fromPredicate2,
     getDifferenceMagma: () => getDifferenceMagma2,
-    getEq: () => getEq3,
+    getEq: () => getEq4,
     getIntersectionSemigroup: () => getIntersectionSemigroup2,
     getMonoid: () => getMonoid3,
     getOrd: () => getOrd2,
-    getSemigroup: () => getSemigroup4,
-    getShow: () => getShow3,
+    getSemigroup: () => getSemigroup5,
+    getShow: () => getShow4,
     getUnionMonoid: () => getUnionMonoid2,
-    getUnionSemigroup: () => getUnionSemigroup2,
+    getUnionSemigroup: () => getUnionSemigroup3,
     guard: () => guard3,
     head: () => head5,
     init: () => init4,
-    insertAt: () => insertAt2,
-    intercalate: () => intercalate3,
+    insertAt: () => insertAt3,
+    intercalate: () => intercalate4,
     intersection: () => intersection2,
     intersperse: () => intersperse4,
     isEmpty: () => isEmpty2,
@@ -2421,18 +3061,18 @@ var full;
     isOutOfBound: () => isOutOfBound4,
     last: () => last5,
     lefts: () => lefts2,
-    let: () => let_3,
+    let: () => let_4,
     lookup: () => lookup2,
     makeBy: () => makeBy4,
-    map: () => map2,
-    mapWithIndex: () => mapWithIndex2,
+    map: () => map3,
+    mapWithIndex: () => mapWithIndex3,
     match: () => match2,
-    matchLeft: () => matchLeft2,
+    matchLeft: () => matchLeft3,
     matchLeftW: () => matchLeftW2,
-    matchRight: () => matchRight2,
+    matchRight: () => matchRight3,
     matchRightW: () => matchRightW2,
     matchW: () => matchW2,
-    modifyAt: () => modifyAt2,
+    modifyAt: () => modifyAt3,
     of: () => of4,
     partition: () => partition2,
     partitionMap: () => partitionMap2,
@@ -2440,21 +3080,21 @@ var full;
     partitionWithIndex: () => partitionWithIndex2,
     prepend: () => prepend4,
     prependAll: () => prependAll4,
-    prependToAll: () => prependToAll2,
+    prependToAll: () => prependToAll3,
     prependW: () => prependW4,
     range: () => range4,
-    reduce: () => reduce3,
-    reduceRight: () => reduceRight3,
-    reduceRightWithIndex: () => reduceRightWithIndex3,
-    reduceWithIndex: () => reduceWithIndex3,
-    replicate: () => replicate2,
-    reverse: () => reverse3,
+    reduce: () => reduce4,
+    reduceRight: () => reduceRight4,
+    reduceRightWithIndex: () => reduceRightWithIndex4,
+    reduceWithIndex: () => reduceWithIndex4,
+    replicate: () => replicate3,
+    reverse: () => reverse4,
     rights: () => rights2,
     rotate: () => rotate4,
     scanLeft: () => scanLeft2,
     scanRight: () => scanRight2,
     separate: () => separate2,
-    sequence: () => sequence2,
+    sequence: () => sequence3,
     size: () => size2,
     snoc: () => snoc4,
     some: () => some3,
@@ -2466,21 +3106,21 @@ var full;
     takeLeft: () => takeLeft2,
     takeLeftWhile: () => takeLeftWhile2,
     takeRight: () => takeRight2,
-    traverse: () => traverse2,
-    traverseWithIndex: () => traverseWithIndex2,
+    traverse: () => traverse3,
+    traverseWithIndex: () => traverseWithIndex3,
     unfold: () => unfold2,
     union: () => union4,
     uniq: () => uniq4,
     unsafeDeleteAt: () => unsafeDeleteAt2,
     unsafeInsertAt: () => unsafeInsertAt4,
     unsafeUpdateAt: () => unsafeUpdateAt4,
-    unzip: () => unzip2,
-    updateAt: () => updateAt2,
+    unzip: () => unzip3,
+    updateAt: () => updateAt3,
     wilt: () => wilt2,
     wither: () => wither2,
     zero: () => zero2,
-    zip: () => zip2,
-    zipWith: () => zipWith2
+    zip: () => zip3,
+    zipWith: () => zipWith3
   });
   function fromPredicate2(predicate) {
     return function(a) {
@@ -2517,13 +3157,13 @@ var full;
   function findLast2(predicate) {
     return findLast(predicate);
   }
-  function zip2(as3, bs) {
+  function zip3(as3, bs) {
     if (bs === void 0) {
       return function(bs2) {
-        return zip2(bs2, as3);
+        return zip3(bs2, as3);
       };
     }
-    return zipWith2(as3, bs, function(a, b) {
+    return zipWith3(as3, bs, function(a, b) {
       return [a, b];
     });
   }
@@ -2534,7 +3174,7 @@ var full;
       };
     }
     var go = function(scope, input2) {
-      return isNonEmpty5(input2) ? flatMap2(head3(input2), function(a) {
+      return isNonEmpty5(input2) ? flatMap3(head3(input2), function(a) {
         return go(pipe(scope, append4(a)), tail3(input2));
       }) : g.apply(void 0, scope) ? [f2.apply(void 0, scope)] : [];
     };
@@ -2580,7 +3220,7 @@ var full;
       });
     };
   }
-  var isEmpty2, isNonEmpty5, prepend4, prependW4, append4, appendW4, makeBy4, replicate2, fromOption2, fromEither2, matchW2, match2, matchLeftW2, matchLeft2, foldLeft2, matchRightW2, matchRight2, foldRight2, chainWithIndex2, scanLeft2, scanRight2, size2, isOutOfBound4, lookup2, head5, last5, tail5, init4, takeLeft2, takeRight2, spanLeftIndex2, dropLeft2, dropRight2, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt2, updateAt2, deleteAt2, modifyAt2, reverse3, rights2, lefts2, sort4, zipWith2, unzip2, prependAll4, intersperse4, rotate4, elem2, uniq4, sortBy4, chop4, splitAt4, chunksOf4, fromOptionK2, concatW2, concat4, _map2, _mapWithIndex2, _ap2, _filter2, _filterMap2, _partition2, _partitionMap2, _partitionWithIndex2, _partitionMapWithIndex2, _alt2, _reduce2, _foldMap2, _reduceRight2, _reduceWithIndex2, _foldMapWithIndex2, _reduceRightWithIndex2, _filterMapWithIndex2, _filterWithIndex2, _extend2, _traverse2, _traverseWithIndex2, _chainRecDepthFirst2, _chainRecBreadthFirst2, of4, zero2, map2, ap3, flatMap2, flatten2, mapWithIndex2, filterMapWithIndex2, filterMap2, compact2, separate2, filter2, partition2, partitionWithIndex2, partitionMap2, partitionMapWithIndex2, altW2, alt2, filterWithIndex2, extend2, duplicate2, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse2, sequence2, traverseWithIndex2, wither2, wilt2, unfold2, URI2, getShow3, getSemigroup4, getMonoid3, getEq3, getOrd2, getUnionSemigroup2, getUnionMonoid2, getIntersectionSemigroup2, getDifferenceMagma2, Functor2, flap3, Pointed2, FunctorWithIndex2, Apply2, apFirst3, apSecond3, Applicative2, Chain2, chainFirst3, Monad2, Unfoldable2, Alt2, Zero2, guard3, Alternative2, Extend2, Compactable2, Filterable2, FilterableWithIndex2, Foldable2, FoldableWithIndex2, Traversable2, TraversableWithIndex2, _wither2, _wilt2, Witherable2, chainRecDepthFirst2, ChainRecDepthFirst2, chainRecBreadthFirst2, ChainRecBreadthFirst2, filterE3, FromEither2, fromEitherK3, unsafeInsertAt4, unsafeUpdateAt4, unsafeDeleteAt2, every2, some3, exists2, intercalate3, Do2, bindTo3, let_3, bind3, apS3, chain2, range4, empty3, cons4, snoc4, prependToAll2, array;
+  var isEmpty2, isNonEmpty5, prepend4, prependW4, append4, appendW4, makeBy4, replicate3, fromOption2, fromEither2, matchW2, match2, matchLeftW2, matchLeft3, foldLeft2, matchRightW2, matchRight3, foldRight2, chainWithIndex3, scanLeft2, scanRight2, size2, isOutOfBound4, lookup2, head5, last5, tail5, init4, takeLeft2, takeRight2, spanLeftIndex2, dropLeft2, dropRight2, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt3, updateAt3, deleteAt2, modifyAt3, reverse4, rights2, lefts2, sort4, zipWith3, unzip3, prependAll4, intersperse4, rotate4, elem2, uniq4, sortBy4, chop4, splitAt4, chunksOf4, fromOptionK2, concatW3, concat4, _map3, _mapWithIndex3, _ap3, _filter2, _filterMap2, _partition2, _partitionMap2, _partitionWithIndex2, _partitionMapWithIndex2, _alt3, _reduce3, _foldMap3, _reduceRight3, _reduceWithIndex3, _foldMapWithIndex3, _reduceRightWithIndex3, _filterMapWithIndex2, _filterWithIndex2, _extend3, _traverse3, _traverseWithIndex3, _chainRecDepthFirst2, _chainRecBreadthFirst2, of4, zero2, map3, ap4, flatMap3, flatten3, mapWithIndex3, filterMapWithIndex2, filterMap2, compact2, separate2, filter3, partition2, partitionWithIndex2, partitionMap2, partitionMapWithIndex2, altW3, alt3, filterWithIndex3, extend3, duplicate3, foldMap4, foldMapWithIndex4, reduce4, reduceWithIndex4, reduceRight4, reduceRightWithIndex4, traverse3, sequence3, traverseWithIndex3, wither2, wilt2, unfold2, URI3, getShow4, getSemigroup5, getMonoid3, getEq4, getOrd2, getUnionSemigroup3, getUnionMonoid2, getIntersectionSemigroup2, getDifferenceMagma2, Functor3, flap4, Pointed3, FunctorWithIndex3, Apply3, apFirst4, apSecond4, Applicative3, Chain3, chainFirst4, Monad3, Unfoldable2, Alt3, Zero2, guard3, Alternative2, Extend2, Compactable2, Filterable2, FilterableWithIndex2, Foldable3, FoldableWithIndex3, Traversable3, TraversableWithIndex3, _wither2, _wilt2, Witherable2, chainRecDepthFirst2, ChainRecDepthFirst2, chainRecBreadthFirst2, ChainRecBreadthFirst2, filterE3, FromEither2, fromEitherK3, unsafeInsertAt4, unsafeUpdateAt4, unsafeDeleteAt2, every2, some3, exists2, intercalate4, Do3, bindTo4, let_4, bind4, apS4, chain3, range4, empty3, cons4, snoc4, prependToAll3, array;
   var init_Array = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Array.js"() {
       init_Apply();
@@ -2605,7 +3245,7 @@ var full;
       makeBy4 = function(n, f2) {
         return n <= 0 ? [] : makeBy2(f2)(n);
       };
-      replicate2 = function(n, a) {
+      replicate3 = function(n, a) {
         return makeBy4(n, function() {
           return a;
         });
@@ -2627,16 +3267,16 @@ var full;
           return isNonEmpty5(as3) ? onNonEmpty(head3(as3), tail3(as3)) : onEmpty();
         };
       };
-      matchLeft2 = matchLeftW2;
-      foldLeft2 = matchLeft2;
+      matchLeft3 = matchLeftW2;
+      foldLeft2 = matchLeft3;
       matchRightW2 = function(onEmpty, onNonEmpty) {
         return function(as3) {
           return isNonEmpty5(as3) ? onNonEmpty(init2(as3), last3(as3)) : onEmpty();
         };
       };
-      matchRight2 = matchRightW2;
-      foldRight2 = matchRight2;
-      chainWithIndex2 = function(f2) {
+      matchRight3 = matchRightW2;
+      foldRight2 = matchRight3;
+      chainWithIndex3 = function(f2) {
         return function(as3) {
           var out = [];
           for (var i = 0; i < as3.length; i++) {
@@ -2717,13 +3357,13 @@ var full;
       copy2 = function(as3) {
         return as3.slice();
       };
-      insertAt2 = function(i, a) {
+      insertAt3 = function(i, a) {
         return function(as3) {
           return i < 0 || i > as3.length ? none : some(unsafeInsertAt4(i, a, as3));
         };
       };
-      updateAt2 = function(i, a) {
-        return modifyAt2(i, function() {
+      updateAt3 = function(i, a) {
+        return modifyAt3(i, function() {
           return a;
         });
       };
@@ -2732,12 +3372,12 @@ var full;
           return isOutOfBound4(i, as3) ? none : some(unsafeDeleteAt2(i, as3));
         };
       };
-      modifyAt2 = function(i, f2) {
+      modifyAt3 = function(i, f2) {
         return function(as3) {
           return isOutOfBound4(i, as3) ? none : some(unsafeUpdateAt4(i, f2(as3[i]), as3));
         };
       };
-      reverse3 = function(as3) {
+      reverse4 = function(as3) {
         return isEmpty2(as3) ? [] : as3.slice().reverse();
       };
       rights2 = function(as3) {
@@ -2765,7 +3405,7 @@ var full;
           return as3.length <= 1 ? copy2(as3) : as3.slice().sort(O.compare);
         };
       };
-      zipWith2 = function(fa, fb, f2) {
+      zipWith3 = function(fa, fb, f2) {
         var fc = [];
         var len = Math.min(fa.length, fb.length);
         for (var i = 0; i < len; i++) {
@@ -2773,7 +3413,7 @@ var full;
         }
         return fc;
       };
-      unzip2 = function(as3) {
+      unzip3 = function(as3) {
         var fa = [];
         var fb = [];
         for (var i = 0; i < as3.length; i++) {
@@ -2839,23 +3479,23 @@ var full;
           return fromOption2(f2.apply(void 0, a));
         };
       };
-      concatW2 = function(second) {
+      concatW3 = function(second) {
         return function(first2) {
           return isEmpty2(first2) ? copy2(second) : isEmpty2(second) ? copy2(first2) : first2.concat(second);
         };
       };
-      concat4 = concatW2;
-      _map2 = function(fa, f2) {
-        return pipe(fa, map2(f2));
+      concat4 = concatW3;
+      _map3 = function(fa, f2) {
+        return pipe(fa, map3(f2));
       };
-      _mapWithIndex2 = function(fa, f2) {
-        return pipe(fa, mapWithIndex2(f2));
+      _mapWithIndex3 = function(fa, f2) {
+        return pipe(fa, mapWithIndex3(f2));
       };
-      _ap2 = function(fab, fa) {
-        return pipe(fab, ap3(fa));
+      _ap3 = function(fab, fa) {
+        return pipe(fab, ap4(fa));
       };
       _filter2 = function(fa, predicate) {
-        return pipe(fa, filter2(predicate));
+        return pipe(fa, filter3(predicate));
       };
       _filterMap2 = function(fa, f2) {
         return pipe(fa, filterMap2(f2));
@@ -2872,50 +3512,50 @@ var full;
       _partitionMapWithIndex2 = function(fa, f2) {
         return pipe(fa, partitionMapWithIndex2(f2));
       };
-      _alt2 = function(fa, that) {
-        return pipe(fa, alt2(that));
+      _alt3 = function(fa, that) {
+        return pipe(fa, alt3(that));
       };
-      _reduce2 = function(fa, b, f2) {
-        return pipe(fa, reduce3(b, f2));
+      _reduce3 = function(fa, b, f2) {
+        return pipe(fa, reduce4(b, f2));
       };
-      _foldMap2 = function(M) {
-        var foldMapM = foldMap3(M);
+      _foldMap3 = function(M) {
+        var foldMapM = foldMap4(M);
         return function(fa, f2) {
           return pipe(fa, foldMapM(f2));
         };
       };
-      _reduceRight2 = function(fa, b, f2) {
-        return pipe(fa, reduceRight3(b, f2));
+      _reduceRight3 = function(fa, b, f2) {
+        return pipe(fa, reduceRight4(b, f2));
       };
-      _reduceWithIndex2 = function(fa, b, f2) {
-        return pipe(fa, reduceWithIndex3(b, f2));
+      _reduceWithIndex3 = function(fa, b, f2) {
+        return pipe(fa, reduceWithIndex4(b, f2));
       };
-      _foldMapWithIndex2 = function(M) {
-        var foldMapWithIndexM = foldMapWithIndex3(M);
+      _foldMapWithIndex3 = function(M) {
+        var foldMapWithIndexM = foldMapWithIndex4(M);
         return function(fa, f2) {
           return pipe(fa, foldMapWithIndexM(f2));
         };
       };
-      _reduceRightWithIndex2 = function(fa, b, f2) {
-        return pipe(fa, reduceRightWithIndex3(b, f2));
+      _reduceRightWithIndex3 = function(fa, b, f2) {
+        return pipe(fa, reduceRightWithIndex4(b, f2));
       };
       _filterMapWithIndex2 = function(fa, f2) {
         return pipe(fa, filterMapWithIndex2(f2));
       };
       _filterWithIndex2 = function(fa, predicateWithIndex) {
-        return pipe(fa, filterWithIndex2(predicateWithIndex));
+        return pipe(fa, filterWithIndex3(predicateWithIndex));
       };
-      _extend2 = function(fa, f2) {
-        return pipe(fa, extend2(f2));
+      _extend3 = function(fa, f2) {
+        return pipe(fa, extend3(f2));
       };
-      _traverse2 = function(F) {
-        var traverseF = traverse2(F);
+      _traverse3 = function(F) {
+        var traverseF = traverse3(F);
         return function(ta, f2) {
           return pipe(ta, traverseF(f2));
         };
       };
-      _traverseWithIndex2 = function(F) {
-        var traverseWithIndexF = traverseWithIndex2(F);
+      _traverseWithIndex3 = function(F) {
+        var traverseWithIndexF = traverseWithIndex3(F);
         return function(ta, f2) {
           return pipe(ta, traverseWithIndexF(f2));
         };
@@ -2926,25 +3566,25 @@ var full;
       zero2 = function() {
         return [];
       };
-      map2 = function(f2) {
+      map3 = function(f2) {
         return function(fa) {
           return fa.map(function(a) {
             return f2(a);
           });
         };
       };
-      ap3 = function(fa) {
-        return flatMap2(function(f2) {
-          return pipe(fa, map2(f2));
+      ap4 = function(fa) {
+        return flatMap3(function(f2) {
+          return pipe(fa, map3(f2));
         });
       };
-      flatMap2 = /* @__PURE__ */ dual(2, function(ma, f2) {
-        return pipe(ma, chainWithIndex2(function(i, a) {
+      flatMap3 = /* @__PURE__ */ dual(2, function(ma, f2) {
+        return pipe(ma, chainWithIndex3(function(i, a) {
           return f2(a, i);
         }));
       });
-      flatten2 = /* @__PURE__ */ flatMap2(identity);
-      mapWithIndex2 = function(f2) {
+      flatten3 = /* @__PURE__ */ flatMap3(identity);
+      mapWithIndex3 = function(f2) {
         return function(fa) {
           return fa.map(function(a, i) {
             return f2(i, a);
@@ -2982,7 +3622,7 @@ var full;
         }
         return separated(left, right);
       };
-      filter2 = function(predicate) {
+      filter3 = function(predicate) {
         return function(as3) {
           return as3.filter(predicate);
         };
@@ -3027,44 +3667,44 @@ var full;
           return separated(left, right);
         };
       };
-      altW2 = function(that) {
+      altW3 = function(that) {
         return function(fa) {
           return fa.concat(that());
         };
       };
-      alt2 = altW2;
-      filterWithIndex2 = function(predicateWithIndex) {
+      alt3 = altW3;
+      filterWithIndex3 = function(predicateWithIndex) {
         return function(as3) {
           return as3.filter(function(b, i) {
             return predicateWithIndex(i, b);
           });
         };
       };
-      extend2 = function(f2) {
+      extend3 = function(f2) {
         return function(wa) {
           return wa.map(function(_, i) {
             return f2(wa.slice(i));
           });
         };
       };
-      duplicate2 = /* @__PURE__ */ extend2(identity);
-      foldMap3 = foldMap2;
-      foldMapWithIndex3 = foldMapWithIndex2;
-      reduce3 = reduce2;
-      reduceWithIndex3 = reduceWithIndex2;
-      reduceRight3 = reduceRight2;
-      reduceRightWithIndex3 = reduceRightWithIndex2;
-      traverse2 = function(F) {
-        var traverseWithIndexF = traverseWithIndex2(F);
+      duplicate3 = /* @__PURE__ */ extend3(identity);
+      foldMap4 = foldMap3;
+      foldMapWithIndex4 = foldMapWithIndex3;
+      reduce4 = reduce3;
+      reduceWithIndex4 = reduceWithIndex3;
+      reduceRight4 = reduceRight3;
+      reduceRightWithIndex4 = reduceRightWithIndex3;
+      traverse3 = function(F) {
+        var traverseWithIndexF = traverseWithIndex3(F);
         return function(f2) {
           return traverseWithIndexF(function(_, a) {
             return f2(a);
           });
         };
       };
-      sequence2 = function(F) {
+      sequence3 = function(F) {
         return function(ta) {
-          return _reduce2(ta, F.of(zero2()), function(fas, fa) {
+          return _reduce3(ta, F.of(zero2()), function(fas, fa) {
             return F.ap(F.map(fas, function(as3) {
               return function(a) {
                 return pipe(as3, append4(a));
@@ -3073,9 +3713,9 @@ var full;
           });
         };
       };
-      traverseWithIndex2 = function(F) {
+      traverseWithIndex3 = function(F) {
         return function(f2) {
-          return reduceWithIndex3(F.of(zero2()), function(i, fbs, a) {
+          return reduceWithIndex4(F.of(zero2()), function(i, fbs, a) {
             return F.ap(F.map(fbs, function(bs) {
               return function(b) {
                 return pipe(bs, append4(b));
@@ -3115,9 +3755,9 @@ var full;
         }
         return out;
       };
-      URI2 = "Array";
-      getShow3 = getShow2;
-      getSemigroup4 = function() {
+      URI3 = "Array";
+      getShow4 = getShow3;
+      getSemigroup5 = function() {
         return {
           concat: function(first2, second) {
             return first2.concat(second);
@@ -3126,13 +3766,13 @@ var full;
       };
       getMonoid3 = function() {
         return {
-          concat: getSemigroup4().concat,
+          concat: getSemigroup5().concat,
           empty: []
         };
       };
-      getEq3 = getEq2;
+      getEq4 = getEq3;
       getOrd2 = getOrd;
-      getUnionSemigroup2 = function(E) {
+      getUnionSemigroup3 = function(E) {
         var unionE = union4(E);
         return {
           concat: function(first2, second) {
@@ -3142,7 +3782,7 @@ var full;
       };
       getUnionMonoid2 = function(E) {
         return {
-          concat: getUnionSemigroup2(E).concat,
+          concat: getUnionSemigroup3(E).concat,
           empty: []
         };
       };
@@ -3162,82 +3802,82 @@ var full;
           }
         };
       };
-      Functor2 = {
-        URI: URI2,
-        map: _map2
+      Functor3 = {
+        URI: URI3,
+        map: _map3
       };
-      flap3 = /* @__PURE__ */ flap(Functor2);
-      Pointed2 = {
-        URI: URI2,
+      flap4 = /* @__PURE__ */ flap(Functor3);
+      Pointed3 = {
+        URI: URI3,
         of: of4
       };
-      FunctorWithIndex2 = {
-        URI: URI2,
-        map: _map2,
-        mapWithIndex: _mapWithIndex2
+      FunctorWithIndex3 = {
+        URI: URI3,
+        map: _map3,
+        mapWithIndex: _mapWithIndex3
       };
-      Apply2 = {
-        URI: URI2,
-        map: _map2,
-        ap: _ap2
+      Apply3 = {
+        URI: URI3,
+        map: _map3,
+        ap: _ap3
       };
-      apFirst3 = /* @__PURE__ */ apFirst(Apply2);
-      apSecond3 = /* @__PURE__ */ apSecond(Apply2);
-      Applicative2 = {
-        URI: URI2,
-        map: _map2,
-        ap: _ap2,
+      apFirst4 = /* @__PURE__ */ apFirst(Apply3);
+      apSecond4 = /* @__PURE__ */ apSecond(Apply3);
+      Applicative3 = {
+        URI: URI3,
+        map: _map3,
+        ap: _ap3,
         of: of4
       };
-      Chain2 = {
-        URI: URI2,
-        map: _map2,
-        ap: _ap2,
-        chain: flatMap2
+      Chain3 = {
+        URI: URI3,
+        map: _map3,
+        ap: _ap3,
+        chain: flatMap3
       };
-      chainFirst3 = /* @__PURE__ */ chainFirst(Chain2);
-      Monad2 = {
-        URI: URI2,
-        map: _map2,
-        ap: _ap2,
+      chainFirst4 = /* @__PURE__ */ chainFirst(Chain3);
+      Monad3 = {
+        URI: URI3,
+        map: _map3,
+        ap: _ap3,
         of: of4,
-        chain: flatMap2
+        chain: flatMap3
       };
       Unfoldable2 = {
-        URI: URI2,
+        URI: URI3,
         unfold: unfold2
       };
-      Alt2 = {
-        URI: URI2,
-        map: _map2,
-        alt: _alt2
+      Alt3 = {
+        URI: URI3,
+        map: _map3,
+        alt: _alt3
       };
       Zero2 = {
-        URI: URI2,
+        URI: URI3,
         zero: zero2
       };
-      guard3 = /* @__PURE__ */ guard(Zero2, Pointed2);
+      guard3 = /* @__PURE__ */ guard(Zero2, Pointed3);
       Alternative2 = {
-        URI: URI2,
-        map: _map2,
-        ap: _ap2,
+        URI: URI3,
+        map: _map3,
+        ap: _ap3,
         of: of4,
-        alt: _alt2,
+        alt: _alt3,
         zero: zero2
       };
       Extend2 = {
-        URI: URI2,
-        map: _map2,
-        extend: _extend2
+        URI: URI3,
+        map: _map3,
+        extend: _extend3
       };
       Compactable2 = {
-        URI: URI2,
+        URI: URI3,
         compact: compact2,
         separate: separate2
       };
       Filterable2 = {
-        URI: URI2,
-        map: _map2,
+        URI: URI3,
+        map: _map3,
         compact: compact2,
         separate: separate2,
         filter: _filter2,
@@ -3246,9 +3886,9 @@ var full;
         partitionMap: _partitionMap2
       };
       FilterableWithIndex2 = {
-        URI: URI2,
-        map: _map2,
-        mapWithIndex: _mapWithIndex2,
+        URI: URI3,
+        map: _map3,
+        mapWithIndex: _mapWithIndex3,
         compact: compact2,
         separate: separate2,
         filter: _filter2,
@@ -3260,82 +3900,82 @@ var full;
         filterMapWithIndex: _filterMapWithIndex2,
         filterWithIndex: _filterWithIndex2
       };
-      Foldable2 = {
-        URI: URI2,
-        reduce: _reduce2,
-        foldMap: _foldMap2,
-        reduceRight: _reduceRight2
+      Foldable3 = {
+        URI: URI3,
+        reduce: _reduce3,
+        foldMap: _foldMap3,
+        reduceRight: _reduceRight3
       };
-      FoldableWithIndex2 = {
-        URI: URI2,
-        reduce: _reduce2,
-        foldMap: _foldMap2,
-        reduceRight: _reduceRight2,
-        reduceWithIndex: _reduceWithIndex2,
-        foldMapWithIndex: _foldMapWithIndex2,
-        reduceRightWithIndex: _reduceRightWithIndex2
+      FoldableWithIndex3 = {
+        URI: URI3,
+        reduce: _reduce3,
+        foldMap: _foldMap3,
+        reduceRight: _reduceRight3,
+        reduceWithIndex: _reduceWithIndex3,
+        foldMapWithIndex: _foldMapWithIndex3,
+        reduceRightWithIndex: _reduceRightWithIndex3
       };
-      Traversable2 = {
-        URI: URI2,
-        map: _map2,
-        reduce: _reduce2,
-        foldMap: _foldMap2,
-        reduceRight: _reduceRight2,
-        traverse: _traverse2,
-        sequence: sequence2
+      Traversable3 = {
+        URI: URI3,
+        map: _map3,
+        reduce: _reduce3,
+        foldMap: _foldMap3,
+        reduceRight: _reduceRight3,
+        traverse: _traverse3,
+        sequence: sequence3
       };
-      TraversableWithIndex2 = {
-        URI: URI2,
-        map: _map2,
-        mapWithIndex: _mapWithIndex2,
-        reduce: _reduce2,
-        foldMap: _foldMap2,
-        reduceRight: _reduceRight2,
-        reduceWithIndex: _reduceWithIndex2,
-        foldMapWithIndex: _foldMapWithIndex2,
-        reduceRightWithIndex: _reduceRightWithIndex2,
-        traverse: _traverse2,
-        sequence: sequence2,
-        traverseWithIndex: _traverseWithIndex2
+      TraversableWithIndex3 = {
+        URI: URI3,
+        map: _map3,
+        mapWithIndex: _mapWithIndex3,
+        reduce: _reduce3,
+        foldMap: _foldMap3,
+        reduceRight: _reduceRight3,
+        reduceWithIndex: _reduceWithIndex3,
+        foldMapWithIndex: _foldMapWithIndex3,
+        reduceRightWithIndex: _reduceRightWithIndex3,
+        traverse: _traverse3,
+        sequence: sequence3,
+        traverseWithIndex: _traverseWithIndex3
       };
-      _wither2 = /* @__PURE__ */ witherDefault(Traversable2, Compactable2);
-      _wilt2 = /* @__PURE__ */ wiltDefault(Traversable2, Compactable2);
+      _wither2 = /* @__PURE__ */ witherDefault(Traversable3, Compactable2);
+      _wilt2 = /* @__PURE__ */ wiltDefault(Traversable3, Compactable2);
       Witherable2 = {
-        URI: URI2,
-        map: _map2,
+        URI: URI3,
+        map: _map3,
         compact: compact2,
         separate: separate2,
         filter: _filter2,
         filterMap: _filterMap2,
         partition: _partition2,
         partitionMap: _partitionMap2,
-        reduce: _reduce2,
-        foldMap: _foldMap2,
-        reduceRight: _reduceRight2,
-        traverse: _traverse2,
-        sequence: sequence2,
+        reduce: _reduce3,
+        foldMap: _foldMap3,
+        reduceRight: _reduceRight3,
+        traverse: _traverse3,
+        sequence: sequence3,
         wither: _wither2,
         wilt: _wilt2
       };
       chainRecDepthFirst2 = chainRecDepthFirst;
       ChainRecDepthFirst2 = {
-        URI: URI2,
-        map: _map2,
-        ap: _ap2,
-        chain: flatMap2,
+        URI: URI3,
+        map: _map3,
+        ap: _ap3,
+        chain: flatMap3,
         chainRec: _chainRecDepthFirst2
       };
       chainRecBreadthFirst2 = chainRecBreadthFirst;
       ChainRecBreadthFirst2 = {
-        URI: URI2,
-        map: _map2,
-        ap: _ap2,
-        chain: flatMap2,
+        URI: URI3,
+        map: _map3,
+        ap: _ap3,
+        chain: flatMap3,
         chainRec: _chainRecBreadthFirst2
       };
       filterE3 = /* @__PURE__ */ filterE(Witherable2);
       FromEither2 = {
-        URI: URI2,
+        URI: URI3,
         fromEither: fromEither2
       };
       fromEitherK3 = /* @__PURE__ */ fromEitherK(FromEither2);
@@ -3355,48 +3995,48 @@ var full;
         };
       };
       exists2 = some3;
-      intercalate3 = intercalate2;
-      Do2 = /* @__PURE__ */ of4(emptyRecord);
-      bindTo3 = /* @__PURE__ */ bindTo(Functor2);
-      let_3 = /* @__PURE__ */ let_(Functor2);
-      bind3 = /* @__PURE__ */ bind(Chain2);
-      apS3 = /* @__PURE__ */ apS(Apply2);
-      chain2 = flatMap2;
+      intercalate4 = intercalate3;
+      Do3 = /* @__PURE__ */ of4(emptyRecord);
+      bindTo4 = /* @__PURE__ */ bindTo(Functor3);
+      let_4 = /* @__PURE__ */ let_(Functor3);
+      bind4 = /* @__PURE__ */ bind(Chain3);
+      apS4 = /* @__PURE__ */ apS(Apply3);
+      chain3 = flatMap3;
       range4 = range2;
       empty3 = [];
       cons4 = cons2;
       snoc4 = snoc2;
-      prependToAll2 = prependAll4;
+      prependToAll3 = prependAll4;
       array = {
-        URI: URI2,
+        URI: URI3,
         compact: compact2,
         separate: separate2,
-        map: _map2,
-        ap: _ap2,
+        map: _map3,
+        ap: _ap3,
         of: of4,
-        chain: flatMap2,
+        chain: flatMap3,
         filter: _filter2,
         filterMap: _filterMap2,
         partition: _partition2,
         partitionMap: _partitionMap2,
-        mapWithIndex: _mapWithIndex2,
+        mapWithIndex: _mapWithIndex3,
         partitionMapWithIndex: _partitionMapWithIndex2,
         partitionWithIndex: _partitionWithIndex2,
         filterMapWithIndex: _filterMapWithIndex2,
         filterWithIndex: _filterWithIndex2,
-        alt: _alt2,
+        alt: _alt3,
         zero: zero2,
         unfold: unfold2,
-        reduce: _reduce2,
-        foldMap: _foldMap2,
-        reduceRight: _reduceRight2,
-        traverse: _traverse2,
-        sequence: sequence2,
-        reduceWithIndex: _reduceWithIndex2,
-        foldMapWithIndex: _foldMapWithIndex2,
-        reduceRightWithIndex: _reduceRightWithIndex2,
-        traverseWithIndex: _traverseWithIndex2,
-        extend: _extend2,
+        reduce: _reduce3,
+        foldMap: _foldMap3,
+        reduceRight: _reduceRight3,
+        traverse: _traverse3,
+        sequence: sequence3,
+        reduceWithIndex: _reduceWithIndex3,
+        foldMapWithIndex: _foldMapWithIndex3,
+        reduceRightWithIndex: _reduceRightWithIndex3,
+        traverseWithIndex: _traverseWithIndex3,
+        extend: _extend3,
         wither: _wither2,
         wilt: _wilt2
       };
@@ -3418,53 +4058,53 @@ var full;
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Option.js
   var Option_exports = {};
   __export(Option_exports, {
-    Alt: () => Alt3,
+    Alt: () => Alt4,
     Alternative: () => Alternative3,
     ApT: () => ApT,
-    Applicative: () => Applicative3,
-    Apply: () => Apply3,
-    Chain: () => Chain3,
+    Applicative: () => Applicative4,
+    Apply: () => Apply4,
+    Chain: () => Chain4,
     Compactable: () => Compactable3,
-    Do: () => Do3,
+    Do: () => Do4,
     Extend: () => Extend3,
     Filterable: () => Filterable3,
-    Foldable: () => Foldable3,
+    Foldable: () => Foldable4,
     FromEither: () => FromEither3,
-    Functor: () => Functor3,
-    Monad: () => Monad3,
+    Functor: () => Functor4,
+    Monad: () => Monad4,
     MonadThrow: () => MonadThrow,
-    Pointed: () => Pointed3,
-    Traversable: () => Traversable3,
-    URI: () => URI3,
+    Pointed: () => Pointed4,
+    Traversable: () => Traversable4,
+    URI: () => URI4,
     Witherable: () => Witherable3,
     Zero: () => Zero3,
-    alt: () => alt3,
-    altW: () => altW3,
-    ap: () => ap4,
-    apFirst: () => apFirst4,
-    apS: () => apS4,
-    apSecond: () => apSecond4,
+    alt: () => alt4,
+    altW: () => altW4,
+    ap: () => ap5,
+    apFirst: () => apFirst5,
+    apS: () => apS5,
+    apSecond: () => apSecond5,
     as: () => as2,
     asUnit: () => asUnit2,
-    bind: () => bind4,
-    bindTo: () => bindTo4,
-    chain: () => chain3,
+    bind: () => bind5,
+    bindTo: () => bindTo5,
+    chain: () => chain4,
     chainEitherK: () => chainEitherK2,
-    chainFirst: () => chainFirst4,
+    chainFirst: () => chainFirst5,
     chainFirstEitherK: () => chainFirstEitherK,
     chainNullableK: () => chainNullableK,
     compact: () => compact3,
-    duplicate: () => duplicate3,
+    duplicate: () => duplicate4,
     elem: () => elem3,
     exists: () => exists3,
-    extend: () => extend3,
-    filter: () => filter3,
+    extend: () => extend4,
+    filter: () => filter4,
     filterMap: () => filterMap3,
-    flap: () => flap4,
-    flatMap: () => flatMap3,
-    flatten: () => flatten3,
-    fold: () => fold,
-    foldMap: () => foldMap4,
+    flap: () => flap5,
+    flatMap: () => flatMap4,
+    flatten: () => flatten4,
+    fold: () => fold2,
+    foldMap: () => foldMap5,
     foldW: () => foldW,
     fromEither: () => fromEither3,
     fromEitherK: () => fromEitherK4,
@@ -3473,7 +4113,7 @@ var full;
     fromPredicate: () => fromPredicate3,
     getApplyMonoid: () => getApplyMonoid,
     getApplySemigroup: () => getApplySemigroup2,
-    getEq: () => getEq4,
+    getEq: () => getEq5,
     getFirstMonoid: () => getFirstMonoid,
     getLastMonoid: () => getLastMonoid,
     getLeft: () => getLeft,
@@ -3483,12 +4123,12 @@ var full;
     getOrd: () => getOrd3,
     getRefinement: () => getRefinement,
     getRight: () => getRight,
-    getShow: () => getShow4,
+    getShow: () => getShow5,
     guard: () => guard4,
     isNone: () => isNone2,
     isSome: () => isSome2,
-    let: () => let_4,
-    map: () => map3,
+    let: () => let_5,
+    map: () => map4,
     mapNullable: () => mapNullable,
     match: () => match3,
     matchW: () => matchW3,
@@ -3498,10 +4138,10 @@ var full;
     orElse: () => orElse,
     partition: () => partition3,
     partitionMap: () => partitionMap3,
-    reduce: () => reduce4,
-    reduceRight: () => reduceRight4,
+    reduce: () => reduce5,
+    reduceRight: () => reduceRight5,
     separate: () => separate3,
-    sequence: () => sequence3,
+    sequence: () => sequence4,
     sequenceArray: () => sequenceArray,
     some: () => some4,
     tap: () => tap2,
@@ -3509,7 +4149,7 @@ var full;
     throwError: () => throwError,
     toNullable: () => toNullable,
     toUndefined: () => toUndefined,
-    traverse: () => traverse3,
+    traverse: () => traverse4,
     traverseArray: () => traverseArray,
     traverseArrayWithIndex: () => traverseArrayWithIndex,
     traverseReadonlyArrayWithIndex: () => traverseReadonlyArrayWithIndex,
@@ -3541,7 +4181,7 @@ var full;
       return isSome2(getOption(a));
     };
   }
-  var none2, some4, getLeft, getRight, _map3, _ap3, _reduce3, _foldMap3, _reduceRight3, _traverse3, _alt3, _filter3, _filterMap3, _extend3, _partition3, _partitionMap3, URI3, getShow4, getEq4, getOrd3, getMonoid4, map3, Functor3, as2, asUnit2, of5, Pointed3, ap4, Apply3, Applicative3, flatMap3, Chain3, Monad3, reduce4, foldMap4, reduceRight4, Foldable3, orElse, altW3, alt3, Alt3, zero3, Zero3, guard4, Alternative3, extend3, Extend3, compact3, defaultSeparated, separate3, Compactable3, filter3, filterMap3, partition3, partitionMap3, Filterable3, traverse3, sequence3, Traversable3, _wither3, _wilt3, wither3, wilt3, Witherable3, throwError, MonadThrow, fromEither3, FromEither3, isSome2, isNone2, matchW3, foldW, match3, fold, getOrElseW, getOrElse, flap4, apFirst4, apSecond4, flatten3, tap2, tapEither2, duplicate3, fromEitherK4, chainEitherK2, chainFirstEitherK, fromNullable, tryCatch, tryCatchK, fromNullableK, chainNullableK, toNullable, toUndefined, exists3, Do3, bindTo4, let_4, bind4, apS4, ApT, traverseReadonlyNonEmptyArrayWithIndex, traverseReadonlyArrayWithIndex, traverseArrayWithIndex, traverseArray, sequenceArray, chain3, chainFirst4, mapNullable, option, getApplySemigroup2, getApplyMonoid, getFirstMonoid, getLastMonoid;
+  var none2, some4, getLeft, getRight, _map4, _ap4, _reduce4, _foldMap4, _reduceRight4, _traverse4, _alt4, _filter3, _filterMap3, _extend4, _partition3, _partitionMap3, URI4, getShow5, getEq5, getOrd3, getMonoid4, map4, Functor4, as2, asUnit2, of5, Pointed4, ap5, Apply4, Applicative4, flatMap4, Chain4, Monad4, reduce5, foldMap5, reduceRight5, Foldable4, orElse, altW4, alt4, Alt4, zero3, Zero3, guard4, Alternative3, extend4, Extend3, compact3, defaultSeparated, separate3, Compactable3, filter4, filterMap3, partition3, partitionMap3, Filterable3, traverse4, sequence4, Traversable4, _wither3, _wilt3, wither3, wilt3, Witherable3, throwError, MonadThrow, fromEither3, FromEither3, isSome2, isNone2, matchW3, foldW, match3, fold2, getOrElseW, getOrElse, flap5, apFirst5, apSecond5, flatten4, tap2, tapEither2, duplicate4, fromEitherK4, chainEitherK2, chainFirstEitherK, fromNullable, tryCatch, tryCatchK, fromNullableK, chainNullableK, toNullable, toUndefined, exists3, Do4, bindTo5, let_5, bind5, apS5, ApT, traverseReadonlyNonEmptyArrayWithIndex, traverseReadonlyArrayWithIndex, traverseArrayWithIndex, traverseArray, sequenceArray, chain4, chainFirst5, mapNullable, option, getApplySemigroup2, getApplyMonoid, getFirstMonoid, getLastMonoid;
   var init_Option = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Option.js"() {
       init_Applicative();
@@ -3564,41 +4204,41 @@ var full;
       getRight = function(ma) {
         return ma._tag === "Left" ? none2 : some4(ma.right);
       };
-      _map3 = function(fa, f2) {
-        return pipe(fa, map3(f2));
+      _map4 = function(fa, f2) {
+        return pipe(fa, map4(f2));
       };
-      _ap3 = function(fab, fa) {
-        return pipe(fab, ap4(fa));
+      _ap4 = function(fab, fa) {
+        return pipe(fab, ap5(fa));
       };
-      _reduce3 = function(fa, b, f2) {
-        return pipe(fa, reduce4(b, f2));
+      _reduce4 = function(fa, b, f2) {
+        return pipe(fa, reduce5(b, f2));
       };
-      _foldMap3 = function(M) {
-        var foldMapM = foldMap4(M);
+      _foldMap4 = function(M) {
+        var foldMapM = foldMap5(M);
         return function(fa, f2) {
           return pipe(fa, foldMapM(f2));
         };
       };
-      _reduceRight3 = function(fa, b, f2) {
-        return pipe(fa, reduceRight4(b, f2));
+      _reduceRight4 = function(fa, b, f2) {
+        return pipe(fa, reduceRight5(b, f2));
       };
-      _traverse3 = function(F) {
-        var traverseF = traverse3(F);
+      _traverse4 = function(F) {
+        var traverseF = traverse4(F);
         return function(ta, f2) {
           return pipe(ta, traverseF(f2));
         };
       };
-      _alt3 = function(fa, that) {
-        return pipe(fa, alt3(that));
+      _alt4 = function(fa, that) {
+        return pipe(fa, alt4(that));
       };
       _filter3 = function(fa, predicate) {
-        return pipe(fa, filter3(predicate));
+        return pipe(fa, filter4(predicate));
       };
       _filterMap3 = function(fa, f2) {
         return pipe(fa, filterMap3(f2));
       };
-      _extend3 = function(wa, f2) {
-        return pipe(wa, extend3(f2));
+      _extend4 = function(wa, f2) {
+        return pipe(wa, extend4(f2));
       };
       _partition3 = function(fa, predicate) {
         return pipe(fa, partition3(predicate));
@@ -3606,15 +4246,15 @@ var full;
       _partitionMap3 = function(fa, f2) {
         return pipe(fa, partitionMap3(f2));
       };
-      URI3 = "Option";
-      getShow4 = function(S) {
+      URI4 = "Option";
+      getShow5 = function(S) {
         return {
           show: function(ma) {
             return isNone2(ma) ? "none" : "some(".concat(S.show(ma.value), ")");
           }
         };
       };
-      getEq4 = function(E) {
+      getEq5 = function(E) {
         return {
           equals: function(x, y) {
             return x === y || (isNone2(x) ? isNone2(y) : isNone2(y) ? false : E.equals(x.value, y.value));
@@ -3623,7 +4263,7 @@ var full;
       };
       getOrd3 = function(O) {
         return {
-          equals: getEq4(O).equals,
+          equals: getEq5(O).equals,
           compare: function(x, y) {
             return x === y ? 0 : isSome2(x) ? isSome2(y) ? O.compare(x.value, y.value) : 1 : -1;
           }
@@ -3637,124 +4277,124 @@ var full;
           empty: none2
         };
       };
-      map3 = function(f2) {
+      map4 = function(f2) {
         return function(fa) {
           return isNone2(fa) ? none2 : some4(f2(fa.value));
         };
       };
-      Functor3 = {
-        URI: URI3,
-        map: _map3
+      Functor4 = {
+        URI: URI4,
+        map: _map4
       };
-      as2 = dual(2, as(Functor3));
-      asUnit2 = asUnit(Functor3);
+      as2 = dual(2, as(Functor4));
+      asUnit2 = asUnit(Functor4);
       of5 = some4;
-      Pointed3 = {
-        URI: URI3,
+      Pointed4 = {
+        URI: URI4,
         of: of5
       };
-      ap4 = function(fa) {
+      ap5 = function(fa) {
         return function(fab) {
           return isNone2(fab) ? none2 : isNone2(fa) ? none2 : some4(fab.value(fa.value));
         };
       };
-      Apply3 = {
-        URI: URI3,
-        map: _map3,
-        ap: _ap3
+      Apply4 = {
+        URI: URI4,
+        map: _map4,
+        ap: _ap4
       };
-      Applicative3 = {
-        URI: URI3,
-        map: _map3,
-        ap: _ap3,
+      Applicative4 = {
+        URI: URI4,
+        map: _map4,
+        ap: _ap4,
         of: of5
       };
-      flatMap3 = /* @__PURE__ */ dual(2, function(ma, f2) {
+      flatMap4 = /* @__PURE__ */ dual(2, function(ma, f2) {
         return isNone2(ma) ? none2 : f2(ma.value);
       });
-      Chain3 = {
-        URI: URI3,
-        map: _map3,
-        ap: _ap3,
-        chain: flatMap3
+      Chain4 = {
+        URI: URI4,
+        map: _map4,
+        ap: _ap4,
+        chain: flatMap4
       };
-      Monad3 = {
-        URI: URI3,
-        map: _map3,
-        ap: _ap3,
+      Monad4 = {
+        URI: URI4,
+        map: _map4,
+        ap: _ap4,
         of: of5,
-        chain: flatMap3
+        chain: flatMap4
       };
-      reduce4 = function(b, f2) {
+      reduce5 = function(b, f2) {
         return function(fa) {
           return isNone2(fa) ? b : f2(b, fa.value);
         };
       };
-      foldMap4 = function(M) {
+      foldMap5 = function(M) {
         return function(f2) {
           return function(fa) {
             return isNone2(fa) ? M.empty : f2(fa.value);
           };
         };
       };
-      reduceRight4 = function(b, f2) {
+      reduceRight5 = function(b, f2) {
         return function(fa) {
           return isNone2(fa) ? b : f2(fa.value, b);
         };
       };
-      Foldable3 = {
-        URI: URI3,
-        reduce: _reduce3,
-        foldMap: _foldMap3,
-        reduceRight: _reduceRight3
+      Foldable4 = {
+        URI: URI4,
+        reduce: _reduce4,
+        foldMap: _foldMap4,
+        reduceRight: _reduceRight4
       };
       orElse = dual(2, function(self2, that) {
         return isNone2(self2) ? that() : self2;
       });
-      altW3 = orElse;
-      alt3 = orElse;
-      Alt3 = {
-        URI: URI3,
-        map: _map3,
-        alt: _alt3
+      altW4 = orElse;
+      alt4 = orElse;
+      Alt4 = {
+        URI: URI4,
+        map: _map4,
+        alt: _alt4
       };
       zero3 = function() {
         return none2;
       };
       Zero3 = {
-        URI: URI3,
+        URI: URI4,
         zero: zero3
       };
-      guard4 = /* @__PURE__ */ guard(Zero3, Pointed3);
+      guard4 = /* @__PURE__ */ guard(Zero3, Pointed4);
       Alternative3 = {
-        URI: URI3,
-        map: _map3,
-        ap: _ap3,
+        URI: URI4,
+        map: _map4,
+        ap: _ap4,
         of: of5,
-        alt: _alt3,
+        alt: _alt4,
         zero: zero3
       };
-      extend3 = function(f2) {
+      extend4 = function(f2) {
         return function(wa) {
           return isNone2(wa) ? none2 : some4(f2(wa));
         };
       };
       Extend3 = {
-        URI: URI3,
-        map: _map3,
-        extend: _extend3
+        URI: URI4,
+        map: _map4,
+        extend: _extend4
       };
-      compact3 = /* @__PURE__ */ flatMap3(identity);
+      compact3 = /* @__PURE__ */ flatMap4(identity);
       defaultSeparated = /* @__PURE__ */ separated(none2, none2);
       separate3 = function(ma) {
         return isNone2(ma) ? defaultSeparated : separated(getLeft(ma.value), getRight(ma.value));
       };
       Compactable3 = {
-        URI: URI3,
+        URI: URI4,
         compact: compact3,
         separate: separate3
       };
-      filter3 = function(predicate) {
+      filter4 = function(predicate) {
         return function(fa) {
           return isNone2(fa) ? none2 : predicate(fa.value) ? fa : none2;
         };
@@ -3770,11 +4410,11 @@ var full;
         };
       };
       partitionMap3 = function(f2) {
-        return flow(map3(f2), separate3);
+        return flow(map4(f2), separate3);
       };
       Filterable3 = {
-        URI: URI3,
-        map: _map3,
+        URI: URI4,
+        map: _map4,
         compact: compact3,
         separate: separate3,
         filter: _filter3,
@@ -3782,29 +4422,29 @@ var full;
         partition: _partition3,
         partitionMap: _partitionMap3
       };
-      traverse3 = function(F) {
+      traverse4 = function(F) {
         return function(f2) {
           return function(ta) {
             return isNone2(ta) ? F.of(none2) : F.map(f2(ta.value), some4);
           };
         };
       };
-      sequence3 = function(F) {
+      sequence4 = function(F) {
         return function(ta) {
           return isNone2(ta) ? F.of(none2) : F.map(ta.value, some4);
         };
       };
-      Traversable3 = {
-        URI: URI3,
-        map: _map3,
-        reduce: _reduce3,
-        foldMap: _foldMap3,
-        reduceRight: _reduceRight3,
-        traverse: _traverse3,
-        sequence: sequence3
+      Traversable4 = {
+        URI: URI4,
+        map: _map4,
+        reduce: _reduce4,
+        foldMap: _foldMap4,
+        reduceRight: _reduceRight4,
+        traverse: _traverse4,
+        sequence: sequence4
       };
-      _wither3 = /* @__PURE__ */ witherDefault(Traversable3, Compactable3);
-      _wilt3 = /* @__PURE__ */ wiltDefault(Traversable3, Compactable3);
+      _wither3 = /* @__PURE__ */ witherDefault(Traversable4, Compactable3);
+      _wilt3 = /* @__PURE__ */ wiltDefault(Traversable4, Compactable3);
       wither3 = function(F) {
         var _witherF = _wither3(F);
         return function(f2) {
@@ -3822,13 +4462,13 @@ var full;
         };
       };
       Witherable3 = {
-        URI: URI3,
-        map: _map3,
-        reduce: _reduce3,
-        foldMap: _foldMap3,
-        reduceRight: _reduceRight3,
-        traverse: _traverse3,
-        sequence: sequence3,
+        URI: URI4,
+        map: _map4,
+        reduce: _reduce4,
+        foldMap: _foldMap4,
+        reduceRight: _reduceRight4,
+        traverse: _traverse4,
+        sequence: sequence4,
         compact: compact3,
         separate: separate3,
         filter: _filter3,
@@ -3842,16 +4482,16 @@ var full;
         return none2;
       };
       MonadThrow = {
-        URI: URI3,
-        map: _map3,
-        ap: _ap3,
+        URI: URI4,
+        map: _map4,
+        ap: _ap4,
         of: of5,
-        chain: flatMap3,
+        chain: flatMap4,
         throwError
       };
       fromEither3 = getRight;
       FromEither3 = {
-        URI: URI3,
+        URI: URI4,
         fromEither: fromEither3
       };
       isSome2 = isSome;
@@ -3865,22 +4505,22 @@ var full;
       };
       foldW = matchW3;
       match3 = matchW3;
-      fold = match3;
+      fold2 = match3;
       getOrElseW = function(onNone) {
         return function(ma) {
           return isNone2(ma) ? onNone() : ma.value;
         };
       };
       getOrElse = getOrElseW;
-      flap4 = /* @__PURE__ */ flap(Functor3);
-      apFirst4 = /* @__PURE__ */ apFirst(Apply3);
-      apSecond4 = /* @__PURE__ */ apSecond(Apply3);
-      flatten3 = compact3;
-      tap2 = /* @__PURE__ */ dual(2, tap(Chain3));
-      tapEither2 = /* @__PURE__ */ dual(2, tapEither(FromEither3, Chain3));
-      duplicate3 = /* @__PURE__ */ extend3(identity);
+      flap5 = /* @__PURE__ */ flap(Functor4);
+      apFirst5 = /* @__PURE__ */ apFirst(Apply4);
+      apSecond5 = /* @__PURE__ */ apSecond(Apply4);
+      flatten4 = compact3;
+      tap2 = /* @__PURE__ */ dual(2, tap(Chain4));
+      tapEither2 = /* @__PURE__ */ dual(2, tapEither(FromEither3, Chain4));
+      duplicate4 = /* @__PURE__ */ extend4(identity);
       fromEitherK4 = /* @__PURE__ */ fromEitherK(FromEither3);
-      chainEitherK2 = /* @__PURE__ */ chainEitherK(FromEither3, Chain3);
+      chainEitherK2 = /* @__PURE__ */ chainEitherK(FromEither3, Chain4);
       chainFirstEitherK = tapEither2;
       fromNullable = function(a) {
         return a == null ? none2 : some4(a);
@@ -3918,11 +4558,11 @@ var full;
           return isNone2(ma) ? false : predicate(ma.value);
         };
       };
-      Do3 = /* @__PURE__ */ of5(emptyRecord);
-      bindTo4 = /* @__PURE__ */ bindTo(Functor3);
-      let_4 = /* @__PURE__ */ let_(Functor3);
-      bind4 = /* @__PURE__ */ bind(Chain3);
-      apS4 = /* @__PURE__ */ apS(Apply3);
+      Do4 = /* @__PURE__ */ of5(emptyRecord);
+      bindTo5 = /* @__PURE__ */ bindTo(Functor4);
+      let_5 = /* @__PURE__ */ let_(Functor4);
+      bind5 = /* @__PURE__ */ bind(Chain4);
+      apS5 = /* @__PURE__ */ apS(Apply4);
       ApT = /* @__PURE__ */ of5(emptyReadonlyArray);
       traverseReadonlyNonEmptyArrayWithIndex = function(f2) {
         return function(as3) {
@@ -3954,23 +4594,23 @@ var full;
         });
       };
       sequenceArray = /* @__PURE__ */ traverseArray(identity);
-      chain3 = flatMap3;
-      chainFirst4 = tap2;
+      chain4 = flatMap4;
+      chainFirst5 = tap2;
       mapNullable = chainNullableK;
       option = {
-        URI: URI3,
-        map: _map3,
+        URI: URI4,
+        map: _map4,
         of: of5,
-        ap: _ap3,
-        chain: flatMap3,
-        reduce: _reduce3,
-        foldMap: _foldMap3,
-        reduceRight: _reduceRight3,
-        traverse: _traverse3,
-        sequence: sequence3,
+        ap: _ap4,
+        chain: flatMap4,
+        reduce: _reduce4,
+        foldMap: _foldMap4,
+        reduceRight: _reduceRight4,
+        traverse: _traverse4,
+        sequence: sequence4,
         zero: zero3,
-        alt: _alt3,
-        extend: _extend3,
+        alt: _alt4,
+        extend: _extend4,
         compact: compact3,
         separate: separate3,
         filter: _filter3,
@@ -3981,8 +4621,8 @@ var full;
         wilt: _wilt3,
         throwError
       };
-      getApplySemigroup2 = /* @__PURE__ */ getApplySemigroup(Apply3);
-      getApplyMonoid = /* @__PURE__ */ getApplicativeMonoid(Applicative3);
+      getApplySemigroup2 = /* @__PURE__ */ getApplySemigroup(Apply4);
+      getApplyMonoid = /* @__PURE__ */ getApplicativeMonoid(Applicative4);
       getFirstMonoid = function() {
         return getMonoid4(first());
       };
@@ -3993,11 +4633,11 @@ var full;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Endomorphism.js
-  var getSemigroup5, getMonoid5;
+  var getSemigroup6, getMonoid5;
   var init_Endomorphism = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Endomorphism.js"() {
       init_function();
-      getSemigroup5 = function() {
+      getSemigroup6 = function() {
         return {
           concat: function(first2, second) {
             return flow(first2, second);
@@ -4006,7 +4646,7 @@ var full;
       };
       getMonoid5 = function() {
         return {
-          concat: getSemigroup5().concat,
+          concat: getSemigroup6().concat,
           empty: identity
         };
       };
@@ -4020,11 +4660,11 @@ var full;
   });
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Monoid.js
-  var concatAll4, monoidVoid, monoidAll, monoidAny, monoidString, monoidSum, monoidProduct;
+  var concatAll5, monoidVoid, monoidAll, monoidAny, monoidString, monoidSum, monoidProduct;
   var init_Monoid = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Monoid.js"() {
       init_Semigroup();
-      concatAll4 = function(M) {
+      concatAll5 = function(M) {
         return concatAll2(M)(M.empty);
       };
       monoidVoid = {
@@ -4195,6 +4835,7 @@ var full;
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/index.js"() {
       init_Array();
       init_HKT();
+      init_NonEmptyArray();
       init_Option();
       init_ReadonlyArray();
       init_string();
@@ -4251,7 +4892,7 @@ var full;
         };
       };
       exports.getBooleanAlgebra = getBooleanAlgebra;
-      var getSemigroup6 = function(S) {
+      var getSemigroup7 = function(S) {
         return function() {
           return {
             concat: function(f2, g) {
@@ -4262,7 +4903,7 @@ var full;
           };
         };
       };
-      exports.getSemigroup = getSemigroup6;
+      exports.getSemigroup = getSemigroup7;
       var getMonoid7 = function(M) {
         var getSemigroupM = (0, exports.getSemigroup)(M);
         return function() {
@@ -4537,6 +5178,13 @@ var full;
     }
   });
 
+  // external-global-plugin:react-dom
+  var require_react_dom = __commonJS({
+    "external-global-plugin:react-dom"(exports, module) {
+      module.exports = Spicetify.ReactDOM;
+    }
+  });
+
   // external-global-plugin:react
   var require_react = __commonJS({
     "external-global-plugin:react"(exports, module) {
@@ -4544,10 +5192,220 @@ var full;
     }
   });
 
-  // external-global-plugin:react-dom
-  var require_react_dom = __commonJS({
-    "external-global-plugin:react-dom"(exports, module) {
-      module.exports = Spicetify.ReactDOM;
+  // extensions/full-screen/src/constants/icons.ts
+  var ICONS, icons_default;
+  var init_icons = __esm({
+    "extensions/full-screen/src/constants/icons.ts"() {
+      "use strict";
+      ICONS = {
+        OFFLINE_SVG: `data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo=`,
+        FULLSCREEN: `<svg role="img" height="20" width="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10.5 3L16.5428 3.00182L16.6281 3.01661L16.691 3.03779L16.767 3.07719L16.8221 3.11759L16.8824 3.17788L16.9112 3.21534L16.9533 3.2886L16.9834 3.37186L16.9979 3.45421L17 3.5V9.5C17 9.77614 16.7761 10 16.5 10C16.2545 10 16.0504 9.82312 16.0081 9.58988L16 9.5V4.706L4.706 16H9.5C9.74546 16 9.94961 16.1769 9.99194 16.4101L10 16.5C10 16.7455 9.82312 16.9496 9.58988 16.9919L9.5 17L3.47964 16.9996L3.4112 16.9921L3.30896 16.9622L3.23299 16.9228L3.17786 16.8824L3.11758 16.8221L3.08884 16.7847L3.04674 16.7114L3.01661 16.6281L3.01109 16.605C3.00383 16.5713 3 16.5361 3 16.5L3.00546 16.5739L3.00182 16.5428L3 10.5C3 10.2239 3.22386 10 3.5 10C3.74546 10 3.94961 10.1769 3.99194 10.4101L4 10.5V15.292L15.292 4H10.5C10.2545 4 10.0504 3.82312 10.0081 3.58988L10 3.5C10 3.22386 10.2239 3 10.5 3Z"></path><path class="" d="M16 3C16.5523 3 17 3.44772 17 4V9.25C17 9.66421 16.6642 10 16.25 10C15.8358 10 15.5 9.66421 15.5 9.25V5.559L5.559 15.5H9.25C9.66421 15.5 10 15.8358 10 16.25C10 16.6642 9.66421 17 9.25 17H4C3.44772 17 3 16.5523 3 16V10.75C3 10.3358 3.33579 10 3.75 10C4.16421 10 4.5 10.3358 4.5 10.75V14.439L14.439 4.5H10.75C10.3358 4.5 10 4.16421 10 3.75C10 3.33579 10.3358 3 10.75 3H16Z"></path></svg>`,
+        TV_MODE: `<svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM13.991 3l.024.001a1.46 1.46 0 0 1 .538.143.757.757 0 0 1 .302.254c.067.1.145.277.145.602v5.991l-.001.024a1.464 1.464 0 0 1-.143.538.758.758 0 0 1-.254.302c-.1.067-.277.145-.602.145H2.009l-.024-.001a1.464 1.464 0 0 1-.538-.143.758.758 0 0 1-.302-.254C1.078 10.502 1 10.325 1 10V4.009l.001-.024a1.46 1.46 0 0 1 .143-.538.758.758 0 0 1 .254-.302C1.498 3.078 1.675 3 2 3h11.991zM14 2H2C0 2 0 4 0 4v6c0 2 2 2 2 2h12c2 0 2-2 2-2V4c0-2-2-2-2-2z"/></svg>`,
+        INVERT_ACTIVE: `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>`,
+        INVERT_INACTIVE: `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M14.53,6.59L14.53,6.59L10,2L5.5,6.56c-1.08,1.11-1.75,2.62-1.75,4.28c0,3.4,2.8,6.16,6.25,6.16s6.25-2.76,6.25-6.16 C16.25,9.19,15.6,7.7,14.53,6.59z M5.25,10.84c0-1.21,0.47-2.35,1.32-3.22L10,4.14V15.5C7.38,15.5,5.25,13.41,5.25,10.84z"/></svg>`,
+        LYRICS_ACTIVE: `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor"><path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/><path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/></svg>`,
+        LYRICS_INACTIVE: `<svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm7.194 2.766a1.688 1.688 0 0 0-.227-.272 1.467 1.467 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 5.734 4C4.776 4 4 4.746 4 5.667c0 .92.776 1.666 1.734 1.666.343 0 .662-.095.931-.26-.137.389-.39.804-.81 1.22a.405.405 0 0 0 .011.59c.173.16.447.155.614-.01 1.334-1.329 1.37-2.758.941-3.706a2.461 2.461 0 0 0-.227-.4zM11 7.073c-.136.389-.39.804-.81 1.22a.405.405 0 0 0 .012.59c.172.16.446.155.613-.01 1.334-1.329 1.37-2.758.942-3.706a2.466 2.466 0 0 0-.228-.4 1.686 1.686 0 0 0-.227-.273 1.466 1.466 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 10.07 4c-.957 0-1.734.746-1.734 1.667 0 .92.777 1.666 1.734 1.666.343 0 .662-.095.931-.26z"/></svg>`,
+        MINUS: `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 7h12v2H0z"/>`,
+        ALBUM: `<svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.album}</svg>`,
+        ARTIST: `   <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.artist}</svg>`,
+        PLAYING_ICON: `<svg id='playing-icon' width="30" height="30" viewBox='0 0 22 24' fill="currentColor"><defs><style> #playing-icon { fill: currentColor; } @keyframes play { 0% {transform: scaleY(1);} 3.3% {transform: scaleY(0.9583);} 6.6% {transform: scaleY(0.9166);} 9.9% {transform: scaleY(0.8333);} 13.3% {transform: scaleY(0.7083);} 16.6% {transform: scaleY(0.5416);} 19.9% {transform: scaleY(0.4166);} 23.3% {transform: scaleY(0.25);} 26.6% {transform: scaleY(0.1666);} 29.9% {transform: scaleY(0.125);} 33.3% {transform: scaleY(0.125);} 36.6% {transform: scaleY(0.1666);} 39.9% {transform: scaleY(0.1666);} 43.3% {transform: scaleY(0.2083);} 46.6% {transform: scaleY(0.2916);} 49.9% {transform: scaleY(0.375);} 53.3% {transform: scaleY(0.5);} 56.6% {transform: scaleY(0.5833);} 59.9% {transform: scaleY(0.625);} 63.3% {transform: scaleY(0.6666);} 66.6% {transform: scaleY(0.6666);} 69.9% {transform: scaleY(0.6666);} 73.3% {transform: scaleY(0.6666);} 76.6% {transform: scaleY(0.7083);} 79.9% {transform: scaleY(0.75);} 83.3% {transform: scaleY(0.8333);} 86.6% {transform: scaleY(0.875);} 89.9% {transform: scaleY(0.9166);} 93.3% {transform: scaleY(0.9583);} 96.6% {transform: scaleY(1);} } #bar1 { transform-origin: bottom; animation: play 0.9s -0.51s infinite; } #bar2 { transform-origin: bottom; animation: play 0.9s infinite; } #bar3 { transform-origin: bottom; animation: play 0.9s -0.15s infinite; } #bar4 { transform-origin: bottom; animation: play 0.9s -0.75s infinite; } </style></defs><rect id='bar1' class='cls-1' width='2' height='24'/><rect id='bar2' class='cls-1' x='6' width='2' height='24'/><rect id='bar3' class='cls-1' x='12' width='2' height='24'/><rect id='bar4' class='cls-1' x='18' width='2' height='24'/></svg>`,
+        PAUSED_ICON: `<svg id='paused-icon'  width="30" height="30" viewBox="5 4 16 16" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>`,
+        CTX_RADIO: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M19.359 18.57C21.033 16.818 22 14.461 22 11.89s-.967-4.93-2.641-6.68c-.276-.292-.653-.26-.868-.023-.222.246-.176.591.085.868 1.466 1.535 2.272 3.593 2.272 5.835 0 2.241-.806 4.3-2.272 5.835-.261.268-.307.621-.085.86.215.245.592.276.868-.016zm-13.85.014c.222-.238.176-.59-.085-.86-1.474-1.535-2.272-3.593-2.272-5.834 0-2.242.798-4.3 2.272-5.835.261-.277.307-.622.085-.868-.215-.238-.592-.269-.868.023C2.967 6.96 2 9.318 2 11.89s.967 4.929 2.641 6.68c.276.29.653.26.868.014zm1.957-1.873c.223-.253.162-.583-.1-.867-.951-1.068-1.473-2.45-1.473-3.954 0-1.505.522-2.887 1.474-3.954.26-.284.322-.614.1-.876-.23-.26-.622-.26-.891.039-1.175 1.274-1.827 2.963-1.827 4.79 0 1.82.652 3.517 1.827 4.784.269.3.66.307.89.038zm9.958-.038c1.175-1.267 1.827-2.964 1.827-4.783 0-1.828-.652-3.517-1.827-4.791-.269-.3-.66-.3-.89-.039-.23.262-.162.592.092.876.96 1.067 1.481 2.449 1.481 3.954 0 1.504-.522 2.886-1.481 3.954-.254.284-.323.614-.092.867.23.269.621.261.89-.038zm-8.061-1.966c.23-.26.13-.568-.092-.883-.415-.522-.63-1.197-.63-1.934 0-.737.215-1.413.63-1.943.222-.307.322-.614.092-.875s-.653-.261-.906.054a4.385 4.385 0 00-.968 2.764 4.38 4.38 0 00.968 2.756c.253.322.675.322.906.061zm6.18-.061a4.38 4.38 0 00.968-2.756 4.385 4.385 0 00-.968-2.764c-.253-.315-.675-.315-.906-.054-.23.261-.138.568.092.875.415.53.63 1.206.63 1.943 0 .737-.215 1.412-.63 1.934-.23.315-.322.622-.092.883s.653.261.906-.061zm-3.547-.967c.96 0 1.789-.814 1.789-1.797s-.83-1.789-1.789-1.789c-.96 0-1.781.806-1.781 1.789 0 .983.821 1.797 1.781 1.797z" fill-rule="nonzero"></path></svg>`,
+        CTX_TRACK: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>`,
+        CTX_QUEUE: `<svg width="48" height="48" viewBox="1 1.2 16 16" fill="currentColor"><path d="M2 2v5l4.33-2.5L2 2zm0 12h14v-1H2v1zm0-4h14V9H2v1zm7-5v1h7V5H9z"></path></svg>`
+      };
+      icons_default = ICONS;
+    }
+  });
+
+  // extensions/full-screen/src/constants/defaults.ts
+  var DEFAULTS;
+  var init_defaults = __esm({
+    "extensions/full-screen/src/constants/defaults.ts"() {
+      "use strict";
+      DEFAULTS = {
+        tv: {
+          lyricsDisplay: true,
+          lyricsAlignment: "right",
+          autoHideLyrics: true,
+          animationTempo: 0.2,
+          progressBarDisplay: false,
+          playerControls: false,
+          trimTitle: true,
+          trimTitleUpNext: true,
+          showAlbum: "date",
+          showAllArtists: true,
+          icons: true,
+          titleMovingIcon: false,
+          enableFade: true,
+          enableFullscreen: true,
+          backgroundChoice: "artist_art",
+          extraControls: false,
+          upnextDisplay: true,
+          contextDisplay: "always",
+          volumeDisplay: "smart",
+          themedButtons: true,
+          themedIcons: true,
+          invertColors: "never",
+          backAnimationTime: 0.4,
+          animationSpeed: 0.25,
+          upNextAnim: "sp",
+          upnextTimeToShow: 45,
+          coloredBackChoice: "DESATURATED",
+          staticBackChoice: "#787878",
+          blurSize: 0,
+          backgroundBrightness: 0.4,
+          showRemainingTime: false
+        },
+        def: {
+          lyricsDisplay: true,
+          lyricsAlignment: "right",
+          autoHideLyrics: true,
+          animationTempo: 0.2,
+          progressBarDisplay: true,
+          playerControls: true,
+          trimTitle: true,
+          trimTitleUpNext: true,
+          showAlbum: "never",
+          showAllArtists: true,
+          icons: false,
+          titleMovingIcon: false,
+          enableFade: true,
+          enableFullscreen: true,
+          backgroundChoice: "album_art",
+          extraControls: true,
+          upnextDisplay: true,
+          contextDisplay: "mousemove",
+          volumeDisplay: "smart",
+          themedButtons: true,
+          themedIcons: false,
+          invertColors: "never",
+          backAnimationTime: 1,
+          animationSpeed: 0.25,
+          upNextAnim: "sp",
+          upnextTimeToShow: 30,
+          coloredBackChoice: "DESATURATED",
+          staticBackChoice: "#787878",
+          blurSize: 32,
+          backgroundBrightness: 0.7,
+          showRemainingTime: false
+        },
+        tvMode: false,
+        locale: "en-US",
+        fsHideOriginal: false,
+        autoLaunch: "never",
+        activationTypes: "both",
+        buttonActivation: "both",
+        keyActivation: "both"
+      };
+    }
+  });
+
+  // extensions/full-screen/src/constants/general.ts
+  var CLASSES_TO_ADD;
+  var init_general = __esm({
+    "extensions/full-screen/src/constants/general.ts"() {
+      "use strict";
+      CLASSES_TO_ADD = [
+        "video",
+        "video-full-screen",
+        "video-full-window",
+        "video-full-screen--hide-ui",
+        "fsd-activated"
+      ];
+    }
+  });
+
+  // extensions/full-screen/src/constants/selectors.ts
+  var TOP_BAR_SELECTOR, EXTRA_BAR_SELECTOR;
+  var init_selectors = __esm({
+    "extensions/full-screen/src/constants/selectors.ts"() {
+      "use strict";
+      TOP_BAR_SELECTOR = ".main-topBar-historyButtons";
+      EXTRA_BAR_SELECTOR = ".main-nowPlayingBar-right";
+    }
+  });
+
+  // extensions/full-screen/src/constants/index.ts
+  var constants_default;
+  var init_constants = __esm({
+    "extensions/full-screen/src/constants/index.ts"() {
+      "use strict";
+      init_icons();
+      init_defaults();
+      init_general();
+      init_selectors();
+      constants_default = icons_default;
+    }
+  });
+
+  // extensions/full-screen/src/services/web-api.ts
+  var colorsCache, WebAPI, web_api_default;
+  var init_web_api = __esm({
+    "extensions/full-screen/src/services/web-api.ts"() {
+      "use strict";
+      colorsCache = [];
+      WebAPI = class _WebAPI {
+        static getToken() {
+          return Spicetify.Platform.AuthorizationAPI._tokenProvider({
+            preferCached: true
+          }).then((res) => res.accessToken);
+        }
+        static async getTrackInfo(id) {
+          return fetch(`https://api.spotify.com/v1/tracks/${id}`, {
+            headers: {
+              Authorization: `Bearer ${await _WebAPI.getToken()}`
+            }
+          }).then((res) => res.json());
+        }
+        static async getAlbumInfo(id) {
+          return fetch(`https://api.spotify.com/v1/albums/${id}`, {
+            headers: {
+              Authorization: `Bearer ${await _WebAPI.getToken()}`
+            }
+          }).then((res) => res.json());
+        }
+        static async getPlaylistInfo(uri) {
+          return Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}`);
+        }
+        static async getArtistInfo(id) {
+          return fetch(
+            `https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&variables=%7B%22uri%22%3A%22spotify%3Aartist%3A${id}%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22d66221ea13998b2f81883c5187d174c8646e4041d67f5b1e103bc262d447e3a0%22%7D%7D`,
+            {
+              headers: {
+                Authorization: `Bearer ${await _WebAPI.getToken()}`
+              }
+            }
+          ).then((res) => res.json()).then((res) => res.data.artist);
+        }
+        static async searchArt(name) {
+          return fetch(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`, {
+            headers: {
+              Authorization: `Bearer ${await _WebAPI.getToken()}`
+            }
+          }).then((res) => res.json());
+        }
+        static async colorExtractor(uri) {
+          const presentInCache = colorsCache.filter((obj) => obj.uri === uri);
+          if (presentInCache.length > 0)
+            return presentInCache[0].colors;
+          const body = await Spicetify.CosmosAsync.get(
+            `wg://colorextractor/v1/extract-presets?uri=${uri}&format=json`
+          );
+          if (body.entries && body.entries.length) {
+            const list = {};
+            for (const color of body.entries[0].color_swatches) {
+              list[color.preset] = `#${color.color.toString(16).padStart(6, "0")}`;
+            }
+            if (colorsCache.length > 20)
+              colorsCache.shift();
+            colorsCache.push({ uri, colors: list });
+            return list;
+          }
+          throw "No colors returned.";
+        }
+      };
+      web_api_default = WebAPI;
     }
   });
 
@@ -5092,8 +5950,8 @@ var full;
         }
         return objValue;
       }
-      function getMapData(map6, key) {
-        var data2 = map6.__data__;
+      function getMapData(map7, key) {
+        var data2 = map7.__data__;
         return isKeyable(key) ? data2[typeof key == "string" ? "string" : "hash"] : data2.map;
       }
       function getNative(object, key) {
@@ -5285,153 +6143,6 @@ var full;
     }
   });
 
-  // extensions/full-screen/src/constants/icons.ts
-  var ICONS, icons_default;
-  var init_icons = __esm({
-    "extensions/full-screen/src/constants/icons.ts"() {
-      "use strict";
-      ICONS = {
-        OFFLINE_SVG: `data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo=`,
-        FULLSCREEN: `<svg role="img" height="20" width="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10.5 3L16.5428 3.00182L16.6281 3.01661L16.691 3.03779L16.767 3.07719L16.8221 3.11759L16.8824 3.17788L16.9112 3.21534L16.9533 3.2886L16.9834 3.37186L16.9979 3.45421L17 3.5V9.5C17 9.77614 16.7761 10 16.5 10C16.2545 10 16.0504 9.82312 16.0081 9.58988L16 9.5V4.706L4.706 16H9.5C9.74546 16 9.94961 16.1769 9.99194 16.4101L10 16.5C10 16.7455 9.82312 16.9496 9.58988 16.9919L9.5 17L3.47964 16.9996L3.4112 16.9921L3.30896 16.9622L3.23299 16.9228L3.17786 16.8824L3.11758 16.8221L3.08884 16.7847L3.04674 16.7114L3.01661 16.6281L3.01109 16.605C3.00383 16.5713 3 16.5361 3 16.5L3.00546 16.5739L3.00182 16.5428L3 10.5C3 10.2239 3.22386 10 3.5 10C3.74546 10 3.94961 10.1769 3.99194 10.4101L4 10.5V15.292L15.292 4H10.5C10.2545 4 10.0504 3.82312 10.0081 3.58988L10 3.5C10 3.22386 10.2239 3 10.5 3Z"></path><path class="" d="M16 3C16.5523 3 17 3.44772 17 4V9.25C17 9.66421 16.6642 10 16.25 10C15.8358 10 15.5 9.66421 15.5 9.25V5.559L5.559 15.5H9.25C9.66421 15.5 10 15.8358 10 16.25C10 16.6642 9.66421 17 9.25 17H4C3.44772 17 3 16.5523 3 16V10.75C3 10.3358 3.33579 10 3.75 10C4.16421 10 4.5 10.3358 4.5 10.75V14.439L14.439 4.5H10.75C10.3358 4.5 10 4.16421 10 3.75C10 3.33579 10.3358 3 10.75 3H16Z"></path></svg>`,
-        TV_MODE: `<svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM13.991 3l.024.001a1.46 1.46 0 0 1 .538.143.757.757 0 0 1 .302.254c.067.1.145.277.145.602v5.991l-.001.024a1.464 1.464 0 0 1-.143.538.758.758 0 0 1-.254.302c-.1.067-.277.145-.602.145H2.009l-.024-.001a1.464 1.464 0 0 1-.538-.143.758.758 0 0 1-.302-.254C1.078 10.502 1 10.325 1 10V4.009l.001-.024a1.46 1.46 0 0 1 .143-.538.758.758 0 0 1 .254-.302C1.498 3.078 1.675 3 2 3h11.991zM14 2H2C0 2 0 4 0 4v6c0 2 2 2 2 2h12c2 0 2-2 2-2V4c0-2-2-2-2-2z"/></svg>`,
-        INVERT_ACTIVE: `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>`,
-        INVERT_INACTIVE: `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M14.53,6.59L14.53,6.59L10,2L5.5,6.56c-1.08,1.11-1.75,2.62-1.75,4.28c0,3.4,2.8,6.16,6.25,6.16s6.25-2.76,6.25-6.16 C16.25,9.19,15.6,7.7,14.53,6.59z M5.25,10.84c0-1.21,0.47-2.35,1.32-3.22L10,4.14V15.5C7.38,15.5,5.25,13.41,5.25,10.84z"/></svg>`,
-        LYRICS_ACTIVE: `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor"><path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/><path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/></svg>`,
-        LYRICS_INACTIVE: `<svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm7.194 2.766a1.688 1.688 0 0 0-.227-.272 1.467 1.467 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 5.734 4C4.776 4 4 4.746 4 5.667c0 .92.776 1.666 1.734 1.666.343 0 .662-.095.931-.26-.137.389-.39.804-.81 1.22a.405.405 0 0 0 .011.59c.173.16.447.155.614-.01 1.334-1.329 1.37-2.758.941-3.706a2.461 2.461 0 0 0-.227-.4zM11 7.073c-.136.389-.39.804-.81 1.22a.405.405 0 0 0 .012.59c.172.16.446.155.613-.01 1.334-1.329 1.37-2.758.942-3.706a2.466 2.466 0 0 0-.228-.4 1.686 1.686 0 0 0-.227-.273 1.466 1.466 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 10.07 4c-.957 0-1.734.746-1.734 1.667 0 .92.777 1.666 1.734 1.666.343 0 .662-.095.931-.26z"/></svg>`,
-        MINUS: `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 7h12v2H0z"/>`,
-        ALBUM: `<svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.album}</svg>`,
-        ARTIST: `   <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.artist}</svg>`,
-        PLAYING_ICON: `<svg id='playing-icon' width="30" height="30" viewBox='0 0 22 24' fill="currentColor"><defs><style> #playing-icon { fill: currentColor; } @keyframes play { 0% {transform: scaleY(1);} 3.3% {transform: scaleY(0.9583);} 6.6% {transform: scaleY(0.9166);} 9.9% {transform: scaleY(0.8333);} 13.3% {transform: scaleY(0.7083);} 16.6% {transform: scaleY(0.5416);} 19.9% {transform: scaleY(0.4166);} 23.3% {transform: scaleY(0.25);} 26.6% {transform: scaleY(0.1666);} 29.9% {transform: scaleY(0.125);} 33.3% {transform: scaleY(0.125);} 36.6% {transform: scaleY(0.1666);} 39.9% {transform: scaleY(0.1666);} 43.3% {transform: scaleY(0.2083);} 46.6% {transform: scaleY(0.2916);} 49.9% {transform: scaleY(0.375);} 53.3% {transform: scaleY(0.5);} 56.6% {transform: scaleY(0.5833);} 59.9% {transform: scaleY(0.625);} 63.3% {transform: scaleY(0.6666);} 66.6% {transform: scaleY(0.6666);} 69.9% {transform: scaleY(0.6666);} 73.3% {transform: scaleY(0.6666);} 76.6% {transform: scaleY(0.7083);} 79.9% {transform: scaleY(0.75);} 83.3% {transform: scaleY(0.8333);} 86.6% {transform: scaleY(0.875);} 89.9% {transform: scaleY(0.9166);} 93.3% {transform: scaleY(0.9583);} 96.6% {transform: scaleY(1);} } #bar1 { transform-origin: bottom; animation: play 0.9s -0.51s infinite; } #bar2 { transform-origin: bottom; animation: play 0.9s infinite; } #bar3 { transform-origin: bottom; animation: play 0.9s -0.15s infinite; } #bar4 { transform-origin: bottom; animation: play 0.9s -0.75s infinite; } </style></defs><rect id='bar1' class='cls-1' width='2' height='24'/><rect id='bar2' class='cls-1' x='6' width='2' height='24'/><rect id='bar3' class='cls-1' x='12' width='2' height='24'/><rect id='bar4' class='cls-1' x='18' width='2' height='24'/></svg>`,
-        PAUSED_ICON: `<svg id='paused-icon'  width="30" height="30" viewBox="5 4 16 16" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>`,
-        CTX_RADIO: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M19.359 18.57C21.033 16.818 22 14.461 22 11.89s-.967-4.93-2.641-6.68c-.276-.292-.653-.26-.868-.023-.222.246-.176.591.085.868 1.466 1.535 2.272 3.593 2.272 5.835 0 2.241-.806 4.3-2.272 5.835-.261.268-.307.621-.085.86.215.245.592.276.868-.016zm-13.85.014c.222-.238.176-.59-.085-.86-1.474-1.535-2.272-3.593-2.272-5.834 0-2.242.798-4.3 2.272-5.835.261-.277.307-.622.085-.868-.215-.238-.592-.269-.868.023C2.967 6.96 2 9.318 2 11.89s.967 4.929 2.641 6.68c.276.29.653.26.868.014zm1.957-1.873c.223-.253.162-.583-.1-.867-.951-1.068-1.473-2.45-1.473-3.954 0-1.505.522-2.887 1.474-3.954.26-.284.322-.614.1-.876-.23-.26-.622-.26-.891.039-1.175 1.274-1.827 2.963-1.827 4.79 0 1.82.652 3.517 1.827 4.784.269.3.66.307.89.038zm9.958-.038c1.175-1.267 1.827-2.964 1.827-4.783 0-1.828-.652-3.517-1.827-4.791-.269-.3-.66-.3-.89-.039-.23.262-.162.592.092.876.96 1.067 1.481 2.449 1.481 3.954 0 1.504-.522 2.886-1.481 3.954-.254.284-.323.614-.092.867.23.269.621.261.89-.038zm-8.061-1.966c.23-.26.13-.568-.092-.883-.415-.522-.63-1.197-.63-1.934 0-.737.215-1.413.63-1.943.222-.307.322-.614.092-.875s-.653-.261-.906.054a4.385 4.385 0 00-.968 2.764 4.38 4.38 0 00.968 2.756c.253.322.675.322.906.061zm6.18-.061a4.38 4.38 0 00.968-2.756 4.385 4.385 0 00-.968-2.764c-.253-.315-.675-.315-.906-.054-.23.261-.138.568.092.875.415.53.63 1.206.63 1.943 0 .737-.215 1.412-.63 1.934-.23.315-.322.622-.092.883s.653.261.906-.061zm-3.547-.967c.96 0 1.789-.814 1.789-1.797s-.83-1.789-1.789-1.789c-.96 0-1.781.806-1.781 1.789 0 .983.821 1.797 1.781 1.797z" fill-rule="nonzero"></path></svg>`,
-        CTX_TRACK: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>`,
-        CTX_QUEUE: `<svg width="48" height="48" viewBox="1 1.2 16 16" fill="currentColor"><path d="M2 2v5l4.33-2.5L2 2zm0 12h14v-1H2v1zm0-4h14V9H2v1zm7-5v1h7V5H9z"></path></svg>`
-      };
-      icons_default = ICONS;
-    }
-  });
-
-  // extensions/full-screen/src/constants/defaults.ts
-  var DEFAULTS;
-  var init_defaults = __esm({
-    "extensions/full-screen/src/constants/defaults.ts"() {
-      "use strict";
-      DEFAULTS = {
-        tv: {
-          lyricsDisplay: true,
-          lyricsAlignment: "right",
-          autoHideLyrics: true,
-          animationTempo: 0.2,
-          progressBarDisplay: false,
-          playerControls: false,
-          trimTitle: true,
-          trimTitleUpNext: true,
-          showAlbum: "date",
-          showAllArtists: true,
-          icons: true,
-          titleMovingIcon: false,
-          enableFade: true,
-          enableFullscreen: true,
-          backgroundChoice: "artist_art",
-          extraControls: false,
-          upnextDisplay: true,
-          contextDisplay: "always",
-          volumeDisplay: "smart",
-          themedButtons: true,
-          themedIcons: true,
-          invertColors: "never",
-          backAnimationTime: 0.4,
-          animationSpeed: 0.25,
-          upNextAnim: "sp",
-          upnextTimeToShow: 45,
-          coloredBackChoice: "DESATURATED",
-          staticBackChoice: "#787878",
-          blurSize: 0,
-          backgroundBrightness: 0.4,
-          showRemainingTime: false
-        },
-        def: {
-          lyricsDisplay: true,
-          lyricsAlignment: "right",
-          autoHideLyrics: true,
-          animationTempo: 0.2,
-          progressBarDisplay: true,
-          playerControls: true,
-          trimTitle: true,
-          trimTitleUpNext: true,
-          showAlbum: "never",
-          showAllArtists: true,
-          icons: false,
-          titleMovingIcon: false,
-          enableFade: true,
-          enableFullscreen: true,
-          backgroundChoice: "album_art",
-          extraControls: true,
-          upnextDisplay: true,
-          contextDisplay: "mousemove",
-          volumeDisplay: "smart",
-          themedButtons: true,
-          themedIcons: false,
-          invertColors: "never",
-          backAnimationTime: 1,
-          animationSpeed: 0.25,
-          upNextAnim: "sp",
-          upnextTimeToShow: 30,
-          coloredBackChoice: "DESATURATED",
-          staticBackChoice: "#787878",
-          blurSize: 32,
-          backgroundBrightness: 0.7,
-          showRemainingTime: false
-        },
-        tvMode: false,
-        locale: "en-US",
-        fsHideOriginal: false,
-        autoLaunch: "never",
-        activationTypes: "both",
-        buttonActivation: "both",
-        keyActivation: "both"
-      };
-    }
-  });
-
-  // extensions/full-screen/src/constants/general.ts
-  var CLASSES_TO_ADD;
-  var init_general = __esm({
-    "extensions/full-screen/src/constants/general.ts"() {
-      "use strict";
-      CLASSES_TO_ADD = [
-        "video",
-        "video-full-screen",
-        "video-full-window",
-        "video-full-screen--hide-ui",
-        "fsd-activated"
-      ];
-    }
-  });
-
-  // extensions/full-screen/src/constants/selectors.ts
-  var TOP_BAR_SELECTOR, EXTRA_BAR_SELECTOR;
-  var init_selectors = __esm({
-    "extensions/full-screen/src/constants/selectors.ts"() {
-      "use strict";
-      TOP_BAR_SELECTOR = ".main-topBar-historyButtons";
-      EXTRA_BAR_SELECTOR = ".main-nowPlayingBar-right";
-    }
-  });
-
-  // extensions/full-screen/src/constants/index.ts
-  var constants_default;
-  var init_constants = __esm({
-    "extensions/full-screen/src/constants/index.ts"() {
-      "use strict";
-      init_icons();
-      init_defaults();
-      init_general();
-      init_selectors();
-      constants_default = icons_default;
-    }
-  });
-
   // extensions/full-screen/src/utils/config.ts
   function getConfig(DEFAULTS2) {
     try {
@@ -5534,6 +6245,292 @@ var full;
     }
   });
 
+  // extensions/full-screen/src/utils/utils.ts
+  var prevUriObj, Utils, utils_default;
+  var init_utils = __esm({
+    "extensions/full-screen/src/utils/utils.ts"() {
+      "use strict";
+      init_constants();
+      init_selectors();
+      init_web_api();
+      init_config();
+      Utils = class _Utils {
+        static allNotExist() {
+          const extraBar = document.querySelector(EXTRA_BAR_SELECTOR)?.childNodes[0];
+          const topBar = document.querySelector(TOP_BAR_SELECTOR);
+          const entriesToVerify = {
+            "Top Bar Component": topBar,
+            "Extra Bar Component": extraBar,
+            "Spicetify CosmosAsync": Spicetify.CosmosAsync,
+            "Spicetify Mousetrap": Spicetify.Mousetrap,
+            "Spicetify Player": Spicetify.Player,
+            "Spicetify Platform": Spicetify.Platform
+          };
+          return Object.entries(entriesToVerify).filter(([, val]) => !val);
+        }
+        static printNotExistings(entriesNotPresent) {
+          entriesNotPresent.forEach((entry) => {
+            console.error(
+              `${entry[0]} not available. Report issue on GitHub or run Spicetify.test() to test.`
+            );
+            Spicetify.showNotification(
+              `Error initializing "fullscreen.js" extension. ${entry[0]} not available. Report issue on GitHub.`
+            );
+          });
+          console.log("Retries exceeded. Aborting.");
+        }
+        static fullScreenOn() {
+          if (!document.fullscreen)
+            return document.documentElement.requestFullscreen();
+        }
+        static fullScreenOff() {
+          if (document.fullscreen)
+            return document.exitFullscreen();
+        }
+        /**
+         * Add fade animation on button click
+         * @param element The element to add fade animation
+         * @param animClass Fade animation type class
+         */
+        static fadeAnimation(element, animClass = "fade-do") {
+          element.classList.remove(animClass);
+          element.classList.add(animClass);
+          setTimeout(() => {
+            element.classList.remove(animClass);
+          }, 800);
+        }
+        // Utility function to add a observer with wait for element support
+        static addObserver(observer, selector, options2) {
+          const ele = document.querySelector(selector);
+          if (!ele) {
+            setTimeout(() => {
+              _Utils.addObserver(observer, selector, options2);
+            }, 2e3);
+            return;
+          }
+          observer.observe(ele, options2);
+        }
+        // Converting hex to rgb
+        static hexToRgb(hex) {
+          const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+          hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+            return r + r + g + g + b + b;
+          });
+          const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+          return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : null;
+        }
+        static trimTitle(title) {
+          const trimmedTitle = title.replace(/\(.+?\)/g, "").replace(/\[.+?\]/g, "").replace(/\s-\s.+?$/, "").trim();
+          if (!trimmedTitle)
+            return title;
+          return trimmedTitle;
+        }
+        static async getAlbumReleaseDate(albumURI, locale) {
+          const albumInfo = await web_api_default.getAlbumInfo(albumURI.replace("spotify:album:", "")).catch(
+            (err) => console.error(err)
+          );
+          if (!albumInfo?.release_date)
+            return "";
+          const albumDate = new Date(albumInfo.release_date);
+          const recentDate = /* @__PURE__ */ new Date();
+          recentDate.setMonth(recentDate.getMonth() - 18);
+          const dateStr = albumDate.toLocaleString(
+            locale,
+            albumDate > recentDate ? { year: "numeric", month: "short" } : { year: "numeric" }
+          );
+          return " \u2022 " + dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        }
+        static async getImageAndLoad(meta) {
+          if (meta.artist_uri == null)
+            return meta.image_xlarge_url;
+          let arUri = meta.artist_uri.split(":")[2];
+          if (meta.artist_uri.split(":")[1] === "local") {
+            const res = await web_api_default.searchArt(meta.artist_name).catch((err) => console.error(err));
+            arUri = res ? res.artists.items[0].id : "";
+          }
+          const artistInfo = await web_api_default.getArtistInfo(arUri).catch((err) => console.error(err));
+          return artistInfo?.visuals?.headerImage?.sources[0].url ?? meta.image_xlarge_url;
+        }
+        static async getNextColor(colorChoice) {
+          let nextColor = "#444444";
+          const imageColors = await web_api_default.colorExtractor(
+            Spicetify.Player.data.track?.uri ?? ""
+          ).catch((err) => console.warn(err));
+          if (imageColors && imageColors[colorChoice])
+            nextColor = imageColors[colorChoice];
+          return nextColor;
+        }
+        static revertPathHistory(originalLocation) {
+          Spicetify.Platform.History.push(originalLocation);
+          Spicetify.Platform.History.entries.splice(Spicetify.Platform.History.entries.length - 3, 2);
+          Spicetify.Platform.History.index = Spicetify.Platform.History.index > 0 ? Spicetify.Platform.History.index - 2 : -1;
+          Spicetify.Platform.History.length = Spicetify.Platform.History.length > 1 ? Spicetify.Platform.History.length - 2 : 0;
+        }
+        // Return the total time left to show the upnext timer
+        static getShowTime(upnextTime) {
+          const showBefore = upnextTime * 1e3;
+          const dur = Spicetify.Player.data.duration;
+          const curProg = Spicetify.Player.getProgress();
+          if (dur - curProg <= showBefore)
+            return -1;
+          else
+            return dur - showBefore - curProg;
+        }
+        static isModeActivated() {
+          return document.body.classList.contains("fsd-activated");
+        }
+        static overlayBack(hideBackground = true) {
+          const overlay = document.querySelector("body > generic-modal > div");
+          if (overlay) {
+            hideBackground ? overlay.classList.add("transparent-bg") : overlay.classList.remove("transparent-bg");
+          }
+        }
+        // Translation string
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        static getAvailableLanguages(translations2) {
+          const languages = {};
+          for (const lang in translations2) {
+            languages[lang] = translations2[lang].langName;
+          }
+          return languages;
+        }
+        static async getMainColor(imageURL) {
+          let imageProminentColor, thresholdValue = 160;
+          const imageColors = await web_api_default.colorExtractor(imageURL).catch((err) => console.warn(err));
+          if (config_default.get("backgroundChoice") === "album_art" || config_default.get("backgroundChoice") === "artist_art") {
+            if (!imageColors?.PROMINENT)
+              imageProminentColor = "0,0,0";
+            else
+              imageProminentColor = _Utils.hexToRgb(imageColors.PROMINENT);
+            thresholdValue = 260 - config_default.get("backgroundBrightness") * 100;
+          } else if (config_default.get("backgroundChoice") === "dynamic_color") {
+            if (!imageColors || !imageColors[config_default.get("coloredBackChoice")])
+              imageProminentColor = _Utils.hexToRgb("#444444");
+            else
+              imageProminentColor = _Utils.hexToRgb(
+                imageColors[config_default.get("coloredBackChoice")]
+              );
+          } else if (config_default.get("backgroundChoice") === "static_color") {
+            imageProminentColor = _Utils.hexToRgb(
+              config_default.get("staticBackChoice")
+            );
+          }
+          const isLightBG = Number(imageProminentColor?.split(",")[0]) * 0.299 + Number(imageProminentColor?.split(",")[1]) * 0.587 + Number(imageProminentColor?.split(",")[2]) * 0.114 > thresholdValue;
+          const mainColor = isLightBG && Number(config_default.get("backgroundBrightness")) > 0.3 ? "0,0,0" : "255,255,255";
+          const contrastColor = isLightBG && Number(config_default.get("backgroundBrightness")) > 0.3 ? "255,255,255" : "0,0,0";
+          return [mainColor, contrastColor];
+        }
+        // Translation strings
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        static async getContext(STRINGS) {
+          let ctxIcon = "", ctxSource, ctxName;
+          if (Spicetify.Player.data.track?.provider === "queue") {
+            ctxIcon = constants_default.CTX_QUEUE;
+            ctxSource = STRINGS.context.queue;
+            ctxName = "";
+          } else {
+            const uriObj = Spicetify.URI.fromString(Spicetify.Player.data.context_uri);
+            if (JSON.stringify(uriObj) === JSON.stringify(prevUriObj) && ctxSource != void 0 && ctxName != void 0)
+              return { ctxIcon, ctxSource, ctxName };
+            prevUriObj = uriObj;
+            switch (uriObj.type) {
+              case Spicetify.URI.Type.TRACK:
+                ctxIcon = constants_default.CTX_TRACK;
+                ctxSource = STRINGS.context.track;
+                await web_api_default.getTrackInfo(uriObj._base62Id ? uriObj._base62Id : uriObj.id).then(
+                  (meta) => ctxName = `${meta.name}  \u2022  ${meta.artists[0].name}`
+                );
+                break;
+              case Spicetify.URI.Type.SEARCH:
+                ctxIcon = Spicetify.SVGIcons["search-active"];
+                ctxSource = STRINGS.context.search;
+                ctxName = `"${uriObj.query}" in ${STRINGS.context.searchDest}`;
+                break;
+              case Spicetify.URI.Type.COLLECTION:
+                ctxIcon = Spicetify.SVGIcons["heart-active"];
+                ctxSource = STRINGS.context.collection;
+                ctxName = STRINGS.context.likedSongs;
+                break;
+              case Spicetify.URI.Type.PLAYLIST_V2:
+                ctxIcon = Spicetify.SVGIcons["playlist"];
+                ctxSource = STRINGS.context.playlist;
+                ctxName = Spicetify.Player.data.context_metadata?.context_description || "";
+                break;
+              case Spicetify.URI.Type.STATION:
+              case Spicetify.URI.Type.RADIO:
+                ctxIcon = constants_default.CTX_RADIO;
+                switch (uriObj.args[0]) {
+                  case "album":
+                    ctxSource = STRINGS.context.albumRadio;
+                    await web_api_default.getAlbumInfo(uriObj.args[1]).then(
+                      (meta) => ctxName = meta.name
+                    );
+                    break;
+                  case "track":
+                    ctxSource = STRINGS.context.trackRadio;
+                    await web_api_default.getTrackInfo(uriObj.args[1]).then(
+                      (meta) => ctxName = `${meta.name}  \u2022  ${meta.artists[0].name}`
+                    );
+                    break;
+                  case "artist":
+                    ctxSource = STRINGS.context.artistRadio;
+                    await web_api_default.getArtistInfo(uriObj.args[1]).then(
+                      (meta) => ctxName = meta?.profile?.name
+                    );
+                    break;
+                  case "playlist":
+                  case "playlist-v2":
+                    ctxSource = STRINGS.context.playlistRadio;
+                    ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M16.94 6.9l-1.4 1.46C16.44 9.3 17 10.58 17 12s-.58 2.7-1.48 3.64l1.4 1.45C18.22 15.74 19 13.94 19 12s-.8-3.8-2.06-5.1zM23 12c0-3.12-1.23-5.95-3.23-8l-1.4 1.45C19.97 7.13 21 9.45 21 12s-1 4.9-2.64 6.55l1.4 1.45c2-2.04 3.24-4.87 3.24-8zM7.06 17.1l1.4-1.46C7.56 14.7 7 13.42 7 12s.6-2.7 1.5-3.64L7.08 6.9C5.78 8.2 5 10 5 12s.8 3.8 2.06 5.1zM1 12c0 3.12 1.23 5.95 3.23 8l1.4-1.45C4.03 16.87 3 14.55 3 12s1-4.9 2.64-6.55L4.24 4C2.24 6.04 1 8.87 1 12zm9-3.32v6.63l5-3.3-5-3.3z"></path></svg>`;
+                    await web_api_default.getPlaylistInfo("spotify:playlist:" + uriObj.args[1]).then(
+                      (meta) => ctxName = meta.playlist.name
+                    );
+                    break;
+                  default:
+                    ctxName = "";
+                }
+                break;
+              case Spicetify.URI.Type.PLAYLIST:
+                ctxIcon = Spicetify.SVGIcons[uriObj.type];
+                ctxSource = STRINGS.context.playlist;
+                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+                break;
+              case Spicetify.URI.Type.ALBUM:
+                ctxIcon = Spicetify.SVGIcons[uriObj.type];
+                ctxSource = STRINGS.context.album;
+                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+                break;
+              case Spicetify.URI.Type.ARTIST:
+                ctxIcon = Spicetify.SVGIcons[uriObj.type];
+                ctxSource = STRINGS.context.artist;
+                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+                break;
+              case Spicetify.URI.Type.FOLDER: {
+                ctxIcon = Spicetify.SVGIcons["playlist-folder"];
+                ctxSource = STRINGS.context.playlistFolder;
+                const res = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/rootlist`, {
+                  policy: { folder: { rows: true, link: true, name: true } }
+                });
+                for (const item of res.rows) {
+                  if (item.type === "folder" && item.link === Spicetify.Player.data.context_uri) {
+                    ctxName = item.name;
+                    break;
+                  }
+                }
+                break;
+              }
+              default:
+                ctxSource = uriObj.type;
+                ctxName = Spicetify.Player.data?.context_metadata?.context_description || "";
+            }
+          }
+          return { ctxIcon, ctxSource, ctxName };
+        }
+      };
+      utils_default = Utils;
+    }
+  });
+
   // extensions/full-screen/src/utils/animation.ts
   function animateCanvas(prevImg, nextImg, back, fromResize = false) {
     const configTransitionTime = config_default.get("backAnimationTime");
@@ -5617,7 +6614,10 @@ var full;
     back.width = window.innerWidth;
     back.height = window.innerHeight;
     const blur = Math.max(config_default.get("blurSize"), 28);
-    const brightness = Math.min(config_default.get("backgroundBrightness"), 0.7);
+    const brightness = Math.min(
+      config_default.get("backgroundBrightness"),
+      0.7
+    );
     ctx.filter = `saturate(2) brightness(${brightness}) blur(${blur}px)`;
     const radius = Math.min(back.width, back.height);
     let rotationAngle = 0;
@@ -8031,8 +9031,8 @@ ${content}</tr>
         [LETTERDASHNUMBER, MAX_SAFE_BUILD_LENGTH]
       ];
       var makeSafeRegex = (value) => {
-        for (const [token, max3] of safeRegexReplacements) {
-          value = value.split(`${token}*`).join(`${token}{0,${max3}}`).split(`${token}+`).join(`${token}{1,${max3}}`);
+        for (const [token, max5] of safeRegexReplacements) {
+          value = value.split(`${token}*`).join(`${token}{0,${max5}}`).split(`${token}+`).join(`${token}{1,${max5}}`);
         }
         return value;
       };
@@ -8540,19 +9540,19 @@ ${changes}`;
     `;
     return settingCard;
   }
-  function createAdjust(title, key, unit = "", configValue, step, min3, max3, onChange, extraDescription = "") {
+  function createAdjust(title, key, unit = "", configValue, step, min5, max5, onChange, extraDescription = "") {
     let value = configValue;
     function adjustValue(dir) {
       let temp = Number(value) + dir * step;
-      if (temp < min3) {
-        temp = min3;
-      } else if (temp > max3) {
-        temp = max3;
+      if (temp < min5) {
+        temp = min5;
+      } else if (temp > max5) {
+        temp = max5;
       }
       value = Number(Number(temp).toFixed(step >= 1 ? 0 : 2));
       settingCard.querySelector(".adjust-value").innerText = `${value}${unit}`;
-      plus && plus.classList.toggle("disabled", value === max3);
-      minus && minus.classList.toggle("disabled", value === min3);
+      plus && plus.classList.toggle("disabled", value === max5);
+      minus && minus.classList.toggle("disabled", value === min5);
       onChange(value);
     }
     const settingCard = getSettingCard(
@@ -8566,8 +9566,8 @@ ${changes}`;
     const minus = settingCard.querySelector(".minus");
     const plus = settingCard.querySelector(".plus");
     if (minus && plus) {
-      minus.classList.toggle("disabled", value === min3);
-      plus.classList.toggle("disabled", value === max3);
+      minus.classList.toggle("disabled", value === min5);
+      plus.classList.toggle("disabled", value === max5);
       minus.onclick = () => adjustValue(-1);
       plus.onclick = () => adjustValue(1);
     }
@@ -8601,362 +9601,6 @@ ${changes}`;
       init_package();
       init_whats_new();
       init_config();
-    }
-  });
-
-  // extensions/full-screen/src/services/web-api.ts
-  var colorsCache, WebAPI, web_api_default;
-  var init_web_api = __esm({
-    "extensions/full-screen/src/services/web-api.ts"() {
-      "use strict";
-      colorsCache = [];
-      WebAPI = class _WebAPI {
-        static getToken() {
-          return Spicetify.Platform.AuthorizationAPI._tokenProvider({
-            preferCached: true
-          }).then((res) => res.accessToken);
-        }
-        static async getTrackInfo(id) {
-          return fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-            headers: {
-              Authorization: `Bearer ${await _WebAPI.getToken()}`
-            }
-          }).then((res) => res.json());
-        }
-        static async getAlbumInfo(id) {
-          return fetch(`https://api.spotify.com/v1/albums/${id}`, {
-            headers: {
-              Authorization: `Bearer ${await _WebAPI.getToken()}`
-            }
-          }).then((res) => res.json());
-        }
-        static async getPlaylistInfo(uri) {
-          return Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}`);
-        }
-        static async getArtistInfo(id) {
-          return fetch(
-            `https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&variables=%7B%22uri%22%3A%22spotify%3Aartist%3A${id}%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22d66221ea13998b2f81883c5187d174c8646e4041d67f5b1e103bc262d447e3a0%22%7D%7D`,
-            {
-              headers: {
-                Authorization: `Bearer ${await _WebAPI.getToken()}`
-              }
-            }
-          ).then((res) => res.json()).then((res) => res.data.artist);
-        }
-        static async searchArt(name) {
-          return fetch(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`, {
-            headers: {
-              Authorization: `Bearer ${await _WebAPI.getToken()}`
-            }
-          }).then((res) => res.json());
-        }
-        static async colorExtractor(uri) {
-          const presentInCache = colorsCache.filter((obj) => obj.uri === uri);
-          if (presentInCache.length > 0)
-            return presentInCache[0].colors;
-          const body = await Spicetify.CosmosAsync.get(
-            `wg://colorextractor/v1/extract-presets?uri=${uri}&format=json`
-          );
-          if (body.entries && body.entries.length) {
-            const list = {};
-            for (const color of body.entries[0].color_swatches) {
-              list[color.preset] = `#${color.color.toString(16).padStart(6, "0")}`;
-            }
-            if (colorsCache.length > 20)
-              colorsCache.shift();
-            colorsCache.push({ uri, colors: list });
-            return list;
-          }
-          throw "No colors returned.";
-        }
-      };
-      web_api_default = WebAPI;
-    }
-  });
-
-  // extensions/full-screen/src/utils/utils.ts
-  var prevUriObj, Utils, utils_default;
-  var init_utils = __esm({
-    "extensions/full-screen/src/utils/utils.ts"() {
-      "use strict";
-      init_constants();
-      init_selectors();
-      init_web_api();
-      init_config();
-      Utils = class _Utils {
-        static allNotExist() {
-          const extraBar = document.querySelector(EXTRA_BAR_SELECTOR)?.childNodes[0];
-          const topBar = document.querySelector(TOP_BAR_SELECTOR);
-          const entriesToVerify = {
-            "Top Bar Component": topBar,
-            "Extra Bar Component": extraBar,
-            "Spicetify CosmosAsync": Spicetify.CosmosAsync,
-            "Spicetify Mousetrap": Spicetify.Mousetrap,
-            "Spicetify Player": Spicetify.Player,
-            "Spicetify Platform": Spicetify.Platform
-          };
-          return Object.entries(entriesToVerify).filter(([, val]) => !val);
-        }
-        static printNotExistings(entriesNotPresent) {
-          entriesNotPresent.forEach((entry) => {
-            console.error(
-              `${entry[0]} not available. Report issue on GitHub or run Spicetify.test() to test.`
-            );
-            Spicetify.showNotification(
-              `Error initializing "fullscreen.js" extension. ${entry[0]} not available. Report issue on GitHub.`
-            );
-          });
-          console.log("Retries exceeded. Aborting.");
-        }
-        static fullScreenOn() {
-          if (!document.fullscreen)
-            return document.documentElement.requestFullscreen();
-        }
-        static fullScreenOff() {
-          if (document.fullscreen)
-            return document.exitFullscreen();
-        }
-        /**
-         * Add fade animation on button click
-         * @param element The element to add fade animation
-         * @param animClass Fade animation type class
-         */
-        static fadeAnimation(element, animClass = "fade-do") {
-          element.classList.remove(animClass);
-          element.classList.add(animClass);
-          setTimeout(() => {
-            element.classList.remove(animClass);
-          }, 800);
-        }
-        // Utility function to add a observer with wait for element support
-        static addObserver(observer, selector, options2) {
-          const ele = document.querySelector(selector);
-          if (!ele) {
-            setTimeout(() => {
-              _Utils.addObserver(observer, selector, options2);
-            }, 2e3);
-            return;
-          }
-          observer.observe(ele, options2);
-        }
-        // Converting hex to rgb
-        static hexToRgb(hex) {
-          const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-          hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-            return r + r + g + g + b + b;
-          });
-          const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-          return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : null;
-        }
-        static trimTitle(title) {
-          const trimmedTitle = title.replace(/\(.+?\)/g, "").replace(/\[.+?\]/g, "").replace(/\s-\s.+?$/, "").trim();
-          if (!trimmedTitle)
-            return title;
-          return trimmedTitle;
-        }
-        static async getAlbumReleaseDate(albumURI, locale) {
-          const albumInfo = await web_api_default.getAlbumInfo(albumURI.replace("spotify:album:", "")).catch(
-            (err) => console.error(err)
-          );
-          if (!albumInfo?.release_date)
-            return "";
-          const albumDate = new Date(albumInfo.release_date);
-          const recentDate = /* @__PURE__ */ new Date();
-          recentDate.setMonth(recentDate.getMonth() - 18);
-          const dateStr = albumDate.toLocaleString(
-            locale,
-            albumDate > recentDate ? { year: "numeric", month: "short" } : { year: "numeric" }
-          );
-          return " \u2022 " + dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
-        }
-        static async getImageAndLoad(meta) {
-          if (meta.artist_uri == null)
-            return meta.image_xlarge_url;
-          let arUri = meta.artist_uri.split(":")[2];
-          if (meta.artist_uri.split(":")[1] === "local") {
-            const res = await web_api_default.searchArt(meta.artist_name).catch((err) => console.error(err));
-            arUri = res ? res.artists.items[0].id : "";
-          }
-          const artistInfo = await web_api_default.getArtistInfo(arUri).catch((err) => console.error(err));
-          return artistInfo?.visuals?.headerImage?.sources[0].url ?? meta.image_xlarge_url;
-        }
-        static async getNextColor(colorChoice) {
-          let nextColor = "#444444";
-          const imageColors = await web_api_default.colorExtractor(
-            Spicetify.Player.data.track?.uri ?? ""
-          ).catch((err) => console.warn(err));
-          if (imageColors && imageColors[colorChoice])
-            nextColor = imageColors[colorChoice];
-          return nextColor;
-        }
-        static revertPathHistory(originalLocation) {
-          Spicetify.Platform.History.push(originalLocation);
-          Spicetify.Platform.History.entries.splice(Spicetify.Platform.History.entries.length - 3, 2);
-          Spicetify.Platform.History.index = Spicetify.Platform.History.index > 0 ? Spicetify.Platform.History.index - 2 : -1;
-          Spicetify.Platform.History.length = Spicetify.Platform.History.length > 1 ? Spicetify.Platform.History.length - 2 : 0;
-        }
-        // Return the total time left to show the upnext timer
-        static getShowTime(upnextTime) {
-          const showBefore = upnextTime * 1e3;
-          const dur = Spicetify.Player.data.duration;
-          const curProg = Spicetify.Player.getProgress();
-          if (dur - curProg <= showBefore)
-            return -1;
-          else
-            return dur - showBefore - curProg;
-        }
-        static isModeActivated() {
-          return document.body.classList.contains("fsd-activated");
-        }
-        static overlayBack(hideBackground = true) {
-          const overlay = document.querySelector("body > generic-modal > div");
-          if (overlay) {
-            hideBackground ? overlay.classList.add("transparent-bg") : overlay.classList.remove("transparent-bg");
-          }
-        }
-        // Translation string
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        static getAvailableLanguages(translations2) {
-          const languages = {};
-          for (const lang in translations2) {
-            languages[lang] = translations2[lang].langName;
-          }
-          return languages;
-        }
-        static async getMainColor(imageURL) {
-          let imageProminentColor, thresholdValue = 160;
-          const imageColors = await web_api_default.colorExtractor(imageURL).catch((err) => console.warn(err));
-          if (config_default.get("backgroundChoice") === "album_art" || config_default.get("backgroundChoice") === "artist_art") {
-            if (!imageColors?.PROMINENT)
-              imageProminentColor = "0,0,0";
-            else
-              imageProminentColor = _Utils.hexToRgb(imageColors.PROMINENT);
-            thresholdValue = 260 - config_default.get("backgroundBrightness") * 100;
-          } else if (config_default.get("backgroundChoice") === "dynamic_color") {
-            if (!imageColors || !imageColors[config_default.get("coloredBackChoice")])
-              imageProminentColor = _Utils.hexToRgb("#444444");
-            else
-              imageProminentColor = _Utils.hexToRgb(
-                imageColors[config_default.get("coloredBackChoice")]
-              );
-          } else if (config_default.get("backgroundChoice") === "static_color") {
-            imageProminentColor = _Utils.hexToRgb(
-              config_default.get("staticBackChoice")
-            );
-          }
-          const isLightBG = Number(imageProminentColor?.split(",")[0]) * 0.299 + Number(imageProminentColor?.split(",")[1]) * 0.587 + Number(imageProminentColor?.split(",")[2]) * 0.114 > thresholdValue;
-          const mainColor = isLightBG && Number(config_default.get("backgroundBrightness")) > 0.3 ? "0,0,0" : "255,255,255";
-          const contrastColor = isLightBG && Number(config_default.get("backgroundBrightness")) > 0.3 ? "255,255,255" : "0,0,0";
-          return [mainColor, contrastColor];
-        }
-        // Translation strings
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        static async getContext(STRINGS) {
-          let ctxIcon = "", ctxSource, ctxName;
-          if (Spicetify.Player.data.track?.provider === "queue") {
-            ctxIcon = constants_default.CTX_QUEUE;
-            ctxSource = STRINGS.context.queue;
-            ctxName = "";
-          } else {
-            const uriObj = Spicetify.URI.fromString(Spicetify.Player.data.context_uri);
-            if (JSON.stringify(uriObj) === JSON.stringify(prevUriObj) && ctxSource != void 0 && ctxName != void 0)
-              return { ctxIcon, ctxSource, ctxName };
-            prevUriObj = uriObj;
-            switch (uriObj.type) {
-              case Spicetify.URI.Type.TRACK:
-                ctxIcon = constants_default.CTX_TRACK;
-                ctxSource = STRINGS.context.track;
-                await web_api_default.getTrackInfo(uriObj._base62Id ? uriObj._base62Id : uriObj.id).then(
-                  (meta) => ctxName = `${meta.name}  \u2022  ${meta.artists[0].name}`
-                );
-                break;
-              case Spicetify.URI.Type.SEARCH:
-                ctxIcon = Spicetify.SVGIcons["search-active"];
-                ctxSource = STRINGS.context.search;
-                ctxName = `"${uriObj.query}" in ${STRINGS.context.searchDest}`;
-                break;
-              case Spicetify.URI.Type.COLLECTION:
-                ctxIcon = Spicetify.SVGIcons["heart-active"];
-                ctxSource = STRINGS.context.collection;
-                ctxName = STRINGS.context.likedSongs;
-                break;
-              case Spicetify.URI.Type.PLAYLIST_V2:
-                ctxIcon = Spicetify.SVGIcons["playlist"];
-                ctxSource = STRINGS.context.playlist;
-                ctxName = Spicetify.Player.data.context_metadata?.context_description || "";
-                break;
-              case Spicetify.URI.Type.STATION:
-              case Spicetify.URI.Type.RADIO:
-                ctxIcon = constants_default.CTX_RADIO;
-                switch (uriObj.args[0]) {
-                  case "album":
-                    ctxSource = STRINGS.context.albumRadio;
-                    await web_api_default.getAlbumInfo(uriObj.args[1]).then(
-                      (meta) => ctxName = meta.name
-                    );
-                    break;
-                  case "track":
-                    ctxSource = STRINGS.context.trackRadio;
-                    await web_api_default.getTrackInfo(uriObj.args[1]).then(
-                      (meta) => ctxName = `${meta.name}  \u2022  ${meta.artists[0].name}`
-                    );
-                    break;
-                  case "artist":
-                    ctxSource = STRINGS.context.artistRadio;
-                    await web_api_default.getArtistInfo(uriObj.args[1]).then(
-                      (meta) => ctxName = meta?.profile?.name
-                    );
-                    break;
-                  case "playlist":
-                  case "playlist-v2":
-                    ctxSource = STRINGS.context.playlistRadio;
-                    ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M16.94 6.9l-1.4 1.46C16.44 9.3 17 10.58 17 12s-.58 2.7-1.48 3.64l1.4 1.45C18.22 15.74 19 13.94 19 12s-.8-3.8-2.06-5.1zM23 12c0-3.12-1.23-5.95-3.23-8l-1.4 1.45C19.97 7.13 21 9.45 21 12s-1 4.9-2.64 6.55l1.4 1.45c2-2.04 3.24-4.87 3.24-8zM7.06 17.1l1.4-1.46C7.56 14.7 7 13.42 7 12s.6-2.7 1.5-3.64L7.08 6.9C5.78 8.2 5 10 5 12s.8 3.8 2.06 5.1zM1 12c0 3.12 1.23 5.95 3.23 8l1.4-1.45C4.03 16.87 3 14.55 3 12s1-4.9 2.64-6.55L4.24 4C2.24 6.04 1 8.87 1 12zm9-3.32v6.63l5-3.3-5-3.3z"></path></svg>`;
-                    await web_api_default.getPlaylistInfo("spotify:playlist:" + uriObj.args[1]).then(
-                      (meta) => ctxName = meta.playlist.name
-                    );
-                    break;
-                  default:
-                    ctxName = "";
-                }
-                break;
-              case Spicetify.URI.Type.PLAYLIST:
-                ctxIcon = Spicetify.SVGIcons[uriObj.type];
-                ctxSource = STRINGS.context.playlist;
-                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
-                break;
-              case Spicetify.URI.Type.ALBUM:
-                ctxIcon = Spicetify.SVGIcons[uriObj.type];
-                ctxSource = STRINGS.context.album;
-                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
-                break;
-              case Spicetify.URI.Type.ARTIST:
-                ctxIcon = Spicetify.SVGIcons[uriObj.type];
-                ctxSource = STRINGS.context.artist;
-                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
-                break;
-              case Spicetify.URI.Type.FOLDER: {
-                ctxIcon = Spicetify.SVGIcons["playlist-folder"];
-                ctxSource = STRINGS.context.playlistFolder;
-                const res = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/rootlist`, {
-                  policy: { folder: { rows: true, link: true, name: true } }
-                });
-                for (const item of res.rows) {
-                  if (item.type === "folder" && item.link === Spicetify.Player.data.context_uri) {
-                    ctxName = item.name;
-                    break;
-                  }
-                }
-                break;
-              }
-              default:
-                ctxSource = uriObj.type;
-                ctxName = Spicetify.Player.data?.context_metadata?.context_description || "";
-            }
-          }
-          return { ctxIcon, ctxSource, ctxName };
-        }
-      };
-      utils_default = Utils;
     }
   });
 
@@ -10212,7 +10856,7 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
             ${config_default.get("showAlbum") !== "never" ? `<div id="fsd-album">
                  ${constants_default.ALBUM}
                  <span></span>
-            </div>` : ""}
+            </div>` : ""} 
             <div id="fsd-status" class="${config_default.get("playerControls") || config_default.get("extraControls") || config_default.get("progressBarDisplay") ? "active" : ""}">
                 ${config_default.get("extraControls") ? `<div class="fsd-controls-left fsd-controls extra-controls">
                        <button class="fs-button" id="fsd-heart">
@@ -10760,32 +11404,6 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
     }
   });
 
-  // temp_stylePlugin:ni:sha-256;nXfqXL-OAQ2p_9am_BnlQpJRaaDLbI-_7dq9TwWggFg
-  var init_ni_sha_256_nXfqXL_OAQ2p_9am_BnlQpJRaaDLbI_7dq9TwWggFg = __esm({
-    "temp_stylePlugin:ni:sha-256;nXfqXL-OAQ2p_9am_BnlQpJRaaDLbI-_7dq9TwWggFg"() {
-    }
-  });
-
-  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\base.scss
-  var init_base = __esm({
-    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\base.scss"() {
-      init_ni_sha_256_nXfqXL_OAQ2p_9am_BnlQpJRaaDLbI_7dq9TwWggFg();
-    }
-  });
-
-  // temp_stylePlugin:ni:sha-256;Wl-k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4
-  var init_ni_sha_256_Wl_k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4 = __esm({
-    "temp_stylePlugin:ni:sha-256;Wl-k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4"() {
-    }
-  });
-
-  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\defaultMode.scss
-  var init_defaultMode = __esm({
-    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\defaultMode.scss"() {
-      init_ni_sha_256_Wl_k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4();
-    }
-  });
-
   // extensions/full-screen/src/styles/settings.ts
   var settingsStyles;
   var init_settings = __esm({
@@ -10817,16 +11435,16 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
     }
   });
 
-  // temp_stylePlugin:ni:sha-256;NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag
-  var init_ni_sha_256_NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag = __esm({
-    "temp_stylePlugin:ni:sha-256;NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag"() {
+  // temp_stylePlugin:ni:sha-256;iBB-hDKAKLdHAcA00O6MpIB-aottNiKsFHAsY-hjSBE
+  var init_ni_sha_256_iBB_hDKAKLdHAcA00O6MpIB_aottNiKsFHAsY_hjSBE = __esm({
+    "temp_stylePlugin:ni:sha-256;iBB-hDKAKLdHAcA00O6MpIB-aottNiKsFHAsY-hjSBE"() {
     }
   });
 
-  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\settings.scss
-  var init_settings2 = __esm({
-    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\settings.scss"() {
-      init_ni_sha_256_NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag();
+  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\base.scss
+  var init_base = __esm({
+    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\base.scss"() {
+      init_ni_sha_256_iBB_hDKAKLdHAcA00O6MpIB_aottNiKsFHAsY_hjSBE();
     }
   });
 
@@ -10843,12 +11461,95 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
     }
   });
 
+  // temp_stylePlugin:ni:sha-256;Wl-k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4
+  var init_ni_sha_256_Wl_k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4 = __esm({
+    "temp_stylePlugin:ni:sha-256;Wl-k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4"() {
+    }
+  });
+
+  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\defaultMode.scss
+  var init_defaultMode = __esm({
+    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\defaultMode.scss"() {
+      init_ni_sha_256_Wl_k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4();
+    }
+  });
+
+  // temp_stylePlugin:ni:sha-256;NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag
+  var init_ni_sha_256_NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag = __esm({
+    "temp_stylePlugin:ni:sha-256;NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag"() {
+    }
+  });
+
+  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\settings.scss
+  var init_settings2 = __esm({
+    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\settings.scss"() {
+      init_ni_sha_256_NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag();
+    }
+  });
+
+  // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
+  var import_function10, URI5, map6, Functor5, of6, ap6, Applicative5, apFirst6, apSecond6, chain5, Monad5, Do5, bindTo6, bind6, apS6, let_6, unary, guard5, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var init_Function = __esm({
+    ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
+      init_Option();
+      init_Array();
+      import_function10 = __toESM(require_function());
+      init_Predicate();
+      init_Endomorphism();
+      init_Monoid();
+      init_Semigroup();
+      init_Functor();
+      init_Apply();
+      init_Chain();
+      URI5 = "Function";
+      map6 = (f2) => (g) => (0, import_function10.flow)(g, f2);
+      Functor5 = {
+        URI: URI5,
+        map: (f2, g) => map6(g)(f2)
+      };
+      of6 = import_function10.constant;
+      ap6 = (f2) => (g) => (x) => g(x)(f2(x));
+      Applicative5 = {
+        ...Functor5,
+        of: of6,
+        ap: (f2, g) => ap6(g)(f2)
+      };
+      apFirst6 = apFirst(Applicative5);
+      apSecond6 = apSecond(Applicative5);
+      chain5 = (f2) => (g) => (x) => f2(g(x))(x);
+      Monad5 = {
+        ...Applicative5,
+        chain: (f2, g) => chain5(g)(f2)
+      };
+      Do5 = of6({});
+      bindTo6 = bindTo(Functor5);
+      bind6 = bind(Monad5);
+      apS6 = apS(Applicative5);
+      let_6 = let_(Functor5);
+      unary = import_function10.tupled;
+      guard5 = (branches) => (fallback) => (input) => (0, import_function10.pipe)(branches, map3(([f2, g]) => (0, import_function10.flow)(fromPredicate3(f2), map4(g))), concatAll5((0, import_function10.getMonoid)(getMonoid4(first()))()), (0, import_function10.apply)(input), getOrElse(() => fallback(input)));
+      unless = (f2) => (onFalse) => (x) => f2(x) ? x : onFalse(x);
+      when = (0, import_function10.flow)(not, unless);
+      invoke = (x) => (ys) => (z) => z[x](...ys);
+      invokeNullary = (0, import_function10.flip)(invoke)([]);
+      curry2T = (f2) => (a) => (b) => f2([a, b]);
+      curry2 = (0, import_function10.flow)(unary, curry2T);
+      curry3T = (f2) => (a) => (b) => (c) => f2([a, b, c]);
+      curry3 = (0, import_function10.flow)(unary, curry3T);
+      curry4T = (f2) => (a) => (b) => (c) => (d) => f2([a, b, c, d]);
+      curry4 = (0, import_function10.flow)(unary, curry4T);
+      curry5T = (f2) => (a) => (b) => (c) => (d) => (e) => f2([a, b, c, d, e]);
+      curry5 = (0, import_function10.flow)(unary, curry5T);
+      applyEvery = concatAll5(getMonoid5());
+    }
+  });
+
   // extensions/full-screen/deps/beautiful-lyrics/Packages/Signal.ts
-  var import_function10, Event2, Signal;
+  var import_function11, Event2, Signal;
   var init_Signal = __esm({
     "extensions/full-screen/deps/beautiful-lyrics/Packages/Signal.ts"() {
       "use strict";
-      import_function10 = __toESM(require_function());
+      import_function11 = __toESM(require_function());
       init_es6();
       Event2 = class {
         signal;
@@ -10872,7 +11573,7 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
         fire(...args) {
           if (this.disposed)
             throw "Cannot fire a Destroyed Signal";
-          (0, import_function10.pipe)(
+          (0, import_function11.pipe)(
             this.connRefs.values(),
             Array.from,
             Array_exports.map((cb) => cb(...args))
@@ -12549,12 +13250,12 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
             v[i] = val;
           return v;
         }
-        function map6(v, func) {
+        function map7(v, func) {
           for (var i = 0; i < v.length; i++)
             v[i] = func(v[i], i);
           return v;
         }
-        function reduce6(v, func, r) {
+        function reduce7(v, func, r) {
           void 0 === r && (r = 0);
           for (var i = 0; i < v.length; i++)
             r = func(r, v[i], i);
@@ -12566,14 +13267,14 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
             target[i] = source[i];
           return target;
         }
-        function clamp(value, min3, max3) {
-          return void 0 === min3 && (min3 = 0), void 0 === max3 && (max3 = 1), value < min3 ? min3 : value > max3 ? max3 : value;
+        function clamp(value, min5, max5) {
+          return void 0 === min5 && (min5 = 0), void 0 === max5 && (max5 = 1), value < min5 ? min5 : value > max5 ? max5 : value;
         }
         function binarySearch(targetValue, accumulatedValues) {
-          var min3 = accumulatedValues[0];
+          var min5 = accumulatedValues[0];
           if (targetValue >= accumulatedValues[accumulatedValues.length - 1])
             return accumulatedValues.length - 1;
-          if (targetValue <= min3)
+          if (targetValue <= min5)
             return 0;
           for (var left = 0, right = accumulatedValues.length - 1; left <= right; ) {
             var mid = Math.floor((left + right) / 2), lMid = accumulatedValues[mid];
@@ -12650,10 +13351,10 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
           return 0 === sqrs ? 0 : Math.sqrt(sqrs);
         }
         function normalize2(v, target) {
-          var u = target ? copyValues(v, target) : v, squared = reduce6(u, function(s, c) {
+          var u = target ? copyValues(v, target) : v, squared = reduce7(u, function(s, c) {
             return s + Math.pow(c, 2);
           }), l = Math.sqrt(squared);
-          return 0 === l ? fill(u, 0) : map6(u, function(c) {
+          return 0 === l ? fill(u, 0) : map7(u, function(c) {
             return c / l;
           });
         }
@@ -12942,13 +13643,13 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
           }, CurveInterpolator3.prototype.getBoundingBox = function(from, to) {
             if (void 0 === from && (from = 0), void 0 === to && (to = 1), 0 === from && 1 === to && this._cache.has("bbox"))
               return this._cache.get("bbox");
-            for (var min3 = [], max3 = [], t0 = this.getTimeFromPosition(from), t1 = this.getTimeFromPosition(to), start = this.getPointAtTime(t0), end = this.getPointAtTime(t1), nPoints = this.closed ? this.points.length : this.points.length - 1, i0 = Math.floor(nPoints * t0), i1 = Math.ceil(nPoints * t1), c = 0; c < start.length; c++)
-              min3[c] = Math.min(start[c], end[c]), max3[c] = Math.max(start[c], end[c]);
+            for (var min5 = [], max5 = [], t0 = this.getTimeFromPosition(from), t1 = this.getTimeFromPosition(to), start = this.getPointAtTime(t0), end = this.getPointAtTime(t1), nPoints = this.closed ? this.points.length : this.points.length - 1, i0 = Math.floor(nPoints * t0), i1 = Math.ceil(nPoints * t1), c = 0; c < start.length; c++)
+              min5[c] = Math.min(start[c], end[c]), max5[c] = Math.max(start[c], end[c]);
             for (var _loop_1 = function(i2) {
               var p22 = getControlPoints(i2 - 1, this_1.points, this_1.closed)[2];
               if (i2 < i1)
                 for (var c2 = 0; c2 < p22.length; c2++)
-                  p22[c2] < min3[c2] && (min3[c2] = p22[c2]), p22[c2] > max3[c2] && (max3[c2] = p22[c2]);
+                  p22[c2] < min5[c2] && (min5[c2] = p22[c2]), p22[c2] > max5[c2] && (max5[c2] = p22[c2]);
               if (this_1.tension < 1) {
                 var w0_1 = nPoints * t0 - (i2 - 1), w1_1 = nPoints * t1 - (i2 - 1), valid = function(t) {
                   return t > -EPS && t <= 1 + EPS && (i2 - 1 !== i0 || t > w0_1) && (i2 !== i1 || t < w1_1);
@@ -12956,7 +13657,7 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
                   var _b = coefficients_1[c3];
                   getQuadRoots(3 * _b[0], 2 * _b[1], _b[2]).filter(valid).forEach(function(t) {
                     var v = valueAtT(t, coefficients_1[c3]);
-                    v < min3[c3] && (min3[c3] = v), v > max3[c3] && (max3[c3] = v);
+                    v < min5[c3] && (min5[c3] = v), v > max5[c3] && (max5[c3] = v);
                   });
                 };
                 for (c2 = 0; c2 < coefficients_1.length; c2++)
@@ -12964,7 +13665,7 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
               }
             }, this_1 = this, i = i0 + 1; i <= i1; i++)
               _loop_1(i);
-            var bbox = { min: min3, max: max3 };
+            var bbox = { min: min5, max: max5 };
             return 0 === from && 1 === to && this._cache.set("bbox", bbox), bbox;
           }, CurveInterpolator3.prototype.getPoints = function(segments, returnType, from, to) {
             if (void 0 === segments && (segments = 100), void 0 === from && (from = 0), void 0 === to && (to = 1), !segments || segments <= 0)
@@ -12996,32 +13697,32 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
             }, step = 5e-3; step > threshold; )
               bisect(minT - step) || bisect(minT + step) || (step /= 2);
             return { u: minU = this._curveMapper.getU(minT), distance: minDist, point: pu };
-          }, CurveInterpolator3.prototype.getIntersects = function(v, axis, max3, margin) {
+          }, CurveInterpolator3.prototype.getIntersects = function(v, axis, max5, margin) {
             var _this = this;
-            void 0 === axis && (axis = 0), void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
-            var solutions = this.getIntersectsAsTime(v, axis, max3, margin).map(function(t) {
+            void 0 === axis && (axis = 0), void 0 === max5 && (max5 = 0), void 0 === margin && (margin = this._lmargin);
+            var solutions = this.getIntersectsAsTime(v, axis, max5, margin).map(function(t) {
               return _this.getPointAtTime(t);
             });
-            return 1 === Math.abs(max3) ? 1 === solutions.length ? solutions[0] : null : solutions;
-          }, CurveInterpolator3.prototype.getIntersectsAsPositions = function(v, axis, max3, margin) {
+            return 1 === Math.abs(max5) ? 1 === solutions.length ? solutions[0] : null : solutions;
+          }, CurveInterpolator3.prototype.getIntersectsAsPositions = function(v, axis, max5, margin) {
             var _this = this;
-            return void 0 === axis && (axis = 0), void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin), this.getIntersectsAsTime(v, axis, max3, margin).map(function(t) {
+            return void 0 === axis && (axis = 0), void 0 === max5 && (max5 = 0), void 0 === margin && (margin = this._lmargin), this.getIntersectsAsTime(v, axis, max5, margin).map(function(t) {
               return _this.getPositionFromTime(t);
             });
-          }, CurveInterpolator3.prototype.getIntersectsAsTime = function(v, axis, max3, margin) {
-            void 0 === axis && (axis = 0), void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
-            for (var k = axis, solutions = /* @__PURE__ */ new Set(), nPoints = this.closed ? this.points.length : this.points.length - 1, i = 0; i < nPoints && (0 === max3 || solutions.size < Math.abs(max3)); i += 1) {
-              var idx = max3 < 0 ? nPoints - (i + 1) : i, _a2 = getControlPoints(idx, this.points, this.closed), p1 = _a2[1], p22 = _a2[2], coefficients = this._curveMapper.getCoefficients(idx), vmin = void 0, vmax = void 0;
+          }, CurveInterpolator3.prototype.getIntersectsAsTime = function(v, axis, max5, margin) {
+            void 0 === axis && (axis = 0), void 0 === max5 && (max5 = 0), void 0 === margin && (margin = this._lmargin);
+            for (var k = axis, solutions = /* @__PURE__ */ new Set(), nPoints = this.closed ? this.points.length : this.points.length - 1, i = 0; i < nPoints && (0 === max5 || solutions.size < Math.abs(max5)); i += 1) {
+              var idx = max5 < 0 ? nPoints - (i + 1) : i, _a2 = getControlPoints(idx, this.points, this.closed), p1 = _a2[1], p22 = _a2[2], coefficients = this._curveMapper.getCoefficients(idx), vmin = void 0, vmax = void 0;
               if (p1[k] < p22[k] ? (vmin = p1[k], vmax = p22[k]) : (vmin = p22[k], vmax = p1[k]), v - margin <= vmax && v + margin >= vmin) {
                 var ts = findRootsOfT(v, coefficients[k]);
-                max3 < 0 ? ts.sort(function(a, b) {
+                max5 < 0 ? ts.sort(function(a, b) {
                   return b - a;
-                }) : max3 >= 0 && ts.sort(function(a, b) {
+                }) : max5 >= 0 && ts.sort(function(a, b) {
                   return a - b;
                 });
                 for (var j = 0; j < ts.length; j++) {
                   var nt = (ts[j] + idx) / nPoints;
-                  if (solutions.add(nt), 0 !== max3 && solutions.size === Math.abs(max3))
+                  if (solutions.add(nt), 0 !== max5 && solutions.size === Math.abs(max5))
                     break;
                 }
               }
@@ -13164,16 +13865,16 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
               return [p3[0], p3[1]];
             }), { tension, alpha, arcDivisions, closed }) || this;
           }
-          return __extends2(CurveInterpolator2D2, _super), CurveInterpolator2D2.prototype.x = function(y, max3, margin) {
-            void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
-            var res = this.getIntersects(y, 1, max3, margin);
-            return 1 === Math.abs(max3) ? res[0] : res.map(function(d) {
+          return __extends2(CurveInterpolator2D2, _super), CurveInterpolator2D2.prototype.x = function(y, max5, margin) {
+            void 0 === max5 && (max5 = 0), void 0 === margin && (margin = this._lmargin);
+            var res = this.getIntersects(y, 1, max5, margin);
+            return 1 === Math.abs(max5) ? res[0] : res.map(function(d) {
               return d[0];
             });
-          }, CurveInterpolator2D2.prototype.y = function(x, max3, margin) {
-            void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
-            var res = this.getIntersects(x, 0, max3, margin);
-            return 1 === Math.abs(max3) ? res[1] : res.map(function(d) {
+          }, CurveInterpolator2D2.prototype.y = function(x, max5, margin) {
+            void 0 === max5 && (max5 = 0), void 0 === margin && (margin = this._lmargin);
+            var res = this.getIntersects(x, 0, max5, margin);
+            return 1 === Math.abs(max5) ? res[1] : res.map(function(d) {
               return d[1];
             });
           }, CurveInterpolator2D2.prototype.getNormalAt = function(position, target) {
@@ -13194,13 +13895,13 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
         }
         exports2.CurveInterpolator = CurveInterpolator2, exports2.CurveInterpolator2D = CurveInterpolator2D, exports2.EPS = EPS, exports2.LinearCurveMapper = SegmentedCurveMapper, exports2.NumericalCurveMapper = NumericalCurveMapper, exports2.Point = Point, exports2.binarySearch = binarySearch, exports2.calcKnotSequence = calcKnotSequence, exports2.calculateCoefficients = calculateCoefficients, exports2.clamp = clamp, exports2.copyValues = copyValues, exports2.cross = cross, exports2.derivativeAtT = derivativeAtT, exports2.distance = distance, exports2.dot = dot, exports2.evaluateForT = evaluateForT, exports2.extrapolateControlPoint = extrapolateControlPoint, exports2.fill = fill, exports2.findRootsOfT = findRootsOfT, exports2.getBoundingBox = function(points, options2) {
           void 0 === options2 && (options2 = {});
-          for (var _a2 = __assign2({ tension: 0.5, alpha: 0, closed: false, from: 0, to: 1 }, options2), tension = _a2.tension, alpha = _a2.alpha, closed = _a2.closed, t0 = _a2.from, t1 = _a2.to, nPoints = closed ? points.length : points.length - 1, i0 = Math.floor(nPoints * t0), i1 = Math.ceil(nPoints * t1), start = getPointAtT(t0, points, { tension, alpha, closed }), end = getPointAtT(t1, points, { tension, alpha, closed }), min3 = [], max3 = [], c = 0; c < start.length; c++)
-            min3[c] = Math.min(start[c], end[c]), max3[c] = Math.max(start[c], end[c]);
+          for (var _a2 = __assign2({ tension: 0.5, alpha: 0, closed: false, from: 0, to: 1 }, options2), tension = _a2.tension, alpha = _a2.alpha, closed = _a2.closed, t0 = _a2.from, t1 = _a2.to, nPoints = closed ? points.length : points.length - 1, i0 = Math.floor(nPoints * t0), i1 = Math.ceil(nPoints * t1), start = getPointAtT(t0, points, { tension, alpha, closed }), end = getPointAtT(t1, points, { tension, alpha, closed }), min5 = [], max5 = [], c = 0; c < start.length; c++)
+            min5[c] = Math.min(start[c], end[c]), max5[c] = Math.max(start[c], end[c]);
           for (var _loop_1 = function(i2) {
             var _b = getControlPoints(i2 - 1, points, closed), p0 = _b[0], p1 = _b[1], p22 = _b[2], p3 = _b[3];
             if (i2 < i1)
               for (var c2 = 0; c2 < p22.length; c2++)
-                p22[c2] < min3[c2] && (min3[c2] = p22[c2]), p22[c2] > max3[c2] && (max3[c2] = p22[c2]);
+                p22[c2] < min5[c2] && (min5[c2] = p22[c2]), p22[c2] > max5[c2] && (max5[c2] = p22[c2]);
             if (tension < 1) {
               var w0_1 = nPoints * t0 - (i2 - 1), w1_1 = nPoints * t1 - (i2 - 1), valid = function(t) {
                 return t > -EPS && t <= 1 + EPS && (i2 - 1 !== i0 || t > w0_1) && (i2 !== i1 || t < w1_1);
@@ -13208,7 +13909,7 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
                 var _c = coefficients_1[c3];
                 getQuadRoots(3 * _c[0], 2 * _c[1], _c[2]).filter(valid).forEach(function(t) {
                   var v = valueAtT(t, coefficients_1[c3]);
-                  v < min3[c3] && (min3[c3] = v), v > max3[c3] && (max3[c3] = v);
+                  v < min5[c3] && (min5[c3] = v), v > max5[c3] && (max5[c3] = v);
                 });
               };
               for (c2 = 0; c2 < coefficients_1.length; c2++)
@@ -13216,31 +13917,31 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
             }
           }, i = i0 + 1; i <= i1; i++)
             _loop_1(i);
-          return { min: min3, max: max3 };
+          return { min: min5, max: max5 };
         }, exports2.getControlPoints = getControlPoints, exports2.getCubicRoots = getCubicRoots, exports2.getPointAtT = getPointAtT, exports2.getQuadRoots = getQuadRoots, exports2.getSegmentIndexAndT = getSegmentIndexAndT, exports2.getTangentAtT = function(t, points, options2, target) {
           void 0 === options2 && (options2 = {});
           var _a2 = getSegmentIndexAndT(t, points, !!options2.closed), index = _a2.index, weight = _a2.weight, _b = getControlPoints(index, points, !!options2.closed), p0 = _b[0];
           return evaluateForT(derivativeAtT, weight, calculateCoefficients(p0, _b[1], _b[2], _b[3], options2), target = target || new Array(p0.length));
-        }, exports2.magnitude = magnitude, exports2.map = map6, exports2.normalize = normalize2, exports2.orthogonal = orthogonal, exports2.positionsLookup = function(lookup5, points, options2) {
-          for (var _a2 = __assign2({ axis: 0, closed: false, margin: 0.5, max: 0 }, options2), axis = _a2.axis, closed = _a2.closed, margin = _a2.margin, max3 = _a2.max, k = axis, solutions = /* @__PURE__ */ new Set(), nPoints = closed ? points.length : points.length - 1, i = 0; i < nPoints; i += 1) {
-            var idx = max3 < 0 ? points.length - i : i, _b = getControlPoints(i, points, closed), p0 = _b[0], p1 = _b[1], p22 = _b[2], coefficients = calculateCoefficients(p0, p1, p22, _b[3], options2), vmin = void 0, vmax = void 0;
+        }, exports2.magnitude = magnitude, exports2.map = map7, exports2.normalize = normalize2, exports2.orthogonal = orthogonal, exports2.positionsLookup = function(lookup5, points, options2) {
+          for (var _a2 = __assign2({ axis: 0, closed: false, margin: 0.5, max: 0 }, options2), axis = _a2.axis, closed = _a2.closed, margin = _a2.margin, max5 = _a2.max, k = axis, solutions = /* @__PURE__ */ new Set(), nPoints = closed ? points.length : points.length - 1, i = 0; i < nPoints; i += 1) {
+            var idx = max5 < 0 ? points.length - i : i, _b = getControlPoints(i, points, closed), p0 = _b[0], p1 = _b[1], p22 = _b[2], coefficients = calculateCoefficients(p0, p1, p22, _b[3], options2), vmin = void 0, vmax = void 0;
             if (p1[k] < p22[k] ? (vmin = p1[k], vmax = p22[k]) : (vmin = p22[k], vmax = p1[k]), lookup5 - margin <= vmax && lookup5 + margin >= vmin) {
               var ts = findRootsOfT(lookup5, coefficients[k]);
-              max3 < 0 ? ts.sort(function(a, b) {
+              max5 < 0 ? ts.sort(function(a, b) {
                 return b - a;
-              }) : max3 >= 0 && ts.sort(function(a, b) {
+              }) : max5 >= 0 && ts.sort(function(a, b) {
                 return a - b;
               });
               for (var j = 0; j < ts.length; j++)
                 if (!(0 === ts[j] && i > 0)) {
                   var nt = (ts[j] + idx) / nPoints;
-                  if (solutions.add(nt), solutions.size === Math.abs(max3))
+                  if (solutions.add(nt), solutions.size === Math.abs(max5))
                     return Array.from(solutions);
                 }
             }
           }
           return Array.from(solutions);
-        }, exports2.reduce = reduce6, exports2.secondDerivativeAtT = secondDerivativeAtT, exports2.simplify2d = function(inputArr, maxOffset, maxDistance) {
+        }, exports2.reduce = reduce7, exports2.secondDerivativeAtT = secondDerivativeAtT, exports2.simplify2d = function(inputArr, maxOffset, maxDistance) {
           var _a2;
           if (void 0 === maxOffset && (maxOffset = 1e-3), void 0 === maxDistance && (maxDistance = 10), inputArr.length <= 4)
             return inputArr;
@@ -13256,13 +13957,13 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
           var last6 = arr[arr.length - 1];
           return sim.push([last6[0] + o0, last6[1] + o1]), sim;
         }, exports2.sumOfSquares = sumOfSquares, exports2.valueAtT = valueAtT, exports2.valuesLookup = function(lookup5, points, options2) {
-          for (var _a2 = __assign2({ axis: 0, closed: false, margin: 0.5, max: 0, processRefAxis: false }, options2), axis = _a2.axis, closed = _a2.closed, margin = _a2.margin, max3 = _a2.max, processRefAxis = _a2.processRefAxis, k = axis, solutions = [], nPoints = closed ? points.length : points.length - 1, i = 0; i < nPoints; i += 1) {
-            var _b = getControlPoints(max3 < 0 ? nPoints - (i + 1) : i, points, closed), p0 = _b[0], p1 = _b[1], p22 = _b[2], coefficients = calculateCoefficients(p0, p1, p22, _b[3], options2), vmin = void 0, vmax = void 0;
+          for (var _a2 = __assign2({ axis: 0, closed: false, margin: 0.5, max: 0, processRefAxis: false }, options2), axis = _a2.axis, closed = _a2.closed, margin = _a2.margin, max5 = _a2.max, processRefAxis = _a2.processRefAxis, k = axis, solutions = [], nPoints = closed ? points.length : points.length - 1, i = 0; i < nPoints; i += 1) {
+            var _b = getControlPoints(max5 < 0 ? nPoints - (i + 1) : i, points, closed), p0 = _b[0], p1 = _b[1], p22 = _b[2], coefficients = calculateCoefficients(p0, p1, p22, _b[3], options2), vmin = void 0, vmax = void 0;
             if (p1[k] < p22[k] ? (vmin = p1[k], vmax = p22[k]) : (vmin = p22[k], vmax = p1[k]), lookup5 - margin <= vmax && lookup5 + margin >= vmin) {
               var ts = findRootsOfT(lookup5, coefficients[k]);
-              max3 < 0 ? ts.sort(function(a, b) {
+              max5 < 0 ? ts.sort(function(a, b) {
                 return b - a;
-              }) : max3 >= 0 && ts.sort(function(a, b) {
+              }) : max5 >= 0 && ts.sort(function(a, b) {
                 return a - b;
               });
               for (var j = 0; j < ts.length; j++)
@@ -13271,7 +13972,7 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
                     var v = void 0;
                     v = c !== k || processRefAxis ? valueAtT(ts[j], coefficients[c]) : lookup5, coord[c] = v;
                   }
-                  if (solutions.push(coord), solutions.length === Math.abs(max3))
+                  if (solutions.push(coord), solutions.length === Math.abs(max5))
                     return solutions;
                 }
             }
@@ -13452,12 +14153,12 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
         let k = 0;
         while (h < m && k <= m) {
           let i_max = 0;
-          let max3 = -Infinity;
+          let max5 = -Infinity;
           for (let i = h; i < m; i++) {
             const v2 = Math.abs(A[i][k]);
-            if (v2 > max3) {
+            if (v2 > max5) {
               i_max = i;
-              max3 = v2;
+              max5 = v2;
             }
           }
           if (A[i_max][k] === 0) {
@@ -13512,8 +14213,8 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
         const values = range5.map((value) => value.Value);
         return new import_cubic_spline.default(times, values);
       };
-      Clamp = (value, min3, max3) => {
-        return Math.max(min3, Math.min(value, max3));
+      Clamp = (value, min5, max5) => {
+        return Math.max(min5, Math.min(value, max5));
       };
     }
   });
@@ -14535,69 +15236,13 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
     }
   });
 
-  // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function11, URI4, map5, Functor4, of6, ap5, Applicative4, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard5, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
-  var init_Function = __esm({
-    ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
-      init_Option();
-      init_Array();
-      import_function11 = __toESM(require_function());
-      init_Predicate();
-      init_Endomorphism();
-      init_Monoid();
-      init_Semigroup();
-      init_Functor();
-      init_Apply();
-      init_Chain();
-      URI4 = "Function";
-      map5 = (f2) => (g) => (0, import_function11.flow)(g, f2);
-      Functor4 = {
-        URI: URI4,
-        map: (f2, g) => map5(g)(f2)
-      };
-      of6 = import_function11.constant;
-      ap5 = (f2) => (g) => (x) => g(x)(f2(x));
-      Applicative4 = {
-        ...Functor4,
-        of: of6,
-        ap: (f2, g) => ap5(g)(f2)
-      };
-      apFirst5 = apFirst(Applicative4);
-      apSecond5 = apSecond(Applicative4);
-      chain4 = (f2) => (g) => (x) => f2(g(x))(x);
-      Monad4 = {
-        ...Applicative4,
-        chain: (f2, g) => chain4(g)(f2)
-      };
-      Do4 = of6({});
-      bindTo5 = bindTo(Functor4);
-      bind5 = bind(Monad4);
-      apS5 = apS(Applicative4);
-      let_5 = let_(Functor4);
-      unary = import_function11.tupled;
-      guard5 = (branches) => (fallback) => (input) => (0, import_function11.pipe)(branches, map2(([f2, g]) => (0, import_function11.flow)(fromPredicate3(f2), map3(g))), concatAll4((0, import_function11.getMonoid)(getMonoid4(first()))()), (0, import_function11.apply)(input), getOrElse(() => fallback(input)));
-      unless = (f2) => (onFalse) => (x) => f2(x) ? x : onFalse(x);
-      when = (0, import_function11.flow)(not, unless);
-      invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function11.flip)(invoke)([]);
-      curry2T = (f2) => (a) => (b) => f2([a, b]);
-      curry2 = (0, import_function11.flow)(unary, curry2T);
-      curry3T = (f2) => (a) => (b) => (c) => f2([a, b, c]);
-      curry3 = (0, import_function11.flow)(unary, curry3T);
-      curry4T = (f2) => (a) => (b) => (c) => (d) => f2([a, b, c, d]);
-      curry4 = (0, import_function11.flow)(unary, curry4T);
-      curry5T = (f2) => (a) => (b) => (c) => (d) => (e) => f2([a, b, c, d, e]);
-      curry5 = (0, import_function11.flow)(unary, curry5T);
-      applyEvery = concatAll4(getMonoid5());
-    }
-  });
-
   // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer.ts
   var import_function12, parseStaticLyrics, parseNonStaticLyrics, LyricsRenderer_default;
   var init_LyricsRenderer = __esm({
     "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer.ts"() {
       "use strict";
       init_es6();
+      init_Function();
       import_function12 = __toESM(require_function());
       init_Maid();
       init_Scheduler();
@@ -14607,7 +15252,6 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
       init_StaticVocals();
       init_SyllableVocals();
       init_Lyrics();
-      init_Function();
       parseStaticLyrics = (parsedLyrics) => {
         return (0, import_function12.pipe)(
           parsedLyrics.Lyrics.map((l) => {
@@ -14722,17 +15366,18 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
             );
           });
         }
-        scrollContainer.Destroy = () => maid.dispose();
+        scrollContainer.dispose = () => maid.dispose();
         return scrollContainer;
       };
     }
   });
 
   // extensions/full-screen/deps/beautiful-lyrics/Services/Cache.ts
-  var StoreTemplates, ExpireCacheStoreItemVersions, StoreItemVersions, CacheManager, Cache;
+  var StoreTemplates, ExpireCacheStoreItemVersions, StoreItemVersions, Cache;
   var init_Cache = __esm({
     "extensions/full-screen/deps/beautiful-lyrics/Services/Cache.ts"() {
       "use strict";
+      init_es6();
       StoreTemplates = {
         Analytics: {},
         LyricViews: {
@@ -14747,48 +15392,34 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
       StoreItemVersions = /* @__PURE__ */ new Map();
       StoreItemVersions.set("Analytics", 1);
       StoreItemVersions.set("LyricViews", 1);
-      CacheManager = class {
-        // Private Properties
+      Cache = new class {
         Store;
-        // Constructor
         constructor() {
           const generalStore = this.LoadStore();
           this.Store = generalStore;
-          {
-            const OldExpireCacheStoreItemVersions = /* @__PURE__ */ new Map();
-            OldExpireCacheStoreItemVersions.set("TrackInformation", 1);
-            OldExpireCacheStoreItemVersions.set("ISRCLyrics", 11);
-            for (const [itemName, version2] of OldExpireCacheStoreItemVersions) {
-              localStorage.removeItem(`BeautifulLyrics:ExpireCache_${itemName}`);
-              for (let oldVersion = 1; oldVersion <= version2; oldVersion += 1) {
-                localStorage.removeItem(
-                  `BeautifulLyrics:ExpireCache_${itemName}_V${oldVersion}`
-                );
-              }
-            }
-            for (const [itemName, version2] of StoreItemVersions) {
-              localStorage.removeItem(this.GetItemLocation(itemName, false));
-              for (let oldVersion = 1; oldVersion < version2; oldVersion += 1) {
-                localStorage.removeItem(this.GetItemLocation(itemName, oldVersion));
-              }
-            }
+          const OldExpireCacheStoreItemVersions = /* @__PURE__ */ new Map();
+          OldExpireCacheStoreItemVersions.set("TrackInformation", 1);
+          OldExpireCacheStoreItemVersions.set("ISRCLyrics", 11);
+          for (const [itemName, version2] of OldExpireCacheStoreItemVersions) {
+            localStorage.removeItem(`BeautifulLyrics:ExpireCache_${itemName}`);
+            NonEmptyArray_exports.range(1, version2).map((oldVersion) => localStorage.removeItem(`BeautifulLyrics:ExpireCache_${itemName}_V${oldVersion}`));
+          }
+          for (const [itemName, version2] of StoreItemVersions) {
+            localStorage.removeItem(this.GetItemLocation(itemName, false));
+            NonEmptyArray_exports.range(1, version2).map((oldVersion) => localStorage.removeItem(this.GetItemLocation(itemName, oldVersion)));
           }
         }
-        // Private methods
         LoadStore() {
           const templates = StoreTemplates;
           const temporaryStore = {};
           const missingItems = {};
-          for (const key of Object.keys(templates)) {
-            const serializedValue = localStorage.getItem(
-              this.GetItemLocation(key)
-            );
-            if (serializedValue === null) {
+          Object.keys(templates).map((key) => {
+            const serializedValue = localStorage.getItem(this.GetItemLocation(key));
+            if (serializedValue === null)
               missingItems[key] = templates[key];
-            } else {
+            else
               temporaryStore[key] = JSON.parse(serializedValue);
-            }
-          }
+          });
           return {
             ...temporaryStore,
             // Deep-clone and ensures we are JSON-serializable
@@ -14820,46 +15451,35 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
             console.error(error);
           });
         }
-        // Public Dynamic Store Methods
         GetDynamicItem(itemName) {
           return localStorage.getItem(itemName) ?? void 0;
         }
         SetDynamicItem(itemName, item) {
           localStorage.setItem(`BeautifulLyrics:Dynamic_${itemName}`, item);
         }
-        // Public Store Methods
         GetItem(itemName) {
           return this.Store[itemName];
         }
         SaveItemChanges(itemName) {
           this.SaveChanges(itemName, JSON.stringify(this.Store[itemName]));
         }
-        // Public Expire Cache Methods
-        GetFromExpireCache(expireCacheName, itemName) {
-          if (expireCacheName === "ISRCLyrics") {
-          }
-          return this.GetFromCacheAPI(
-            `ExpireCache/${expireCacheName}`,
-            itemName
-          ).then((expireItem) => {
-            if (expireItem === void 0) {
-              return void 0;
-            }
-            if (expireItem.CacheVersion !== ExpireCacheStoreItemVersions.get(expireCacheName)) {
-              return void 0;
-            }
-            if (expireItem.ExpiresAt < Date.now()) {
-              return void 0;
-            }
+        GetFromExpireCache = (expireCacheName, itemName) => this.GetFromCacheAPI(`ExpireCache/${expireCacheName}`, itemName).then(
+          (expireItem) => {
+            if (expireItem === void 0)
+              return;
+            if (expireItem.CacheVersion !== ExpireCacheStoreItemVersions.get(expireCacheName))
+              return;
+            if (expireItem.ExpiresAt < Date.now())
+              return;
             return expireItem.Content;
-          });
-        }
+          }
+        );
         SetExpireCacheItem(expireCacheName, itemName, content, expiration) {
           const expireAtDate = /* @__PURE__ */ new Date();
           expireAtDate.setHours(0, 0, 0, 0);
-          if (expiration.Unit == "Weeks") {
+          if (expiration.Unit == "Weeks")
             expireAtDate.setDate(expireAtDate.getDate() + expiration.Duration * 7);
-          } else {
+          else {
             expireAtDate.setMonth(expireAtDate.getMonth() + expiration.Duration);
             expireAtDate.setDate(0);
           }
@@ -14871,8 +15491,7 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
           };
           return this.UpdateCacheAPI(`ExpireCache/${expireCacheName}`, itemName, expireItem);
         }
-      };
-      Cache = new CacheManager();
+      }();
     }
   });
 
@@ -15237,11 +15856,11 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
     );
   }
   function normalize(value, distances) {
-    const min3 = distances[0][1];
-    const max3 = value.length * MAX_DIFFERENCE - min3;
+    const min5 = distances[0][1];
+    const max5 = value.length * MAX_DIFFERENCE - min5;
     let index = -1;
     while (++index < distances.length) {
-      distances[index][1] = 1 - (distances[index][1] - min3) / max3 || 0;
+      distances[index][1] = 1 - (distances[index][1] - min5) / max5 || 0;
     }
     return distances;
   }
@@ -15504,17 +16123,10 @@ ${result.Lyrics[index]}`;
                       const isBackground = syllable.getAttribute(FeatureRoleAttribute) === "x-bg";
                       if (isBackground) {
                         const backgroundNodes = syllable.childNodes;
-                        for (const [
-                          backgroundIndex,
-                          backgroundSyllable
-                        ] of backgroundNodes.entries()) {
+                        for (const [backgroundIndex, backgroundSyllable] of backgroundNodes.entries()) {
                           if (IsNodeASpan(backgroundSyllable)) {
-                            const start = GetTimeInSeconds(
-                              backgroundSyllable.getAttribute("begin")
-                            );
-                            const end = GetTimeInSeconds(
-                              backgroundSyllable.getAttribute("end")
-                            );
+                            const start = GetTimeInSeconds(backgroundSyllable.getAttribute("begin"));
+                            const end = GetTimeInSeconds(backgroundSyllable.getAttribute("end"));
                             const nextNode = backgroundNodes[backgroundIndex + 1];
                             backgroundLyrics.push({
                               Text: backgroundSyllable.textContent,
@@ -15548,10 +16160,7 @@ ${result.Lyrics[index]}`;
                   result.VocalGroups.push({
                     Type: "Vocal",
                     OppositeAligned: oppositeAligned,
-                    StartTime: backgroundLyrics.length === 0 ? leadLyrics[0].StartTime : Math.min(
-                      leadLyrics[0].StartTime,
-                      backgroundLyrics[0].StartTime
-                    ),
+                    StartTime: backgroundLyrics.length === 0 ? leadLyrics[0].StartTime : Math.min(leadLyrics[0].StartTime, backgroundLyrics[0].StartTime),
                     EndTime: backgroundLyrics.length === 0 ? leadLyrics[leadLyrics.length - 1].EndTime : Math.max(
                       leadLyrics[leadLyrics.length - 1].EndTime,
                       backgroundLyrics[backgroundLyrics.length - 1].EndTime
@@ -16031,19 +16640,19 @@ ${content[index].words}`;
     }
   });
 
-  // extensions/full-screen/src/lyrics.ts
-  var lyrics_exports = {};
-  __export(lyrics_exports, {
-    default: () => lyrics_default
+  // extensions/full-screen/src/beautiful-lyrics.ts
+  var beautiful_lyrics_exports = {};
+  __export(beautiful_lyrics_exports, {
+    default: () => beautiful_lyrics_default
   });
-  var lyrics_default, closePrevConn;
-  var init_lyrics = __esm({
-    "extensions/full-screen/src/lyrics.ts"() {
+  var beautiful_lyrics_default, closePrevConn;
+  var init_beautiful_lyrics = __esm({
+    "extensions/full-screen/src/beautiful-lyrics.ts"() {
       "use strict";
       init_util();
       init_LyricsRenderer();
       init_Player();
-      lyrics_default = {};
+      beautiful_lyrics_default = {};
       trapElement("#BeautifulLyrics", (lyricsContainer) => {
         closePrevConn?.();
         if (!lyricsContainer)
@@ -16260,7 +16869,9 @@ ${content[index].words}`;
     }
     function updateUpNextShow() {
       setTimeout(() => {
-        const timetogo = utils_default.getShowTime(config_default.get("upnextTimeToShow"));
+        const timetogo = utils_default.getShowTime(
+          config_default.get("upnextTimeToShow")
+        );
         if (upnextTimer) {
           clearTimeout(upnextTimer);
         }
@@ -16319,7 +16930,9 @@ ${content[index].words}`;
           updatedAlbum = true;
         }
         if (config_default.get("lyricsDisplay") && config_default.get("autoHideLyrics")) {
-          const lyricsContainer = container.querySelector("#fad-lyrics-plus-container");
+          const lyricsContainer = container.querySelector(
+            "#fad-lyrics-plus-container"
+          );
           if (lyricsContainer) {
             previousLyrics = lyricsContainer.innerText.slice(0, 15);
             autoHideLyrics();
@@ -16390,7 +17003,6 @@ ${content[index].words}`;
           if (config_default.get("backgroundChoice") === "album_art" && meta.album_uri.split(":")[2] in INVERTED) {
             mainColor = INVERTED[meta.album_uri.split(":")[2]] ? "0,0,0" : "255,255,255";
           } else {
-            ;
             [mainColor, contrastColor] = await utils_default.getMainColor(imageURL);
           }
           container.style.setProperty("--main-color", mainColor);
@@ -16413,7 +17025,9 @@ ${content[index].words}`;
         container.classList.toggle("themed-buttons", Boolean(config_default.get("themedButtons")));
         container.classList.toggle("themed-icons", Boolean(config_default.get("themedIcons")));
         let themeVibrantColor;
-        const artColors = await web_api_default.colorExtractor(imageURL).catch((err) => console.warn(err));
+        const artColors = await web_api_default.colorExtractor(imageURL).catch(
+          (err) => console.warn(err)
+        );
         if (!artColors?.VIBRANT)
           themeVibrantColor = "175,175,175";
         else
@@ -16436,7 +17050,9 @@ ${content[index].words}`;
       }
     }
     function autoHideLyrics() {
-      const lyricsContainer = container.querySelector("#fad-lyrics-plus-container");
+      const lyricsContainer = container.querySelector(
+        "#fad-lyrics-plus-container"
+      );
       if (!lyricsContainer.innerText || lyricsContainer.innerText.slice(0, 15) == previousLyrics) {
         handleLyricsUpdate({ detail: { isLoading: true, available: false } });
         setTimeout(autoHideLyrics, 100);
@@ -16454,7 +17070,9 @@ ${content[index].words}`;
       updateBackground(Spicetify.Player.data.track?.metadata, true);
     }
     async function updateContext() {
-      const ctxDetails = await utils_default.getContext(strings_default[LOCALE]).catch((err) => console.error(err));
+      const ctxDetails = await utils_default.getContext(strings_default[LOCALE]).catch(
+        (err) => console.error(err)
+      );
       ctx_source.classList.toggle("ctx-no-name", !ctxDetails.ctxName);
       if (!ctxDetails.ctxIcon)
         ctxDetails.ctxIcon = Spicetify.SVGIcons.spotify;
@@ -16511,7 +17129,10 @@ ${content[index].words}`;
             case "mq":
               fsd_first_span.style.paddingRight = "80px";
               animTime = 5e3 * (fsd_first_span.offsetWidth / 400);
-              fsd_myUp.style.setProperty("--translate_width_fsd", `-${fsd_first_span.offsetWidth + 3.5}px`);
+              fsd_myUp.style.setProperty(
+                "--translate_width_fsd",
+                `-${fsd_first_span.offsetWidth + 3.5}px`
+              );
               fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee " + animTime + "ms linear 800ms infinite";
               break;
             case "sp":
@@ -16682,7 +17303,10 @@ ${content[index].words}`;
         Spicetify.Player.addEventListener("onplaypause", updatePlayingIcon);
       }
       if (config_default.get("progressBarDisplay")) {
-        import_react_dom2.default.render(/* @__PURE__ */ import_react.default.createElement(ProgressBar_default, null), container.querySelector("#fsd-progress-parent"));
+        import_react_dom2.default.render(
+          /* @__PURE__ */ import_react.default.createElement(ProgressBar_default, null),
+          container.querySelector("#fsd-progress-parent")
+        );
       }
       if (config_default.get("playerControls")) {
         updatePlayerControls({ data: { is_paused: !Spicetify.Player.isPlaying() } });
@@ -17015,13 +17639,22 @@ ${content[index].words}`;
           }
         ),
         headerText(strings_default[LOCALE].settings.generalHeader),
-        createToggle(strings_default[LOCALE].settings.progressBar, "progressBarDisplay", (value) => {
-          config_default.set("progressBarDisplay", value);
-          if (value)
-            import_react_dom2.default.render(/* @__PURE__ */ import_react.default.createElement(ProgressBar_default, null), container.querySelector("#fsd-progress-parent"));
-          else
-            import_react_dom2.default.unmountComponentAtNode(container.querySelector("#fsd-progress-parent"));
-        }),
+        createToggle(
+          strings_default[LOCALE].settings.progressBar,
+          "progressBarDisplay",
+          (value) => {
+            config_default.set("progressBarDisplay", value);
+            if (value)
+              import_react_dom2.default.render(
+                /* @__PURE__ */ import_react.default.createElement(ProgressBar_default, null),
+                container.querySelector("#fsd-progress-parent")
+              );
+            else
+              import_react_dom2.default.unmountComponentAtNode(
+                container.querySelector("#fsd-progress-parent")
+              );
+          }
+        ),
         createToggle(strings_default[LOCALE].settings.playerControls, "playerControls"),
         createOptions(
           strings_default[LOCALE].settings.showAlbum.setting,
@@ -17070,7 +17703,9 @@ ${content[index].words}`;
                 container.querySelector("#fsd-volume-parent")
               );
             } else {
-              import_react_dom2.default.unmountComponentAtNode(container.querySelector("#fsd-volume-parent"));
+              import_react_dom2.default.unmountComponentAtNode(
+                container.querySelector("#fsd-volume-parent")
+              );
             }
           },
           strings_default[LOCALE].settings.volumeDisplay.description.join("\n")
@@ -17143,19 +17778,27 @@ ${content[index].words}`;
             }
           }
         ),
-        createInputElement(strings_default[LOCALE].settings.staticColor, "staticBackChoice", "color", (value) => {
-          config_default.set("staticBackChoice", value);
-          if (config_default.get("backgroundChoice") === "static_color" && utils_default.isModeActivated()) {
-            utils_default.overlayBack();
-            animateColor(value, back, true);
-            updateMainColor(Spicetify.Player.data.track?.uri, Spicetify.Player.data.track?.metadata);
-            if (overlayTimout)
-              clearTimeout(overlayTimout);
-            overlayTimout = setTimeout(() => {
-              utils_default.overlayBack(false);
-            }, 1500);
+        createInputElement(
+          strings_default[LOCALE].settings.staticColor,
+          "staticBackChoice",
+          "color",
+          (value) => {
+            config_default.set("staticBackChoice", value);
+            if (config_default.get("backgroundChoice") === "static_color" && utils_default.isModeActivated()) {
+              utils_default.overlayBack();
+              animateColor(value, back, true);
+              updateMainColor(
+                Spicetify.Player.data.track?.uri,
+                Spicetify.Player.data.track?.metadata
+              );
+              if (overlayTimout)
+                clearTimeout(overlayTimout);
+              overlayTimout = setTimeout(() => {
+                utils_default.overlayBack(false);
+              }, 1500);
+            }
           }
-        }),
+        ),
         createAdjust(
           strings_default[LOCALE].settings.backgroundBlur,
           "blurSize",
@@ -17273,7 +17916,12 @@ ${content[index].words}`;
       }
       if (config_default.getGlobal("buttonActivation") !== "def") {
         const tvButton = document.createElement("button");
-        tvButton.classList.add("button", "tm-button", "main-topBar-button", "InvalidDropTarget");
+        tvButton.classList.add(
+          "button",
+          "tm-button",
+          "main-topBar-button",
+          "InvalidDropTarget"
+        );
         tvButton.innerHTML = constants_default.TV_MODE;
         tvButton.id = "TV-button";
         tvButton.setAttribute("title", strings_default[LOCALE].tvBtnDesc);
@@ -17304,30 +17952,30 @@ ${content[index].words}`;
       default:
         break;
     }
-    Promise.resolve().then(() => init_lyrics());
+    Promise.resolve().then(() => init_beautiful_lyrics());
   }
-  var import_react, import_react_dom2, app_default;
+  var import_react_dom2, import_react, app_default;
   var init_app = __esm({
     "extensions/full-screen/src/app.tsx"() {
       "use strict";
-      import_react = __toESM(require_react());
       import_react_dom2 = __toESM(require_react_dom());
-      init_animation();
-      init_config();
-      init_setting();
+      import_react = __toESM(require_react());
       init_utils();
-      init_constants();
+      init_config();
+      init_animation();
+      init_setting();
       init_strings();
-      init_html_creator();
+      init_constants();
       init_web_api();
       init_whats_new();
+      init_html_creator();
       init_ProgressBar();
       init_VolumeBar();
-      init_base();
-      init_defaultMode();
       init_settings();
-      init_settings2();
+      init_base();
       init_tvMode();
+      init_defaultMode();
+      init_settings2();
       app_default = main;
     }
   });
@@ -17538,7 +18186,7 @@ curve-interpolator/dist/index.js:
   background-color: var(--tertiary-color);
 }
 
-/* temp_stylePlugin:ni:sha-256;nXfqXL-OAQ2p_9am_BnlQpJRaaDLbI-_7dq9TwWggFg */
+/* temp_stylePlugin:ni:sha-256;iBB-hDKAKLdHAcA00O6MpIB-aottNiKsFHAsY-hjSBE */
 #full-screen-display {
   display: none;
   z-index: 100;
@@ -17768,6 +18416,28 @@ curve-interpolator/dist/index.js:
     transform: translateX(0%);
   }
 }
+#full-screen-display #fad-lyrics-plus-container {
+  transition: transform var(--transition-duration) var(--transition-function);
+  position: absolute;
+  right: -50px;
+  width: 50%;
+  top: 7.5vh;
+}
+#full-screen-display #fad-lyrics-plus-container .lyrics-lyricsContainer-LyricsContainer {
+  --lyrics-color-active: var(--primary-color) !important;
+  --lyrics-color-inactive: var(--tertiary-color) !important;
+  --lyrics-highlight-background: rgba(var(--contrast-color), 0.7) !important;
+  --lyrics-align-text: var(--lyrics-alignment) !important;
+  --animation-tempo: var(--lyrics-animation-tempo) !important;
+  height: 85vh !important;
+}
+#full-screen-display #fad-lyrics-plus-container .lyrics-config-button {
+  margin-right: 20px;
+}
+#full-screen-display.lyrics-unavailable #fad-lyrics-plus-container,
+#full-screen-display.lyrics-hide-force #fad-lyrics-plus-container {
+  transform: translateX(1000px) scale3d(0.1, 0.1, 0.1) rotate(45deg);
+}
 #full-screen-display #fsd-foreground {
   position: relative;
   top: 0;
@@ -17870,6 +18540,114 @@ body.fsd-activated #full-screen-display {
 }
 .main-notificationBubbleContainer-NotificationBubbleContainer {
   z-index: 1000;
+}
+
+/* temp_stylePlugin:ni:sha-256;Kvx_0mMlrzNJRg1uAtOagUSDCAIPa0-GZe0BJu9ZyUM */
+#full-screen-display[mode=tv] #fsd-foreground {
+  flex-direction: row;
+  text-align: left;
+  justify-content: left;
+  align-items: flex-end;
+  position: absolute;
+  top: auto;
+  bottom: 75px;
+}
+#full-screen-display[mode=tv] #fad-lyrics-plus-container {
+  width: 45%;
+}
+#full-screen-display[mode=tv].lyrics-active #fsd-foreground {
+  width: -moz-max-content;
+  width: max-content;
+  max-width: 60%;
+}
+#full-screen-display[mode=tv] #fsd-art {
+  width: calc(100vw - 840px);
+  min-width: 180px;
+  max-width: 220px;
+  margin-left: 65px;
+}
+#full-screen-display[mode=tv] #fsd-progress-parent {
+  width: 100%;
+  max-width: 450px;
+}
+#full-screen-display[mode=tv] .fsd-controls + #fsd-progress-parent {
+  padding-left: 10px;
+}
+#full-screen-display[mode=tv] #fsd-details {
+  padding-left: 30px;
+  line-height: initial;
+  width: 80%;
+  color: var(--primary-color);
+}
+#full-screen-display[mode=tv] #fsd-title,
+#full-screen-display[mode=tv] #fsd-album,
+#full-screen-display[mode=tv] #fsd-artist {
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+  gap: 5px;
+}
+#full-screen-display[mode=tv] #fsd-title span,
+#full-screen-display[mode=tv] #fsd-album span,
+#full-screen-display[mode=tv] #fsd-artist span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+#full-screen-display[mode=tv] #fsd-title span {
+  -webkit-line-clamp: 3;
+}
+#full-screen-display[mode=tv] #fsd-title svg,
+#full-screen-display[mode=tv] #fsd-artist svg,
+#full-screen-display[mode=tv] #fsd-album svg {
+  flex: 0 0 auto;
+}
+#full-screen-display[mode=tv] #fsd-title {
+  font-size: 62px;
+  font-weight: 900;
+}
+@media (max-width: 900px), (max-height: 800px) {
+  #full-screen-display[mode=tv] #fsd-title {
+    font-size: 40px;
+    font-weight: 600;
+  }
+  #full-screen-display[mode=tv] #fsd-artist,
+  #full-screen-display[mode=tv] #fsd-album {
+    font-size: 20px;
+  }
+}
+#full-screen-display[mode=tv] #fsd-artist,
+#full-screen-display[mode=tv] #fsd-album {
+  font-size: 28px;
+}
+#full-screen-display[mode=tv] #fsd-title svg {
+  width: 35px;
+  height: 45px;
+}
+#full-screen-display[mode=tv] #playing-icon {
+  width: 30px !important;
+  height: 40px !important;
+  margin-right: 5px;
+}
+#full-screen-display[mode=tv] #fsd-artist svg,
+#full-screen-display[mode=tv] #fsd-album svg {
+  margin-right: 15px;
+  width: 22px;
+  height: 22px;
+}
+#full-screen-display[mode=tv] #fsd-status {
+  display: flex;
+  flex-direction: row;
+  min-width: 450px;
+  max-width: 450px;
+  align-items: center;
+  justify-content: space-between;
+}
+#full-screen-display[mode=tv] #fsd-status.active {
+  -moz-column-gap: 10px;
+  column-gap: 10px;
+  margin: 10px 0;
 }
 
 /* temp_stylePlugin:ni:sha-256;Wl-k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4 */
@@ -18297,114 +19075,6 @@ body.fsd-activated #full-screen-display {
   background-color: transparent;
   color: var(--theme-color);
   border: 2px solid var(--theme-color);
-}
-
-/* temp_stylePlugin:ni:sha-256;Kvx_0mMlrzNJRg1uAtOagUSDCAIPa0-GZe0BJu9ZyUM */
-#full-screen-display[mode=tv] #fsd-foreground {
-  flex-direction: row;
-  text-align: left;
-  justify-content: left;
-  align-items: flex-end;
-  position: absolute;
-  top: auto;
-  bottom: 75px;
-}
-#full-screen-display[mode=tv] #fad-lyrics-plus-container {
-  width: 45%;
-}
-#full-screen-display[mode=tv].lyrics-active #fsd-foreground {
-  width: -moz-max-content;
-  width: max-content;
-  max-width: 60%;
-}
-#full-screen-display[mode=tv] #fsd-art {
-  width: calc(100vw - 840px);
-  min-width: 180px;
-  max-width: 220px;
-  margin-left: 65px;
-}
-#full-screen-display[mode=tv] #fsd-progress-parent {
-  width: 100%;
-  max-width: 450px;
-}
-#full-screen-display[mode=tv] .fsd-controls + #fsd-progress-parent {
-  padding-left: 10px;
-}
-#full-screen-display[mode=tv] #fsd-details {
-  padding-left: 30px;
-  line-height: initial;
-  width: 80%;
-  color: var(--primary-color);
-}
-#full-screen-display[mode=tv] #fsd-title,
-#full-screen-display[mode=tv] #fsd-album,
-#full-screen-display[mode=tv] #fsd-artist {
-  display: flex;
-  justify-content: flex-start;
-  align-items: baseline;
-  gap: 5px;
-}
-#full-screen-display[mode=tv] #fsd-title span,
-#full-screen-display[mode=tv] #fsd-album span,
-#full-screen-display[mode=tv] #fsd-artist span {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-#full-screen-display[mode=tv] #fsd-title span {
-  -webkit-line-clamp: 3;
-}
-#full-screen-display[mode=tv] #fsd-title svg,
-#full-screen-display[mode=tv] #fsd-artist svg,
-#full-screen-display[mode=tv] #fsd-album svg {
-  flex: 0 0 auto;
-}
-#full-screen-display[mode=tv] #fsd-title {
-  font-size: 62px;
-  font-weight: 900;
-}
-@media (max-width: 900px), (max-height: 800px) {
-  #full-screen-display[mode=tv] #fsd-title {
-    font-size: 40px;
-    font-weight: 600;
-  }
-  #full-screen-display[mode=tv] #fsd-artist,
-  #full-screen-display[mode=tv] #fsd-album {
-    font-size: 20px;
-  }
-}
-#full-screen-display[mode=tv] #fsd-artist,
-#full-screen-display[mode=tv] #fsd-album {
-  font-size: 28px;
-}
-#full-screen-display[mode=tv] #fsd-title svg {
-  width: 35px;
-  height: 45px;
-}
-#full-screen-display[mode=tv] #playing-icon {
-  width: 30px !important;
-  height: 40px !important;
-  margin-right: 5px;
-}
-#full-screen-display[mode=tv] #fsd-artist svg,
-#full-screen-display[mode=tv] #fsd-album svg {
-  margin-right: 15px;
-  width: 22px;
-  height: 22px;
-}
-#full-screen-display[mode=tv] #fsd-status {
-  display: flex;
-  flex-direction: row;
-  min-width: 450px;
-  max-width: 450px;
-  align-items: center;
-  justify-content: space-between;
-}
-#full-screen-display[mode=tv] #fsd-status.active {
-  -moz-column-gap: 10px;
-  column-gap: 10px;
-  margin: 10px 0;
 }
 
 /* temp_stylePlugin:ni:sha-256;KVx94jldE_KaxinoeDiqjf5EQ_cVEuInES9qjI-i37U */

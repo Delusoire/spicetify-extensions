@@ -20,7 +20,6 @@ trapElement("#BeautifulLyrics", lyricsContainer => {
     let lyricsRenderer: HTMLElement | undefined
     const HandlePageView = async () => {
         const song = Player.getSong()
-
         if (lastSong === song) return
 
         lyricsRenderer?.remove()

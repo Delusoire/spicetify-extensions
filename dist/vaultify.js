@@ -3825,7 +3825,7 @@ var vaultify = (() => {
   });
 
   // shared/util.tsx
-  var import_function14, SpotifyLoc, sleep;
+  var import_function14, SpotifyLoc, sleep, getReactProps;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
@@ -3853,6 +3853,7 @@ var vaultify = (() => {
         })(after = SpotifyLoc3.after || (SpotifyLoc3.after = {}));
       })(SpotifyLoc || (SpotifyLoc = {}));
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      getReactProps = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactProps$"))];
     }
   });
 
@@ -4897,6 +4898,7 @@ var vaultify = (() => {
       import_function19 = __toESM(require_function());
       init_api();
       init_fp();
+      init_util();
       app_default = {};
       isType = is("type");
       extractLikedPlaylistTreeRecur = (leaf) => guard22([
@@ -4971,7 +4973,7 @@ var vaultify = (() => {
               setting.value = value;
             else
               return;
-            const settingReactProps = Object.values(setting)[1];
+            const settingReactProps = getReactProps(setting);
             settingReactProps.onChange({ target: setting });
           });
           Spicetify.showNotification("Restored Settings");
