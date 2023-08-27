@@ -63,8 +63,21 @@ const restorePlaylistseRecur = async (leaf: PersonalFolder | PersonalPlaylist | 
 export const backup = async () => {
     const playlists = await p((await fetchPlatRootFolder()) as any, extractLikedPlaylistTreeRecur)
 
-    const allowedAppDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify-exp-features$)/
-    const extensions = toUnfoldable(array)(localStorage).filter(([key]) => allowedAppDataRegex.test(key))
+    const allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/
+
+    const localStore = p(
+        localStorage,
+        toUnfoldable(a),
+        a.filter(([key]) => allowedExtDataRegex.test(key)),
+    )
+
+    const { items, namespace } = Spicetify.Platform.LocalStorageAPI
+    const localStoreAPI = p(
+        items,
+        toUnfoldable(a),
+        a.filter(([key]) => key.startsWith(namespace)),
+        a.map(([key, value]) => [key.split(":")[1], value]),
+    )
 
     const settings = p(
         document.querySelectorAll(`[id^="settings."],[id^="desktop."],[class^="network."]`) as NodeListOf<HTMLElement>,
@@ -83,13 +96,16 @@ export const backup = async () => {
         }),
     )
 
-    await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({ playlists, extensions, settings }))
+    await Spicetify.Platform.ClipboardAPI.copy(
+        JSON.stringify({ playlists, localStore, localStoreAPI, settings } as Vault),
+    )
     Spicetify.showNotification("Backed up Playlists, Extensions and Settings")
 }
 
 type Vault = {
     playlists: PersonalFolder
-    extensions: Array<[string, string]>
+    localStore: Array<[string, string]>
+    localStoreAPI: Array<[string, string]>
     settings: Array<[string, string, any]>
 }
 export const restore = (mode: "playlists" | "extensions" | "settings") => async () => {
@@ -100,7 +116,8 @@ export const restore = (mode: "playlists" | "extensions" | "settings") => async 
         Spicetify.showNotification("Restored Playlists")
     }
     if (mode === "extensions") {
-        map(tupled(Spicetify.LocalStorage.set))(vault.extensions)
+        map(tupled(Spicetify.LocalStorage.set))(vault.localStore)
+        map(tupled(Spicetify.Platform.LocalStorageAPI.setItem))(vault.localStoreAPI)
         Spicetify.showNotification("Restored Extensions")
     }
     if (mode === "settings") {
