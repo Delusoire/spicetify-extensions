@@ -105,7 +105,9 @@ export const restore = (mode: "playlists" | "extensions" | "settings") => async 
     }
     if (mode === "settings") {
         vault.settings.map(([id, type, value]) => {
-            const setting = document.querySelector(`[id="${id}"]`)! as any
+            const setting = document.querySelector<any>(`[id="${id}"]`)
+            if (!setting) return console.warn(`Setting for ${id} wasn't found`)
+
             if (type === "text") setting.value = value
             else if (type === "checkbox") setting.checked = value
             else if (type === "select") setting.value = value

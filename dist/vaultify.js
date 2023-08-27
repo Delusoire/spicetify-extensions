@@ -4965,6 +4965,8 @@ var vaultify = (() => {
         if (mode === "settings") {
           vault.settings.map(([id, type, value]) => {
             const setting = document.querySelector(`[id="${id}"]`);
+            if (!setting)
+              return console.warn(`Setting for ${id} wasn't found`);
             if (type === "text")
               setting.value = value;
             else if (type === "checkbox")
