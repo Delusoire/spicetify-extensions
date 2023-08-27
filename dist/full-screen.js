@@ -4537,13 +4537,6 @@ var full;
     }
   });
 
-  // external-global-plugin:react-dom
-  var require_react_dom = __commonJS({
-    "external-global-plugin:react-dom"(exports, module) {
-      module.exports = Spicetify.ReactDOM;
-    }
-  });
-
   // external-global-plugin:react
   var require_react = __commonJS({
     "external-global-plugin:react"(exports, module) {
@@ -4551,220 +4544,10 @@ var full;
     }
   });
 
-  // extensions/full-screen/src/constants/icons.ts
-  var ICONS, icons_default;
-  var init_icons = __esm({
-    "extensions/full-screen/src/constants/icons.ts"() {
-      "use strict";
-      ICONS = {
-        OFFLINE_SVG: `data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo=`,
-        FULLSCREEN: `<svg role="img" height="20" width="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10.5 3L16.5428 3.00182L16.6281 3.01661L16.691 3.03779L16.767 3.07719L16.8221 3.11759L16.8824 3.17788L16.9112 3.21534L16.9533 3.2886L16.9834 3.37186L16.9979 3.45421L17 3.5V9.5C17 9.77614 16.7761 10 16.5 10C16.2545 10 16.0504 9.82312 16.0081 9.58988L16 9.5V4.706L4.706 16H9.5C9.74546 16 9.94961 16.1769 9.99194 16.4101L10 16.5C10 16.7455 9.82312 16.9496 9.58988 16.9919L9.5 17L3.47964 16.9996L3.4112 16.9921L3.30896 16.9622L3.23299 16.9228L3.17786 16.8824L3.11758 16.8221L3.08884 16.7847L3.04674 16.7114L3.01661 16.6281L3.01109 16.605C3.00383 16.5713 3 16.5361 3 16.5L3.00546 16.5739L3.00182 16.5428L3 10.5C3 10.2239 3.22386 10 3.5 10C3.74546 10 3.94961 10.1769 3.99194 10.4101L4 10.5V15.292L15.292 4H10.5C10.2545 4 10.0504 3.82312 10.0081 3.58988L10 3.5C10 3.22386 10.2239 3 10.5 3Z"></path><path class="" d="M16 3C16.5523 3 17 3.44772 17 4V9.25C17 9.66421 16.6642 10 16.25 10C15.8358 10 15.5 9.66421 15.5 9.25V5.559L5.559 15.5H9.25C9.66421 15.5 10 15.8358 10 16.25C10 16.6642 9.66421 17 9.25 17H4C3.44772 17 3 16.5523 3 16V10.75C3 10.3358 3.33579 10 3.75 10C4.16421 10 4.5 10.3358 4.5 10.75V14.439L14.439 4.5H10.75C10.3358 4.5 10 4.16421 10 3.75C10 3.33579 10.3358 3 10.75 3H16Z"></path></svg>`,
-        TV_MODE: `<svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM13.991 3l.024.001a1.46 1.46 0 0 1 .538.143.757.757 0 0 1 .302.254c.067.1.145.277.145.602v5.991l-.001.024a1.464 1.464 0 0 1-.143.538.758.758 0 0 1-.254.302c-.1.067-.277.145-.602.145H2.009l-.024-.001a1.464 1.464 0 0 1-.538-.143.758.758 0 0 1-.302-.254C1.078 10.502 1 10.325 1 10V4.009l.001-.024a1.46 1.46 0 0 1 .143-.538.758.758 0 0 1 .254-.302C1.498 3.078 1.675 3 2 3h11.991zM14 2H2C0 2 0 4 0 4v6c0 2 2 2 2 2h12c2 0 2-2 2-2V4c0-2-2-2-2-2z"/></svg>`,
-        INVERT_ACTIVE: `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>`,
-        INVERT_INACTIVE: `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M14.53,6.59L14.53,6.59L10,2L5.5,6.56c-1.08,1.11-1.75,2.62-1.75,4.28c0,3.4,2.8,6.16,6.25,6.16s6.25-2.76,6.25-6.16 C16.25,9.19,15.6,7.7,14.53,6.59z M5.25,10.84c0-1.21,0.47-2.35,1.32-3.22L10,4.14V15.5C7.38,15.5,5.25,13.41,5.25,10.84z"/></svg>`,
-        LYRICS_ACTIVE: `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor"><path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/><path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/></svg>`,
-        LYRICS_INACTIVE: `<svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm7.194 2.766a1.688 1.688 0 0 0-.227-.272 1.467 1.467 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 5.734 4C4.776 4 4 4.746 4 5.667c0 .92.776 1.666 1.734 1.666.343 0 .662-.095.931-.26-.137.389-.39.804-.81 1.22a.405.405 0 0 0 .011.59c.173.16.447.155.614-.01 1.334-1.329 1.37-2.758.941-3.706a2.461 2.461 0 0 0-.227-.4zM11 7.073c-.136.389-.39.804-.81 1.22a.405.405 0 0 0 .012.59c.172.16.446.155.613-.01 1.334-1.329 1.37-2.758.942-3.706a2.466 2.466 0 0 0-.228-.4 1.686 1.686 0 0 0-.227-.273 1.466 1.466 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 10.07 4c-.957 0-1.734.746-1.734 1.667 0 .92.777 1.666 1.734 1.666.343 0 .662-.095.931-.26z"/></svg>`,
-        MINUS: `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 7h12v2H0z"/>`,
-        ALBUM: `<svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.album}</svg>`,
-        ARTIST: `   <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.artist}</svg>`,
-        PLAYING_ICON: `<svg id='playing-icon' width="30" height="30" viewBox='0 0 22 24' fill="currentColor"><defs><style> #playing-icon { fill: currentColor; } @keyframes play { 0% {transform: scaleY(1);} 3.3% {transform: scaleY(0.9583);} 6.6% {transform: scaleY(0.9166);} 9.9% {transform: scaleY(0.8333);} 13.3% {transform: scaleY(0.7083);} 16.6% {transform: scaleY(0.5416);} 19.9% {transform: scaleY(0.4166);} 23.3% {transform: scaleY(0.25);} 26.6% {transform: scaleY(0.1666);} 29.9% {transform: scaleY(0.125);} 33.3% {transform: scaleY(0.125);} 36.6% {transform: scaleY(0.1666);} 39.9% {transform: scaleY(0.1666);} 43.3% {transform: scaleY(0.2083);} 46.6% {transform: scaleY(0.2916);} 49.9% {transform: scaleY(0.375);} 53.3% {transform: scaleY(0.5);} 56.6% {transform: scaleY(0.5833);} 59.9% {transform: scaleY(0.625);} 63.3% {transform: scaleY(0.6666);} 66.6% {transform: scaleY(0.6666);} 69.9% {transform: scaleY(0.6666);} 73.3% {transform: scaleY(0.6666);} 76.6% {transform: scaleY(0.7083);} 79.9% {transform: scaleY(0.75);} 83.3% {transform: scaleY(0.8333);} 86.6% {transform: scaleY(0.875);} 89.9% {transform: scaleY(0.9166);} 93.3% {transform: scaleY(0.9583);} 96.6% {transform: scaleY(1);} } #bar1 { transform-origin: bottom; animation: play 0.9s -0.51s infinite; } #bar2 { transform-origin: bottom; animation: play 0.9s infinite; } #bar3 { transform-origin: bottom; animation: play 0.9s -0.15s infinite; } #bar4 { transform-origin: bottom; animation: play 0.9s -0.75s infinite; } </style></defs><rect id='bar1' class='cls-1' width='2' height='24'/><rect id='bar2' class='cls-1' x='6' width='2' height='24'/><rect id='bar3' class='cls-1' x='12' width='2' height='24'/><rect id='bar4' class='cls-1' x='18' width='2' height='24'/></svg>`,
-        PAUSED_ICON: `<svg id='paused-icon'  width="30" height="30" viewBox="5 4 16 16" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>`,
-        CTX_RADIO: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M19.359 18.57C21.033 16.818 22 14.461 22 11.89s-.967-4.93-2.641-6.68c-.276-.292-.653-.26-.868-.023-.222.246-.176.591.085.868 1.466 1.535 2.272 3.593 2.272 5.835 0 2.241-.806 4.3-2.272 5.835-.261.268-.307.621-.085.86.215.245.592.276.868-.016zm-13.85.014c.222-.238.176-.59-.085-.86-1.474-1.535-2.272-3.593-2.272-5.834 0-2.242.798-4.3 2.272-5.835.261-.277.307-.622.085-.868-.215-.238-.592-.269-.868.023C2.967 6.96 2 9.318 2 11.89s.967 4.929 2.641 6.68c.276.29.653.26.868.014zm1.957-1.873c.223-.253.162-.583-.1-.867-.951-1.068-1.473-2.45-1.473-3.954 0-1.505.522-2.887 1.474-3.954.26-.284.322-.614.1-.876-.23-.26-.622-.26-.891.039-1.175 1.274-1.827 2.963-1.827 4.79 0 1.82.652 3.517 1.827 4.784.269.3.66.307.89.038zm9.958-.038c1.175-1.267 1.827-2.964 1.827-4.783 0-1.828-.652-3.517-1.827-4.791-.269-.3-.66-.3-.89-.039-.23.262-.162.592.092.876.96 1.067 1.481 2.449 1.481 3.954 0 1.504-.522 2.886-1.481 3.954-.254.284-.323.614-.092.867.23.269.621.261.89-.038zm-8.061-1.966c.23-.26.13-.568-.092-.883-.415-.522-.63-1.197-.63-1.934 0-.737.215-1.413.63-1.943.222-.307.322-.614.092-.875s-.653-.261-.906.054a4.385 4.385 0 00-.968 2.764 4.38 4.38 0 00.968 2.756c.253.322.675.322.906.061zm6.18-.061a4.38 4.38 0 00.968-2.756 4.385 4.385 0 00-.968-2.764c-.253-.315-.675-.315-.906-.054-.23.261-.138.568.092.875.415.53.63 1.206.63 1.943 0 .737-.215 1.412-.63 1.934-.23.315-.322.622-.092.883s.653.261.906-.061zm-3.547-.967c.96 0 1.789-.814 1.789-1.797s-.83-1.789-1.789-1.789c-.96 0-1.781.806-1.781 1.789 0 .983.821 1.797 1.781 1.797z" fill-rule="nonzero"></path></svg>`,
-        CTX_TRACK: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>`,
-        CTX_QUEUE: `<svg width="48" height="48" viewBox="1 1.2 16 16" fill="currentColor"><path d="M2 2v5l4.33-2.5L2 2zm0 12h14v-1H2v1zm0-4h14V9H2v1zm7-5v1h7V5H9z"></path></svg>`
-      };
-      icons_default = ICONS;
-    }
-  });
-
-  // extensions/full-screen/src/constants/defaults.ts
-  var DEFAULTS;
-  var init_defaults = __esm({
-    "extensions/full-screen/src/constants/defaults.ts"() {
-      "use strict";
-      DEFAULTS = {
-        tv: {
-          lyricsDisplay: true,
-          lyricsAlignment: "right",
-          autoHideLyrics: true,
-          animationTempo: 0.2,
-          progressBarDisplay: false,
-          playerControls: false,
-          trimTitle: true,
-          trimTitleUpNext: true,
-          showAlbum: "date",
-          showAllArtists: true,
-          icons: true,
-          titleMovingIcon: false,
-          enableFade: true,
-          enableFullscreen: true,
-          backgroundChoice: "artist_art",
-          extraControls: false,
-          upnextDisplay: true,
-          contextDisplay: "always",
-          volumeDisplay: "smart",
-          themedButtons: true,
-          themedIcons: true,
-          invertColors: "never",
-          backAnimationTime: 0.4,
-          animationSpeed: 0.25,
-          upNextAnim: "sp",
-          upnextTimeToShow: 45,
-          coloredBackChoice: "DESATURATED",
-          staticBackChoice: "#787878",
-          blurSize: 0,
-          backgroundBrightness: 0.4,
-          showRemainingTime: false
-        },
-        def: {
-          lyricsDisplay: true,
-          lyricsAlignment: "right",
-          autoHideLyrics: true,
-          animationTempo: 0.2,
-          progressBarDisplay: true,
-          playerControls: true,
-          trimTitle: true,
-          trimTitleUpNext: true,
-          showAlbum: "never",
-          showAllArtists: true,
-          icons: false,
-          titleMovingIcon: false,
-          enableFade: true,
-          enableFullscreen: true,
-          backgroundChoice: "album_art",
-          extraControls: true,
-          upnextDisplay: true,
-          contextDisplay: "mousemove",
-          volumeDisplay: "smart",
-          themedButtons: true,
-          themedIcons: false,
-          invertColors: "never",
-          backAnimationTime: 1,
-          animationSpeed: 0.25,
-          upNextAnim: "sp",
-          upnextTimeToShow: 30,
-          coloredBackChoice: "DESATURATED",
-          staticBackChoice: "#787878",
-          blurSize: 32,
-          backgroundBrightness: 0.7,
-          showRemainingTime: false
-        },
-        tvMode: false,
-        locale: "en-US",
-        fsHideOriginal: false,
-        autoLaunch: "never",
-        activationTypes: "both",
-        buttonActivation: "both",
-        keyActivation: "both"
-      };
-    }
-  });
-
-  // extensions/full-screen/src/constants/general.ts
-  var CLASSES_TO_ADD;
-  var init_general = __esm({
-    "extensions/full-screen/src/constants/general.ts"() {
-      "use strict";
-      CLASSES_TO_ADD = [
-        "video",
-        "video-full-screen",
-        "video-full-window",
-        "video-full-screen--hide-ui",
-        "fsd-activated"
-      ];
-    }
-  });
-
-  // extensions/full-screen/src/constants/selectors.ts
-  var TOP_BAR_SELECTOR, EXTRA_BAR_SELECTOR;
-  var init_selectors = __esm({
-    "extensions/full-screen/src/constants/selectors.ts"() {
-      "use strict";
-      TOP_BAR_SELECTOR = ".main-topBar-historyButtons";
-      EXTRA_BAR_SELECTOR = ".main-nowPlayingBar-right";
-    }
-  });
-
-  // extensions/full-screen/src/constants/index.ts
-  var constants_default;
-  var init_constants = __esm({
-    "extensions/full-screen/src/constants/index.ts"() {
-      "use strict";
-      init_icons();
-      init_defaults();
-      init_general();
-      init_selectors();
-      constants_default = icons_default;
-    }
-  });
-
-  // extensions/full-screen/src/services/web-api.ts
-  var colorsCache, WebAPI, web_api_default;
-  var init_web_api = __esm({
-    "extensions/full-screen/src/services/web-api.ts"() {
-      "use strict";
-      colorsCache = [];
-      WebAPI = class _WebAPI {
-        static getToken() {
-          return Spicetify.Platform.AuthorizationAPI._tokenProvider({
-            preferCached: true
-          }).then((res) => res.accessToken);
-        }
-        static async getTrackInfo(id) {
-          return fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-            headers: {
-              Authorization: `Bearer ${await _WebAPI.getToken()}`
-            }
-          }).then((res) => res.json());
-        }
-        static async getAlbumInfo(id) {
-          return fetch(`https://api.spotify.com/v1/albums/${id}`, {
-            headers: {
-              Authorization: `Bearer ${await _WebAPI.getToken()}`
-            }
-          }).then((res) => res.json());
-        }
-        static async getPlaylistInfo(uri) {
-          return Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}`);
-        }
-        static async getArtistInfo(id) {
-          return fetch(
-            `https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&variables=%7B%22uri%22%3A%22spotify%3Aartist%3A${id}%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22d66221ea13998b2f81883c5187d174c8646e4041d67f5b1e103bc262d447e3a0%22%7D%7D`,
-            {
-              headers: {
-                Authorization: `Bearer ${await _WebAPI.getToken()}`
-              }
-            }
-          ).then((res) => res.json()).then((res) => res.data.artist);
-        }
-        static async searchArt(name) {
-          return fetch(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`, {
-            headers: {
-              Authorization: `Bearer ${await _WebAPI.getToken()}`
-            }
-          }).then((res) => res.json());
-        }
-        static async colorExtractor(uri) {
-          const presentInCache = colorsCache.filter((obj) => obj.uri === uri);
-          if (presentInCache.length > 0)
-            return presentInCache[0].colors;
-          const body = await Spicetify.CosmosAsync.get(
-            `wg://colorextractor/v1/extract-presets?uri=${uri}&format=json`
-          );
-          if (body.entries && body.entries.length) {
-            const list = {};
-            for (const color of body.entries[0].color_swatches) {
-              list[color.preset] = `#${color.color.toString(16).padStart(6, "0")}`;
-            }
-            if (colorsCache.length > 20)
-              colorsCache.shift();
-            colorsCache.push({ uri, colors: list });
-            return list;
-          }
-          throw "No colors returned.";
-        }
-      };
-      web_api_default = WebAPI;
+  // external-global-plugin:react-dom
+  var require_react_dom = __commonJS({
+    "external-global-plugin:react-dom"(exports, module) {
+      module.exports = Spicetify.ReactDOM;
     }
   });
 
@@ -5502,6 +5285,153 @@ var full;
     }
   });
 
+  // extensions/full-screen/src/constants/icons.ts
+  var ICONS, icons_default;
+  var init_icons = __esm({
+    "extensions/full-screen/src/constants/icons.ts"() {
+      "use strict";
+      ICONS = {
+        OFFLINE_SVG: `data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo=`,
+        FULLSCREEN: `<svg role="img" height="20" width="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10.5 3L16.5428 3.00182L16.6281 3.01661L16.691 3.03779L16.767 3.07719L16.8221 3.11759L16.8824 3.17788L16.9112 3.21534L16.9533 3.2886L16.9834 3.37186L16.9979 3.45421L17 3.5V9.5C17 9.77614 16.7761 10 16.5 10C16.2545 10 16.0504 9.82312 16.0081 9.58988L16 9.5V4.706L4.706 16H9.5C9.74546 16 9.94961 16.1769 9.99194 16.4101L10 16.5C10 16.7455 9.82312 16.9496 9.58988 16.9919L9.5 17L3.47964 16.9996L3.4112 16.9921L3.30896 16.9622L3.23299 16.9228L3.17786 16.8824L3.11758 16.8221L3.08884 16.7847L3.04674 16.7114L3.01661 16.6281L3.01109 16.605C3.00383 16.5713 3 16.5361 3 16.5L3.00546 16.5739L3.00182 16.5428L3 10.5C3 10.2239 3.22386 10 3.5 10C3.74546 10 3.94961 10.1769 3.99194 10.4101L4 10.5V15.292L15.292 4H10.5C10.2545 4 10.0504 3.82312 10.0081 3.58988L10 3.5C10 3.22386 10.2239 3 10.5 3Z"></path><path class="" d="M16 3C16.5523 3 17 3.44772 17 4V9.25C17 9.66421 16.6642 10 16.25 10C15.8358 10 15.5 9.66421 15.5 9.25V5.559L5.559 15.5H9.25C9.66421 15.5 10 15.8358 10 16.25C10 16.6642 9.66421 17 9.25 17H4C3.44772 17 3 16.5523 3 16V10.75C3 10.3358 3.33579 10 3.75 10C4.16421 10 4.5 10.3358 4.5 10.75V14.439L14.439 4.5H10.75C10.3358 4.5 10 4.16421 10 3.75C10 3.33579 10.3358 3 10.75 3H16Z"></path></svg>`,
+        TV_MODE: `<svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM13.991 3l.024.001a1.46 1.46 0 0 1 .538.143.757.757 0 0 1 .302.254c.067.1.145.277.145.602v5.991l-.001.024a1.464 1.464 0 0 1-.143.538.758.758 0 0 1-.254.302c-.1.067-.277.145-.602.145H2.009l-.024-.001a1.464 1.464 0 0 1-.538-.143.758.758 0 0 1-.302-.254C1.078 10.502 1 10.325 1 10V4.009l.001-.024a1.46 1.46 0 0 1 .143-.538.758.758 0 0 1 .254-.302C1.498 3.078 1.675 3 2 3h11.991zM14 2H2C0 2 0 4 0 4v6c0 2 2 2 2 2h12c2 0 2-2 2-2V4c0-2-2-2-2-2z"/></svg>`,
+        INVERT_ACTIVE: `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>`,
+        INVERT_INACTIVE: `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M14.53,6.59L14.53,6.59L10,2L5.5,6.56c-1.08,1.11-1.75,2.62-1.75,4.28c0,3.4,2.8,6.16,6.25,6.16s6.25-2.76,6.25-6.16 C16.25,9.19,15.6,7.7,14.53,6.59z M5.25,10.84c0-1.21,0.47-2.35,1.32-3.22L10,4.14V15.5C7.38,15.5,5.25,13.41,5.25,10.84z"/></svg>`,
+        LYRICS_ACTIVE: `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor"><path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/><path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/></svg>`,
+        LYRICS_INACTIVE: `<svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm7.194 2.766a1.688 1.688 0 0 0-.227-.272 1.467 1.467 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 5.734 4C4.776 4 4 4.746 4 5.667c0 .92.776 1.666 1.734 1.666.343 0 .662-.095.931-.26-.137.389-.39.804-.81 1.22a.405.405 0 0 0 .011.59c.173.16.447.155.614-.01 1.334-1.329 1.37-2.758.941-3.706a2.461 2.461 0 0 0-.227-.4zM11 7.073c-.136.389-.39.804-.81 1.22a.405.405 0 0 0 .012.59c.172.16.446.155.613-.01 1.334-1.329 1.37-2.758.942-3.706a2.466 2.466 0 0 0-.228-.4 1.686 1.686 0 0 0-.227-.273 1.466 1.466 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 10.07 4c-.957 0-1.734.746-1.734 1.667 0 .92.777 1.666 1.734 1.666.343 0 .662-.095.931-.26z"/></svg>`,
+        MINUS: `<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 7h12v2H0z"/>`,
+        ALBUM: `<svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.album}</svg>`,
+        ARTIST: `   <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.artist}</svg>`,
+        PLAYING_ICON: `<svg id='playing-icon' width="30" height="30" viewBox='0 0 22 24' fill="currentColor"><defs><style> #playing-icon { fill: currentColor; } @keyframes play { 0% {transform: scaleY(1);} 3.3% {transform: scaleY(0.9583);} 6.6% {transform: scaleY(0.9166);} 9.9% {transform: scaleY(0.8333);} 13.3% {transform: scaleY(0.7083);} 16.6% {transform: scaleY(0.5416);} 19.9% {transform: scaleY(0.4166);} 23.3% {transform: scaleY(0.25);} 26.6% {transform: scaleY(0.1666);} 29.9% {transform: scaleY(0.125);} 33.3% {transform: scaleY(0.125);} 36.6% {transform: scaleY(0.1666);} 39.9% {transform: scaleY(0.1666);} 43.3% {transform: scaleY(0.2083);} 46.6% {transform: scaleY(0.2916);} 49.9% {transform: scaleY(0.375);} 53.3% {transform: scaleY(0.5);} 56.6% {transform: scaleY(0.5833);} 59.9% {transform: scaleY(0.625);} 63.3% {transform: scaleY(0.6666);} 66.6% {transform: scaleY(0.6666);} 69.9% {transform: scaleY(0.6666);} 73.3% {transform: scaleY(0.6666);} 76.6% {transform: scaleY(0.7083);} 79.9% {transform: scaleY(0.75);} 83.3% {transform: scaleY(0.8333);} 86.6% {transform: scaleY(0.875);} 89.9% {transform: scaleY(0.9166);} 93.3% {transform: scaleY(0.9583);} 96.6% {transform: scaleY(1);} } #bar1 { transform-origin: bottom; animation: play 0.9s -0.51s infinite; } #bar2 { transform-origin: bottom; animation: play 0.9s infinite; } #bar3 { transform-origin: bottom; animation: play 0.9s -0.15s infinite; } #bar4 { transform-origin: bottom; animation: play 0.9s -0.75s infinite; } </style></defs><rect id='bar1' class='cls-1' width='2' height='24'/><rect id='bar2' class='cls-1' x='6' width='2' height='24'/><rect id='bar3' class='cls-1' x='12' width='2' height='24'/><rect id='bar4' class='cls-1' x='18' width='2' height='24'/></svg>`,
+        PAUSED_ICON: `<svg id='paused-icon'  width="30" height="30" viewBox="5 4 16 16" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>`,
+        CTX_RADIO: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M19.359 18.57C21.033 16.818 22 14.461 22 11.89s-.967-4.93-2.641-6.68c-.276-.292-.653-.26-.868-.023-.222.246-.176.591.085.868 1.466 1.535 2.272 3.593 2.272 5.835 0 2.241-.806 4.3-2.272 5.835-.261.268-.307.621-.085.86.215.245.592.276.868-.016zm-13.85.014c.222-.238.176-.59-.085-.86-1.474-1.535-2.272-3.593-2.272-5.834 0-2.242.798-4.3 2.272-5.835.261-.277.307-.622.085-.868-.215-.238-.592-.269-.868.023C2.967 6.96 2 9.318 2 11.89s.967 4.929 2.641 6.68c.276.29.653.26.868.014zm1.957-1.873c.223-.253.162-.583-.1-.867-.951-1.068-1.473-2.45-1.473-3.954 0-1.505.522-2.887 1.474-3.954.26-.284.322-.614.1-.876-.23-.26-.622-.26-.891.039-1.175 1.274-1.827 2.963-1.827 4.79 0 1.82.652 3.517 1.827 4.784.269.3.66.307.89.038zm9.958-.038c1.175-1.267 1.827-2.964 1.827-4.783 0-1.828-.652-3.517-1.827-4.791-.269-.3-.66-.3-.89-.039-.23.262-.162.592.092.876.96 1.067 1.481 2.449 1.481 3.954 0 1.504-.522 2.886-1.481 3.954-.254.284-.323.614-.092.867.23.269.621.261.89-.038zm-8.061-1.966c.23-.26.13-.568-.092-.883-.415-.522-.63-1.197-.63-1.934 0-.737.215-1.413.63-1.943.222-.307.322-.614.092-.875s-.653-.261-.906.054a4.385 4.385 0 00-.968 2.764 4.38 4.38 0 00.968 2.756c.253.322.675.322.906.061zm6.18-.061a4.38 4.38 0 00.968-2.756 4.385 4.385 0 00-.968-2.764c-.253-.315-.675-.315-.906-.054-.23.261-.138.568.092.875.415.53.63 1.206.63 1.943 0 .737-.215 1.412-.63 1.934-.23.315-.322.622-.092.883s.653.261.906-.061zm-3.547-.967c.96 0 1.789-.814 1.789-1.797s-.83-1.789-1.789-1.789c-.96 0-1.781.806-1.781 1.789 0 .983.821 1.797 1.781 1.797z" fill-rule="nonzero"></path></svg>`,
+        CTX_TRACK: `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>`,
+        CTX_QUEUE: `<svg width="48" height="48" viewBox="1 1.2 16 16" fill="currentColor"><path d="M2 2v5l4.33-2.5L2 2zm0 12h14v-1H2v1zm0-4h14V9H2v1zm7-5v1h7V5H9z"></path></svg>`
+      };
+      icons_default = ICONS;
+    }
+  });
+
+  // extensions/full-screen/src/constants/defaults.ts
+  var DEFAULTS;
+  var init_defaults = __esm({
+    "extensions/full-screen/src/constants/defaults.ts"() {
+      "use strict";
+      DEFAULTS = {
+        tv: {
+          lyricsDisplay: true,
+          lyricsAlignment: "right",
+          autoHideLyrics: true,
+          animationTempo: 0.2,
+          progressBarDisplay: false,
+          playerControls: false,
+          trimTitle: true,
+          trimTitleUpNext: true,
+          showAlbum: "date",
+          showAllArtists: true,
+          icons: true,
+          titleMovingIcon: false,
+          enableFade: true,
+          enableFullscreen: true,
+          backgroundChoice: "artist_art",
+          extraControls: false,
+          upnextDisplay: true,
+          contextDisplay: "always",
+          volumeDisplay: "smart",
+          themedButtons: true,
+          themedIcons: true,
+          invertColors: "never",
+          backAnimationTime: 0.4,
+          animationSpeed: 0.25,
+          upNextAnim: "sp",
+          upnextTimeToShow: 45,
+          coloredBackChoice: "DESATURATED",
+          staticBackChoice: "#787878",
+          blurSize: 0,
+          backgroundBrightness: 0.4,
+          showRemainingTime: false
+        },
+        def: {
+          lyricsDisplay: true,
+          lyricsAlignment: "right",
+          autoHideLyrics: true,
+          animationTempo: 0.2,
+          progressBarDisplay: true,
+          playerControls: true,
+          trimTitle: true,
+          trimTitleUpNext: true,
+          showAlbum: "never",
+          showAllArtists: true,
+          icons: false,
+          titleMovingIcon: false,
+          enableFade: true,
+          enableFullscreen: true,
+          backgroundChoice: "album_art",
+          extraControls: true,
+          upnextDisplay: true,
+          contextDisplay: "mousemove",
+          volumeDisplay: "smart",
+          themedButtons: true,
+          themedIcons: false,
+          invertColors: "never",
+          backAnimationTime: 1,
+          animationSpeed: 0.25,
+          upNextAnim: "sp",
+          upnextTimeToShow: 30,
+          coloredBackChoice: "DESATURATED",
+          staticBackChoice: "#787878",
+          blurSize: 32,
+          backgroundBrightness: 0.7,
+          showRemainingTime: false
+        },
+        tvMode: false,
+        locale: "en-US",
+        fsHideOriginal: false,
+        autoLaunch: "never",
+        activationTypes: "both",
+        buttonActivation: "both",
+        keyActivation: "both"
+      };
+    }
+  });
+
+  // extensions/full-screen/src/constants/general.ts
+  var CLASSES_TO_ADD;
+  var init_general = __esm({
+    "extensions/full-screen/src/constants/general.ts"() {
+      "use strict";
+      CLASSES_TO_ADD = [
+        "video",
+        "video-full-screen",
+        "video-full-window",
+        "video-full-screen--hide-ui",
+        "fsd-activated"
+      ];
+    }
+  });
+
+  // extensions/full-screen/src/constants/selectors.ts
+  var TOP_BAR_SELECTOR, EXTRA_BAR_SELECTOR;
+  var init_selectors = __esm({
+    "extensions/full-screen/src/constants/selectors.ts"() {
+      "use strict";
+      TOP_BAR_SELECTOR = ".main-topBar-historyButtons";
+      EXTRA_BAR_SELECTOR = ".main-nowPlayingBar-right";
+    }
+  });
+
+  // extensions/full-screen/src/constants/index.ts
+  var constants_default;
+  var init_constants = __esm({
+    "extensions/full-screen/src/constants/index.ts"() {
+      "use strict";
+      init_icons();
+      init_defaults();
+      init_general();
+      init_selectors();
+      constants_default = icons_default;
+    }
+  });
+
   // extensions/full-screen/src/utils/config.ts
   function getConfig(DEFAULTS2) {
     try {
@@ -5601,292 +5531,6 @@ var full;
         }
       };
       config_default = ConfigManager;
-    }
-  });
-
-  // extensions/full-screen/src/utils/utils.ts
-  var prevUriObj, Utils, utils_default;
-  var init_utils = __esm({
-    "extensions/full-screen/src/utils/utils.ts"() {
-      "use strict";
-      init_constants();
-      init_selectors();
-      init_web_api();
-      init_config();
-      Utils = class _Utils {
-        static allNotExist() {
-          const extraBar = document.querySelector(EXTRA_BAR_SELECTOR)?.childNodes[0];
-          const topBar = document.querySelector(TOP_BAR_SELECTOR);
-          const entriesToVerify = {
-            "Top Bar Component": topBar,
-            "Extra Bar Component": extraBar,
-            "Spicetify CosmosAsync": Spicetify.CosmosAsync,
-            "Spicetify Mousetrap": Spicetify.Mousetrap,
-            "Spicetify Player": Spicetify.Player,
-            "Spicetify Platform": Spicetify.Platform
-          };
-          return Object.entries(entriesToVerify).filter(([, val]) => !val);
-        }
-        static printNotExistings(entriesNotPresent) {
-          entriesNotPresent.forEach((entry) => {
-            console.error(
-              `${entry[0]} not available. Report issue on GitHub or run Spicetify.test() to test.`
-            );
-            Spicetify.showNotification(
-              `Error initializing "fullscreen.js" extension. ${entry[0]} not available. Report issue on GitHub.`
-            );
-          });
-          console.log("Retries exceeded. Aborting.");
-        }
-        static fullScreenOn() {
-          if (!document.fullscreen)
-            return document.documentElement.requestFullscreen();
-        }
-        static fullScreenOff() {
-          if (document.fullscreen)
-            return document.exitFullscreen();
-        }
-        /**
-         * Add fade animation on button click
-         * @param element The element to add fade animation
-         * @param animClass Fade animation type class
-         */
-        static fadeAnimation(element, animClass = "fade-do") {
-          element.classList.remove(animClass);
-          element.classList.add(animClass);
-          setTimeout(() => {
-            element.classList.remove(animClass);
-          }, 800);
-        }
-        // Utility function to add a observer with wait for element support
-        static addObserver(observer, selector, options2) {
-          const ele = document.querySelector(selector);
-          if (!ele) {
-            setTimeout(() => {
-              _Utils.addObserver(observer, selector, options2);
-            }, 2e3);
-            return;
-          }
-          observer.observe(ele, options2);
-        }
-        // Converting hex to rgb
-        static hexToRgb(hex) {
-          const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-          hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-            return r + r + g + g + b + b;
-          });
-          const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-          return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : null;
-        }
-        static trimTitle(title) {
-          const trimmedTitle = title.replace(/\(.+?\)/g, "").replace(/\[.+?\]/g, "").replace(/\s-\s.+?$/, "").trim();
-          if (!trimmedTitle)
-            return title;
-          return trimmedTitle;
-        }
-        static async getAlbumReleaseDate(albumURI, locale) {
-          const albumInfo = await web_api_default.getAlbumInfo(albumURI.replace("spotify:album:", "")).catch(
-            (err) => console.error(err)
-          );
-          if (!albumInfo?.release_date)
-            return "";
-          const albumDate = new Date(albumInfo.release_date);
-          const recentDate = /* @__PURE__ */ new Date();
-          recentDate.setMonth(recentDate.getMonth() - 18);
-          const dateStr = albumDate.toLocaleString(
-            locale,
-            albumDate > recentDate ? { year: "numeric", month: "short" } : { year: "numeric" }
-          );
-          return " \u2022 " + dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
-        }
-        static async getImageAndLoad(meta) {
-          if (meta.artist_uri == null)
-            return meta.image_xlarge_url;
-          let arUri = meta.artist_uri.split(":")[2];
-          if (meta.artist_uri.split(":")[1] === "local") {
-            const res = await web_api_default.searchArt(meta.artist_name).catch((err) => console.error(err));
-            arUri = res ? res.artists.items[0].id : "";
-          }
-          const artistInfo = await web_api_default.getArtistInfo(arUri).catch((err) => console.error(err));
-          return artistInfo?.visuals?.headerImage?.sources[0].url ?? meta.image_xlarge_url;
-        }
-        static async getNextColor(colorChoice) {
-          let nextColor = "#444444";
-          const imageColors = await web_api_default.colorExtractor(
-            Spicetify.Player.data.track?.uri ?? ""
-          ).catch((err) => console.warn(err));
-          if (imageColors && imageColors[colorChoice])
-            nextColor = imageColors[colorChoice];
-          return nextColor;
-        }
-        static revertPathHistory(originalLocation) {
-          Spicetify.Platform.History.push(originalLocation);
-          Spicetify.Platform.History.entries.splice(Spicetify.Platform.History.entries.length - 3, 2);
-          Spicetify.Platform.History.index = Spicetify.Platform.History.index > 0 ? Spicetify.Platform.History.index - 2 : -1;
-          Spicetify.Platform.History.length = Spicetify.Platform.History.length > 1 ? Spicetify.Platform.History.length - 2 : 0;
-        }
-        // Return the total time left to show the upnext timer
-        static getShowTime(upnextTime) {
-          const showBefore = upnextTime * 1e3;
-          const dur = Spicetify.Player.data.duration;
-          const curProg = Spicetify.Player.getProgress();
-          if (dur - curProg <= showBefore)
-            return -1;
-          else
-            return dur - showBefore - curProg;
-        }
-        static isModeActivated() {
-          return document.body.classList.contains("fsd-activated");
-        }
-        static overlayBack(hideBackground = true) {
-          const overlay = document.querySelector("body > generic-modal > div");
-          if (overlay) {
-            hideBackground ? overlay.classList.add("transparent-bg") : overlay.classList.remove("transparent-bg");
-          }
-        }
-        // Translation string
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        static getAvailableLanguages(translations2) {
-          const languages = {};
-          for (const lang in translations2) {
-            languages[lang] = translations2[lang].langName;
-          }
-          return languages;
-        }
-        static async getMainColor(imageURL) {
-          let imageProminentColor, thresholdValue = 160;
-          const imageColors = await web_api_default.colorExtractor(imageURL).catch((err) => console.warn(err));
-          if (config_default.get("backgroundChoice") === "album_art" || config_default.get("backgroundChoice") === "artist_art") {
-            if (!imageColors?.PROMINENT)
-              imageProminentColor = "0,0,0";
-            else
-              imageProminentColor = _Utils.hexToRgb(imageColors.PROMINENT);
-            thresholdValue = 260 - config_default.get("backgroundBrightness") * 100;
-          } else if (config_default.get("backgroundChoice") === "dynamic_color") {
-            if (!imageColors || !imageColors[config_default.get("coloredBackChoice")])
-              imageProminentColor = _Utils.hexToRgb("#444444");
-            else
-              imageProminentColor = _Utils.hexToRgb(
-                imageColors[config_default.get("coloredBackChoice")]
-              );
-          } else if (config_default.get("backgroundChoice") === "static_color") {
-            imageProminentColor = _Utils.hexToRgb(
-              config_default.get("staticBackChoice")
-            );
-          }
-          const isLightBG = Number(imageProminentColor?.split(",")[0]) * 0.299 + Number(imageProminentColor?.split(",")[1]) * 0.587 + Number(imageProminentColor?.split(",")[2]) * 0.114 > thresholdValue;
-          const mainColor = isLightBG && Number(config_default.get("backgroundBrightness")) > 0.3 ? "0,0,0" : "255,255,255";
-          const contrastColor = isLightBG && Number(config_default.get("backgroundBrightness")) > 0.3 ? "255,255,255" : "0,0,0";
-          return [mainColor, contrastColor];
-        }
-        // Translation strings
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        static async getContext(STRINGS) {
-          let ctxIcon = "", ctxSource, ctxName;
-          if (Spicetify.Player.data.track?.provider === "queue") {
-            ctxIcon = constants_default.CTX_QUEUE;
-            ctxSource = STRINGS.context.queue;
-            ctxName = "";
-          } else {
-            const uriObj = Spicetify.URI.fromString(Spicetify.Player.data.context_uri);
-            if (JSON.stringify(uriObj) === JSON.stringify(prevUriObj) && ctxSource != void 0 && ctxName != void 0)
-              return { ctxIcon, ctxSource, ctxName };
-            prevUriObj = uriObj;
-            switch (uriObj.type) {
-              case Spicetify.URI.Type.TRACK:
-                ctxIcon = constants_default.CTX_TRACK;
-                ctxSource = STRINGS.context.track;
-                await web_api_default.getTrackInfo(uriObj._base62Id ? uriObj._base62Id : uriObj.id).then(
-                  (meta) => ctxName = `${meta.name}  \u2022  ${meta.artists[0].name}`
-                );
-                break;
-              case Spicetify.URI.Type.SEARCH:
-                ctxIcon = Spicetify.SVGIcons["search-active"];
-                ctxSource = STRINGS.context.search;
-                ctxName = `"${uriObj.query}" in ${STRINGS.context.searchDest}`;
-                break;
-              case Spicetify.URI.Type.COLLECTION:
-                ctxIcon = Spicetify.SVGIcons["heart-active"];
-                ctxSource = STRINGS.context.collection;
-                ctxName = STRINGS.context.likedSongs;
-                break;
-              case Spicetify.URI.Type.PLAYLIST_V2:
-                ctxIcon = Spicetify.SVGIcons["playlist"];
-                ctxSource = STRINGS.context.playlist;
-                ctxName = Spicetify.Player.data.context_metadata?.context_description || "";
-                break;
-              case Spicetify.URI.Type.STATION:
-              case Spicetify.URI.Type.RADIO:
-                ctxIcon = constants_default.CTX_RADIO;
-                switch (uriObj.args[0]) {
-                  case "album":
-                    ctxSource = STRINGS.context.albumRadio;
-                    await web_api_default.getAlbumInfo(uriObj.args[1]).then(
-                      (meta) => ctxName = meta.name
-                    );
-                    break;
-                  case "track":
-                    ctxSource = STRINGS.context.trackRadio;
-                    await web_api_default.getTrackInfo(uriObj.args[1]).then(
-                      (meta) => ctxName = `${meta.name}  \u2022  ${meta.artists[0].name}`
-                    );
-                    break;
-                  case "artist":
-                    ctxSource = STRINGS.context.artistRadio;
-                    await web_api_default.getArtistInfo(uriObj.args[1]).then(
-                      (meta) => ctxName = meta?.profile?.name
-                    );
-                    break;
-                  case "playlist":
-                  case "playlist-v2":
-                    ctxSource = STRINGS.context.playlistRadio;
-                    ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M16.94 6.9l-1.4 1.46C16.44 9.3 17 10.58 17 12s-.58 2.7-1.48 3.64l1.4 1.45C18.22 15.74 19 13.94 19 12s-.8-3.8-2.06-5.1zM23 12c0-3.12-1.23-5.95-3.23-8l-1.4 1.45C19.97 7.13 21 9.45 21 12s-1 4.9-2.64 6.55l1.4 1.45c2-2.04 3.24-4.87 3.24-8zM7.06 17.1l1.4-1.46C7.56 14.7 7 13.42 7 12s.6-2.7 1.5-3.64L7.08 6.9C5.78 8.2 5 10 5 12s.8 3.8 2.06 5.1zM1 12c0 3.12 1.23 5.95 3.23 8l1.4-1.45C4.03 16.87 3 14.55 3 12s1-4.9 2.64-6.55L4.24 4C2.24 6.04 1 8.87 1 12zm9-3.32v6.63l5-3.3-5-3.3z"></path></svg>`;
-                    await web_api_default.getPlaylistInfo("spotify:playlist:" + uriObj.args[1]).then(
-                      (meta) => ctxName = meta.playlist.name
-                    );
-                    break;
-                  default:
-                    ctxName = "";
-                }
-                break;
-              case Spicetify.URI.Type.PLAYLIST:
-                ctxIcon = Spicetify.SVGIcons[uriObj.type];
-                ctxSource = STRINGS.context.playlist;
-                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
-                break;
-              case Spicetify.URI.Type.ALBUM:
-                ctxIcon = Spicetify.SVGIcons[uriObj.type];
-                ctxSource = STRINGS.context.album;
-                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
-                break;
-              case Spicetify.URI.Type.ARTIST:
-                ctxIcon = Spicetify.SVGIcons[uriObj.type];
-                ctxSource = STRINGS.context.artist;
-                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
-                break;
-              case Spicetify.URI.Type.FOLDER: {
-                ctxIcon = Spicetify.SVGIcons["playlist-folder"];
-                ctxSource = STRINGS.context.playlistFolder;
-                const res = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/rootlist`, {
-                  policy: { folder: { rows: true, link: true, name: true } }
-                });
-                for (const item of res.rows) {
-                  if (item.type === "folder" && item.link === Spicetify.Player.data.context_uri) {
-                    ctxName = item.name;
-                    break;
-                  }
-                }
-                break;
-              }
-              default:
-                ctxSource = uriObj.type;
-                ctxName = Spicetify.Player.data?.context_metadata?.context_description || "";
-            }
-          }
-          return { ctxIcon, ctxSource, ctxName };
-        }
-      };
-      utils_default = Utils;
     }
   });
 
@@ -8960,6 +8604,362 @@ ${changes}`;
     }
   });
 
+  // extensions/full-screen/src/services/web-api.ts
+  var colorsCache, WebAPI, web_api_default;
+  var init_web_api = __esm({
+    "extensions/full-screen/src/services/web-api.ts"() {
+      "use strict";
+      colorsCache = [];
+      WebAPI = class _WebAPI {
+        static getToken() {
+          return Spicetify.Platform.AuthorizationAPI._tokenProvider({
+            preferCached: true
+          }).then((res) => res.accessToken);
+        }
+        static async getTrackInfo(id) {
+          return fetch(`https://api.spotify.com/v1/tracks/${id}`, {
+            headers: {
+              Authorization: `Bearer ${await _WebAPI.getToken()}`
+            }
+          }).then((res) => res.json());
+        }
+        static async getAlbumInfo(id) {
+          return fetch(`https://api.spotify.com/v1/albums/${id}`, {
+            headers: {
+              Authorization: `Bearer ${await _WebAPI.getToken()}`
+            }
+          }).then((res) => res.json());
+        }
+        static async getPlaylistInfo(uri) {
+          return Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}`);
+        }
+        static async getArtistInfo(id) {
+          return fetch(
+            `https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&variables=%7B%22uri%22%3A%22spotify%3Aartist%3A${id}%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22d66221ea13998b2f81883c5187d174c8646e4041d67f5b1e103bc262d447e3a0%22%7D%7D`,
+            {
+              headers: {
+                Authorization: `Bearer ${await _WebAPI.getToken()}`
+              }
+            }
+          ).then((res) => res.json()).then((res) => res.data.artist);
+        }
+        static async searchArt(name) {
+          return fetch(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`, {
+            headers: {
+              Authorization: `Bearer ${await _WebAPI.getToken()}`
+            }
+          }).then((res) => res.json());
+        }
+        static async colorExtractor(uri) {
+          const presentInCache = colorsCache.filter((obj) => obj.uri === uri);
+          if (presentInCache.length > 0)
+            return presentInCache[0].colors;
+          const body = await Spicetify.CosmosAsync.get(
+            `wg://colorextractor/v1/extract-presets?uri=${uri}&format=json`
+          );
+          if (body.entries && body.entries.length) {
+            const list = {};
+            for (const color of body.entries[0].color_swatches) {
+              list[color.preset] = `#${color.color.toString(16).padStart(6, "0")}`;
+            }
+            if (colorsCache.length > 20)
+              colorsCache.shift();
+            colorsCache.push({ uri, colors: list });
+            return list;
+          }
+          throw "No colors returned.";
+        }
+      };
+      web_api_default = WebAPI;
+    }
+  });
+
+  // extensions/full-screen/src/utils/utils.ts
+  var prevUriObj, Utils, utils_default;
+  var init_utils = __esm({
+    "extensions/full-screen/src/utils/utils.ts"() {
+      "use strict";
+      init_constants();
+      init_selectors();
+      init_web_api();
+      init_config();
+      Utils = class _Utils {
+        static allNotExist() {
+          const extraBar = document.querySelector(EXTRA_BAR_SELECTOR)?.childNodes[0];
+          const topBar = document.querySelector(TOP_BAR_SELECTOR);
+          const entriesToVerify = {
+            "Top Bar Component": topBar,
+            "Extra Bar Component": extraBar,
+            "Spicetify CosmosAsync": Spicetify.CosmosAsync,
+            "Spicetify Mousetrap": Spicetify.Mousetrap,
+            "Spicetify Player": Spicetify.Player,
+            "Spicetify Platform": Spicetify.Platform
+          };
+          return Object.entries(entriesToVerify).filter(([, val]) => !val);
+        }
+        static printNotExistings(entriesNotPresent) {
+          entriesNotPresent.forEach((entry) => {
+            console.error(
+              `${entry[0]} not available. Report issue on GitHub or run Spicetify.test() to test.`
+            );
+            Spicetify.showNotification(
+              `Error initializing "fullscreen.js" extension. ${entry[0]} not available. Report issue on GitHub.`
+            );
+          });
+          console.log("Retries exceeded. Aborting.");
+        }
+        static fullScreenOn() {
+          if (!document.fullscreen)
+            return document.documentElement.requestFullscreen();
+        }
+        static fullScreenOff() {
+          if (document.fullscreen)
+            return document.exitFullscreen();
+        }
+        /**
+         * Add fade animation on button click
+         * @param element The element to add fade animation
+         * @param animClass Fade animation type class
+         */
+        static fadeAnimation(element, animClass = "fade-do") {
+          element.classList.remove(animClass);
+          element.classList.add(animClass);
+          setTimeout(() => {
+            element.classList.remove(animClass);
+          }, 800);
+        }
+        // Utility function to add a observer with wait for element support
+        static addObserver(observer, selector, options2) {
+          const ele = document.querySelector(selector);
+          if (!ele) {
+            setTimeout(() => {
+              _Utils.addObserver(observer, selector, options2);
+            }, 2e3);
+            return;
+          }
+          observer.observe(ele, options2);
+        }
+        // Converting hex to rgb
+        static hexToRgb(hex) {
+          const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+          hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+            return r + r + g + g + b + b;
+          });
+          const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+          return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}` : null;
+        }
+        static trimTitle(title) {
+          const trimmedTitle = title.replace(/\(.+?\)/g, "").replace(/\[.+?\]/g, "").replace(/\s-\s.+?$/, "").trim();
+          if (!trimmedTitle)
+            return title;
+          return trimmedTitle;
+        }
+        static async getAlbumReleaseDate(albumURI, locale) {
+          const albumInfo = await web_api_default.getAlbumInfo(albumURI.replace("spotify:album:", "")).catch(
+            (err) => console.error(err)
+          );
+          if (!albumInfo?.release_date)
+            return "";
+          const albumDate = new Date(albumInfo.release_date);
+          const recentDate = /* @__PURE__ */ new Date();
+          recentDate.setMonth(recentDate.getMonth() - 18);
+          const dateStr = albumDate.toLocaleString(
+            locale,
+            albumDate > recentDate ? { year: "numeric", month: "short" } : { year: "numeric" }
+          );
+          return " \u2022 " + dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        }
+        static async getImageAndLoad(meta) {
+          if (meta.artist_uri == null)
+            return meta.image_xlarge_url;
+          let arUri = meta.artist_uri.split(":")[2];
+          if (meta.artist_uri.split(":")[1] === "local") {
+            const res = await web_api_default.searchArt(meta.artist_name).catch((err) => console.error(err));
+            arUri = res ? res.artists.items[0].id : "";
+          }
+          const artistInfo = await web_api_default.getArtistInfo(arUri).catch((err) => console.error(err));
+          return artistInfo?.visuals?.headerImage?.sources[0].url ?? meta.image_xlarge_url;
+        }
+        static async getNextColor(colorChoice) {
+          let nextColor = "#444444";
+          const imageColors = await web_api_default.colorExtractor(
+            Spicetify.Player.data.track?.uri ?? ""
+          ).catch((err) => console.warn(err));
+          if (imageColors && imageColors[colorChoice])
+            nextColor = imageColors[colorChoice];
+          return nextColor;
+        }
+        static revertPathHistory(originalLocation) {
+          Spicetify.Platform.History.push(originalLocation);
+          Spicetify.Platform.History.entries.splice(Spicetify.Platform.History.entries.length - 3, 2);
+          Spicetify.Platform.History.index = Spicetify.Platform.History.index > 0 ? Spicetify.Platform.History.index - 2 : -1;
+          Spicetify.Platform.History.length = Spicetify.Platform.History.length > 1 ? Spicetify.Platform.History.length - 2 : 0;
+        }
+        // Return the total time left to show the upnext timer
+        static getShowTime(upnextTime) {
+          const showBefore = upnextTime * 1e3;
+          const dur = Spicetify.Player.data.duration;
+          const curProg = Spicetify.Player.getProgress();
+          if (dur - curProg <= showBefore)
+            return -1;
+          else
+            return dur - showBefore - curProg;
+        }
+        static isModeActivated() {
+          return document.body.classList.contains("fsd-activated");
+        }
+        static overlayBack(hideBackground = true) {
+          const overlay = document.querySelector("body > generic-modal > div");
+          if (overlay) {
+            hideBackground ? overlay.classList.add("transparent-bg") : overlay.classList.remove("transparent-bg");
+          }
+        }
+        // Translation string
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        static getAvailableLanguages(translations2) {
+          const languages = {};
+          for (const lang in translations2) {
+            languages[lang] = translations2[lang].langName;
+          }
+          return languages;
+        }
+        static async getMainColor(imageURL) {
+          let imageProminentColor, thresholdValue = 160;
+          const imageColors = await web_api_default.colorExtractor(imageURL).catch((err) => console.warn(err));
+          if (config_default.get("backgroundChoice") === "album_art" || config_default.get("backgroundChoice") === "artist_art") {
+            if (!imageColors?.PROMINENT)
+              imageProminentColor = "0,0,0";
+            else
+              imageProminentColor = _Utils.hexToRgb(imageColors.PROMINENT);
+            thresholdValue = 260 - config_default.get("backgroundBrightness") * 100;
+          } else if (config_default.get("backgroundChoice") === "dynamic_color") {
+            if (!imageColors || !imageColors[config_default.get("coloredBackChoice")])
+              imageProminentColor = _Utils.hexToRgb("#444444");
+            else
+              imageProminentColor = _Utils.hexToRgb(
+                imageColors[config_default.get("coloredBackChoice")]
+              );
+          } else if (config_default.get("backgroundChoice") === "static_color") {
+            imageProminentColor = _Utils.hexToRgb(
+              config_default.get("staticBackChoice")
+            );
+          }
+          const isLightBG = Number(imageProminentColor?.split(",")[0]) * 0.299 + Number(imageProminentColor?.split(",")[1]) * 0.587 + Number(imageProminentColor?.split(",")[2]) * 0.114 > thresholdValue;
+          const mainColor = isLightBG && Number(config_default.get("backgroundBrightness")) > 0.3 ? "0,0,0" : "255,255,255";
+          const contrastColor = isLightBG && Number(config_default.get("backgroundBrightness")) > 0.3 ? "255,255,255" : "0,0,0";
+          return [mainColor, contrastColor];
+        }
+        // Translation strings
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        static async getContext(STRINGS) {
+          let ctxIcon = "", ctxSource, ctxName;
+          if (Spicetify.Player.data.track?.provider === "queue") {
+            ctxIcon = constants_default.CTX_QUEUE;
+            ctxSource = STRINGS.context.queue;
+            ctxName = "";
+          } else {
+            const uriObj = Spicetify.URI.fromString(Spicetify.Player.data.context_uri);
+            if (JSON.stringify(uriObj) === JSON.stringify(prevUriObj) && ctxSource != void 0 && ctxName != void 0)
+              return { ctxIcon, ctxSource, ctxName };
+            prevUriObj = uriObj;
+            switch (uriObj.type) {
+              case Spicetify.URI.Type.TRACK:
+                ctxIcon = constants_default.CTX_TRACK;
+                ctxSource = STRINGS.context.track;
+                await web_api_default.getTrackInfo(uriObj._base62Id ? uriObj._base62Id : uriObj.id).then(
+                  (meta) => ctxName = `${meta.name}  \u2022  ${meta.artists[0].name}`
+                );
+                break;
+              case Spicetify.URI.Type.SEARCH:
+                ctxIcon = Spicetify.SVGIcons["search-active"];
+                ctxSource = STRINGS.context.search;
+                ctxName = `"${uriObj.query}" in ${STRINGS.context.searchDest}`;
+                break;
+              case Spicetify.URI.Type.COLLECTION:
+                ctxIcon = Spicetify.SVGIcons["heart-active"];
+                ctxSource = STRINGS.context.collection;
+                ctxName = STRINGS.context.likedSongs;
+                break;
+              case Spicetify.URI.Type.PLAYLIST_V2:
+                ctxIcon = Spicetify.SVGIcons["playlist"];
+                ctxSource = STRINGS.context.playlist;
+                ctxName = Spicetify.Player.data.context_metadata?.context_description || "";
+                break;
+              case Spicetify.URI.Type.STATION:
+              case Spicetify.URI.Type.RADIO:
+                ctxIcon = constants_default.CTX_RADIO;
+                switch (uriObj.args[0]) {
+                  case "album":
+                    ctxSource = STRINGS.context.albumRadio;
+                    await web_api_default.getAlbumInfo(uriObj.args[1]).then(
+                      (meta) => ctxName = meta.name
+                    );
+                    break;
+                  case "track":
+                    ctxSource = STRINGS.context.trackRadio;
+                    await web_api_default.getTrackInfo(uriObj.args[1]).then(
+                      (meta) => ctxName = `${meta.name}  \u2022  ${meta.artists[0].name}`
+                    );
+                    break;
+                  case "artist":
+                    ctxSource = STRINGS.context.artistRadio;
+                    await web_api_default.getArtistInfo(uriObj.args[1]).then(
+                      (meta) => ctxName = meta?.profile?.name
+                    );
+                    break;
+                  case "playlist":
+                  case "playlist-v2":
+                    ctxSource = STRINGS.context.playlistRadio;
+                    ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M16.94 6.9l-1.4 1.46C16.44 9.3 17 10.58 17 12s-.58 2.7-1.48 3.64l1.4 1.45C18.22 15.74 19 13.94 19 12s-.8-3.8-2.06-5.1zM23 12c0-3.12-1.23-5.95-3.23-8l-1.4 1.45C19.97 7.13 21 9.45 21 12s-1 4.9-2.64 6.55l1.4 1.45c2-2.04 3.24-4.87 3.24-8zM7.06 17.1l1.4-1.46C7.56 14.7 7 13.42 7 12s.6-2.7 1.5-3.64L7.08 6.9C5.78 8.2 5 10 5 12s.8 3.8 2.06 5.1zM1 12c0 3.12 1.23 5.95 3.23 8l1.4-1.45C4.03 16.87 3 14.55 3 12s1-4.9 2.64-6.55L4.24 4C2.24 6.04 1 8.87 1 12zm9-3.32v6.63l5-3.3-5-3.3z"></path></svg>`;
+                    await web_api_default.getPlaylistInfo("spotify:playlist:" + uriObj.args[1]).then(
+                      (meta) => ctxName = meta.playlist.name
+                    );
+                    break;
+                  default:
+                    ctxName = "";
+                }
+                break;
+              case Spicetify.URI.Type.PLAYLIST:
+                ctxIcon = Spicetify.SVGIcons[uriObj.type];
+                ctxSource = STRINGS.context.playlist;
+                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+                break;
+              case Spicetify.URI.Type.ALBUM:
+                ctxIcon = Spicetify.SVGIcons[uriObj.type];
+                ctxSource = STRINGS.context.album;
+                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+                break;
+              case Spicetify.URI.Type.ARTIST:
+                ctxIcon = Spicetify.SVGIcons[uriObj.type];
+                ctxSource = STRINGS.context.artist;
+                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+                break;
+              case Spicetify.URI.Type.FOLDER: {
+                ctxIcon = Spicetify.SVGIcons["playlist-folder"];
+                ctxSource = STRINGS.context.playlistFolder;
+                const res = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/rootlist`, {
+                  policy: { folder: { rows: true, link: true, name: true } }
+                });
+                for (const item of res.rows) {
+                  if (item.type === "folder" && item.link === Spicetify.Player.data.context_uri) {
+                    ctxName = item.name;
+                    break;
+                  }
+                }
+                break;
+              }
+              default:
+                ctxSource = uriObj.type;
+                ctxName = Spicetify.Player.data?.context_metadata?.context_description || "";
+            }
+          }
+          return { ctxIcon, ctxSource, ctxName };
+        }
+      };
+      utils_default = Utils;
+    }
+  });
+
   // extensions/full-screen/src/resources/locales/en-US.json
   var en_US_default;
   var init_en_US = __esm({
@@ -10760,6 +10760,32 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
     }
   });
 
+  // temp_stylePlugin:ni:sha-256;nXfqXL-OAQ2p_9am_BnlQpJRaaDLbI-_7dq9TwWggFg
+  var init_ni_sha_256_nXfqXL_OAQ2p_9am_BnlQpJRaaDLbI_7dq9TwWggFg = __esm({
+    "temp_stylePlugin:ni:sha-256;nXfqXL-OAQ2p_9am_BnlQpJRaaDLbI-_7dq9TwWggFg"() {
+    }
+  });
+
+  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\base.scss
+  var init_base = __esm({
+    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\base.scss"() {
+      init_ni_sha_256_nXfqXL_OAQ2p_9am_BnlQpJRaaDLbI_7dq9TwWggFg();
+    }
+  });
+
+  // temp_stylePlugin:ni:sha-256;Wl-k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4
+  var init_ni_sha_256_Wl_k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4 = __esm({
+    "temp_stylePlugin:ni:sha-256;Wl-k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4"() {
+    }
+  });
+
+  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\defaultMode.scss
+  var init_defaultMode = __esm({
+    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\defaultMode.scss"() {
+      init_ni_sha_256_Wl_k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4();
+    }
+  });
+
   // extensions/full-screen/src/styles/settings.ts
   var settingsStyles;
   var init_settings = __esm({
@@ -10791,16 +10817,16 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
     }
   });
 
-  // temp_stylePlugin:ni:sha-256;nXfqXL-OAQ2p_9am_BnlQpJRaaDLbI-_7dq9TwWggFg
-  var init_ni_sha_256_nXfqXL_OAQ2p_9am_BnlQpJRaaDLbI_7dq9TwWggFg = __esm({
-    "temp_stylePlugin:ni:sha-256;nXfqXL-OAQ2p_9am_BnlQpJRaaDLbI-_7dq9TwWggFg"() {
+  // temp_stylePlugin:ni:sha-256;NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag
+  var init_ni_sha_256_NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag = __esm({
+    "temp_stylePlugin:ni:sha-256;NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag"() {
     }
   });
 
-  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\base.scss
-  var init_base = __esm({
-    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\base.scss"() {
-      init_ni_sha_256_nXfqXL_OAQ2p_9am_BnlQpJRaaDLbI_7dq9TwWggFg();
+  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\settings.scss
+  var init_settings2 = __esm({
+    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\settings.scss"() {
+      init_ni_sha_256_NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag();
     }
   });
 
@@ -10817,189 +10843,70 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
     }
   });
 
-  // temp_stylePlugin:ni:sha-256;Wl-k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4
-  var init_ni_sha_256_Wl_k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4 = __esm({
-    "temp_stylePlugin:ni:sha-256;Wl-k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4"() {
-    }
-  });
-
-  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\defaultMode.scss
-  var init_defaultMode = __esm({
-    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\defaultMode.scss"() {
-      init_ni_sha_256_Wl_k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4();
-    }
-  });
-
-  // temp_stylePlugin:ni:sha-256;NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag
-  var init_ni_sha_256_NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag = __esm({
-    "temp_stylePlugin:ni:sha-256;NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag"() {
-    }
-  });
-
-  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\src\styles\settings.scss
-  var init_settings2 = __esm({
-    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\src\\styles\\settings.scss"() {
-      init_ni_sha_256_NjpqJvFaY9CTujaXqI76VnFsjd7WU5Z8iL2YyjkS1Ag();
-    }
-  });
-
-  // extensions/full-screen/deps/beautiful-lyrics/Packages/FreeArray.ts
-  var FreeArray;
-  var init_FreeArray = __esm({
-    "extensions/full-screen/deps/beautiful-lyrics/Packages/FreeArray.ts"() {
-      "use strict";
-      FreeArray = class {
-        Items;
-        DestroyedState;
-        constructor() {
-          this.Items = /* @__PURE__ */ new Map();
-          this.DestroyedState = false;
-        }
-        Push(item) {
-          const key = Symbol();
-          this.Items.set(key, item);
-          return key;
-        }
-        Get(key) {
-          return this.Items.get(key);
-        }
-        Remove(key) {
-          const item = this.Get(key);
-          if (item === void 0)
-            return;
-          this.Items.delete(key);
-          return item;
-        }
-        GetIterator() {
-          return this.Items.entries();
-        }
-        IsDestroyed() {
-          return this.DestroyedState;
-        }
-        Destroy() {
-          if (this.DestroyedState)
-            return;
-          this.DestroyedState = true;
-          delete this.Items;
-        }
-      };
-    }
-  });
-
   // extensions/full-screen/deps/beautiful-lyrics/Packages/Signal.ts
-  var Connection, Event2, Signal, IsConnection;
+  var import_function10, Event2, Signal;
   var init_Signal = __esm({
     "extensions/full-screen/deps/beautiful-lyrics/Packages/Signal.ts"() {
       "use strict";
-      init_FreeArray();
-      Connection = class {
-        // Private Properties
-        connectionReferences;
-        location;
-        disconnected;
-        // Constructor
-        constructor(connections, callback) {
-          this.connectionReferences = connections;
-          this.disconnected = false;
-          this.location = connections.Push({
-            Callback: callback,
-            Connection: this
-          });
-        }
-        // Public Methods
-        disconnect() {
-          if (this.disconnected)
-            return;
-          this.disconnected = true;
-          this.connectionReferences.Remove(this.location);
-          delete this.Location;
-          delete this.Callback;
-          delete this.SignalConnections;
-        }
-        isDisconnected() {
-          return this.disconnected;
-        }
-      };
+      import_function10 = __toESM(require_function());
+      init_es6();
       Event2 = class {
-        // Private Properties
-        Signal;
-        // Constructor
+        signal;
         constructor(signal) {
-          this.Signal = signal;
+          this.signal = signal;
         }
-        // Public Methods
         connect(callback) {
-          return this.Signal.connect(callback);
-        }
-        isDisposed() {
-          return this.Signal.isDisposed();
+          return this.signal.connect(callback);
         }
       };
       Signal = class {
-        // Private Properties
-        ConnectionReferences;
-        DestroyedState;
-        // Constructor
-        constructor() {
-          this.ConnectionReferences = new FreeArray();
-          this.DestroyedState = false;
-        }
-        // Public Methods
+        connRefs = /* @__PURE__ */ new Map();
+        disposed = false;
         connect(callback) {
-          if (this.DestroyedState)
+          if (this.disposed)
             throw "Cannot connect to a Destroyed Signal";
-          return new Connection(this.ConnectionReferences, callback);
+          const key = Symbol();
+          this.connRefs.set(key, callback);
+          return () => this.connRefs.delete(key);
         }
         fire(...args) {
-          if (this.DestroyedState)
+          if (this.disposed)
             throw "Cannot fire a Destroyed Signal";
-          for (const [_, reference] of this.ConnectionReferences.GetIterator())
-            reference.Callback(...args);
+          (0, import_function10.pipe)(
+            this.connRefs.values(),
+            Array.from,
+            Array_exports.map((cb) => cb(...args))
+          );
         }
-        getEvent() {
+        asEvent() {
           return new Event2(this);
         }
-        isDisposed() {
-          return this.DestroyedState;
-        }
-        // Deconstructor
         dispose() {
-          if (this.DestroyedState)
+          if (this.disposed)
             return;
-          for (const [_, reference] of this.ConnectionReferences.GetIterator()) {
-            reference.Connection.disconnect();
-          }
-          this.DestroyedState = true;
-          delete this.ConnectionReferences;
+          this.connRefs.clear();
+          this.disposed = true;
         }
-      };
-      IsConnection = (value) => {
-        return value instanceof Connection;
       };
     }
   });
 
   // extensions/full-screen/deps/beautiful-lyrics/Packages/Scheduler.ts
-  var Scheduled, Timeout, OnNextFrame, IsScheduled;
+  var Scheduled, Timeout, OnNextFrame;
   var init_Scheduler = __esm({
     "extensions/full-screen/deps/beautiful-lyrics/Packages/Scheduler.ts"() {
       "use strict";
       Scheduled = class {
-        Id;
-        Cleaner;
-        // Constructor
+        id;
+        cleaner;
         constructor(cleaner, id) {
-          this.Cleaner = cleaner;
-          this.Id = id;
+          this.cleaner = cleaner;
+          this.id = id;
         }
-        // Public Methods
         cancel() {
-          if (this.Id === void 0) {
+          if (this.id === void 0)
             return;
-          }
-          this.Cleaner(this.Id);
-          delete this.Id;
-          delete this.Cleaner;
+          this.cleaner(this.id);
         }
       };
       Timeout = (seconds, callback) => {
@@ -11008,23 +10915,18 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
       OnNextFrame = (callback) => {
         return new Scheduled(window.cancelAnimationFrame.bind(window), requestAnimationFrame(callback));
       };
-      IsScheduled = (value) => {
-        return value instanceof Scheduled;
-      };
     }
   });
 
   // extensions/full-screen/deps/beautiful-lyrics/Packages/Maid.ts
-  var isDisposable, Maid;
+  var isDisposable, Maid, GlobalMaid;
   var init_Maid = __esm({
     "extensions/full-screen/deps/beautiful-lyrics/Packages/Maid.ts"() {
       "use strict";
       init_Signal();
       init_Scheduler();
-      isDisposable = (item) => {
-        return "dispose" in item;
-      };
-      Maid = class {
+      isDisposable = (item) => "dispose" in item;
+      Maid = class _Maid {
         items;
         destroyedState;
         destroyingSignal;
@@ -11039,111 +10941,3790 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
           this.destroyingSignal = new Signal();
           this.cleanedSignal = new Signal();
           this.destroyedSignal = new Signal();
-          this.destroying = this.destroyingSignal.getEvent();
-          this.cleaned = this.cleanedSignal.getEvent();
-          this.destroyed = this.destroyedSignal.getEvent();
+          this.destroying = this.destroyingSignal.asEvent();
+          this.cleaned = this.cleanedSignal.asEvent();
+          this.destroyed = this.destroyedSignal.asEvent();
         }
-        cleanItem(item) {
+        subordinate = () => this.handle(new _Maid());
+        handle(item, key) {
+          if (this.destroyedState)
+            return this.disposeItem(item), item;
+          const finalKey = key ?? Symbol();
+          if (this.items.has(finalKey))
+            this.disposeEntry(finalKey);
+          this.items.set(finalKey, item);
+          return item;
+        }
+        disposeItem(item) {
           if (isDisposable(item))
             item.dispose();
-          else if (IsScheduled(item))
+          else if (item instanceof Scheduled)
             item.cancel();
           else if (item instanceof MutationObserver || item instanceof ResizeObserver)
-            item.disconnect();
-          else if (IsConnection(item))
             item.disconnect();
           else if (item instanceof HTMLElement)
             item.remove();
           else
             item();
         }
-        give(item, key) {
-          if (this.destroyedState)
-            return this.cleanItem(item), item;
-          const finalKey = key ?? Symbol();
-          if (this.has(finalKey))
-            this.cleanEntry(finalKey);
-          this.items.set(finalKey, item);
-          return item;
-        }
-        giveItems(...items) {
-          items.map(this.give.bind(this));
-          return items;
-        }
-        has(key) {
-          return this.items.has(key);
-        }
-        cleanEntry(key) {
+        disposeEntry(key) {
           const item = this.items.get(key);
           if (item === void 0)
             return;
           this.items.delete(key);
-          this.cleanItem(item);
+          this.disposeItem(item);
         }
-        CleanUp() {
+        cleanAllEntries() {
           const keys = Array.from(this.items.keys());
-          keys.map(this.cleanEntry.bind(this));
+          keys.map(this.disposeEntry.bind(this));
           if (this.destroyedState === false)
             this.cleanedSignal.fire();
         }
-        IsDestroyed() {
-          return this.destroyedState;
-        }
-        // Deconstructor
         dispose() {
           if (this.destroyedState !== false)
             return;
-          this.destroyedState = true;
           this.destroyingSignal.fire();
-          this.CleanUp();
-          delete this.Items;
+          this.cleanAllEntries();
+          this.destroyedState = true;
           this.destroyedSignal.fire();
           this.destroyingSignal.dispose();
           this.cleanedSignal.dispose();
           this.destroyedSignal.dispose();
-          delete this.DestroyingSignal;
-          delete this.CleanedSignal;
-          delete this.DestroyedSignal;
+        }
+      };
+      GlobalMaid = new Maid();
+    }
+  });
+
+  // .yarn/cache/can-use-dom-npm-0.1.0-48c60a9052-488fc94c40.zip/node_modules/can-use-dom/index.js
+  var require_can_use_dom = __commonJS({
+    ".yarn/cache/can-use-dom-npm-0.1.0-48c60a9052-488fc94c40.zip/node_modules/can-use-dom/index.js"(exports, module) {
+      var canUseDOM3 = !!(typeof window !== "undefined" && window.document && window.document.createElement);
+      module.exports = canUseDOM3;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_freeGlobal.js
+  var freeGlobal, freeGlobal_default;
+  var init_freeGlobal = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_freeGlobal.js"() {
+      freeGlobal = typeof global == "object" && global && global.Object === Object && global;
+      freeGlobal_default = freeGlobal;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_root.js
+  var freeSelf, root, root_default;
+  var init_root = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_root.js"() {
+      init_freeGlobal();
+      freeSelf = typeof self == "object" && self && self.Object === Object && self;
+      root = freeGlobal_default || freeSelf || Function("return this")();
+      root_default = root;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_Symbol.js
+  var Symbol2, Symbol_default;
+  var init_Symbol = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_Symbol.js"() {
+      init_root();
+      Symbol2 = root_default.Symbol;
+      Symbol_default = Symbol2;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_getRawTag.js
+  function getRawTag(value) {
+    var isOwn = hasOwnProperty2.call(value, symToStringTag), tag = value[symToStringTag];
+    try {
+      value[symToStringTag] = void 0;
+      var unmasked = true;
+    } catch (e) {
+    }
+    var result = nativeObjectToString.call(value);
+    if (unmasked) {
+      if (isOwn) {
+        value[symToStringTag] = tag;
+      } else {
+        delete value[symToStringTag];
+      }
+    }
+    return result;
+  }
+  var objectProto, hasOwnProperty2, nativeObjectToString, symToStringTag, getRawTag_default;
+  var init_getRawTag = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_getRawTag.js"() {
+      init_Symbol();
+      objectProto = Object.prototype;
+      hasOwnProperty2 = objectProto.hasOwnProperty;
+      nativeObjectToString = objectProto.toString;
+      symToStringTag = Symbol_default ? Symbol_default.toStringTag : void 0;
+      getRawTag_default = getRawTag;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_objectToString.js
+  function objectToString(value) {
+    return nativeObjectToString2.call(value);
+  }
+  var objectProto2, nativeObjectToString2, objectToString_default;
+  var init_objectToString = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_objectToString.js"() {
+      objectProto2 = Object.prototype;
+      nativeObjectToString2 = objectProto2.toString;
+      objectToString_default = objectToString;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_baseGetTag.js
+  function baseGetTag(value) {
+    if (value == null) {
+      return value === void 0 ? undefinedTag : nullTag;
+    }
+    return symToStringTag2 && symToStringTag2 in Object(value) ? getRawTag_default(value) : objectToString_default(value);
+  }
+  var nullTag, undefinedTag, symToStringTag2, baseGetTag_default;
+  var init_baseGetTag = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_baseGetTag.js"() {
+      init_Symbol();
+      init_getRawTag();
+      init_objectToString();
+      nullTag = "[object Null]";
+      undefinedTag = "[object Undefined]";
+      symToStringTag2 = Symbol_default ? Symbol_default.toStringTag : void 0;
+      baseGetTag_default = baseGetTag;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isObjectLike.js
+  function isObjectLike(value) {
+    return value != null && typeof value == "object";
+  }
+  var isObjectLike_default;
+  var init_isObjectLike = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isObjectLike.js"() {
+      isObjectLike_default = isObjectLike;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isSymbol.js
+  function isSymbol(value) {
+    return typeof value == "symbol" || isObjectLike_default(value) && baseGetTag_default(value) == symbolTag;
+  }
+  var symbolTag, isSymbol_default;
+  var init_isSymbol = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isSymbol.js"() {
+      init_baseGetTag();
+      init_isObjectLike();
+      symbolTag = "[object Symbol]";
+      isSymbol_default = isSymbol;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_trimmedEndIndex.js
+  function trimmedEndIndex(string) {
+    var index = string.length;
+    while (index-- && reWhitespace.test(string.charAt(index))) {
+    }
+    return index;
+  }
+  var reWhitespace, trimmedEndIndex_default;
+  var init_trimmedEndIndex = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_trimmedEndIndex.js"() {
+      reWhitespace = /\s/;
+      trimmedEndIndex_default = trimmedEndIndex;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_baseTrim.js
+  function baseTrim(string) {
+    return string ? string.slice(0, trimmedEndIndex_default(string) + 1).replace(reTrimStart, "") : string;
+  }
+  var reTrimStart, baseTrim_default;
+  var init_baseTrim = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_baseTrim.js"() {
+      init_trimmedEndIndex();
+      reTrimStart = /^\s+/;
+      baseTrim_default = baseTrim;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isObject.js
+  function isObject(value) {
+    var type = typeof value;
+    return value != null && (type == "object" || type == "function");
+  }
+  var isObject_default;
+  var init_isObject = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isObject.js"() {
+      isObject_default = isObject;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/toNumber.js
+  function toNumber(value) {
+    if (typeof value == "number") {
+      return value;
+    }
+    if (isSymbol_default(value)) {
+      return NAN;
+    }
+    if (isObject_default(value)) {
+      var other = typeof value.valueOf == "function" ? value.valueOf() : value;
+      value = isObject_default(other) ? other + "" : other;
+    }
+    if (typeof value != "string") {
+      return value === 0 ? value : +value;
+    }
+    value = baseTrim_default(value);
+    var isBinary = reIsBinary.test(value);
+    return isBinary || reIsOctal.test(value) ? freeParseInt(value.slice(2), isBinary ? 2 : 8) : reIsBadHex.test(value) ? NAN : +value;
+  }
+  var NAN, reIsBadHex, reIsBinary, reIsOctal, freeParseInt, toNumber_default;
+  var init_toNumber = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/toNumber.js"() {
+      init_baseTrim();
+      init_isObject();
+      init_isSymbol();
+      NAN = 0 / 0;
+      reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+      reIsBinary = /^0b[01]+$/i;
+      reIsOctal = /^0o[0-7]+$/i;
+      freeParseInt = parseInt;
+      toNumber_default = toNumber;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/now.js
+  var now, now_default;
+  var init_now = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/now.js"() {
+      init_root();
+      now = function() {
+        return root_default.Date.now();
+      };
+      now_default = now;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/debounce.js
+  function debounce2(func, wait, options2) {
+    var lastArgs, lastThis, maxWait, result, timerId, lastCallTime, lastInvokeTime = 0, leading = false, maxing = false, trailing = true;
+    if (typeof func != "function") {
+      throw new TypeError(FUNC_ERROR_TEXT);
+    }
+    wait = toNumber_default(wait) || 0;
+    if (isObject_default(options2)) {
+      leading = !!options2.leading;
+      maxing = "maxWait" in options2;
+      maxWait = maxing ? nativeMax(toNumber_default(options2.maxWait) || 0, wait) : maxWait;
+      trailing = "trailing" in options2 ? !!options2.trailing : trailing;
+    }
+    function invokeFunc(time) {
+      var args = lastArgs, thisArg = lastThis;
+      lastArgs = lastThis = void 0;
+      lastInvokeTime = time;
+      result = func.apply(thisArg, args);
+      return result;
+    }
+    function leadingEdge(time) {
+      lastInvokeTime = time;
+      timerId = setTimeout(timerExpired, wait);
+      return leading ? invokeFunc(time) : result;
+    }
+    function remainingWait(time) {
+      var timeSinceLastCall = time - lastCallTime, timeSinceLastInvoke = time - lastInvokeTime, timeWaiting = wait - timeSinceLastCall;
+      return maxing ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke) : timeWaiting;
+    }
+    function shouldInvoke(time) {
+      var timeSinceLastCall = time - lastCallTime, timeSinceLastInvoke = time - lastInvokeTime;
+      return lastCallTime === void 0 || timeSinceLastCall >= wait || timeSinceLastCall < 0 || maxing && timeSinceLastInvoke >= maxWait;
+    }
+    function timerExpired() {
+      var time = now_default();
+      if (shouldInvoke(time)) {
+        return trailingEdge(time);
+      }
+      timerId = setTimeout(timerExpired, remainingWait(time));
+    }
+    function trailingEdge(time) {
+      timerId = void 0;
+      if (trailing && lastArgs) {
+        return invokeFunc(time);
+      }
+      lastArgs = lastThis = void 0;
+      return result;
+    }
+    function cancel() {
+      if (timerId !== void 0) {
+        clearTimeout(timerId);
+      }
+      lastInvokeTime = 0;
+      lastArgs = lastCallTime = lastThis = timerId = void 0;
+    }
+    function flush() {
+      return timerId === void 0 ? result : trailingEdge(now_default());
+    }
+    function debounced() {
+      var time = now_default(), isInvoking = shouldInvoke(time);
+      lastArgs = arguments;
+      lastThis = this;
+      lastCallTime = time;
+      if (isInvoking) {
+        if (timerId === void 0) {
+          return leadingEdge(lastCallTime);
+        }
+        if (maxing) {
+          clearTimeout(timerId);
+          timerId = setTimeout(timerExpired, wait);
+          return invokeFunc(lastCallTime);
+        }
+      }
+      if (timerId === void 0) {
+        timerId = setTimeout(timerExpired, wait);
+      }
+      return result;
+    }
+    debounced.cancel = cancel;
+    debounced.flush = flush;
+    return debounced;
+  }
+  var FUNC_ERROR_TEXT, nativeMax, nativeMin, debounce_default;
+  var init_debounce = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/debounce.js"() {
+      init_isObject();
+      init_now();
+      init_toNumber();
+      FUNC_ERROR_TEXT = "Expected a function";
+      nativeMax = Math.max;
+      nativeMin = Math.min;
+      debounce_default = debounce2;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/throttle.js
+  function throttle(func, wait, options2) {
+    var leading = true, trailing = true;
+    if (typeof func != "function") {
+      throw new TypeError(FUNC_ERROR_TEXT2);
+    }
+    if (isObject_default(options2)) {
+      leading = "leading" in options2 ? !!options2.leading : leading;
+      trailing = "trailing" in options2 ? !!options2.trailing : trailing;
+    }
+    return debounce_default(func, wait, {
+      "leading": leading,
+      "maxWait": wait,
+      "trailing": trailing
+    });
+  }
+  var FUNC_ERROR_TEXT2, throttle_default;
+  var init_throttle = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/throttle.js"() {
+      init_debounce();
+      init_isObject();
+      FUNC_ERROR_TEXT2 = "Expected a function";
+      throttle_default = throttle;
+    }
+  });
+
+  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/lodash.js
+  var init_lodash = __esm({
+    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/lodash.js"() {
+      init_debounce();
+      init_throttle();
+    }
+  });
+
+  // .yarn/cache/simplebar-core-npm-1.2.4-2dd1c4c362-9bef0a29cc.zip/node_modules/simplebar-core/dist/index.mjs
+  function scrollbarWidth() {
+    if (cachedScrollbarWidth === null) {
+      if (typeof document === "undefined") {
+        cachedScrollbarWidth = 0;
+        return cachedScrollbarWidth;
+      }
+      var body = document.body;
+      var box = document.createElement("div");
+      box.classList.add("simplebar-hide-scrollbar");
+      body.appendChild(box);
+      var width = box.getBoundingClientRect().right;
+      body.removeChild(box);
+      cachedScrollbarWidth = width;
+    }
+    return cachedScrollbarWidth;
+  }
+  function getElementWindow$1(element) {
+    if (!element || !element.ownerDocument || !element.ownerDocument.defaultView) {
+      return window;
+    }
+    return element.ownerDocument.defaultView;
+  }
+  function getElementDocument$1(element) {
+    if (!element || !element.ownerDocument) {
+      return document;
+    }
+    return element.ownerDocument;
+  }
+  function addClasses$1(el, classes) {
+    var _a2;
+    if (!el)
+      return;
+    (_a2 = el.classList).add.apply(_a2, classes.split(" "));
+  }
+  function removeClasses$1(el, classes) {
+    if (!el)
+      return;
+    classes.split(" ").forEach(function(className) {
+      el.classList.remove(className);
+    });
+  }
+  function classNamesToQuery$1(classNames3) {
+    return ".".concat(classNames3.split(" ").join("."));
+  }
+  var import_can_use_dom, __assign, cachedScrollbarWidth, cachedDevicePixelRatio, getOptions$1, helpers, getElementWindow, getElementDocument, getOptions, addClasses, removeClasses, classNamesToQuery, SimpleBarCore;
+  var init_dist = __esm({
+    ".yarn/cache/simplebar-core-npm-1.2.4-2dd1c4c362-9bef0a29cc.zip/node_modules/simplebar-core/dist/index.mjs"() {
+      init_lodash();
+      import_can_use_dom = __toESM(require_can_use_dom(), 1);
+      __assign = function() {
+        __assign = Object.assign || function __assign2(t) {
+          for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p3 in s)
+              if (Object.prototype.hasOwnProperty.call(s, p3))
+                t[p3] = s[p3];
+          }
+          return t;
+        };
+        return __assign.apply(this, arguments);
+      };
+      cachedScrollbarWidth = null;
+      cachedDevicePixelRatio = null;
+      if (import_can_use_dom.default) {
+        window.addEventListener("resize", function() {
+          if (cachedDevicePixelRatio !== window.devicePixelRatio) {
+            cachedDevicePixelRatio = window.devicePixelRatio;
+            cachedScrollbarWidth = null;
+          }
+        });
+      }
+      getOptions$1 = function(obj) {
+        var initialObj = {};
+        var options2 = Array.prototype.reduce.call(obj, function(acc, attribute) {
+          var option2 = attribute.name.match(/data-simplebar-(.+)/);
+          if (option2) {
+            var key = option2[1].replace(/\W+(.)/g, function(_, chr) {
+              return chr.toUpperCase();
+            });
+            switch (attribute.value) {
+              case "true":
+                acc[key] = true;
+                break;
+              case "false":
+                acc[key] = false;
+                break;
+              case void 0:
+                acc[key] = true;
+                break;
+              default:
+                acc[key] = attribute.value;
+            }
+          }
+          return acc;
+        }, initialObj);
+        return options2;
+      };
+      helpers = /* @__PURE__ */ Object.freeze({
+        __proto__: null,
+        getElementWindow: getElementWindow$1,
+        getElementDocument: getElementDocument$1,
+        getOptions: getOptions$1,
+        addClasses: addClasses$1,
+        removeClasses: removeClasses$1,
+        classNamesToQuery: classNamesToQuery$1
+      });
+      getElementWindow = getElementWindow$1;
+      getElementDocument = getElementDocument$1;
+      getOptions = getOptions$1;
+      addClasses = addClasses$1;
+      removeClasses = removeClasses$1;
+      classNamesToQuery = classNamesToQuery$1;
+      SimpleBarCore = /** @class */
+      function() {
+        function SimpleBarCore2(element, options2) {
+          if (options2 === void 0) {
+            options2 = {};
+          }
+          var _this = this;
+          this.removePreventClickId = null;
+          this.minScrollbarWidth = 20;
+          this.stopScrollDelay = 175;
+          this.isScrolling = false;
+          this.isMouseEntering = false;
+          this.scrollXTicking = false;
+          this.scrollYTicking = false;
+          this.wrapperEl = null;
+          this.contentWrapperEl = null;
+          this.contentEl = null;
+          this.offsetEl = null;
+          this.maskEl = null;
+          this.placeholderEl = null;
+          this.heightAutoObserverWrapperEl = null;
+          this.heightAutoObserverEl = null;
+          this.rtlHelpers = null;
+          this.scrollbarWidth = 0;
+          this.resizeObserver = null;
+          this.mutationObserver = null;
+          this.elStyles = null;
+          this.isRtl = null;
+          this.mouseX = 0;
+          this.mouseY = 0;
+          this.onMouseMove = function() {
+          };
+          this.onWindowResize = function() {
+          };
+          this.onStopScrolling = function() {
+          };
+          this.onMouseEntered = function() {
+          };
+          this.onScroll = function() {
+            var elWindow = getElementWindow(_this.el);
+            if (!_this.scrollXTicking) {
+              elWindow.requestAnimationFrame(_this.scrollX);
+              _this.scrollXTicking = true;
+            }
+            if (!_this.scrollYTicking) {
+              elWindow.requestAnimationFrame(_this.scrollY);
+              _this.scrollYTicking = true;
+            }
+            if (!_this.isScrolling) {
+              _this.isScrolling = true;
+              addClasses(_this.el, _this.classNames.scrolling);
+            }
+            _this.showScrollbar("x");
+            _this.showScrollbar("y");
+            _this.onStopScrolling();
+          };
+          this.scrollX = function() {
+            if (_this.axis.x.isOverflowing) {
+              _this.positionScrollbar("x");
+            }
+            _this.scrollXTicking = false;
+          };
+          this.scrollY = function() {
+            if (_this.axis.y.isOverflowing) {
+              _this.positionScrollbar("y");
+            }
+            _this.scrollYTicking = false;
+          };
+          this._onStopScrolling = function() {
+            removeClasses(_this.el, _this.classNames.scrolling);
+            if (_this.options.autoHide) {
+              _this.hideScrollbar("x");
+              _this.hideScrollbar("y");
+            }
+            _this.isScrolling = false;
+          };
+          this.onMouseEnter = function() {
+            if (!_this.isMouseEntering) {
+              addClasses(_this.el, _this.classNames.mouseEntered);
+              _this.showScrollbar("x");
+              _this.showScrollbar("y");
+              _this.isMouseEntering = true;
+            }
+            _this.onMouseEntered();
+          };
+          this._onMouseEntered = function() {
+            removeClasses(_this.el, _this.classNames.mouseEntered);
+            if (_this.options.autoHide) {
+              _this.hideScrollbar("x");
+              _this.hideScrollbar("y");
+            }
+            _this.isMouseEntering = false;
+          };
+          this._onMouseMove = function(e) {
+            _this.mouseX = e.clientX;
+            _this.mouseY = e.clientY;
+            if (_this.axis.x.isOverflowing || _this.axis.x.forceVisible) {
+              _this.onMouseMoveForAxis("x");
+            }
+            if (_this.axis.y.isOverflowing || _this.axis.y.forceVisible) {
+              _this.onMouseMoveForAxis("y");
+            }
+          };
+          this.onMouseLeave = function() {
+            _this.onMouseMove.cancel();
+            if (_this.axis.x.isOverflowing || _this.axis.x.forceVisible) {
+              _this.onMouseLeaveForAxis("x");
+            }
+            if (_this.axis.y.isOverflowing || _this.axis.y.forceVisible) {
+              _this.onMouseLeaveForAxis("y");
+            }
+            _this.mouseX = -1;
+            _this.mouseY = -1;
+          };
+          this._onWindowResize = function() {
+            _this.scrollbarWidth = _this.getScrollbarWidth();
+            _this.hideNativeScrollbar();
+          };
+          this.onPointerEvent = function(e) {
+            if (!_this.axis.x.track.el || !_this.axis.y.track.el || !_this.axis.x.scrollbar.el || !_this.axis.y.scrollbar.el)
+              return;
+            var isWithinTrackXBounds, isWithinTrackYBounds;
+            _this.axis.x.track.rect = _this.axis.x.track.el.getBoundingClientRect();
+            _this.axis.y.track.rect = _this.axis.y.track.el.getBoundingClientRect();
+            if (_this.axis.x.isOverflowing || _this.axis.x.forceVisible) {
+              isWithinTrackXBounds = _this.isWithinBounds(_this.axis.x.track.rect);
+            }
+            if (_this.axis.y.isOverflowing || _this.axis.y.forceVisible) {
+              isWithinTrackYBounds = _this.isWithinBounds(_this.axis.y.track.rect);
+            }
+            if (isWithinTrackXBounds || isWithinTrackYBounds) {
+              e.stopPropagation();
+              if (e.type === "pointerdown" && e.pointerType !== "touch") {
+                if (isWithinTrackXBounds) {
+                  _this.axis.x.scrollbar.rect = _this.axis.x.scrollbar.el.getBoundingClientRect();
+                  if (_this.isWithinBounds(_this.axis.x.scrollbar.rect)) {
+                    _this.onDragStart(e, "x");
+                  } else {
+                    _this.onTrackClick(e, "x");
+                  }
+                }
+                if (isWithinTrackYBounds) {
+                  _this.axis.y.scrollbar.rect = _this.axis.y.scrollbar.el.getBoundingClientRect();
+                  if (_this.isWithinBounds(_this.axis.y.scrollbar.rect)) {
+                    _this.onDragStart(e, "y");
+                  } else {
+                    _this.onTrackClick(e, "y");
+                  }
+                }
+              }
+            }
+          };
+          this.drag = function(e) {
+            var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+            if (!_this.draggedAxis || !_this.contentWrapperEl)
+              return;
+            var eventOffset;
+            var track = _this.axis[_this.draggedAxis].track;
+            var trackSize = (_b = (_a2 = track.rect) === null || _a2 === void 0 ? void 0 : _a2[_this.axis[_this.draggedAxis].sizeAttr]) !== null && _b !== void 0 ? _b : 0;
+            var scrollbar = _this.axis[_this.draggedAxis].scrollbar;
+            var contentSize = (_d = (_c = _this.contentWrapperEl) === null || _c === void 0 ? void 0 : _c[_this.axis[_this.draggedAxis].scrollSizeAttr]) !== null && _d !== void 0 ? _d : 0;
+            var hostSize = parseInt((_f = (_e = _this.elStyles) === null || _e === void 0 ? void 0 : _e[_this.axis[_this.draggedAxis].sizeAttr]) !== null && _f !== void 0 ? _f : "0px", 10);
+            e.preventDefault();
+            e.stopPropagation();
+            if (_this.draggedAxis === "y") {
+              eventOffset = e.pageY;
+            } else {
+              eventOffset = e.pageX;
+            }
+            var dragPos = eventOffset - ((_h = (_g = track.rect) === null || _g === void 0 ? void 0 : _g[_this.axis[_this.draggedAxis].offsetAttr]) !== null && _h !== void 0 ? _h : 0) - _this.axis[_this.draggedAxis].dragOffset;
+            dragPos = _this.draggedAxis === "x" && _this.isRtl ? ((_k = (_j = track.rect) === null || _j === void 0 ? void 0 : _j[_this.axis[_this.draggedAxis].sizeAttr]) !== null && _k !== void 0 ? _k : 0) - scrollbar.size - dragPos : dragPos;
+            var dragPerc = dragPos / (trackSize - scrollbar.size);
+            var scrollPos = dragPerc * (contentSize - hostSize);
+            if (_this.draggedAxis === "x" && _this.isRtl) {
+              scrollPos = ((_l = SimpleBarCore2.getRtlHelpers()) === null || _l === void 0 ? void 0 : _l.isScrollingToNegative) ? -scrollPos : scrollPos;
+            }
+            _this.contentWrapperEl[_this.axis[_this.draggedAxis].scrollOffsetAttr] = scrollPos;
+          };
+          this.onEndDrag = function(e) {
+            var elDocument = getElementDocument(_this.el);
+            var elWindow = getElementWindow(_this.el);
+            e.preventDefault();
+            e.stopPropagation();
+            removeClasses(_this.el, _this.classNames.dragging);
+            elDocument.removeEventListener("mousemove", _this.drag, true);
+            elDocument.removeEventListener("mouseup", _this.onEndDrag, true);
+            _this.removePreventClickId = elWindow.setTimeout(function() {
+              elDocument.removeEventListener("click", _this.preventClick, true);
+              elDocument.removeEventListener("dblclick", _this.preventClick, true);
+              _this.removePreventClickId = null;
+            });
+          };
+          this.preventClick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+          };
+          this.el = element;
+          this.options = __assign(__assign({}, SimpleBarCore2.defaultOptions), options2);
+          this.classNames = __assign(__assign({}, SimpleBarCore2.defaultOptions.classNames), options2.classNames);
+          this.axis = {
+            x: {
+              scrollOffsetAttr: "scrollLeft",
+              sizeAttr: "width",
+              scrollSizeAttr: "scrollWidth",
+              offsetSizeAttr: "offsetWidth",
+              offsetAttr: "left",
+              overflowAttr: "overflowX",
+              dragOffset: 0,
+              isOverflowing: true,
+              forceVisible: false,
+              track: { size: null, el: null, rect: null, isVisible: false },
+              scrollbar: { size: null, el: null, rect: null, isVisible: false }
+            },
+            y: {
+              scrollOffsetAttr: "scrollTop",
+              sizeAttr: "height",
+              scrollSizeAttr: "scrollHeight",
+              offsetSizeAttr: "offsetHeight",
+              offsetAttr: "top",
+              overflowAttr: "overflowY",
+              dragOffset: 0,
+              isOverflowing: true,
+              forceVisible: false,
+              track: { size: null, el: null, rect: null, isVisible: false },
+              scrollbar: { size: null, el: null, rect: null, isVisible: false }
+            }
+          };
+          if (typeof this.el !== "object" || !this.el.nodeName) {
+            throw new Error("Argument passed to SimpleBar must be an HTML element instead of ".concat(this.el));
+          }
+          this.onMouseMove = throttle_default(this._onMouseMove, 64);
+          this.onWindowResize = debounce_default(this._onWindowResize, 64, { leading: true });
+          this.onStopScrolling = debounce_default(this._onStopScrolling, this.stopScrollDelay);
+          this.onMouseEntered = debounce_default(this._onMouseEntered, this.stopScrollDelay);
+          this.init();
+        }
+        SimpleBarCore2.getRtlHelpers = function() {
+          if (SimpleBarCore2.rtlHelpers) {
+            return SimpleBarCore2.rtlHelpers;
+          }
+          var dummyDiv = document.createElement("div");
+          dummyDiv.innerHTML = '<div class="simplebar-dummy-scrollbar-size"><div></div></div>';
+          var scrollbarDummyEl = dummyDiv.firstElementChild;
+          var dummyChild = scrollbarDummyEl === null || scrollbarDummyEl === void 0 ? void 0 : scrollbarDummyEl.firstElementChild;
+          if (!dummyChild)
+            return null;
+          document.body.appendChild(scrollbarDummyEl);
+          scrollbarDummyEl.scrollLeft = 0;
+          var dummyContainerOffset = SimpleBarCore2.getOffset(scrollbarDummyEl);
+          var dummyChildOffset = SimpleBarCore2.getOffset(dummyChild);
+          scrollbarDummyEl.scrollLeft = -999;
+          var dummyChildOffsetAfterScroll = SimpleBarCore2.getOffset(dummyChild);
+          document.body.removeChild(scrollbarDummyEl);
+          SimpleBarCore2.rtlHelpers = {
+            // determines if the scrolling is responding with negative values
+            isScrollOriginAtZero: dummyContainerOffset.left !== dummyChildOffset.left,
+            // determines if the origin scrollbar position is inverted or not (positioned on left or right)
+            isScrollingToNegative: dummyChildOffset.left !== dummyChildOffsetAfterScroll.left
+          };
+          return SimpleBarCore2.rtlHelpers;
+        };
+        SimpleBarCore2.prototype.getScrollbarWidth = function() {
+          try {
+            if (this.contentWrapperEl && getComputedStyle(this.contentWrapperEl, "::-webkit-scrollbar").display === "none" || "scrollbarWidth" in document.documentElement.style || "-ms-overflow-style" in document.documentElement.style) {
+              return 0;
+            } else {
+              return scrollbarWidth();
+            }
+          } catch (e) {
+            return scrollbarWidth();
+          }
+        };
+        SimpleBarCore2.getOffset = function(el) {
+          var rect = el.getBoundingClientRect();
+          var elDocument = getElementDocument(el);
+          var elWindow = getElementWindow(el);
+          return {
+            top: rect.top + (elWindow.pageYOffset || elDocument.documentElement.scrollTop),
+            left: rect.left + (elWindow.pageXOffset || elDocument.documentElement.scrollLeft)
+          };
+        };
+        SimpleBarCore2.prototype.init = function() {
+          if (import_can_use_dom.default) {
+            this.initDOM();
+            this.rtlHelpers = SimpleBarCore2.getRtlHelpers();
+            this.scrollbarWidth = this.getScrollbarWidth();
+            this.recalculate();
+            this.initListeners();
+          }
+        };
+        SimpleBarCore2.prototype.initDOM = function() {
+          var _a2, _b;
+          this.wrapperEl = this.el.querySelector(classNamesToQuery(this.classNames.wrapper));
+          this.contentWrapperEl = this.options.scrollableNode || this.el.querySelector(classNamesToQuery(this.classNames.contentWrapper));
+          this.contentEl = this.options.contentNode || this.el.querySelector(classNamesToQuery(this.classNames.contentEl));
+          this.offsetEl = this.el.querySelector(classNamesToQuery(this.classNames.offset));
+          this.maskEl = this.el.querySelector(classNamesToQuery(this.classNames.mask));
+          this.placeholderEl = this.findChild(this.wrapperEl, classNamesToQuery(this.classNames.placeholder));
+          this.heightAutoObserverWrapperEl = this.el.querySelector(classNamesToQuery(this.classNames.heightAutoObserverWrapperEl));
+          this.heightAutoObserverEl = this.el.querySelector(classNamesToQuery(this.classNames.heightAutoObserverEl));
+          this.axis.x.track.el = this.findChild(this.el, "".concat(classNamesToQuery(this.classNames.track)).concat(classNamesToQuery(this.classNames.horizontal)));
+          this.axis.y.track.el = this.findChild(this.el, "".concat(classNamesToQuery(this.classNames.track)).concat(classNamesToQuery(this.classNames.vertical)));
+          this.axis.x.scrollbar.el = ((_a2 = this.axis.x.track.el) === null || _a2 === void 0 ? void 0 : _a2.querySelector(classNamesToQuery(this.classNames.scrollbar))) || null;
+          this.axis.y.scrollbar.el = ((_b = this.axis.y.track.el) === null || _b === void 0 ? void 0 : _b.querySelector(classNamesToQuery(this.classNames.scrollbar))) || null;
+          if (!this.options.autoHide) {
+            addClasses(this.axis.x.scrollbar.el, this.classNames.visible);
+            addClasses(this.axis.y.scrollbar.el, this.classNames.visible);
+          }
+        };
+        SimpleBarCore2.prototype.initListeners = function() {
+          var _this = this;
+          var _a2;
+          var elWindow = getElementWindow(this.el);
+          this.el.addEventListener("mouseenter", this.onMouseEnter);
+          this.el.addEventListener("pointerdown", this.onPointerEvent, true);
+          this.el.addEventListener("mousemove", this.onMouseMove);
+          this.el.addEventListener("mouseleave", this.onMouseLeave);
+          (_a2 = this.contentWrapperEl) === null || _a2 === void 0 ? void 0 : _a2.addEventListener("scroll", this.onScroll);
+          elWindow.addEventListener("resize", this.onWindowResize);
+          if (!this.contentEl)
+            return;
+          if (window.ResizeObserver) {
+            var resizeObserverStarted_1 = false;
+            var resizeObserver = elWindow.ResizeObserver || ResizeObserver;
+            this.resizeObserver = new resizeObserver(function() {
+              if (!resizeObserverStarted_1)
+                return;
+              elWindow.requestAnimationFrame(function() {
+                _this.recalculate();
+              });
+            });
+            this.resizeObserver.observe(this.el);
+            this.resizeObserver.observe(this.contentEl);
+            elWindow.requestAnimationFrame(function() {
+              resizeObserverStarted_1 = true;
+            });
+          }
+          this.mutationObserver = new elWindow.MutationObserver(function() {
+            elWindow.requestAnimationFrame(function() {
+              _this.recalculate();
+            });
+          });
+          this.mutationObserver.observe(this.contentEl, {
+            childList: true,
+            subtree: true,
+            characterData: true
+          });
+        };
+        SimpleBarCore2.prototype.recalculate = function() {
+          if (!this.heightAutoObserverEl || !this.contentEl || !this.contentWrapperEl || !this.wrapperEl || !this.placeholderEl)
+            return;
+          var elWindow = getElementWindow(this.el);
+          this.elStyles = elWindow.getComputedStyle(this.el);
+          this.isRtl = this.elStyles.direction === "rtl";
+          var contentElOffsetWidth = this.contentEl.offsetWidth;
+          var isHeightAuto = this.heightAutoObserverEl.offsetHeight <= 1;
+          var isWidthAuto = this.heightAutoObserverEl.offsetWidth <= 1 || contentElOffsetWidth > 0;
+          var contentWrapperElOffsetWidth = this.contentWrapperEl.offsetWidth;
+          var elOverflowX = this.elStyles.overflowX;
+          var elOverflowY = this.elStyles.overflowY;
+          this.contentEl.style.padding = "".concat(this.elStyles.paddingTop, " ").concat(this.elStyles.paddingRight, " ").concat(this.elStyles.paddingBottom, " ").concat(this.elStyles.paddingLeft);
+          this.wrapperEl.style.margin = "-".concat(this.elStyles.paddingTop, " -").concat(this.elStyles.paddingRight, " -").concat(this.elStyles.paddingBottom, " -").concat(this.elStyles.paddingLeft);
+          var contentElScrollHeight = this.contentEl.scrollHeight;
+          var contentElScrollWidth = this.contentEl.scrollWidth;
+          this.contentWrapperEl.style.height = isHeightAuto ? "auto" : "100%";
+          this.placeholderEl.style.width = isWidthAuto ? "".concat(contentElOffsetWidth || contentElScrollWidth, "px") : "auto";
+          this.placeholderEl.style.height = "".concat(contentElScrollHeight, "px");
+          var contentWrapperElOffsetHeight = this.contentWrapperEl.offsetHeight;
+          this.axis.x.isOverflowing = contentElOffsetWidth !== 0 && contentElScrollWidth > contentElOffsetWidth;
+          this.axis.y.isOverflowing = contentElScrollHeight > contentWrapperElOffsetHeight;
+          this.axis.x.isOverflowing = elOverflowX === "hidden" ? false : this.axis.x.isOverflowing;
+          this.axis.y.isOverflowing = elOverflowY === "hidden" ? false : this.axis.y.isOverflowing;
+          this.axis.x.forceVisible = this.options.forceVisible === "x" || this.options.forceVisible === true;
+          this.axis.y.forceVisible = this.options.forceVisible === "y" || this.options.forceVisible === true;
+          this.hideNativeScrollbar();
+          var offsetForXScrollbar = this.axis.x.isOverflowing ? this.scrollbarWidth : 0;
+          var offsetForYScrollbar = this.axis.y.isOverflowing ? this.scrollbarWidth : 0;
+          this.axis.x.isOverflowing = this.axis.x.isOverflowing && contentElScrollWidth > contentWrapperElOffsetWidth - offsetForYScrollbar;
+          this.axis.y.isOverflowing = this.axis.y.isOverflowing && contentElScrollHeight > contentWrapperElOffsetHeight - offsetForXScrollbar;
+          this.axis.x.scrollbar.size = this.getScrollbarSize("x");
+          this.axis.y.scrollbar.size = this.getScrollbarSize("y");
+          if (this.axis.x.scrollbar.el)
+            this.axis.x.scrollbar.el.style.width = "".concat(this.axis.x.scrollbar.size, "px");
+          if (this.axis.y.scrollbar.el)
+            this.axis.y.scrollbar.el.style.height = "".concat(this.axis.y.scrollbar.size, "px");
+          this.positionScrollbar("x");
+          this.positionScrollbar("y");
+          this.toggleTrackVisibility("x");
+          this.toggleTrackVisibility("y");
+        };
+        SimpleBarCore2.prototype.getScrollbarSize = function(axis) {
+          var _a2, _b;
+          if (axis === void 0) {
+            axis = "y";
+          }
+          if (!this.axis[axis].isOverflowing || !this.contentEl) {
+            return 0;
+          }
+          var contentSize = this.contentEl[this.axis[axis].scrollSizeAttr];
+          var trackSize = (_b = (_a2 = this.axis[axis].track.el) === null || _a2 === void 0 ? void 0 : _a2[this.axis[axis].offsetSizeAttr]) !== null && _b !== void 0 ? _b : 0;
+          var scrollbarRatio = trackSize / contentSize;
+          var scrollbarSize;
+          scrollbarSize = Math.max(~~(scrollbarRatio * trackSize), this.options.scrollbarMinSize);
+          if (this.options.scrollbarMaxSize) {
+            scrollbarSize = Math.min(scrollbarSize, this.options.scrollbarMaxSize);
+          }
+          return scrollbarSize;
+        };
+        SimpleBarCore2.prototype.positionScrollbar = function(axis) {
+          var _a2, _b, _c;
+          if (axis === void 0) {
+            axis = "y";
+          }
+          var scrollbar = this.axis[axis].scrollbar;
+          if (!this.axis[axis].isOverflowing || !this.contentWrapperEl || !scrollbar.el || !this.elStyles) {
+            return;
+          }
+          var contentSize = this.contentWrapperEl[this.axis[axis].scrollSizeAttr];
+          var trackSize = ((_a2 = this.axis[axis].track.el) === null || _a2 === void 0 ? void 0 : _a2[this.axis[axis].offsetSizeAttr]) || 0;
+          var hostSize = parseInt(this.elStyles[this.axis[axis].sizeAttr], 10);
+          var scrollOffset = this.contentWrapperEl[this.axis[axis].scrollOffsetAttr];
+          scrollOffset = axis === "x" && this.isRtl && ((_b = SimpleBarCore2.getRtlHelpers()) === null || _b === void 0 ? void 0 : _b.isScrollOriginAtZero) ? -scrollOffset : scrollOffset;
+          if (axis === "x" && this.isRtl) {
+            scrollOffset = ((_c = SimpleBarCore2.getRtlHelpers()) === null || _c === void 0 ? void 0 : _c.isScrollingToNegative) ? scrollOffset : -scrollOffset;
+          }
+          var scrollPourcent = scrollOffset / (contentSize - hostSize);
+          var handleOffset = ~~((trackSize - scrollbar.size) * scrollPourcent);
+          handleOffset = axis === "x" && this.isRtl ? -handleOffset + (trackSize - scrollbar.size) : handleOffset;
+          scrollbar.el.style.transform = axis === "x" ? "translate3d(".concat(handleOffset, "px, 0, 0)") : "translate3d(0, ".concat(handleOffset, "px, 0)");
+        };
+        SimpleBarCore2.prototype.toggleTrackVisibility = function(axis) {
+          if (axis === void 0) {
+            axis = "y";
+          }
+          var track = this.axis[axis].track.el;
+          var scrollbar = this.axis[axis].scrollbar.el;
+          if (!track || !scrollbar || !this.contentWrapperEl)
+            return;
+          if (this.axis[axis].isOverflowing || this.axis[axis].forceVisible) {
+            track.style.visibility = "visible";
+            this.contentWrapperEl.style[this.axis[axis].overflowAttr] = "scroll";
+            this.el.classList.add("".concat(this.classNames.scrollable, "-").concat(axis));
+          } else {
+            track.style.visibility = "hidden";
+            this.contentWrapperEl.style[this.axis[axis].overflowAttr] = "hidden";
+            this.el.classList.remove("".concat(this.classNames.scrollable, "-").concat(axis));
+          }
+          if (this.axis[axis].isOverflowing) {
+            scrollbar.style.display = "block";
+          } else {
+            scrollbar.style.display = "none";
+          }
+        };
+        SimpleBarCore2.prototype.showScrollbar = function(axis) {
+          if (axis === void 0) {
+            axis = "y";
+          }
+          if (this.axis[axis].isOverflowing && !this.axis[axis].scrollbar.isVisible) {
+            addClasses(this.axis[axis].scrollbar.el, this.classNames.visible);
+            this.axis[axis].scrollbar.isVisible = true;
+          }
+        };
+        SimpleBarCore2.prototype.hideScrollbar = function(axis) {
+          if (axis === void 0) {
+            axis = "y";
+          }
+          if (this.axis[axis].isOverflowing && this.axis[axis].scrollbar.isVisible) {
+            removeClasses(this.axis[axis].scrollbar.el, this.classNames.visible);
+            this.axis[axis].scrollbar.isVisible = false;
+          }
+        };
+        SimpleBarCore2.prototype.hideNativeScrollbar = function() {
+          if (!this.offsetEl)
+            return;
+          this.offsetEl.style[this.isRtl ? "left" : "right"] = this.axis.y.isOverflowing || this.axis.y.forceVisible ? "-".concat(this.scrollbarWidth, "px") : "0px";
+          this.offsetEl.style.bottom = this.axis.x.isOverflowing || this.axis.x.forceVisible ? "-".concat(this.scrollbarWidth, "px") : "0px";
+        };
+        SimpleBarCore2.prototype.onMouseMoveForAxis = function(axis) {
+          if (axis === void 0) {
+            axis = "y";
+          }
+          var currentAxis = this.axis[axis];
+          if (!currentAxis.track.el || !currentAxis.scrollbar.el)
+            return;
+          currentAxis.track.rect = currentAxis.track.el.getBoundingClientRect();
+          currentAxis.scrollbar.rect = currentAxis.scrollbar.el.getBoundingClientRect();
+          if (this.isWithinBounds(currentAxis.track.rect)) {
+            this.showScrollbar(axis);
+            addClasses(currentAxis.track.el, this.classNames.hover);
+            if (this.isWithinBounds(currentAxis.scrollbar.rect)) {
+              addClasses(currentAxis.scrollbar.el, this.classNames.hover);
+            } else {
+              removeClasses(currentAxis.scrollbar.el, this.classNames.hover);
+            }
+          } else {
+            removeClasses(currentAxis.track.el, this.classNames.hover);
+            if (this.options.autoHide) {
+              this.hideScrollbar(axis);
+            }
+          }
+        };
+        SimpleBarCore2.prototype.onMouseLeaveForAxis = function(axis) {
+          if (axis === void 0) {
+            axis = "y";
+          }
+          removeClasses(this.axis[axis].track.el, this.classNames.hover);
+          removeClasses(this.axis[axis].scrollbar.el, this.classNames.hover);
+          if (this.options.autoHide) {
+            this.hideScrollbar(axis);
+          }
+        };
+        SimpleBarCore2.prototype.onDragStart = function(e, axis) {
+          var _a2;
+          if (axis === void 0) {
+            axis = "y";
+          }
+          var elDocument = getElementDocument(this.el);
+          var elWindow = getElementWindow(this.el);
+          var scrollbar = this.axis[axis].scrollbar;
+          var eventOffset = axis === "y" ? e.pageY : e.pageX;
+          this.axis[axis].dragOffset = eventOffset - (((_a2 = scrollbar.rect) === null || _a2 === void 0 ? void 0 : _a2[this.axis[axis].offsetAttr]) || 0);
+          this.draggedAxis = axis;
+          addClasses(this.el, this.classNames.dragging);
+          elDocument.addEventListener("mousemove", this.drag, true);
+          elDocument.addEventListener("mouseup", this.onEndDrag, true);
+          if (this.removePreventClickId === null) {
+            elDocument.addEventListener("click", this.preventClick, true);
+            elDocument.addEventListener("dblclick", this.preventClick, true);
+          } else {
+            elWindow.clearTimeout(this.removePreventClickId);
+            this.removePreventClickId = null;
+          }
+        };
+        SimpleBarCore2.prototype.onTrackClick = function(e, axis) {
+          var _this = this;
+          var _a2, _b, _c, _d;
+          if (axis === void 0) {
+            axis = "y";
+          }
+          var currentAxis = this.axis[axis];
+          if (!this.options.clickOnTrack || !currentAxis.scrollbar.el || !this.contentWrapperEl)
+            return;
+          e.preventDefault();
+          var elWindow = getElementWindow(this.el);
+          this.axis[axis].scrollbar.rect = currentAxis.scrollbar.el.getBoundingClientRect();
+          var scrollbar = this.axis[axis].scrollbar;
+          var scrollbarOffset = (_b = (_a2 = scrollbar.rect) === null || _a2 === void 0 ? void 0 : _a2[this.axis[axis].offsetAttr]) !== null && _b !== void 0 ? _b : 0;
+          var hostSize = parseInt((_d = (_c = this.elStyles) === null || _c === void 0 ? void 0 : _c[this.axis[axis].sizeAttr]) !== null && _d !== void 0 ? _d : "0px", 10);
+          var scrolled = this.contentWrapperEl[this.axis[axis].scrollOffsetAttr];
+          var t = axis === "y" ? this.mouseY - scrollbarOffset : this.mouseX - scrollbarOffset;
+          var dir = t < 0 ? -1 : 1;
+          var scrollSize = dir === -1 ? scrolled - hostSize : scrolled + hostSize;
+          var speed = 40;
+          var scrollTo = function() {
+            if (!_this.contentWrapperEl)
+              return;
+            if (dir === -1) {
+              if (scrolled > scrollSize) {
+                scrolled -= speed;
+                _this.contentWrapperEl[_this.axis[axis].scrollOffsetAttr] = scrolled;
+                elWindow.requestAnimationFrame(scrollTo);
+              }
+            } else {
+              if (scrolled < scrollSize) {
+                scrolled += speed;
+                _this.contentWrapperEl[_this.axis[axis].scrollOffsetAttr] = scrolled;
+                elWindow.requestAnimationFrame(scrollTo);
+              }
+            }
+          };
+          scrollTo();
+        };
+        SimpleBarCore2.prototype.getContentElement = function() {
+          return this.contentEl;
+        };
+        SimpleBarCore2.prototype.getScrollElement = function() {
+          return this.contentWrapperEl;
+        };
+        SimpleBarCore2.prototype.removeListeners = function() {
+          var elWindow = getElementWindow(this.el);
+          this.el.removeEventListener("mouseenter", this.onMouseEnter);
+          this.el.removeEventListener("pointerdown", this.onPointerEvent, true);
+          this.el.removeEventListener("mousemove", this.onMouseMove);
+          this.el.removeEventListener("mouseleave", this.onMouseLeave);
+          if (this.contentWrapperEl) {
+            this.contentWrapperEl.removeEventListener("scroll", this.onScroll);
+          }
+          elWindow.removeEventListener("resize", this.onWindowResize);
+          if (this.mutationObserver) {
+            this.mutationObserver.disconnect();
+          }
+          if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+          }
+          this.onMouseMove.cancel();
+          this.onWindowResize.cancel();
+          this.onStopScrolling.cancel();
+          this.onMouseEntered.cancel();
+        };
+        SimpleBarCore2.prototype.unMount = function() {
+          this.removeListeners();
+        };
+        SimpleBarCore2.prototype.isWithinBounds = function(bbox) {
+          return this.mouseX >= bbox.left && this.mouseX <= bbox.left + bbox.width && this.mouseY >= bbox.top && this.mouseY <= bbox.top + bbox.height;
+        };
+        SimpleBarCore2.prototype.findChild = function(el, query) {
+          var matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
+          return Array.prototype.filter.call(el.children, function(child) {
+            return matches.call(child, query);
+          })[0];
+        };
+        SimpleBarCore2.rtlHelpers = null;
+        SimpleBarCore2.defaultOptions = {
+          forceVisible: false,
+          clickOnTrack: true,
+          scrollbarMinSize: 25,
+          scrollbarMaxSize: 0,
+          ariaLabel: "scrollable content",
+          classNames: {
+            contentEl: "simplebar-content",
+            contentWrapper: "simplebar-content-wrapper",
+            offset: "simplebar-offset",
+            mask: "simplebar-mask",
+            wrapper: "simplebar-wrapper",
+            placeholder: "simplebar-placeholder",
+            scrollbar: "simplebar-scrollbar",
+            track: "simplebar-track",
+            heightAutoObserverWrapperEl: "simplebar-height-auto-observer-wrapper",
+            heightAutoObserverEl: "simplebar-height-auto-observer",
+            visible: "simplebar-visible",
+            horizontal: "simplebar-horizontal",
+            vertical: "simplebar-vertical",
+            hover: "simplebar-hover",
+            dragging: "simplebar-dragging",
+            scrolling: "simplebar-scrolling",
+            scrollable: "simplebar-scrollable",
+            mouseEntered: "simplebar-mouse-entered"
+          },
+          scrollableNode: null,
+          contentNode: null,
+          autoHide: true
+        };
+        SimpleBarCore2.getOptions = getOptions;
+        SimpleBarCore2.helpers = helpers;
+        return SimpleBarCore2;
+      }();
+    }
+  });
+
+  // .yarn/cache/simplebar-npm-6.2.5-06f4ef67c9-351b3757af.zip/node_modules/simplebar/dist/index.mjs
+  function __extends(d, b) {
+    if (typeof b !== "function" && b !== null)
+      throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+    extendStatics(d, b);
+    function __() {
+      this.constructor = d;
+    }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  }
+  var import_can_use_dom2, extendStatics, _a, getOptions2, addClasses2, SimpleBar;
+  var init_dist2 = __esm({
+    ".yarn/cache/simplebar-npm-6.2.5-06f4ef67c9-351b3757af.zip/node_modules/simplebar/dist/index.mjs"() {
+      import_can_use_dom2 = __toESM(require_can_use_dom(), 1);
+      init_dist();
+      extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
+          d2.__proto__ = b2;
+        } || function(d2, b2) {
+          for (var p3 in b2)
+            if (Object.prototype.hasOwnProperty.call(b2, p3))
+              d2[p3] = b2[p3];
+        };
+        return extendStatics(d, b);
+      };
+      _a = SimpleBarCore.helpers;
+      getOptions2 = _a.getOptions;
+      addClasses2 = _a.addClasses;
+      SimpleBar = /** @class */
+      function(_super) {
+        __extends(SimpleBar2, _super);
+        function SimpleBar2() {
+          var args = [];
+          for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+          }
+          var _this = _super.apply(this, args) || this;
+          SimpleBar2.instances.set(args[0], _this);
+          return _this;
+        }
+        SimpleBar2.initDOMLoadedElements = function() {
+          document.removeEventListener("DOMContentLoaded", this.initDOMLoadedElements);
+          window.removeEventListener("load", this.initDOMLoadedElements);
+          Array.prototype.forEach.call(document.querySelectorAll("[data-simplebar]"), function(el) {
+            if (el.getAttribute("data-simplebar") !== "init" && !SimpleBar2.instances.has(el))
+              new SimpleBar2(el, getOptions2(el.attributes));
+          });
+        };
+        SimpleBar2.removeObserver = function() {
+          var _a2;
+          (_a2 = SimpleBar2.globalObserver) === null || _a2 === void 0 ? void 0 : _a2.disconnect();
+        };
+        SimpleBar2.prototype.initDOM = function() {
+          var _this = this;
+          var _a2, _b, _c;
+          if (!Array.prototype.filter.call(this.el.children, function(child) {
+            return child.classList.contains(_this.classNames.wrapper);
+          }).length) {
+            this.wrapperEl = document.createElement("div");
+            this.contentWrapperEl = document.createElement("div");
+            this.offsetEl = document.createElement("div");
+            this.maskEl = document.createElement("div");
+            this.contentEl = document.createElement("div");
+            this.placeholderEl = document.createElement("div");
+            this.heightAutoObserverWrapperEl = document.createElement("div");
+            this.heightAutoObserverEl = document.createElement("div");
+            addClasses2(this.wrapperEl, this.classNames.wrapper);
+            addClasses2(this.contentWrapperEl, this.classNames.contentWrapper);
+            addClasses2(this.offsetEl, this.classNames.offset);
+            addClasses2(this.maskEl, this.classNames.mask);
+            addClasses2(this.contentEl, this.classNames.contentEl);
+            addClasses2(this.placeholderEl, this.classNames.placeholder);
+            addClasses2(this.heightAutoObserverWrapperEl, this.classNames.heightAutoObserverWrapperEl);
+            addClasses2(this.heightAutoObserverEl, this.classNames.heightAutoObserverEl);
+            while (this.el.firstChild) {
+              this.contentEl.appendChild(this.el.firstChild);
+            }
+            this.contentWrapperEl.appendChild(this.contentEl);
+            this.offsetEl.appendChild(this.contentWrapperEl);
+            this.maskEl.appendChild(this.offsetEl);
+            this.heightAutoObserverWrapperEl.appendChild(this.heightAutoObserverEl);
+            this.wrapperEl.appendChild(this.heightAutoObserverWrapperEl);
+            this.wrapperEl.appendChild(this.maskEl);
+            this.wrapperEl.appendChild(this.placeholderEl);
+            this.el.appendChild(this.wrapperEl);
+            (_a2 = this.contentWrapperEl) === null || _a2 === void 0 ? void 0 : _a2.setAttribute("tabindex", "0");
+            (_b = this.contentWrapperEl) === null || _b === void 0 ? void 0 : _b.setAttribute("role", "region");
+            (_c = this.contentWrapperEl) === null || _c === void 0 ? void 0 : _c.setAttribute("aria-label", this.options.ariaLabel);
+          }
+          if (!this.axis.x.track.el || !this.axis.y.track.el) {
+            var track = document.createElement("div");
+            var scrollbar = document.createElement("div");
+            addClasses2(track, this.classNames.track);
+            addClasses2(scrollbar, this.classNames.scrollbar);
+            track.appendChild(scrollbar);
+            this.axis.x.track.el = track.cloneNode(true);
+            addClasses2(this.axis.x.track.el, this.classNames.horizontal);
+            this.axis.y.track.el = track.cloneNode(true);
+            addClasses2(this.axis.y.track.el, this.classNames.vertical);
+            this.el.appendChild(this.axis.x.track.el);
+            this.el.appendChild(this.axis.y.track.el);
+          }
+          SimpleBarCore.prototype.initDOM.call(this);
+          this.el.setAttribute("data-simplebar", "init");
+        };
+        SimpleBar2.prototype.unMount = function() {
+          SimpleBarCore.prototype.unMount.call(this);
+          SimpleBar2.instances["delete"](this.el);
+        };
+        SimpleBar2.initHtmlApi = function() {
+          this.initDOMLoadedElements = this.initDOMLoadedElements.bind(this);
+          if (typeof MutationObserver !== "undefined") {
+            this.globalObserver = new MutationObserver(SimpleBar2.handleMutations);
+            this.globalObserver.observe(document, { childList: true, subtree: true });
+          }
+          if (document.readyState === "complete" || // @ts-ignore: IE specific
+          document.readyState !== "loading" && !document.documentElement.doScroll) {
+            window.setTimeout(this.initDOMLoadedElements);
+          } else {
+            document.addEventListener("DOMContentLoaded", this.initDOMLoadedElements);
+            window.addEventListener("load", this.initDOMLoadedElements);
+          }
+        };
+        SimpleBar2.handleMutations = function(mutations) {
+          mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(function(addedNode) {
+              if (addedNode.nodeType === 1) {
+                if (addedNode.hasAttribute("data-simplebar")) {
+                  !SimpleBar2.instances.has(addedNode) && document.documentElement.contains(addedNode) && new SimpleBar2(addedNode, getOptions2(addedNode.attributes));
+                } else {
+                  addedNode.querySelectorAll("[data-simplebar]").forEach(function(el) {
+                    if (el.getAttribute("data-simplebar") !== "init" && !SimpleBar2.instances.has(el) && document.documentElement.contains(el))
+                      new SimpleBar2(el, getOptions2(el.attributes));
+                  });
+                }
+              }
+            });
+            mutation.removedNodes.forEach(function(removedNode) {
+              if (removedNode.nodeType === 1) {
+                if (removedNode.getAttribute("data-simplebar") === "init") {
+                  SimpleBar2.instances.has(removedNode) && !document.documentElement.contains(removedNode) && SimpleBar2.instances.get(removedNode).unMount();
+                } else {
+                  Array.prototype.forEach.call(removedNode.querySelectorAll('[data-simplebar="init"]'), function(el) {
+                    SimpleBar2.instances.has(el) && !document.documentElement.contains(el) && SimpleBar2.instances.get(el).unMount();
+                  });
+                }
+              }
+            });
+          });
+        };
+        SimpleBar2.instances = /* @__PURE__ */ new WeakMap();
+        return SimpleBar2;
+      }(SimpleBarCore);
+      if (import_can_use_dom2.default) {
+        SimpleBar.initHtmlApi();
+      }
+    }
+  });
+
+  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/LyricsScroller.ts
+  var DistanceToMaximumBlur, BlurScale, UserScrollingStopsAfter, AutoScrollingStopsAfter, GetTotalElementHeight, LyricsScroller;
+  var init_LyricsScroller = __esm({
+    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/LyricsScroller.ts"() {
+      "use strict";
+      init_dist2();
+      init_dist2();
+      init_Maid();
+      init_Scheduler();
+      DistanceToMaximumBlur = 4;
+      BlurScale = 1.25;
+      UserScrollingStopsAfter = 0.75;
+      AutoScrollingStopsAfter = 1 / 30;
+      GetTotalElementHeight = (element) => {
+        const style = window.getComputedStyle(element);
+        const marginTop = parseFloat(style.marginTop);
+        const marginBottom = parseFloat(style.marginBottom);
+        return element.offsetHeight + marginTop + marginBottom;
+      };
+      LyricsScroller = class {
+        // Private Properties
+        Maid;
+        ScrollContainer;
+        LyricsContainer;
+        VocalGroups;
+        LyricsAreSynced;
+        Scroller;
+        ScrollerObject;
+        GroupDimensions = [];
+        AutoScrollBlocked = false;
+        AutoScrolling = false;
+        LastActiveVocalIndex = 0;
+        LyricsEnded = false;
+        // Constructor
+        constructor(scrollContainer, lyricsContainer, vocalGroups, lyricsAreSynced) {
+          this.LyricsAreSynced = lyricsAreSynced;
+          this.Maid = new Maid();
+          this.Scroller = new SimpleBar(scrollContainer);
+          this.ScrollerObject = this.Scroller.getScrollElement();
+          this.Maid.handle(this.Scroller.unMount.bind(this.Scroller));
+          this.ScrollContainer = scrollContainer, this.LyricsContainer = lyricsContainer;
+          this.VocalGroups = vocalGroups;
+          this.WatchAutoScrollBlocking();
+          const resizeObserver = this.Maid.handle(
+            new ResizeObserver(() => {
+              this.UpdateLyricHeights();
+              if (lyricsAreSynced) {
+                this.MoveToActiveLyrics();
+              }
+            })
+          );
+          resizeObserver.observe(this.ScrollContainer);
+          this.UpdateLyricHeights();
+          if (lyricsAreSynced) {
+            this.HandleLyricActiveStateChanges();
+            this.MoveToActiveLyrics(true);
+          }
+        }
+        // Private Methods
+        ToggleAutoScrollBlock(blocked) {
+          if (this.AutoScrollBlocked !== blocked) {
+            if (blocked) {
+              this.AutoScrollBlocked = true;
+              this.ScrollContainer.classList.add("UserScrolling");
+            } else {
+              this.AutoScrollBlocked = false;
+              this.ScrollContainer.classList.remove("UserScrolling");
+            }
+          }
+        }
+        WatchAutoScrollBlocking() {
+          const callback = () => {
+            if (this.AutoScrolling === false) {
+              this.ToggleAutoScrollBlock(true);
+              this.Maid.handle(
+                Timeout(UserScrollingStopsAfter, () => this.MoveToActiveLyrics()),
+                "WaitForUserToStopScrolling"
+              );
+            } else {
+              this.Maid.handle(
+                Timeout(AutoScrollingStopsAfter, () => this.AutoScrolling = false),
+                "WaitForAutoScroll"
+              );
+            }
+          };
+          this.ScrollerObject.addEventListener("scroll", callback);
+          this.Maid.handle(() => this.ScrollerObject.removeEventListener("scroll", callback));
+        }
+        HandleLyricActiveStateChanges() {
+          for (const vocalGroup of this.VocalGroups) {
+            for (const vocal of vocalGroup.Vocals) {
+              this.Maid.handle(vocal.ActivityChanged.connect(() => this.MoveToActiveLyrics(true)));
+            }
+          }
+        }
+        UpdateLyricHeights() {
+          this.GroupDimensions = [];
+          let totalHeight = 0;
+          for (const vocalGroup of this.VocalGroups) {
+            const groupHeight = GetTotalElementHeight(vocalGroup.GroupContainer);
+            this.GroupDimensions.push({
+              Height: groupHeight / 2,
+              Center: totalHeight + groupHeight / 2
+            });
+            totalHeight += groupHeight;
+          }
+          this.LyricsContainer.style.height = `${totalHeight}px`;
+          this.Scroller.recalculate();
+        }
+        DetermineLyricBlur() {
+          let startIndex, endIndex;
+          const vocals = [];
+          for (const vocalGroup of this.VocalGroups) {
+            for (const vocal of vocalGroup.Vocals) {
+              if (vocal.IsActive()) {
+                const vocalIndex = vocals.length;
+                if (startIndex === void 0) {
+                  startIndex = vocalIndex;
+                }
+                endIndex = vocalIndex;
+              }
+              vocals.push(vocal);
+            }
+          }
+          if (startIndex === void 0 || endIndex === void 0) {
+            startIndex = this.LastActiveVocalIndex;
+            endIndex = startIndex;
+          } else {
+            this.LastActiveVocalIndex = startIndex;
+          }
+          for (const [index, vocal] of vocals.entries()) {
+            const distance = Math.min(
+              index < startIndex ? startIndex - index : index > endIndex ? index - endIndex : 0,
+              DistanceToMaximumBlur
+            );
+            vocal.SetBlur(distance * BlurScale);
+          }
+        }
+        MoveToActiveLyrics(redetermineBlur) {
+          if (this.LyricsAreSynced === false) {
+            return;
+          }
+          if (redetermineBlur) {
+            this.DetermineLyricBlur();
+          }
+          if (this.AutoScrollBlocked && this.Scroller.isScrolling) {
+            return;
+          }
+          const lyricsContainerStyle = window.getComputedStyle(this.LyricsContainer);
+          const lyricsContainerMarginTop = parseInt(lyricsContainerStyle.marginTop);
+          const offset = lyricsContainerStyle.getPropertyValue("--use-offset") === "1" ? parseInt(lyricsContainerStyle.lineHeight) : 0;
+          const scrollViewportHeight = this.ScrollContainer.offsetHeight;
+          const viewportCenter = scrollViewportHeight / 2 - offset;
+          const minimumDistanceToAutoScroll = viewportCenter - lyricsContainerMarginTop;
+          const currentScrollTop = this.ScrollerObject.scrollTop;
+          const maximumScrollTop = this.ScrollerObject.scrollHeight - scrollViewportHeight;
+          const activeVocalGroups = [];
+          for (const [index, vocalGroup] of this.VocalGroups.entries()) {
+            if (vocalGroup.Vocals.some((vocal) => vocal.IsActive())) {
+              activeVocalGroups.push({
+                Dimensions: this.GroupDimensions[index],
+                Group: vocalGroup
+              });
+            }
+          }
+          if (activeVocalGroups.length === 0) {
+            if (this.AutoScrollBlocked === false && this.LyricsEnded) {
+              if (currentScrollTop < maximumScrollTop) {
+                this.ScrollTo(maximumScrollTop);
+              }
+            }
+            return;
+          }
+          let center = 0, totalHalfHeight = 0;
+          for (const activeVocalGroup of activeVocalGroups) {
+            totalHalfHeight += activeVocalGroup.Dimensions.Height;
+            center += activeVocalGroup.Dimensions.Center;
+          }
+          center /= activeVocalGroups.length;
+          let scrollY;
+          if (this.AutoScrollBlocked || center > minimumDistanceToAutoScroll) {
+            if (this.AutoScrollBlocked) {
+              if (center >= currentScrollTop - totalHalfHeight && center <= currentScrollTop + scrollViewportHeight) {
+                this.ToggleAutoScrollBlock(false);
+                this.DetermineLyricBlur();
+              }
+            }
+            if (this.AutoScrollBlocked === false) {
+              scrollY = center - viewportCenter + lyricsContainerMarginTop + offset;
+            }
+          } else if (currentScrollTop > 0) {
+            scrollY = 0;
+          }
+          if (scrollY !== void 0) {
+            this.ScrollTo(scrollY);
+          }
+        }
+        ScrollTo(yPosition) {
+          this.AutoScrolling = true;
+          this.ScrollerObject.scrollTop = yPosition;
+          this.Scroller.scrollY();
+        }
+        // Public Methods
+        SetLyricsEnded(ended) {
+          this.LyricsEnded = ended;
+        }
+        ForceToActive(skippedByVocal) {
+          if (this.LyricsAreSynced === false) {
+            return;
+          }
+          this.ToggleAutoScrollBlock(false);
+          if (skippedByVocal) {
+            this.Maid.disposeEntry("ForceToActiveCSS");
+          } else {
+            this.ScrollContainer.classList.add("InstantScroll");
+            this.Maid.handle(
+              OnNextFrame(() => this.ScrollContainer.classList.remove("InstantScroll")),
+              "ForceToActiveCSS"
+            );
+          }
+          this.MoveToActiveLyrics();
+        }
+        ForceToTop() {
+          this.ToggleAutoScrollBlock(false);
+          this.ScrollTo(0);
+        }
+        dispose() {
+          this.Maid.dispose();
         }
       };
     }
   });
 
-  // extensions/full-screen/deps/beautiful-lyrics/Services/Session.ts
-  var GlobalMaid, SpicetifyLoadedSignal, AllSpicetifyLoaded, SpotifyPlayer, SpotifyFetch, SpotifyShowNotification, SpotifyPlatform, SpotifyHistory, SpotifyPlaybar, SpicetifyLoaded;
-  var init_Session = __esm({
-    "extensions/full-screen/deps/beautiful-lyrics/Services/Session.ts"() {
+  // .yarn/cache/curve-interpolator-npm-3.1.1-0ba0a1302a-6e0f39b930.zip/node_modules/curve-interpolator/dist/index.js
+  var require_dist = __commonJS({
+    ".yarn/cache/curve-interpolator-npm-3.1.1-0ba0a1302a-6e0f39b930.zip/node_modules/curve-interpolator/dist/index.js"(exports, module) {
+      !function(global2, factory) {
+        "object" == typeof exports && "undefined" != typeof module ? factory(exports) : "function" == typeof define && define.amd ? define(["exports"], factory) : factory((global2 = "undefined" != typeof globalThis ? globalThis : global2 || self)["curve-interpolator"] = {});
+      }(exports, function(exports2) {
+        "use strict";
+        var extendStatics2 = function(d, b) {
+          return extendStatics2 = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
+            d2.__proto__ = b2;
+          } || function(d2, b2) {
+            for (var p3 in b2)
+              b2.hasOwnProperty(p3) && (d2[p3] = b2[p3]);
+          }, extendStatics2(d, b);
+        };
+        function __extends2(d, b) {
+          function __() {
+            this.constructor = d;
+          }
+          extendStatics2(d, b), d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __());
+        }
+        var __assign2 = function() {
+          return __assign2 = Object.assign || function(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++)
+              for (var p3 in s = arguments[i])
+                Object.prototype.hasOwnProperty.call(s, p3) && (t[p3] = s[p3]);
+            return t;
+          }, __assign2.apply(this, arguments);
+        };
+        function extrapolateControlPoint(u, v) {
+          for (var e = new Array(u.length), i = 0; i < u.length; i++)
+            e[i] = 2 * u[i] - v[i];
+          return e;
+        }
+        function getControlPoints(idx, points, closed) {
+          var p0, p1, p22, p3, maxIndex = points.length - 1;
+          if (closed)
+            p0 = points[idx - 1 < 0 ? maxIndex : idx - 1], p1 = points[idx % points.length], p22 = points[(idx + 1) % points.length], p3 = points[(idx + 2) % points.length];
+          else {
+            if (idx === maxIndex)
+              throw Error("There is no spline segment at this index for a closed curve!");
+            p1 = points[idx], p22 = points[idx + 1], p0 = idx > 0 ? points[idx - 1] : extrapolateControlPoint(p1, p22), p3 = idx < maxIndex - 1 ? points[idx + 2] : extrapolateControlPoint(p22, p1);
+          }
+          return [p0, p1, p22, p3];
+        }
+        function getSegmentIndexAndT(ct, points, closed) {
+          void 0 === closed && (closed = false);
+          var nPoints = closed ? points.length : points.length - 1;
+          if (1 === ct)
+            return { index: nPoints - 1, weight: 1 };
+          var p3 = nPoints * ct, index = Math.floor(p3);
+          return { index, weight: p3 - index };
+        }
+        function fill(v, val) {
+          for (var i = 0; i < v.length; i++)
+            v[i] = val;
+          return v;
+        }
+        function map6(v, func) {
+          for (var i = 0; i < v.length; i++)
+            v[i] = func(v[i], i);
+          return v;
+        }
+        function reduce6(v, func, r) {
+          void 0 === r && (r = 0);
+          for (var i = 0; i < v.length; i++)
+            r = func(r, v[i], i);
+          return r;
+        }
+        function copyValues(source, target) {
+          target = target || new Array(source.length);
+          for (var i = 0; i < source.length; i++)
+            target[i] = source[i];
+          return target;
+        }
+        function clamp(value, min3, max3) {
+          return void 0 === min3 && (min3 = 0), void 0 === max3 && (max3 = 1), value < min3 ? min3 : value > max3 ? max3 : value;
+        }
+        function binarySearch(targetValue, accumulatedValues) {
+          var min3 = accumulatedValues[0];
+          if (targetValue >= accumulatedValues[accumulatedValues.length - 1])
+            return accumulatedValues.length - 1;
+          if (targetValue <= min3)
+            return 0;
+          for (var left = 0, right = accumulatedValues.length - 1; left <= right; ) {
+            var mid = Math.floor((left + right) / 2), lMid = accumulatedValues[mid];
+            if (lMid < targetValue)
+              left = mid + 1;
+            else {
+              if (!(lMid > targetValue))
+                return mid;
+              right = mid - 1;
+            }
+          }
+          return Math.max(0, right);
+        }
+        var EPS = Math.pow(2, -42);
+        function cuberoot(x) {
+          var y = Math.pow(Math.abs(x), 1 / 3);
+          return x < 0 ? -y : y;
+        }
+        function getQuadRoots(a, b, c) {
+          if (Math.abs(a) < EPS)
+            return Math.abs(b) < EPS ? [] : [-c / b];
+          var D = b * b - 4 * a * c;
+          return Math.abs(D) < EPS ? [-b / (2 * a)] : D > 0 ? [(-b + Math.sqrt(D)) / (2 * a), (-b - Math.sqrt(D)) / (2 * a)] : [];
+        }
+        function getCubicRoots(a, b, c, d) {
+          if (Math.abs(a) < EPS)
+            return getQuadRoots(b, c, d);
+          var roots, p3 = (3 * a * c - b * b) / (3 * a * a), q = (2 * b * b * b - 9 * a * b * c + 27 * a * a * d) / (27 * a * a * a);
+          if (Math.abs(p3) < EPS)
+            roots = [cuberoot(-q)];
+          else if (Math.abs(q) < EPS)
+            roots = [0].concat(p3 < 0 ? [Math.sqrt(-p3), -Math.sqrt(-p3)] : []);
+          else {
+            var D = q * q / 4 + p3 * p3 * p3 / 27;
+            if (Math.abs(D) < EPS)
+              roots = [-1.5 * q / p3, 3 * q / p3];
+            else if (D > 0) {
+              roots = [(u = cuberoot(-q / 2 - Math.sqrt(D))) - p3 / (3 * u)];
+            } else {
+              var u = 2 * Math.sqrt(-p3 / 3), t = Math.acos(3 * q / p3 / u) / 3, k = 2 * Math.PI / 3;
+              roots = [u * Math.cos(t), u * Math.cos(t - k), u * Math.cos(t - 2 * k)];
+            }
+          }
+          for (var i = 0; i < roots.length; i++)
+            roots[i] -= b / (3 * a);
+          return roots;
+        }
+        function dot(v1, v2) {
+          if (v1.length !== v2.length)
+            throw Error("Vectors must be of equal length!");
+          for (var p3 = 0, k = 0; k < v1.length; k++)
+            p3 += v1[k] * v2[k];
+          return p3;
+        }
+        function cross(v1, v2, target) {
+          if (!(v1.length > 3)) {
+            target = target || new Array(3);
+            var ax = v1[0], ay = v1[1], az = v1[2] || 0, bx = v2[0], by = v2[1], bz = v2[2] || 0;
+            return target[0] = ay * bz - az * by, target[1] = az * bx - ax * bz, target[2] = ax * by - ay * bx, target;
+          }
+        }
+        function sumOfSquares(v1, v2) {
+          for (var sumOfSquares2 = 0, i = 0; i < v1.length; i++)
+            sumOfSquares2 += (v1[i] - v2[i]) * (v1[i] - v2[i]);
+          return sumOfSquares2;
+        }
+        function magnitude(v) {
+          for (var sumOfSquares2 = 0, i = 0; i < v.length; i++)
+            sumOfSquares2 += v[i] * v[i];
+          return Math.sqrt(sumOfSquares2);
+        }
+        function distance(p1, p22) {
+          var sqrs = sumOfSquares(p1, p22);
+          return 0 === sqrs ? 0 : Math.sqrt(sqrs);
+        }
+        function normalize2(v, target) {
+          var u = target ? copyValues(v, target) : v, squared = reduce6(u, function(s, c) {
+            return s + Math.pow(c, 2);
+          }), l = Math.sqrt(squared);
+          return 0 === l ? fill(u, 0) : map6(u, function(c) {
+            return c / l;
+          });
+        }
+        function orthogonal(v, target) {
+          if (v.length > 2)
+            throw Error("Only supported for 2d vectors");
+          var u = target ? copyValues(v, target) : v, x = -u[1];
+          return u[1] = u[0], u[0] = x, u;
+        }
+        function calcKnotSequence(p0, p1, p22, p3, alpha) {
+          if (void 0 === alpha && (alpha = 0), 0 === alpha)
+            return [0, 1, 2, 3];
+          var deltaT = function(u, v) {
+            return Math.pow(sumOfSquares(u, v), 0.5 * alpha);
+          }, t1 = deltaT(p1, p0), t2 = deltaT(p22, p1) + t1;
+          return [0, t1, t2, deltaT(p3, p22) + t2];
+        }
+        function calculateCoefficients(p0, p1, p22, p3, options2) {
+          for (var tension = Number.isFinite(options2.tension) ? options2.tension : 0.5, alpha = Number.isFinite(options2.alpha) ? options2.alpha : null, knotSequence = alpha > 0 ? calcKnotSequence(p0, p1, p22, p3, alpha) : null, coefficientsList = new Array(p0.length), k = 0; k < p0.length; k++) {
+            var u = 0, v = 0, v0 = p0[k], v1 = p1[k], v2 = p22[k], v3 = p3[k];
+            if (knotSequence) {
+              var t0 = knotSequence[0], t1 = knotSequence[1], t2 = knotSequence[2], t3 = knotSequence[3];
+              t1 - t2 != 0 && (t0 - t1 != 0 && t0 - t2 != 0 && (u = (1 - tension) * (t2 - t1) * ((v0 - v1) / (t0 - t1) - (v0 - v2) / (t0 - t2) + (v1 - v2) / (t1 - t2))), t1 - t3 != 0 && t2 - t3 != 0 && (v = (1 - tension) * (t2 - t1) * ((v1 - v2) / (t1 - t2) - (v1 - v3) / (t1 - t3) + (v2 - v3) / (t2 - t3))));
+            } else
+              u = (1 - tension) * (v2 - v0) * 0.5, v = (1 - tension) * (v3 - v1) * 0.5;
+            var a = 2 * v1 - 2 * v2 + u + v, b = -3 * v1 + 3 * v2 - 2 * u - v, c = u, d = v1;
+            coefficientsList[k] = [a, b, c, d];
+          }
+          return coefficientsList;
+        }
+        function valueAtT(t, coefficients) {
+          var t2 = t * t, t3 = t * t2;
+          return coefficients[0] * t3 + coefficients[1] * t2 + coefficients[2] * t + coefficients[3];
+        }
+        function derivativeAtT(t, coefficients) {
+          var t2 = t * t;
+          return 3 * coefficients[0] * t2 + 2 * coefficients[1] * t + coefficients[2];
+        }
+        function secondDerivativeAtT(t, coefficients) {
+          return 6 * coefficients[0] * t + 2 * coefficients[1];
+        }
+        function findRootsOfT(lookup5, coefficients) {
+          var a = coefficients[0], b = coefficients[1], c = coefficients[2], x = coefficients[3] - lookup5;
+          return 0 === a && 0 === b && 0 === c && 0 === x ? [0] : getCubicRoots(a, b, c, x).filter(function(t) {
+            return t > -EPS && t <= 1 + EPS;
+          }).map(function(t) {
+            return clamp(t, 0, 1);
+          });
+        }
+        function evaluateForT(func, t, coefficients, target) {
+          void 0 === target && (target = null), target = target || new Array(coefficients.length);
+          for (var k = 0; k < coefficients.length; k++)
+            target[k] = func(t, coefficients[k]);
+          return target;
+        }
+        var AbstractCurveMapper = function() {
+          function AbstractCurveMapper2(onInvalidateCache) {
+            void 0 === onInvalidateCache && (onInvalidateCache = null), this._alpha = 0, this._tension = 0.5, this._closed = false, this._onInvalidateCache = null, this._onInvalidateCache = onInvalidateCache, this._cache = { arcLengths: null, coefficients: null };
+          }
+          return AbstractCurveMapper2.prototype._invalidateCache = function() {
+            this.points && (this._cache = { arcLengths: null, coefficients: null }, this._onInvalidateCache && this._onInvalidateCache());
+          }, Object.defineProperty(AbstractCurveMapper2.prototype, "alpha", { get: function() {
+            return this._alpha;
+          }, set: function(alpha) {
+            Number.isFinite(alpha) && alpha !== this._alpha && (this._invalidateCache(), this._alpha = alpha);
+          }, enumerable: false, configurable: true }), Object.defineProperty(AbstractCurveMapper2.prototype, "tension", { get: function() {
+            return this._tension;
+          }, set: function(tension) {
+            Number.isFinite(tension) && tension !== this._tension && (this._invalidateCache(), this._tension = tension);
+          }, enumerable: false, configurable: true }), Object.defineProperty(AbstractCurveMapper2.prototype, "points", { get: function() {
+            return this._points;
+          }, set: function(points) {
+            if (!points || points.length < 2)
+              throw Error("At least 2 control points are required!");
+            this._points = points, this._invalidateCache();
+          }, enumerable: false, configurable: true }), Object.defineProperty(AbstractCurveMapper2.prototype, "closed", { get: function() {
+            return this._closed;
+          }, set: function(closed) {
+            closed = !!closed, this._closed !== closed && (this._invalidateCache(), this._closed = closed);
+          }, enumerable: false, configurable: true }), AbstractCurveMapper2.prototype.reset = function() {
+            this._invalidateCache();
+          }, AbstractCurveMapper2.prototype.evaluateForT = function(func, t, target) {
+            var _a2 = getSegmentIndexAndT(t, this.points, this.closed), index = _a2.index;
+            return evaluateForT(func, _a2.weight, this.getCoefficients(index), target);
+          }, AbstractCurveMapper2.prototype.getCoefficients = function(idx) {
+            if (this.points) {
+              if (this._cache.coefficients || (this._cache.coefficients = /* @__PURE__ */ new Map()), !this._cache.coefficients.has(idx)) {
+                var _a2 = getControlPoints(idx, this.points, this.closed), coefficients = calculateCoefficients(_a2[0], _a2[1], _a2[2], _a2[3], { tension: this.tension, alpha: this.alpha });
+                this._cache.coefficients.set(idx, coefficients);
+              }
+              return this._cache.coefficients.get(idx);
+            }
+          }, AbstractCurveMapper2;
+        }(), SegmentedCurveMapper = function(_super) {
+          function SegmentedCurveMapper2(subDivisions, onInvalidateCache) {
+            void 0 === subDivisions && (subDivisions = 300), void 0 === onInvalidateCache && (onInvalidateCache = null);
+            var _this = _super.call(this, onInvalidateCache) || this;
+            return _this._subDivisions = subDivisions, _this;
+          }
+          return __extends2(SegmentedCurveMapper2, _super), Object.defineProperty(SegmentedCurveMapper2.prototype, "arcLengths", { get: function() {
+            return this._cache.arcLengths || (this._cache.arcLengths = this.computeArcLengths()), this._cache.arcLengths;
+          }, enumerable: false, configurable: true }), SegmentedCurveMapper2.prototype._invalidateCache = function() {
+            _super.prototype._invalidateCache.call(this), this._cache.arcLengths = null;
+          }, SegmentedCurveMapper2.prototype.computeArcLengths = function() {
+            var current, lengths = [], last6 = this.evaluateForT(valueAtT, 0), sum = 0;
+            lengths.push(0);
+            for (var p3 = 1; p3 <= this._subDivisions; p3++)
+              sum += distance(current = this.evaluateForT(valueAtT, p3 / this._subDivisions), last6), lengths.push(sum), last6 = current;
+            return lengths;
+          }, SegmentedCurveMapper2.prototype.lengthAt = function(u) {
+            var arcLengths = this.arcLengths;
+            return u * arcLengths[arcLengths.length - 1];
+          }, SegmentedCurveMapper2.prototype.getT = function(u) {
+            var arcLengths = this.arcLengths, il = arcLengths.length, targetArcLength = u * arcLengths[il - 1], i = binarySearch(targetArcLength, arcLengths);
+            if (arcLengths[i] === targetArcLength)
+              return i / (il - 1);
+            var lengthBefore = arcLengths[i];
+            return (i + (targetArcLength - lengthBefore) / (arcLengths[i + 1] - lengthBefore)) / (il - 1);
+          }, SegmentedCurveMapper2.prototype.getU = function(t) {
+            if (0 === t)
+              return 0;
+            if (1 === t)
+              return 1;
+            var arcLengths = this.arcLengths, al = arcLengths.length - 1, totalLength = arcLengths[al], tIdx = t * al, subIdx = Math.floor(tIdx), l1 = arcLengths[subIdx];
+            if (tIdx === subIdx)
+              return l1 / totalLength;
+            var t0 = subIdx / al;
+            return (l1 + distance(this.evaluateForT(valueAtT, t0), this.evaluateForT(valueAtT, t))) / totalLength;
+          }, SegmentedCurveMapper2;
+        }(AbstractCurveMapper), lut = [[[-0.906179845938664, 0.23692688505618908], [-0.5384693101056831, 0.47862867049936647], [0, 0.5688888888888889], [0.5384693101056831, 0.47862867049936647], [0.906179845938664, 0.23692688505618908]], [[-0.932469514203152, 0.17132449237917036], [-0.6612093864662645, 0.3607615730481386], [-0.2386191860831969, 0.46791393457269104], [0.2386191860831969, 0.46791393457269104], [0.6612093864662645, 0.3607615730481386], [0.932469514203152, 0.17132449237917036]], [[-0.9491079123427585, 0.1294849661688697], [-0.7415311855993945, 0.27970539148927664], [-0.4058451513773972, 0.3818300505051189], [0, 0.4179591836734694], [0.4058451513773972, 0.3818300505051189], [0.7415311855993945, 0.27970539148927664], [0.9491079123427585, 0.1294849661688697]], [[-0.9602898564975363, 0.10122853629037626], [-0.7966664774136267, 0.22238103445337448], [-0.525532409916329, 0.31370664587788727], [-0.1834346424956498, 0.362683783378362], [0.1834346424956498, 0.362683783378362], [0.525532409916329, 0.31370664587788727], [0.7966664774136267, 0.22238103445337448], [0.9602898564975363, 0.10122853629037626]], [[-0.9681602395076261, 0.08127438836157441], [-0.8360311073266358, 0.1806481606948574], [-0.6133714327005904, 0.26061069640293544], [-0.3242534234038089, 0.31234707704000286], [0, 0.3302393550012598], [0.3242534234038089, 0.31234707704000286], [0.6133714327005904, 0.26061069640293544], [0.8360311073266358, 0.1806481606948574], [0.9681602395076261, 0.08127438836157441]], [[-0.9739065285171717, 0.06667134430868814], [-0.8650633666889845, 0.1494513491505806], [-0.6794095682990244, 0.21908636251598204], [-0.4333953941292472, 0.26926671930999635], [-0.14887433898163122, 0.29552422471475287], [0.14887433898163122, 0.29552422471475287], [0.4333953941292472, 0.26926671930999635], [0.6794095682990244, 0.21908636251598204], [0.8650633666889845, 0.1494513491505806], [0.9739065285171717, 0.06667134430868814]], [[-0.978228658146056, 0.0556685671161736], [-0.887062599768095, 0.125580369464904], [-0.730152005574049, 0.186290210927734], [-0.519096129206811, 0.23319376459199], [-0.269543155952344, 0.262804544510246], [0, 0.2729250867779], [0.269543155952344, 0.262804544510246], [0.519096129206811, 0.23319376459199], [0.730152005574049, 0.186290210927734], [0.887062599768095, 0.125580369464904], [0.978228658146056, 0.0556685671161736]], [[-0.981560634246719, 0.0471753363865118], [-0.904117256370474, 0.106939325995318], [-0.769902674194304, 0.160078328543346], [-0.587317954286617, 0.203167426723065], [-0.36783149899818, 0.233492536538354], [-0.125233408511468, 0.249147045813402], [0.125233408511468, 0.249147045813402], [0.36783149899818, 0.233492536538354], [0.587317954286617, 0.203167426723065], [0.769902674194304, 0.160078328543346], [0.904117256370474, 0.106939325995318], [0.981560634246719, 0.0471753363865118]], [[-0.984183054718588, 0.0404840047653158], [-0.917598399222977, 0.0921214998377284], [-0.801578090733309, 0.138873510219787], [-0.64234933944034, 0.178145980761945], [-0.448492751036446, 0.207816047536888], [-0.230458315955134, 0.226283180262897], [0, 0.232551553230873], [0.230458315955134, 0.226283180262897], [0.448492751036446, 0.207816047536888], [0.64234933944034, 0.178145980761945], [0.801578090733309, 0.138873510219787], [0.917598399222977, 0.0921214998377284], [0.984183054718588, 0.0404840047653158]], [[-0.986283808696812, 0.0351194603317518], [-0.928434883663573, 0.0801580871597602], [-0.827201315069764, 0.121518570687903], [-0.687292904811685, 0.157203167158193], [-0.515248636358154, 0.185538397477937], [-0.319112368927889, 0.205198463721295], [-0.108054948707343, 0.215263853463157], [0.108054948707343, 0.215263853463157], [0.319112368927889, 0.205198463721295], [0.515248636358154, 0.185538397477937], [0.687292904811685, 0.157203167158193], [0.827201315069764, 0.121518570687903], [0.928434883663573, 0.0801580871597602], [0.986283808696812, 0.0351194603317518]], [[-0.987992518020485, 0.0307532419961172], [-0.937273392400705, 0.0703660474881081], [-0.848206583410427, 0.107159220467171], [-0.72441773136017, 0.139570677926154], [-0.570972172608538, 0.166269205816993], [-0.394151347077563, 0.186161000015562], [-0.201194093997434, 0.198431485327111], [0, 0.202578241925561], [0.201194093997434, 0.198431485327111], [0.394151347077563, 0.186161000015562], [0.570972172608538, 0.166269205816993], [0.72441773136017, 0.139570677926154], [0.848206583410427, 0.107159220467171], [0.937273392400705, 0.0703660474881081], [0.987992518020485, 0.0307532419961172]], [[-0.989400934991649, 0.027152459411754], [-0.944575023073232, 0.0622535239386478], [-0.865631202387831, 0.0951585116824927], [-0.755404408355003, 0.124628971255533], [-0.617876244402643, 0.149595988816576], [-0.458016777657227, 0.169156519395002], [-0.281603550779258, 0.182603415044923], [-0.0950125098376374, 0.189450610455068], [0.0950125098376374, 0.189450610455068], [0.281603550779258, 0.182603415044923], [0.458016777657227, 0.169156519395002], [0.617876244402643, 0.149595988816576], [0.755404408355003, 0.124628971255533], [0.865631202387831, 0.0951585116824927], [0.944575023073232, 0.0622535239386478], [0.989400934991649, 0.027152459411754]], [[-0.990575475314417, 0.0241483028685479], [-0.950675521768767, 0.0554595293739872], [-0.880239153726985, 0.0850361483171791], [-0.781514003896801, 0.111883847193403], [-0.65767115921669, 0.135136368468525], [-0.512690537086476, 0.15404576107681], [-0.351231763453876, 0.16800410215645], [-0.178484181495847, 0.176562705366992], [0, 0.179446470356206], [0.178484181495847, 0.176562705366992], [0.351231763453876, 0.16800410215645], [0.512690537086476, 0.15404576107681], [0.65767115921669, 0.135136368468525], [0.781514003896801, 0.111883847193403], [0.880239153726985, 0.0850361483171791], [0.950675521768767, 0.0554595293739872], [0.990575475314417, 0.0241483028685479]], [[-0.99156516842093, 0.0216160135264833], [-0.955823949571397, 0.0497145488949698], [-0.892602466497555, 0.076425730254889], [-0.803704958972523, 0.100942044106287], [-0.691687043060353, 0.122555206711478], [-0.559770831073947, 0.14064291467065], [-0.411751161462842, 0.154684675126265], [-0.251886225691505, 0.164276483745832], [-0.0847750130417353, 0.169142382963143], [0.0847750130417353, 0.169142382963143], [0.251886225691505, 0.164276483745832], [0.411751161462842, 0.154684675126265], [0.559770831073947, 0.14064291467065], [0.691687043060353, 0.122555206711478], [0.803704958972523, 0.100942044106287], [0.892602466497555, 0.076425730254889], [0.955823949571397, 0.0497145488949697], [0.99156516842093, 0.0216160135264833]], [[-0.992406843843584, 0.0194617882297264], [-0.96020815213483, 0.0448142267656996], [-0.903155903614817, 0.0690445427376412], [-0.822714656537142, 0.0914900216224499], [-0.720966177335229, 0.111566645547333], [-0.600545304661681, 0.128753962539336], [-0.46457074137596, 0.142606702173606], [-0.316564099963629, 0.152766042065859], [-0.160358645640225, 0.158968843393954], [0, 0.161054449848783], [0.160358645640225, 0.158968843393954], [0.316564099963629, 0.152766042065859], [0.46457074137596, 0.142606702173606], [0.600545304661681, 0.128753962539336], [0.720966177335229, 0.111566645547333], [0.822714656537142, 0.0914900216224499], [0.903155903614817, 0.0690445427376412], [0.96020815213483, 0.0448142267656996], [0.992406843843584, 0.0194617882297264]], [[-0.993128599185094, 0.0176140071391521], [-0.963971927277913, 0.0406014298003869], [-0.912234428251325, 0.062672048334109], [-0.839116971822218, 0.0832767415767047], [-0.74633190646015, 0.10193011981724], [-0.636053680726515, 0.118194531961518], [-0.510867001950827, 0.131688638449176], [-0.373706088715419, 0.142096109318382], [-0.227785851141645, 0.149172986472603], [-0.0765265211334973, 0.152753387130725], [0.0765265211334973, 0.152753387130725], [0.227785851141645, 0.149172986472603], [0.373706088715419, 0.142096109318382], [0.510867001950827, 0.131688638449176], [0.636053680726515, 0.118194531961518], [0.74633190646015, 0.10193011981724], [0.839116971822218, 0.0832767415767047], [0.912234428251325, 0.062672048334109], [0.963971927277913, 0.0406014298003869], [0.993128599185094, 0.0176140071391521]], [[-0.993752170620389, 0.0160172282577743], [-0.967226838566306, 0.0369537897708524], [-0.9200993341504, 0.0571344254268572], [-0.853363364583317, 0.0761001136283793], [-0.768439963475677, 0.0934444234560338], [-0.667138804197412, 0.108797299167148], [-0.551618835887219, 0.121831416053728], [-0.424342120207438, 0.132268938633337], [-0.288021316802401, 0.139887394791073], [-0.145561854160895, 0.14452440398997], [0, 0.14608113364969], [0.145561854160895, 0.14452440398997], [0.288021316802401, 0.139887394791073], [0.424342120207438, 0.132268938633337], [0.551618835887219, 0.121831416053728], [0.667138804197412, 0.108797299167148], [0.768439963475677, 0.0934444234560338], [0.853363364583317, 0.0761001136283793], [0.9200993341504, 0.0571344254268572], [0.967226838566306, 0.0369537897708524], [0.993752170620389, 0.0160172282577743]], [[-0.994294585482399, 0.0146279952982722], [-0.970060497835428, 0.0337749015848141], [-0.926956772187174, 0.0522933351526832], [-0.8658125777203, 0.0697964684245204], [-0.787816805979208, 0.0859416062170677], [-0.694487263186682, 0.10041414444288], [-0.587640403506911, 0.112932296080539], [-0.469355837986757, 0.123252376810512], [-0.341935820892084, 0.131173504787062], [-0.207860426688221, 0.136541498346015], [-0.0697392733197222, 0.139251872855631], [0.0697392733197222, 0.139251872855631], [0.207860426688221, 0.136541498346015], [0.341935820892084, 0.131173504787062], [0.469355837986757, 0.123252376810512], [0.587640403506911, 0.112932296080539], [0.694487263186682, 0.10041414444288], [0.787816805979208, 0.0859416062170677], [0.8658125777203, 0.0697964684245204], [0.926956772187174, 0.0522933351526832], [0.970060497835428, 0.0337749015848141], [0.994294585482399, 0.0146279952982722]], [[-0.994769334997552, 0.0134118594871417], [-0.972542471218115, 0.0309880058569794], [-0.932971086826016, 0.0480376717310846], [-0.876752358270441, 0.0642324214085258], [-0.804888401618839, 0.0792814117767189], [-0.71866136313195, 0.0929157660600351], [-0.619609875763646, 0.104892091464541], [-0.509501477846007, 0.114996640222411], [-0.39030103803029, 0.123049084306729], [-0.264135680970344, 0.128905722188082], [-0.133256824298466, 0.132462039404696], [0, 0.133654572186106], [0.133256824298466, 0.132462039404696], [0.264135680970344, 0.128905722188082], [0.39030103803029, 0.123049084306729], [0.509501477846007, 0.114996640222411], [0.619609875763646, 0.104892091464541], [0.71866136313195, 0.0929157660600351], [0.804888401618839, 0.0792814117767189], [0.876752358270441, 0.0642324214085258], [0.932971086826016, 0.0480376717310846], [0.972542471218115, 0.0309880058569794], [0.994769334997552, 0.0134118594871417]], [[-0.995187219997021, 0.0123412297999872], [-0.974728555971309, 0.0285313886289336], [-0.938274552002732, 0.0442774388174198], [-0.886415527004401, 0.0592985849154367], [-0.820001985973902, 0.0733464814110803], [-0.740124191578554, 0.0861901615319532], [-0.648093651936975, 0.0976186521041138], [-0.545421471388839, 0.107444270115965], [-0.433793507626045, 0.115505668053725], [-0.315042679696163, 0.121670472927803], [-0.191118867473616, 0.125837456346828], [-0.0640568928626056, 0.127938195346752], [0.0640568928626056, 0.127938195346752], [0.191118867473616, 0.125837456346828], [0.315042679696163, 0.121670472927803], [0.433793507626045, 0.115505668053725], [0.545421471388839, 0.107444270115965], [0.648093651936975, 0.0976186521041138], [0.740124191578554, 0.0861901615319532], [0.820001985973902, 0.0733464814110803], [0.886415527004401, 0.0592985849154367], [0.938274552002732, 0.0442774388174198], [0.974728555971309, 0.0285313886289336], [0.995187219997021, 0.0123412297999872]], [[-0.995556969790498, 0.0113937985010262], [-0.976663921459517, 0.0263549866150321], [-0.942974571228974, 0.0409391567013063], [-0.894991997878275, 0.0549046959758351], [-0.833442628760834, 0.0680383338123569], [-0.759259263037357, 0.080140700335001], [-0.673566368473468, 0.0910282619829636], [-0.577662930241222, 0.10053594906705], [-0.473002731445714, 0.108519624474263], [-0.361172305809387, 0.114858259145711], [-0.243866883720988, 0.119455763535784], [-0.12286469261071, 0.12224244299031], [0, 0.123176053726715], [0.12286469261071, 0.12224244299031], [0.243866883720988, 0.119455763535784], [0.361172305809387, 0.114858259145711], [0.473002731445714, 0.108519624474263], [0.577662930241222, 0.10053594906705], [0.673566368473468, 0.0910282619829636], [0.759259263037357, 0.080140700335001], [0.833442628760834, 0.0680383338123569], [0.894991997878275, 0.0549046959758351], [0.942974571228974, 0.0409391567013063], [0.976663921459517, 0.0263549866150321], [0.995556969790498, 0.0113937985010262]], [[-0.995885701145616, 0.010551372617343], [-0.97838544595647, 0.0244178510926319], [-0.947159066661714, 0.0379623832943627], [-0.902637861984307, 0.0509758252971478], [-0.845445942788498, 0.0632740463295748], [-0.776385948820678, 0.0746841497656597], [-0.696427260419957, 0.0850458943134852], [-0.606692293017618, 0.0942138003559141], [-0.508440714824505, 0.102059161094425], [-0.403051755123486, 0.108471840528576], [-0.292004839485956, 0.113361816546319], [-0.17685882035689, 0.116660443485296], [-0.0592300934293132, 0.118321415279262], [0.0592300934293132, 0.118321415279262], [0.17685882035689, 0.116660443485296], [0.292004839485956, 0.113361816546319], [0.403051755123486, 0.108471840528576], [0.508440714824505, 0.102059161094425], [0.606692293017618, 0.0942138003559141], [0.696427260419957, 0.0850458943134852], [0.776385948820678, 0.0746841497656597], [0.845445942788498, 0.0632740463295748], [0.902637861984307, 0.0509758252971478], [0.947159066661714, 0.0379623832943627], [0.97838544595647, 0.0244178510926319], [0.995885701145616, 0.010551372617343]], [[-0.996179262888988, 0.00979899605129436], [-0.979923475961501, 0.0226862315961806], [-0.950900557814705, 0.0352970537574197], [-0.909482320677491, 0.047449412520615], [-0.856207908018294, 0.0589835368598335], [-0.791771639070508, 0.0697488237662455], [-0.717013473739423, 0.0796048677730577], [-0.632907971946495, 0.0884231585437569], [-0.540551564579456, 0.0960887273700285], [-0.441148251750026, 0.102501637817745], [-0.335993903638508, 0.107578285788533], [-0.226459365439536, 0.111252488356845], [-0.113972585609529, 0.113476346108965], [0, 0.114220867378956], [0.113972585609529, 0.113476346108965], [0.226459365439536, 0.111252488356845], [0.335993903638508, 0.107578285788533], [0.441148251750026, 0.102501637817745], [0.540551564579456, 0.0960887273700285], [0.632907971946495, 0.0884231585437569], [0.717013473739423, 0.0796048677730577], [0.791771639070508, 0.0697488237662455], [0.856207908018294, 0.0589835368598336], [0.909482320677491, 0.047449412520615], [0.950900557814705, 0.0352970537574197], [0.979923475961501, 0.0226862315961806], [0.996179262888988, 0.00979899605129436]], [[-0.996442497573954, 0.00912428259309452], [-0.981303165370872, 0.0211321125927712], [-0.954259280628938, 0.0329014277823043], [-0.915633026392132, 0.0442729347590042], [-0.865892522574395, 0.0551073456757167], [-0.805641370917179, 0.0652729239669995], [-0.735610878013631, 0.0746462142345687], [-0.656651094038864, 0.0831134172289012], [-0.569720471811401, 0.0905717443930328], [-0.475874224955118, 0.0969306579979299], [-0.376251516089078, 0.10211296757806], [-0.272061627635178, 0.106055765922846], [-0.16456928213338, 0.108711192258294], [-0.0550792898840342, 0.110047013016475], [0.0550792898840342, 0.110047013016475], [0.16456928213338, 0.108711192258294], [0.272061627635178, 0.106055765922846], [0.376251516089078, 0.10211296757806], [0.475874224955118, 0.0969306579979299], [0.569720471811401, 0.0905717443930328], [0.656651094038864, 0.0831134172289012], [0.735610878013631, 0.0746462142345687], [0.805641370917179, 0.0652729239669995], [0.865892522574395, 0.0551073456757167], [0.915633026392132, 0.0442729347590042], [0.954259280628938, 0.0329014277823043], [0.981303165370872, 0.0211321125927712], [0.996442497573954, 0.00912428259309452]], [[-0.996679442260596, 0.00851690387874641], [-0.982545505261413, 0.0197320850561227], [-0.957285595778087, 0.0307404922020936], [-0.921180232953058, 0.0414020625186828], [-0.874637804920102, 0.0515948269024979], [-0.818185487615252, 0.0612030906570791], [-0.752462851734477, 0.0701179332550512], [-0.678214537602686, 0.0782383271357637], [-0.596281797138227, 0.0854722573661725], [-0.507592955124227, 0.0917377571392587], [-0.413152888174008, 0.0969638340944086], [-0.314031637867639, 0.101091273759914], [-0.211352286166001, 0.104073310077729], [-0.106278230132679, 0.10587615509732], [0, 0.106479381718314], [0.106278230132679, 0.10587615509732], [0.211352286166001, 0.104073310077729], [0.314031637867639, 0.101091273759914], [0.413152888174008, 0.0969638340944086], [0.507592955124227, 0.0917377571392587], [0.596281797138227, 0.0854722573661725], [0.678214537602686, 0.0782383271357637], [0.752462851734477, 0.0701179332550512], [0.818185487615252, 0.0612030906570791], [0.874637804920102, 0.0515948269024979], [0.921180232953058, 0.0414020625186828], [0.957285595778087, 0.0307404922020936], [0.982545505261413, 0.0197320850561227], [0.996679442260596, 0.00851690387874641]], [[-0.996893484074649, 0.0079681924961666], [-0.983668123279747, 0.0184664683110909], [-0.960021864968307, 0.0287847078833233], [-0.926200047429274, 0.038799192569627], [-0.882560535792052, 0.048402672830594], [-0.829565762382768, 0.057493156217619], [-0.767777432104826, 0.0659742298821805], [-0.697850494793315, 0.0737559747377052], [-0.620526182989242, 0.0807558952294202], [-0.536624148142019, 0.0868997872010829], [-0.447033769538089, 0.0921225222377861], [-0.352704725530878, 0.0963687371746442], [-0.254636926167889, 0.0995934205867952], [-0.153869913608583, 0.101762389748405], [-0.0514718425553176, 0.102852652893558], [0.0514718425553176, 0.102852652893558], [0.153869913608583, 0.101762389748405], [0.254636926167889, 0.0995934205867952], [0.352704725530878, 0.0963687371746442], [0.447033769538089, 0.0921225222377861], [0.536624148142019, 0.0868997872010829], [0.620526182989242, 0.0807558952294202], [0.697850494793315, 0.0737559747377052], [0.767777432104826, 0.0659742298821805], [0.829565762382768, 0.057493156217619], [0.882560535792052, 0.048402672830594], [0.926200047429274, 0.038799192569627], [0.960021864968307, 0.0287847078833233], [0.983668123279747, 0.0184664683110909], [0.996893484074649, 0.0079681924961666]]], maxOrder = lut.length + 5;
+        var NumericalCurveMapper = function(_super) {
+          function NumericalCurveMapper2(nQuadraturePoints, nInverseSamples, onInvalidateCache) {
+            void 0 === nQuadraturePoints && (nQuadraturePoints = 24), void 0 === nInverseSamples && (nInverseSamples = 21);
+            var _this = _super.call(this, onInvalidateCache) || this;
+            return _this._nSamples = 21, _this._gauss = function(order) {
+              if (order < 5 || order > maxOrder)
+                throw Error("Order for Gaussian Quadrature must be in the range of ".concat(5, " and ").concat(maxOrder, "."));
+              return lut[order - 5];
+            }(nQuadraturePoints), _this._nSamples = nInverseSamples, _this;
+          }
+          return __extends2(NumericalCurveMapper2, _super), NumericalCurveMapper2.prototype._invalidateCache = function() {
+            _super.prototype._invalidateCache.call(this), this._cache.arcLengths = null, this._cache.samples = null;
+          }, Object.defineProperty(NumericalCurveMapper2.prototype, "arcLengths", { get: function() {
+            return this._cache.arcLengths || (this._cache.arcLengths = this.computeArcLengths()), this._cache.arcLengths;
+          }, enumerable: false, configurable: true }), NumericalCurveMapper2.prototype.getSamples = function(idx) {
+            if (this.points) {
+              if (this._cache.samples || (this._cache.samples = /* @__PURE__ */ new Map()), !this._cache.samples.has(idx)) {
+                for (var samples = this._nSamples, lengths = [], slopes = [], coefficients = this.getCoefficients(idx), i = 0; i < samples; ++i) {
+                  var ti = i / (samples - 1);
+                  lengths.push(this.computeArcLength(idx, 0, ti));
+                  var dtln = magnitude(evaluateForT(derivativeAtT, ti, coefficients)), slope = 0 === dtln ? 0 : 1 / dtln;
+                  this.tension > 0.95 && (slope = clamp(slope, -1, 1)), slopes.push(slope);
+                }
+                var nCoeff = samples - 1, dis = [], cis = [], li_prev = lengths[0], tdi_prev = slopes[0], step = 1 / nCoeff;
+                for (i = 0; i < nCoeff; ++i) {
+                  var li = li_prev, lDiff = (li_prev = lengths[i + 1]) - li, tdi = tdi_prev, tdi_next = slopes[i + 1];
+                  tdi_prev = tdi_next;
+                  var si = step / lDiff, di = (tdi + tdi_next - 2 * si) / (lDiff * lDiff), ci = (3 * si - 2 * tdi - tdi_next) / lDiff;
+                  dis.push(di), cis.push(ci);
+                }
+                this._cache.samples.set(idx, [lengths, slopes, cis, dis]);
+              }
+              return this._cache.samples.get(idx);
+            }
+          }, NumericalCurveMapper2.prototype.computeArcLength = function(index, t0, t1) {
+            if (void 0 === t0 && (t0 = 0), void 0 === t1 && (t1 = 1), t0 === t1)
+              return 0;
+            for (var coefficients = this.getCoefficients(index), z = 0.5 * (t1 - t0), sum = 0, i = 0; i < this._gauss.length; i++) {
+              var _a2 = this._gauss[i], T = _a2[0];
+              sum += _a2[1] * magnitude(evaluateForT(derivativeAtT, z * T + z + t0, coefficients));
+            }
+            return z * sum;
+          }, NumericalCurveMapper2.prototype.computeArcLengths = function() {
+            if (this.points) {
+              var lengths = [];
+              lengths.push(0);
+              for (var nPoints = this.closed ? this.points.length : this.points.length - 1, tl = 0, i = 0; i < nPoints; i++) {
+                tl += this.computeArcLength(i), lengths.push(tl);
+              }
+              return lengths;
+            }
+          }, NumericalCurveMapper2.prototype.inverse = function(idx, len) {
+            var step = 1 / (this._nSamples - 1), _a2 = this.getSamples(idx), lengths = _a2[0], slopes = _a2[1], cis = _a2[2], dis = _a2[3];
+            if (len >= lengths[lengths.length - 1])
+              return 1;
+            if (len <= 0)
+              return 0;
+            var i = Math.max(0, binarySearch(len, lengths)), ti = i * step;
+            if (lengths[i] === len)
+              return ti;
+            var tdi = slopes[i], di = dis[i], ci = cis[i], ld = len - lengths[i];
+            return ((di * ld + ci) * ld + tdi) * ld + ti;
+          }, NumericalCurveMapper2.prototype.lengthAt = function(u) {
+            return u * this.arcLengths[this.arcLengths.length - 1];
+          }, NumericalCurveMapper2.prototype.getT = function(u) {
+            var arcLengths = this.arcLengths, il = arcLengths.length, targetArcLength = u * arcLengths[il - 1], i = binarySearch(targetArcLength, arcLengths), ti = i / (il - 1);
+            if (arcLengths[i] === targetArcLength)
+              return ti;
+            var len = targetArcLength - arcLengths[i];
+            return (i + this.inverse(i, len)) / (il - 1);
+          }, NumericalCurveMapper2.prototype.getU = function(t) {
+            if (0 === t)
+              return 0;
+            if (1 === t)
+              return 1;
+            var arcLengths = this.arcLengths, al = arcLengths.length - 1, totalLength = arcLengths[al], tIdx = t * al, subIdx = Math.floor(tIdx), l1 = arcLengths[subIdx];
+            if (tIdx === subIdx)
+              return l1 / totalLength;
+            var t0 = tIdx - subIdx;
+            return (l1 + this.computeArcLength(subIdx, 0, t0)) / totalLength;
+          }, NumericalCurveMapper2;
+        }(AbstractCurveMapper), CurveInterpolator2 = function() {
+          function CurveInterpolator3(points, options2) {
+            void 0 === options2 && (options2 = {});
+            var _this = this;
+            this._cache = /* @__PURE__ */ new Map();
+            var curveMapper = (options2 = __assign2({ tension: 0.5, alpha: 0, closed: false }, options2)).arcDivisions ? new SegmentedCurveMapper(options2.arcDivisions, function() {
+              return _this._invalidateCache();
+            }) : new NumericalCurveMapper(options2.numericalApproximationOrder, options2.numericalInverseSamples, function() {
+              return _this._invalidateCache();
+            });
+            curveMapper.alpha = options2.alpha, curveMapper.tension = options2.tension, curveMapper.closed = options2.closed, curveMapper.points = points, this._lmargin = options2.lmargin || 1 - curveMapper.tension, this._curveMapper = curveMapper;
+          }
+          return CurveInterpolator3.prototype.getTimeFromPosition = function(position, clampInput) {
+            return void 0 === clampInput && (clampInput = false), this._curveMapper.getT(clampInput ? clamp(position, 0, 1) : position);
+          }, CurveInterpolator3.prototype.getPositionFromTime = function(t, clampInput) {
+            return void 0 === clampInput && (clampInput = false), this._curveMapper.getU(clampInput ? clamp(t, 0, 1) : t);
+          }, CurveInterpolator3.prototype.getPositionFromLength = function(length, clampInput) {
+            void 0 === clampInput && (clampInput = false);
+            var l = clampInput ? clamp(length, 0, this.length) : length;
+            return this._curveMapper.getU(l / this.length);
+          }, CurveInterpolator3.prototype.getLengthAt = function(position, clampInput) {
+            return void 0 === position && (position = 1), void 0 === clampInput && (clampInput = false), this._curveMapper.lengthAt(clampInput ? clamp(position, 0, 1) : position);
+          }, CurveInterpolator3.prototype.getTimeAtKnot = function(index) {
+            if (index < 0 || index > this.points.length - 1)
+              throw Error("Invalid index!");
+            return 0 === index ? 0 : this.closed || index !== this.points.length - 1 ? index / (this.closed ? this.points.length : this.points.length - 1) : 1;
+          }, CurveInterpolator3.prototype.getPositionAtKnot = function(index) {
+            return this.getPositionFromTime(this.getTimeAtKnot(index));
+          }, CurveInterpolator3.prototype.getPointAtTime = function(t, target) {
+            return 0 === (t = clamp(t, 0, 1)) ? copyValues(this.points[0], target) : 1 === t ? copyValues(this.closed ? this.points[0] : this.points[this.points.length - 1], target) : this._curveMapper.evaluateForT(valueAtT, t, target);
+          }, CurveInterpolator3.prototype.getPointAt = function(position, target) {
+            return this.getPointAtTime(this.getTimeFromPosition(position), target);
+          }, CurveInterpolator3.prototype.getTangentAt = function(position, target) {
+            var t = clamp(this.getTimeFromPosition(position), 0, 1);
+            return this.getTangentAtTime(t, target);
+          }, CurveInterpolator3.prototype.getTangentAtTime = function(t, target) {
+            return normalize2(this._curveMapper.evaluateForT(derivativeAtT, t, target));
+          }, CurveInterpolator3.prototype.getNormalAt = function(position, target) {
+            var t = clamp(this.getTimeFromPosition(position), 0, 1);
+            return this.getNormalAtTime(t, target);
+          }, CurveInterpolator3.prototype.getNormalAtTime = function(t, target) {
+            var dt = normalize2(this._curveMapper.evaluateForT(derivativeAtT, t));
+            if (!(dt.length < 2 || dt.length > 3)) {
+              var normal = target || new Array(dt.length);
+              if (2 === dt.length)
+                return normal[0] = -dt[1], normal[1] = dt[0], normal;
+              var ddt = normalize2(this._curveMapper.evaluateForT(secondDerivativeAtT, t));
+              return normalize2(cross(cross(dt, ddt), dt), normal);
+            }
+          }, CurveInterpolator3.prototype.getCurvatureAt = function(position) {
+            var t = clamp(this.getTimeFromPosition(position), 0, 1);
+            return this.getCurvatureAtTime(t);
+          }, CurveInterpolator3.prototype.getCurvatureAtTime = function(t) {
+            var dt = this._curveMapper.evaluateForT(derivativeAtT, t), ddt = this._curveMapper.evaluateForT(secondDerivativeAtT, t), tangent = normalize2(dt, []), curvature = 0, direction = void 0;
+            if (2 === dt.length) {
+              if (0 !== (denominator = Math.pow(dt[0] * dt[0] + dt[1] * dt[1], 1.5))) {
+                var signedCurvature = (dt[0] * ddt[1] - dt[1] * ddt[0]) / denominator;
+                direction = signedCurvature < 0 ? [tangent[1], -tangent[0]] : [-tangent[1], tangent[0]], curvature = Math.abs(signedCurvature);
+              }
+            } else if (3 === dt.length) {
+              var a = magnitude(dt), cp = cross(dt, ddt);
+              direction = normalize2(cross(cp, dt)), 0 !== a && (curvature = magnitude(cp) / Math.pow(a, 3));
+            } else {
+              a = magnitude(dt);
+              var b = magnitude(ddt), denominator = Math.pow(a, 3), dotProduct = dot(dt, ddt);
+              0 !== denominator && (curvature = Math.sqrt(Math.pow(a, 2) * Math.pow(b, 2) - Math.pow(dotProduct, 2)) / denominator);
+            }
+            return { curvature, radius: 0 !== curvature ? 1 / curvature : 0, tangent, direction };
+          }, CurveInterpolator3.prototype.getDerivativeAt = function(position, target) {
+            var t = clamp(this.getTimeFromPosition(position), 0, 1);
+            return this._curveMapper.evaluateForT(derivativeAtT, t, target);
+          }, CurveInterpolator3.prototype.getSecondDerivativeAt = function(position, target) {
+            var t = clamp(this.getTimeFromPosition(position), 0, 1);
+            return this._curveMapper.evaluateForT(secondDerivativeAtT, t, target);
+          }, CurveInterpolator3.prototype.getBoundingBox = function(from, to) {
+            if (void 0 === from && (from = 0), void 0 === to && (to = 1), 0 === from && 1 === to && this._cache.has("bbox"))
+              return this._cache.get("bbox");
+            for (var min3 = [], max3 = [], t0 = this.getTimeFromPosition(from), t1 = this.getTimeFromPosition(to), start = this.getPointAtTime(t0), end = this.getPointAtTime(t1), nPoints = this.closed ? this.points.length : this.points.length - 1, i0 = Math.floor(nPoints * t0), i1 = Math.ceil(nPoints * t1), c = 0; c < start.length; c++)
+              min3[c] = Math.min(start[c], end[c]), max3[c] = Math.max(start[c], end[c]);
+            for (var _loop_1 = function(i2) {
+              var p22 = getControlPoints(i2 - 1, this_1.points, this_1.closed)[2];
+              if (i2 < i1)
+                for (var c2 = 0; c2 < p22.length; c2++)
+                  p22[c2] < min3[c2] && (min3[c2] = p22[c2]), p22[c2] > max3[c2] && (max3[c2] = p22[c2]);
+              if (this_1.tension < 1) {
+                var w0_1 = nPoints * t0 - (i2 - 1), w1_1 = nPoints * t1 - (i2 - 1), valid = function(t) {
+                  return t > -EPS && t <= 1 + EPS && (i2 - 1 !== i0 || t > w0_1) && (i2 !== i1 || t < w1_1);
+                }, coefficients_1 = this_1._curveMapper.getCoefficients(i2 - 1), _loop_2 = function(c3) {
+                  var _b = coefficients_1[c3];
+                  getQuadRoots(3 * _b[0], 2 * _b[1], _b[2]).filter(valid).forEach(function(t) {
+                    var v = valueAtT(t, coefficients_1[c3]);
+                    v < min3[c3] && (min3[c3] = v), v > max3[c3] && (max3[c3] = v);
+                  });
+                };
+                for (c2 = 0; c2 < coefficients_1.length; c2++)
+                  _loop_2(c2);
+              }
+            }, this_1 = this, i = i0 + 1; i <= i1; i++)
+              _loop_1(i);
+            var bbox = { min: min3, max: max3 };
+            return 0 === from && 1 === to && this._cache.set("bbox", bbox), bbox;
+          }, CurveInterpolator3.prototype.getPoints = function(segments, returnType, from, to) {
+            if (void 0 === segments && (segments = 100), void 0 === from && (from = 0), void 0 === to && (to = 1), !segments || segments <= 0)
+              throw Error("Invalid arguments passed to getPoints(). You must specify at least 1 sample/segment.");
+            if (!(from < 0 || to > 1 || to < from)) {
+              for (var pts = [], d = 0; d <= segments; d++) {
+                var u = 0 === from && 1 === to ? d / segments : from + d / segments * (to - from);
+                pts.push(this.getPointAt(u, returnType && new returnType()));
+              }
+              return pts;
+            }
+          }, CurveInterpolator3.prototype.getNearestPosition = function(point, threshold) {
+            var _this = this;
+            if (void 0 === threshold && (threshold = 1e-5), threshold <= 0 || !Number.isFinite(threshold))
+              throw Error("Invalid threshold. Must be a number greater than zero!");
+            var samples = 10 * this.points.length - 1, pu = new Array(point.length), minDist = 1 / 0, minU = 0, lut2 = this.createLookupTable(samples);
+            Array.from(lut2.keys()).forEach(function(key) {
+              var c = lut2.get(key), dist = distance(point, c);
+              if (dist < minDist)
+                return minDist = dist, minU = key, true;
+            });
+            for (var minT = this.getTimeFromPosition(minU), bisect = function(t) {
+              if (t >= 0 && t <= 1) {
+                _this.getPointAtTime(t, pu);
+                var dist = distance(point, pu);
+                if (dist < minDist)
+                  return minDist = dist, minT = t, true;
+              }
+            }, step = 5e-3; step > threshold; )
+              bisect(minT - step) || bisect(minT + step) || (step /= 2);
+            return { u: minU = this._curveMapper.getU(minT), distance: minDist, point: pu };
+          }, CurveInterpolator3.prototype.getIntersects = function(v, axis, max3, margin) {
+            var _this = this;
+            void 0 === axis && (axis = 0), void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
+            var solutions = this.getIntersectsAsTime(v, axis, max3, margin).map(function(t) {
+              return _this.getPointAtTime(t);
+            });
+            return 1 === Math.abs(max3) ? 1 === solutions.length ? solutions[0] : null : solutions;
+          }, CurveInterpolator3.prototype.getIntersectsAsPositions = function(v, axis, max3, margin) {
+            var _this = this;
+            return void 0 === axis && (axis = 0), void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin), this.getIntersectsAsTime(v, axis, max3, margin).map(function(t) {
+              return _this.getPositionFromTime(t);
+            });
+          }, CurveInterpolator3.prototype.getIntersectsAsTime = function(v, axis, max3, margin) {
+            void 0 === axis && (axis = 0), void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
+            for (var k = axis, solutions = /* @__PURE__ */ new Set(), nPoints = this.closed ? this.points.length : this.points.length - 1, i = 0; i < nPoints && (0 === max3 || solutions.size < Math.abs(max3)); i += 1) {
+              var idx = max3 < 0 ? nPoints - (i + 1) : i, _a2 = getControlPoints(idx, this.points, this.closed), p1 = _a2[1], p22 = _a2[2], coefficients = this._curveMapper.getCoefficients(idx), vmin = void 0, vmax = void 0;
+              if (p1[k] < p22[k] ? (vmin = p1[k], vmax = p22[k]) : (vmin = p22[k], vmax = p1[k]), v - margin <= vmax && v + margin >= vmin) {
+                var ts = findRootsOfT(v, coefficients[k]);
+                max3 < 0 ? ts.sort(function(a, b) {
+                  return b - a;
+                }) : max3 >= 0 && ts.sort(function(a, b) {
+                  return a - b;
+                });
+                for (var j = 0; j < ts.length; j++) {
+                  var nt = (ts[j] + idx) / nPoints;
+                  if (solutions.add(nt), 0 !== max3 && solutions.size === Math.abs(max3))
+                    break;
+                }
+              }
+            }
+            return Array.from(solutions);
+          }, CurveInterpolator3.prototype.createLookupTable = function(samples, from, to) {
+            if (void 0 === from && (from = 0), void 0 === to && (to = 1), !samples || samples <= 1)
+              throw Error("Invalid arguments passed to createLookupTable(). You must specify at least 2 samples.");
+            if (!(from < 0 || to > 1 || to < from)) {
+              var cacheKey = "lut_".concat(samples, "_").concat(from, "_").concat(to);
+              if (!this._cache.has(cacheKey)) {
+                for (var lut2 = /* @__PURE__ */ new Map(), d = 0; d < samples; d++) {
+                  var u = 0 === from && 1 === to ? d / (samples - 1) : from + d / (samples - 1) * (to - from), point = this.getPointAt(u);
+                  lut2.set(u, point);
+                }
+                this._cache.set(cacheKey, lut2);
+              }
+              return this._cache.get(cacheKey);
+            }
+          }, CurveInterpolator3.prototype.forEach = function(func, samples, from, to) {
+            var _this = this;
+            void 0 === from && (from = 0), void 0 === to && (to = 1);
+            var positions = [];
+            if (Number.isFinite(samples)) {
+              if (samples <= 1)
+                throw Error("Invalid arguments passed to forEach(). You must specify at least 2 samples.");
+              for (var nSamples = samples, i = 0; i < samples; i++) {
+                var u = 0 === from && 1 === to ? i / (nSamples - 1) : from + i / (nSamples - 1) * (to - from);
+                positions.push(u);
+              }
+            } else
+              Array.isArray(samples) && (positions = samples);
+            var prev = null;
+            positions.forEach(function(u2, i2) {
+              if (!Number.isFinite(u2) || u2 < 0 || u2 > 1)
+                throw Error("Invalid position (u) for sample in forEach!");
+              var t = _this.getTimeFromPosition(u2), current = func({ u: u2, t, i: i2, prev });
+              prev = { u: u2, t, i: i2, value: current };
+            });
+          }, CurveInterpolator3.prototype.map = function(func, samples, from, to) {
+            var _this = this;
+            void 0 === from && (from = 0), void 0 === to && (to = 1);
+            var positions = [];
+            if (Number.isFinite(samples)) {
+              if (samples <= 1)
+                throw Error("Invalid arguments passed to map(). You must specify at least 2 samples.");
+              for (var nSamples = samples, i = 0; i < samples; i++) {
+                var u = 0 === from && 1 === to ? i / (nSamples - 1) : from + i / (nSamples - 1) * (to - from);
+                positions.push(u);
+              }
+            } else
+              Array.isArray(samples) && (positions = samples);
+            var prev = null;
+            return positions.map(function(u2, i2) {
+              if (!Number.isFinite(u2) || u2 < 0 || u2 > 1)
+                throw Error("Invalid position (u) for sample in map()!");
+              var t = _this.getTimeFromPosition(u2), current = func({ u: u2, t, i: i2, prev });
+              return prev = { u: u2, t, i: i2, value: current }, current;
+            });
+          }, CurveInterpolator3.prototype.reduce = function(func, initialValue, samples, from, to) {
+            var _this = this;
+            void 0 === from && (from = 0), void 0 === to && (to = 1);
+            var positions = [];
+            if (Number.isFinite(samples)) {
+              if (samples <= 1)
+                throw Error("Invalid arguments passed to map(). You must specify at least 2 samples.");
+              for (var nSamples = samples, i = 0; i < samples; i++) {
+                var u = 0 === from && 1 === to ? i / (nSamples - 1) : from + i / (nSamples - 1) * (to - from);
+                positions.push(u);
+              }
+            } else
+              Array.isArray(samples) && (positions = samples);
+            return positions.reduce(function(acc, u2, i2) {
+              if (!Number.isFinite(u2) || u2 < 0 || u2 > 1)
+                throw Error("Invalid position (u) for sample in map()!");
+              var t = _this.getTimeFromPosition(u2);
+              return func({ acc, u: u2, t, i: i2 });
+            }, initialValue);
+          }, CurveInterpolator3.prototype._invalidateCache = function() {
+            return this._cache = /* @__PURE__ */ new Map(), this;
+          }, CurveInterpolator3.prototype.reset = function() {
+            this._curveMapper.reset();
+          }, Object.defineProperty(CurveInterpolator3.prototype, "points", { get: function() {
+            return this._curveMapper.points;
+          }, set: function(pts) {
+            this._curveMapper.points = pts;
+          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "tension", { get: function() {
+            return this._curveMapper.tension;
+          }, set: function(t) {
+            this._curveMapper.tension = t;
+          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "alpha", { get: function() {
+            return this._curveMapper.alpha;
+          }, set: function(a) {
+            this._curveMapper.alpha = a;
+          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "closed", { get: function() {
+            return this._curveMapper.closed;
+          }, set: function(isClosed) {
+            this._curveMapper.closed = isClosed;
+          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "length", { get: function() {
+            return this._curveMapper.lengthAt(1);
+          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "minX", { get: function() {
+            return this.getBoundingBox().min[0];
+          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "maxX", { get: function() {
+            return this.getBoundingBox().max[0];
+          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "minY", { get: function() {
+            return this.getBoundingBox().min[1];
+          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "maxY", { get: function() {
+            return this.getBoundingBox().max[1];
+          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "minZ", { get: function() {
+            return this.getBoundingBox().min[2];
+          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "maxZ", { get: function() {
+            return this.getBoundingBox().max[2];
+          }, enumerable: false, configurable: true }), CurveInterpolator3;
+        }(), Point = function() {
+          function Point2(x, y, z, w) {
+            void 0 === x && (x = 0), void 0 === y && (y = 0), void 0 === z && (z = null), void 0 === w && (w = null), this.x = x, this.y = y, this.z = z, this.w = w;
+          }
+          return Object.defineProperty(Point2.prototype, 0, { get: function() {
+            return this.x;
+          }, set: function(x) {
+            this.x = x;
+          }, enumerable: false, configurable: true }), Object.defineProperty(Point2.prototype, 1, { get: function() {
+            return this.y;
+          }, set: function(y) {
+            this.y = y;
+          }, enumerable: false, configurable: true }), Object.defineProperty(Point2.prototype, 2, { get: function() {
+            return this.z;
+          }, set: function(z) {
+            this.z = z;
+          }, enumerable: false, configurable: true }), Object.defineProperty(Point2.prototype, 3, { get: function() {
+            return this.w;
+          }, set: function(w) {
+            this.w = w;
+          }, enumerable: false, configurable: true }), Object.defineProperty(Point2.prototype, "length", { get: function() {
+            return Number.isFinite(this.w) ? 4 : Number.isFinite(this.z) ? 3 : 2;
+          }, enumerable: false, configurable: true }), Point2;
+        }(), CurveInterpolator2D = function(_super) {
+          function CurveInterpolator2D2(points, tension, arcDivisions, closed, alpha) {
+            return void 0 === tension && (tension = 0.5), void 0 === arcDivisions && (arcDivisions = 300), void 0 === closed && (closed = false), void 0 === alpha && (alpha = 0), _super.call(this, points.map(function(p3) {
+              return [p3[0], p3[1]];
+            }), { tension, alpha, arcDivisions, closed }) || this;
+          }
+          return __extends2(CurveInterpolator2D2, _super), CurveInterpolator2D2.prototype.x = function(y, max3, margin) {
+            void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
+            var res = this.getIntersects(y, 1, max3, margin);
+            return 1 === Math.abs(max3) ? res[0] : res.map(function(d) {
+              return d[0];
+            });
+          }, CurveInterpolator2D2.prototype.y = function(x, max3, margin) {
+            void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
+            var res = this.getIntersects(x, 0, max3, margin);
+            return 1 === Math.abs(max3) ? res[1] : res.map(function(d) {
+              return d[1];
+            });
+          }, CurveInterpolator2D2.prototype.getNormalAt = function(position, target) {
+            return normalize2(orthogonal(this.getTangentAt(position, target)));
+          }, CurveInterpolator2D2.prototype.getAngleAt = function(position) {
+            var tan = this.getTangentAt(position);
+            return Math.atan2(tan[1], tan[0]);
+          }, CurveInterpolator2D2.prototype.getBoundingBox = function(from, to) {
+            void 0 === from && (from = 0), void 0 === to && (to = 1);
+            var bbox = _super.prototype.getBoundingBox.call(this, from, to);
+            return { x1: bbox.min[0], x2: bbox.max[0], y1: bbox.min[1], y2: bbox.max[1], min: bbox.min, max: bbox.max };
+          }, CurveInterpolator2D2;
+        }(CurveInterpolator2);
+        function getPointAtT(t, points, options2, target) {
+          void 0 === options2 && (options2 = {});
+          var _a2 = getSegmentIndexAndT(t, points, !!options2.closed), index = _a2.index, weight = _a2.weight, _b = getControlPoints(index, points, !!options2.closed), p0 = _b[0];
+          return evaluateForT(valueAtT, weight, calculateCoefficients(p0, _b[1], _b[2], _b[3], options2), target = target || new Array(p0.length));
+        }
+        exports2.CurveInterpolator = CurveInterpolator2, exports2.CurveInterpolator2D = CurveInterpolator2D, exports2.EPS = EPS, exports2.LinearCurveMapper = SegmentedCurveMapper, exports2.NumericalCurveMapper = NumericalCurveMapper, exports2.Point = Point, exports2.binarySearch = binarySearch, exports2.calcKnotSequence = calcKnotSequence, exports2.calculateCoefficients = calculateCoefficients, exports2.clamp = clamp, exports2.copyValues = copyValues, exports2.cross = cross, exports2.derivativeAtT = derivativeAtT, exports2.distance = distance, exports2.dot = dot, exports2.evaluateForT = evaluateForT, exports2.extrapolateControlPoint = extrapolateControlPoint, exports2.fill = fill, exports2.findRootsOfT = findRootsOfT, exports2.getBoundingBox = function(points, options2) {
+          void 0 === options2 && (options2 = {});
+          for (var _a2 = __assign2({ tension: 0.5, alpha: 0, closed: false, from: 0, to: 1 }, options2), tension = _a2.tension, alpha = _a2.alpha, closed = _a2.closed, t0 = _a2.from, t1 = _a2.to, nPoints = closed ? points.length : points.length - 1, i0 = Math.floor(nPoints * t0), i1 = Math.ceil(nPoints * t1), start = getPointAtT(t0, points, { tension, alpha, closed }), end = getPointAtT(t1, points, { tension, alpha, closed }), min3 = [], max3 = [], c = 0; c < start.length; c++)
+            min3[c] = Math.min(start[c], end[c]), max3[c] = Math.max(start[c], end[c]);
+          for (var _loop_1 = function(i2) {
+            var _b = getControlPoints(i2 - 1, points, closed), p0 = _b[0], p1 = _b[1], p22 = _b[2], p3 = _b[3];
+            if (i2 < i1)
+              for (var c2 = 0; c2 < p22.length; c2++)
+                p22[c2] < min3[c2] && (min3[c2] = p22[c2]), p22[c2] > max3[c2] && (max3[c2] = p22[c2]);
+            if (tension < 1) {
+              var w0_1 = nPoints * t0 - (i2 - 1), w1_1 = nPoints * t1 - (i2 - 1), valid = function(t) {
+                return t > -EPS && t <= 1 + EPS && (i2 - 1 !== i0 || t > w0_1) && (i2 !== i1 || t < w1_1);
+              }, coefficients_1 = calculateCoefficients(p0, p1, p22, p3, { tension, alpha }), _loop_2 = function(c3) {
+                var _c = coefficients_1[c3];
+                getQuadRoots(3 * _c[0], 2 * _c[1], _c[2]).filter(valid).forEach(function(t) {
+                  var v = valueAtT(t, coefficients_1[c3]);
+                  v < min3[c3] && (min3[c3] = v), v > max3[c3] && (max3[c3] = v);
+                });
+              };
+              for (c2 = 0; c2 < coefficients_1.length; c2++)
+                _loop_2(c2);
+            }
+          }, i = i0 + 1; i <= i1; i++)
+            _loop_1(i);
+          return { min: min3, max: max3 };
+        }, exports2.getControlPoints = getControlPoints, exports2.getCubicRoots = getCubicRoots, exports2.getPointAtT = getPointAtT, exports2.getQuadRoots = getQuadRoots, exports2.getSegmentIndexAndT = getSegmentIndexAndT, exports2.getTangentAtT = function(t, points, options2, target) {
+          void 0 === options2 && (options2 = {});
+          var _a2 = getSegmentIndexAndT(t, points, !!options2.closed), index = _a2.index, weight = _a2.weight, _b = getControlPoints(index, points, !!options2.closed), p0 = _b[0];
+          return evaluateForT(derivativeAtT, weight, calculateCoefficients(p0, _b[1], _b[2], _b[3], options2), target = target || new Array(p0.length));
+        }, exports2.magnitude = magnitude, exports2.map = map6, exports2.normalize = normalize2, exports2.orthogonal = orthogonal, exports2.positionsLookup = function(lookup5, points, options2) {
+          for (var _a2 = __assign2({ axis: 0, closed: false, margin: 0.5, max: 0 }, options2), axis = _a2.axis, closed = _a2.closed, margin = _a2.margin, max3 = _a2.max, k = axis, solutions = /* @__PURE__ */ new Set(), nPoints = closed ? points.length : points.length - 1, i = 0; i < nPoints; i += 1) {
+            var idx = max3 < 0 ? points.length - i : i, _b = getControlPoints(i, points, closed), p0 = _b[0], p1 = _b[1], p22 = _b[2], coefficients = calculateCoefficients(p0, p1, p22, _b[3], options2), vmin = void 0, vmax = void 0;
+            if (p1[k] < p22[k] ? (vmin = p1[k], vmax = p22[k]) : (vmin = p22[k], vmax = p1[k]), lookup5 - margin <= vmax && lookup5 + margin >= vmin) {
+              var ts = findRootsOfT(lookup5, coefficients[k]);
+              max3 < 0 ? ts.sort(function(a, b) {
+                return b - a;
+              }) : max3 >= 0 && ts.sort(function(a, b) {
+                return a - b;
+              });
+              for (var j = 0; j < ts.length; j++)
+                if (!(0 === ts[j] && i > 0)) {
+                  var nt = (ts[j] + idx) / nPoints;
+                  if (solutions.add(nt), solutions.size === Math.abs(max3))
+                    return Array.from(solutions);
+                }
+            }
+          }
+          return Array.from(solutions);
+        }, exports2.reduce = reduce6, exports2.secondDerivativeAtT = secondDerivativeAtT, exports2.simplify2d = function(inputArr, maxOffset, maxDistance) {
+          var _a2;
+          if (void 0 === maxOffset && (maxOffset = 1e-3), void 0 === maxDistance && (maxDistance = 10), inputArr.length <= 4)
+            return inputArr;
+          for (var _b = inputArr[0], o0 = _b[0], o1 = _b[1], arr = inputArr.map(function(d) {
+            return [d[0] - o0, d[1] - o1];
+          }), _c = arr[0], a0 = _c[0], a1 = _c[1], sim = [inputArr[0]], i = 1; i + 1 < arr.length; i++) {
+            var _d = arr[i], t0 = _d[0], t1 = _d[1], _e = arr[i + 1], b0 = _e[0], b1 = _e[1];
+            if (b0 - t0 != 0 || b1 - t1 != 0) {
+              var proximity = Math.abs(a0 * b1 - a1 * b0 + b0 * t1 - b1 * t0 + a1 * t0 - a0 * t1) / Math.sqrt(Math.pow(b0 - a0, 2) + Math.pow(b1 - a1, 2)), dir = [a0 - t0, a1 - t1], len = Math.sqrt(Math.pow(dir[0], 2) + Math.pow(dir[1], 2));
+              (proximity > maxOffset || len >= maxDistance) && (sim.push([t0 + o0, t1 + o1]), a0 = (_a2 = [t0, t1])[0], a1 = _a2[1]);
+            }
+          }
+          var last6 = arr[arr.length - 1];
+          return sim.push([last6[0] + o0, last6[1] + o1]), sim;
+        }, exports2.sumOfSquares = sumOfSquares, exports2.valueAtT = valueAtT, exports2.valuesLookup = function(lookup5, points, options2) {
+          for (var _a2 = __assign2({ axis: 0, closed: false, margin: 0.5, max: 0, processRefAxis: false }, options2), axis = _a2.axis, closed = _a2.closed, margin = _a2.margin, max3 = _a2.max, processRefAxis = _a2.processRefAxis, k = axis, solutions = [], nPoints = closed ? points.length : points.length - 1, i = 0; i < nPoints; i += 1) {
+            var _b = getControlPoints(max3 < 0 ? nPoints - (i + 1) : i, points, closed), p0 = _b[0], p1 = _b[1], p22 = _b[2], coefficients = calculateCoefficients(p0, p1, p22, _b[3], options2), vmin = void 0, vmax = void 0;
+            if (p1[k] < p22[k] ? (vmin = p1[k], vmax = p22[k]) : (vmin = p22[k], vmax = p1[k]), lookup5 - margin <= vmax && lookup5 + margin >= vmin) {
+              var ts = findRootsOfT(lookup5, coefficients[k]);
+              max3 < 0 ? ts.sort(function(a, b) {
+                return b - a;
+              }) : max3 >= 0 && ts.sort(function(a, b) {
+                return a - b;
+              });
+              for (var j = 0; j < ts.length; j++)
+                if (!(0 === ts[j] && i > 0)) {
+                  for (var coord = [], c = 0; c < p0.length; c++) {
+                    var v = void 0;
+                    v = c !== k || processRefAxis ? valueAtT(ts[j], coefficients[c]) : lookup5, coord[c] = v;
+                  }
+                  if (solutions.push(coord), solutions.length === Math.abs(max3))
+                    return solutions;
+                }
+            }
+          }
+          return solutions;
+        };
+      });
+    }
+  });
+
+  // .yarn/cache/d3-ease-npm-3.0.1-f8f3709dc7-06e2ee5326.zip/node_modules/d3-ease/src/sin.js
+  function sinOut(t) {
+    return Math.sin(t * halfPi);
+  }
+  var pi, halfPi;
+  var init_sin = __esm({
+    ".yarn/cache/d3-ease-npm-3.0.1-f8f3709dc7-06e2ee5326.zip/node_modules/d3-ease/src/sin.js"() {
+      pi = Math.PI;
+      halfPi = pi / 2;
+    }
+  });
+
+  // .yarn/cache/d3-ease-npm-3.0.1-f8f3709dc7-06e2ee5326.zip/node_modules/d3-ease/src/index.js
+  var init_src = __esm({
+    ".yarn/cache/d3-ease-npm-3.0.1-f8f3709dc7-06e2ee5326.zip/node_modules/d3-ease/src/index.js"() {
+      init_sin();
+    }
+  });
+
+  // extensions/full-screen/deps/beautiful-lyrics/Packages/Spring.ts
+  var Epsilon, Pi, Tau, Exp, Sin, Cos, Sqrt, SleepEpsilon, Spring, Spring_default;
+  var init_Spring = __esm({
+    "extensions/full-screen/deps/beautiful-lyrics/Packages/Spring.ts"() {
+      "use strict";
+      Epsilon = 1e-4;
+      Pi = Math.PI;
+      Tau = Pi * 2;
+      Exp = Math.exp;
+      Sin = Math.sin;
+      Cos = Math.cos;
+      Sqrt = Math.sqrt;
+      SleepEpsilon = 0.1;
+      Spring = class {
+        // Private Properties
+        Velocity;
+        DampingRatio;
+        Frequency;
+        Sleeping = true;
+        // Public Properties
+        Position;
+        Final;
+        // Constructor
+        constructor(initial, dampingRatio, frequency) {
+          if (dampingRatio * frequency < 0) {
+            throw new Error("Spring does not converge.");
+          }
+          this.DampingRatio = dampingRatio, this.Frequency = frequency;
+          this.Velocity = 0;
+          this.Position = initial, this.Final = initial;
+        }
+        Update(deltaTime) {
+          const radialFrequency = this.Frequency * Tau;
+          const final = this.Final;
+          const velocity = this.Velocity;
+          const offset = this.Position - final;
+          const dampingRatio = this.DampingRatio;
+          const decay = Exp(-dampingRatio * radialFrequency * deltaTime);
+          let newPosition, newVelocity;
+          if (this.DampingRatio == 1) {
+            newPosition = (offset * (1 + radialFrequency * deltaTime) + velocity * deltaTime) * decay + final;
+            newVelocity = (velocity * (1 - radialFrequency * deltaTime) - offset * (radialFrequency * radialFrequency * deltaTime)) * decay;
+          } else if (this.DampingRatio < 1) {
+            const c = Sqrt(1 - dampingRatio * dampingRatio);
+            const i = Cos(radialFrequency * c * deltaTime);
+            const j = Sin(radialFrequency * c * deltaTime);
+            let z;
+            if (c > Epsilon) {
+              z = j / c;
+            } else {
+              const a = deltaTime * radialFrequency;
+              z = a + (a * a * (c * c) * (c * c) / 20 - c * c) * (a * a * a) / 6;
+            }
+            let y;
+            if (radialFrequency * c > Epsilon) {
+              y = j / (radialFrequency * c);
+            } else {
+              const b = radialFrequency * c;
+              y = deltaTime + (deltaTime * deltaTime * (b * b) * (b * b) / 20 - b * b) * (deltaTime * deltaTime * deltaTime) / 6;
+            }
+            newPosition = (offset * (i + dampingRatio * z) + velocity * y) * decay + final;
+            newVelocity = (velocity * (i - z * dampingRatio) - offset * (z * radialFrequency)) * decay;
+          } else {
+            const c = Sqrt(dampingRatio * dampingRatio - 1);
+            const r1 = -radialFrequency * (dampingRatio - c);
+            const r2 = -radialFrequency * (dampingRatio + c);
+            const co2 = (velocity - offset * r1) / (2 * radialFrequency * c);
+            const co1 = offset - co2;
+            const e1 = co1 * Exp(r1 * deltaTime);
+            const e2 = co2 * Exp(r2 * deltaTime);
+            newPosition = e1 + e2 + final;
+            newVelocity = e1 * r1 + e2 * r2;
+          }
+          this.Position = newPosition;
+          this.Velocity = newVelocity;
+          this.Sleeping = Math.abs(final - newPosition) <= SleepEpsilon;
+          return newPosition;
+        }
+        Set(value) {
+          this.Position = value, this.Final = value;
+          this.Velocity = 0;
+          this.Sleeping = true;
+        }
+        IsSleeping() {
+          return this.Sleeping;
+        }
+      };
+      Spring_default = Spring;
+    }
+  });
+
+  // .yarn/cache/cubic-spline-npm-3.0.3-82372b4422-860170c5d4.zip/node_modules/cubic-spline/index.js
+  var require_cubic_spline = __commonJS({
+    ".yarn/cache/cubic-spline-npm-3.0.3-82372b4422-860170c5d4.zip/node_modules/cubic-spline/index.js"(exports, module) {
+      module.exports = class Spline {
+        constructor(xs, ys) {
+          this.xs = xs;
+          this.ys = ys;
+          this.ks = this.getNaturalKs(new Float64Array(this.xs.length));
+        }
+        getNaturalKs(ks) {
+          const n = this.xs.length - 1;
+          const A = zerosMat(n + 1, n + 2);
+          for (let i = 1; i < n; i++) {
+            A[i][i - 1] = 1 / (this.xs[i] - this.xs[i - 1]);
+            A[i][i] = 2 * (1 / (this.xs[i] - this.xs[i - 1]) + 1 / (this.xs[i + 1] - this.xs[i]));
+            A[i][i + 1] = 1 / (this.xs[i + 1] - this.xs[i]);
+            A[i][n + 1] = 3 * ((this.ys[i] - this.ys[i - 1]) / ((this.xs[i] - this.xs[i - 1]) * (this.xs[i] - this.xs[i - 1])) + (this.ys[i + 1] - this.ys[i]) / ((this.xs[i + 1] - this.xs[i]) * (this.xs[i + 1] - this.xs[i])));
+          }
+          A[0][0] = 2 / (this.xs[1] - this.xs[0]);
+          A[0][1] = 1 / (this.xs[1] - this.xs[0]);
+          A[0][n + 1] = 3 * (this.ys[1] - this.ys[0]) / ((this.xs[1] - this.xs[0]) * (this.xs[1] - this.xs[0]));
+          A[n][n - 1] = 1 / (this.xs[n] - this.xs[n - 1]);
+          A[n][n] = 2 / (this.xs[n] - this.xs[n - 1]);
+          A[n][n + 1] = 3 * (this.ys[n] - this.ys[n - 1]) / ((this.xs[n] - this.xs[n - 1]) * (this.xs[n] - this.xs[n - 1]));
+          return solve(A, ks);
+        }
+        /**
+         * inspired by https://stackoverflow.com/a/40850313/4417327
+         */
+        getIndexBefore(target) {
+          let low = 0;
+          let high = this.xs.length;
+          let mid = 0;
+          while (low < high) {
+            mid = Math.floor((low + high) / 2);
+            if (this.xs[mid] < target && mid !== low) {
+              low = mid;
+            } else if (this.xs[mid] >= target && mid !== high) {
+              high = mid;
+            } else {
+              high = low;
+            }
+          }
+          return low + 1;
+        }
+        at(x) {
+          let i = this.getIndexBefore(x);
+          const t = (x - this.xs[i - 1]) / (this.xs[i] - this.xs[i - 1]);
+          const a = this.ks[i - 1] * (this.xs[i] - this.xs[i - 1]) - (this.ys[i] - this.ys[i - 1]);
+          const b = -this.ks[i] * (this.xs[i] - this.xs[i - 1]) + (this.ys[i] - this.ys[i - 1]);
+          const q = (1 - t) * this.ys[i - 1] + t * this.ys[i] + t * (1 - t) * (a * (1 - t) + b * t);
+          return q;
+        }
+      };
+      function solve(A, ks) {
+        const m = A.length;
+        let h = 0;
+        let k = 0;
+        while (h < m && k <= m) {
+          let i_max = 0;
+          let max3 = -Infinity;
+          for (let i = h; i < m; i++) {
+            const v2 = Math.abs(A[i][k]);
+            if (v2 > max3) {
+              i_max = i;
+              max3 = v2;
+            }
+          }
+          if (A[i_max][k] === 0) {
+            k++;
+          } else {
+            swapRows(A, h, i_max);
+            for (let i = h + 1; i < m; i++) {
+              const f2 = A[i][k] / A[h][k];
+              A[i][k] = 0;
+              for (let j = k + 1; j <= m; j++)
+                A[i][j] -= A[h][j] * f2;
+            }
+            h++;
+            k++;
+          }
+        }
+        for (let i = m - 1; i >= 0; i--) {
+          var v = 0;
+          if (A[i][i]) {
+            v = A[i][m] / A[i][i];
+          }
+          ks[i] = v;
+          for (let j = i - 1; j >= 0; j--) {
+            A[j][m] -= A[j][i] * v;
+            A[j][i] = 0;
+          }
+        }
+        return ks;
+      }
+      function zerosMat(r, c) {
+        const A = [];
+        for (let i = 0; i < r; i++)
+          A.push(new Float64Array(c));
+        return A;
+      }
+      function swapRows(m, k, l) {
+        let p3 = m[k];
+        m[k] = m[l];
+        m[l] = p3;
+      }
+    }
+  });
+
+  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/SharedMethods.ts
+  var import_cubic_spline, GetSpline, Clamp;
+  var init_SharedMethods = __esm({
+    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/SharedMethods.ts"() {
+      "use strict";
+      import_cubic_spline = __toESM(require_cubic_spline());
+      GetSpline = (range5) => {
+        const times = range5.map((value) => value.Time);
+        const values = range5.map((value) => value.Value);
+        return new import_cubic_spline.default(times, values);
+      };
+      Clamp = (value, min3, max3) => {
+        return Math.max(min3, Math.min(value, max3));
+      };
+    }
+  });
+
+  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/Interlude.ts
+  var import_curve_interpolator, DotCount, DotAnimations, DotSplines, CreateDotSprings, MainAnimations, PulseInterval, DownPulse, UpPulse, MainYOffsetSpline, CreateMainSprings, InterludeVisual;
+  var init_Interlude = __esm({
+    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/Interlude.ts"() {
+      "use strict";
+      import_curve_interpolator = __toESM(require_dist());
+      init_src();
+      init_Maid();
+      init_Signal();
+      init_Spring();
+      init_SharedMethods();
+      DotCount = 3;
+      DotAnimations = {
+        YOffsetDamping: 0.4,
+        YOffsetFrequency: 1.25,
+        ScaleDamping: 0.6,
+        ScaleFrequency: 0.7,
+        GlowDamping: 0.5,
+        GlowFrequency: 1,
+        ScaleRange: [
+          {
+            Time: 0,
+            Value: 0.75
+          },
+          // Lowest
+          {
+            Time: 0.7,
+            Value: 1.05
+          },
+          // Highest
+          {
+            Time: 1,
+            Value: 1
+          }
+          // Rest
+        ],
+        YOffsetRange: [
+          // This is relative to the font-size
+          {
+            Time: 0,
+            Value: 0.125
+          },
+          // Lowest
+          {
+            Time: 0.9,
+            Value: -0.2
+          },
+          // Highest
+          {
+            Time: 1,
+            Value: 0
+          }
+          // Rest
+        ],
+        GlowRange: [
+          {
+            Time: 0,
+            Value: 0
+          },
+          // Lowest
+          {
+            Time: 0.6,
+            Value: 1
+          },
+          // Highest
+          {
+            Time: 1,
+            Value: 1
+          }
+          // Rest
+        ],
+        OpacityRange: [
+          {
+            Time: 0,
+            Value: 0.35
+          },
+          // Lowest
+          {
+            Time: 0.6,
+            Value: 1
+          },
+          // Highest
+          {
+            Time: 1,
+            Value: 1
+          }
+          // Rest
+        ]
+      };
+      DotSplines = {
+        ScaleSpline: GetSpline(DotAnimations.ScaleRange),
+        YOffsetSpline: GetSpline(DotAnimations.YOffsetRange),
+        GlowSpline: GetSpline(DotAnimations.GlowRange),
+        OpacitySpline: GetSpline(DotAnimations.OpacityRange)
+      };
+      CreateDotSprings = () => {
+        return {
+          Scale: new Spring_default(0, DotAnimations.ScaleDamping, DotAnimations.ScaleFrequency),
+          YOffset: new Spring_default(0, DotAnimations.YOffsetDamping, DotAnimations.YOffsetFrequency),
+          Glow: new Spring_default(0, DotAnimations.GlowDamping, DotAnimations.GlowFrequency),
+          Opacity: new Spring_default(0, DotAnimations.GlowDamping, DotAnimations.GlowFrequency)
+        };
+      };
+      MainAnimations = {
+        YOffsetDamping: 0.4,
+        YOffsetFrequency: 1.25,
+        ScaleDamping: 0.7,
+        // 0.6
+        ScaleFrequency: 5,
+        // 4
+        BaseScaleRange: [
+          // Time is actually real-time (so in seconds)
+          {
+            Time: 0,
+            Value: 0
+          },
+          {
+            Time: 0.2,
+            Value: 1.05
+          },
+          {
+            Time: -0.075,
+            Value: 1.15
+          },
+          {
+            Time: -0,
+            Value: 0
+          }
+          // Rest
+        ],
+        OpacityRange: [
+          {
+            Time: 0,
+            Value: 0
+          },
+          {
+            Time: 0.5,
+            Value: 1
+          },
+          {
+            Time: -0.075,
+            Value: 1
+          },
+          {
+            Time: -0,
+            Value: 0
+          }
+          // Rest
+        ],
+        YOffsetRange: [
+          // This is relative to the font-size
+          {
+            Time: 0,
+            Value: 1 / 100
+          },
+          // Lowest
+          {
+            Time: 0.9,
+            Value: -(1 / 60)
+          },
+          // Highest
+          {
+            Time: 1,
+            Value: 0
+          }
+          // Rest
+        ]
+      };
+      PulseInterval = 2.25;
+      DownPulse = 0.95;
+      UpPulse = 1.05;
+      MainYOffsetSpline = new import_curve_interpolator.CurveInterpolator(
+        MainAnimations.YOffsetRange.map((metadata) => [metadata.Time, metadata.Value])
+      );
+      CreateMainSprings = () => {
+        return {
+          Scale: new Spring_default(0, MainAnimations.ScaleDamping, MainAnimations.ScaleFrequency),
+          YOffset: new Spring_default(0, MainAnimations.YOffsetDamping, MainAnimations.YOffsetFrequency),
+          Opacity: new Spring_default(0, MainAnimations.YOffsetDamping, MainAnimations.YOffsetFrequency)
+        };
+      };
+      InterludeVisual = class {
+        // Private Properties
+        Maid = new Maid();
+        Container;
+        StartTime;
+        Duration;
+        Dots = [];
+        LiveText;
+        ScaleSpline;
+        OpacitySpline;
+        State = "Idle";
+        IsSleeping = true;
+        ActivityChangedSignal = this.Maid.handle(new Signal());
+        RequestedTimeSkipSignal = this.Maid.handle(new Signal());
+        // Public Properties
+        ActivityChanged = this.ActivityChangedSignal.asEvent();
+        RequestedTimeSkip = this.RequestedTimeSkipSignal.asEvent();
+        // Constructor
+        constructor(lineContainer, interludeMetadata) {
+          const container = this.Maid.handle(document.createElement("div"));
+          container.classList.add("Interlude");
+          this.Container = container;
+          this.LiveText = {
+            Object: container,
+            Springs: CreateMainSprings()
+          };
+          this.StartTime = interludeMetadata.StartTime;
+          this.Duration = interludeMetadata.EndTime - this.StartTime;
+          {
+            const scaleRange = MainAnimations.BaseScaleRange.map((point) => {
+              return {
+                Time: point.Time,
+                Value: point.Value
+              };
+            });
+            const opacityRange = MainAnimations.OpacityRange.map((point) => {
+              return {
+                Time: point.Time,
+                Value: point.Value
+              };
+            });
+            scaleRange[2].Time += this.Duration;
+            opacityRange[2].Time += this.Duration;
+            scaleRange[3].Time = this.Duration;
+            opacityRange[3].Time = this.Duration;
+            {
+              const startPoint = scaleRange[1];
+              const endPoint = scaleRange[2];
+              const deltaTime = endPoint.Time - startPoint.Time;
+              for (let iteration = Math.floor(deltaTime / PulseInterval); iteration > 0; iteration -= 1) {
+                const time = startPoint.Time + iteration * PulseInterval;
+                const value = iteration % 2 === 0 ? UpPulse : DownPulse;
+                scaleRange.splice(2, 0, {
+                  Time: time,
+                  Value: value
+                });
+              }
+            }
+            for (const range5 of [scaleRange, opacityRange]) {
+              for (const point of range5) {
+                point.Time /= this.Duration;
+              }
+            }
+            this.ScaleSpline = new import_curve_interpolator.CurveInterpolator(scaleRange.map((metadata) => [metadata.Time, metadata.Value]));
+            this.OpacitySpline = new import_curve_interpolator.CurveInterpolator(opacityRange.map((metadata) => [metadata.Time, metadata.Value]));
+          }
+          {
+            const dotStep = 0.925 / DotCount;
+            let startTime = 0;
+            for (let i = 0; i < DotCount; i++) {
+              const syllableSpan = this.Maid.handle(document.createElement("span"));
+              syllableSpan.classList.add("InterludeDot");
+              this.Dots.push({
+                Start: startTime,
+                Duration: dotStep,
+                GlowDuration: 1 - startTime,
+                LiveText: {
+                  Object: syllableSpan,
+                  Springs: CreateDotSprings()
+                }
+              });
+              container.appendChild(syllableSpan);
+              startTime += dotStep;
+            }
+          }
+          this.SetToGeneralState(false);
+          lineContainer.appendChild(container);
+        }
+        // Private Methods
+        UpdateLiveDotState = (liveText, timeScale, glowTimeScale, forceTo) => {
+          const scale = DotSplines.ScaleSpline.at(timeScale);
+          const yOffset = DotSplines.YOffsetSpline.at(timeScale);
+          const glowAlpha = DotSplines.GlowSpline.at(glowTimeScale);
+          const opacity = DotSplines.OpacitySpline.at(timeScale);
+          if (forceTo) {
+            liveText.Springs.Scale.Set(scale);
+            liveText.Springs.YOffset.Set(yOffset);
+            liveText.Springs.Glow.Set(glowAlpha);
+            liveText.Springs.Opacity.Set(opacity);
+          } else {
+            liveText.Springs.Scale.Final = scale;
+            liveText.Springs.YOffset.Final = yOffset;
+            liveText.Springs.Glow.Final = glowAlpha;
+            liveText.Springs.Opacity.Final = opacity;
+          }
+        };
+        UpdateLiveDotVisuals = (liveText, deltaTime) => {
+          const scale = liveText.Springs.Scale.Update(deltaTime);
+          const yOffset = liveText.Springs.YOffset.Update(deltaTime);
+          const glowAlpha = liveText.Springs.Glow.Update(deltaTime);
+          const opacity = liveText.Springs.Opacity.Update(deltaTime);
+          liveText.Object.style.transform = `translateY(calc(var(--dot-size) * ${yOffset}))`;
+          liveText.Object.style.scale = scale.toString();
+          liveText.Object.style.setProperty("--text-shadow-blur-radius", `${4 + 6 * glowAlpha}px`);
+          liveText.Object.style.setProperty("--text-shadow-opacity", `${glowAlpha * 90}%`);
+          liveText.Object.style.opacity = opacity.toString();
+          return liveText.Springs.Scale.IsSleeping() && liveText.Springs.YOffset.IsSleeping() && liveText.Springs.Glow.IsSleeping() && liveText.Springs.Opacity.IsSleeping();
+        };
+        UpdateLiveMainState = (liveText, timeScale, forceTo) => {
+          const yOffset = MainYOffsetSpline.getPointAt(timeScale)[1];
+          const scaleIntersections = this.ScaleSpline.getIntersects(timeScale);
+          const opacityIntersections = this.OpacitySpline.getIntersects(timeScale);
+          const scale = scaleIntersections.length === 0 ? 1 : scaleIntersections[scaleIntersections.length - 1][1];
+          const opacity = opacityIntersections.length === 0 ? 1 : opacityIntersections[opacityIntersections.length - 1][1];
+          if (forceTo) {
+            liveText.Springs.Scale.Set(scale);
+            liveText.Springs.YOffset.Set(yOffset);
+            liveText.Springs.Opacity.Set(opacity);
+          } else {
+            liveText.Springs.Scale.Final = scale;
+            liveText.Springs.YOffset.Final = yOffset;
+            liveText.Springs.Opacity.Final = opacity;
+          }
+        };
+        UpdateLiveMainVisuals = (liveText, deltaTime) => {
+          const scale = liveText.Springs.Scale.Update(deltaTime);
+          const yOffset = liveText.Springs.YOffset.Update(deltaTime);
+          const opacity = liveText.Springs.Opacity.Update(deltaTime);
+          liveText.Object.style.transform = `translateY(calc(var(--dot-size) * ${yOffset}))`;
+          liveText.Object.style.scale = scale.toString();
+          liveText.Object.style.opacity = sinOut(opacity).toString();
+          return liveText.Springs.Scale.IsSleeping() && liveText.Springs.YOffset.IsSleeping() && liveText.Springs.Opacity.IsSleeping();
+        };
+        EvaluateClassState() {
+          const removeClasses2 = ["Active", "Sung"];
+          let classToAdd;
+          if (this.State === "Active") {
+            removeClasses2.splice(0, 1);
+            classToAdd = "Active";
+          } else if (this.State == "Sung") {
+            removeClasses2.splice(1, 1);
+            classToAdd = "Sung";
+          }
+          for (const className of removeClasses2) {
+            if (this.Container.classList.contains(className)) {
+              this.Container.classList.remove(className);
+            }
+          }
+          if (classToAdd !== void 0) {
+            this.Container.classList.add(classToAdd);
+          }
+        }
+        SetToGeneralState(state) {
+          const timeScale = state ? 1 : 0;
+          for (const dot of this.Dots) {
+            this.UpdateLiveDotState(dot.LiveText, timeScale, timeScale, true);
+            this.UpdateLiveDotVisuals(dot.LiveText, 0);
+          }
+          this.UpdateLiveMainState(this.LiveText, timeScale, true);
+          this.UpdateLiveMainVisuals(this.LiveText, 0);
+          this.State = state ? "Sung" : "Idle";
+          this.EvaluateClassState();
+        }
+        // Public Methods
+        Animate(songTimestamp, deltaTime, isImmediate) {
+          const relativeTime = songTimestamp - this.StartTime;
+          const timeScale = Clamp(relativeTime / this.Duration, 0, 1);
+          const pastStart = relativeTime >= 0, beforeEnd = relativeTime <= this.Duration;
+          const isActive = pastStart && beforeEnd;
+          const stateNow = isActive ? "Active" : pastStart ? "Sung" : "Idle";
+          const stateChanged = stateNow != this.State;
+          const shouldUpdateVisualState = stateChanged || isActive || isImmediate;
+          if (stateChanged) {
+            const oldState = this.State;
+            this.State = stateNow;
+            if (this.State !== "Sung") {
+              this.EvaluateClassState();
+            }
+            if (oldState === "Active") {
+              this.ActivityChangedSignal.fire(false);
+            } else if (isActive) {
+              this.ActivityChangedSignal.fire(true);
+            }
+          }
+          if (shouldUpdateVisualState) {
+            this.IsSleeping = false;
+          }
+          const isMoving = this.IsSleeping === false;
+          if (shouldUpdateVisualState || isMoving) {
+            let isSleeping = true;
+            for (const dot of this.Dots) {
+              const dotTimeScale = Clamp((timeScale - dot.Start) / dot.Duration, 0, 1);
+              {
+                if (shouldUpdateVisualState) {
+                  this.UpdateLiveDotState(dot.LiveText, dotTimeScale, dotTimeScale, isImmediate);
+                }
+                if (isMoving) {
+                  const dotIsSleeping = this.UpdateLiveDotVisuals(dot.LiveText, deltaTime);
+                  if (dotIsSleeping === false) {
+                    isSleeping = false;
+                  }
+                }
+              }
+            }
+            {
+              if (shouldUpdateVisualState) {
+                this.UpdateLiveMainState(this.LiveText, timeScale, isImmediate);
+              }
+              if (isMoving) {
+                const mainIsSleeping = this.UpdateLiveMainVisuals(this.LiveText, deltaTime);
+                if (mainIsSleeping === false) {
+                  isSleeping = false;
+                }
+              }
+            }
+            if (isSleeping) {
+              this.IsSleeping = true;
+              if (isActive === false) {
+                this.EvaluateClassState();
+              }
+            }
+          }
+        }
+        ForceState(state) {
+          this.SetToGeneralState(state);
+        }
+        IsActive() {
+          return this.State === "Active";
+        }
+        SetBlur() {
+        }
+        // Interlude we'll never use this since it will never be visible
+        // Deconstructor
+        dispose() {
+          this.Maid.dispose();
+        }
+      };
+    }
+  });
+
+  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/LineVocals.ts
+  var GlowRange, GlowSpline, GlowDamping, GlowFrequency, LineVocals;
+  var init_LineVocals = __esm({
+    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/LineVocals.ts"() {
       "use strict";
       init_Maid();
       init_Signal();
-      init_Scheduler();
-      GlobalMaid = new Maid();
-      SpicetifyLoadedSignal = new Signal();
-      AllSpicetifyLoaded = false;
-      SpotifyPlayer = Spicetify.Player;
-      SpotifyFetch = Spicetify.CosmosAsync;
-      SpotifyShowNotification = Spicetify.showNotification;
-      SpotifyPlatform = Spicetify.Platform;
-      SpotifyHistory = SpotifyPlatform?.History;
-      SpotifyPlaybar = Spicetify.Playbar;
-      {
-        const WaitForSpicetify = () => {
-          SpotifyPlayer = Spicetify.Player;
-          SpotifyFetch = Spicetify.CosmosAsync;
-          SpotifyShowNotification = Spicetify.showNotification;
-          SpotifyPlatform = Spicetify.Platform;
-          SpotifyHistory = SpotifyPlatform?.History;
-          SpotifyPlaybar = Spicetify.Playbar;
-          if (SpotifyPlayer === void 0 || SpotifyFetch === void 0 || SpotifyShowNotification === void 0 || SpotifyPlatform === void 0 || SpotifyHistory === void 0 || SpotifyPlaybar === void 0) {
-            GlobalMaid.give(Timeout(0, WaitForSpicetify), "WaitForSpicetify");
+      init_Spring();
+      init_SharedMethods();
+      GlowRange = [
+        {
+          Time: 0,
+          Value: 0
+        },
+        // Lowest
+        {
+          Time: 0.5,
+          Value: 1
+        },
+        // Highest
+        {
+          Time: 0.925,
+          Value: 1
+        },
+        // Sustain
+        {
+          Time: 1,
+          Value: 0
+        }
+        // Rest
+      ];
+      GlowSpline = GetSpline(GlowRange);
+      GlowDamping = 0.5;
+      GlowFrequency = 1;
+      LineVocals = class {
+        // Private Properties
+        Maid = new Maid();
+        Container;
+        StartTime;
+        Duration;
+        Span;
+        GlowSpring;
+        State = "Idle";
+        IsSleeping = true;
+        ActivityChangedSignal = this.Maid.handle(new Signal());
+        RequestedTimeSkipSignal = this.Maid.handle(new Signal());
+        // Public Properties
+        ActivityChanged = this.ActivityChangedSignal.asEvent();
+        RequestedTimeSkip = this.RequestedTimeSkipSignal.asEvent();
+        // Constructor
+        constructor(lineContainer, lineMetadata) {
+          const container = this.Maid.handle(document.createElement("div"));
+          container.classList.add("Vocals");
+          container.classList.add("Lead");
+          this.Container = container;
+          container.addEventListener("click", () => this.RequestedTimeSkipSignal.fire());
+          this.StartTime = lineMetadata.StartTime;
+          this.Duration = lineMetadata.EndTime - lineMetadata.StartTime;
+          const syllableSpan = this.Maid.handle(document.createElement("span"));
+          syllableSpan.classList.add("Lyric");
+          syllableSpan.classList.add("Synced");
+          syllableSpan.classList.add("Line");
+          syllableSpan.innerText = lineMetadata.Text;
+          container.appendChild(syllableSpan);
+          this.Span = syllableSpan;
+          this.GlowSpring = new Spring_default(0, GlowDamping, GlowFrequency);
+          this.SetToGeneralState(false);
+          lineContainer.appendChild(container);
+        }
+        // Private Methods
+        UpdateLiveTextState = (timeScale, forceTo) => {
+          const glowAlpha = GlowSpline.at(timeScale);
+          if (forceTo) {
+            this.GlowSpring.Set(glowAlpha);
           } else {
-            AllSpicetifyLoaded = true;
-            SpicetifyLoadedSignal.fire();
+            this.GlowSpring.Final = glowAlpha;
           }
         };
-        WaitForSpicetify();
-      }
-      SpicetifyLoaded = SpicetifyLoadedSignal.getEvent();
+        UpdateLiveTextVisuals = (timeScale, deltaTime) => {
+          const glowAlpha = this.GlowSpring.Update(deltaTime);
+          this.Span.style.setProperty("--text-shadow-blur-radius", `${4 + 8 * glowAlpha}px`);
+          this.Span.style.setProperty("--text-shadow-opacity", `${glowAlpha * 50}%`);
+          this.Span.style.setProperty("--gradient-progress", `${0 + 120 * timeScale}%`);
+          return this.GlowSpring.IsSleeping();
+        };
+        EvaluateClassState() {
+          const removeClasses2 = ["Active", "Sung"];
+          let classToAdd;
+          if (this.State === "Active") {
+            removeClasses2.splice(0, 1);
+            classToAdd = "Active";
+          } else if (this.State == "Sung") {
+            removeClasses2.splice(1, 1);
+            classToAdd = "Sung";
+          }
+          for (const className of removeClasses2) {
+            if (this.Container.classList.contains(className)) {
+              this.Container.classList.remove(className);
+            }
+          }
+          if (classToAdd !== void 0) {
+            this.Container.classList.add(classToAdd);
+          }
+        }
+        SetToGeneralState(state) {
+          const timeScale = state ? 1 : 0;
+          this.UpdateLiveTextState(timeScale, true);
+          this.UpdateLiveTextVisuals(timeScale, 0);
+          this.State = state ? "Sung" : "Idle";
+          this.EvaluateClassState();
+        }
+        // Public Methods
+        Animate(songTimestamp, deltaTime, isImmediate) {
+          const relativeTime = songTimestamp - this.StartTime;
+          const timeScale = Clamp(relativeTime / this.Duration, 0, 1);
+          const pastStart = relativeTime >= 0, beforeEnd = relativeTime <= this.Duration;
+          const isActive = pastStart && beforeEnd;
+          const stateNow = isActive ? "Active" : pastStart ? "Sung" : "Idle";
+          const stateChanged = stateNow != this.State;
+          const shouldUpdateVisualState = stateChanged || isActive || isImmediate;
+          if (stateChanged) {
+            const oldState = this.State;
+            this.State = stateNow;
+            if (this.State !== "Sung") {
+              this.EvaluateClassState();
+            }
+            if (oldState === "Active") {
+              this.ActivityChangedSignal.fire(false);
+            } else if (isActive) {
+              this.ActivityChangedSignal.fire(true);
+            }
+          }
+          if (shouldUpdateVisualState) {
+            this.IsSleeping = false;
+            this.UpdateLiveTextState(timeScale, isImmediate || relativeTime < 0 || void 0);
+          }
+          if (this.IsSleeping === false) {
+            const isSleeping = this.UpdateLiveTextVisuals(timeScale, deltaTime);
+            if (isSleeping) {
+              this.IsSleeping = true;
+              if (isActive === false) {
+                this.EvaluateClassState();
+              }
+            }
+          }
+        }
+        ForceState(state) {
+          this.SetToGeneralState(state);
+        }
+        IsActive() {
+          return this.State === "Active";
+        }
+        SetBlur(blurDistance) {
+          this.Container.style.setProperty("--text-blur", `${blurDistance}px`);
+        }
+        // Deconstructor
+        dispose() {
+          this.Maid.dispose();
+        }
+      };
+    }
+  });
+
+  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/StaticVocals.ts
+  var StaticVocals;
+  var init_StaticVocals = __esm({
+    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/StaticVocals.ts"() {
+      "use strict";
+      init_Maid();
+      StaticVocals = class {
+        // Private Properties
+        Maid;
+        // Constructor
+        constructor(lineContainer, text) {
+          this.Maid = new Maid();
+          const container = this.Maid.handle(document.createElement("div"));
+          container.classList.add("Vocals");
+          container.classList.add("Lead");
+          container.classList.add("Active");
+          const syllableSpan = this.Maid.handle(document.createElement("span"));
+          syllableSpan.classList.add("Lyric");
+          syllableSpan.classList.add("Static");
+          syllableSpan.innerText = text;
+          container.appendChild(syllableSpan);
+          lineContainer.appendChild(container);
+        }
+        // Deconstructor
+        dispose() {
+          this.Maid.dispose();
+        }
+      };
+    }
+  });
+
+  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/SyllableVocals.ts
+  var ScaleRange, YOffsetRange, GlowRange2, ScaleSpline, YOffsetSpline, GlowSpline2, YOffsetDamping, YOffsetFrequency, ScaleDamping, ScaleFrequency, GlowDamping2, GlowFrequency2, CreateSprings, MinimumEmphasizedDuration, MaximumEmphasizedCharacters, IsEmphasized, SyllableVocals;
+  var init_SyllableVocals = __esm({
+    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/SyllableVocals.ts"() {
+      "use strict";
+      init_src();
+      init_Maid();
+      init_Signal();
+      init_Spring();
+      init_SharedMethods();
+      ScaleRange = [
+        {
+          Time: 0,
+          Value: 0.95
+        },
+        // Lowest
+        {
+          Time: 0.7,
+          Value: 1.025
+        },
+        // Highest
+        {
+          Time: 1,
+          Value: 1
+        }
+        // Rest
+      ];
+      YOffsetRange = [
+        // This is relative to the font-size
+        {
+          Time: 0,
+          Value: 1 / 100
+        },
+        // Lowest
+        {
+          Time: 0.9,
+          Value: -(1 / 60)
+        },
+        // Highest
+        {
+          Time: 1,
+          Value: 0
+        }
+        // Rest
+      ];
+      GlowRange2 = [
+        {
+          Time: 0,
+          Value: 0
+        },
+        // Lowest
+        {
+          Time: 0.15,
+          Value: 1
+        },
+        // Highest
+        {
+          Time: 0.6,
+          Value: 1
+        },
+        // Sustain
+        {
+          Time: 1,
+          Value: 0
+        }
+        // Rest
+      ];
+      ScaleSpline = GetSpline(ScaleRange);
+      YOffsetSpline = GetSpline(YOffsetRange);
+      GlowSpline2 = GetSpline(GlowRange2);
+      YOffsetDamping = 0.4;
+      YOffsetFrequency = 1.25;
+      ScaleDamping = 0.6;
+      ScaleFrequency = 0.7;
+      GlowDamping2 = 0.5;
+      GlowFrequency2 = 1;
+      CreateSprings = () => {
+        return {
+          Scale: new Spring_default(0, ScaleDamping, ScaleFrequency),
+          YOffset: new Spring_default(0, YOffsetDamping, YOffsetFrequency),
+          Glow: new Spring_default(0, GlowDamping2, GlowFrequency2)
+        };
+      };
+      MinimumEmphasizedDuration = 1;
+      MaximumEmphasizedCharacters = 12;
+      IsEmphasized = (metadata) => {
+        return metadata.EndTime - metadata.StartTime >= MinimumEmphasizedDuration && metadata.Text.length <= MaximumEmphasizedCharacters;
+      };
+      SyllableVocals = class {
+        // Private Properties
+        Maid = new Maid();
+        Container;
+        StartTime;
+        Duration;
+        Syllables = [];
+        State = "Idle";
+        IsSleeping = true;
+        ActivityChangedSignal = this.Maid.handle(new Signal());
+        RequestedTimeSkipSignal = this.Maid.handle(new Signal());
+        // Public Properties
+        ActivityChanged = this.ActivityChangedSignal.asEvent();
+        RequestedTimeSkip = this.RequestedTimeSkipSignal.asEvent();
+        // Constructor
+        constructor(lineContainer, syllablesMetadata, isBackground) {
+          const container = this.Maid.handle(document.createElement("div"));
+          container.classList.add("Vocals");
+          container.classList.add(isBackground ? "Background" : "Lead");
+          this.Container = container;
+          container.addEventListener("click", () => this.RequestedTimeSkipSignal.fire());
+          this.StartTime = syllablesMetadata[0].StartTime;
+          this.Duration = syllablesMetadata[syllablesMetadata.length - 1].EndTime - this.StartTime;
+          const syllableGroups = [];
+          {
+            let currentSyllableGroup = [];
+            for (const syllableMetadata of syllablesMetadata) {
+              currentSyllableGroup.push(syllableMetadata);
+              if (syllableMetadata.IsPartOfWord === false) {
+                syllableGroups.push(currentSyllableGroup);
+                currentSyllableGroup = [];
+              }
+            }
+            if (currentSyllableGroup.length > 0) {
+              syllableGroups.push(currentSyllableGroup);
+            }
+          }
+          for (const syllableGroup of syllableGroups) {
+            let parentElement = container;
+            const syllableCount = syllableGroup.length;
+            const isInWordGroup = syllableCount > 1;
+            if (isInWordGroup) {
+              const parent = this.Maid.handle(document.createElement("span"));
+              parent.classList.add("Word");
+              parentElement = parent;
+              container.appendChild(parent);
+            }
+            for (const [index, syllableMetadata] of syllableGroup.entries()) {
+              const isEmphasized = IsEmphasized(syllableMetadata);
+              const syllableSpan = this.Maid.handle(document.createElement("span"));
+              {
+                syllableSpan.classList.add("Lyric");
+                syllableSpan.classList.add("Syllable");
+                if (isEmphasized) {
+                  syllableSpan.classList.add("Emphasis");
+                } else {
+                  syllableSpan.classList.add("Synced");
+                }
+                const isEndOfWord = isInWordGroup && index === syllableCount - 1;
+                if (syllableMetadata.IsPartOfWord) {
+                  syllableSpan.classList.add("PartOfWord");
+                  if (index === 0) {
+                    syllableSpan.classList.add("StartOfWord");
+                  } else if (isEndOfWord) {
+                    syllableSpan.classList.add("EndOfWord");
+                  }
+                } else if (isEndOfWord) {
+                  syllableSpan.classList.add("EndOfWord");
+                }
+              }
+              let letters;
+              if (isEmphasized) {
+                const letterTexts = [];
+                for (const letter of syllableMetadata.Text) {
+                  letterTexts.push(letter);
+                }
+                const relativeTimestep = 1 / letterTexts.length;
+                letters = [];
+                let relativeTimestamp = 0;
+                for (const letter of syllableMetadata.Text) {
+                  const letterSpan = this.Maid.handle(document.createElement("span"));
+                  letterSpan.classList.add("Letter");
+                  letterSpan.classList.add("Synced");
+                  letterSpan.innerText = letter;
+                  syllableSpan.appendChild(letterSpan);
+                  letters.push({
+                    Start: relativeTimestamp,
+                    Duration: relativeTimestep,
+                    GlowDuration: 1 - relativeTimestamp,
+                    LiveText: {
+                      Object: letterSpan,
+                      Springs: CreateSprings()
+                    }
+                  });
+                  relativeTimestamp += relativeTimestep;
+                }
+              } else {
+                syllableSpan.innerText = syllableMetadata.Text;
+              }
+              const relativeStart = syllableMetadata.StartTime - this.StartTime;
+              const relativeEnd = syllableMetadata.EndTime - this.StartTime;
+              const relativeStartScale = relativeStart / this.Duration;
+              const relativeEndScale = relativeEnd / this.Duration;
+              const duration = relativeEnd - relativeStart;
+              const durationScale = relativeEndScale - relativeStartScale;
+              const syllableLiveText = {
+                Object: syllableSpan,
+                Springs: CreateSprings()
+              };
+              if (isEmphasized) {
+                this.Syllables.push({
+                  Type: "Letters",
+                  Start: relativeStart,
+                  Duration: duration,
+                  StartScale: relativeStartScale,
+                  DurationScale: durationScale,
+                  LiveText: syllableLiveText,
+                  Letters: letters
+                });
+              } else {
+                this.Syllables.push({
+                  Type: "Syllable",
+                  Start: relativeStart,
+                  Duration: duration,
+                  StartScale: relativeStartScale,
+                  DurationScale: durationScale,
+                  LiveText: syllableLiveText
+                });
+              }
+              parentElement.appendChild(syllableSpan);
+            }
+          }
+          this.SetToGeneralState(false);
+          lineContainer.appendChild(container);
+        }
+        // Private Methods
+        UpdateLiveTextState = (liveText, timeScale, glowTimeScale, forceTo) => {
+          const scale = ScaleSpline.at(timeScale);
+          const yOffset = YOffsetSpline.at(timeScale);
+          const glowAlpha = GlowSpline2.at(glowTimeScale);
+          if (forceTo) {
+            liveText.Springs.Scale.Set(scale);
+            liveText.Springs.YOffset.Set(yOffset);
+            liveText.Springs.Glow.Set(glowAlpha);
+          } else {
+            liveText.Springs.Scale.Final = scale;
+            liveText.Springs.YOffset.Final = yOffset;
+            liveText.Springs.Glow.Final = glowAlpha;
+          }
+        };
+        UpdateLiveTextVisuals = (liveText, isEmphasized, timeScale, deltaTime) => {
+          const scale = liveText.Springs.Scale.Update(deltaTime);
+          const yOffset = liveText.Springs.YOffset.Update(deltaTime);
+          const glowAlpha = liveText.Springs.Glow.Update(deltaTime);
+          liveText.Object.style.setProperty("--gradient-progress", `${-20 + 120 * timeScale}%`);
+          liveText.Object.style.transform = `translateY(calc(var(--lyrics-size) * ${yOffset * (isEmphasized ? 2 : 1)}))`;
+          liveText.Object.style.scale = scale.toString();
+          liveText.Object.style.setProperty(
+            "--text-shadow-blur-radius",
+            `${4 + 2 * glowAlpha * (isEmphasized ? 3 : 1)}px`
+          );
+          liveText.Object.style.setProperty("--text-shadow-opacity", `${glowAlpha * (isEmphasized ? 100 : 35)}%`);
+          return liveText.Springs.Scale.IsSleeping() && liveText.Springs.YOffset.IsSleeping() && liveText.Springs.Glow.IsSleeping();
+        };
+        EvaluateClassState() {
+          const removeClasses2 = ["Active", "Sung"];
+          let classToAdd;
+          if (this.State === "Active") {
+            removeClasses2.splice(0, 1);
+            classToAdd = "Active";
+          } else if (this.State == "Sung") {
+            removeClasses2.splice(1, 1);
+            classToAdd = "Sung";
+          }
+          for (const className of removeClasses2) {
+            if (this.Container.classList.contains(className)) {
+              this.Container.classList.remove(className);
+            }
+          }
+          if (classToAdd !== void 0) {
+            this.Container.classList.add(classToAdd);
+          }
+        }
+        SetToGeneralState(state) {
+          const timeScale = state ? 1 : 0;
+          for (const syllable of this.Syllables) {
+            this.UpdateLiveTextState(syllable.LiveText, timeScale, timeScale, true);
+            this.UpdateLiveTextVisuals(syllable.LiveText, false, timeScale, 0);
+            if (syllable.Type === "Letters") {
+              for (const letter of syllable.Letters) {
+                this.UpdateLiveTextState(letter.LiveText, timeScale, timeScale, true);
+                this.UpdateLiveTextVisuals(letter.LiveText, true, timeScale, 0);
+              }
+            }
+          }
+          this.State = state ? "Sung" : "Idle";
+          this.EvaluateClassState();
+        }
+        // Public Methods
+        Animate(songTimestamp, deltaTime, isImmediate) {
+          const relativeTime = songTimestamp - this.StartTime;
+          const timeScale = Clamp(relativeTime / this.Duration, 0, 1);
+          const pastStart = relativeTime >= 0, beforeEnd = relativeTime <= this.Duration;
+          const isActive = pastStart && beforeEnd;
+          const stateNow = isActive ? "Active" : pastStart ? "Sung" : "Idle";
+          const stateChanged = stateNow != this.State;
+          const shouldUpdateVisualState = stateChanged || isActive || isImmediate;
+          if (stateChanged) {
+            const oldState = this.State;
+            this.State = stateNow;
+            if (this.State !== "Sung") {
+              this.EvaluateClassState();
+            }
+            if (oldState === "Active") {
+              this.ActivityChangedSignal.fire(false);
+            } else if (isActive) {
+              this.ActivityChangedSignal.fire(true);
+            }
+          }
+          if (shouldUpdateVisualState) {
+            this.IsSleeping = false;
+          }
+          const isMoving = this.IsSleeping === false;
+          if (shouldUpdateVisualState || isMoving) {
+            let isSleeping = true;
+            for (const syllable of this.Syllables) {
+              const syllableTimeScale = Clamp((timeScale - syllable.StartScale) / syllable.DurationScale, 0, 1);
+              if (syllable.Type == "Letters") {
+                const timeAlpha = sinOut(syllableTimeScale);
+                for (const letter of syllable.Letters) {
+                  const letterTime = timeAlpha - letter.Start;
+                  const letterTimeScale = Clamp(letterTime / letter.Duration, 0, 1);
+                  const glowTimeScale = Clamp(letterTime / letter.GlowDuration, 0, 1);
+                  if (shouldUpdateVisualState) {
+                    this.UpdateLiveTextState(letter.LiveText, letterTimeScale, glowTimeScale, isImmediate);
+                  }
+                  if (isMoving) {
+                    const letterIsSleeping = this.UpdateLiveTextVisuals(
+                      letter.LiveText,
+                      true,
+                      letterTimeScale,
+                      deltaTime
+                    );
+                    if (letterIsSleeping === false) {
+                      isSleeping = false;
+                    }
+                  }
+                }
+              }
+              {
+                if (shouldUpdateVisualState) {
+                  this.UpdateLiveTextState(syllable.LiveText, syllableTimeScale, syllableTimeScale, isImmediate);
+                }
+                if (isMoving) {
+                  const syllableIsSleeping = this.UpdateLiveTextVisuals(
+                    syllable.LiveText,
+                    false,
+                    syllableTimeScale,
+                    deltaTime
+                  );
+                  if (syllableIsSleeping === false) {
+                    isSleeping = false;
+                  }
+                }
+              }
+            }
+            if (isSleeping) {
+              this.IsSleeping = true;
+              if (isActive === false) {
+                this.EvaluateClassState();
+              }
+            }
+          }
+        }
+        ForceState(state) {
+          this.SetToGeneralState(state);
+        }
+        IsActive() {
+          return this.State === "Active";
+        }
+        SetBlur(blurDistance) {
+          this.Container.style.setProperty("--text-blur", `${blurDistance}px`);
+        }
+        // Deconstructor
+        dispose() {
+          this.Maid.dispose();
+        }
+      };
+    }
+  });
+
+  // temp_stylePlugin:ni:sha-256;KVx94jldE_KaxinoeDiqjf5EQ_cVEuInES9qjI-i37U
+  var init_ni_sha_256_KVx94jldE_KaxinoeDiqjf5EQ_cVEuInES9qjI_i37U = __esm({
+    "temp_stylePlugin:ni:sha-256;KVx94jldE_KaxinoeDiqjf5EQ_cVEuInES9qjI-i37U"() {
+    }
+  });
+
+  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\deps\beautiful-lyrics\Stylings\Lyrics.scss
+  var init_Lyrics = __esm({
+    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\deps\\beautiful-lyrics\\Stylings\\Lyrics.scss"() {
+      init_ni_sha_256_KVx94jldE_KaxinoeDiqjf5EQ_cVEuInES9qjI_i37U();
+    }
+  });
+
+  // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
+  var import_function11, URI4, map5, Functor4, of6, ap5, Applicative4, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard5, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var init_Function = __esm({
+    ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
+      init_Option();
+      init_Array();
+      import_function11 = __toESM(require_function());
+      init_Predicate();
+      init_Endomorphism();
+      init_Monoid();
+      init_Semigroup();
+      init_Functor();
+      init_Apply();
+      init_Chain();
+      URI4 = "Function";
+      map5 = (f2) => (g) => (0, import_function11.flow)(g, f2);
+      Functor4 = {
+        URI: URI4,
+        map: (f2, g) => map5(g)(f2)
+      };
+      of6 = import_function11.constant;
+      ap5 = (f2) => (g) => (x) => g(x)(f2(x));
+      Applicative4 = {
+        ...Functor4,
+        of: of6,
+        ap: (f2, g) => ap5(g)(f2)
+      };
+      apFirst5 = apFirst(Applicative4);
+      apSecond5 = apSecond(Applicative4);
+      chain4 = (f2) => (g) => (x) => f2(g(x))(x);
+      Monad4 = {
+        ...Applicative4,
+        chain: (f2, g) => chain4(g)(f2)
+      };
+      Do4 = of6({});
+      bindTo5 = bindTo(Functor4);
+      bind5 = bind(Monad4);
+      apS5 = apS(Applicative4);
+      let_5 = let_(Functor4);
+      unary = import_function11.tupled;
+      guard5 = (branches) => (fallback) => (input) => (0, import_function11.pipe)(branches, map2(([f2, g]) => (0, import_function11.flow)(fromPredicate3(f2), map3(g))), concatAll4((0, import_function11.getMonoid)(getMonoid4(first()))()), (0, import_function11.apply)(input), getOrElse(() => fallback(input)));
+      unless = (f2) => (onFalse) => (x) => f2(x) ? x : onFalse(x);
+      when = (0, import_function11.flow)(not, unless);
+      invoke = (x) => (ys) => (z) => z[x](...ys);
+      invokeNullary = (0, import_function11.flip)(invoke)([]);
+      curry2T = (f2) => (a) => (b) => f2([a, b]);
+      curry2 = (0, import_function11.flow)(unary, curry2T);
+      curry3T = (f2) => (a) => (b) => (c) => f2([a, b, c]);
+      curry3 = (0, import_function11.flow)(unary, curry3T);
+      curry4T = (f2) => (a) => (b) => (c) => (d) => f2([a, b, c, d]);
+      curry4 = (0, import_function11.flow)(unary, curry4T);
+      curry5T = (f2) => (a) => (b) => (c) => (d) => (e) => f2([a, b, c, d, e]);
+      curry5 = (0, import_function11.flow)(unary, curry5T);
+      applyEvery = concatAll4(getMonoid5());
+    }
+  });
+
+  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer.ts
+  var import_function12, parseStaticLyrics, parseNonStaticLyrics, LyricsRenderer_default;
+  var init_LyricsRenderer = __esm({
+    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer.ts"() {
+      "use strict";
+      init_es6();
+      import_function12 = __toESM(require_function());
+      init_Maid();
+      init_Scheduler();
+      init_LyricsScroller();
+      init_Interlude();
+      init_LineVocals();
+      init_StaticVocals();
+      init_SyllableVocals();
+      init_Lyrics();
+      init_Function();
+      parseStaticLyrics = (parsedLyrics) => {
+        return (0, import_function12.pipe)(
+          parsedLyrics.Lyrics.map((l) => {
+            const lineContainer = document.createElement("div");
+            lineContainer.classList.add("VocalsGroup");
+            const line = {
+              GroupContainer: lineContainer,
+              Vocals: [new StaticVocals(lineContainer, l)]
+            };
+            return [lineContainer, line];
+          }),
+          ReadonlyArray_exports.unzip
+        );
+      };
+      parseNonStaticLyrics = (parsedLyrics) => (0, import_function12.pipe)(
+        parsedLyrics.VocalGroups,
+        Array_exports.map((vocalGroup) => {
+          const vocalGroupContainer = document.createElement("button");
+          vocalGroupContainer.classList.add("VocalsGroup");
+          if ("OppositeAligned" in vocalGroup && vocalGroup.OppositeAligned)
+            vocalGroupContainer.classList.add("AlignedOpposite");
+          const vocals = guard5([
+            [
+              string_exports.startsWith("Interlude"),
+              () => [new InterludeVisual(vocalGroupContainer, vocalGroup)]
+            ],
+            [string_exports.startsWith("LineVocal"), () => [new LineVocals(vocalGroupContainer, vocalGroup)]],
+            [
+              string_exports.startsWith("SyllableVocal"),
+              () => {
+                vocalGroup = vocalGroup;
+                const vocals2 = [new SyllableVocals(vocalGroupContainer, vocalGroup.Lead, false)];
+                if (vocalGroup.Background)
+                  vocals2.push(new SyllableVocals(vocalGroupContainer, vocalGroup.Background, true));
+                return vocals2;
+              }
+            ]
+          ])(() => [])(parsedLyrics.Type + vocalGroup.Type);
+          return [
+            {
+              GroupContainer: vocalGroupContainer,
+              Vocals: vocals
+            },
+            vocalGroup.StartTime
+          ];
+        }),
+        ReadonlyArray_exports.unzip
+      );
+      LyricsRenderer_default = (song, parsedLyrics) => {
+        const maid = new Maid();
+        const scrollContainer = maid.handle(document.createElement("div"));
+        scrollContainer.classList.add("LyricsScrollContainer");
+        const lyricsContainer = document.createElement("div");
+        lyricsContainer.classList.add("Lyrics");
+        lyricsContainer.classList.add(`NaturallyAligned${parsedLyrics.NaturalAlignment}`);
+        scrollContainer.appendChild(lyricsContainer);
+        if (parsedLyrics.Type === "Static") {
+          const [lineContainers, lines] = parseStaticLyrics(parsedLyrics);
+          lyricsContainer.append(...lineContainers);
+          new LyricsScroller(scrollContainer, lyricsContainer, lines, false);
+        } else {
+          const [vocalGroups, vocalGroupStartTimes] = parseNonStaticLyrics(parsedLyrics);
+          lyricsContainer.append(...vocalGroups.map((vocalGroup) => vocalGroup.GroupContainer));
+          const scroller = new LyricsScroller(
+            scrollContainer,
+            lyricsContainer,
+            vocalGroups,
+            true
+          );
+          const Update = (scroller2, vocalGroups2, lyricsEndTime, timestamp, deltaTime, skipped, skippedByVocal) => {
+            vocalGroups2.flatMap((vocalGroup) => vocalGroup.Vocals).map((vocal) => vocal.Animate(timestamp, deltaTime, skipped));
+            scroller2.SetLyricsEnded(timestamp >= lyricsEndTime);
+            if (skipped)
+              scroller2.ForceToActive(skippedByVocal);
+          };
+          let justSkippedByVocal = false;
+          maid.handle(
+            song.TimeStepped.connect((timestamp, deltaTime, skipped) => {
+              Update(
+                scroller,
+                vocalGroups,
+                parsedLyrics.EndTime,
+                timestamp,
+                deltaTime,
+                skipped,
+                justSkippedByVocal || void 0
+              );
+              if (skipped && justSkippedByVocal) {
+                justSkippedByVocal = false;
+              }
+            })
+          );
+          maid.handle(
+            OnNextFrame(
+              () => Update(
+                scroller,
+                vocalGroups,
+                parsedLyrics.EndTime,
+                song.GetTimestamp(),
+                1 / 60,
+                true
+              )
+            )
+          );
+          vocalGroups.map((vocalGroup, index) => {
+            const startTime = vocalGroupStartTimes[index];
+            vocalGroup.Vocals.map(
+              (vocal) => vocal.RequestedTimeSkip.connect(() => {
+                justSkippedByVocal = true;
+                song.SetTimestamp(startTime);
+              })
+            );
+          });
+        }
+        scrollContainer.Destroy = () => maid.dispose();
+        return scrollContainer;
+      };
     }
   });
 
@@ -12080,17 +15661,15 @@ ${content[index].words}`;
   });
 
   // extensions/full-screen/deps/beautiful-lyrics/Services/Player/Song.ts
-  var MinimumTimeSkipDifferenceOffset, TrackInformationExpiration, ProviderLyricsExpiration, ParsedLyricsExpiration, SyncTimeouts, FirstSongLoaded, Song;
+  var TrackInformationExpiration, ProviderLyricsExpiration, ParsedLyricsExpiration, SyncTimeouts, FirstSongLoaded, Song;
   var init_Song = __esm({
     "extensions/full-screen/deps/beautiful-lyrics/Services/Player/Song.ts"() {
       "use strict";
       init_Signal();
       init_Maid();
       init_Scheduler();
-      init_Session();
       init_Cache();
       init_LyricsParser();
-      MinimumTimeSkipDifferenceOffset = 1 / 120;
       TrackInformationExpiration = {
         Duration: 2,
         Unit: "Weeks"
@@ -12103,7 +15682,7 @@ ${content[index].words}`;
         Duration: 1,
         Unit: "Months"
       };
-      SyncTimeouts = [0.05, 0.1, 0.15, 0.75, 2.5, 5, 10, 30];
+      SyncTimeouts = [0, 0.05, 0.1, 0.15, 0.75, 2.5, 5, 10, 30];
       FirstSongLoaded = false;
       Song = class {
         // Private Properties
@@ -12122,76 +15701,73 @@ ${content[index].words}`;
         AutomatedSyncsExecuted = 0;
         LoadedDetails;
         // Signals
-        TimeSteppedSignal = this.Maid.give(
+        TimeSteppedSignal = this.Maid.handle(
           new Signal()
         );
-        IsPlayingChangedSignal = this.Maid.give(new Signal());
-        DetailsLoadedSignal = this.Maid.give(new Signal());
-        TimeStepped = this.TimeSteppedSignal.getEvent();
-        IsPlayingChanged = this.IsPlayingChangedSignal.getEvent();
+        IsPlayingChangedSignal = this.Maid.handle(new Signal());
+        DetailsLoadedSignal = this.Maid.handle(new Signal());
+        TimeStepped = this.TimeSteppedSignal.asEvent();
+        IsPlayingChanged = this.IsPlayingChangedSignal.asEvent();
         // Constructor
-        constructor(duration, isPlaying, trackId, metadata, isLocal, fireChangedSignal) {
+        constructor({
+          trackId,
+          duration,
+          isLocal,
+          isPlaying,
+          metadata
+        }, fireChangedSignal) {
           {
             this.FireChangedSignal = fireChangedSignal;
-            {
-              this.Id = trackId;
-              this.Duration = duration;
-              this.IsLocal = isLocal;
-              this.CoverArt = {
-                Large: metadata.image_xlarge_url,
-                Big: metadata.image_large_url,
-                Default: metadata.image_url,
-                Small: metadata.image_small_url
-              };
-            }
+            this.Id = trackId;
+            this.Duration = duration;
+            this.IsLocal = isLocal;
+            this.CoverArt = {
+              Large: metadata.image_xlarge_url,
+              Big: metadata.image_large_url,
+              Default: metadata.image_url,
+              Small: metadata.image_small_url
+            };
             this.Playing = isPlaying;
           }
           this.HandleEvents();
           this.LoadDetails();
         }
-        // Private Setup Methods
         HandleEvents() {
-          {
-            const startSpotifyTimestamp = SpotifyPlayer.getProgress();
-            const callback = (event) => {
-              if (event === void 0) {
-                return;
-              }
-              if (FirstSongLoaded === false || startSpotifyTimestamp !== event.data) {
-                FirstSongLoaded = true;
-                this.Maid.cleanEntry("WaitForSongStart");
-                this.StartNaturalTimestepping();
-              }
-            };
-            SpotifyPlayer.addEventListener("onprogress", callback);
-            this.Maid.give(() => SpotifyPlayer.removeEventListener("onprogress", callback), "WaitForSongStart");
-          }
-          {
-            const callback = (event) => {
-              if (event === void 0) {
-                return;
-              }
-              if (this.Playing === event.data.is_paused) {
-                this.Playing = !this.Playing;
-                this.IsPlayingChangedSignal.fire(this.Playing);
-                if (this.Playing === false) {
-                  this.Maid.cleanEntry("AutomaticSync");
-                }
-              }
-            };
-            SpotifyPlayer.addEventListener("onplaypause", callback);
-            this.Maid.give(() => SpotifyPlayer.removeEventListener("onplaypause", callback));
-          }
+          const startSpotifyTimestamp = Spicetify.Player.getProgress();
+          const onProgress = (event) => {
+            if (event === void 0)
+              return;
+            if (FirstSongLoaded === false || startSpotifyTimestamp !== event.data) {
+              FirstSongLoaded = true;
+              this.Maid.disposeEntry("WaitForSongStart");
+              this.StartNaturalTimestepping();
+            }
+          };
+          const onPlayPause = (event) => {
+            if (event === void 0)
+              return;
+            if (this.Playing === event.data.is_paused) {
+              this.Playing = !this.Playing;
+              this.IsPlayingChangedSignal.fire(this.Playing);
+              if (this.Playing === false)
+                this.Maid.disposeEntry("AutomaticSync");
+            }
+          };
+          Spicetify.Player.addEventListener("onprogress", onProgress);
+          this.Maid.handle(
+            () => Spicetify.Player.removeEventListener("onprogress", onProgress),
+            "WaitForSongStart"
+          );
+          Spicetify.Player.addEventListener("onplaypause", onPlayPause);
+          this.Maid.handle(() => Spicetify.Player.removeEventListener("onplaypause", onPlayPause));
         }
-        // Private Detail methods
         GetLyricsFromSpotify(recordCode, ourPopularity) {
-          return SpotifyFetch.request("GET", `https://api.spotify.com/v1/search?q=isrc:${recordCode}&type=track`).catch((error) => {
+          return Spicetify.CosmosAsync.request("GET", `https://api.spotify.com/v1/search?q=isrc:${recordCode}&type=track`).catch((error) => {
             console.warn(error);
             throw error;
           }).then((response) => {
-            if (response.status < 200 || response.status > 299) {
+            if (response.status < 200 || 300 <= response.status)
               throw `Failed to get Requests for RecordCode (${recordCode})`;
-            }
             return response.body;
           }).then(async (releases) => {
             const releaseIds = [];
@@ -12211,7 +15787,7 @@ ${content[index].words}`;
             const lyricsPromises = [];
             for (const releaseId of releaseIds) {
               lyricsPromises.push(
-                SpotifyFetch.request(
+                Spicetify.CosmosAsync.request(
                   "GET",
                   `https://spclient.wg.spotify.com/color-lyrics/v2/track/${releaseId}?format=json&vocalRemoval=false`
                 ).catch((error) => {
@@ -12242,147 +15818,131 @@ ${content[index].words}`;
             return void 0;
           });
         }
-        GetLyricsFromBackendProvider(recordCode) {
-          return fetch(`https://beautiful-lyrics.socalifornian.live/lyrics/${recordCode}`).then((response) => {
-            if (response.ok === false) {
-              throw `Failed to load Lyrics for Track (${this.Id}), Error: ${response.status} ${response.statusText}`;
-            }
-            return response.text();
-          }).then((text) => {
-            if (text.length === 0) {
-              return void 0;
-            } else {
-              return JSON.parse(text);
-            }
-          });
-        }
+        GetLyricsFromBackendProvider = (recordCode) => fetch(`https://beautiful-lyrics.socalifornian.live/lyrics/${recordCode}`).then((res) => {
+          if (res.ok === false)
+            throw `Failed to load Lyrics for Track (${this.Id}), Error: ${res.status} ${res.statusText}`;
+          return res.text();
+        }).then((text) => text === "" ? void 0 : JSON.parse(text));
         LoadDetails() {
           if (this.IsLocal) {
+            this.Details = { ISRC: "", Lyrics: void 0 };
+            this.LoadedDetails = true;
+            this.DetailsLoadedSignal.fire();
+            return;
+          }
+          Cache.GetFromExpireCache("TrackInformation", this.Id).then((trackInformation) => {
+            if (trackInformation === void 0) {
+              return Spicetify.CosmosAsync.request("GET", `https://api.spotify.com/v1/tracks/${this.Id}`).catch((error) => {
+                console.warn(error);
+                throw error;
+              }).then((response) => {
+                if (response.status < 200 || response.status > 299) {
+                  throw `Failed to load Track (${this.Id}) Information`;
+                }
+                const trackInformation2 = response.body;
+                Cache.SetExpireCacheItem(
+                  "TrackInformation",
+                  this.Id,
+                  trackInformation2,
+                  TrackInformationExpiration
+                );
+                return trackInformation2;
+              });
+            } else {
+              return trackInformation;
+            }
+          }).then((trackInformation) => {
+            return Cache.GetFromExpireCache("ProviderLyrics", trackInformation.external_ids.isrc).then(
+              (storedProviderLyrics) => [trackInformation, storedProviderLyrics]
+            );
+          }).then(
+            ([trackInformation, storedProviderLyrics]) => {
+              const recordCode = trackInformation.external_ids.isrc;
+              if (storedProviderLyrics === void 0) {
+                return this.GetLyricsFromBackendProvider(recordCode).then((backendLyric) => {
+                  if (backendLyric === void 0 || backendLyric.IsSynced === false) {
+                    return this.GetLyricsFromSpotify(recordCode, trackInformation.popularity).then(
+                      (spotifyLyric) => {
+                        if (spotifyLyric === void 0) {
+                          return [backendLyric, false];
+                        } else {
+                          return [spotifyLyric, true];
+                        }
+                      }
+                    );
+                  } else {
+                    return Promise.resolve([backendLyric, false]);
+                  }
+                }).then(([lyric, isSpotifyLyric]) => {
+                  if (lyric === void 0) {
+                    return void 0;
+                  }
+                  return isSpotifyLyric ? {
+                    Source: "Spotify",
+                    Content: lyric.Content
+                  } : {
+                    Source: "AppleMusic",
+                    Content: lyric.Content
+                  };
+                }).then((providerLyrics) => {
+                  const lyrics = providerLyrics ?? false;
+                  Cache.SetExpireCacheItem("ProviderLyrics", recordCode, lyrics, ProviderLyricsExpiration);
+                  return [trackInformation, lyrics];
+                });
+              } else {
+                return Promise.resolve([trackInformation, storedProviderLyrics]);
+              }
+            }
+          ).then(
+            ([trackInformation, storedProviderLyrics]) => {
+              return Cache.GetFromExpireCache("ISRCLyrics", trackInformation.external_ids.isrc).then(
+                (storedParsedLyrics) => [trackInformation, storedProviderLyrics, storedParsedLyrics]
+              );
+            }
+          ).then(
+            ([trackInformation, storedProviderLyrics, storedParsedLyrics]) => {
+              if (storedParsedLyrics === void 0) {
+                let parsedLyrics = false;
+                if (storedProviderLyrics !== false) {
+                  parsedLyrics = ParseLyrics(storedProviderLyrics);
+                }
+                Cache.SetExpireCacheItem(
+                  "ISRCLyrics",
+                  trackInformation.external_ids.isrc,
+                  parsedLyrics,
+                  ParsedLyricsExpiration
+                );
+                return Promise.resolve([trackInformation, parsedLyrics || void 0]);
+              } else {
+                return Promise.resolve([trackInformation, storedParsedLyrics || void 0]);
+              }
+            }
+          ).then(([trackInformation, parsedLyrics]) => {
             this.Details = {
-              ISRC: "",
-              Lyrics: void 0
+              ISRC: trackInformation.external_ids.isrc,
+              Lyrics: parsedLyrics
             };
             this.LoadedDetails = true;
             this.DetailsLoadedSignal.fire();
-          } else {
-            Cache.GetFromExpireCache("TrackInformation", this.Id).then((trackInformation) => {
-              if (trackInformation === void 0) {
-                return SpotifyFetch.request("GET", `https://api.spotify.com/v1/tracks/${this.Id}`).catch((error) => {
-                  console.warn(error);
-                  throw error;
-                }).then((response) => {
-                  if (response.status < 200 || response.status > 299) {
-                    throw `Failed to load Track (${this.Id}) Information`;
-                  }
-                  const trackInformation2 = response.body;
-                  Cache.SetExpireCacheItem(
-                    "TrackInformation",
-                    this.Id,
-                    trackInformation2,
-                    TrackInformationExpiration
-                  );
-                  return trackInformation2;
-                });
-              } else {
-                return trackInformation;
-              }
-            }).then((trackInformation) => {
-              return Cache.GetFromExpireCache("ProviderLyrics", trackInformation.external_ids.isrc).then(
-                (storedProviderLyrics) => [trackInformation, storedProviderLyrics]
-              );
-            }).then(
-              ([trackInformation, storedProviderLyrics]) => {
-                const recordCode = trackInformation.external_ids.isrc;
-                if (storedProviderLyrics === void 0) {
-                  return this.GetLyricsFromBackendProvider(recordCode).then((backendLyric) => {
-                    if (backendLyric === void 0 || backendLyric.IsSynced === false) {
-                      return this.GetLyricsFromSpotify(recordCode, trackInformation.popularity).then(
-                        (spotifyLyric) => {
-                          if (spotifyLyric === void 0) {
-                            return [backendLyric, false];
-                          } else {
-                            return [spotifyLyric, true];
-                          }
-                        }
-                      );
-                    } else {
-                      return Promise.resolve([backendLyric, false]);
-                    }
-                  }).then(([lyric, isSpotifyLyric]) => {
-                    if (lyric === void 0) {
-                      return void 0;
-                    }
-                    return isSpotifyLyric ? {
-                      Source: "Spotify",
-                      Content: lyric.Content
-                    } : {
-                      Source: "AppleMusic",
-                      Content: lyric.Content
-                    };
-                  }).then((providerLyrics) => {
-                    const lyrics = providerLyrics ?? false;
-                    Cache.SetExpireCacheItem(
-                      "ProviderLyrics",
-                      recordCode,
-                      lyrics,
-                      ProviderLyricsExpiration
-                    );
-                    return [trackInformation, lyrics];
-                  });
-                } else {
-                  return Promise.resolve([trackInformation, storedProviderLyrics]);
-                }
-              }
-            ).then(
-              ([trackInformation, storedProviderLyrics]) => {
-                return Cache.GetFromExpireCache("ISRCLyrics", trackInformation.external_ids.isrc).then(
-                  (storedParsedLyrics) => [trackInformation, storedProviderLyrics, storedParsedLyrics]
-                );
-              }
-            ).then(
-              ([trackInformation, storedProviderLyrics, storedParsedLyrics]) => {
-                if (storedParsedLyrics === void 0) {
-                  let parsedLyrics = false;
-                  if (storedProviderLyrics !== false) {
-                    parsedLyrics = ParseLyrics(storedProviderLyrics);
-                  }
-                  Cache.SetExpireCacheItem(
-                    "ISRCLyrics",
-                    trackInformation.external_ids.isrc,
-                    parsedLyrics,
-                    ParsedLyricsExpiration
-                  );
-                  return Promise.resolve([trackInformation, parsedLyrics || void 0]);
-                } else {
-                  return Promise.resolve([trackInformation, storedParsedLyrics || void 0]);
-                }
-              }
-            ).then(([trackInformation, parsedLyrics]) => {
-              this.Details = {
-                ISRC: trackInformation.external_ids.isrc,
-                Lyrics: parsedLyrics
-              };
-              this.LoadedDetails = true;
-              this.DetailsLoadedSignal.fire();
-            });
-          }
+          });
         }
         TriggerAutomatedSync() {
-          const syncsExecuted = this.AutomatedSyncsExecuted;
-          if (this.Playing === false || syncsExecuted >= SyncTimeouts.length) {
+          if (this.Playing === false || this.AutomatedSyncsExecuted >= SyncTimeouts.length)
             return;
-          }
-          const spotifyPlayerOrigin = SpotifyPlayer.origin;
+          const spotifyPlayerOrigin = Spicetify.Player.origin;
           if (!spotifyPlayerOrigin._events.emitResumeSync()) {
             spotifyPlayerOrigin._contextPlayer.resume({}).catch((error) => console.warn("BeautifulLyrics: Failed to force resync", error));
           }
-          this.AutomatedSyncsExecuted += 1;
-          this.Maid.give(Timeout(SyncTimeouts[syncsExecuted], this.TriggerAutomatedSync.bind(this)), "AutomaticSync");
+          this.AutomatedSyncsExecuted++;
+          this.Maid.handle(
+            Timeout(SyncTimeouts[this.AutomatedSyncsExecuted], this.TriggerAutomatedSync.bind(this)),
+            "AutomaticSync"
+          );
         }
         StartNaturalTimestepping() {
           let lastTime = Date.now();
           let lastUpdatedPlaybackTimestamp = -1;
-          const update = () => {
+          const step = () => {
             const timeNow = Date.now();
             const deltaTime = (timeNow - lastTime) / 1e3;
             const lastActionTimestamp = Spicetify.Platform.PlayerAPI._state.timestamp;
@@ -12396,3861 +15956,121 @@ ${content[index].words}`;
               lastUpdatedPlaybackTimestamp = lastPlaybackTimestamp;
               this.UpdateTimestamp(lastPlaybackTimestamp / 1e3, 0);
             }
-            this.DeltaTime = deltaTime;
             lastTime = timeNow;
-            this.Maid.give(OnNextFrame(update), "NaturalTimestepping");
+            this.Maid.handle(OnNextFrame(step), "NaturalTimestepping");
           };
           this.TriggerAutomatedSync();
-          update();
+          step();
         }
-        // Private State Methods
         UpdateTimestamp(timestamp, deltaTime, skipped) {
           this.Timestamp = timestamp;
-          const fireChangedSignal = this.FireChangedSignal;
-          if (fireChangedSignal !== void 0) {
-            delete this.FireChangedSignal;
-            fireChangedSignal(this);
+          if (this.FireChangedSignal !== void 0) {
+            this.FireChangedSignal(this);
+            this.FireChangedSignal = void 0;
           }
           this.TimeSteppedSignal.fire(timestamp, deltaTime, skipped);
         }
-        // Public Metadata Methods
-        GetId() {
-          return this.Id;
-        }
-        GetDuration() {
-          return this.Duration;
-        }
-        GetCoverArt() {
-          return this.CoverArt;
-        }
         GetDetails() {
-          if (this.LoadedDetails === true) {
+          if (this.LoadedDetails === true)
             return Promise.resolve(this.Details);
-          } else {
+          else
             return new Promise((resolve) => this.DetailsLoadedSignal.connect(() => resolve(this.Details)));
-          }
         }
-        IsLocalFile() {
-          return this.IsLocal;
-        }
-        // Public State Methods
-        IsPlaying() {
-          return this.Playing;
-        }
-        GetTimestamp() {
-          return this.Timestamp;
-        }
-        SetTimestamp(timestamp) {
-          SpotifyPlayer.seek(timestamp * 1e3);
-        }
-        // Deconstructor
-        dispose() {
-          this.Maid.dispose();
-        }
+        GetTimestamp = () => this.Timestamp;
+        SetTimestamp = (timestamp) => Spicetify.Player.seek(timestamp * 1e3);
+        dispose = () => this.Maid.dispose();
       };
     }
   });
 
   // extensions/full-screen/deps/beautiful-lyrics/Services/Player.ts
-  var SpicetifyTrackId, SpicetifyLocalTrackId, Player, Player_default;
+  var Player_default;
   var init_Player = __esm({
     "extensions/full-screen/deps/beautiful-lyrics/Services/Player.ts"() {
       "use strict";
       init_Signal();
       init_Maid();
-      init_Session();
       init_Song();
-      SpicetifyTrackId = /^spotify:track:([\w\d]+)$/;
-      SpicetifyLocalTrackId = /^spotify:local:(.+)$/;
-      Player = class {
-        // Private Properties
-        Maid = GlobalMaid.give(new Maid());
-        Song;
-        SongJustChanged;
-        // Used to determine when we initially fire our SongChanged event
-        Started;
-        // Signals
-        SongChangedSignal = this.Maid.give(new Signal());
-        SongChanged = this.SongChangedSignal.getEvent();
-        // Private Methods
-        // Public Methods
-        GetSong() {
-          if (this.SongJustChanged) {
-            return void 0;
-          }
-          return this.Song;
+      Player_default = new class {
+        maid = GlobalMaid.subordinate();
+        song;
+        SongChangedSignal = this.maid.handle(new Signal());
+        SongChanged = this.SongChangedSignal.asEvent();
+        getSong() {
+          return this.song;
         }
-        Start() {
-          if (this.Started === void 0) {
-            this.Started = true;
-            {
-              const callback = (event) => {
-                this.Maid.cleanEntry("Song");
-                if (event === void 0 || event.data.track === void 0) {
-                  this.Song = void 0;
-                  this.SongJustChanged = void 0;
-                  this.SongChangedSignal.fire();
-                } else {
-                  const track = event.data.track;
-                  const metadata = track.metadata;
-                  const isLocal = metadata.is_local === "true";
-                  const trackId = track.uri.match(isLocal ? SpicetifyLocalTrackId : SpicetifyTrackId)[1];
-                  const duration = event.data.duration / 1e3;
-                  this.Song = this.Maid.give(
-                    new Song(
-                      duration,
-                      !event.data.is_paused,
-                      trackId,
-                      metadata,
-                      isLocal,
-                      (song) => this.SongChangedSignal.fire(song)
-                    ),
-                    "Song"
-                  );
-                }
-              };
-              SpotifyPlayer.addEventListener("songchange", callback);
-              this.Maid.give(() => SpotifyPlayer.removeEventListener("songchange", callback));
-              if (SpotifyPlayer.data !== void 0) {
-                callback({ data: SpotifyPlayer.data });
-              }
-            }
+        handleSongChange = (event) => {
+          this.maid.disposeEntry("Song");
+          if (event?.data?.track === void 0) {
+            this.song = void 0;
+            this.SongChangedSignal.fire();
+            return;
           }
+          const { metadata, uri } = event.data.track;
+          this.song = this.maid.handle(
+            new Song(
+              {
+                trackId: Spicetify.URI.from(uri).id,
+                duration: event.data.duration / 1e3,
+                isLocal: metadata.is_local === "true",
+                isPlaying: !event.data.is_paused,
+                metadata
+              },
+              (song) => this.SongChangedSignal.fire(song)
+            ),
+            "Song"
+          );
+        };
+        constructor() {
+          const handleSongChange = this.handleSongChange.bind(this);
+          Spicetify.Player.addEventListener("songchange", handleSongChange);
+          this.maid.handle(() => Spicetify.Player.removeEventListener("songchange", handleSongChange));
+          handleSongChange({ data: Spicetify.Player.data });
         }
-      };
-      Player_default = new Player();
-    }
-  });
-
-  // .yarn/cache/can-use-dom-npm-0.1.0-48c60a9052-488fc94c40.zip/node_modules/can-use-dom/index.js
-  var require_can_use_dom = __commonJS({
-    ".yarn/cache/can-use-dom-npm-0.1.0-48c60a9052-488fc94c40.zip/node_modules/can-use-dom/index.js"(exports, module) {
-      var canUseDOM3 = !!(typeof window !== "undefined" && window.document && window.document.createElement);
-      module.exports = canUseDOM3;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_freeGlobal.js
-  var freeGlobal, freeGlobal_default;
-  var init_freeGlobal = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_freeGlobal.js"() {
-      freeGlobal = typeof global == "object" && global && global.Object === Object && global;
-      freeGlobal_default = freeGlobal;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_root.js
-  var freeSelf, root, root_default;
-  var init_root = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_root.js"() {
-      init_freeGlobal();
-      freeSelf = typeof self == "object" && self && self.Object === Object && self;
-      root = freeGlobal_default || freeSelf || Function("return this")();
-      root_default = root;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_Symbol.js
-  var Symbol2, Symbol_default;
-  var init_Symbol = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_Symbol.js"() {
-      init_root();
-      Symbol2 = root_default.Symbol;
-      Symbol_default = Symbol2;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_getRawTag.js
-  function getRawTag(value) {
-    var isOwn = hasOwnProperty2.call(value, symToStringTag), tag = value[symToStringTag];
-    try {
-      value[symToStringTag] = void 0;
-      var unmasked = true;
-    } catch (e) {
-    }
-    var result = nativeObjectToString.call(value);
-    if (unmasked) {
-      if (isOwn) {
-        value[symToStringTag] = tag;
-      } else {
-        delete value[symToStringTag];
-      }
-    }
-    return result;
-  }
-  var objectProto, hasOwnProperty2, nativeObjectToString, symToStringTag, getRawTag_default;
-  var init_getRawTag = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_getRawTag.js"() {
-      init_Symbol();
-      objectProto = Object.prototype;
-      hasOwnProperty2 = objectProto.hasOwnProperty;
-      nativeObjectToString = objectProto.toString;
-      symToStringTag = Symbol_default ? Symbol_default.toStringTag : void 0;
-      getRawTag_default = getRawTag;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_objectToString.js
-  function objectToString(value) {
-    return nativeObjectToString2.call(value);
-  }
-  var objectProto2, nativeObjectToString2, objectToString_default;
-  var init_objectToString = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_objectToString.js"() {
-      objectProto2 = Object.prototype;
-      nativeObjectToString2 = objectProto2.toString;
-      objectToString_default = objectToString;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_baseGetTag.js
-  function baseGetTag(value) {
-    if (value == null) {
-      return value === void 0 ? undefinedTag : nullTag;
-    }
-    return symToStringTag2 && symToStringTag2 in Object(value) ? getRawTag_default(value) : objectToString_default(value);
-  }
-  var nullTag, undefinedTag, symToStringTag2, baseGetTag_default;
-  var init_baseGetTag = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_baseGetTag.js"() {
-      init_Symbol();
-      init_getRawTag();
-      init_objectToString();
-      nullTag = "[object Null]";
-      undefinedTag = "[object Undefined]";
-      symToStringTag2 = Symbol_default ? Symbol_default.toStringTag : void 0;
-      baseGetTag_default = baseGetTag;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isObjectLike.js
-  function isObjectLike(value) {
-    return value != null && typeof value == "object";
-  }
-  var isObjectLike_default;
-  var init_isObjectLike = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isObjectLike.js"() {
-      isObjectLike_default = isObjectLike;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isSymbol.js
-  function isSymbol(value) {
-    return typeof value == "symbol" || isObjectLike_default(value) && baseGetTag_default(value) == symbolTag;
-  }
-  var symbolTag, isSymbol_default;
-  var init_isSymbol = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isSymbol.js"() {
-      init_baseGetTag();
-      init_isObjectLike();
-      symbolTag = "[object Symbol]";
-      isSymbol_default = isSymbol;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_trimmedEndIndex.js
-  function trimmedEndIndex(string) {
-    var index = string.length;
-    while (index-- && reWhitespace.test(string.charAt(index))) {
-    }
-    return index;
-  }
-  var reWhitespace, trimmedEndIndex_default;
-  var init_trimmedEndIndex = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_trimmedEndIndex.js"() {
-      reWhitespace = /\s/;
-      trimmedEndIndex_default = trimmedEndIndex;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_baseTrim.js
-  function baseTrim(string) {
-    return string ? string.slice(0, trimmedEndIndex_default(string) + 1).replace(reTrimStart, "") : string;
-  }
-  var reTrimStart, baseTrim_default;
-  var init_baseTrim = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/_baseTrim.js"() {
-      init_trimmedEndIndex();
-      reTrimStart = /^\s+/;
-      baseTrim_default = baseTrim;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isObject.js
-  function isObject(value) {
-    var type = typeof value;
-    return value != null && (type == "object" || type == "function");
-  }
-  var isObject_default;
-  var init_isObject = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/isObject.js"() {
-      isObject_default = isObject;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/toNumber.js
-  function toNumber(value) {
-    if (typeof value == "number") {
-      return value;
-    }
-    if (isSymbol_default(value)) {
-      return NAN;
-    }
-    if (isObject_default(value)) {
-      var other = typeof value.valueOf == "function" ? value.valueOf() : value;
-      value = isObject_default(other) ? other + "" : other;
-    }
-    if (typeof value != "string") {
-      return value === 0 ? value : +value;
-    }
-    value = baseTrim_default(value);
-    var isBinary = reIsBinary.test(value);
-    return isBinary || reIsOctal.test(value) ? freeParseInt(value.slice(2), isBinary ? 2 : 8) : reIsBadHex.test(value) ? NAN : +value;
-  }
-  var NAN, reIsBadHex, reIsBinary, reIsOctal, freeParseInt, toNumber_default;
-  var init_toNumber = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/toNumber.js"() {
-      init_baseTrim();
-      init_isObject();
-      init_isSymbol();
-      NAN = 0 / 0;
-      reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
-      reIsBinary = /^0b[01]+$/i;
-      reIsOctal = /^0o[0-7]+$/i;
-      freeParseInt = parseInt;
-      toNumber_default = toNumber;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/now.js
-  var now, now_default;
-  var init_now = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/now.js"() {
-      init_root();
-      now = function() {
-        return root_default.Date.now();
-      };
-      now_default = now;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/debounce.js
-  function debounce2(func, wait, options2) {
-    var lastArgs, lastThis, maxWait, result, timerId, lastCallTime, lastInvokeTime = 0, leading = false, maxing = false, trailing = true;
-    if (typeof func != "function") {
-      throw new TypeError(FUNC_ERROR_TEXT);
-    }
-    wait = toNumber_default(wait) || 0;
-    if (isObject_default(options2)) {
-      leading = !!options2.leading;
-      maxing = "maxWait" in options2;
-      maxWait = maxing ? nativeMax(toNumber_default(options2.maxWait) || 0, wait) : maxWait;
-      trailing = "trailing" in options2 ? !!options2.trailing : trailing;
-    }
-    function invokeFunc(time) {
-      var args = lastArgs, thisArg = lastThis;
-      lastArgs = lastThis = void 0;
-      lastInvokeTime = time;
-      result = func.apply(thisArg, args);
-      return result;
-    }
-    function leadingEdge(time) {
-      lastInvokeTime = time;
-      timerId = setTimeout(timerExpired, wait);
-      return leading ? invokeFunc(time) : result;
-    }
-    function remainingWait(time) {
-      var timeSinceLastCall = time - lastCallTime, timeSinceLastInvoke = time - lastInvokeTime, timeWaiting = wait - timeSinceLastCall;
-      return maxing ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke) : timeWaiting;
-    }
-    function shouldInvoke(time) {
-      var timeSinceLastCall = time - lastCallTime, timeSinceLastInvoke = time - lastInvokeTime;
-      return lastCallTime === void 0 || timeSinceLastCall >= wait || timeSinceLastCall < 0 || maxing && timeSinceLastInvoke >= maxWait;
-    }
-    function timerExpired() {
-      var time = now_default();
-      if (shouldInvoke(time)) {
-        return trailingEdge(time);
-      }
-      timerId = setTimeout(timerExpired, remainingWait(time));
-    }
-    function trailingEdge(time) {
-      timerId = void 0;
-      if (trailing && lastArgs) {
-        return invokeFunc(time);
-      }
-      lastArgs = lastThis = void 0;
-      return result;
-    }
-    function cancel() {
-      if (timerId !== void 0) {
-        clearTimeout(timerId);
-      }
-      lastInvokeTime = 0;
-      lastArgs = lastCallTime = lastThis = timerId = void 0;
-    }
-    function flush() {
-      return timerId === void 0 ? result : trailingEdge(now_default());
-    }
-    function debounced() {
-      var time = now_default(), isInvoking = shouldInvoke(time);
-      lastArgs = arguments;
-      lastThis = this;
-      lastCallTime = time;
-      if (isInvoking) {
-        if (timerId === void 0) {
-          return leadingEdge(lastCallTime);
-        }
-        if (maxing) {
-          clearTimeout(timerId);
-          timerId = setTimeout(timerExpired, wait);
-          return invokeFunc(lastCallTime);
-        }
-      }
-      if (timerId === void 0) {
-        timerId = setTimeout(timerExpired, wait);
-      }
-      return result;
-    }
-    debounced.cancel = cancel;
-    debounced.flush = flush;
-    return debounced;
-  }
-  var FUNC_ERROR_TEXT, nativeMax, nativeMin, debounce_default;
-  var init_debounce = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/debounce.js"() {
-      init_isObject();
-      init_now();
-      init_toNumber();
-      FUNC_ERROR_TEXT = "Expected a function";
-      nativeMax = Math.max;
-      nativeMin = Math.min;
-      debounce_default = debounce2;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/throttle.js
-  function throttle(func, wait, options2) {
-    var leading = true, trailing = true;
-    if (typeof func != "function") {
-      throw new TypeError(FUNC_ERROR_TEXT2);
-    }
-    if (isObject_default(options2)) {
-      leading = "leading" in options2 ? !!options2.leading : leading;
-      trailing = "trailing" in options2 ? !!options2.trailing : trailing;
-    }
-    return debounce_default(func, wait, {
-      "leading": leading,
-      "maxWait": wait,
-      "trailing": trailing
-    });
-  }
-  var FUNC_ERROR_TEXT2, throttle_default;
-  var init_throttle = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/throttle.js"() {
-      init_debounce();
-      init_isObject();
-      FUNC_ERROR_TEXT2 = "Expected a function";
-      throttle_default = throttle;
-    }
-  });
-
-  // .yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/lodash.js
-  var init_lodash = __esm({
-    ".yarn/cache/lodash-es-npm-4.17.21-b45832dfce-05cbffad6e.zip/node_modules/lodash-es/lodash.js"() {
-      init_debounce();
-      init_throttle();
-    }
-  });
-
-  // .yarn/cache/simplebar-core-npm-1.2.4-2dd1c4c362-9bef0a29cc.zip/node_modules/simplebar-core/dist/index.mjs
-  function scrollbarWidth() {
-    if (cachedScrollbarWidth === null) {
-      if (typeof document === "undefined") {
-        cachedScrollbarWidth = 0;
-        return cachedScrollbarWidth;
-      }
-      var body = document.body;
-      var box = document.createElement("div");
-      box.classList.add("simplebar-hide-scrollbar");
-      body.appendChild(box);
-      var width = box.getBoundingClientRect().right;
-      body.removeChild(box);
-      cachedScrollbarWidth = width;
-    }
-    return cachedScrollbarWidth;
-  }
-  function getElementWindow$1(element) {
-    if (!element || !element.ownerDocument || !element.ownerDocument.defaultView) {
-      return window;
-    }
-    return element.ownerDocument.defaultView;
-  }
-  function getElementDocument$1(element) {
-    if (!element || !element.ownerDocument) {
-      return document;
-    }
-    return element.ownerDocument;
-  }
-  function addClasses$1(el, classes) {
-    var _a2;
-    if (!el)
-      return;
-    (_a2 = el.classList).add.apply(_a2, classes.split(" "));
-  }
-  function removeClasses$1(el, classes) {
-    if (!el)
-      return;
-    classes.split(" ").forEach(function(className) {
-      el.classList.remove(className);
-    });
-  }
-  function classNamesToQuery$1(classNames3) {
-    return ".".concat(classNames3.split(" ").join("."));
-  }
-  var import_can_use_dom, __assign, cachedScrollbarWidth, cachedDevicePixelRatio, getOptions$1, helpers, getElementWindow, getElementDocument, getOptions, addClasses, removeClasses, classNamesToQuery, SimpleBarCore;
-  var init_dist = __esm({
-    ".yarn/cache/simplebar-core-npm-1.2.4-2dd1c4c362-9bef0a29cc.zip/node_modules/simplebar-core/dist/index.mjs"() {
-      init_lodash();
-      import_can_use_dom = __toESM(require_can_use_dom(), 1);
-      __assign = function() {
-        __assign = Object.assign || function __assign2(t) {
-          for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p2 in s)
-              if (Object.prototype.hasOwnProperty.call(s, p2))
-                t[p2] = s[p2];
-          }
-          return t;
-        };
-        return __assign.apply(this, arguments);
-      };
-      cachedScrollbarWidth = null;
-      cachedDevicePixelRatio = null;
-      if (import_can_use_dom.default) {
-        window.addEventListener("resize", function() {
-          if (cachedDevicePixelRatio !== window.devicePixelRatio) {
-            cachedDevicePixelRatio = window.devicePixelRatio;
-            cachedScrollbarWidth = null;
-          }
-        });
-      }
-      getOptions$1 = function(obj) {
-        var initialObj = {};
-        var options2 = Array.prototype.reduce.call(obj, function(acc, attribute) {
-          var option2 = attribute.name.match(/data-simplebar-(.+)/);
-          if (option2) {
-            var key = option2[1].replace(/\W+(.)/g, function(_, chr) {
-              return chr.toUpperCase();
-            });
-            switch (attribute.value) {
-              case "true":
-                acc[key] = true;
-                break;
-              case "false":
-                acc[key] = false;
-                break;
-              case void 0:
-                acc[key] = true;
-                break;
-              default:
-                acc[key] = attribute.value;
-            }
-          }
-          return acc;
-        }, initialObj);
-        return options2;
-      };
-      helpers = /* @__PURE__ */ Object.freeze({
-        __proto__: null,
-        getElementWindow: getElementWindow$1,
-        getElementDocument: getElementDocument$1,
-        getOptions: getOptions$1,
-        addClasses: addClasses$1,
-        removeClasses: removeClasses$1,
-        classNamesToQuery: classNamesToQuery$1
-      });
-      getElementWindow = getElementWindow$1;
-      getElementDocument = getElementDocument$1;
-      getOptions = getOptions$1;
-      addClasses = addClasses$1;
-      removeClasses = removeClasses$1;
-      classNamesToQuery = classNamesToQuery$1;
-      SimpleBarCore = /** @class */
-      function() {
-        function SimpleBarCore2(element, options2) {
-          if (options2 === void 0) {
-            options2 = {};
-          }
-          var _this = this;
-          this.removePreventClickId = null;
-          this.minScrollbarWidth = 20;
-          this.stopScrollDelay = 175;
-          this.isScrolling = false;
-          this.isMouseEntering = false;
-          this.scrollXTicking = false;
-          this.scrollYTicking = false;
-          this.wrapperEl = null;
-          this.contentWrapperEl = null;
-          this.contentEl = null;
-          this.offsetEl = null;
-          this.maskEl = null;
-          this.placeholderEl = null;
-          this.heightAutoObserverWrapperEl = null;
-          this.heightAutoObserverEl = null;
-          this.rtlHelpers = null;
-          this.scrollbarWidth = 0;
-          this.resizeObserver = null;
-          this.mutationObserver = null;
-          this.elStyles = null;
-          this.isRtl = null;
-          this.mouseX = 0;
-          this.mouseY = 0;
-          this.onMouseMove = function() {
-          };
-          this.onWindowResize = function() {
-          };
-          this.onStopScrolling = function() {
-          };
-          this.onMouseEntered = function() {
-          };
-          this.onScroll = function() {
-            var elWindow = getElementWindow(_this.el);
-            if (!_this.scrollXTicking) {
-              elWindow.requestAnimationFrame(_this.scrollX);
-              _this.scrollXTicking = true;
-            }
-            if (!_this.scrollYTicking) {
-              elWindow.requestAnimationFrame(_this.scrollY);
-              _this.scrollYTicking = true;
-            }
-            if (!_this.isScrolling) {
-              _this.isScrolling = true;
-              addClasses(_this.el, _this.classNames.scrolling);
-            }
-            _this.showScrollbar("x");
-            _this.showScrollbar("y");
-            _this.onStopScrolling();
-          };
-          this.scrollX = function() {
-            if (_this.axis.x.isOverflowing) {
-              _this.positionScrollbar("x");
-            }
-            _this.scrollXTicking = false;
-          };
-          this.scrollY = function() {
-            if (_this.axis.y.isOverflowing) {
-              _this.positionScrollbar("y");
-            }
-            _this.scrollYTicking = false;
-          };
-          this._onStopScrolling = function() {
-            removeClasses(_this.el, _this.classNames.scrolling);
-            if (_this.options.autoHide) {
-              _this.hideScrollbar("x");
-              _this.hideScrollbar("y");
-            }
-            _this.isScrolling = false;
-          };
-          this.onMouseEnter = function() {
-            if (!_this.isMouseEntering) {
-              addClasses(_this.el, _this.classNames.mouseEntered);
-              _this.showScrollbar("x");
-              _this.showScrollbar("y");
-              _this.isMouseEntering = true;
-            }
-            _this.onMouseEntered();
-          };
-          this._onMouseEntered = function() {
-            removeClasses(_this.el, _this.classNames.mouseEntered);
-            if (_this.options.autoHide) {
-              _this.hideScrollbar("x");
-              _this.hideScrollbar("y");
-            }
-            _this.isMouseEntering = false;
-          };
-          this._onMouseMove = function(e) {
-            _this.mouseX = e.clientX;
-            _this.mouseY = e.clientY;
-            if (_this.axis.x.isOverflowing || _this.axis.x.forceVisible) {
-              _this.onMouseMoveForAxis("x");
-            }
-            if (_this.axis.y.isOverflowing || _this.axis.y.forceVisible) {
-              _this.onMouseMoveForAxis("y");
-            }
-          };
-          this.onMouseLeave = function() {
-            _this.onMouseMove.cancel();
-            if (_this.axis.x.isOverflowing || _this.axis.x.forceVisible) {
-              _this.onMouseLeaveForAxis("x");
-            }
-            if (_this.axis.y.isOverflowing || _this.axis.y.forceVisible) {
-              _this.onMouseLeaveForAxis("y");
-            }
-            _this.mouseX = -1;
-            _this.mouseY = -1;
-          };
-          this._onWindowResize = function() {
-            _this.scrollbarWidth = _this.getScrollbarWidth();
-            _this.hideNativeScrollbar();
-          };
-          this.onPointerEvent = function(e) {
-            if (!_this.axis.x.track.el || !_this.axis.y.track.el || !_this.axis.x.scrollbar.el || !_this.axis.y.scrollbar.el)
-              return;
-            var isWithinTrackXBounds, isWithinTrackYBounds;
-            _this.axis.x.track.rect = _this.axis.x.track.el.getBoundingClientRect();
-            _this.axis.y.track.rect = _this.axis.y.track.el.getBoundingClientRect();
-            if (_this.axis.x.isOverflowing || _this.axis.x.forceVisible) {
-              isWithinTrackXBounds = _this.isWithinBounds(_this.axis.x.track.rect);
-            }
-            if (_this.axis.y.isOverflowing || _this.axis.y.forceVisible) {
-              isWithinTrackYBounds = _this.isWithinBounds(_this.axis.y.track.rect);
-            }
-            if (isWithinTrackXBounds || isWithinTrackYBounds) {
-              e.stopPropagation();
-              if (e.type === "pointerdown" && e.pointerType !== "touch") {
-                if (isWithinTrackXBounds) {
-                  _this.axis.x.scrollbar.rect = _this.axis.x.scrollbar.el.getBoundingClientRect();
-                  if (_this.isWithinBounds(_this.axis.x.scrollbar.rect)) {
-                    _this.onDragStart(e, "x");
-                  } else {
-                    _this.onTrackClick(e, "x");
-                  }
-                }
-                if (isWithinTrackYBounds) {
-                  _this.axis.y.scrollbar.rect = _this.axis.y.scrollbar.el.getBoundingClientRect();
-                  if (_this.isWithinBounds(_this.axis.y.scrollbar.rect)) {
-                    _this.onDragStart(e, "y");
-                  } else {
-                    _this.onTrackClick(e, "y");
-                  }
-                }
-              }
-            }
-          };
-          this.drag = function(e) {
-            var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
-            if (!_this.draggedAxis || !_this.contentWrapperEl)
-              return;
-            var eventOffset;
-            var track = _this.axis[_this.draggedAxis].track;
-            var trackSize = (_b = (_a2 = track.rect) === null || _a2 === void 0 ? void 0 : _a2[_this.axis[_this.draggedAxis].sizeAttr]) !== null && _b !== void 0 ? _b : 0;
-            var scrollbar = _this.axis[_this.draggedAxis].scrollbar;
-            var contentSize = (_d = (_c = _this.contentWrapperEl) === null || _c === void 0 ? void 0 : _c[_this.axis[_this.draggedAxis].scrollSizeAttr]) !== null && _d !== void 0 ? _d : 0;
-            var hostSize = parseInt((_f = (_e = _this.elStyles) === null || _e === void 0 ? void 0 : _e[_this.axis[_this.draggedAxis].sizeAttr]) !== null && _f !== void 0 ? _f : "0px", 10);
-            e.preventDefault();
-            e.stopPropagation();
-            if (_this.draggedAxis === "y") {
-              eventOffset = e.pageY;
-            } else {
-              eventOffset = e.pageX;
-            }
-            var dragPos = eventOffset - ((_h = (_g = track.rect) === null || _g === void 0 ? void 0 : _g[_this.axis[_this.draggedAxis].offsetAttr]) !== null && _h !== void 0 ? _h : 0) - _this.axis[_this.draggedAxis].dragOffset;
-            dragPos = _this.draggedAxis === "x" && _this.isRtl ? ((_k = (_j = track.rect) === null || _j === void 0 ? void 0 : _j[_this.axis[_this.draggedAxis].sizeAttr]) !== null && _k !== void 0 ? _k : 0) - scrollbar.size - dragPos : dragPos;
-            var dragPerc = dragPos / (trackSize - scrollbar.size);
-            var scrollPos = dragPerc * (contentSize - hostSize);
-            if (_this.draggedAxis === "x" && _this.isRtl) {
-              scrollPos = ((_l = SimpleBarCore2.getRtlHelpers()) === null || _l === void 0 ? void 0 : _l.isScrollingToNegative) ? -scrollPos : scrollPos;
-            }
-            _this.contentWrapperEl[_this.axis[_this.draggedAxis].scrollOffsetAttr] = scrollPos;
-          };
-          this.onEndDrag = function(e) {
-            var elDocument = getElementDocument(_this.el);
-            var elWindow = getElementWindow(_this.el);
-            e.preventDefault();
-            e.stopPropagation();
-            removeClasses(_this.el, _this.classNames.dragging);
-            elDocument.removeEventListener("mousemove", _this.drag, true);
-            elDocument.removeEventListener("mouseup", _this.onEndDrag, true);
-            _this.removePreventClickId = elWindow.setTimeout(function() {
-              elDocument.removeEventListener("click", _this.preventClick, true);
-              elDocument.removeEventListener("dblclick", _this.preventClick, true);
-              _this.removePreventClickId = null;
-            });
-          };
-          this.preventClick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-          };
-          this.el = element;
-          this.options = __assign(__assign({}, SimpleBarCore2.defaultOptions), options2);
-          this.classNames = __assign(__assign({}, SimpleBarCore2.defaultOptions.classNames), options2.classNames);
-          this.axis = {
-            x: {
-              scrollOffsetAttr: "scrollLeft",
-              sizeAttr: "width",
-              scrollSizeAttr: "scrollWidth",
-              offsetSizeAttr: "offsetWidth",
-              offsetAttr: "left",
-              overflowAttr: "overflowX",
-              dragOffset: 0,
-              isOverflowing: true,
-              forceVisible: false,
-              track: { size: null, el: null, rect: null, isVisible: false },
-              scrollbar: { size: null, el: null, rect: null, isVisible: false }
-            },
-            y: {
-              scrollOffsetAttr: "scrollTop",
-              sizeAttr: "height",
-              scrollSizeAttr: "scrollHeight",
-              offsetSizeAttr: "offsetHeight",
-              offsetAttr: "top",
-              overflowAttr: "overflowY",
-              dragOffset: 0,
-              isOverflowing: true,
-              forceVisible: false,
-              track: { size: null, el: null, rect: null, isVisible: false },
-              scrollbar: { size: null, el: null, rect: null, isVisible: false }
-            }
-          };
-          if (typeof this.el !== "object" || !this.el.nodeName) {
-            throw new Error("Argument passed to SimpleBar must be an HTML element instead of ".concat(this.el));
-          }
-          this.onMouseMove = throttle_default(this._onMouseMove, 64);
-          this.onWindowResize = debounce_default(this._onWindowResize, 64, { leading: true });
-          this.onStopScrolling = debounce_default(this._onStopScrolling, this.stopScrollDelay);
-          this.onMouseEntered = debounce_default(this._onMouseEntered, this.stopScrollDelay);
-          this.init();
-        }
-        SimpleBarCore2.getRtlHelpers = function() {
-          if (SimpleBarCore2.rtlHelpers) {
-            return SimpleBarCore2.rtlHelpers;
-          }
-          var dummyDiv = document.createElement("div");
-          dummyDiv.innerHTML = '<div class="simplebar-dummy-scrollbar-size"><div></div></div>';
-          var scrollbarDummyEl = dummyDiv.firstElementChild;
-          var dummyChild = scrollbarDummyEl === null || scrollbarDummyEl === void 0 ? void 0 : scrollbarDummyEl.firstElementChild;
-          if (!dummyChild)
-            return null;
-          document.body.appendChild(scrollbarDummyEl);
-          scrollbarDummyEl.scrollLeft = 0;
-          var dummyContainerOffset = SimpleBarCore2.getOffset(scrollbarDummyEl);
-          var dummyChildOffset = SimpleBarCore2.getOffset(dummyChild);
-          scrollbarDummyEl.scrollLeft = -999;
-          var dummyChildOffsetAfterScroll = SimpleBarCore2.getOffset(dummyChild);
-          document.body.removeChild(scrollbarDummyEl);
-          SimpleBarCore2.rtlHelpers = {
-            // determines if the scrolling is responding with negative values
-            isScrollOriginAtZero: dummyContainerOffset.left !== dummyChildOffset.left,
-            // determines if the origin scrollbar position is inverted or not (positioned on left or right)
-            isScrollingToNegative: dummyChildOffset.left !== dummyChildOffsetAfterScroll.left
-          };
-          return SimpleBarCore2.rtlHelpers;
-        };
-        SimpleBarCore2.prototype.getScrollbarWidth = function() {
-          try {
-            if (this.contentWrapperEl && getComputedStyle(this.contentWrapperEl, "::-webkit-scrollbar").display === "none" || "scrollbarWidth" in document.documentElement.style || "-ms-overflow-style" in document.documentElement.style) {
-              return 0;
-            } else {
-              return scrollbarWidth();
-            }
-          } catch (e) {
-            return scrollbarWidth();
-          }
-        };
-        SimpleBarCore2.getOffset = function(el) {
-          var rect = el.getBoundingClientRect();
-          var elDocument = getElementDocument(el);
-          var elWindow = getElementWindow(el);
-          return {
-            top: rect.top + (elWindow.pageYOffset || elDocument.documentElement.scrollTop),
-            left: rect.left + (elWindow.pageXOffset || elDocument.documentElement.scrollLeft)
-          };
-        };
-        SimpleBarCore2.prototype.init = function() {
-          if (import_can_use_dom.default) {
-            this.initDOM();
-            this.rtlHelpers = SimpleBarCore2.getRtlHelpers();
-            this.scrollbarWidth = this.getScrollbarWidth();
-            this.recalculate();
-            this.initListeners();
-          }
-        };
-        SimpleBarCore2.prototype.initDOM = function() {
-          var _a2, _b;
-          this.wrapperEl = this.el.querySelector(classNamesToQuery(this.classNames.wrapper));
-          this.contentWrapperEl = this.options.scrollableNode || this.el.querySelector(classNamesToQuery(this.classNames.contentWrapper));
-          this.contentEl = this.options.contentNode || this.el.querySelector(classNamesToQuery(this.classNames.contentEl));
-          this.offsetEl = this.el.querySelector(classNamesToQuery(this.classNames.offset));
-          this.maskEl = this.el.querySelector(classNamesToQuery(this.classNames.mask));
-          this.placeholderEl = this.findChild(this.wrapperEl, classNamesToQuery(this.classNames.placeholder));
-          this.heightAutoObserverWrapperEl = this.el.querySelector(classNamesToQuery(this.classNames.heightAutoObserverWrapperEl));
-          this.heightAutoObserverEl = this.el.querySelector(classNamesToQuery(this.classNames.heightAutoObserverEl));
-          this.axis.x.track.el = this.findChild(this.el, "".concat(classNamesToQuery(this.classNames.track)).concat(classNamesToQuery(this.classNames.horizontal)));
-          this.axis.y.track.el = this.findChild(this.el, "".concat(classNamesToQuery(this.classNames.track)).concat(classNamesToQuery(this.classNames.vertical)));
-          this.axis.x.scrollbar.el = ((_a2 = this.axis.x.track.el) === null || _a2 === void 0 ? void 0 : _a2.querySelector(classNamesToQuery(this.classNames.scrollbar))) || null;
-          this.axis.y.scrollbar.el = ((_b = this.axis.y.track.el) === null || _b === void 0 ? void 0 : _b.querySelector(classNamesToQuery(this.classNames.scrollbar))) || null;
-          if (!this.options.autoHide) {
-            addClasses(this.axis.x.scrollbar.el, this.classNames.visible);
-            addClasses(this.axis.y.scrollbar.el, this.classNames.visible);
-          }
-        };
-        SimpleBarCore2.prototype.initListeners = function() {
-          var _this = this;
-          var _a2;
-          var elWindow = getElementWindow(this.el);
-          this.el.addEventListener("mouseenter", this.onMouseEnter);
-          this.el.addEventListener("pointerdown", this.onPointerEvent, true);
-          this.el.addEventListener("mousemove", this.onMouseMove);
-          this.el.addEventListener("mouseleave", this.onMouseLeave);
-          (_a2 = this.contentWrapperEl) === null || _a2 === void 0 ? void 0 : _a2.addEventListener("scroll", this.onScroll);
-          elWindow.addEventListener("resize", this.onWindowResize);
-          if (!this.contentEl)
-            return;
-          if (window.ResizeObserver) {
-            var resizeObserverStarted_1 = false;
-            var resizeObserver = elWindow.ResizeObserver || ResizeObserver;
-            this.resizeObserver = new resizeObserver(function() {
-              if (!resizeObserverStarted_1)
-                return;
-              elWindow.requestAnimationFrame(function() {
-                _this.recalculate();
-              });
-            });
-            this.resizeObserver.observe(this.el);
-            this.resizeObserver.observe(this.contentEl);
-            elWindow.requestAnimationFrame(function() {
-              resizeObserverStarted_1 = true;
-            });
-          }
-          this.mutationObserver = new elWindow.MutationObserver(function() {
-            elWindow.requestAnimationFrame(function() {
-              _this.recalculate();
-            });
-          });
-          this.mutationObserver.observe(this.contentEl, {
-            childList: true,
-            subtree: true,
-            characterData: true
-          });
-        };
-        SimpleBarCore2.prototype.recalculate = function() {
-          if (!this.heightAutoObserverEl || !this.contentEl || !this.contentWrapperEl || !this.wrapperEl || !this.placeholderEl)
-            return;
-          var elWindow = getElementWindow(this.el);
-          this.elStyles = elWindow.getComputedStyle(this.el);
-          this.isRtl = this.elStyles.direction === "rtl";
-          var contentElOffsetWidth = this.contentEl.offsetWidth;
-          var isHeightAuto = this.heightAutoObserverEl.offsetHeight <= 1;
-          var isWidthAuto = this.heightAutoObserverEl.offsetWidth <= 1 || contentElOffsetWidth > 0;
-          var contentWrapperElOffsetWidth = this.contentWrapperEl.offsetWidth;
-          var elOverflowX = this.elStyles.overflowX;
-          var elOverflowY = this.elStyles.overflowY;
-          this.contentEl.style.padding = "".concat(this.elStyles.paddingTop, " ").concat(this.elStyles.paddingRight, " ").concat(this.elStyles.paddingBottom, " ").concat(this.elStyles.paddingLeft);
-          this.wrapperEl.style.margin = "-".concat(this.elStyles.paddingTop, " -").concat(this.elStyles.paddingRight, " -").concat(this.elStyles.paddingBottom, " -").concat(this.elStyles.paddingLeft);
-          var contentElScrollHeight = this.contentEl.scrollHeight;
-          var contentElScrollWidth = this.contentEl.scrollWidth;
-          this.contentWrapperEl.style.height = isHeightAuto ? "auto" : "100%";
-          this.placeholderEl.style.width = isWidthAuto ? "".concat(contentElOffsetWidth || contentElScrollWidth, "px") : "auto";
-          this.placeholderEl.style.height = "".concat(contentElScrollHeight, "px");
-          var contentWrapperElOffsetHeight = this.contentWrapperEl.offsetHeight;
-          this.axis.x.isOverflowing = contentElOffsetWidth !== 0 && contentElScrollWidth > contentElOffsetWidth;
-          this.axis.y.isOverflowing = contentElScrollHeight > contentWrapperElOffsetHeight;
-          this.axis.x.isOverflowing = elOverflowX === "hidden" ? false : this.axis.x.isOverflowing;
-          this.axis.y.isOverflowing = elOverflowY === "hidden" ? false : this.axis.y.isOverflowing;
-          this.axis.x.forceVisible = this.options.forceVisible === "x" || this.options.forceVisible === true;
-          this.axis.y.forceVisible = this.options.forceVisible === "y" || this.options.forceVisible === true;
-          this.hideNativeScrollbar();
-          var offsetForXScrollbar = this.axis.x.isOverflowing ? this.scrollbarWidth : 0;
-          var offsetForYScrollbar = this.axis.y.isOverflowing ? this.scrollbarWidth : 0;
-          this.axis.x.isOverflowing = this.axis.x.isOverflowing && contentElScrollWidth > contentWrapperElOffsetWidth - offsetForYScrollbar;
-          this.axis.y.isOverflowing = this.axis.y.isOverflowing && contentElScrollHeight > contentWrapperElOffsetHeight - offsetForXScrollbar;
-          this.axis.x.scrollbar.size = this.getScrollbarSize("x");
-          this.axis.y.scrollbar.size = this.getScrollbarSize("y");
-          if (this.axis.x.scrollbar.el)
-            this.axis.x.scrollbar.el.style.width = "".concat(this.axis.x.scrollbar.size, "px");
-          if (this.axis.y.scrollbar.el)
-            this.axis.y.scrollbar.el.style.height = "".concat(this.axis.y.scrollbar.size, "px");
-          this.positionScrollbar("x");
-          this.positionScrollbar("y");
-          this.toggleTrackVisibility("x");
-          this.toggleTrackVisibility("y");
-        };
-        SimpleBarCore2.prototype.getScrollbarSize = function(axis) {
-          var _a2, _b;
-          if (axis === void 0) {
-            axis = "y";
-          }
-          if (!this.axis[axis].isOverflowing || !this.contentEl) {
-            return 0;
-          }
-          var contentSize = this.contentEl[this.axis[axis].scrollSizeAttr];
-          var trackSize = (_b = (_a2 = this.axis[axis].track.el) === null || _a2 === void 0 ? void 0 : _a2[this.axis[axis].offsetSizeAttr]) !== null && _b !== void 0 ? _b : 0;
-          var scrollbarRatio = trackSize / contentSize;
-          var scrollbarSize;
-          scrollbarSize = Math.max(~~(scrollbarRatio * trackSize), this.options.scrollbarMinSize);
-          if (this.options.scrollbarMaxSize) {
-            scrollbarSize = Math.min(scrollbarSize, this.options.scrollbarMaxSize);
-          }
-          return scrollbarSize;
-        };
-        SimpleBarCore2.prototype.positionScrollbar = function(axis) {
-          var _a2, _b, _c;
-          if (axis === void 0) {
-            axis = "y";
-          }
-          var scrollbar = this.axis[axis].scrollbar;
-          if (!this.axis[axis].isOverflowing || !this.contentWrapperEl || !scrollbar.el || !this.elStyles) {
-            return;
-          }
-          var contentSize = this.contentWrapperEl[this.axis[axis].scrollSizeAttr];
-          var trackSize = ((_a2 = this.axis[axis].track.el) === null || _a2 === void 0 ? void 0 : _a2[this.axis[axis].offsetSizeAttr]) || 0;
-          var hostSize = parseInt(this.elStyles[this.axis[axis].sizeAttr], 10);
-          var scrollOffset = this.contentWrapperEl[this.axis[axis].scrollOffsetAttr];
-          scrollOffset = axis === "x" && this.isRtl && ((_b = SimpleBarCore2.getRtlHelpers()) === null || _b === void 0 ? void 0 : _b.isScrollOriginAtZero) ? -scrollOffset : scrollOffset;
-          if (axis === "x" && this.isRtl) {
-            scrollOffset = ((_c = SimpleBarCore2.getRtlHelpers()) === null || _c === void 0 ? void 0 : _c.isScrollingToNegative) ? scrollOffset : -scrollOffset;
-          }
-          var scrollPourcent = scrollOffset / (contentSize - hostSize);
-          var handleOffset = ~~((trackSize - scrollbar.size) * scrollPourcent);
-          handleOffset = axis === "x" && this.isRtl ? -handleOffset + (trackSize - scrollbar.size) : handleOffset;
-          scrollbar.el.style.transform = axis === "x" ? "translate3d(".concat(handleOffset, "px, 0, 0)") : "translate3d(0, ".concat(handleOffset, "px, 0)");
-        };
-        SimpleBarCore2.prototype.toggleTrackVisibility = function(axis) {
-          if (axis === void 0) {
-            axis = "y";
-          }
-          var track = this.axis[axis].track.el;
-          var scrollbar = this.axis[axis].scrollbar.el;
-          if (!track || !scrollbar || !this.contentWrapperEl)
-            return;
-          if (this.axis[axis].isOverflowing || this.axis[axis].forceVisible) {
-            track.style.visibility = "visible";
-            this.contentWrapperEl.style[this.axis[axis].overflowAttr] = "scroll";
-            this.el.classList.add("".concat(this.classNames.scrollable, "-").concat(axis));
-          } else {
-            track.style.visibility = "hidden";
-            this.contentWrapperEl.style[this.axis[axis].overflowAttr] = "hidden";
-            this.el.classList.remove("".concat(this.classNames.scrollable, "-").concat(axis));
-          }
-          if (this.axis[axis].isOverflowing) {
-            scrollbar.style.display = "block";
-          } else {
-            scrollbar.style.display = "none";
-          }
-        };
-        SimpleBarCore2.prototype.showScrollbar = function(axis) {
-          if (axis === void 0) {
-            axis = "y";
-          }
-          if (this.axis[axis].isOverflowing && !this.axis[axis].scrollbar.isVisible) {
-            addClasses(this.axis[axis].scrollbar.el, this.classNames.visible);
-            this.axis[axis].scrollbar.isVisible = true;
-          }
-        };
-        SimpleBarCore2.prototype.hideScrollbar = function(axis) {
-          if (axis === void 0) {
-            axis = "y";
-          }
-          if (this.axis[axis].isOverflowing && this.axis[axis].scrollbar.isVisible) {
-            removeClasses(this.axis[axis].scrollbar.el, this.classNames.visible);
-            this.axis[axis].scrollbar.isVisible = false;
-          }
-        };
-        SimpleBarCore2.prototype.hideNativeScrollbar = function() {
-          if (!this.offsetEl)
-            return;
-          this.offsetEl.style[this.isRtl ? "left" : "right"] = this.axis.y.isOverflowing || this.axis.y.forceVisible ? "-".concat(this.scrollbarWidth, "px") : "0px";
-          this.offsetEl.style.bottom = this.axis.x.isOverflowing || this.axis.x.forceVisible ? "-".concat(this.scrollbarWidth, "px") : "0px";
-        };
-        SimpleBarCore2.prototype.onMouseMoveForAxis = function(axis) {
-          if (axis === void 0) {
-            axis = "y";
-          }
-          var currentAxis = this.axis[axis];
-          if (!currentAxis.track.el || !currentAxis.scrollbar.el)
-            return;
-          currentAxis.track.rect = currentAxis.track.el.getBoundingClientRect();
-          currentAxis.scrollbar.rect = currentAxis.scrollbar.el.getBoundingClientRect();
-          if (this.isWithinBounds(currentAxis.track.rect)) {
-            this.showScrollbar(axis);
-            addClasses(currentAxis.track.el, this.classNames.hover);
-            if (this.isWithinBounds(currentAxis.scrollbar.rect)) {
-              addClasses(currentAxis.scrollbar.el, this.classNames.hover);
-            } else {
-              removeClasses(currentAxis.scrollbar.el, this.classNames.hover);
-            }
-          } else {
-            removeClasses(currentAxis.track.el, this.classNames.hover);
-            if (this.options.autoHide) {
-              this.hideScrollbar(axis);
-            }
-          }
-        };
-        SimpleBarCore2.prototype.onMouseLeaveForAxis = function(axis) {
-          if (axis === void 0) {
-            axis = "y";
-          }
-          removeClasses(this.axis[axis].track.el, this.classNames.hover);
-          removeClasses(this.axis[axis].scrollbar.el, this.classNames.hover);
-          if (this.options.autoHide) {
-            this.hideScrollbar(axis);
-          }
-        };
-        SimpleBarCore2.prototype.onDragStart = function(e, axis) {
-          var _a2;
-          if (axis === void 0) {
-            axis = "y";
-          }
-          var elDocument = getElementDocument(this.el);
-          var elWindow = getElementWindow(this.el);
-          var scrollbar = this.axis[axis].scrollbar;
-          var eventOffset = axis === "y" ? e.pageY : e.pageX;
-          this.axis[axis].dragOffset = eventOffset - (((_a2 = scrollbar.rect) === null || _a2 === void 0 ? void 0 : _a2[this.axis[axis].offsetAttr]) || 0);
-          this.draggedAxis = axis;
-          addClasses(this.el, this.classNames.dragging);
-          elDocument.addEventListener("mousemove", this.drag, true);
-          elDocument.addEventListener("mouseup", this.onEndDrag, true);
-          if (this.removePreventClickId === null) {
-            elDocument.addEventListener("click", this.preventClick, true);
-            elDocument.addEventListener("dblclick", this.preventClick, true);
-          } else {
-            elWindow.clearTimeout(this.removePreventClickId);
-            this.removePreventClickId = null;
-          }
-        };
-        SimpleBarCore2.prototype.onTrackClick = function(e, axis) {
-          var _this = this;
-          var _a2, _b, _c, _d;
-          if (axis === void 0) {
-            axis = "y";
-          }
-          var currentAxis = this.axis[axis];
-          if (!this.options.clickOnTrack || !currentAxis.scrollbar.el || !this.contentWrapperEl)
-            return;
-          e.preventDefault();
-          var elWindow = getElementWindow(this.el);
-          this.axis[axis].scrollbar.rect = currentAxis.scrollbar.el.getBoundingClientRect();
-          var scrollbar = this.axis[axis].scrollbar;
-          var scrollbarOffset = (_b = (_a2 = scrollbar.rect) === null || _a2 === void 0 ? void 0 : _a2[this.axis[axis].offsetAttr]) !== null && _b !== void 0 ? _b : 0;
-          var hostSize = parseInt((_d = (_c = this.elStyles) === null || _c === void 0 ? void 0 : _c[this.axis[axis].sizeAttr]) !== null && _d !== void 0 ? _d : "0px", 10);
-          var scrolled = this.contentWrapperEl[this.axis[axis].scrollOffsetAttr];
-          var t = axis === "y" ? this.mouseY - scrollbarOffset : this.mouseX - scrollbarOffset;
-          var dir = t < 0 ? -1 : 1;
-          var scrollSize = dir === -1 ? scrolled - hostSize : scrolled + hostSize;
-          var speed = 40;
-          var scrollTo = function() {
-            if (!_this.contentWrapperEl)
-              return;
-            if (dir === -1) {
-              if (scrolled > scrollSize) {
-                scrolled -= speed;
-                _this.contentWrapperEl[_this.axis[axis].scrollOffsetAttr] = scrolled;
-                elWindow.requestAnimationFrame(scrollTo);
-              }
-            } else {
-              if (scrolled < scrollSize) {
-                scrolled += speed;
-                _this.contentWrapperEl[_this.axis[axis].scrollOffsetAttr] = scrolled;
-                elWindow.requestAnimationFrame(scrollTo);
-              }
-            }
-          };
-          scrollTo();
-        };
-        SimpleBarCore2.prototype.getContentElement = function() {
-          return this.contentEl;
-        };
-        SimpleBarCore2.prototype.getScrollElement = function() {
-          return this.contentWrapperEl;
-        };
-        SimpleBarCore2.prototype.removeListeners = function() {
-          var elWindow = getElementWindow(this.el);
-          this.el.removeEventListener("mouseenter", this.onMouseEnter);
-          this.el.removeEventListener("pointerdown", this.onPointerEvent, true);
-          this.el.removeEventListener("mousemove", this.onMouseMove);
-          this.el.removeEventListener("mouseleave", this.onMouseLeave);
-          if (this.contentWrapperEl) {
-            this.contentWrapperEl.removeEventListener("scroll", this.onScroll);
-          }
-          elWindow.removeEventListener("resize", this.onWindowResize);
-          if (this.mutationObserver) {
-            this.mutationObserver.disconnect();
-          }
-          if (this.resizeObserver) {
-            this.resizeObserver.disconnect();
-          }
-          this.onMouseMove.cancel();
-          this.onWindowResize.cancel();
-          this.onStopScrolling.cancel();
-          this.onMouseEntered.cancel();
-        };
-        SimpleBarCore2.prototype.unMount = function() {
-          this.removeListeners();
-        };
-        SimpleBarCore2.prototype.isWithinBounds = function(bbox) {
-          return this.mouseX >= bbox.left && this.mouseX <= bbox.left + bbox.width && this.mouseY >= bbox.top && this.mouseY <= bbox.top + bbox.height;
-        };
-        SimpleBarCore2.prototype.findChild = function(el, query) {
-          var matches = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
-          return Array.prototype.filter.call(el.children, function(child) {
-            return matches.call(child, query);
-          })[0];
-        };
-        SimpleBarCore2.rtlHelpers = null;
-        SimpleBarCore2.defaultOptions = {
-          forceVisible: false,
-          clickOnTrack: true,
-          scrollbarMinSize: 25,
-          scrollbarMaxSize: 0,
-          ariaLabel: "scrollable content",
-          classNames: {
-            contentEl: "simplebar-content",
-            contentWrapper: "simplebar-content-wrapper",
-            offset: "simplebar-offset",
-            mask: "simplebar-mask",
-            wrapper: "simplebar-wrapper",
-            placeholder: "simplebar-placeholder",
-            scrollbar: "simplebar-scrollbar",
-            track: "simplebar-track",
-            heightAutoObserverWrapperEl: "simplebar-height-auto-observer-wrapper",
-            heightAutoObserverEl: "simplebar-height-auto-observer",
-            visible: "simplebar-visible",
-            horizontal: "simplebar-horizontal",
-            vertical: "simplebar-vertical",
-            hover: "simplebar-hover",
-            dragging: "simplebar-dragging",
-            scrolling: "simplebar-scrolling",
-            scrollable: "simplebar-scrollable",
-            mouseEntered: "simplebar-mouse-entered"
-          },
-          scrollableNode: null,
-          contentNode: null,
-          autoHide: true
-        };
-        SimpleBarCore2.getOptions = getOptions;
-        SimpleBarCore2.helpers = helpers;
-        return SimpleBarCore2;
       }();
     }
   });
 
-  // .yarn/cache/simplebar-npm-6.2.5-06f4ef67c9-351b3757af.zip/node_modules/simplebar/dist/index.mjs
-  function __extends(d, b) {
-    if (typeof b !== "function" && b !== null)
-      throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-    extendStatics(d, b);
-    function __() {
-      this.constructor = d;
-    }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  }
-  var import_can_use_dom2, extendStatics, _a, getOptions2, addClasses2, SimpleBar;
-  var init_dist2 = __esm({
-    ".yarn/cache/simplebar-npm-6.2.5-06f4ef67c9-351b3757af.zip/node_modules/simplebar/dist/index.mjs"() {
-      import_can_use_dom2 = __toESM(require_can_use_dom(), 1);
-      init_dist();
-      extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
-          d2.__proto__ = b2;
-        } || function(d2, b2) {
-          for (var p2 in b2)
-            if (Object.prototype.hasOwnProperty.call(b2, p2))
-              d2[p2] = b2[p2];
-        };
-        return extendStatics(d, b);
-      };
-      _a = SimpleBarCore.helpers;
-      getOptions2 = _a.getOptions;
-      addClasses2 = _a.addClasses;
-      SimpleBar = /** @class */
-      function(_super) {
-        __extends(SimpleBar2, _super);
-        function SimpleBar2() {
-          var args = [];
-          for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-          }
-          var _this = _super.apply(this, args) || this;
-          SimpleBar2.instances.set(args[0], _this);
-          return _this;
-        }
-        SimpleBar2.initDOMLoadedElements = function() {
-          document.removeEventListener("DOMContentLoaded", this.initDOMLoadedElements);
-          window.removeEventListener("load", this.initDOMLoadedElements);
-          Array.prototype.forEach.call(document.querySelectorAll("[data-simplebar]"), function(el) {
-            if (el.getAttribute("data-simplebar") !== "init" && !SimpleBar2.instances.has(el))
-              new SimpleBar2(el, getOptions2(el.attributes));
-          });
-        };
-        SimpleBar2.removeObserver = function() {
-          var _a2;
-          (_a2 = SimpleBar2.globalObserver) === null || _a2 === void 0 ? void 0 : _a2.disconnect();
-        };
-        SimpleBar2.prototype.initDOM = function() {
-          var _this = this;
-          var _a2, _b, _c;
-          if (!Array.prototype.filter.call(this.el.children, function(child) {
-            return child.classList.contains(_this.classNames.wrapper);
-          }).length) {
-            this.wrapperEl = document.createElement("div");
-            this.contentWrapperEl = document.createElement("div");
-            this.offsetEl = document.createElement("div");
-            this.maskEl = document.createElement("div");
-            this.contentEl = document.createElement("div");
-            this.placeholderEl = document.createElement("div");
-            this.heightAutoObserverWrapperEl = document.createElement("div");
-            this.heightAutoObserverEl = document.createElement("div");
-            addClasses2(this.wrapperEl, this.classNames.wrapper);
-            addClasses2(this.contentWrapperEl, this.classNames.contentWrapper);
-            addClasses2(this.offsetEl, this.classNames.offset);
-            addClasses2(this.maskEl, this.classNames.mask);
-            addClasses2(this.contentEl, this.classNames.contentEl);
-            addClasses2(this.placeholderEl, this.classNames.placeholder);
-            addClasses2(this.heightAutoObserverWrapperEl, this.classNames.heightAutoObserverWrapperEl);
-            addClasses2(this.heightAutoObserverEl, this.classNames.heightAutoObserverEl);
-            while (this.el.firstChild) {
-              this.contentEl.appendChild(this.el.firstChild);
-            }
-            this.contentWrapperEl.appendChild(this.contentEl);
-            this.offsetEl.appendChild(this.contentWrapperEl);
-            this.maskEl.appendChild(this.offsetEl);
-            this.heightAutoObserverWrapperEl.appendChild(this.heightAutoObserverEl);
-            this.wrapperEl.appendChild(this.heightAutoObserverWrapperEl);
-            this.wrapperEl.appendChild(this.maskEl);
-            this.wrapperEl.appendChild(this.placeholderEl);
-            this.el.appendChild(this.wrapperEl);
-            (_a2 = this.contentWrapperEl) === null || _a2 === void 0 ? void 0 : _a2.setAttribute("tabindex", "0");
-            (_b = this.contentWrapperEl) === null || _b === void 0 ? void 0 : _b.setAttribute("role", "region");
-            (_c = this.contentWrapperEl) === null || _c === void 0 ? void 0 : _c.setAttribute("aria-label", this.options.ariaLabel);
-          }
-          if (!this.axis.x.track.el || !this.axis.y.track.el) {
-            var track = document.createElement("div");
-            var scrollbar = document.createElement("div");
-            addClasses2(track, this.classNames.track);
-            addClasses2(scrollbar, this.classNames.scrollbar);
-            track.appendChild(scrollbar);
-            this.axis.x.track.el = track.cloneNode(true);
-            addClasses2(this.axis.x.track.el, this.classNames.horizontal);
-            this.axis.y.track.el = track.cloneNode(true);
-            addClasses2(this.axis.y.track.el, this.classNames.vertical);
-            this.el.appendChild(this.axis.x.track.el);
-            this.el.appendChild(this.axis.y.track.el);
-          }
-          SimpleBarCore.prototype.initDOM.call(this);
-          this.el.setAttribute("data-simplebar", "init");
-        };
-        SimpleBar2.prototype.unMount = function() {
-          SimpleBarCore.prototype.unMount.call(this);
-          SimpleBar2.instances["delete"](this.el);
-        };
-        SimpleBar2.initHtmlApi = function() {
-          this.initDOMLoadedElements = this.initDOMLoadedElements.bind(this);
-          if (typeof MutationObserver !== "undefined") {
-            this.globalObserver = new MutationObserver(SimpleBar2.handleMutations);
-            this.globalObserver.observe(document, { childList: true, subtree: true });
-          }
-          if (document.readyState === "complete" || // @ts-ignore: IE specific
-          document.readyState !== "loading" && !document.documentElement.doScroll) {
-            window.setTimeout(this.initDOMLoadedElements);
-          } else {
-            document.addEventListener("DOMContentLoaded", this.initDOMLoadedElements);
-            window.addEventListener("load", this.initDOMLoadedElements);
-          }
-        };
-        SimpleBar2.handleMutations = function(mutations) {
-          mutations.forEach(function(mutation) {
-            mutation.addedNodes.forEach(function(addedNode) {
-              if (addedNode.nodeType === 1) {
-                if (addedNode.hasAttribute("data-simplebar")) {
-                  !SimpleBar2.instances.has(addedNode) && document.documentElement.contains(addedNode) && new SimpleBar2(addedNode, getOptions2(addedNode.attributes));
-                } else {
-                  addedNode.querySelectorAll("[data-simplebar]").forEach(function(el) {
-                    if (el.getAttribute("data-simplebar") !== "init" && !SimpleBar2.instances.has(el) && document.documentElement.contains(el))
-                      new SimpleBar2(el, getOptions2(el.attributes));
-                  });
-                }
-              }
-            });
-            mutation.removedNodes.forEach(function(removedNode) {
-              if (removedNode.nodeType === 1) {
-                if (removedNode.getAttribute("data-simplebar") === "init") {
-                  SimpleBar2.instances.has(removedNode) && !document.documentElement.contains(removedNode) && SimpleBar2.instances.get(removedNode).unMount();
-                } else {
-                  Array.prototype.forEach.call(removedNode.querySelectorAll('[data-simplebar="init"]'), function(el) {
-                    SimpleBar2.instances.has(el) && !document.documentElement.contains(el) && SimpleBar2.instances.get(el).unMount();
-                  });
-                }
-              }
-            });
-          });
-        };
-        SimpleBar2.instances = /* @__PURE__ */ new WeakMap();
-        return SimpleBar2;
-      }(SimpleBarCore);
-      if (import_can_use_dom2.default) {
-        SimpleBar.initHtmlApi();
-      }
-    }
+  // extensions/full-screen/src/lyrics.ts
+  var lyrics_exports = {};
+  __export(lyrics_exports, {
+    default: () => lyrics_default
   });
-
-  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/LyricsScroller.ts
-  var DistanceToMaximumBlur, BlurScale, UserScrollingStopsAfter, AutoScrollingStopsAfter, GetTotalElementHeight, LyricsScroller;
-  var init_LyricsScroller = __esm({
-    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/LyricsScroller.ts"() {
+  var lyrics_default, closePrevConn;
+  var init_lyrics = __esm({
+    "extensions/full-screen/src/lyrics.ts"() {
       "use strict";
-      init_dist2();
-      init_dist2();
-      init_Maid();
-      init_Scheduler();
-      DistanceToMaximumBlur = 4;
-      BlurScale = 1.25;
-      UserScrollingStopsAfter = 0.75;
-      AutoScrollingStopsAfter = 1 / 30;
-      GetTotalElementHeight = (element) => {
-        const style = window.getComputedStyle(element);
-        const marginTop = parseFloat(style.marginTop);
-        const marginBottom = parseFloat(style.marginBottom);
-        return element.offsetHeight + marginTop + marginBottom;
-      };
-      LyricsScroller = class {
-        // Private Properties
-        Maid;
-        ScrollContainer;
-        LyricsContainer;
-        VocalGroups;
-        LyricsAreSynced;
-        Scroller;
-        ScrollerObject;
-        GroupDimensions = [];
-        AutoScrollBlocked = false;
-        AutoScrolling = false;
-        LastActiveVocalIndex = 0;
-        LyricsEnded = false;
-        // Constructor
-        constructor(scrollContainer, lyricsContainer, vocalGroups, lyricsAreSynced) {
-          this.LyricsAreSynced = lyricsAreSynced;
-          this.Maid = new Maid();
-          this.Scroller = new SimpleBar(scrollContainer);
-          this.ScrollerObject = this.Scroller.getScrollElement();
-          this.Maid.give(this.Scroller.unMount.bind(this.Scroller));
-          this.ScrollContainer = scrollContainer, this.LyricsContainer = lyricsContainer;
-          this.VocalGroups = vocalGroups;
-          this.WatchAutoScrollBlocking();
-          const resizeObserver = this.Maid.give(
-            new ResizeObserver(() => {
-              this.UpdateLyricHeights();
-              if (lyricsAreSynced) {
-                this.MoveToActiveLyrics();
-              }
-            })
-          );
-          resizeObserver.observe(this.ScrollContainer);
-          this.UpdateLyricHeights();
-          if (lyricsAreSynced) {
-            this.HandleLyricActiveStateChanges();
-            this.MoveToActiveLyrics(true);
-          }
-        }
-        // Private Methods
-        ToggleAutoScrollBlock(blocked) {
-          if (this.AutoScrollBlocked !== blocked) {
-            if (blocked) {
-              this.AutoScrollBlocked = true;
-              this.ScrollContainer.classList.add("UserScrolling");
-            } else {
-              this.AutoScrollBlocked = false;
-              this.ScrollContainer.classList.remove("UserScrolling");
-            }
-          }
-        }
-        WatchAutoScrollBlocking() {
-          const callback = () => {
-            if (this.AutoScrolling === false) {
-              this.ToggleAutoScrollBlock(true);
-              this.Maid.give(
-                Timeout(UserScrollingStopsAfter, () => this.MoveToActiveLyrics()),
-                "WaitForUserToStopScrolling"
-              );
-            } else {
-              this.Maid.give(
-                Timeout(AutoScrollingStopsAfter, () => this.AutoScrolling = false),
-                "WaitForAutoScroll"
-              );
-            }
-          };
-          this.ScrollerObject.addEventListener("scroll", callback);
-          this.Maid.give(() => this.ScrollerObject.removeEventListener("scroll", callback));
-        }
-        HandleLyricActiveStateChanges() {
-          for (const vocalGroup of this.VocalGroups) {
-            for (const vocal of vocalGroup.Vocals) {
-              this.Maid.give(vocal.ActivityChanged.connect(() => this.MoveToActiveLyrics(true)));
-            }
-          }
-        }
-        UpdateLyricHeights() {
-          this.GroupDimensions = [];
-          let totalHeight = 0;
-          for (const vocalGroup of this.VocalGroups) {
-            const groupHeight = GetTotalElementHeight(vocalGroup.GroupContainer);
-            this.GroupDimensions.push({
-              Height: groupHeight / 2,
-              Center: totalHeight + groupHeight / 2
-            });
-            totalHeight += groupHeight;
-          }
-          this.LyricsContainer.style.height = `${totalHeight}px`;
-          this.Scroller.recalculate();
-        }
-        DetermineLyricBlur() {
-          let startIndex, endIndex;
-          const vocals = [];
-          for (const vocalGroup of this.VocalGroups) {
-            for (const vocal of vocalGroup.Vocals) {
-              if (vocal.IsActive()) {
-                const vocalIndex = vocals.length;
-                if (startIndex === void 0) {
-                  startIndex = vocalIndex;
-                }
-                endIndex = vocalIndex;
-              }
-              vocals.push(vocal);
-            }
-          }
-          if (startIndex === void 0 || endIndex === void 0) {
-            startIndex = this.LastActiveVocalIndex;
-            endIndex = startIndex;
-          } else {
-            this.LastActiveVocalIndex = startIndex;
-          }
-          for (const [index, vocal] of vocals.entries()) {
-            const distance = Math.min(
-              index < startIndex ? startIndex - index : index > endIndex ? index - endIndex : 0,
-              DistanceToMaximumBlur
-            );
-            vocal.SetBlur(distance * BlurScale);
-          }
-        }
-        MoveToActiveLyrics(redetermineBlur) {
-          if (this.LyricsAreSynced === false) {
+      init_util();
+      init_LyricsRenderer();
+      init_Player();
+      lyrics_default = {};
+      trapElement("#BeautifulLyrics", (lyricsContainer) => {
+        closePrevConn?.();
+        if (!lyricsContainer)
+          return;
+        lyricsContainer.innerHTML = "";
+        const lyrics = document.createElement("div");
+        lyrics.classList.add("RootContainer");
+        lyricsContainer.append(lyrics);
+        let lastSong;
+        let lyricsRenderer;
+        const HandlePageView = async () => {
+          const song = Player_default.getSong();
+          if (lastSong === song)
             return;
-          }
-          if (redetermineBlur) {
-            this.DetermineLyricBlur();
-          }
-          if (this.AutoScrollBlocked && this.Scroller.isScrolling) {
+          lyricsRenderer?.remove();
+          if (!song)
             return;
+          const details = await song.GetDetails();
+          if (details?.Lyrics) {
+            lyricsRenderer = LyricsRenderer_default(song, details.Lyrics);
+            lyrics?.appendChild(lyricsRenderer);
           }
-          const lyricsContainerStyle = window.getComputedStyle(this.LyricsContainer);
-          const lyricsContainerMarginTop = parseInt(lyricsContainerStyle.marginTop);
-          const offset = lyricsContainerStyle.getPropertyValue("--use-offset") === "1" ? parseInt(lyricsContainerStyle.lineHeight) : 0;
-          const scrollViewportHeight = this.ScrollContainer.offsetHeight;
-          const viewportCenter = scrollViewportHeight / 2 - offset;
-          const minimumDistanceToAutoScroll = viewportCenter - lyricsContainerMarginTop;
-          const currentScrollTop = this.ScrollerObject.scrollTop;
-          const maximumScrollTop = this.ScrollerObject.scrollHeight - scrollViewportHeight;
-          const activeVocalGroups = [];
-          for (const [index, vocalGroup] of this.VocalGroups.entries()) {
-            if (vocalGroup.Vocals.some((vocal) => vocal.IsActive())) {
-              activeVocalGroups.push({
-                Dimensions: this.GroupDimensions[index],
-                Group: vocalGroup
-              });
-            }
-          }
-          if (activeVocalGroups.length === 0) {
-            if (this.AutoScrollBlocked === false && this.LyricsEnded) {
-              if (currentScrollTop < maximumScrollTop) {
-                this.ScrollTo(maximumScrollTop);
-              }
-            }
-            return;
-          }
-          let center = 0, totalHalfHeight = 0;
-          for (const activeVocalGroup of activeVocalGroups) {
-            totalHalfHeight += activeVocalGroup.Dimensions.Height;
-            center += activeVocalGroup.Dimensions.Center;
-          }
-          center /= activeVocalGroups.length;
-          let scrollY;
-          if (this.AutoScrollBlocked || center > minimumDistanceToAutoScroll) {
-            if (this.AutoScrollBlocked) {
-              if (center >= currentScrollTop - totalHalfHeight && center <= currentScrollTop + scrollViewportHeight) {
-                this.ToggleAutoScrollBlock(false);
-                this.DetermineLyricBlur();
-              }
-            }
-            if (this.AutoScrollBlocked === false) {
-              scrollY = center - viewportCenter + lyricsContainerMarginTop + offset;
-            }
-          } else if (currentScrollTop > 0) {
-            scrollY = 0;
-          }
-          if (scrollY !== void 0) {
-            this.ScrollTo(scrollY);
-          }
-        }
-        ScrollTo(yPosition) {
-          this.AutoScrolling = true;
-          this.ScrollerObject.scrollTop = yPosition;
-          this.Scroller.scrollY();
-        }
-        // Public Methods
-        SetLyricsEnded(ended) {
-          this.LyricsEnded = ended;
-        }
-        ForceToActive(skippedByVocal) {
-          if (this.LyricsAreSynced === false) {
-            return;
-          }
-          this.ToggleAutoScrollBlock(false);
-          if (skippedByVocal) {
-            this.Maid.cleanEntry("ForceToActiveCSS");
-          } else {
-            this.ScrollContainer.classList.add("InstantScroll");
-            this.Maid.give(
-              OnNextFrame(() => this.ScrollContainer.classList.remove("InstantScroll")),
-              "ForceToActiveCSS"
-            );
-          }
-          this.MoveToActiveLyrics();
-        }
-        ForceToTop() {
-          this.ToggleAutoScrollBlock(false);
-          this.ScrollTo(0);
-        }
-        dispose() {
-          this.Maid.dispose();
-        }
-      };
-    }
-  });
-
-  // .yarn/cache/curve-interpolator-npm-3.1.1-0ba0a1302a-6e0f39b930.zip/node_modules/curve-interpolator/dist/index.js
-  var require_dist = __commonJS({
-    ".yarn/cache/curve-interpolator-npm-3.1.1-0ba0a1302a-6e0f39b930.zip/node_modules/curve-interpolator/dist/index.js"(exports, module) {
-      !function(global2, factory) {
-        "object" == typeof exports && "undefined" != typeof module ? factory(exports) : "function" == typeof define && define.amd ? define(["exports"], factory) : factory((global2 = "undefined" != typeof globalThis ? globalThis : global2 || self)["curve-interpolator"] = {});
-      }(exports, function(exports2) {
-        "use strict";
-        var extendStatics2 = function(d, b) {
-          return extendStatics2 = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
-            d2.__proto__ = b2;
-          } || function(d2, b2) {
-            for (var p2 in b2)
-              b2.hasOwnProperty(p2) && (d2[p2] = b2[p2]);
-          }, extendStatics2(d, b);
+          lastSong = song;
         };
-        function __extends2(d, b) {
-          function __() {
-            this.constructor = d;
-          }
-          extendStatics2(d, b), d.prototype = null === b ? Object.create(b) : (__.prototype = b.prototype, new __());
-        }
-        var __assign2 = function() {
-          return __assign2 = Object.assign || function(t) {
-            for (var s, i = 1, n = arguments.length; i < n; i++)
-              for (var p2 in s = arguments[i])
-                Object.prototype.hasOwnProperty.call(s, p2) && (t[p2] = s[p2]);
-            return t;
-          }, __assign2.apply(this, arguments);
-        };
-        function extrapolateControlPoint(u, v) {
-          for (var e = new Array(u.length), i = 0; i < u.length; i++)
-            e[i] = 2 * u[i] - v[i];
-          return e;
-        }
-        function getControlPoints(idx, points, closed) {
-          var p0, p1, p2, p3, maxIndex = points.length - 1;
-          if (closed)
-            p0 = points[idx - 1 < 0 ? maxIndex : idx - 1], p1 = points[idx % points.length], p2 = points[(idx + 1) % points.length], p3 = points[(idx + 2) % points.length];
-          else {
-            if (idx === maxIndex)
-              throw Error("There is no spline segment at this index for a closed curve!");
-            p1 = points[idx], p2 = points[idx + 1], p0 = idx > 0 ? points[idx - 1] : extrapolateControlPoint(p1, p2), p3 = idx < maxIndex - 1 ? points[idx + 2] : extrapolateControlPoint(p2, p1);
-          }
-          return [p0, p1, p2, p3];
-        }
-        function getSegmentIndexAndT(ct, points, closed) {
-          void 0 === closed && (closed = false);
-          var nPoints = closed ? points.length : points.length - 1;
-          if (1 === ct)
-            return { index: nPoints - 1, weight: 1 };
-          var p2 = nPoints * ct, index = Math.floor(p2);
-          return { index, weight: p2 - index };
-        }
-        function fill(v, val) {
-          for (var i = 0; i < v.length; i++)
-            v[i] = val;
-          return v;
-        }
-        function map6(v, func) {
-          for (var i = 0; i < v.length; i++)
-            v[i] = func(v[i], i);
-          return v;
-        }
-        function reduce6(v, func, r) {
-          void 0 === r && (r = 0);
-          for (var i = 0; i < v.length; i++)
-            r = func(r, v[i], i);
-          return r;
-        }
-        function copyValues(source, target) {
-          target = target || new Array(source.length);
-          for (var i = 0; i < source.length; i++)
-            target[i] = source[i];
-          return target;
-        }
-        function clamp(value, min3, max3) {
-          return void 0 === min3 && (min3 = 0), void 0 === max3 && (max3 = 1), value < min3 ? min3 : value > max3 ? max3 : value;
-        }
-        function binarySearch(targetValue, accumulatedValues) {
-          var min3 = accumulatedValues[0];
-          if (targetValue >= accumulatedValues[accumulatedValues.length - 1])
-            return accumulatedValues.length - 1;
-          if (targetValue <= min3)
-            return 0;
-          for (var left = 0, right = accumulatedValues.length - 1; left <= right; ) {
-            var mid = Math.floor((left + right) / 2), lMid = accumulatedValues[mid];
-            if (lMid < targetValue)
-              left = mid + 1;
-            else {
-              if (!(lMid > targetValue))
-                return mid;
-              right = mid - 1;
-            }
-          }
-          return Math.max(0, right);
-        }
-        var EPS = Math.pow(2, -42);
-        function cuberoot(x) {
-          var y = Math.pow(Math.abs(x), 1 / 3);
-          return x < 0 ? -y : y;
-        }
-        function getQuadRoots(a, b, c) {
-          if (Math.abs(a) < EPS)
-            return Math.abs(b) < EPS ? [] : [-c / b];
-          var D = b * b - 4 * a * c;
-          return Math.abs(D) < EPS ? [-b / (2 * a)] : D > 0 ? [(-b + Math.sqrt(D)) / (2 * a), (-b - Math.sqrt(D)) / (2 * a)] : [];
-        }
-        function getCubicRoots(a, b, c, d) {
-          if (Math.abs(a) < EPS)
-            return getQuadRoots(b, c, d);
-          var roots, p2 = (3 * a * c - b * b) / (3 * a * a), q = (2 * b * b * b - 9 * a * b * c + 27 * a * a * d) / (27 * a * a * a);
-          if (Math.abs(p2) < EPS)
-            roots = [cuberoot(-q)];
-          else if (Math.abs(q) < EPS)
-            roots = [0].concat(p2 < 0 ? [Math.sqrt(-p2), -Math.sqrt(-p2)] : []);
-          else {
-            var D = q * q / 4 + p2 * p2 * p2 / 27;
-            if (Math.abs(D) < EPS)
-              roots = [-1.5 * q / p2, 3 * q / p2];
-            else if (D > 0) {
-              roots = [(u = cuberoot(-q / 2 - Math.sqrt(D))) - p2 / (3 * u)];
-            } else {
-              var u = 2 * Math.sqrt(-p2 / 3), t = Math.acos(3 * q / p2 / u) / 3, k = 2 * Math.PI / 3;
-              roots = [u * Math.cos(t), u * Math.cos(t - k), u * Math.cos(t - 2 * k)];
-            }
-          }
-          for (var i = 0; i < roots.length; i++)
-            roots[i] -= b / (3 * a);
-          return roots;
-        }
-        function dot(v1, v2) {
-          if (v1.length !== v2.length)
-            throw Error("Vectors must be of equal length!");
-          for (var p2 = 0, k = 0; k < v1.length; k++)
-            p2 += v1[k] * v2[k];
-          return p2;
-        }
-        function cross(v1, v2, target) {
-          if (!(v1.length > 3)) {
-            target = target || new Array(3);
-            var ax = v1[0], ay = v1[1], az = v1[2] || 0, bx = v2[0], by = v2[1], bz = v2[2] || 0;
-            return target[0] = ay * bz - az * by, target[1] = az * bx - ax * bz, target[2] = ax * by - ay * bx, target;
-          }
-        }
-        function sumOfSquares(v1, v2) {
-          for (var sumOfSquares2 = 0, i = 0; i < v1.length; i++)
-            sumOfSquares2 += (v1[i] - v2[i]) * (v1[i] - v2[i]);
-          return sumOfSquares2;
-        }
-        function magnitude(v) {
-          for (var sumOfSquares2 = 0, i = 0; i < v.length; i++)
-            sumOfSquares2 += v[i] * v[i];
-          return Math.sqrt(sumOfSquares2);
-        }
-        function distance(p1, p2) {
-          var sqrs = sumOfSquares(p1, p2);
-          return 0 === sqrs ? 0 : Math.sqrt(sqrs);
-        }
-        function normalize2(v, target) {
-          var u = target ? copyValues(v, target) : v, squared = reduce6(u, function(s, c) {
-            return s + Math.pow(c, 2);
-          }), l = Math.sqrt(squared);
-          return 0 === l ? fill(u, 0) : map6(u, function(c) {
-            return c / l;
-          });
-        }
-        function orthogonal(v, target) {
-          if (v.length > 2)
-            throw Error("Only supported for 2d vectors");
-          var u = target ? copyValues(v, target) : v, x = -u[1];
-          return u[1] = u[0], u[0] = x, u;
-        }
-        function calcKnotSequence(p0, p1, p2, p3, alpha) {
-          if (void 0 === alpha && (alpha = 0), 0 === alpha)
-            return [0, 1, 2, 3];
-          var deltaT = function(u, v) {
-            return Math.pow(sumOfSquares(u, v), 0.5 * alpha);
-          }, t1 = deltaT(p1, p0), t2 = deltaT(p2, p1) + t1;
-          return [0, t1, t2, deltaT(p3, p2) + t2];
-        }
-        function calculateCoefficients(p0, p1, p2, p3, options2) {
-          for (var tension = Number.isFinite(options2.tension) ? options2.tension : 0.5, alpha = Number.isFinite(options2.alpha) ? options2.alpha : null, knotSequence = alpha > 0 ? calcKnotSequence(p0, p1, p2, p3, alpha) : null, coefficientsList = new Array(p0.length), k = 0; k < p0.length; k++) {
-            var u = 0, v = 0, v0 = p0[k], v1 = p1[k], v2 = p2[k], v3 = p3[k];
-            if (knotSequence) {
-              var t0 = knotSequence[0], t1 = knotSequence[1], t2 = knotSequence[2], t3 = knotSequence[3];
-              t1 - t2 != 0 && (t0 - t1 != 0 && t0 - t2 != 0 && (u = (1 - tension) * (t2 - t1) * ((v0 - v1) / (t0 - t1) - (v0 - v2) / (t0 - t2) + (v1 - v2) / (t1 - t2))), t1 - t3 != 0 && t2 - t3 != 0 && (v = (1 - tension) * (t2 - t1) * ((v1 - v2) / (t1 - t2) - (v1 - v3) / (t1 - t3) + (v2 - v3) / (t2 - t3))));
-            } else
-              u = (1 - tension) * (v2 - v0) * 0.5, v = (1 - tension) * (v3 - v1) * 0.5;
-            var a = 2 * v1 - 2 * v2 + u + v, b = -3 * v1 + 3 * v2 - 2 * u - v, c = u, d = v1;
-            coefficientsList[k] = [a, b, c, d];
-          }
-          return coefficientsList;
-        }
-        function valueAtT(t, coefficients) {
-          var t2 = t * t, t3 = t * t2;
-          return coefficients[0] * t3 + coefficients[1] * t2 + coefficients[2] * t + coefficients[3];
-        }
-        function derivativeAtT(t, coefficients) {
-          var t2 = t * t;
-          return 3 * coefficients[0] * t2 + 2 * coefficients[1] * t + coefficients[2];
-        }
-        function secondDerivativeAtT(t, coefficients) {
-          return 6 * coefficients[0] * t + 2 * coefficients[1];
-        }
-        function findRootsOfT(lookup5, coefficients) {
-          var a = coefficients[0], b = coefficients[1], c = coefficients[2], x = coefficients[3] - lookup5;
-          return 0 === a && 0 === b && 0 === c && 0 === x ? [0] : getCubicRoots(a, b, c, x).filter(function(t) {
-            return t > -EPS && t <= 1 + EPS;
-          }).map(function(t) {
-            return clamp(t, 0, 1);
-          });
-        }
-        function evaluateForT(func, t, coefficients, target) {
-          void 0 === target && (target = null), target = target || new Array(coefficients.length);
-          for (var k = 0; k < coefficients.length; k++)
-            target[k] = func(t, coefficients[k]);
-          return target;
-        }
-        var AbstractCurveMapper = function() {
-          function AbstractCurveMapper2(onInvalidateCache) {
-            void 0 === onInvalidateCache && (onInvalidateCache = null), this._alpha = 0, this._tension = 0.5, this._closed = false, this._onInvalidateCache = null, this._onInvalidateCache = onInvalidateCache, this._cache = { arcLengths: null, coefficients: null };
-          }
-          return AbstractCurveMapper2.prototype._invalidateCache = function() {
-            this.points && (this._cache = { arcLengths: null, coefficients: null }, this._onInvalidateCache && this._onInvalidateCache());
-          }, Object.defineProperty(AbstractCurveMapper2.prototype, "alpha", { get: function() {
-            return this._alpha;
-          }, set: function(alpha) {
-            Number.isFinite(alpha) && alpha !== this._alpha && (this._invalidateCache(), this._alpha = alpha);
-          }, enumerable: false, configurable: true }), Object.defineProperty(AbstractCurveMapper2.prototype, "tension", { get: function() {
-            return this._tension;
-          }, set: function(tension) {
-            Number.isFinite(tension) && tension !== this._tension && (this._invalidateCache(), this._tension = tension);
-          }, enumerable: false, configurable: true }), Object.defineProperty(AbstractCurveMapper2.prototype, "points", { get: function() {
-            return this._points;
-          }, set: function(points) {
-            if (!points || points.length < 2)
-              throw Error("At least 2 control points are required!");
-            this._points = points, this._invalidateCache();
-          }, enumerable: false, configurable: true }), Object.defineProperty(AbstractCurveMapper2.prototype, "closed", { get: function() {
-            return this._closed;
-          }, set: function(closed) {
-            closed = !!closed, this._closed !== closed && (this._invalidateCache(), this._closed = closed);
-          }, enumerable: false, configurable: true }), AbstractCurveMapper2.prototype.reset = function() {
-            this._invalidateCache();
-          }, AbstractCurveMapper2.prototype.evaluateForT = function(func, t, target) {
-            var _a2 = getSegmentIndexAndT(t, this.points, this.closed), index = _a2.index;
-            return evaluateForT(func, _a2.weight, this.getCoefficients(index), target);
-          }, AbstractCurveMapper2.prototype.getCoefficients = function(idx) {
-            if (this.points) {
-              if (this._cache.coefficients || (this._cache.coefficients = /* @__PURE__ */ new Map()), !this._cache.coefficients.has(idx)) {
-                var _a2 = getControlPoints(idx, this.points, this.closed), coefficients = calculateCoefficients(_a2[0], _a2[1], _a2[2], _a2[3], { tension: this.tension, alpha: this.alpha });
-                this._cache.coefficients.set(idx, coefficients);
-              }
-              return this._cache.coefficients.get(idx);
-            }
-          }, AbstractCurveMapper2;
-        }(), SegmentedCurveMapper = function(_super) {
-          function SegmentedCurveMapper2(subDivisions, onInvalidateCache) {
-            void 0 === subDivisions && (subDivisions = 300), void 0 === onInvalidateCache && (onInvalidateCache = null);
-            var _this = _super.call(this, onInvalidateCache) || this;
-            return _this._subDivisions = subDivisions, _this;
-          }
-          return __extends2(SegmentedCurveMapper2, _super), Object.defineProperty(SegmentedCurveMapper2.prototype, "arcLengths", { get: function() {
-            return this._cache.arcLengths || (this._cache.arcLengths = this.computeArcLengths()), this._cache.arcLengths;
-          }, enumerable: false, configurable: true }), SegmentedCurveMapper2.prototype._invalidateCache = function() {
-            _super.prototype._invalidateCache.call(this), this._cache.arcLengths = null;
-          }, SegmentedCurveMapper2.prototype.computeArcLengths = function() {
-            var current, lengths = [], last6 = this.evaluateForT(valueAtT, 0), sum = 0;
-            lengths.push(0);
-            for (var p2 = 1; p2 <= this._subDivisions; p2++)
-              sum += distance(current = this.evaluateForT(valueAtT, p2 / this._subDivisions), last6), lengths.push(sum), last6 = current;
-            return lengths;
-          }, SegmentedCurveMapper2.prototype.lengthAt = function(u) {
-            var arcLengths = this.arcLengths;
-            return u * arcLengths[arcLengths.length - 1];
-          }, SegmentedCurveMapper2.prototype.getT = function(u) {
-            var arcLengths = this.arcLengths, il = arcLengths.length, targetArcLength = u * arcLengths[il - 1], i = binarySearch(targetArcLength, arcLengths);
-            if (arcLengths[i] === targetArcLength)
-              return i / (il - 1);
-            var lengthBefore = arcLengths[i];
-            return (i + (targetArcLength - lengthBefore) / (arcLengths[i + 1] - lengthBefore)) / (il - 1);
-          }, SegmentedCurveMapper2.prototype.getU = function(t) {
-            if (0 === t)
-              return 0;
-            if (1 === t)
-              return 1;
-            var arcLengths = this.arcLengths, al = arcLengths.length - 1, totalLength = arcLengths[al], tIdx = t * al, subIdx = Math.floor(tIdx), l1 = arcLengths[subIdx];
-            if (tIdx === subIdx)
-              return l1 / totalLength;
-            var t0 = subIdx / al;
-            return (l1 + distance(this.evaluateForT(valueAtT, t0), this.evaluateForT(valueAtT, t))) / totalLength;
-          }, SegmentedCurveMapper2;
-        }(AbstractCurveMapper), lut = [[[-0.906179845938664, 0.23692688505618908], [-0.5384693101056831, 0.47862867049936647], [0, 0.5688888888888889], [0.5384693101056831, 0.47862867049936647], [0.906179845938664, 0.23692688505618908]], [[-0.932469514203152, 0.17132449237917036], [-0.6612093864662645, 0.3607615730481386], [-0.2386191860831969, 0.46791393457269104], [0.2386191860831969, 0.46791393457269104], [0.6612093864662645, 0.3607615730481386], [0.932469514203152, 0.17132449237917036]], [[-0.9491079123427585, 0.1294849661688697], [-0.7415311855993945, 0.27970539148927664], [-0.4058451513773972, 0.3818300505051189], [0, 0.4179591836734694], [0.4058451513773972, 0.3818300505051189], [0.7415311855993945, 0.27970539148927664], [0.9491079123427585, 0.1294849661688697]], [[-0.9602898564975363, 0.10122853629037626], [-0.7966664774136267, 0.22238103445337448], [-0.525532409916329, 0.31370664587788727], [-0.1834346424956498, 0.362683783378362], [0.1834346424956498, 0.362683783378362], [0.525532409916329, 0.31370664587788727], [0.7966664774136267, 0.22238103445337448], [0.9602898564975363, 0.10122853629037626]], [[-0.9681602395076261, 0.08127438836157441], [-0.8360311073266358, 0.1806481606948574], [-0.6133714327005904, 0.26061069640293544], [-0.3242534234038089, 0.31234707704000286], [0, 0.3302393550012598], [0.3242534234038089, 0.31234707704000286], [0.6133714327005904, 0.26061069640293544], [0.8360311073266358, 0.1806481606948574], [0.9681602395076261, 0.08127438836157441]], [[-0.9739065285171717, 0.06667134430868814], [-0.8650633666889845, 0.1494513491505806], [-0.6794095682990244, 0.21908636251598204], [-0.4333953941292472, 0.26926671930999635], [-0.14887433898163122, 0.29552422471475287], [0.14887433898163122, 0.29552422471475287], [0.4333953941292472, 0.26926671930999635], [0.6794095682990244, 0.21908636251598204], [0.8650633666889845, 0.1494513491505806], [0.9739065285171717, 0.06667134430868814]], [[-0.978228658146056, 0.0556685671161736], [-0.887062599768095, 0.125580369464904], [-0.730152005574049, 0.186290210927734], [-0.519096129206811, 0.23319376459199], [-0.269543155952344, 0.262804544510246], [0, 0.2729250867779], [0.269543155952344, 0.262804544510246], [0.519096129206811, 0.23319376459199], [0.730152005574049, 0.186290210927734], [0.887062599768095, 0.125580369464904], [0.978228658146056, 0.0556685671161736]], [[-0.981560634246719, 0.0471753363865118], [-0.904117256370474, 0.106939325995318], [-0.769902674194304, 0.160078328543346], [-0.587317954286617, 0.203167426723065], [-0.36783149899818, 0.233492536538354], [-0.125233408511468, 0.249147045813402], [0.125233408511468, 0.249147045813402], [0.36783149899818, 0.233492536538354], [0.587317954286617, 0.203167426723065], [0.769902674194304, 0.160078328543346], [0.904117256370474, 0.106939325995318], [0.981560634246719, 0.0471753363865118]], [[-0.984183054718588, 0.0404840047653158], [-0.917598399222977, 0.0921214998377284], [-0.801578090733309, 0.138873510219787], [-0.64234933944034, 0.178145980761945], [-0.448492751036446, 0.207816047536888], [-0.230458315955134, 0.226283180262897], [0, 0.232551553230873], [0.230458315955134, 0.226283180262897], [0.448492751036446, 0.207816047536888], [0.64234933944034, 0.178145980761945], [0.801578090733309, 0.138873510219787], [0.917598399222977, 0.0921214998377284], [0.984183054718588, 0.0404840047653158]], [[-0.986283808696812, 0.0351194603317518], [-0.928434883663573, 0.0801580871597602], [-0.827201315069764, 0.121518570687903], [-0.687292904811685, 0.157203167158193], [-0.515248636358154, 0.185538397477937], [-0.319112368927889, 0.205198463721295], [-0.108054948707343, 0.215263853463157], [0.108054948707343, 0.215263853463157], [0.319112368927889, 0.205198463721295], [0.515248636358154, 0.185538397477937], [0.687292904811685, 0.157203167158193], [0.827201315069764, 0.121518570687903], [0.928434883663573, 0.0801580871597602], [0.986283808696812, 0.0351194603317518]], [[-0.987992518020485, 0.0307532419961172], [-0.937273392400705, 0.0703660474881081], [-0.848206583410427, 0.107159220467171], [-0.72441773136017, 0.139570677926154], [-0.570972172608538, 0.166269205816993], [-0.394151347077563, 0.186161000015562], [-0.201194093997434, 0.198431485327111], [0, 0.202578241925561], [0.201194093997434, 0.198431485327111], [0.394151347077563, 0.186161000015562], [0.570972172608538, 0.166269205816993], [0.72441773136017, 0.139570677926154], [0.848206583410427, 0.107159220467171], [0.937273392400705, 0.0703660474881081], [0.987992518020485, 0.0307532419961172]], [[-0.989400934991649, 0.027152459411754], [-0.944575023073232, 0.0622535239386478], [-0.865631202387831, 0.0951585116824927], [-0.755404408355003, 0.124628971255533], [-0.617876244402643, 0.149595988816576], [-0.458016777657227, 0.169156519395002], [-0.281603550779258, 0.182603415044923], [-0.0950125098376374, 0.189450610455068], [0.0950125098376374, 0.189450610455068], [0.281603550779258, 0.182603415044923], [0.458016777657227, 0.169156519395002], [0.617876244402643, 0.149595988816576], [0.755404408355003, 0.124628971255533], [0.865631202387831, 0.0951585116824927], [0.944575023073232, 0.0622535239386478], [0.989400934991649, 0.027152459411754]], [[-0.990575475314417, 0.0241483028685479], [-0.950675521768767, 0.0554595293739872], [-0.880239153726985, 0.0850361483171791], [-0.781514003896801, 0.111883847193403], [-0.65767115921669, 0.135136368468525], [-0.512690537086476, 0.15404576107681], [-0.351231763453876, 0.16800410215645], [-0.178484181495847, 0.176562705366992], [0, 0.179446470356206], [0.178484181495847, 0.176562705366992], [0.351231763453876, 0.16800410215645], [0.512690537086476, 0.15404576107681], [0.65767115921669, 0.135136368468525], [0.781514003896801, 0.111883847193403], [0.880239153726985, 0.0850361483171791], [0.950675521768767, 0.0554595293739872], [0.990575475314417, 0.0241483028685479]], [[-0.99156516842093, 0.0216160135264833], [-0.955823949571397, 0.0497145488949698], [-0.892602466497555, 0.076425730254889], [-0.803704958972523, 0.100942044106287], [-0.691687043060353, 0.122555206711478], [-0.559770831073947, 0.14064291467065], [-0.411751161462842, 0.154684675126265], [-0.251886225691505, 0.164276483745832], [-0.0847750130417353, 0.169142382963143], [0.0847750130417353, 0.169142382963143], [0.251886225691505, 0.164276483745832], [0.411751161462842, 0.154684675126265], [0.559770831073947, 0.14064291467065], [0.691687043060353, 0.122555206711478], [0.803704958972523, 0.100942044106287], [0.892602466497555, 0.076425730254889], [0.955823949571397, 0.0497145488949697], [0.99156516842093, 0.0216160135264833]], [[-0.992406843843584, 0.0194617882297264], [-0.96020815213483, 0.0448142267656996], [-0.903155903614817, 0.0690445427376412], [-0.822714656537142, 0.0914900216224499], [-0.720966177335229, 0.111566645547333], [-0.600545304661681, 0.128753962539336], [-0.46457074137596, 0.142606702173606], [-0.316564099963629, 0.152766042065859], [-0.160358645640225, 0.158968843393954], [0, 0.161054449848783], [0.160358645640225, 0.158968843393954], [0.316564099963629, 0.152766042065859], [0.46457074137596, 0.142606702173606], [0.600545304661681, 0.128753962539336], [0.720966177335229, 0.111566645547333], [0.822714656537142, 0.0914900216224499], [0.903155903614817, 0.0690445427376412], [0.96020815213483, 0.0448142267656996], [0.992406843843584, 0.0194617882297264]], [[-0.993128599185094, 0.0176140071391521], [-0.963971927277913, 0.0406014298003869], [-0.912234428251325, 0.062672048334109], [-0.839116971822218, 0.0832767415767047], [-0.74633190646015, 0.10193011981724], [-0.636053680726515, 0.118194531961518], [-0.510867001950827, 0.131688638449176], [-0.373706088715419, 0.142096109318382], [-0.227785851141645, 0.149172986472603], [-0.0765265211334973, 0.152753387130725], [0.0765265211334973, 0.152753387130725], [0.227785851141645, 0.149172986472603], [0.373706088715419, 0.142096109318382], [0.510867001950827, 0.131688638449176], [0.636053680726515, 0.118194531961518], [0.74633190646015, 0.10193011981724], [0.839116971822218, 0.0832767415767047], [0.912234428251325, 0.062672048334109], [0.963971927277913, 0.0406014298003869], [0.993128599185094, 0.0176140071391521]], [[-0.993752170620389, 0.0160172282577743], [-0.967226838566306, 0.0369537897708524], [-0.9200993341504, 0.0571344254268572], [-0.853363364583317, 0.0761001136283793], [-0.768439963475677, 0.0934444234560338], [-0.667138804197412, 0.108797299167148], [-0.551618835887219, 0.121831416053728], [-0.424342120207438, 0.132268938633337], [-0.288021316802401, 0.139887394791073], [-0.145561854160895, 0.14452440398997], [0, 0.14608113364969], [0.145561854160895, 0.14452440398997], [0.288021316802401, 0.139887394791073], [0.424342120207438, 0.132268938633337], [0.551618835887219, 0.121831416053728], [0.667138804197412, 0.108797299167148], [0.768439963475677, 0.0934444234560338], [0.853363364583317, 0.0761001136283793], [0.9200993341504, 0.0571344254268572], [0.967226838566306, 0.0369537897708524], [0.993752170620389, 0.0160172282577743]], [[-0.994294585482399, 0.0146279952982722], [-0.970060497835428, 0.0337749015848141], [-0.926956772187174, 0.0522933351526832], [-0.8658125777203, 0.0697964684245204], [-0.787816805979208, 0.0859416062170677], [-0.694487263186682, 0.10041414444288], [-0.587640403506911, 0.112932296080539], [-0.469355837986757, 0.123252376810512], [-0.341935820892084, 0.131173504787062], [-0.207860426688221, 0.136541498346015], [-0.0697392733197222, 0.139251872855631], [0.0697392733197222, 0.139251872855631], [0.207860426688221, 0.136541498346015], [0.341935820892084, 0.131173504787062], [0.469355837986757, 0.123252376810512], [0.587640403506911, 0.112932296080539], [0.694487263186682, 0.10041414444288], [0.787816805979208, 0.0859416062170677], [0.8658125777203, 0.0697964684245204], [0.926956772187174, 0.0522933351526832], [0.970060497835428, 0.0337749015848141], [0.994294585482399, 0.0146279952982722]], [[-0.994769334997552, 0.0134118594871417], [-0.972542471218115, 0.0309880058569794], [-0.932971086826016, 0.0480376717310846], [-0.876752358270441, 0.0642324214085258], [-0.804888401618839, 0.0792814117767189], [-0.71866136313195, 0.0929157660600351], [-0.619609875763646, 0.104892091464541], [-0.509501477846007, 0.114996640222411], [-0.39030103803029, 0.123049084306729], [-0.264135680970344, 0.128905722188082], [-0.133256824298466, 0.132462039404696], [0, 0.133654572186106], [0.133256824298466, 0.132462039404696], [0.264135680970344, 0.128905722188082], [0.39030103803029, 0.123049084306729], [0.509501477846007, 0.114996640222411], [0.619609875763646, 0.104892091464541], [0.71866136313195, 0.0929157660600351], [0.804888401618839, 0.0792814117767189], [0.876752358270441, 0.0642324214085258], [0.932971086826016, 0.0480376717310846], [0.972542471218115, 0.0309880058569794], [0.994769334997552, 0.0134118594871417]], [[-0.995187219997021, 0.0123412297999872], [-0.974728555971309, 0.0285313886289336], [-0.938274552002732, 0.0442774388174198], [-0.886415527004401, 0.0592985849154367], [-0.820001985973902, 0.0733464814110803], [-0.740124191578554, 0.0861901615319532], [-0.648093651936975, 0.0976186521041138], [-0.545421471388839, 0.107444270115965], [-0.433793507626045, 0.115505668053725], [-0.315042679696163, 0.121670472927803], [-0.191118867473616, 0.125837456346828], [-0.0640568928626056, 0.127938195346752], [0.0640568928626056, 0.127938195346752], [0.191118867473616, 0.125837456346828], [0.315042679696163, 0.121670472927803], [0.433793507626045, 0.115505668053725], [0.545421471388839, 0.107444270115965], [0.648093651936975, 0.0976186521041138], [0.740124191578554, 0.0861901615319532], [0.820001985973902, 0.0733464814110803], [0.886415527004401, 0.0592985849154367], [0.938274552002732, 0.0442774388174198], [0.974728555971309, 0.0285313886289336], [0.995187219997021, 0.0123412297999872]], [[-0.995556969790498, 0.0113937985010262], [-0.976663921459517, 0.0263549866150321], [-0.942974571228974, 0.0409391567013063], [-0.894991997878275, 0.0549046959758351], [-0.833442628760834, 0.0680383338123569], [-0.759259263037357, 0.080140700335001], [-0.673566368473468, 0.0910282619829636], [-0.577662930241222, 0.10053594906705], [-0.473002731445714, 0.108519624474263], [-0.361172305809387, 0.114858259145711], [-0.243866883720988, 0.119455763535784], [-0.12286469261071, 0.12224244299031], [0, 0.123176053726715], [0.12286469261071, 0.12224244299031], [0.243866883720988, 0.119455763535784], [0.361172305809387, 0.114858259145711], [0.473002731445714, 0.108519624474263], [0.577662930241222, 0.10053594906705], [0.673566368473468, 0.0910282619829636], [0.759259263037357, 0.080140700335001], [0.833442628760834, 0.0680383338123569], [0.894991997878275, 0.0549046959758351], [0.942974571228974, 0.0409391567013063], [0.976663921459517, 0.0263549866150321], [0.995556969790498, 0.0113937985010262]], [[-0.995885701145616, 0.010551372617343], [-0.97838544595647, 0.0244178510926319], [-0.947159066661714, 0.0379623832943627], [-0.902637861984307, 0.0509758252971478], [-0.845445942788498, 0.0632740463295748], [-0.776385948820678, 0.0746841497656597], [-0.696427260419957, 0.0850458943134852], [-0.606692293017618, 0.0942138003559141], [-0.508440714824505, 0.102059161094425], [-0.403051755123486, 0.108471840528576], [-0.292004839485956, 0.113361816546319], [-0.17685882035689, 0.116660443485296], [-0.0592300934293132, 0.118321415279262], [0.0592300934293132, 0.118321415279262], [0.17685882035689, 0.116660443485296], [0.292004839485956, 0.113361816546319], [0.403051755123486, 0.108471840528576], [0.508440714824505, 0.102059161094425], [0.606692293017618, 0.0942138003559141], [0.696427260419957, 0.0850458943134852], [0.776385948820678, 0.0746841497656597], [0.845445942788498, 0.0632740463295748], [0.902637861984307, 0.0509758252971478], [0.947159066661714, 0.0379623832943627], [0.97838544595647, 0.0244178510926319], [0.995885701145616, 0.010551372617343]], [[-0.996179262888988, 0.00979899605129436], [-0.979923475961501, 0.0226862315961806], [-0.950900557814705, 0.0352970537574197], [-0.909482320677491, 0.047449412520615], [-0.856207908018294, 0.0589835368598335], [-0.791771639070508, 0.0697488237662455], [-0.717013473739423, 0.0796048677730577], [-0.632907971946495, 0.0884231585437569], [-0.540551564579456, 0.0960887273700285], [-0.441148251750026, 0.102501637817745], [-0.335993903638508, 0.107578285788533], [-0.226459365439536, 0.111252488356845], [-0.113972585609529, 0.113476346108965], [0, 0.114220867378956], [0.113972585609529, 0.113476346108965], [0.226459365439536, 0.111252488356845], [0.335993903638508, 0.107578285788533], [0.441148251750026, 0.102501637817745], [0.540551564579456, 0.0960887273700285], [0.632907971946495, 0.0884231585437569], [0.717013473739423, 0.0796048677730577], [0.791771639070508, 0.0697488237662455], [0.856207908018294, 0.0589835368598336], [0.909482320677491, 0.047449412520615], [0.950900557814705, 0.0352970537574197], [0.979923475961501, 0.0226862315961806], [0.996179262888988, 0.00979899605129436]], [[-0.996442497573954, 0.00912428259309452], [-0.981303165370872, 0.0211321125927712], [-0.954259280628938, 0.0329014277823043], [-0.915633026392132, 0.0442729347590042], [-0.865892522574395, 0.0551073456757167], [-0.805641370917179, 0.0652729239669995], [-0.735610878013631, 0.0746462142345687], [-0.656651094038864, 0.0831134172289012], [-0.569720471811401, 0.0905717443930328], [-0.475874224955118, 0.0969306579979299], [-0.376251516089078, 0.10211296757806], [-0.272061627635178, 0.106055765922846], [-0.16456928213338, 0.108711192258294], [-0.0550792898840342, 0.110047013016475], [0.0550792898840342, 0.110047013016475], [0.16456928213338, 0.108711192258294], [0.272061627635178, 0.106055765922846], [0.376251516089078, 0.10211296757806], [0.475874224955118, 0.0969306579979299], [0.569720471811401, 0.0905717443930328], [0.656651094038864, 0.0831134172289012], [0.735610878013631, 0.0746462142345687], [0.805641370917179, 0.0652729239669995], [0.865892522574395, 0.0551073456757167], [0.915633026392132, 0.0442729347590042], [0.954259280628938, 0.0329014277823043], [0.981303165370872, 0.0211321125927712], [0.996442497573954, 0.00912428259309452]], [[-0.996679442260596, 0.00851690387874641], [-0.982545505261413, 0.0197320850561227], [-0.957285595778087, 0.0307404922020936], [-0.921180232953058, 0.0414020625186828], [-0.874637804920102, 0.0515948269024979], [-0.818185487615252, 0.0612030906570791], [-0.752462851734477, 0.0701179332550512], [-0.678214537602686, 0.0782383271357637], [-0.596281797138227, 0.0854722573661725], [-0.507592955124227, 0.0917377571392587], [-0.413152888174008, 0.0969638340944086], [-0.314031637867639, 0.101091273759914], [-0.211352286166001, 0.104073310077729], [-0.106278230132679, 0.10587615509732], [0, 0.106479381718314], [0.106278230132679, 0.10587615509732], [0.211352286166001, 0.104073310077729], [0.314031637867639, 0.101091273759914], [0.413152888174008, 0.0969638340944086], [0.507592955124227, 0.0917377571392587], [0.596281797138227, 0.0854722573661725], [0.678214537602686, 0.0782383271357637], [0.752462851734477, 0.0701179332550512], [0.818185487615252, 0.0612030906570791], [0.874637804920102, 0.0515948269024979], [0.921180232953058, 0.0414020625186828], [0.957285595778087, 0.0307404922020936], [0.982545505261413, 0.0197320850561227], [0.996679442260596, 0.00851690387874641]], [[-0.996893484074649, 0.0079681924961666], [-0.983668123279747, 0.0184664683110909], [-0.960021864968307, 0.0287847078833233], [-0.926200047429274, 0.038799192569627], [-0.882560535792052, 0.048402672830594], [-0.829565762382768, 0.057493156217619], [-0.767777432104826, 0.0659742298821805], [-0.697850494793315, 0.0737559747377052], [-0.620526182989242, 0.0807558952294202], [-0.536624148142019, 0.0868997872010829], [-0.447033769538089, 0.0921225222377861], [-0.352704725530878, 0.0963687371746442], [-0.254636926167889, 0.0995934205867952], [-0.153869913608583, 0.101762389748405], [-0.0514718425553176, 0.102852652893558], [0.0514718425553176, 0.102852652893558], [0.153869913608583, 0.101762389748405], [0.254636926167889, 0.0995934205867952], [0.352704725530878, 0.0963687371746442], [0.447033769538089, 0.0921225222377861], [0.536624148142019, 0.0868997872010829], [0.620526182989242, 0.0807558952294202], [0.697850494793315, 0.0737559747377052], [0.767777432104826, 0.0659742298821805], [0.829565762382768, 0.057493156217619], [0.882560535792052, 0.048402672830594], [0.926200047429274, 0.038799192569627], [0.960021864968307, 0.0287847078833233], [0.983668123279747, 0.0184664683110909], [0.996893484074649, 0.0079681924961666]]], maxOrder = lut.length + 5;
-        var NumericalCurveMapper = function(_super) {
-          function NumericalCurveMapper2(nQuadraturePoints, nInverseSamples, onInvalidateCache) {
-            void 0 === nQuadraturePoints && (nQuadraturePoints = 24), void 0 === nInverseSamples && (nInverseSamples = 21);
-            var _this = _super.call(this, onInvalidateCache) || this;
-            return _this._nSamples = 21, _this._gauss = function(order) {
-              if (order < 5 || order > maxOrder)
-                throw Error("Order for Gaussian Quadrature must be in the range of ".concat(5, " and ").concat(maxOrder, "."));
-              return lut[order - 5];
-            }(nQuadraturePoints), _this._nSamples = nInverseSamples, _this;
-          }
-          return __extends2(NumericalCurveMapper2, _super), NumericalCurveMapper2.prototype._invalidateCache = function() {
-            _super.prototype._invalidateCache.call(this), this._cache.arcLengths = null, this._cache.samples = null;
-          }, Object.defineProperty(NumericalCurveMapper2.prototype, "arcLengths", { get: function() {
-            return this._cache.arcLengths || (this._cache.arcLengths = this.computeArcLengths()), this._cache.arcLengths;
-          }, enumerable: false, configurable: true }), NumericalCurveMapper2.prototype.getSamples = function(idx) {
-            if (this.points) {
-              if (this._cache.samples || (this._cache.samples = /* @__PURE__ */ new Map()), !this._cache.samples.has(idx)) {
-                for (var samples = this._nSamples, lengths = [], slopes = [], coefficients = this.getCoefficients(idx), i = 0; i < samples; ++i) {
-                  var ti = i / (samples - 1);
-                  lengths.push(this.computeArcLength(idx, 0, ti));
-                  var dtln = magnitude(evaluateForT(derivativeAtT, ti, coefficients)), slope = 0 === dtln ? 0 : 1 / dtln;
-                  this.tension > 0.95 && (slope = clamp(slope, -1, 1)), slopes.push(slope);
-                }
-                var nCoeff = samples - 1, dis = [], cis = [], li_prev = lengths[0], tdi_prev = slopes[0], step = 1 / nCoeff;
-                for (i = 0; i < nCoeff; ++i) {
-                  var li = li_prev, lDiff = (li_prev = lengths[i + 1]) - li, tdi = tdi_prev, tdi_next = slopes[i + 1];
-                  tdi_prev = tdi_next;
-                  var si = step / lDiff, di = (tdi + tdi_next - 2 * si) / (lDiff * lDiff), ci = (3 * si - 2 * tdi - tdi_next) / lDiff;
-                  dis.push(di), cis.push(ci);
-                }
-                this._cache.samples.set(idx, [lengths, slopes, cis, dis]);
-              }
-              return this._cache.samples.get(idx);
-            }
-          }, NumericalCurveMapper2.prototype.computeArcLength = function(index, t0, t1) {
-            if (void 0 === t0 && (t0 = 0), void 0 === t1 && (t1 = 1), t0 === t1)
-              return 0;
-            for (var coefficients = this.getCoefficients(index), z = 0.5 * (t1 - t0), sum = 0, i = 0; i < this._gauss.length; i++) {
-              var _a2 = this._gauss[i], T = _a2[0];
-              sum += _a2[1] * magnitude(evaluateForT(derivativeAtT, z * T + z + t0, coefficients));
-            }
-            return z * sum;
-          }, NumericalCurveMapper2.prototype.computeArcLengths = function() {
-            if (this.points) {
-              var lengths = [];
-              lengths.push(0);
-              for (var nPoints = this.closed ? this.points.length : this.points.length - 1, tl = 0, i = 0; i < nPoints; i++) {
-                tl += this.computeArcLength(i), lengths.push(tl);
-              }
-              return lengths;
-            }
-          }, NumericalCurveMapper2.prototype.inverse = function(idx, len) {
-            var step = 1 / (this._nSamples - 1), _a2 = this.getSamples(idx), lengths = _a2[0], slopes = _a2[1], cis = _a2[2], dis = _a2[3];
-            if (len >= lengths[lengths.length - 1])
-              return 1;
-            if (len <= 0)
-              return 0;
-            var i = Math.max(0, binarySearch(len, lengths)), ti = i * step;
-            if (lengths[i] === len)
-              return ti;
-            var tdi = slopes[i], di = dis[i], ci = cis[i], ld = len - lengths[i];
-            return ((di * ld + ci) * ld + tdi) * ld + ti;
-          }, NumericalCurveMapper2.prototype.lengthAt = function(u) {
-            return u * this.arcLengths[this.arcLengths.length - 1];
-          }, NumericalCurveMapper2.prototype.getT = function(u) {
-            var arcLengths = this.arcLengths, il = arcLengths.length, targetArcLength = u * arcLengths[il - 1], i = binarySearch(targetArcLength, arcLengths), ti = i / (il - 1);
-            if (arcLengths[i] === targetArcLength)
-              return ti;
-            var len = targetArcLength - arcLengths[i];
-            return (i + this.inverse(i, len)) / (il - 1);
-          }, NumericalCurveMapper2.prototype.getU = function(t) {
-            if (0 === t)
-              return 0;
-            if (1 === t)
-              return 1;
-            var arcLengths = this.arcLengths, al = arcLengths.length - 1, totalLength = arcLengths[al], tIdx = t * al, subIdx = Math.floor(tIdx), l1 = arcLengths[subIdx];
-            if (tIdx === subIdx)
-              return l1 / totalLength;
-            var t0 = tIdx - subIdx;
-            return (l1 + this.computeArcLength(subIdx, 0, t0)) / totalLength;
-          }, NumericalCurveMapper2;
-        }(AbstractCurveMapper), CurveInterpolator2 = function() {
-          function CurveInterpolator3(points, options2) {
-            void 0 === options2 && (options2 = {});
-            var _this = this;
-            this._cache = /* @__PURE__ */ new Map();
-            var curveMapper = (options2 = __assign2({ tension: 0.5, alpha: 0, closed: false }, options2)).arcDivisions ? new SegmentedCurveMapper(options2.arcDivisions, function() {
-              return _this._invalidateCache();
-            }) : new NumericalCurveMapper(options2.numericalApproximationOrder, options2.numericalInverseSamples, function() {
-              return _this._invalidateCache();
-            });
-            curveMapper.alpha = options2.alpha, curveMapper.tension = options2.tension, curveMapper.closed = options2.closed, curveMapper.points = points, this._lmargin = options2.lmargin || 1 - curveMapper.tension, this._curveMapper = curveMapper;
-          }
-          return CurveInterpolator3.prototype.getTimeFromPosition = function(position, clampInput) {
-            return void 0 === clampInput && (clampInput = false), this._curveMapper.getT(clampInput ? clamp(position, 0, 1) : position);
-          }, CurveInterpolator3.prototype.getPositionFromTime = function(t, clampInput) {
-            return void 0 === clampInput && (clampInput = false), this._curveMapper.getU(clampInput ? clamp(t, 0, 1) : t);
-          }, CurveInterpolator3.prototype.getPositionFromLength = function(length, clampInput) {
-            void 0 === clampInput && (clampInput = false);
-            var l = clampInput ? clamp(length, 0, this.length) : length;
-            return this._curveMapper.getU(l / this.length);
-          }, CurveInterpolator3.prototype.getLengthAt = function(position, clampInput) {
-            return void 0 === position && (position = 1), void 0 === clampInput && (clampInput = false), this._curveMapper.lengthAt(clampInput ? clamp(position, 0, 1) : position);
-          }, CurveInterpolator3.prototype.getTimeAtKnot = function(index) {
-            if (index < 0 || index > this.points.length - 1)
-              throw Error("Invalid index!");
-            return 0 === index ? 0 : this.closed || index !== this.points.length - 1 ? index / (this.closed ? this.points.length : this.points.length - 1) : 1;
-          }, CurveInterpolator3.prototype.getPositionAtKnot = function(index) {
-            return this.getPositionFromTime(this.getTimeAtKnot(index));
-          }, CurveInterpolator3.prototype.getPointAtTime = function(t, target) {
-            return 0 === (t = clamp(t, 0, 1)) ? copyValues(this.points[0], target) : 1 === t ? copyValues(this.closed ? this.points[0] : this.points[this.points.length - 1], target) : this._curveMapper.evaluateForT(valueAtT, t, target);
-          }, CurveInterpolator3.prototype.getPointAt = function(position, target) {
-            return this.getPointAtTime(this.getTimeFromPosition(position), target);
-          }, CurveInterpolator3.prototype.getTangentAt = function(position, target) {
-            var t = clamp(this.getTimeFromPosition(position), 0, 1);
-            return this.getTangentAtTime(t, target);
-          }, CurveInterpolator3.prototype.getTangentAtTime = function(t, target) {
-            return normalize2(this._curveMapper.evaluateForT(derivativeAtT, t, target));
-          }, CurveInterpolator3.prototype.getNormalAt = function(position, target) {
-            var t = clamp(this.getTimeFromPosition(position), 0, 1);
-            return this.getNormalAtTime(t, target);
-          }, CurveInterpolator3.prototype.getNormalAtTime = function(t, target) {
-            var dt = normalize2(this._curveMapper.evaluateForT(derivativeAtT, t));
-            if (!(dt.length < 2 || dt.length > 3)) {
-              var normal = target || new Array(dt.length);
-              if (2 === dt.length)
-                return normal[0] = -dt[1], normal[1] = dt[0], normal;
-              var ddt = normalize2(this._curveMapper.evaluateForT(secondDerivativeAtT, t));
-              return normalize2(cross(cross(dt, ddt), dt), normal);
-            }
-          }, CurveInterpolator3.prototype.getCurvatureAt = function(position) {
-            var t = clamp(this.getTimeFromPosition(position), 0, 1);
-            return this.getCurvatureAtTime(t);
-          }, CurveInterpolator3.prototype.getCurvatureAtTime = function(t) {
-            var dt = this._curveMapper.evaluateForT(derivativeAtT, t), ddt = this._curveMapper.evaluateForT(secondDerivativeAtT, t), tangent = normalize2(dt, []), curvature = 0, direction = void 0;
-            if (2 === dt.length) {
-              if (0 !== (denominator = Math.pow(dt[0] * dt[0] + dt[1] * dt[1], 1.5))) {
-                var signedCurvature = (dt[0] * ddt[1] - dt[1] * ddt[0]) / denominator;
-                direction = signedCurvature < 0 ? [tangent[1], -tangent[0]] : [-tangent[1], tangent[0]], curvature = Math.abs(signedCurvature);
-              }
-            } else if (3 === dt.length) {
-              var a = magnitude(dt), cp = cross(dt, ddt);
-              direction = normalize2(cross(cp, dt)), 0 !== a && (curvature = magnitude(cp) / Math.pow(a, 3));
-            } else {
-              a = magnitude(dt);
-              var b = magnitude(ddt), denominator = Math.pow(a, 3), dotProduct = dot(dt, ddt);
-              0 !== denominator && (curvature = Math.sqrt(Math.pow(a, 2) * Math.pow(b, 2) - Math.pow(dotProduct, 2)) / denominator);
-            }
-            return { curvature, radius: 0 !== curvature ? 1 / curvature : 0, tangent, direction };
-          }, CurveInterpolator3.prototype.getDerivativeAt = function(position, target) {
-            var t = clamp(this.getTimeFromPosition(position), 0, 1);
-            return this._curveMapper.evaluateForT(derivativeAtT, t, target);
-          }, CurveInterpolator3.prototype.getSecondDerivativeAt = function(position, target) {
-            var t = clamp(this.getTimeFromPosition(position), 0, 1);
-            return this._curveMapper.evaluateForT(secondDerivativeAtT, t, target);
-          }, CurveInterpolator3.prototype.getBoundingBox = function(from, to) {
-            if (void 0 === from && (from = 0), void 0 === to && (to = 1), 0 === from && 1 === to && this._cache.has("bbox"))
-              return this._cache.get("bbox");
-            for (var min3 = [], max3 = [], t0 = this.getTimeFromPosition(from), t1 = this.getTimeFromPosition(to), start = this.getPointAtTime(t0), end = this.getPointAtTime(t1), nPoints = this.closed ? this.points.length : this.points.length - 1, i0 = Math.floor(nPoints * t0), i1 = Math.ceil(nPoints * t1), c = 0; c < start.length; c++)
-              min3[c] = Math.min(start[c], end[c]), max3[c] = Math.max(start[c], end[c]);
-            for (var _loop_1 = function(i2) {
-              var p2 = getControlPoints(i2 - 1, this_1.points, this_1.closed)[2];
-              if (i2 < i1)
-                for (var c2 = 0; c2 < p2.length; c2++)
-                  p2[c2] < min3[c2] && (min3[c2] = p2[c2]), p2[c2] > max3[c2] && (max3[c2] = p2[c2]);
-              if (this_1.tension < 1) {
-                var w0_1 = nPoints * t0 - (i2 - 1), w1_1 = nPoints * t1 - (i2 - 1), valid = function(t) {
-                  return t > -EPS && t <= 1 + EPS && (i2 - 1 !== i0 || t > w0_1) && (i2 !== i1 || t < w1_1);
-                }, coefficients_1 = this_1._curveMapper.getCoefficients(i2 - 1), _loop_2 = function(c3) {
-                  var _b = coefficients_1[c3];
-                  getQuadRoots(3 * _b[0], 2 * _b[1], _b[2]).filter(valid).forEach(function(t) {
-                    var v = valueAtT(t, coefficients_1[c3]);
-                    v < min3[c3] && (min3[c3] = v), v > max3[c3] && (max3[c3] = v);
-                  });
-                };
-                for (c2 = 0; c2 < coefficients_1.length; c2++)
-                  _loop_2(c2);
-              }
-            }, this_1 = this, i = i0 + 1; i <= i1; i++)
-              _loop_1(i);
-            var bbox = { min: min3, max: max3 };
-            return 0 === from && 1 === to && this._cache.set("bbox", bbox), bbox;
-          }, CurveInterpolator3.prototype.getPoints = function(segments, returnType, from, to) {
-            if (void 0 === segments && (segments = 100), void 0 === from && (from = 0), void 0 === to && (to = 1), !segments || segments <= 0)
-              throw Error("Invalid arguments passed to getPoints(). You must specify at least 1 sample/segment.");
-            if (!(from < 0 || to > 1 || to < from)) {
-              for (var pts = [], d = 0; d <= segments; d++) {
-                var u = 0 === from && 1 === to ? d / segments : from + d / segments * (to - from);
-                pts.push(this.getPointAt(u, returnType && new returnType()));
-              }
-              return pts;
-            }
-          }, CurveInterpolator3.prototype.getNearestPosition = function(point, threshold) {
-            var _this = this;
-            if (void 0 === threshold && (threshold = 1e-5), threshold <= 0 || !Number.isFinite(threshold))
-              throw Error("Invalid threshold. Must be a number greater than zero!");
-            var samples = 10 * this.points.length - 1, pu = new Array(point.length), minDist = 1 / 0, minU = 0, lut2 = this.createLookupTable(samples);
-            Array.from(lut2.keys()).forEach(function(key) {
-              var c = lut2.get(key), dist = distance(point, c);
-              if (dist < minDist)
-                return minDist = dist, minU = key, true;
-            });
-            for (var minT = this.getTimeFromPosition(minU), bisect = function(t) {
-              if (t >= 0 && t <= 1) {
-                _this.getPointAtTime(t, pu);
-                var dist = distance(point, pu);
-                if (dist < minDist)
-                  return minDist = dist, minT = t, true;
-              }
-            }, step = 5e-3; step > threshold; )
-              bisect(minT - step) || bisect(minT + step) || (step /= 2);
-            return { u: minU = this._curveMapper.getU(minT), distance: minDist, point: pu };
-          }, CurveInterpolator3.prototype.getIntersects = function(v, axis, max3, margin) {
-            var _this = this;
-            void 0 === axis && (axis = 0), void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
-            var solutions = this.getIntersectsAsTime(v, axis, max3, margin).map(function(t) {
-              return _this.getPointAtTime(t);
-            });
-            return 1 === Math.abs(max3) ? 1 === solutions.length ? solutions[0] : null : solutions;
-          }, CurveInterpolator3.prototype.getIntersectsAsPositions = function(v, axis, max3, margin) {
-            var _this = this;
-            return void 0 === axis && (axis = 0), void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin), this.getIntersectsAsTime(v, axis, max3, margin).map(function(t) {
-              return _this.getPositionFromTime(t);
-            });
-          }, CurveInterpolator3.prototype.getIntersectsAsTime = function(v, axis, max3, margin) {
-            void 0 === axis && (axis = 0), void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
-            for (var k = axis, solutions = /* @__PURE__ */ new Set(), nPoints = this.closed ? this.points.length : this.points.length - 1, i = 0; i < nPoints && (0 === max3 || solutions.size < Math.abs(max3)); i += 1) {
-              var idx = max3 < 0 ? nPoints - (i + 1) : i, _a2 = getControlPoints(idx, this.points, this.closed), p1 = _a2[1], p2 = _a2[2], coefficients = this._curveMapper.getCoefficients(idx), vmin = void 0, vmax = void 0;
-              if (p1[k] < p2[k] ? (vmin = p1[k], vmax = p2[k]) : (vmin = p2[k], vmax = p1[k]), v - margin <= vmax && v + margin >= vmin) {
-                var ts = findRootsOfT(v, coefficients[k]);
-                max3 < 0 ? ts.sort(function(a, b) {
-                  return b - a;
-                }) : max3 >= 0 && ts.sort(function(a, b) {
-                  return a - b;
-                });
-                for (var j = 0; j < ts.length; j++) {
-                  var nt = (ts[j] + idx) / nPoints;
-                  if (solutions.add(nt), 0 !== max3 && solutions.size === Math.abs(max3))
-                    break;
-                }
-              }
-            }
-            return Array.from(solutions);
-          }, CurveInterpolator3.prototype.createLookupTable = function(samples, from, to) {
-            if (void 0 === from && (from = 0), void 0 === to && (to = 1), !samples || samples <= 1)
-              throw Error("Invalid arguments passed to createLookupTable(). You must specify at least 2 samples.");
-            if (!(from < 0 || to > 1 || to < from)) {
-              var cacheKey = "lut_".concat(samples, "_").concat(from, "_").concat(to);
-              if (!this._cache.has(cacheKey)) {
-                for (var lut2 = /* @__PURE__ */ new Map(), d = 0; d < samples; d++) {
-                  var u = 0 === from && 1 === to ? d / (samples - 1) : from + d / (samples - 1) * (to - from), point = this.getPointAt(u);
-                  lut2.set(u, point);
-                }
-                this._cache.set(cacheKey, lut2);
-              }
-              return this._cache.get(cacheKey);
-            }
-          }, CurveInterpolator3.prototype.forEach = function(func, samples, from, to) {
-            var _this = this;
-            void 0 === from && (from = 0), void 0 === to && (to = 1);
-            var positions = [];
-            if (Number.isFinite(samples)) {
-              if (samples <= 1)
-                throw Error("Invalid arguments passed to forEach(). You must specify at least 2 samples.");
-              for (var nSamples = samples, i = 0; i < samples; i++) {
-                var u = 0 === from && 1 === to ? i / (nSamples - 1) : from + i / (nSamples - 1) * (to - from);
-                positions.push(u);
-              }
-            } else
-              Array.isArray(samples) && (positions = samples);
-            var prev = null;
-            positions.forEach(function(u2, i2) {
-              if (!Number.isFinite(u2) || u2 < 0 || u2 > 1)
-                throw Error("Invalid position (u) for sample in forEach!");
-              var t = _this.getTimeFromPosition(u2), current = func({ u: u2, t, i: i2, prev });
-              prev = { u: u2, t, i: i2, value: current };
-            });
-          }, CurveInterpolator3.prototype.map = function(func, samples, from, to) {
-            var _this = this;
-            void 0 === from && (from = 0), void 0 === to && (to = 1);
-            var positions = [];
-            if (Number.isFinite(samples)) {
-              if (samples <= 1)
-                throw Error("Invalid arguments passed to map(). You must specify at least 2 samples.");
-              for (var nSamples = samples, i = 0; i < samples; i++) {
-                var u = 0 === from && 1 === to ? i / (nSamples - 1) : from + i / (nSamples - 1) * (to - from);
-                positions.push(u);
-              }
-            } else
-              Array.isArray(samples) && (positions = samples);
-            var prev = null;
-            return positions.map(function(u2, i2) {
-              if (!Number.isFinite(u2) || u2 < 0 || u2 > 1)
-                throw Error("Invalid position (u) for sample in map()!");
-              var t = _this.getTimeFromPosition(u2), current = func({ u: u2, t, i: i2, prev });
-              return prev = { u: u2, t, i: i2, value: current }, current;
-            });
-          }, CurveInterpolator3.prototype.reduce = function(func, initialValue, samples, from, to) {
-            var _this = this;
-            void 0 === from && (from = 0), void 0 === to && (to = 1);
-            var positions = [];
-            if (Number.isFinite(samples)) {
-              if (samples <= 1)
-                throw Error("Invalid arguments passed to map(). You must specify at least 2 samples.");
-              for (var nSamples = samples, i = 0; i < samples; i++) {
-                var u = 0 === from && 1 === to ? i / (nSamples - 1) : from + i / (nSamples - 1) * (to - from);
-                positions.push(u);
-              }
-            } else
-              Array.isArray(samples) && (positions = samples);
-            return positions.reduce(function(acc, u2, i2) {
-              if (!Number.isFinite(u2) || u2 < 0 || u2 > 1)
-                throw Error("Invalid position (u) for sample in map()!");
-              var t = _this.getTimeFromPosition(u2);
-              return func({ acc, u: u2, t, i: i2 });
-            }, initialValue);
-          }, CurveInterpolator3.prototype._invalidateCache = function() {
-            return this._cache = /* @__PURE__ */ new Map(), this;
-          }, CurveInterpolator3.prototype.reset = function() {
-            this._curveMapper.reset();
-          }, Object.defineProperty(CurveInterpolator3.prototype, "points", { get: function() {
-            return this._curveMapper.points;
-          }, set: function(pts) {
-            this._curveMapper.points = pts;
-          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "tension", { get: function() {
-            return this._curveMapper.tension;
-          }, set: function(t) {
-            this._curveMapper.tension = t;
-          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "alpha", { get: function() {
-            return this._curveMapper.alpha;
-          }, set: function(a) {
-            this._curveMapper.alpha = a;
-          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "closed", { get: function() {
-            return this._curveMapper.closed;
-          }, set: function(isClosed) {
-            this._curveMapper.closed = isClosed;
-          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "length", { get: function() {
-            return this._curveMapper.lengthAt(1);
-          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "minX", { get: function() {
-            return this.getBoundingBox().min[0];
-          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "maxX", { get: function() {
-            return this.getBoundingBox().max[0];
-          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "minY", { get: function() {
-            return this.getBoundingBox().min[1];
-          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "maxY", { get: function() {
-            return this.getBoundingBox().max[1];
-          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "minZ", { get: function() {
-            return this.getBoundingBox().min[2];
-          }, enumerable: false, configurable: true }), Object.defineProperty(CurveInterpolator3.prototype, "maxZ", { get: function() {
-            return this.getBoundingBox().max[2];
-          }, enumerable: false, configurable: true }), CurveInterpolator3;
-        }(), Point = function() {
-          function Point2(x, y, z, w) {
-            void 0 === x && (x = 0), void 0 === y && (y = 0), void 0 === z && (z = null), void 0 === w && (w = null), this.x = x, this.y = y, this.z = z, this.w = w;
-          }
-          return Object.defineProperty(Point2.prototype, 0, { get: function() {
-            return this.x;
-          }, set: function(x) {
-            this.x = x;
-          }, enumerable: false, configurable: true }), Object.defineProperty(Point2.prototype, 1, { get: function() {
-            return this.y;
-          }, set: function(y) {
-            this.y = y;
-          }, enumerable: false, configurable: true }), Object.defineProperty(Point2.prototype, 2, { get: function() {
-            return this.z;
-          }, set: function(z) {
-            this.z = z;
-          }, enumerable: false, configurable: true }), Object.defineProperty(Point2.prototype, 3, { get: function() {
-            return this.w;
-          }, set: function(w) {
-            this.w = w;
-          }, enumerable: false, configurable: true }), Object.defineProperty(Point2.prototype, "length", { get: function() {
-            return Number.isFinite(this.w) ? 4 : Number.isFinite(this.z) ? 3 : 2;
-          }, enumerable: false, configurable: true }), Point2;
-        }(), CurveInterpolator2D = function(_super) {
-          function CurveInterpolator2D2(points, tension, arcDivisions, closed, alpha) {
-            return void 0 === tension && (tension = 0.5), void 0 === arcDivisions && (arcDivisions = 300), void 0 === closed && (closed = false), void 0 === alpha && (alpha = 0), _super.call(this, points.map(function(p2) {
-              return [p2[0], p2[1]];
-            }), { tension, alpha, arcDivisions, closed }) || this;
-          }
-          return __extends2(CurveInterpolator2D2, _super), CurveInterpolator2D2.prototype.x = function(y, max3, margin) {
-            void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
-            var res = this.getIntersects(y, 1, max3, margin);
-            return 1 === Math.abs(max3) ? res[0] : res.map(function(d) {
-              return d[0];
-            });
-          }, CurveInterpolator2D2.prototype.y = function(x, max3, margin) {
-            void 0 === max3 && (max3 = 0), void 0 === margin && (margin = this._lmargin);
-            var res = this.getIntersects(x, 0, max3, margin);
-            return 1 === Math.abs(max3) ? res[1] : res.map(function(d) {
-              return d[1];
-            });
-          }, CurveInterpolator2D2.prototype.getNormalAt = function(position, target) {
-            return normalize2(orthogonal(this.getTangentAt(position, target)));
-          }, CurveInterpolator2D2.prototype.getAngleAt = function(position) {
-            var tan = this.getTangentAt(position);
-            return Math.atan2(tan[1], tan[0]);
-          }, CurveInterpolator2D2.prototype.getBoundingBox = function(from, to) {
-            void 0 === from && (from = 0), void 0 === to && (to = 1);
-            var bbox = _super.prototype.getBoundingBox.call(this, from, to);
-            return { x1: bbox.min[0], x2: bbox.max[0], y1: bbox.min[1], y2: bbox.max[1], min: bbox.min, max: bbox.max };
-          }, CurveInterpolator2D2;
-        }(CurveInterpolator2);
-        function getPointAtT(t, points, options2, target) {
-          void 0 === options2 && (options2 = {});
-          var _a2 = getSegmentIndexAndT(t, points, !!options2.closed), index = _a2.index, weight = _a2.weight, _b = getControlPoints(index, points, !!options2.closed), p0 = _b[0];
-          return evaluateForT(valueAtT, weight, calculateCoefficients(p0, _b[1], _b[2], _b[3], options2), target = target || new Array(p0.length));
-        }
-        exports2.CurveInterpolator = CurveInterpolator2, exports2.CurveInterpolator2D = CurveInterpolator2D, exports2.EPS = EPS, exports2.LinearCurveMapper = SegmentedCurveMapper, exports2.NumericalCurveMapper = NumericalCurveMapper, exports2.Point = Point, exports2.binarySearch = binarySearch, exports2.calcKnotSequence = calcKnotSequence, exports2.calculateCoefficients = calculateCoefficients, exports2.clamp = clamp, exports2.copyValues = copyValues, exports2.cross = cross, exports2.derivativeAtT = derivativeAtT, exports2.distance = distance, exports2.dot = dot, exports2.evaluateForT = evaluateForT, exports2.extrapolateControlPoint = extrapolateControlPoint, exports2.fill = fill, exports2.findRootsOfT = findRootsOfT, exports2.getBoundingBox = function(points, options2) {
-          void 0 === options2 && (options2 = {});
-          for (var _a2 = __assign2({ tension: 0.5, alpha: 0, closed: false, from: 0, to: 1 }, options2), tension = _a2.tension, alpha = _a2.alpha, closed = _a2.closed, t0 = _a2.from, t1 = _a2.to, nPoints = closed ? points.length : points.length - 1, i0 = Math.floor(nPoints * t0), i1 = Math.ceil(nPoints * t1), start = getPointAtT(t0, points, { tension, alpha, closed }), end = getPointAtT(t1, points, { tension, alpha, closed }), min3 = [], max3 = [], c = 0; c < start.length; c++)
-            min3[c] = Math.min(start[c], end[c]), max3[c] = Math.max(start[c], end[c]);
-          for (var _loop_1 = function(i2) {
-            var _b = getControlPoints(i2 - 1, points, closed), p0 = _b[0], p1 = _b[1], p2 = _b[2], p3 = _b[3];
-            if (i2 < i1)
-              for (var c2 = 0; c2 < p2.length; c2++)
-                p2[c2] < min3[c2] && (min3[c2] = p2[c2]), p2[c2] > max3[c2] && (max3[c2] = p2[c2]);
-            if (tension < 1) {
-              var w0_1 = nPoints * t0 - (i2 - 1), w1_1 = nPoints * t1 - (i2 - 1), valid = function(t) {
-                return t > -EPS && t <= 1 + EPS && (i2 - 1 !== i0 || t > w0_1) && (i2 !== i1 || t < w1_1);
-              }, coefficients_1 = calculateCoefficients(p0, p1, p2, p3, { tension, alpha }), _loop_2 = function(c3) {
-                var _c = coefficients_1[c3];
-                getQuadRoots(3 * _c[0], 2 * _c[1], _c[2]).filter(valid).forEach(function(t) {
-                  var v = valueAtT(t, coefficients_1[c3]);
-                  v < min3[c3] && (min3[c3] = v), v > max3[c3] && (max3[c3] = v);
-                });
-              };
-              for (c2 = 0; c2 < coefficients_1.length; c2++)
-                _loop_2(c2);
-            }
-          }, i = i0 + 1; i <= i1; i++)
-            _loop_1(i);
-          return { min: min3, max: max3 };
-        }, exports2.getControlPoints = getControlPoints, exports2.getCubicRoots = getCubicRoots, exports2.getPointAtT = getPointAtT, exports2.getQuadRoots = getQuadRoots, exports2.getSegmentIndexAndT = getSegmentIndexAndT, exports2.getTangentAtT = function(t, points, options2, target) {
-          void 0 === options2 && (options2 = {});
-          var _a2 = getSegmentIndexAndT(t, points, !!options2.closed), index = _a2.index, weight = _a2.weight, _b = getControlPoints(index, points, !!options2.closed), p0 = _b[0];
-          return evaluateForT(derivativeAtT, weight, calculateCoefficients(p0, _b[1], _b[2], _b[3], options2), target = target || new Array(p0.length));
-        }, exports2.magnitude = magnitude, exports2.map = map6, exports2.normalize = normalize2, exports2.orthogonal = orthogonal, exports2.positionsLookup = function(lookup5, points, options2) {
-          for (var _a2 = __assign2({ axis: 0, closed: false, margin: 0.5, max: 0 }, options2), axis = _a2.axis, closed = _a2.closed, margin = _a2.margin, max3 = _a2.max, k = axis, solutions = /* @__PURE__ */ new Set(), nPoints = closed ? points.length : points.length - 1, i = 0; i < nPoints; i += 1) {
-            var idx = max3 < 0 ? points.length - i : i, _b = getControlPoints(i, points, closed), p0 = _b[0], p1 = _b[1], p2 = _b[2], coefficients = calculateCoefficients(p0, p1, p2, _b[3], options2), vmin = void 0, vmax = void 0;
-            if (p1[k] < p2[k] ? (vmin = p1[k], vmax = p2[k]) : (vmin = p2[k], vmax = p1[k]), lookup5 - margin <= vmax && lookup5 + margin >= vmin) {
-              var ts = findRootsOfT(lookup5, coefficients[k]);
-              max3 < 0 ? ts.sort(function(a, b) {
-                return b - a;
-              }) : max3 >= 0 && ts.sort(function(a, b) {
-                return a - b;
-              });
-              for (var j = 0; j < ts.length; j++)
-                if (!(0 === ts[j] && i > 0)) {
-                  var nt = (ts[j] + idx) / nPoints;
-                  if (solutions.add(nt), solutions.size === Math.abs(max3))
-                    return Array.from(solutions);
-                }
-            }
-          }
-          return Array.from(solutions);
-        }, exports2.reduce = reduce6, exports2.secondDerivativeAtT = secondDerivativeAtT, exports2.simplify2d = function(inputArr, maxOffset, maxDistance) {
-          var _a2;
-          if (void 0 === maxOffset && (maxOffset = 1e-3), void 0 === maxDistance && (maxDistance = 10), inputArr.length <= 4)
-            return inputArr;
-          for (var _b = inputArr[0], o0 = _b[0], o1 = _b[1], arr = inputArr.map(function(d) {
-            return [d[0] - o0, d[1] - o1];
-          }), _c = arr[0], a0 = _c[0], a1 = _c[1], sim = [inputArr[0]], i = 1; i + 1 < arr.length; i++) {
-            var _d = arr[i], t0 = _d[0], t1 = _d[1], _e = arr[i + 1], b0 = _e[0], b1 = _e[1];
-            if (b0 - t0 != 0 || b1 - t1 != 0) {
-              var proximity = Math.abs(a0 * b1 - a1 * b0 + b0 * t1 - b1 * t0 + a1 * t0 - a0 * t1) / Math.sqrt(Math.pow(b0 - a0, 2) + Math.pow(b1 - a1, 2)), dir = [a0 - t0, a1 - t1], len = Math.sqrt(Math.pow(dir[0], 2) + Math.pow(dir[1], 2));
-              (proximity > maxOffset || len >= maxDistance) && (sim.push([t0 + o0, t1 + o1]), a0 = (_a2 = [t0, t1])[0], a1 = _a2[1]);
-            }
-          }
-          var last6 = arr[arr.length - 1];
-          return sim.push([last6[0] + o0, last6[1] + o1]), sim;
-        }, exports2.sumOfSquares = sumOfSquares, exports2.valueAtT = valueAtT, exports2.valuesLookup = function(lookup5, points, options2) {
-          for (var _a2 = __assign2({ axis: 0, closed: false, margin: 0.5, max: 0, processRefAxis: false }, options2), axis = _a2.axis, closed = _a2.closed, margin = _a2.margin, max3 = _a2.max, processRefAxis = _a2.processRefAxis, k = axis, solutions = [], nPoints = closed ? points.length : points.length - 1, i = 0; i < nPoints; i += 1) {
-            var _b = getControlPoints(max3 < 0 ? nPoints - (i + 1) : i, points, closed), p0 = _b[0], p1 = _b[1], p2 = _b[2], coefficients = calculateCoefficients(p0, p1, p2, _b[3], options2), vmin = void 0, vmax = void 0;
-            if (p1[k] < p2[k] ? (vmin = p1[k], vmax = p2[k]) : (vmin = p2[k], vmax = p1[k]), lookup5 - margin <= vmax && lookup5 + margin >= vmin) {
-              var ts = findRootsOfT(lookup5, coefficients[k]);
-              max3 < 0 ? ts.sort(function(a, b) {
-                return b - a;
-              }) : max3 >= 0 && ts.sort(function(a, b) {
-                return a - b;
-              });
-              for (var j = 0; j < ts.length; j++)
-                if (!(0 === ts[j] && i > 0)) {
-                  for (var coord = [], c = 0; c < p0.length; c++) {
-                    var v = void 0;
-                    v = c !== k || processRefAxis ? valueAtT(ts[j], coefficients[c]) : lookup5, coord[c] = v;
-                  }
-                  if (solutions.push(coord), solutions.length === Math.abs(max3))
-                    return solutions;
-                }
-            }
-          }
-          return solutions;
-        };
+        closePrevConn = Player_default.SongChanged.connect(HandlePageView);
+        HandlePageView();
       });
-    }
-  });
-
-  // .yarn/cache/d3-ease-npm-3.0.1-f8f3709dc7-06e2ee5326.zip/node_modules/d3-ease/src/sin.js
-  function sinOut(t) {
-    return Math.sin(t * halfPi);
-  }
-  var pi, halfPi;
-  var init_sin = __esm({
-    ".yarn/cache/d3-ease-npm-3.0.1-f8f3709dc7-06e2ee5326.zip/node_modules/d3-ease/src/sin.js"() {
-      pi = Math.PI;
-      halfPi = pi / 2;
-    }
-  });
-
-  // .yarn/cache/d3-ease-npm-3.0.1-f8f3709dc7-06e2ee5326.zip/node_modules/d3-ease/src/index.js
-  var init_src = __esm({
-    ".yarn/cache/d3-ease-npm-3.0.1-f8f3709dc7-06e2ee5326.zip/node_modules/d3-ease/src/index.js"() {
-      init_sin();
-    }
-  });
-
-  // extensions/full-screen/deps/beautiful-lyrics/Packages/Spring.ts
-  var Epsilon, Pi, Tau, Exp, Sin, Cos, Sqrt, SleepEpsilon, Spring, Spring_default;
-  var init_Spring = __esm({
-    "extensions/full-screen/deps/beautiful-lyrics/Packages/Spring.ts"() {
-      "use strict";
-      Epsilon = 1e-4;
-      Pi = Math.PI;
-      Tau = Pi * 2;
-      Exp = Math.exp;
-      Sin = Math.sin;
-      Cos = Math.cos;
-      Sqrt = Math.sqrt;
-      SleepEpsilon = 0.1;
-      Spring = class {
-        // Private Properties
-        Velocity;
-        DampingRatio;
-        Frequency;
-        Sleeping = true;
-        // Public Properties
-        Position;
-        Final;
-        // Constructor
-        constructor(initial, dampingRatio, frequency) {
-          if (dampingRatio * frequency < 0) {
-            throw new Error("Spring does not converge.");
-          }
-          this.DampingRatio = dampingRatio, this.Frequency = frequency;
-          this.Velocity = 0;
-          this.Position = initial, this.Final = initial;
-        }
-        Update(deltaTime) {
-          const radialFrequency = this.Frequency * Tau;
-          const final = this.Final;
-          const velocity = this.Velocity;
-          const offset = this.Position - final;
-          const dampingRatio = this.DampingRatio;
-          const decay = Exp(-dampingRatio * radialFrequency * deltaTime);
-          let newPosition, newVelocity;
-          if (this.DampingRatio == 1) {
-            newPosition = (offset * (1 + radialFrequency * deltaTime) + velocity * deltaTime) * decay + final;
-            newVelocity = (velocity * (1 - radialFrequency * deltaTime) - offset * (radialFrequency * radialFrequency * deltaTime)) * decay;
-          } else if (this.DampingRatio < 1) {
-            const c = Sqrt(1 - dampingRatio * dampingRatio);
-            const i = Cos(radialFrequency * c * deltaTime);
-            const j = Sin(radialFrequency * c * deltaTime);
-            let z;
-            if (c > Epsilon) {
-              z = j / c;
-            } else {
-              const a = deltaTime * radialFrequency;
-              z = a + (a * a * (c * c) * (c * c) / 20 - c * c) * (a * a * a) / 6;
-            }
-            let y;
-            if (radialFrequency * c > Epsilon) {
-              y = j / (radialFrequency * c);
-            } else {
-              const b = radialFrequency * c;
-              y = deltaTime + (deltaTime * deltaTime * (b * b) * (b * b) / 20 - b * b) * (deltaTime * deltaTime * deltaTime) / 6;
-            }
-            newPosition = (offset * (i + dampingRatio * z) + velocity * y) * decay + final;
-            newVelocity = (velocity * (i - z * dampingRatio) - offset * (z * radialFrequency)) * decay;
-          } else {
-            const c = Sqrt(dampingRatio * dampingRatio - 1);
-            const r1 = -radialFrequency * (dampingRatio - c);
-            const r2 = -radialFrequency * (dampingRatio + c);
-            const co2 = (velocity - offset * r1) / (2 * radialFrequency * c);
-            const co1 = offset - co2;
-            const e1 = co1 * Exp(r1 * deltaTime);
-            const e2 = co2 * Exp(r2 * deltaTime);
-            newPosition = e1 + e2 + final;
-            newVelocity = e1 * r1 + e2 * r2;
-          }
-          this.Position = newPosition;
-          this.Velocity = newVelocity;
-          this.Sleeping = Math.abs(final - newPosition) <= SleepEpsilon;
-          return newPosition;
-        }
-        Set(value) {
-          this.Position = value, this.Final = value;
-          this.Velocity = 0;
-          this.Sleeping = true;
-        }
-        IsSleeping() {
-          return this.Sleeping;
-        }
-      };
-      Spring_default = Spring;
-    }
-  });
-
-  // .yarn/cache/cubic-spline-npm-3.0.3-82372b4422-860170c5d4.zip/node_modules/cubic-spline/index.js
-  var require_cubic_spline = __commonJS({
-    ".yarn/cache/cubic-spline-npm-3.0.3-82372b4422-860170c5d4.zip/node_modules/cubic-spline/index.js"(exports, module) {
-      module.exports = class Spline {
-        constructor(xs, ys) {
-          this.xs = xs;
-          this.ys = ys;
-          this.ks = this.getNaturalKs(new Float64Array(this.xs.length));
-        }
-        getNaturalKs(ks) {
-          const n = this.xs.length - 1;
-          const A = zerosMat(n + 1, n + 2);
-          for (let i = 1; i < n; i++) {
-            A[i][i - 1] = 1 / (this.xs[i] - this.xs[i - 1]);
-            A[i][i] = 2 * (1 / (this.xs[i] - this.xs[i - 1]) + 1 / (this.xs[i + 1] - this.xs[i]));
-            A[i][i + 1] = 1 / (this.xs[i + 1] - this.xs[i]);
-            A[i][n + 1] = 3 * ((this.ys[i] - this.ys[i - 1]) / ((this.xs[i] - this.xs[i - 1]) * (this.xs[i] - this.xs[i - 1])) + (this.ys[i + 1] - this.ys[i]) / ((this.xs[i + 1] - this.xs[i]) * (this.xs[i + 1] - this.xs[i])));
-          }
-          A[0][0] = 2 / (this.xs[1] - this.xs[0]);
-          A[0][1] = 1 / (this.xs[1] - this.xs[0]);
-          A[0][n + 1] = 3 * (this.ys[1] - this.ys[0]) / ((this.xs[1] - this.xs[0]) * (this.xs[1] - this.xs[0]));
-          A[n][n - 1] = 1 / (this.xs[n] - this.xs[n - 1]);
-          A[n][n] = 2 / (this.xs[n] - this.xs[n - 1]);
-          A[n][n + 1] = 3 * (this.ys[n] - this.ys[n - 1]) / ((this.xs[n] - this.xs[n - 1]) * (this.xs[n] - this.xs[n - 1]));
-          return solve(A, ks);
-        }
-        /**
-         * inspired by https://stackoverflow.com/a/40850313/4417327
-         */
-        getIndexBefore(target) {
-          let low = 0;
-          let high = this.xs.length;
-          let mid = 0;
-          while (low < high) {
-            mid = Math.floor((low + high) / 2);
-            if (this.xs[mid] < target && mid !== low) {
-              low = mid;
-            } else if (this.xs[mid] >= target && mid !== high) {
-              high = mid;
-            } else {
-              high = low;
-            }
-          }
-          return low + 1;
-        }
-        at(x) {
-          let i = this.getIndexBefore(x);
-          const t = (x - this.xs[i - 1]) / (this.xs[i] - this.xs[i - 1]);
-          const a = this.ks[i - 1] * (this.xs[i] - this.xs[i - 1]) - (this.ys[i] - this.ys[i - 1]);
-          const b = -this.ks[i] * (this.xs[i] - this.xs[i - 1]) + (this.ys[i] - this.ys[i - 1]);
-          const q = (1 - t) * this.ys[i - 1] + t * this.ys[i] + t * (1 - t) * (a * (1 - t) + b * t);
-          return q;
-        }
-      };
-      function solve(A, ks) {
-        const m = A.length;
-        let h = 0;
-        let k = 0;
-        while (h < m && k <= m) {
-          let i_max = 0;
-          let max3 = -Infinity;
-          for (let i = h; i < m; i++) {
-            const v2 = Math.abs(A[i][k]);
-            if (v2 > max3) {
-              i_max = i;
-              max3 = v2;
-            }
-          }
-          if (A[i_max][k] === 0) {
-            k++;
-          } else {
-            swapRows(A, h, i_max);
-            for (let i = h + 1; i < m; i++) {
-              const f2 = A[i][k] / A[h][k];
-              A[i][k] = 0;
-              for (let j = k + 1; j <= m; j++)
-                A[i][j] -= A[h][j] * f2;
-            }
-            h++;
-            k++;
-          }
-        }
-        for (let i = m - 1; i >= 0; i--) {
-          var v = 0;
-          if (A[i][i]) {
-            v = A[i][m] / A[i][i];
-          }
-          ks[i] = v;
-          for (let j = i - 1; j >= 0; j--) {
-            A[j][m] -= A[j][i] * v;
-            A[j][i] = 0;
-          }
-        }
-        return ks;
-      }
-      function zerosMat(r, c) {
-        const A = [];
-        for (let i = 0; i < r; i++)
-          A.push(new Float64Array(c));
-        return A;
-      }
-      function swapRows(m, k, l) {
-        let p2 = m[k];
-        m[k] = m[l];
-        m[l] = p2;
-      }
-    }
-  });
-
-  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/SharedMethods.ts
-  var Spline, GetSpline, Clamp;
-  var init_SharedMethods = __esm({
-    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/SharedMethods.ts"() {
-      "use strict";
-      Spline = require_cubic_spline();
-      GetSpline = (range5) => {
-        const times = range5.map((value) => value.Time);
-        const values = range5.map((value) => value.Value);
-        return new Spline(times, values);
-      };
-      Clamp = (value, min3, max3) => {
-        return Math.max(min3, Math.min(value, max3));
-      };
-    }
-  });
-
-  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/Interlude.ts
-  var import_curve_interpolator, DotCount, DotAnimations, DotSplines, CreateDotSprings, MainAnimations, PulseInterval, DownPulse, UpPulse, MainYOffsetSpline, CreateMainSprings, InterludeVisual;
-  var init_Interlude = __esm({
-    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/Interlude.ts"() {
-      "use strict";
-      import_curve_interpolator = __toESM(require_dist());
-      init_src();
-      init_Maid();
-      init_Signal();
-      init_Spring();
-      init_SharedMethods();
-      DotCount = 3;
-      DotAnimations = {
-        YOffsetDamping: 0.4,
-        YOffsetFrequency: 1.25,
-        ScaleDamping: 0.6,
-        ScaleFrequency: 0.7,
-        GlowDamping: 0.5,
-        GlowFrequency: 1,
-        ScaleRange: [
-          {
-            Time: 0,
-            Value: 0.75
-          },
-          // Lowest
-          {
-            Time: 0.7,
-            Value: 1.05
-          },
-          // Highest
-          {
-            Time: 1,
-            Value: 1
-          }
-          // Rest
-        ],
-        YOffsetRange: [
-          // This is relative to the font-size
-          {
-            Time: 0,
-            Value: 0.125
-          },
-          // Lowest
-          {
-            Time: 0.9,
-            Value: -0.2
-          },
-          // Highest
-          {
-            Time: 1,
-            Value: 0
-          }
-          // Rest
-        ],
-        GlowRange: [
-          {
-            Time: 0,
-            Value: 0
-          },
-          // Lowest
-          {
-            Time: 0.6,
-            Value: 1
-          },
-          // Highest
-          {
-            Time: 1,
-            Value: 1
-          }
-          // Rest
-        ],
-        OpacityRange: [
-          {
-            Time: 0,
-            Value: 0.35
-          },
-          // Lowest
-          {
-            Time: 0.6,
-            Value: 1
-          },
-          // Highest
-          {
-            Time: 1,
-            Value: 1
-          }
-          // Rest
-        ]
-      };
-      DotSplines = {
-        ScaleSpline: GetSpline(DotAnimations.ScaleRange),
-        YOffsetSpline: GetSpline(DotAnimations.YOffsetRange),
-        GlowSpline: GetSpline(DotAnimations.GlowRange),
-        OpacitySpline: GetSpline(DotAnimations.OpacityRange)
-      };
-      CreateDotSprings = () => {
-        return {
-          Scale: new Spring_default(0, DotAnimations.ScaleDamping, DotAnimations.ScaleFrequency),
-          YOffset: new Spring_default(0, DotAnimations.YOffsetDamping, DotAnimations.YOffsetFrequency),
-          Glow: new Spring_default(0, DotAnimations.GlowDamping, DotAnimations.GlowFrequency),
-          Opacity: new Spring_default(0, DotAnimations.GlowDamping, DotAnimations.GlowFrequency)
-        };
-      };
-      MainAnimations = {
-        YOffsetDamping: 0.4,
-        YOffsetFrequency: 1.25,
-        ScaleDamping: 0.7,
-        // 0.6
-        ScaleFrequency: 5,
-        // 4
-        BaseScaleRange: [
-          // Time is actually real-time (so in seconds)
-          {
-            Time: 0,
-            Value: 0
-          },
-          {
-            Time: 0.2,
-            Value: 1.05
-          },
-          {
-            Time: -0.075,
-            Value: 1.15
-          },
-          {
-            Time: -0,
-            Value: 0
-          }
-          // Rest
-        ],
-        OpacityRange: [
-          {
-            Time: 0,
-            Value: 0
-          },
-          {
-            Time: 0.5,
-            Value: 1
-          },
-          {
-            Time: -0.075,
-            Value: 1
-          },
-          {
-            Time: -0,
-            Value: 0
-          }
-          // Rest
-        ],
-        YOffsetRange: [
-          // This is relative to the font-size
-          {
-            Time: 0,
-            Value: 1 / 100
-          },
-          // Lowest
-          {
-            Time: 0.9,
-            Value: -(1 / 60)
-          },
-          // Highest
-          {
-            Time: 1,
-            Value: 0
-          }
-          // Rest
-        ]
-      };
-      PulseInterval = 2.25;
-      DownPulse = 0.95;
-      UpPulse = 1.05;
-      MainYOffsetSpline = new import_curve_interpolator.CurveInterpolator(
-        MainAnimations.YOffsetRange.map((metadata) => [metadata.Time, metadata.Value])
-      );
-      CreateMainSprings = () => {
-        return {
-          Scale: new Spring_default(0, MainAnimations.ScaleDamping, MainAnimations.ScaleFrequency),
-          YOffset: new Spring_default(0, MainAnimations.YOffsetDamping, MainAnimations.YOffsetFrequency),
-          Opacity: new Spring_default(0, MainAnimations.YOffsetDamping, MainAnimations.YOffsetFrequency)
-        };
-      };
-      InterludeVisual = class {
-        // Private Properties
-        Maid = new Maid();
-        Container;
-        StartTime;
-        Duration;
-        Dots = [];
-        LiveText;
-        ScaleSpline;
-        OpacitySpline;
-        State = "Idle";
-        IsSleeping = true;
-        ActivityChangedSignal = this.Maid.give(new Signal());
-        RequestedTimeSkipSignal = this.Maid.give(new Signal());
-        // Public Properties
-        ActivityChanged = this.ActivityChangedSignal.getEvent();
-        RequestedTimeSkip = this.RequestedTimeSkipSignal.getEvent();
-        // Constructor
-        constructor(lineContainer, interludeMetadata) {
-          const container = this.Maid.give(document.createElement("div"));
-          container.classList.add("Interlude");
-          this.Container = container;
-          this.LiveText = {
-            Object: container,
-            Springs: CreateMainSprings()
-          };
-          this.StartTime = interludeMetadata.StartTime;
-          this.Duration = interludeMetadata.EndTime - this.StartTime;
-          {
-            const scaleRange = MainAnimations.BaseScaleRange.map((point) => {
-              return {
-                Time: point.Time,
-                Value: point.Value
-              };
-            });
-            const opacityRange = MainAnimations.OpacityRange.map((point) => {
-              return {
-                Time: point.Time,
-                Value: point.Value
-              };
-            });
-            scaleRange[2].Time += this.Duration;
-            opacityRange[2].Time += this.Duration;
-            scaleRange[3].Time = this.Duration;
-            opacityRange[3].Time = this.Duration;
-            {
-              const startPoint = scaleRange[1];
-              const endPoint = scaleRange[2];
-              const deltaTime = endPoint.Time - startPoint.Time;
-              for (let iteration = Math.floor(deltaTime / PulseInterval); iteration > 0; iteration -= 1) {
-                const time = startPoint.Time + iteration * PulseInterval;
-                const value = iteration % 2 === 0 ? UpPulse : DownPulse;
-                scaleRange.splice(2, 0, {
-                  Time: time,
-                  Value: value
-                });
-              }
-            }
-            for (const range5 of [scaleRange, opacityRange]) {
-              for (const point of range5) {
-                point.Time /= this.Duration;
-              }
-            }
-            this.ScaleSpline = new import_curve_interpolator.CurveInterpolator(scaleRange.map((metadata) => [metadata.Time, metadata.Value]));
-            this.OpacitySpline = new import_curve_interpolator.CurveInterpolator(opacityRange.map((metadata) => [metadata.Time, metadata.Value]));
-          }
-          {
-            const dotStep = 0.925 / DotCount;
-            let startTime = 0;
-            for (let i = 0; i < DotCount; i++) {
-              const syllableSpan = this.Maid.give(document.createElement("span"));
-              syllableSpan.classList.add("InterludeDot");
-              this.Dots.push({
-                Start: startTime,
-                Duration: dotStep,
-                GlowDuration: 1 - startTime,
-                LiveText: {
-                  Object: syllableSpan,
-                  Springs: CreateDotSprings()
-                }
-              });
-              container.appendChild(syllableSpan);
-              startTime += dotStep;
-            }
-          }
-          this.SetToGeneralState(false);
-          lineContainer.appendChild(container);
-        }
-        // Private Methods
-        UpdateLiveDotState = (liveText, timeScale, glowTimeScale, forceTo) => {
-          const scale = DotSplines.ScaleSpline.at(timeScale);
-          const yOffset = DotSplines.YOffsetSpline.at(timeScale);
-          const glowAlpha = DotSplines.GlowSpline.at(glowTimeScale);
-          const opacity = DotSplines.OpacitySpline.at(timeScale);
-          if (forceTo) {
-            liveText.Springs.Scale.Set(scale);
-            liveText.Springs.YOffset.Set(yOffset);
-            liveText.Springs.Glow.Set(glowAlpha);
-            liveText.Springs.Opacity.Set(opacity);
-          } else {
-            liveText.Springs.Scale.Final = scale;
-            liveText.Springs.YOffset.Final = yOffset;
-            liveText.Springs.Glow.Final = glowAlpha;
-            liveText.Springs.Opacity.Final = opacity;
-          }
-        };
-        UpdateLiveDotVisuals = (liveText, deltaTime) => {
-          const scale = liveText.Springs.Scale.Update(deltaTime);
-          const yOffset = liveText.Springs.YOffset.Update(deltaTime);
-          const glowAlpha = liveText.Springs.Glow.Update(deltaTime);
-          const opacity = liveText.Springs.Opacity.Update(deltaTime);
-          liveText.Object.style.transform = `translateY(calc(var(--dot-size) * ${yOffset}))`;
-          liveText.Object.style.scale = scale.toString();
-          liveText.Object.style.setProperty("--text-shadow-blur-radius", `${4 + 6 * glowAlpha}px`);
-          liveText.Object.style.setProperty("--text-shadow-opacity", `${glowAlpha * 90}%`);
-          liveText.Object.style.opacity = opacity.toString();
-          return liveText.Springs.Scale.IsSleeping() && liveText.Springs.YOffset.IsSleeping() && liveText.Springs.Glow.IsSleeping() && liveText.Springs.Opacity.IsSleeping();
-        };
-        UpdateLiveMainState = (liveText, timeScale, forceTo) => {
-          const yOffset = MainYOffsetSpline.getPointAt(timeScale)[1];
-          const scaleIntersections = this.ScaleSpline.getIntersects(timeScale);
-          const opacityIntersections = this.OpacitySpline.getIntersects(timeScale);
-          const scale = scaleIntersections.length === 0 ? 1 : scaleIntersections[scaleIntersections.length - 1][1];
-          const opacity = opacityIntersections.length === 0 ? 1 : opacityIntersections[opacityIntersections.length - 1][1];
-          if (forceTo) {
-            liveText.Springs.Scale.Set(scale);
-            liveText.Springs.YOffset.Set(yOffset);
-            liveText.Springs.Opacity.Set(opacity);
-          } else {
-            liveText.Springs.Scale.Final = scale;
-            liveText.Springs.YOffset.Final = yOffset;
-            liveText.Springs.Opacity.Final = opacity;
-          }
-        };
-        UpdateLiveMainVisuals = (liveText, deltaTime) => {
-          const scale = liveText.Springs.Scale.Update(deltaTime);
-          const yOffset = liveText.Springs.YOffset.Update(deltaTime);
-          const opacity = liveText.Springs.Opacity.Update(deltaTime);
-          liveText.Object.style.transform = `translateY(calc(var(--dot-size) * ${yOffset}))`;
-          liveText.Object.style.scale = scale.toString();
-          liveText.Object.style.opacity = sinOut(opacity).toString();
-          return liveText.Springs.Scale.IsSleeping() && liveText.Springs.YOffset.IsSleeping() && liveText.Springs.Opacity.IsSleeping();
-        };
-        EvaluateClassState() {
-          const removeClasses2 = ["Active", "Sung"];
-          let classToAdd;
-          if (this.State === "Active") {
-            removeClasses2.splice(0, 1);
-            classToAdd = "Active";
-          } else if (this.State == "Sung") {
-            removeClasses2.splice(1, 1);
-            classToAdd = "Sung";
-          }
-          for (const className of removeClasses2) {
-            if (this.Container.classList.contains(className)) {
-              this.Container.classList.remove(className);
-            }
-          }
-          if (classToAdd !== void 0) {
-            this.Container.classList.add(classToAdd);
-          }
-        }
-        SetToGeneralState(state) {
-          const timeScale = state ? 1 : 0;
-          for (const dot of this.Dots) {
-            this.UpdateLiveDotState(dot.LiveText, timeScale, timeScale, true);
-            this.UpdateLiveDotVisuals(dot.LiveText, 0);
-          }
-          this.UpdateLiveMainState(this.LiveText, timeScale, true);
-          this.UpdateLiveMainVisuals(this.LiveText, 0);
-          this.State = state ? "Sung" : "Idle";
-          this.EvaluateClassState();
-        }
-        // Public Methods
-        Animate(songTimestamp, deltaTime, isImmediate) {
-          const relativeTime = songTimestamp - this.StartTime;
-          const timeScale = Clamp(relativeTime / this.Duration, 0, 1);
-          const pastStart = relativeTime >= 0, beforeEnd = relativeTime <= this.Duration;
-          const isActive = pastStart && beforeEnd;
-          const stateNow = isActive ? "Active" : pastStart ? "Sung" : "Idle";
-          const stateChanged = stateNow != this.State;
-          const shouldUpdateVisualState = stateChanged || isActive || isImmediate;
-          if (stateChanged) {
-            const oldState = this.State;
-            this.State = stateNow;
-            if (this.State !== "Sung") {
-              this.EvaluateClassState();
-            }
-            if (oldState === "Active") {
-              this.ActivityChangedSignal.fire(false);
-            } else if (isActive) {
-              this.ActivityChangedSignal.fire(true);
-            }
-          }
-          if (shouldUpdateVisualState) {
-            this.IsSleeping = false;
-          }
-          const isMoving = this.IsSleeping === false;
-          if (shouldUpdateVisualState || isMoving) {
-            let isSleeping = true;
-            for (const dot of this.Dots) {
-              const dotTimeScale = Clamp((timeScale - dot.Start) / dot.Duration, 0, 1);
-              {
-                if (shouldUpdateVisualState) {
-                  this.UpdateLiveDotState(dot.LiveText, dotTimeScale, dotTimeScale, isImmediate);
-                }
-                if (isMoving) {
-                  const dotIsSleeping = this.UpdateLiveDotVisuals(dot.LiveText, deltaTime);
-                  if (dotIsSleeping === false) {
-                    isSleeping = false;
-                  }
-                }
-              }
-            }
-            {
-              if (shouldUpdateVisualState) {
-                this.UpdateLiveMainState(this.LiveText, timeScale, isImmediate);
-              }
-              if (isMoving) {
-                const mainIsSleeping = this.UpdateLiveMainVisuals(this.LiveText, deltaTime);
-                if (mainIsSleeping === false) {
-                  isSleeping = false;
-                }
-              }
-            }
-            if (isSleeping) {
-              this.IsSleeping = true;
-              if (isActive === false) {
-                this.EvaluateClassState();
-              }
-            }
-          }
-        }
-        ForceState(state) {
-          this.SetToGeneralState(state);
-        }
-        IsActive() {
-          return this.State === "Active";
-        }
-        SetBlur() {
-        }
-        // Interlude we'll never use this since it will never be visible
-        // Deconstructor
-        dispose() {
-          this.Maid.dispose();
-        }
-      };
-    }
-  });
-
-  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/LineVocals.ts
-  var GlowRange, GlowSpline, GlowDamping, GlowFrequency, LineVocals;
-  var init_LineVocals = __esm({
-    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/LineVocals.ts"() {
-      "use strict";
-      init_Maid();
-      init_Signal();
-      init_Spring();
-      init_SharedMethods();
-      GlowRange = [
-        {
-          Time: 0,
-          Value: 0
-        },
-        // Lowest
-        {
-          Time: 0.5,
-          Value: 1
-        },
-        // Highest
-        {
-          Time: 0.925,
-          Value: 1
-        },
-        // Sustain
-        {
-          Time: 1,
-          Value: 0
-        }
-        // Rest
-      ];
-      GlowSpline = GetSpline(GlowRange);
-      GlowDamping = 0.5;
-      GlowFrequency = 1;
-      LineVocals = class {
-        // Private Properties
-        Maid = new Maid();
-        Container;
-        StartTime;
-        Duration;
-        Span;
-        GlowSpring;
-        State = "Idle";
-        IsSleeping = true;
-        ActivityChangedSignal = this.Maid.give(new Signal());
-        RequestedTimeSkipSignal = this.Maid.give(new Signal());
-        // Public Properties
-        ActivityChanged = this.ActivityChangedSignal.getEvent();
-        RequestedTimeSkip = this.RequestedTimeSkipSignal.getEvent();
-        // Constructor
-        constructor(lineContainer, lineMetadata) {
-          const container = this.Maid.give(document.createElement("div"));
-          container.classList.add("Vocals");
-          container.classList.add("Lead");
-          this.Container = container;
-          container.addEventListener("click", () => this.RequestedTimeSkipSignal.fire());
-          this.StartTime = lineMetadata.StartTime;
-          this.Duration = lineMetadata.EndTime - lineMetadata.StartTime;
-          const syllableSpan = this.Maid.give(document.createElement("span"));
-          syllableSpan.classList.add("Lyric");
-          syllableSpan.classList.add("Synced");
-          syllableSpan.classList.add("Line");
-          syllableSpan.innerText = lineMetadata.Text;
-          container.appendChild(syllableSpan);
-          this.Span = syllableSpan;
-          this.GlowSpring = new Spring_default(0, GlowDamping, GlowFrequency);
-          this.SetToGeneralState(false);
-          lineContainer.appendChild(container);
-        }
-        // Private Methods
-        UpdateLiveTextState = (timeScale, forceTo) => {
-          const glowAlpha = GlowSpline.at(timeScale);
-          if (forceTo) {
-            this.GlowSpring.Set(glowAlpha);
-          } else {
-            this.GlowSpring.Final = glowAlpha;
-          }
-        };
-        UpdateLiveTextVisuals = (timeScale, deltaTime) => {
-          const glowAlpha = this.GlowSpring.Update(deltaTime);
-          this.Span.style.setProperty("--text-shadow-blur-radius", `${4 + 8 * glowAlpha}px`);
-          this.Span.style.setProperty("--text-shadow-opacity", `${glowAlpha * 50}%`);
-          this.Span.style.setProperty("--gradient-progress", `${0 + 120 * timeScale}%`);
-          return this.GlowSpring.IsSleeping();
-        };
-        EvaluateClassState() {
-          const removeClasses2 = ["Active", "Sung"];
-          let classToAdd;
-          if (this.State === "Active") {
-            removeClasses2.splice(0, 1);
-            classToAdd = "Active";
-          } else if (this.State == "Sung") {
-            removeClasses2.splice(1, 1);
-            classToAdd = "Sung";
-          }
-          for (const className of removeClasses2) {
-            if (this.Container.classList.contains(className)) {
-              this.Container.classList.remove(className);
-            }
-          }
-          if (classToAdd !== void 0) {
-            this.Container.classList.add(classToAdd);
-          }
-        }
-        SetToGeneralState(state) {
-          const timeScale = state ? 1 : 0;
-          this.UpdateLiveTextState(timeScale, true);
-          this.UpdateLiveTextVisuals(timeScale, 0);
-          this.State = state ? "Sung" : "Idle";
-          this.EvaluateClassState();
-        }
-        // Public Methods
-        Animate(songTimestamp, deltaTime, isImmediate) {
-          const relativeTime = songTimestamp - this.StartTime;
-          const timeScale = Clamp(relativeTime / this.Duration, 0, 1);
-          const pastStart = relativeTime >= 0, beforeEnd = relativeTime <= this.Duration;
-          const isActive = pastStart && beforeEnd;
-          const stateNow = isActive ? "Active" : pastStart ? "Sung" : "Idle";
-          const stateChanged = stateNow != this.State;
-          const shouldUpdateVisualState = stateChanged || isActive || isImmediate;
-          if (stateChanged) {
-            const oldState = this.State;
-            this.State = stateNow;
-            if (this.State !== "Sung") {
-              this.EvaluateClassState();
-            }
-            if (oldState === "Active") {
-              this.ActivityChangedSignal.fire(false);
-            } else if (isActive) {
-              this.ActivityChangedSignal.fire(true);
-            }
-          }
-          if (shouldUpdateVisualState) {
-            this.IsSleeping = false;
-            this.UpdateLiveTextState(timeScale, isImmediate || relativeTime < 0 || void 0);
-          }
-          if (this.IsSleeping === false) {
-            const isSleeping = this.UpdateLiveTextVisuals(timeScale, deltaTime);
-            if (isSleeping) {
-              this.IsSleeping = true;
-              if (isActive === false) {
-                this.EvaluateClassState();
-              }
-            }
-          }
-        }
-        ForceState(state) {
-          this.SetToGeneralState(state);
-        }
-        IsActive() {
-          return this.State === "Active";
-        }
-        SetBlur(blurDistance) {
-          this.Container.style.setProperty("--text-blur", `${blurDistance}px`);
-        }
-        // Deconstructor
-        dispose() {
-          this.Maid.dispose();
-        }
-      };
-    }
-  });
-
-  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/StaticVocals.ts
-  var StaticVocals;
-  var init_StaticVocals = __esm({
-    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/StaticVocals.ts"() {
-      "use strict";
-      init_Maid();
-      StaticVocals = class {
-        // Private Properties
-        Maid;
-        // Constructor
-        constructor(lineContainer, text) {
-          this.Maid = new Maid();
-          const container = this.Maid.give(document.createElement("div"));
-          container.classList.add("Vocals");
-          container.classList.add("Lead");
-          container.classList.add("Active");
-          const syllableSpan = this.Maid.give(document.createElement("span"));
-          syllableSpan.classList.add("Lyric");
-          syllableSpan.classList.add("Static");
-          syllableSpan.innerText = text;
-          container.appendChild(syllableSpan);
-          lineContainer.appendChild(container);
-        }
-        // Deconstructor
-        dispose() {
-          this.Maid.dispose();
-        }
-      };
-    }
-  });
-
-  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/SyllableVocals.ts
-  var ScaleRange, YOffsetRange, GlowRange2, ScaleSpline, YOffsetSpline, GlowSpline2, YOffsetDamping, YOffsetFrequency, ScaleDamping, ScaleFrequency, GlowDamping2, GlowFrequency2, CreateSprings, MinimumEmphasizedDuration, MaximumEmphasizedCharacters, IsEmphasized, SyllableVocals;
-  var init_SyllableVocals = __esm({
-    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer/Components/SyllableVocals.ts"() {
-      "use strict";
-      init_src();
-      init_Maid();
-      init_Signal();
-      init_Spring();
-      init_SharedMethods();
-      ScaleRange = [
-        {
-          Time: 0,
-          Value: 0.95
-        },
-        // Lowest
-        {
-          Time: 0.7,
-          Value: 1.025
-        },
-        // Highest
-        {
-          Time: 1,
-          Value: 1
-        }
-        // Rest
-      ];
-      YOffsetRange = [
-        // This is relative to the font-size
-        {
-          Time: 0,
-          Value: 1 / 100
-        },
-        // Lowest
-        {
-          Time: 0.9,
-          Value: -(1 / 60)
-        },
-        // Highest
-        {
-          Time: 1,
-          Value: 0
-        }
-        // Rest
-      ];
-      GlowRange2 = [
-        {
-          Time: 0,
-          Value: 0
-        },
-        // Lowest
-        {
-          Time: 0.15,
-          Value: 1
-        },
-        // Highest
-        {
-          Time: 0.6,
-          Value: 1
-        },
-        // Sustain
-        {
-          Time: 1,
-          Value: 0
-        }
-        // Rest
-      ];
-      ScaleSpline = GetSpline(ScaleRange);
-      YOffsetSpline = GetSpline(YOffsetRange);
-      GlowSpline2 = GetSpline(GlowRange2);
-      YOffsetDamping = 0.4;
-      YOffsetFrequency = 1.25;
-      ScaleDamping = 0.6;
-      ScaleFrequency = 0.7;
-      GlowDamping2 = 0.5;
-      GlowFrequency2 = 1;
-      CreateSprings = () => {
-        return {
-          Scale: new Spring_default(0, ScaleDamping, ScaleFrequency),
-          YOffset: new Spring_default(0, YOffsetDamping, YOffsetFrequency),
-          Glow: new Spring_default(0, GlowDamping2, GlowFrequency2)
-        };
-      };
-      MinimumEmphasizedDuration = 1;
-      MaximumEmphasizedCharacters = 12;
-      IsEmphasized = (metadata) => {
-        return metadata.EndTime - metadata.StartTime >= MinimumEmphasizedDuration && metadata.Text.length <= MaximumEmphasizedCharacters;
-      };
-      SyllableVocals = class {
-        // Private Properties
-        Maid = new Maid();
-        Container;
-        StartTime;
-        Duration;
-        Syllables = [];
-        State = "Idle";
-        IsSleeping = true;
-        ActivityChangedSignal = this.Maid.give(new Signal());
-        RequestedTimeSkipSignal = this.Maid.give(new Signal());
-        // Public Properties
-        ActivityChanged = this.ActivityChangedSignal.getEvent();
-        RequestedTimeSkip = this.RequestedTimeSkipSignal.getEvent();
-        // Constructor
-        constructor(lineContainer, syllablesMetadata, isBackground) {
-          const container = this.Maid.give(document.createElement("div"));
-          container.classList.add("Vocals");
-          container.classList.add(isBackground ? "Background" : "Lead");
-          this.Container = container;
-          container.addEventListener("click", () => this.RequestedTimeSkipSignal.fire());
-          this.StartTime = syllablesMetadata[0].StartTime;
-          this.Duration = syllablesMetadata[syllablesMetadata.length - 1].EndTime - this.StartTime;
-          const syllableGroups = [];
-          {
-            let currentSyllableGroup = [];
-            for (const syllableMetadata of syllablesMetadata) {
-              currentSyllableGroup.push(syllableMetadata);
-              if (syllableMetadata.IsPartOfWord === false) {
-                syllableGroups.push(currentSyllableGroup);
-                currentSyllableGroup = [];
-              }
-            }
-            if (currentSyllableGroup.length > 0) {
-              syllableGroups.push(currentSyllableGroup);
-            }
-          }
-          for (const syllableGroup of syllableGroups) {
-            let parentElement = container;
-            const syllableCount = syllableGroup.length;
-            const isInWordGroup = syllableCount > 1;
-            if (isInWordGroup) {
-              const parent = this.Maid.give(document.createElement("span"));
-              parent.classList.add("Word");
-              parentElement = parent;
-              container.appendChild(parent);
-            }
-            for (const [index, syllableMetadata] of syllableGroup.entries()) {
-              const isEmphasized = IsEmphasized(syllableMetadata);
-              const syllableSpan = this.Maid.give(document.createElement("span"));
-              {
-                syllableSpan.classList.add("Lyric");
-                syllableSpan.classList.add("Syllable");
-                if (isEmphasized) {
-                  syllableSpan.classList.add("Emphasis");
-                } else {
-                  syllableSpan.classList.add("Synced");
-                }
-                const isEndOfWord = isInWordGroup && index === syllableCount - 1;
-                if (syllableMetadata.IsPartOfWord) {
-                  syllableSpan.classList.add("PartOfWord");
-                  if (index === 0) {
-                    syllableSpan.classList.add("StartOfWord");
-                  } else if (isEndOfWord) {
-                    syllableSpan.classList.add("EndOfWord");
-                  }
-                } else if (isEndOfWord) {
-                  syllableSpan.classList.add("EndOfWord");
-                }
-              }
-              let letters;
-              if (isEmphasized) {
-                const letterTexts = [];
-                for (const letter of syllableMetadata.Text) {
-                  letterTexts.push(letter);
-                }
-                const relativeTimestep = 1 / letterTexts.length;
-                letters = [];
-                let relativeTimestamp = 0;
-                for (const letter of syllableMetadata.Text) {
-                  const letterSpan = this.Maid.give(document.createElement("span"));
-                  letterSpan.classList.add("Letter");
-                  letterSpan.classList.add("Synced");
-                  letterSpan.innerText = letter;
-                  syllableSpan.appendChild(letterSpan);
-                  letters.push({
-                    Start: relativeTimestamp,
-                    Duration: relativeTimestep,
-                    GlowDuration: 1 - relativeTimestamp,
-                    LiveText: {
-                      Object: letterSpan,
-                      Springs: CreateSprings()
-                    }
-                  });
-                  relativeTimestamp += relativeTimestep;
-                }
-              } else {
-                syllableSpan.innerText = syllableMetadata.Text;
-              }
-              const relativeStart = syllableMetadata.StartTime - this.StartTime;
-              const relativeEnd = syllableMetadata.EndTime - this.StartTime;
-              const relativeStartScale = relativeStart / this.Duration;
-              const relativeEndScale = relativeEnd / this.Duration;
-              const duration = relativeEnd - relativeStart;
-              const durationScale = relativeEndScale - relativeStartScale;
-              const syllableLiveText = {
-                Object: syllableSpan,
-                Springs: CreateSprings()
-              };
-              if (isEmphasized) {
-                this.Syllables.push({
-                  Type: "Letters",
-                  Start: relativeStart,
-                  Duration: duration,
-                  StartScale: relativeStartScale,
-                  DurationScale: durationScale,
-                  LiveText: syllableLiveText,
-                  Letters: letters
-                });
-              } else {
-                this.Syllables.push({
-                  Type: "Syllable",
-                  Start: relativeStart,
-                  Duration: duration,
-                  StartScale: relativeStartScale,
-                  DurationScale: durationScale,
-                  LiveText: syllableLiveText
-                });
-              }
-              parentElement.appendChild(syllableSpan);
-            }
-          }
-          this.SetToGeneralState(false);
-          lineContainer.appendChild(container);
-        }
-        // Private Methods
-        UpdateLiveTextState = (liveText, timeScale, glowTimeScale, forceTo) => {
-          const scale = ScaleSpline.at(timeScale);
-          const yOffset = YOffsetSpline.at(timeScale);
-          const glowAlpha = GlowSpline2.at(glowTimeScale);
-          if (forceTo) {
-            liveText.Springs.Scale.Set(scale);
-            liveText.Springs.YOffset.Set(yOffset);
-            liveText.Springs.Glow.Set(glowAlpha);
-          } else {
-            liveText.Springs.Scale.Final = scale;
-            liveText.Springs.YOffset.Final = yOffset;
-            liveText.Springs.Glow.Final = glowAlpha;
-          }
-        };
-        UpdateLiveTextVisuals = (liveText, isEmphasized, timeScale, deltaTime) => {
-          const scale = liveText.Springs.Scale.Update(deltaTime);
-          const yOffset = liveText.Springs.YOffset.Update(deltaTime);
-          const glowAlpha = liveText.Springs.Glow.Update(deltaTime);
-          liveText.Object.style.setProperty("--gradient-progress", `${-20 + 120 * timeScale}%`);
-          liveText.Object.style.transform = `translateY(calc(var(--lyrics-size) * ${yOffset * (isEmphasized ? 2 : 1)}))`;
-          liveText.Object.style.scale = scale.toString();
-          liveText.Object.style.setProperty(
-            "--text-shadow-blur-radius",
-            `${4 + 2 * glowAlpha * (isEmphasized ? 3 : 1)}px`
-          );
-          liveText.Object.style.setProperty("--text-shadow-opacity", `${glowAlpha * (isEmphasized ? 100 : 35)}%`);
-          return liveText.Springs.Scale.IsSleeping() && liveText.Springs.YOffset.IsSleeping() && liveText.Springs.Glow.IsSleeping();
-        };
-        EvaluateClassState() {
-          const removeClasses2 = ["Active", "Sung"];
-          let classToAdd;
-          if (this.State === "Active") {
-            removeClasses2.splice(0, 1);
-            classToAdd = "Active";
-          } else if (this.State == "Sung") {
-            removeClasses2.splice(1, 1);
-            classToAdd = "Sung";
-          }
-          for (const className of removeClasses2) {
-            if (this.Container.classList.contains(className)) {
-              this.Container.classList.remove(className);
-            }
-          }
-          if (classToAdd !== void 0) {
-            this.Container.classList.add(classToAdd);
-          }
-        }
-        SetToGeneralState(state) {
-          const timeScale = state ? 1 : 0;
-          for (const syllable of this.Syllables) {
-            this.UpdateLiveTextState(syllable.LiveText, timeScale, timeScale, true);
-            this.UpdateLiveTextVisuals(syllable.LiveText, false, timeScale, 0);
-            if (syllable.Type === "Letters") {
-              for (const letter of syllable.Letters) {
-                this.UpdateLiveTextState(letter.LiveText, timeScale, timeScale, true);
-                this.UpdateLiveTextVisuals(letter.LiveText, true, timeScale, 0);
-              }
-            }
-          }
-          this.State = state ? "Sung" : "Idle";
-          this.EvaluateClassState();
-        }
-        // Public Methods
-        Animate(songTimestamp, deltaTime, isImmediate) {
-          const relativeTime = songTimestamp - this.StartTime;
-          const timeScale = Clamp(relativeTime / this.Duration, 0, 1);
-          const pastStart = relativeTime >= 0, beforeEnd = relativeTime <= this.Duration;
-          const isActive = pastStart && beforeEnd;
-          const stateNow = isActive ? "Active" : pastStart ? "Sung" : "Idle";
-          const stateChanged = stateNow != this.State;
-          const shouldUpdateVisualState = stateChanged || isActive || isImmediate;
-          if (stateChanged) {
-            const oldState = this.State;
-            this.State = stateNow;
-            if (this.State !== "Sung") {
-              this.EvaluateClassState();
-            }
-            if (oldState === "Active") {
-              this.ActivityChangedSignal.fire(false);
-            } else if (isActive) {
-              this.ActivityChangedSignal.fire(true);
-            }
-          }
-          if (shouldUpdateVisualState) {
-            this.IsSleeping = false;
-          }
-          const isMoving = this.IsSleeping === false;
-          if (shouldUpdateVisualState || isMoving) {
-            let isSleeping = true;
-            for (const syllable of this.Syllables) {
-              const syllableTimeScale = Clamp((timeScale - syllable.StartScale) / syllable.DurationScale, 0, 1);
-              if (syllable.Type == "Letters") {
-                const timeAlpha = sinOut(syllableTimeScale);
-                for (const letter of syllable.Letters) {
-                  const letterTime = timeAlpha - letter.Start;
-                  const letterTimeScale = Clamp(letterTime / letter.Duration, 0, 1);
-                  const glowTimeScale = Clamp(letterTime / letter.GlowDuration, 0, 1);
-                  if (shouldUpdateVisualState) {
-                    this.UpdateLiveTextState(letter.LiveText, letterTimeScale, glowTimeScale, isImmediate);
-                  }
-                  if (isMoving) {
-                    const letterIsSleeping = this.UpdateLiveTextVisuals(
-                      letter.LiveText,
-                      true,
-                      letterTimeScale,
-                      deltaTime
-                    );
-                    if (letterIsSleeping === false) {
-                      isSleeping = false;
-                    }
-                  }
-                }
-              }
-              {
-                if (shouldUpdateVisualState) {
-                  this.UpdateLiveTextState(syllable.LiveText, syllableTimeScale, syllableTimeScale, isImmediate);
-                }
-                if (isMoving) {
-                  const syllableIsSleeping = this.UpdateLiveTextVisuals(
-                    syllable.LiveText,
-                    false,
-                    syllableTimeScale,
-                    deltaTime
-                  );
-                  if (syllableIsSleeping === false) {
-                    isSleeping = false;
-                  }
-                }
-              }
-            }
-            if (isSleeping) {
-              this.IsSleeping = true;
-              if (isActive === false) {
-                this.EvaluateClassState();
-              }
-            }
-          }
-        }
-        ForceState(state) {
-          this.SetToGeneralState(state);
-        }
-        IsActive() {
-          return this.State === "Active";
-        }
-        SetBlur(blurDistance) {
-          this.Container.style.setProperty("--text-blur", `${blurDistance}px`);
-        }
-        // Deconstructor
-        dispose() {
-          this.Maid.dispose();
-        }
-      };
-    }
-  });
-
-  // temp_stylePlugin:ni:sha-256;KVx94jldE_KaxinoeDiqjf5EQ_cVEuInES9qjI-i37U
-  var init_ni_sha_256_KVx94jldE_KaxinoeDiqjf5EQ_cVEuInES9qjI_i37U = __esm({
-    "temp_stylePlugin:ni:sha-256;KVx94jldE_KaxinoeDiqjf5EQ_cVEuInES9qjI-i37U"() {
-    }
-  });
-
-  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\full-screen\deps\beautiful-lyrics\Stylings\Lyrics.scss
-  var init_Lyrics = __esm({
-    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\full-screen\\deps\\beautiful-lyrics\\Stylings\\Lyrics.scss"() {
-      init_ni_sha_256_KVx94jldE_KaxinoeDiqjf5EQ_cVEuInES9qjI_i37U();
-    }
-  });
-
-  // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function10, URI4, map5, Functor4, of6, ap5, Applicative4, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard5, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
-  var init_Function = __esm({
-    ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
-      init_Option();
-      init_Array();
-      import_function10 = __toESM(require_function());
-      init_Predicate();
-      init_Endomorphism();
-      init_Monoid();
-      init_Semigroup();
-      init_Functor();
-      init_Apply();
-      init_Chain();
-      URI4 = "Function";
-      map5 = (f2) => (g) => (0, import_function10.flow)(g, f2);
-      Functor4 = {
-        URI: URI4,
-        map: (f2, g) => map5(g)(f2)
-      };
-      of6 = import_function10.constant;
-      ap5 = (f2) => (g) => (x) => g(x)(f2(x));
-      Applicative4 = {
-        ...Functor4,
-        of: of6,
-        ap: (f2, g) => ap5(g)(f2)
-      };
-      apFirst5 = apFirst(Applicative4);
-      apSecond5 = apSecond(Applicative4);
-      chain4 = (f2) => (g) => (x) => f2(g(x))(x);
-      Monad4 = {
-        ...Applicative4,
-        chain: (f2, g) => chain4(g)(f2)
-      };
-      Do4 = of6({});
-      bindTo5 = bindTo(Functor4);
-      bind5 = bind(Monad4);
-      apS5 = apS(Applicative4);
-      let_5 = let_(Functor4);
-      unary = import_function10.tupled;
-      guard5 = (branches) => (fallback) => (input) => (0, import_function10.pipe)(branches, map2(([f2, g]) => (0, import_function10.flow)(fromPredicate3(f2), map3(g))), concatAll4((0, import_function10.getMonoid)(getMonoid4(first()))()), (0, import_function10.apply)(input), getOrElse(() => fallback(input)));
-      unless = (f2) => (onFalse) => (x) => f2(x) ? x : onFalse(x);
-      when = (0, import_function10.flow)(not, unless);
-      invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function10.flip)(invoke)([]);
-      curry2T = (f2) => (a) => (b) => f2([a, b]);
-      curry2 = (0, import_function10.flow)(unary, curry2T);
-      curry3T = (f2) => (a) => (b) => (c) => f2([a, b, c]);
-      curry3 = (0, import_function10.flow)(unary, curry3T);
-      curry4T = (f2) => (a) => (b) => (c) => (d) => f2([a, b, c, d]);
-      curry4 = (0, import_function10.flow)(unary, curry4T);
-      curry5T = (f2) => (a) => (b) => (c) => (d) => (e) => f2([a, b, c, d, e]);
-      curry5 = (0, import_function10.flow)(unary, curry5T);
-      applyEvery = concatAll4(getMonoid5());
-    }
-  });
-
-  // extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer.ts
-  var import_function11, parseStaticLyrics, parseNonStaticLyrics, LyricsRenderer_default;
-  var init_LyricsRenderer = __esm({
-    "extensions/full-screen/deps/beautiful-lyrics/Modules/LyricsRenderer.ts"() {
-      "use strict";
-      init_es6();
-      import_function11 = __toESM(require_function());
-      init_Maid();
-      init_Scheduler();
-      init_LyricsScroller();
-      init_Interlude();
-      init_LineVocals();
-      init_StaticVocals();
-      init_SyllableVocals();
-      init_Lyrics();
-      init_Function();
-      parseStaticLyrics = (parsedLyrics) => {
-        return (0, import_function11.pipe)(
-          parsedLyrics.Lyrics.map((l) => {
-            const lineContainer = document.createElement("div");
-            lineContainer.classList.add("VocalsGroup");
-            const line = {
-              GroupContainer: lineContainer,
-              Vocals: [new StaticVocals(lineContainer, l)]
-            };
-            return [lineContainer, line];
-          }),
-          ReadonlyArray_exports.unzip
-        );
-      };
-      parseNonStaticLyrics = (parsedLyrics) => (0, import_function11.pipe)(
-        parsedLyrics.VocalGroups,
-        Array_exports.map((vocalGroup) => {
-          const vocalGroupContainer = document.createElement("button");
-          vocalGroupContainer.classList.add("VocalsGroup");
-          if ("OppositeAligned" in vocalGroup && vocalGroup.OppositeAligned)
-            vocalGroupContainer.classList.add("AlignedOpposite");
-          const vocals = guard5([
-            [
-              string_exports.startsWith("Interlude"),
-              () => [new InterludeVisual(vocalGroupContainer, vocalGroup)]
-            ],
-            [string_exports.startsWith("LineVocal"), () => [new LineVocals(vocalGroupContainer, vocalGroup)]],
-            [
-              string_exports.startsWith("SyllableVocal"),
-              () => {
-                vocalGroup = vocalGroup;
-                const vocals2 = [new SyllableVocals(vocalGroupContainer, vocalGroup.Lead, false)];
-                if (vocalGroup.Background)
-                  vocals2.push(new SyllableVocals(vocalGroupContainer, vocalGroup.Background, true));
-                return vocals2;
-              }
-            ]
-          ])(() => [])(parsedLyrics.Type + vocalGroup.Type);
-          return [
-            {
-              GroupContainer: vocalGroupContainer,
-              Vocals: vocals
-            },
-            vocalGroup.StartTime
-          ];
-        }),
-        ReadonlyArray_exports.unzip
-      );
-      LyricsRenderer_default = (song, parsedLyrics) => {
-        const maid = new Maid();
-        const scrollContainer = maid.give(document.createElement("div"));
-        scrollContainer.classList.add("LyricsScrollContainer");
-        const lyricsContainer = document.createElement("div");
-        lyricsContainer.classList.add("Lyrics");
-        lyricsContainer.classList.add(`NaturallyAligned${parsedLyrics.NaturalAlignment}`);
-        scrollContainer.appendChild(lyricsContainer);
-        if (parsedLyrics.Type === "Static") {
-          const [lineContainers, lines] = parseStaticLyrics(parsedLyrics);
-          lyricsContainer.append(...lineContainers);
-          new LyricsScroller(scrollContainer, lyricsContainer, lines, false);
-        } else {
-          const [vocalGroups, vocalGroupStartTimes] = parseNonStaticLyrics(parsedLyrics);
-          lyricsContainer.append(...vocalGroups.map((vocalGroup) => vocalGroup.GroupContainer));
-          const scroller = new LyricsScroller(
-            scrollContainer,
-            lyricsContainer,
-            vocalGroups,
-            true
-          );
-          const Update = (scroller2, vocalGroups2, lyricsEndTime, timestamp, deltaTime, skipped, skippedByVocal) => {
-            vocalGroups2.flatMap((vocalGroup) => vocalGroup.Vocals).map((vocal) => vocal.Animate(timestamp, deltaTime, skipped));
-            scroller2.SetLyricsEnded(timestamp >= lyricsEndTime);
-            if (skipped)
-              scroller2.ForceToActive(skippedByVocal);
-          };
-          let justSkippedByVocal = false;
-          maid.give(
-            song.TimeStepped.connect((timestamp, deltaTime, skipped) => {
-              Update(
-                scroller,
-                vocalGroups,
-                parsedLyrics.EndTime,
-                timestamp,
-                deltaTime,
-                skipped,
-                justSkippedByVocal || void 0
-              );
-              if (skipped && justSkippedByVocal) {
-                justSkippedByVocal = false;
-              }
-            })
-          );
-          maid.give(
-            OnNextFrame(
-              () => Update(
-                scroller,
-                vocalGroups,
-                parsedLyrics.EndTime,
-                song.GetTimestamp(),
-                1 / 60,
-                true
-              )
-            )
-          );
-          vocalGroups.map((vocalGroup, index) => {
-            const startTime = vocalGroupStartTimes[index];
-            vocalGroup.Vocals.map(
-              (vocal) => vocal.RequestedTimeSkip.connect(() => {
-                justSkippedByVocal = true;
-                song.SetTimestamp(startTime);
-              })
-            );
-          });
-        }
-        scrollContainer.Destroy = () => maid.dispose();
-        return scrollContainer;
-      };
     }
   });
 
@@ -17484,61 +17304,30 @@ ${content[index].words}`;
       default:
         break;
     }
-    Player_default.Start();
-    let lastConnection;
-    trapElement("#BeautifulLyrics", (lyricsContainer) => {
-      lastConnection?.disconnect();
-      if (!lyricsContainer)
-        return;
-      lyricsContainer.querySelector("div.RootContainer")?.remove();
-      const lyrics2 = document.createElement("div");
-      lyrics2.classList.add("RootContainer");
-      lyricsContainer.append(lyrics2);
-      let lastSong;
-      let lyricsRenderer;
-      const HandlePageView = async () => {
-        const song = Player_default.GetSong();
-        if (lastSong === song)
-          return;
-        lyricsRenderer?.remove();
-        if (!song)
-          return;
-        const details = await song.GetDetails();
-        if (details?.Lyrics) {
-          lyricsRenderer = LyricsRenderer_default(song, details.Lyrics);
-          lyrics2?.appendChild(lyricsRenderer);
-        }
-        lastSong = song;
-      };
-      lastConnection = Player_default.SongChanged.connect(HandlePageView);
-      HandlePageView();
-    });
+    Promise.resolve().then(() => init_lyrics());
   }
-  var import_react_dom2, import_react, app_default;
+  var import_react, import_react_dom2, app_default;
   var init_app = __esm({
     "extensions/full-screen/src/app.tsx"() {
       "use strict";
-      import_react_dom2 = __toESM(require_react_dom());
       import_react = __toESM(require_react());
-      init_utils();
-      init_config();
+      import_react_dom2 = __toESM(require_react_dom());
       init_animation();
+      init_config();
       init_setting();
-      init_strings();
+      init_utils();
       init_constants();
+      init_strings();
+      init_html_creator();
       init_web_api();
       init_whats_new();
-      init_html_creator();
       init_ProgressBar();
       init_VolumeBar();
-      init_settings();
       init_base();
-      init_tvMode();
       init_defaultMode();
+      init_settings();
       init_settings2();
-      init_Player();
-      init_LyricsRenderer();
-      init_util();
+      init_tvMode();
       app_default = main;
     }
   });
@@ -17546,7 +17335,7 @@ ${content[index].words}`;
   // extensions/full-screen/entry.tsx
   init_es6();
   init_Record();
-  var import_function12 = __toESM(require_function());
+  var import_function13 = __toESM(require_function());
   init_util();
   (async () => {
     const mustLoad = [
@@ -17562,7 +17351,7 @@ ${content[index].words}`;
       "URI"
     ];
     let timer = 0;
-    while (mustLoad.some((0, import_function12.flow)((0, import_function12.flip)(lookup4)(Spicetify), Option_exports.isNone)))
+    while (mustLoad.some((0, import_function13.flow)((0, import_function13.flip)(lookup4)(Spicetify), Option_exports.isNone)))
       await sleep(timer += 100);
     const app = await Promise.resolve().then(() => (init_app(), app_exports));
     app.default();
@@ -18083,114 +17872,6 @@ body.fsd-activated #full-screen-display {
   z-index: 1000;
 }
 
-/* temp_stylePlugin:ni:sha-256;Kvx_0mMlrzNJRg1uAtOagUSDCAIPa0-GZe0BJu9ZyUM */
-#full-screen-display[mode=tv] #fsd-foreground {
-  flex-direction: row;
-  text-align: left;
-  justify-content: left;
-  align-items: flex-end;
-  position: absolute;
-  top: auto;
-  bottom: 75px;
-}
-#full-screen-display[mode=tv] #fad-lyrics-plus-container {
-  width: 45%;
-}
-#full-screen-display[mode=tv].lyrics-active #fsd-foreground {
-  width: -moz-max-content;
-  width: max-content;
-  max-width: 60%;
-}
-#full-screen-display[mode=tv] #fsd-art {
-  width: calc(100vw - 840px);
-  min-width: 180px;
-  max-width: 220px;
-  margin-left: 65px;
-}
-#full-screen-display[mode=tv] #fsd-progress-parent {
-  width: 100%;
-  max-width: 450px;
-}
-#full-screen-display[mode=tv] .fsd-controls + #fsd-progress-parent {
-  padding-left: 10px;
-}
-#full-screen-display[mode=tv] #fsd-details {
-  padding-left: 30px;
-  line-height: initial;
-  width: 80%;
-  color: var(--primary-color);
-}
-#full-screen-display[mode=tv] #fsd-title,
-#full-screen-display[mode=tv] #fsd-album,
-#full-screen-display[mode=tv] #fsd-artist {
-  display: flex;
-  justify-content: flex-start;
-  align-items: baseline;
-  gap: 5px;
-}
-#full-screen-display[mode=tv] #fsd-title span,
-#full-screen-display[mode=tv] #fsd-album span,
-#full-screen-display[mode=tv] #fsd-artist span {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-#full-screen-display[mode=tv] #fsd-title span {
-  -webkit-line-clamp: 3;
-}
-#full-screen-display[mode=tv] #fsd-title svg,
-#full-screen-display[mode=tv] #fsd-artist svg,
-#full-screen-display[mode=tv] #fsd-album svg {
-  flex: 0 0 auto;
-}
-#full-screen-display[mode=tv] #fsd-title {
-  font-size: 62px;
-  font-weight: 900;
-}
-@media (max-width: 900px), (max-height: 800px) {
-  #full-screen-display[mode=tv] #fsd-title {
-    font-size: 40px;
-    font-weight: 600;
-  }
-  #full-screen-display[mode=tv] #fsd-artist,
-  #full-screen-display[mode=tv] #fsd-album {
-    font-size: 20px;
-  }
-}
-#full-screen-display[mode=tv] #fsd-artist,
-#full-screen-display[mode=tv] #fsd-album {
-  font-size: 28px;
-}
-#full-screen-display[mode=tv] #fsd-title svg {
-  width: 35px;
-  height: 45px;
-}
-#full-screen-display[mode=tv] #playing-icon {
-  width: 30px !important;
-  height: 40px !important;
-  margin-right: 5px;
-}
-#full-screen-display[mode=tv] #fsd-artist svg,
-#full-screen-display[mode=tv] #fsd-album svg {
-  margin-right: 15px;
-  width: 22px;
-  height: 22px;
-}
-#full-screen-display[mode=tv] #fsd-status {
-  display: flex;
-  flex-direction: row;
-  min-width: 450px;
-  max-width: 450px;
-  align-items: center;
-  justify-content: space-between;
-}
-#full-screen-display[mode=tv] #fsd-status.active {
-  -moz-column-gap: 10px;
-  column-gap: 10px;
-  margin: 10px 0;
-}
-
 /* temp_stylePlugin:ni:sha-256;Wl-k3LIzN5aIKhXtTeJPf7O9VyWtXELqvbazZIT0Qp4 */
 #full-screen-display[mode=def],
 #full-screen-display[mode=def].lyrics-unavailable,
@@ -18616,6 +18297,114 @@ body.fsd-activated #full-screen-display {
   background-color: transparent;
   color: var(--theme-color);
   border: 2px solid var(--theme-color);
+}
+
+/* temp_stylePlugin:ni:sha-256;Kvx_0mMlrzNJRg1uAtOagUSDCAIPa0-GZe0BJu9ZyUM */
+#full-screen-display[mode=tv] #fsd-foreground {
+  flex-direction: row;
+  text-align: left;
+  justify-content: left;
+  align-items: flex-end;
+  position: absolute;
+  top: auto;
+  bottom: 75px;
+}
+#full-screen-display[mode=tv] #fad-lyrics-plus-container {
+  width: 45%;
+}
+#full-screen-display[mode=tv].lyrics-active #fsd-foreground {
+  width: -moz-max-content;
+  width: max-content;
+  max-width: 60%;
+}
+#full-screen-display[mode=tv] #fsd-art {
+  width: calc(100vw - 840px);
+  min-width: 180px;
+  max-width: 220px;
+  margin-left: 65px;
+}
+#full-screen-display[mode=tv] #fsd-progress-parent {
+  width: 100%;
+  max-width: 450px;
+}
+#full-screen-display[mode=tv] .fsd-controls + #fsd-progress-parent {
+  padding-left: 10px;
+}
+#full-screen-display[mode=tv] #fsd-details {
+  padding-left: 30px;
+  line-height: initial;
+  width: 80%;
+  color: var(--primary-color);
+}
+#full-screen-display[mode=tv] #fsd-title,
+#full-screen-display[mode=tv] #fsd-album,
+#full-screen-display[mode=tv] #fsd-artist {
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+  gap: 5px;
+}
+#full-screen-display[mode=tv] #fsd-title span,
+#full-screen-display[mode=tv] #fsd-album span,
+#full-screen-display[mode=tv] #fsd-artist span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+#full-screen-display[mode=tv] #fsd-title span {
+  -webkit-line-clamp: 3;
+}
+#full-screen-display[mode=tv] #fsd-title svg,
+#full-screen-display[mode=tv] #fsd-artist svg,
+#full-screen-display[mode=tv] #fsd-album svg {
+  flex: 0 0 auto;
+}
+#full-screen-display[mode=tv] #fsd-title {
+  font-size: 62px;
+  font-weight: 900;
+}
+@media (max-width: 900px), (max-height: 800px) {
+  #full-screen-display[mode=tv] #fsd-title {
+    font-size: 40px;
+    font-weight: 600;
+  }
+  #full-screen-display[mode=tv] #fsd-artist,
+  #full-screen-display[mode=tv] #fsd-album {
+    font-size: 20px;
+  }
+}
+#full-screen-display[mode=tv] #fsd-artist,
+#full-screen-display[mode=tv] #fsd-album {
+  font-size: 28px;
+}
+#full-screen-display[mode=tv] #fsd-title svg {
+  width: 35px;
+  height: 45px;
+}
+#full-screen-display[mode=tv] #playing-icon {
+  width: 30px !important;
+  height: 40px !important;
+  margin-right: 5px;
+}
+#full-screen-display[mode=tv] #fsd-artist svg,
+#full-screen-display[mode=tv] #fsd-album svg {
+  margin-right: 15px;
+  width: 22px;
+  height: 22px;
+}
+#full-screen-display[mode=tv] #fsd-status {
+  display: flex;
+  flex-direction: row;
+  min-width: 450px;
+  max-width: 450px;
+  align-items: center;
+  justify-content: space-between;
+}
+#full-screen-display[mode=tv] #fsd-status.active {
+  -moz-column-gap: 10px;
+  column-gap: 10px;
+  margin: 10px 0;
 }
 
 /* temp_stylePlugin:ni:sha-256;KVx94jldE_KaxinoeDiqjf5EQ_cVEuInES9qjI-i37U */

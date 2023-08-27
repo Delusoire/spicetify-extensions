@@ -288,6 +288,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.defaultsdeep@npm:^4.6.7":
+  version: 4.6.7
+  resolution: "@types/lodash.defaultsdeep@npm:4.6.7"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 74e8cdab19e564e5ed4059900da64b5733207292c6496429dfb865dcef0708c948e41b8b4803ef04a460469755d9d1ecf6386f143f2a57681d44a747344fa8ce
+  languageName: node
+  linkType: hard
+
 "@types/lodash@npm:*":
   version: 4.14.197
   resolution: "@types/lodash@npm:4.14.197"
@@ -2044,6 +2053,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@types/lodash.defaultsdeep": ^4.6.7
     "@types/mousetrap": ^1.6.11
     "@types/react": ^18.2.18
     "@types/react-dom": ^18.2.7

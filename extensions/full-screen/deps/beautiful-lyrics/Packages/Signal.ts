@@ -1,132 +1,52 @@
 // Packages
-import { FreeArray } from "./FreeArray"
+import { pipe as p } from "fp-ts/lib/function"
+import { array as a } from "fp-ts"
 
 // Connection Types
 type Callback = (...args: any[]) => void
-type SignalConnectionReferences<P extends Callback> = FreeArray<{
-    Callback: P
-    Connection: Connection<P>
-}>
+type SignalConnRef<P extends Callback> = P
+type SignalConnRefs<P extends Callback> = Map<Symbol, SignalConnRef<P>>
 
-// Classes
-class Connection<P extends Callback> {
-    // Private Properties
-    private connectionReferences: SignalConnectionReferences<P>
-    private location: Symbol
-    private disconnected: boolean
+//? Basically a wrapper around Signal, exposing connect and isDisposed
+export class Event<P extends Callback> {
+    private signal: Signal<P>
 
-    // Constructor
-    constructor(connections: SignalConnectionReferences<P>, callback: P) {
-        // Store our signal/callback
-        this.connectionReferences = connections
-
-        // Store our initial disconnected state
-        this.disconnected = false
-
-        // Now store ourselves
-        this.location = connections.Push({
-            Callback: callback,
-            Connection: this,
-        })
-    }
-
-    // Public Methods
-    public disconnect() {
-        if (this.disconnected) return
-
-        // Disconnect ourself
-        this.disconnected = true
-
-        // Remove ourselves from our signal
-        this.connectionReferences.Remove(this.location)
-
-        // Delete our references
-        delete (this as any).Location
-        delete (this as any).Callback
-        delete (this as any).SignalConnections
-    }
-
-    public isDisconnected() {
-        return this.disconnected
-    }
-}
-
-class Event<P extends Callback> {
-    // Private Properties
-    private Signal: Signal<P>
-
-    // Constructor
     constructor(signal: Signal<P>) {
-        // Store our signal
-        this.Signal = signal
+        this.signal = signal
     }
 
-    // Public Methods
     public connect(callback: P) {
-        return this.Signal.connect(callback)
-    }
-
-    public isDisposed() {
-        return this.Signal.isDisposed()
+        return this.signal.connect(callback)
     }
 }
 
-class Signal<P extends Callback> {
-    // Private Properties
-    private ConnectionReferences: SignalConnectionReferences<P>
-    private DestroyedState: boolean
+export class Signal<P extends Callback> {
+    private connRefs: SignalConnRefs<P> = new Map()
+    private disposed = false
 
-    // Constructor
-    constructor() {
-        // Create our list of connections
-        this.ConnectionReferences = new FreeArray()
-
-        // Store our initial destroyed state
-        this.DestroyedState = false
-    }
-
-    // Public Methods
-    public connect(callback: P): Connection<P> {
-        if (this.DestroyedState) throw "Cannot connect to a Destroyed Signal"
-
-        // Return our connection (since the connection handles everything itself)
-        return new Connection(this.ConnectionReferences, callback)
+    public connect(callback: P) {
+        if (this.disposed) throw "Cannot connect to a Destroyed Signal"
+        const key = Symbol()
+        this.connRefs.set(key, callback)
+        return () => this.connRefs.delete(key)
     }
 
     public fire(...args: Parameters<P>) {
-        if (this.DestroyedState) throw "Cannot fire a Destroyed Signal"
-
-        for (const [_, reference] of this.ConnectionReferences.GetIterator()) reference.Callback(...args)
+        if (this.disposed) throw "Cannot fire a Destroyed Signal"
+        p(
+            this.connRefs.values(),
+            Array.from<SignalConnRef<P>>,
+            a.map(cb => cb(...args)),
+        )
     }
 
-    public getEvent(): Event<P> {
+    public asEvent(): Event<P> {
         return new Event(this)
     }
 
-    public isDisposed() {
-        return this.DestroyedState
-    }
-
-    // Deconstructor
     public dispose() {
-        if (this.DestroyedState) return
-
-        // Disconnect all of our connections (so that the connection is labeled as Disconnected)
-        for (const [_, reference] of this.ConnectionReferences.GetIterator()) {
-            reference.Connection.disconnect()
-        }
-
-        // Disconnect ourself
-        this.DestroyedState = true
-
-        // Delete our references
-        delete (this as any).ConnectionReferences
+        if (this.disposed) return
+        this.connRefs.clear()
+        this.disposed = true
     }
 }
-
-// Exports
-export type { Event, Connection }
-export const IsConnection = (value: any): value is Connection<any> => {
-    return value instanceof Connection
-}
-export { Signal }

@@ -1,5 +1,5 @@
-import * as React from "react"
-import "./styles.scss"
+import * as React from "react";
+import "./styles.scss";
 
 // const Popup = (props: any) => {
 //     return (
@@ -19,15 +19,15 @@ import "./styles.scss"
 // };
 
 const Popup = (props: any) => {
-    return <PopupContent state={props} />
-}
+    return <PopupContent state={props} />;
+};
 
 const PopupContent = (props: any) => {
     const checkClose = (evt: any) => {
         if (!document.querySelector(".fsd-settings-modal")?.contains(evt.target)) {
-            props.state.onClose()
+            props.state.onClose();
         }
-    }
+    };
     return (
         <div className="fsd-settings-overlay" onClick={checkClose}>
             <div className="fsd-settings-modal">
@@ -37,15 +37,15 @@ const PopupContent = (props: any) => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 const PopupHeaderBar = (props: any) => {
-    const [value, setValue] = React.useState(0)
+    const [value, setValue] = React.useState(0);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue)
-    }
+        setValue(newValue);
+    };
     return (
         <div className="fsd-settings-header">
             <div className="fsd-settings-cats">
@@ -53,8 +53,8 @@ const PopupHeaderBar = (props: any) => {
             </div>
             <CloseBtn onClose={props.state.onClose} />
         </div>
-    )
-}
+    );
+};
 
 const CloseBtn = (props: any) => {
     return (
@@ -68,12 +68,12 @@ const CloseBtn = (props: any) => {
                 />
             </svg>
         </button>
-    )
-}
+    );
+};
 
-export default Popup
+export default Popup;
 
-//TODO: Add in Main file
+// TODO: Add in Main file
 
 // function testR() {
 //     const onClose = () => {

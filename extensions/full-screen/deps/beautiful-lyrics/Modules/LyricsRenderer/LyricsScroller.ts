@@ -72,7 +72,7 @@ export class LyricsScroller<V extends BaseVocals | SyncedVocals> implements Disp
         // Create our scroller
         this.Scroller = new SimpleBar(scrollContainer)
         this.ScrollerObject = this.Scroller.getScrollElement()!
-        this.Maid.give(this.Scroller.unMount.bind(this.Scroller))
+        this.Maid.handle(this.Scroller.unMount.bind(this.Scroller))
 
         // Store our arguments
         ;(this.ScrollContainer = scrollContainer), (this.LyricsContainer = lyricsContainer)
@@ -82,7 +82,7 @@ export class LyricsScroller<V extends BaseVocals | SyncedVocals> implements Disp
         this.WatchAutoScrollBlocking()
 
         // Watch for size changes
-        const resizeObserver = this.Maid.give(
+        const resizeObserver = this.Maid.handle(
             new ResizeObserver(() => {
                 this.UpdateLyricHeights()
 
@@ -124,12 +124,12 @@ export class LyricsScroller<V extends BaseVocals | SyncedVocals> implements Disp
             if (this.AutoScrolling === false) {
                 this.ToggleAutoScrollBlock(true)
 
-                this.Maid.give(
+                this.Maid.handle(
                     Timeout(UserScrollingStopsAfter, () => this.MoveToActiveLyrics()),
                     "WaitForUserToStopScrolling",
                 )
             } else {
-                this.Maid.give(
+                this.Maid.handle(
                     Timeout(AutoScrollingStopsAfter, () => (this.AutoScrolling = false)),
                     "WaitForAutoScroll",
                 )
@@ -137,13 +137,13 @@ export class LyricsScroller<V extends BaseVocals | SyncedVocals> implements Disp
         }
 
         this.ScrollerObject.addEventListener("scroll", callback)
-        this.Maid.give(() => this.ScrollerObject.removeEventListener("scroll", callback))
+        this.Maid.handle(() => this.ScrollerObject.removeEventListener("scroll", callback))
     }
 
     private HandleLyricActiveStateChanges() {
         for (const vocalGroup of this.VocalGroups as VocalGroups<SyncedVocals>) {
             for (const vocal of vocalGroup.Vocals) {
-                this.Maid.give(vocal.ActivityChanged.connect(() => this.MoveToActiveLyrics(true)))
+                this.Maid.handle(vocal.ActivityChanged.connect(() => this.MoveToActiveLyrics(true)))
             }
         }
     }
@@ -320,10 +320,10 @@ export class LyricsScroller<V extends BaseVocals | SyncedVocals> implements Disp
         this.ToggleAutoScrollBlock(false)
 
         if (skippedByVocal) {
-            this.Maid.cleanEntry("ForceToActiveCSS")
+            this.Maid.disposeEntry("ForceToActiveCSS")
         } else {
             this.ScrollContainer.classList.add("InstantScroll")
-            this.Maid.give(
+            this.Maid.handle(
                 OnNextFrame(() => this.ScrollContainer.classList.remove("InstantScroll")),
                 "ForceToActiveCSS",
             )

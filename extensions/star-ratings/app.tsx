@@ -87,10 +87,8 @@ export const updateTrackListStars = f(
                 const trackUri = getTrackListTrackUri(track)
                 const uri = URI.from(trackUri)
 
-                if (!URI.isTrack(uri!)) {
-                    Spicetify.showNotification(`${trackUri} is an invalid track uri`)
-                    debugger
-                }
+                //TODO: Local Tracks support
+                if (!URI.isTrack(uri!)) return
 
                 const [starsContainer, starsConstructs] = createStars(uri!.id!, STAR_SIZE)
                 ratingColumn.appendChild(starsContainer)

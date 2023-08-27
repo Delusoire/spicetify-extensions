@@ -1,27 +1,16 @@
-class Scheduled {
-    private Id: number
-    private Cleaner: (id: number) => void
+export class Scheduled {
+    private id: number
+    private cleaner: (id: number) => void
 
-    // Constructor
     constructor(cleaner: (id: number) => void, id: number) {
-        // Store our cleaner and id
-        this.Cleaner = cleaner
-        this.Id = id
+        this.cleaner = cleaner
+        this.id = id
     }
 
-    // Public Methods
     public cancel() {
         // Make sure we aren't already cancelled
-        if (this.Id === undefined) {
-            return
-        }
-
-        // Cancel our id
-        this.Cleaner(this.Id)
-
-        // Mark that we are cancelled
-        delete (this as any).Id
-        delete (this as any).Cleaner
+        if (this.id === undefined) return
+        this.cleaner(this.id)
     }
 }
 
@@ -33,9 +22,4 @@ export const Interval = (everySeconds: number, callback: (...args: any[]) => any
 }
 export const OnNextFrame = (callback: (...args: any[]) => any) => {
     return new Scheduled(window.cancelAnimationFrame.bind(window), requestAnimationFrame(callback))
-}
-
-export type { Scheduled }
-export const IsScheduled = (value: any): value is Scheduled => {
-    return value instanceof Scheduled
 }

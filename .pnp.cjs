@@ -28,6 +28,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
+            ["@types/lodash.defaultsdeep", "npm:4.6.7"],\
             ["@types/mousetrap", "npm:1.6.11"],\
             ["@types/react", "npm:18.2.18"],\
             ["@types/react-dom", "npm:18.2.7"],\
@@ -421,6 +422,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-lodash-es-npm-4.17.8-0aba51d605-36356169a1.zip/node_modules/@types/lodash-es/",\
           "packageDependencies": [\
             ["@types/lodash-es", "npm:4.17.8"],\
+            ["@types/lodash", "npm:4.14.197"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/lodash.defaultsdeep", [\
+        ["npm:4.6.7", {\
+          "packageLocation": "./.yarn/cache/@types-lodash.defaultsdeep-npm-4.6.7-e562446ba1-74e8cdab19.zip/node_modules/@types/lodash.defaultsdeep/",\
+          "packageDependencies": [\
+            ["@types/lodash.defaultsdeep", "npm:4.6.7"],\
             ["@types/lodash", "npm:4.14.197"]\
           ],\
           "linkType": "HARD"\
@@ -2499,6 +2510,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["root-workspace-0b6124", "workspace:."],\
+            ["@types/lodash.defaultsdeep", "npm:4.6.7"],\
             ["@types/mousetrap", "npm:1.6.11"],\
             ["@types/react", "npm:18.2.18"],\
             ["@types/react-dom", "npm:18.2.7"],\

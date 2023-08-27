@@ -245,31 +245,30 @@
             transform: translateX(0%);
         }
     }
-    //! Ehhh
-    // #fad-lyrics-plus-container {
-    //     transition: transform var(--transition-duration) var(--transition-function);
-    //     position: absolute;
-    //     right: -50px;
-    //     width: 50%;
-    //     top: 7.5vh;
-    //     .lyrics-lyricsContainer-LyricsContainer {
-    //         --lyrics-color-active: var(--primary-color) !important;
-    //         --lyrics-color-inactive: var(--tertiary-color) !important;
-    //         --lyrics-highlight-background: rgba(var(--contrast-color), 0.7) !important;
-    //         --lyrics-align-text: var(--lyrics-alignment) !important;
-    //         --animation-tempo: var(--lyrics-animation-tempo) !important;
-    //         height: 85vh !important;
-    //     }
-    //     .lyrics-config-button {
-    //         margin-right: 20px;
-    //     }
-    // }
-    // &.lyrics-unavailable,
-    // &.lyrics-hide-force {
-    //     #fad-lyrics-plus-container {
-    //         transform: translateX(1000px) scale3d(0.1, 0.1, 0.1) rotate(45deg);
-    //     }
-    // }
+    #fad-lyrics-plus-container {
+        transition: transform var(--transition-duration) var(--transition-function);
+        position: absolute;
+        right: -50px;
+        width: 50%;
+        top: 7.5vh;
+        .lyrics-lyricsContainer-LyricsContainer {
+            --lyrics-color-active: var(--primary-color) !important;
+            --lyrics-color-inactive: var(--tertiary-color) !important;
+            --lyrics-highlight-background: rgba(var(--contrast-color), 0.7) !important;
+            --lyrics-align-text: var(--lyrics-alignment) !important;
+            --animation-tempo: var(--lyrics-animation-tempo) !important;
+            height: 85vh !important;
+        }
+        .lyrics-config-button {
+            margin-right: 20px;
+        }
+    }
+    &.lyrics-unavailable,
+    &.lyrics-hide-force {
+        #fad-lyrics-plus-container {
+            transform: translateX(1000px) scale3d(0.1, 0.1, 0.1) rotate(45deg);
+        }
+    }
     #fsd-foreground {
         position: relative;
         top: 0;

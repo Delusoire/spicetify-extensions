@@ -90,7 +90,7 @@ const parseNonStaticLyrics = (parsedLyrics: LineSynced | SyllableSynced) =>
 export default (song: Song, parsedLyrics: ParsedLyrics) => {
     const maid = new Maid()
 
-    const scrollContainer = maid.give(document.createElement("div")) as Destoryable<HTMLDivElement>
+    const scrollContainer = maid.handle(document.createElement("div")) as Destoryable<HTMLDivElement>
     scrollContainer.classList.add("LyricsScrollContainer")
 
     const lyricsContainer = document.createElement("div")
@@ -134,7 +134,7 @@ export default (song: Song, parsedLyrics: ParsedLyrics) => {
 
         // Handle our time-update
         let justSkippedByVocal = false
-        maid.give(
+        maid.handle(
             song.TimeStepped.connect((timestamp, deltaTime, skipped) => {
                 Update(
                     scroller,
@@ -153,7 +153,7 @@ export default (song: Song, parsedLyrics: ParsedLyrics) => {
         )
 
         // Immediately update ourselves
-        maid.give(
+        maid.handle(
             OnNextFrame(() =>
                 Update(
                     scroller,

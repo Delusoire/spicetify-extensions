@@ -15,13 +15,13 @@ export default class StaticVocals implements BaseVocals, Disposable {
         this.Maid = new Maid()
 
         // First create our container
-        const container = this.Maid.give(document.createElement("div"))
+        const container = this.Maid.handle(document.createElement("div"))
         container.classList.add("Vocals")
         container.classList.add("Lead")
         container.classList.add("Active")
 
         // Create our main span element
-        const syllableSpan = this.Maid.give(document.createElement("span"))
+        const syllableSpan = this.Maid.handle(document.createElement("span"))
         syllableSpan.classList.add("Lyric")
         syllableSpan.classList.add("Static")
         syllableSpan.innerText = text

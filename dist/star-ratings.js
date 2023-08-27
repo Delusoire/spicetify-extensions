@@ -17018,10 +17018,8 @@ var star;
               }
               const trackUri = getTrackListTrackUri(track);
               const uri = URI12.from(trackUri);
-              if (!URI12.isTrack(uri)) {
-                Spicetify.showNotification(`${trackUri} is an invalid track uri`);
-                debugger;
-              }
+              if (!URI12.isTrack(uri))
+                return;
               const [starsContainer, starsConstructs] = createStars(uri.id, STAR_SIZE);
               ratingColumn.appendChild(starsContainer);
               (0, import_function29.pipe)(

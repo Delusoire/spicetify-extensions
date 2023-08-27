@@ -50,17 +50,17 @@ export default class LineVocals implements SyncedVocals, Disposable {
     private State: LyricState = "Idle"
     private IsSleeping: boolean = true
 
-    private readonly ActivityChangedSignal = this.Maid.give(new Signal<(isActive: boolean) => void>())
-    private readonly RequestedTimeSkipSignal = this.Maid.give(new Signal<() => void>())
+    private readonly ActivityChangedSignal = this.Maid.handle(new Signal<(isActive: boolean) => void>())
+    private readonly RequestedTimeSkipSignal = this.Maid.handle(new Signal<() => void>())
 
     // Public Properties
-    public readonly ActivityChanged = this.ActivityChangedSignal.getEvent()
-    public readonly RequestedTimeSkip = this.RequestedTimeSkipSignal.getEvent()
+    public readonly ActivityChanged = this.ActivityChangedSignal.asEvent()
+    public readonly RequestedTimeSkip = this.RequestedTimeSkipSignal.asEvent()
 
     // Constructor
     public constructor(lineContainer: HTMLElement, lineMetadata: LyricMetadata) {
         // First create our container
-        const container = this.Maid.give(document.createElement("div"))
+        const container = this.Maid.handle(document.createElement("div"))
         container.classList.add("Vocals")
         container.classList.add("Lead")
         this.Container = container
@@ -73,7 +73,7 @@ export default class LineVocals implements SyncedVocals, Disposable {
         this.Duration = lineMetadata.EndTime - lineMetadata.StartTime
 
         // Create our main span element
-        const syllableSpan = this.Maid.give(document.createElement("span"))
+        const syllableSpan = this.Maid.handle(document.createElement("span"))
         syllableSpan.classList.add("Lyric")
         syllableSpan.classList.add("Synced")
         syllableSpan.classList.add("Line")

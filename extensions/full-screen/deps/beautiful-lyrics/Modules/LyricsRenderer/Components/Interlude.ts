@@ -219,17 +219,17 @@ export default class InterludeVisual implements SyncedVocals, Disposable {
     private State: LyricState = "Idle"
     private IsSleeping: boolean = true
 
-    private readonly ActivityChangedSignal = this.Maid.give(new Signal<(isActive: boolean) => void>())
-    private readonly RequestedTimeSkipSignal = this.Maid.give(new Signal<() => void>())
+    private readonly ActivityChangedSignal = this.Maid.handle(new Signal<(isActive: boolean) => void>())
+    private readonly RequestedTimeSkipSignal = this.Maid.handle(new Signal<() => void>())
 
     // Public Properties
-    public readonly ActivityChanged = this.ActivityChangedSignal.getEvent()
-    public readonly RequestedTimeSkip = this.RequestedTimeSkipSignal.getEvent()
+    public readonly ActivityChanged = this.ActivityChangedSignal.asEvent()
+    public readonly RequestedTimeSkip = this.RequestedTimeSkipSignal.asEvent()
 
     // Constructor
     public constructor(lineContainer: HTMLElement, interludeMetadata: Interlude) {
         // First create our container
-        const container = this.Maid.give(document.createElement("div"))
+        const container = this.Maid.handle(document.createElement("div"))
         container.classList.add("Interlude")
         this.Container = container
 
@@ -302,7 +302,7 @@ export default class InterludeVisual implements SyncedVocals, Disposable {
 
             for (let i = 0; i < DotCount; i++) {
                 // Create our main span element
-                const syllableSpan = this.Maid.give(document.createElement("span"))
+                const syllableSpan = this.Maid.handle(document.createElement("span"))
                 syllableSpan.classList.add("InterludeDot")
 
                 // Store our dot

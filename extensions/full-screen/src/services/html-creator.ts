@@ -1,5 +1,5 @@
-import ICONS from "../constants"
-import CFM from "../utils/config"
+import ICONS from "../constants";
+import CFM from "../utils/config";
 
 export const getHtmlContent = (areLyricsForceHidden: boolean) => {
     return `
@@ -35,7 +35,7 @@ export const getHtmlContent = (areLyricsForceHidden: boolean) => {
          : ""
  }
 <div id="fsd-volume-parent"></div>
-${CFM.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="BeautifulLyricsPage Fullscreen"></div>` : ""}
+${CFM.get("lyricsDisplay") ? `<div id="fad-lyrics-plus-container"></div>` : ""}
 <div id="fsd-foreground">
     <div id="fsd-art">
         <div id="fsd-art-image">
@@ -59,9 +59,13 @@ ${CFM.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="BeautifulLyricsPa
                  <span></span>
             </div>`
                     : ""
-            }
+            } 
             <div id="fsd-status" class="${
-                CFM.get("playerControls") || CFM.get("extraControls") || CFM.get("progressBarDisplay") ? "active" : ""
+                CFM.get("playerControls") ||
+                CFM.get("extraControls") ||
+                CFM.get("progressBarDisplay")
+                    ? "active"
+                    : ""
             }">
                 ${
                     CFM.get("extraControls")
@@ -117,7 +121,8 @@ ${CFM.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="BeautifulLyricsPa
                         : ""
                 }
                 ${
-                    CFM.getGlobal("tvMode") && !(CFM.get("playerControls") && CFM.get("extraControls"))
+                    CFM.getGlobal("tvMode") &&
+                    !(CFM.get("playerControls") && CFM.get("extraControls"))
                         ? `<div id="fsd-progress-parent"></div>`
                         : ""
                 }
@@ -129,5 +134,5 @@ ${CFM.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="BeautifulLyricsPa
             }
     </div>
     ${!CFM.getGlobal("tvMode") ? `<div id="fsd-progress-parent"></div>` : ""}
-</div>`
-}
+</div>`;
+};

@@ -132,17 +132,17 @@ export default class SyllableVocals implements SyncedVocals, Disposable {
     private State: LyricState = "Idle"
     private IsSleeping: boolean = true
 
-    private readonly ActivityChangedSignal = this.Maid.give(new Signal<(isActive: boolean) => void>())
-    private readonly RequestedTimeSkipSignal = this.Maid.give(new Signal<() => void>())
+    private readonly ActivityChangedSignal = this.Maid.handle(new Signal<(isActive: boolean) => void>())
+    private readonly RequestedTimeSkipSignal = this.Maid.handle(new Signal<() => void>())
 
     // Public Properties
-    public readonly ActivityChanged = this.ActivityChangedSignal.getEvent()
-    public readonly RequestedTimeSkip = this.RequestedTimeSkipSignal.getEvent()
+    public readonly ActivityChanged = this.ActivityChangedSignal.asEvent()
+    public readonly RequestedTimeSkip = this.RequestedTimeSkipSignal.asEvent()
 
     // Constructor
     public constructor(lineContainer: HTMLElement, syllablesMetadata: SyllableLyricMetadata[], isBackground: boolean) {
         // First create our container
-        const container = this.Maid.give(document.createElement("div"))
+        const container = this.Maid.handle(document.createElement("div"))
         container.classList.add("Vocals")
         container.classList.add(isBackground ? "Background" : "Lead")
         this.Container = container
@@ -183,7 +183,7 @@ export default class SyllableVocals implements SyncedVocals, Disposable {
             const isInWordGroup = syllableCount > 1
             if (isInWordGroup) {
                 // Create our parent element
-                const parent = this.Maid.give(document.createElement("span"))
+                const parent = this.Maid.handle(document.createElement("span"))
                 parent.classList.add("Word")
                 parentElement = parent
 
@@ -197,7 +197,7 @@ export default class SyllableVocals implements SyncedVocals, Disposable {
                 const isEmphasized = IsEmphasized(syllableMetadata)
 
                 // Create our main span element
-                const syllableSpan = this.Maid.give(document.createElement("span"))
+                const syllableSpan = this.Maid.handle(document.createElement("span"))
                 {
                     // Add our classes
                     syllableSpan.classList.add("Lyric")
@@ -239,7 +239,7 @@ export default class SyllableVocals implements SyncedVocals, Disposable {
                     let relativeTimestamp = 0
                     for (const letter of syllableMetadata.Text) {
                         // Create our letter-span
-                        const letterSpan = this.Maid.give(document.createElement("span"))
+                        const letterSpan = this.Maid.handle(document.createElement("span"))
                         letterSpan.classList.add("Letter")
                         letterSpan.classList.add("Synced")
                         letterSpan.innerText = letter
