@@ -215,7 +215,7 @@ const setQueue = async (queue: TrackData[]) => {
         ord.contramap((t: TrackData) => t.uri),
     )
 
-    lastSortedQueue = p(queue, a.uniq(uriOrd))
+    lastSortedQueue = p(queue, a.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)
 
     await Spicetify.Platform.PlayerAPI.clearQueue()
     await Spicetify.Platform.PlayerAPI.addToQueue(lastSortedQueue)
@@ -241,7 +241,6 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         pMchain(a.map(x => (p(x, toOptProp(name), o.isSome) ? o.some(x as Required<TrackData>) : o.none))),
         pMchain(a.sequence(o.Applicative)),
         pMchain(o.map(a.sort(propOrd))),
-        pMchain(o.map(invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)),
         pMchain(o.map(setQueue)),
     )
 }
@@ -267,7 +266,7 @@ const starsOrd = p(
 )
 const starsSubmenu = new Spicetify.ContextMenu.Item(
     "Stars",
-    tupled(f(fetchTracks, pMchain(a.sort(starsOrd)), pMchain(setQueue))) as any,
+    tupled(f(fetchTracks, pMchain(a.sort(starsOrd)), pMchain(tapAny(x => console.log(x))), pMchain(setQueue))) as any,
     // @ts-ignore
     () => globalThis.tracksRatings !== undefined,
     "heart-active",

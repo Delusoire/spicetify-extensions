@@ -6943,7 +6943,7 @@ var sort;
           string_exports.Ord,
           Ord_exports.contramap((t) => t.uri)
         );
-        lastSortedQueue = (0, import_function30.pipe)(queue, Array_exports.uniq(uriOrd));
+        lastSortedQueue = (0, import_function30.pipe)(queue, Array_exports.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? import_function30.identity : Array_exports.reverse);
         await Spicetify.Platform.PlayerAPI.clearQueue();
         await Spicetify.Platform.PlayerAPI.addToQueue(lastSortedQueue);
         await Spicetify.Player.next();
@@ -6964,7 +6964,6 @@ var sort;
           pMchain(Array_exports.map((x) => (0, import_function30.pipe)(x, toOptProp(name), Option_exports.isSome) ? Option_exports.some(x) : Option_exports.none)),
           pMchain(Array_exports.sequence(Option_exports.Applicative)),
           pMchain(Option_exports.map(Array_exports.sort(propOrd))),
-          pMchain(Option_exports.map(invertAscending ^ Number(CONFIG.ascending) ? import_function30.identity : Array_exports.reverse)),
           pMchain(Option_exports.map(setQueue))
         );
       };
