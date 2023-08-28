@@ -17082,7 +17082,7 @@ var star;
             lastCollectionPlayButton
           );
           if (!collectionPlayButton) {
-            debugger;
+            console.warn("Couldn't grab this collection's play button");
             return void Spicetify.showNotification("Couldn't grab this collection's play button");
           }
           lastCollectionPlayButton = collectionPlayButton;
