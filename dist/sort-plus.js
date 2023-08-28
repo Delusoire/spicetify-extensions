@@ -6342,7 +6342,7 @@ var sort;
   });
 
   // shared/fp.tsx
-  var import_function27, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, chunckify, withProgress, memoize2;
+  var import_function27, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, tapAny, chunckify, withProgress, memoize2;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
@@ -6358,6 +6358,10 @@ var sort;
       objConcat = () => Array_exports.reduce({}, objConcat2());
       pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
+      tapAny = (f4) => (fa) => {
+        f4(fa);
+        return fa;
+      };
       chunckify = (n) => (g) => (0, import_function27.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
       withProgress = (map8) => (f4) => (fa) => {
         let i = 0;
@@ -6979,7 +6983,7 @@ var sort;
       );
       starsSubmenu = new Spicetify.ContextMenu.Item(
         "Stars",
-        (0, import_function30.tupled)((0, import_function30.flow)(fetchTracks, pMchain(Array_exports.sort(starsOrd)), pMchain(setQueue))),
+        (0, import_function30.tupled)((0, import_function30.flow)(fetchTracks, pMchain(Array_exports.sort(starsOrd)), pMchain(tapAny((x) => console.log(x))), pMchain(setQueue))),
         // @ts-ignore
         () => globalThis.tracksRatings !== void 0,
         "heart-active",
