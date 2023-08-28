@@ -161,8 +161,8 @@ Spicetify.Platform.History.listen(async ({ pathname }: { pathname: string }) => 
             lastCollectionPlayButton,
         )
         if (!collectionPlayButton) {
-            return void Spicetify.showNotification("Couldn't grab this collection's play button")
             debugger
+            return void Spicetify.showNotification("Couldn't grab this collection's play button")
         }
         lastCollectionPlayButton = collectionPlayButton
 
