@@ -3881,14 +3881,14 @@ var show;
       escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
       titleCase = (str) => str.replace(/\b\w/g, (l) => l.toUpperCase());
       normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
-      waitForElement = (selector, timeout = 1e3, location = document.body) => new Promise((resolve) => {
+      waitForElement = (selector, timeout = 1e3, location = document.body, notEl) => new Promise((resolve) => {
         const res = (v) => {
           observer.disconnect();
           resolve(v);
         };
         const observer = new MutationObserver(() => {
           const el = document.querySelector(selector);
-          if (el)
+          if (el && (!notEl || el !== notEl))
             return res(el);
         });
         observer.observe(location, {

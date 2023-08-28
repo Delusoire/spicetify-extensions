@@ -59,7 +59,12 @@ export const normalizeStr = (str: string) =>
         .trim()
 
 //! Does location actually point to document.body?
-export const waitForElement = <E extends Element>(selector: string, timeout = 1000, location = document.body) =>
+export const waitForElement = <E extends Element>(
+    selector: string,
+    timeout = 1000,
+    location = document.body,
+    notEl?: E,
+) =>
     new Promise((resolve: (value: Element | null) => void) => {
         const res = (v: any) => {
             observer.disconnect()
@@ -67,8 +72,8 @@ export const waitForElement = <E extends Element>(selector: string, timeout = 10
         }
 
         const observer = new MutationObserver(() => {
-            const el = document.querySelector(selector)
-            if (el) return res(el as E)
+            const el = document.querySelector<E>(selector)
+            if (el && (!notEl || el !== notEl)) return res(el)
         })
 
         observer.observe(location, {

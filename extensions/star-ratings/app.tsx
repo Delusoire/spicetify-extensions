@@ -146,17 +146,25 @@ export const updateCollectionStars = async (pathname: SpotifyURI, starsStops?: S
     setStarsGradientByRating(aggregateRatings(uris))(starsStops)
 }
 
+let lastCollectionPlayButton: Element
 Spicetify.Platform.History.listen(async ({ pathname }: { pathname: string }) => {
     const pageHasHeart = anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2])
     if (!pageHasHeart(pathname)) return
 
-    await sleep(300)
     let collectionStarsContainer = getStarsContainer("collection"),
         collectionStarsStops: StarStops[]
     if (!collectionStarsContainer) {
-        const collectionPlayButton = await waitForElement(".main-actionBar-ActionBar .main-playButton-PlayButton")
+        const collectionPlayButton = await waitForElement(
+            ".main-actionBar-ActionBar .main-playButton-PlayButton",
+            Number.MAX_SAFE_INTEGER,
+            document.body,
+            lastCollectionPlayButton,
+        )
+        if (!collectionPlayButton) return void Spicetify.showNotification("Couldn't grab this collection's play button")
+        lastCollectionPlayButton = collectionPlayButton
+
         const [collectionStarsContainer, collectionStarsConstructs] = createStars("collection", STAR_SIZE * 2)
-        collectionPlayButton?.after(collectionStarsContainer)
+        collectionPlayButton.after(collectionStarsContainer)
 
         collectionStarsStops = p(collectionStarsConstructs, a.unzip, ([_, starsStops]) => starsStops)
     } else {

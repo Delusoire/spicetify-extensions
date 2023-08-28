@@ -7556,14 +7556,14 @@ var star;
           });
         })(after = SpotifyLoc3.after || (SpotifyLoc3.after = {}));
       })(SpotifyLoc || (SpotifyLoc = {}));
-      waitForElement = (selector, timeout = 1e3, location = document.body) => new Promise((resolve) => {
+      waitForElement = (selector, timeout = 1e3, location = document.body, notEl) => new Promise((resolve) => {
         const res = (v) => {
           observer.disconnect();
           resolve(v);
         };
         const observer = new MutationObserver(() => {
           const el = document.querySelector(selector);
-          if (el)
+          if (el && (!notEl || el !== notEl))
             return res(el);
         });
         observer.observe(location, {
@@ -16955,7 +16955,7 @@ var star;
     updateNowPlayingStars: () => updateNowPlayingStars,
     updateTrackListStars: () => updateTrackListStars
   });
-  var import_function29, import_spectacles_ts, app_default, URI12, customTrackListColCss, updateTrackListStars, mainElement, mainElementObserver, updateCollectionStars, createNowPlayingStars, nowPlayingHeart, updateNowPlayingStars;
+  var import_function29, import_spectacles_ts, app_default, URI12, customTrackListColCss, updateTrackListStars, mainElement, mainElementObserver, updateCollectionStars, lastCollectionPlayButton, createNowPlayingStars, nowPlayingHeart, updateNowPlayingStars;
   var init_app = __esm({
     "extensions/star-ratings/app.tsx"() {
       "use strict";
@@ -17073,12 +17073,19 @@ var star;
         const pageHasHeart = anyPass([URI12.isAlbum, URI12.isArtist, URI12.isPlaylistV1OrV2]);
         if (!pageHasHeart(pathname))
           return;
-        await sleep(300);
         let collectionStarsContainer = getStarsContainer("collection"), collectionStarsStops;
         if (!collectionStarsContainer) {
-          const collectionPlayButton = await waitForElement(".main-actionBar-ActionBar .main-playButton-PlayButton");
+          const collectionPlayButton = await waitForElement(
+            ".main-actionBar-ActionBar .main-playButton-PlayButton",
+            Number.MAX_SAFE_INTEGER,
+            document.body,
+            lastCollectionPlayButton
+          );
+          if (!collectionPlayButton)
+            return void Spicetify.showNotification("Couldn't grab this collection's play button");
+          lastCollectionPlayButton = collectionPlayButton;
           const [collectionStarsContainer2, collectionStarsConstructs] = createStars("collection", STAR_SIZE * 2);
-          collectionPlayButton?.after(collectionStarsContainer2);
+          collectionPlayButton.after(collectionStarsContainer2);
           collectionStarsStops = (0, import_function29.pipe)(collectionStarsConstructs, Array_exports.unzip, ([_, starsStops]) => starsStops);
         } else {
           collectionStarsStops = (0, import_function29.pipe)(collectionStarsContainer, getStarsStopsFromStarsContainer);
