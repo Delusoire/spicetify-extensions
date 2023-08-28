@@ -153,7 +153,7 @@ Spicetify.Platform.History.listen(async ({ pathname }: { pathname: string }) => 
 
     lastCollectionPlayButton = (await waitForElement(
         ".main-actionBar-ActionBar .main-playButton-PlayButton",
-        2 ** 31 - 1,
+        0,
         document.body,
         lastCollectionPlayButton,
     ))!

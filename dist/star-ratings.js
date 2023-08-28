@@ -17075,7 +17075,7 @@ var star;
           return;
         lastCollectionPlayButton = await waitForElement(
           ".main-actionBar-ActionBar .main-playButton-PlayButton",
-          2 ** 31 - 1,
+          0,
           document.body,
           lastCollectionPlayButton
         );
