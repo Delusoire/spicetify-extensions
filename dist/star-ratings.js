@@ -16827,17 +16827,16 @@ var star;
         const isHalf = CONFIG.halfStarRatings && leftOffsetFromHeart < HALF_STAR_LENGTH;
         return 2 * (nth + 1) - Number(isHalf);
       };
-      onStarClick = (nth, starElement, getTrackUri, getHeart) => async (e) => {
+      onStarClick = (nth, starElement, getTrackUri) => async (e) => {
         const trackUri = getTrackUri();
         const oldRating = tracksRatings[trackUri];
         let newRating = calculateRatingFromMouseEvent(starElement, nth)(e);
-        const heart = getHeart();
         const heartThreshold = starsS2N(CONFIG.heartThreshold);
         if (heartThreshold) {
           const shouldBeHearted = newRating >= heartThreshold;
-          const isHearted = heart.ariaChecked === "true";
+          const [isHearted] = await Spicetify.Platform.LibraryAPI.contains(trackUri);
           if (isHearted !== shouldBeHearted)
-            heart.click();
+            Spicetify.Platform.LibraryAPI[shouldBeHearted ? "add" : "remove"](trackUri);
         }
         if (oldRating === newRating)
           newRating = 0;
@@ -16851,7 +16850,10 @@ var star;
         if (newRating) {
           let playlistUri = playlistUris[newRating];
           if (!playlistUri) {
-            playlistUri = await createPlatPlaylist(starsN2S(newRating), SpotifyLoc.after(CONFIG.ratingsFolderUri));
+            playlistUri = await createPlatPlaylist(
+              starsN2S(newRating),
+              SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri)
+            );
             setPlatPlaylistVisibility(playlistUri, false);
             playlistUris[newRating] = playlistUri;
           }
@@ -16877,7 +16879,6 @@ var star;
       import_NonEmptyArray = __toESM(require_NonEmptyArray());
       init_api();
       init_fp();
-      init_util();
       init_stars();
       init_util2();
       w = (n) => Math.exp(n);
@@ -16889,7 +16890,7 @@ var star;
         ReadonlyArray_exports.unzip,
         ([rs, wrs]) => ReadonlyArray_exports.reduceWithIndex(0, (i, s, r) => s + r * wrs[i])(rs) / ReadonlyArray_exports.reduce(0, (s, wr) => s + wr)(wrs) || 0
       );
-      addRatingsListenersToStars = ([starsContainer, starsConstructs], getTrackUri, getHeart) => {
+      addRatingsListenersToStars = ([starsContainer, starsConstructs], getTrackUri) => {
         const [starsElements, starsSVGStops] = (0, import_function28.pipe)(starsConstructs, ReadonlyArray_exports.unzip);
         starsContainer.addEventListener(
           "mouseout",
@@ -16902,7 +16903,7 @@ var star;
               "mousemove",
               (0, import_function28.flow)(calculateRatingFromMouseEvent(starElement, nth), (0, import_function28.flip)(setStarsGradientByRating)(starsSVGStops))
             );
-            starElement.addEventListener("click", onStarClick(nth, starsElements[nth], getTrackUri, getHeart));
+            starElement.addEventListener("click", onStarClick(nth, starsElements[nth], getTrackUri));
           })
         );
       };
@@ -17028,11 +17029,7 @@ var star;
                 ([_, starsStops]) => starsStops,
                 setStarsGradientByRating(tracksRatings[trackUri] ?? 0)
               );
-              addRatingsListenersToStars(
-                [starsContainer, starsConstructs],
-                () => trackUri,
-                () => getFirstHeart(track)
-              );
+              addRatingsListenersToStars([starsContainer, starsConstructs], () => trackUri);
               const setVisibleCond = () => starsContainer.style.visibility = tracksRatings[trackUri] ? "visible" : "hidden";
               track.addEventListener("mouseover", () => starsContainer.style.visibility = "visible");
               track.addEventListener("mouseout", setVisibleCond);
@@ -17105,8 +17102,7 @@ var star;
           nowPlayingElement.prepend(nowPlayingStarsContainer);
         addRatingsListenersToStars(
           [nowPlayingStarsContainer, nowPlayingStarConstruct],
-          () => Spicetify.Player.data.track?.uri,
-          getNowPlayingHeart
+          () => Spicetify.Player.data.track?.uri
         );
       };
       createNowPlayingStars();

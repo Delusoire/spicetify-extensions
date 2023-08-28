@@ -98,11 +98,7 @@ export const updateTrackListStars = f(
                     ([_, starsStops]) => starsStops,
                     setStarsGradientByRating(tracksRatings[trackUri] ?? 0),
                 )
-                addRatingsListenersToStars(
-                    [starsContainer, starsConstructs],
-                    () => trackUri,
-                    () => getFirstHeart(track),
-                )
+                addRatingsListenersToStars([starsContainer, starsConstructs], () => trackUri)
 
                 const setVisibleCond = () =>
                     (starsContainer.style.visibility = tracksRatings[trackUri] ? "visible" : "hidden")
@@ -192,7 +188,6 @@ export const createNowPlayingStars = () => {
     addRatingsListenersToStars(
         [nowPlayingStarsContainer, nowPlayingStarConstruct],
         () => Spicetify.Player.data.track?.uri!,
-        getNowPlayingHeart as () => HTMLButtonElement,
     )
 }
 

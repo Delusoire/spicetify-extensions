@@ -113,19 +113,18 @@ export const calculateRatingFromMouseEvent = (starElement: SVGSVGElement, nth: n
 }
 
 export const onStarClick =
-    (nth: number, starElement: SVGSVGElement, getTrackUri: () => SpotifyURI, getHeart: () => HTMLButtonElement) =>
-    async (e: MouseEvent) => {
+    (nth: number, starElement: SVGSVGElement, getTrackUri: () => SpotifyURI) => async (e: MouseEvent) => {
         const trackUri = getTrackUri()
         const oldRating = tracksRatings[trackUri]
         let newRating = calculateRatingFromMouseEvent(starElement, nth)(e)
 
-        const heart = getHeart()
         const heartThreshold = starsS2N(CONFIG.heartThreshold)
         if (heartThreshold) {
             const shouldBeHearted = newRating >= heartThreshold
-            const isHearted = heart.ariaChecked === "true"
+            const [isHearted] = await Spicetify.Platform.LibraryAPI.contains(trackUri)
 
-            if (isHearted !== shouldBeHearted) heart.click()
+            if (isHearted !== shouldBeHearted)
+                Spicetify.Platform.LibraryAPI[shouldBeHearted ? "add" : "remove"](trackUri)
         }
 
         if (oldRating === newRating) newRating = 0
@@ -142,7 +141,10 @@ export const onStarClick =
         if (newRating) {
             let playlistUri = playlistUris[newRating]
             if (!playlistUri) {
-                playlistUri = await createPlatPlaylist(starsN2S(newRating), SpotifyLoc.after(CONFIG.ratingsFolderUri))
+                playlistUri = await createPlatPlaylist(
+                    starsN2S(newRating),
+                    SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri),
+                )
                 setPlatPlaylistVisibility(playlistUri, false)
                 playlistUris[newRating] = playlistUri
             }

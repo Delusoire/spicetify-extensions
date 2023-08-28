@@ -20,31 +20,9 @@ export const aggregateRatings = (uris: SpotifyURI[]) =>
                 readonlyArray.reduce(0, (s, wr: number) => s + wr)(wrs) || 0,
     )
 
-export const sortPlaylistByRating = async (playlist: SpotifyURI) => {
-    const items = await fetchPlatPlaylistContents(playlist)
-
-    if (items.length === 0) return
-
-    const urisGroupedByRating = p(
-        items,
-        a.map(t => t.uri),
-        groupBy(uri => String(tracksRatings[uri] ?? 0)),
-    )
-
-    p(
-        nonEmptyArray.range(0, 10),
-        a.map(i => urisGroupedByRating[i] ?? []),
-        a.reduce(["first" as SpotifyURI], (lastUris, currUris) => {
-            if (currUris.length) movePlatPlaylistTracks(playlist, currUris, SpotifyLoc.before(lastUris[0]))
-            return currUris
-        }),
-    )
-}
-
 export const addRatingsListenersToStars = (
     [starsContainer, starsConstructs]: ReturnType<typeof createStars>,
     getTrackUri: () => SpotifyURI,
-    getHeart: () => HTMLButtonElement,
 ) => {
     const [starsElements, starsSVGStops] = p(starsConstructs, readonlyArray.unzip) as [SVGSVGElement[], StarStops[]]
 
@@ -60,7 +38,7 @@ export const addRatingsListenersToStars = (
                 f(calculateRatingFromMouseEvent(starElement, nth), flip(setStarsGradientByRating)(starsSVGStops)),
             )
 
-            starElement.addEventListener("click", onStarClick(nth, starsElements[nth], getTrackUri, getHeart))
+            starElement.addEventListener("click", onStarClick(nth, starsElements[nth], getTrackUri))
         }),
     )
 }
