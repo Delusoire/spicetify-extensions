@@ -16699,9 +16699,9 @@ var star;
       getStarsStops = (0, import_function26.flow)(getStarsContainer, getStarsStopsFromStarsContainer);
       getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-indexable"));
       getTrackListHeader = (trackList) => trackList.querySelector(".main-trackList-trackListHeader")?.firstChild;
-      getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
+      getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll("div.main-trackList-trackListRow"));
       getLastColIndex = (parent) => {
-        const lastCol = parent.querySelector(".main-trackList-rowSectionEnd");
+        const lastCol = parent.querySelector("div.main-trackList-rowSectionEnd");
         const lastColIndex = Number(lastCol.getAttribute("aria-colindex"));
         return [lastColIndex, lastCol];
       };
@@ -17073,25 +17073,16 @@ var star;
         const pageHasHeart = anyPass([URI12.isAlbum, URI12.isArtist, URI12.isPlaylistV1OrV2]);
         if (!pageHasHeart(pathname))
           return;
-        let collectionStarsContainer = getStarsContainer("collection"), collectionStarsStops;
-        if (!collectionStarsContainer) {
-          const collectionPlayButton = await waitForElement(
-            ".main-actionBar-ActionBar .main-playButton-PlayButton",
-            2 ** 31 - 1,
-            document.body,
-            lastCollectionPlayButton
-          );
-          if (!collectionPlayButton) {
-            console.warn("Couldn't grab this collection's play button");
-            return void Spicetify.showNotification("Couldn't grab this collection's play button");
-          }
-          lastCollectionPlayButton = collectionPlayButton;
-          const [collectionStarsContainer2, collectionStarsConstructs] = createStars("collection", STAR_SIZE * 2);
-          collectionPlayButton.after(collectionStarsContainer2);
-          collectionStarsStops = (0, import_function29.pipe)(collectionStarsConstructs, Array_exports.unzip, ([_, starsStops]) => starsStops);
-        } else {
-          collectionStarsStops = (0, import_function29.pipe)(collectionStarsContainer, getStarsStopsFromStarsContainer);
-        }
+        lastCollectionPlayButton = await waitForElement(
+          ".main-actionBar-ActionBar .main-playButton-PlayButton",
+          2 ** 31 - 1,
+          document.body,
+          lastCollectionPlayButton
+        );
+        const [collectionStarsContainer, collectionStarsConstructs] = createStars("collection", STAR_SIZE * 2);
+        getStarsContainer("collection")?.remove();
+        lastCollectionPlayButton.after(collectionStarsContainer);
+        const collectionStarsStops = (0, import_function29.pipe)(collectionStarsConstructs, Array_exports.unzip, ([_, starsStops]) => starsStops);
         updateCollectionStars(pathname, collectionStarsStops);
       });
       createNowPlayingStars = () => {

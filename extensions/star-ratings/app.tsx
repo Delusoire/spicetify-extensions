@@ -151,28 +151,18 @@ Spicetify.Platform.History.listen(async ({ pathname }: { pathname: string }) => 
     const pageHasHeart = anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2])
     if (!pageHasHeart(pathname)) return
 
-    let collectionStarsContainer = getStarsContainer("collection"),
-        collectionStarsStops: StarStops[]
-    if (!collectionStarsContainer) {
-        const collectionPlayButton = await waitForElement(
-            ".main-actionBar-ActionBar .main-playButton-PlayButton",
-            2 ** 31 - 1,
-            document.body,
-            lastCollectionPlayButton,
-        )
-        if (!collectionPlayButton) {
-            console.warn("Couldn't grab this collection's play button")
-            return void Spicetify.showNotification("Couldn't grab this collection's play button")
-        }
-        lastCollectionPlayButton = collectionPlayButton
+    lastCollectionPlayButton = (await waitForElement(
+        ".main-actionBar-ActionBar .main-playButton-PlayButton",
+        2 ** 31 - 1,
+        document.body,
+        lastCollectionPlayButton,
+    ))!
 
-        const [collectionStarsContainer, collectionStarsConstructs] = createStars("collection", STAR_SIZE * 2)
-        collectionPlayButton.after(collectionStarsContainer)
+    const [collectionStarsContainer, collectionStarsConstructs] = createStars("collection", STAR_SIZE * 2)
+    getStarsContainer("collection")?.remove()
+    lastCollectionPlayButton!.after(collectionStarsContainer)
 
-        collectionStarsStops = p(collectionStarsConstructs, a.unzip, ([_, starsStops]) => starsStops)
-    } else {
-        collectionStarsStops = p(collectionStarsContainer, getStarsStopsFromStarsContainer)
-    }
+    const collectionStarsStops = p(collectionStarsConstructs, a.unzip, ([_, starsStops]) => starsStops)
 
     updateCollectionStars(pathname, collectionStarsStops)
 })

@@ -13,7 +13,7 @@ export const starsS2N = (S: string) => Number(S) * 2
 export const starsN2S = (N: number) => (N / 2).toFixed(1)
 
 export const getNowPlayingHeart = () =>
-    document.querySelector(".main-nowPlayingWidget-nowPlaying .control-button-heart") as HTMLButtonElement | null
+    document.querySelector<HTMLButtonElement>(".main-nowPlayingWidget-nowPlaying .control-button-heart")
 
 export const getStarsFromStarsContainer = (starsElement: HTMLSpanElement) =>
     Array.from(starsElement.children) as SVGSVGElement[]
@@ -28,23 +28,22 @@ export const getStarsContainer = (idSuffix: string) => document.getElementById(`
 export const getStars = flow(getStarsContainer, getStarsFromStarsContainer)
 export const getStarsStops = flow(getStarsContainer, getStarsStopsFromStarsContainer)
 
-export const getTrackLists = () =>
-    Array.from(document.querySelectorAll(".main-trackList-indexable")) as HTMLDivElement[]
+export const getTrackLists = () => Array.from(document.querySelectorAll<HTMLDivElement>(".main-trackList-indexable"))
 export const getTrackListHeader = (trackList: HTMLDivElement) =>
     trackList.querySelector(".main-trackList-trackListHeader")?.firstChild as HTMLDivElement
 export const getTrackListTracks = (trackList: HTMLDivElement) =>
-    Array.from(trackList.querySelectorAll(".main-trackList-trackListRow")) as HTMLDivElement[]
+    Array.from(trackList.querySelectorAll<HTMLDivElement>("div.main-trackList-trackListRow"))
 
 export const getLastColIndex = (parent: HTMLElement) => {
-    const lastCol = parent.querySelector(".main-trackList-rowSectionEnd") as HTMLDivElement
+    const lastCol = parent.querySelector<HTMLDivElement>("div.main-trackList-rowSectionEnd")!
     const lastColIndex = Number(lastCol.getAttribute("aria-colindex"))
     return [lastColIndex, lastCol] as [number, HTMLDivElement]
 }
 
 export const getFirstHeart = (parent: HTMLElement) =>
-    parent.querySelector(
+    parent.querySelector<HTMLButtonElement>(
         ".Button-textSubdued-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle, .Button-textBrightAccent-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle",
-    ) as HTMLButtonElement
+    )!
 
 export const getTrackListTrackUri = (track: HTMLDivElement) => (
     (track = Object.values(track)[0].child.child.child.child),
