@@ -263,13 +263,13 @@ const shuffleSubmenu = new Spicetify.ContextMenu.Item(
 
 const starsOrd = p(
     number.Ord,
-    ord.contramap((t: { uri: SpotifyURI }) => (globalThis as any).starRatings[t.uri] ?? 0),
+    ord.contramap((t: { uri: SpotifyURI }) => (globalThis as any).tracksRatings[t.uri] ?? 0),
 )
 const starsSubmenu = new Spicetify.ContextMenu.Item(
     "Stars",
     tupled(f(fetchTracks, pMchain(a.sort(starsOrd)), pMchain(setQueue))) as any,
     // @ts-ignore
-    () => globalThis.starRatings !== undefined,
+    () => globalThis.tracksRatings !== undefined,
     "heart-active",
     false,
 )

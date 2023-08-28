@@ -6975,13 +6975,13 @@ var sort;
       );
       starsOrd = (0, import_function30.pipe)(
         number_exports.Ord,
-        Ord_exports.contramap((t) => globalThis.starRatings[t.uri] ?? 0)
+        Ord_exports.contramap((t) => globalThis.tracksRatings[t.uri] ?? 0)
       );
       starsSubmenu = new Spicetify.ContextMenu.Item(
         "Stars",
         (0, import_function30.tupled)((0, import_function30.flow)(fetchTracks, pMchain(Array_exports.sort(starsOrd)), pMchain(setQueue))),
         // @ts-ignore
-        () => globalThis.starRatings !== void 0,
+        () => globalThis.tracksRatings !== void 0,
         "heart-active",
         false
       );
