@@ -6342,7 +6342,7 @@ var sort;
   });
 
   // shared/fp.tsx
-  var import_function27, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, tapAny, chunckify, withProgress, memoize2;
+  var import_function27, import_Semigroup3, guard42, objConcat2, objConcat, pMchain, is, chunckify, withProgress, memoize2;
   var init_fp = __esm({
     "shared/fp.tsx"() {
       "use strict";
@@ -6358,10 +6358,6 @@ var sort;
       objConcat = () => Array_exports.reduce({}, objConcat2());
       pMchain = (f4) => async (fa) => f4(await fa);
       is = (c) => (a) => (field) => field[c] === a;
-      tapAny = (f4) => (fa) => {
-        f4(fa);
-        return fa;
-      };
       chunckify = (n) => (g) => (0, import_function27.flow)(Array_exports.chunksOf(n), Array_exports.map(g), (ps) => Promise.all(ps), pMchain(Array_exports.flatten));
       withProgress = (map8) => (f4) => (fa) => {
         let i = 0;
@@ -6833,7 +6829,7 @@ var sort;
     }
     return allTracks;
   }
-  var import_function30, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu, generatePlaylistName, invertAscending;
+  var import_function30, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu, starsOrd, starsSubmenu, generatePlaylistName, invertAscending;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6939,8 +6935,13 @@ var sort;
       ])((0, import_function30.constant)(Task_exports.of([])));
       lastSortedQueue = [];
       setQueue = async (queue) => {
+        const uriOrd = (0, import_function30.pipe)(
+          string_exports.Ord,
+          Ord_exports.contramap((t) => t.uri)
+        );
+        lastSortedQueue = (0, import_function30.pipe)(queue, Array_exports.uniq(uriOrd));
         await Spicetify.Platform.PlayerAPI.clearQueue();
-        await Spicetify.Platform.PlayerAPI.addToQueue(queue);
+        await Spicetify.Platform.PlayerAPI.addToQueue(lastSortedQueue);
         await Spicetify.Player.next();
       };
       toOptProp = (prop2) => Optional.fromNullableProp()(SortProp[prop2]).getOption;
@@ -6952,10 +6953,6 @@ var sort;
           number_exports.Ord,
           Ord_exports.contramap((t) => t[SortProp[name]])
         );
-        const uriOrd = (0, import_function30.pipe)(
-          string_exports.Ord,
-          Ord_exports.contramap((t) => t.uri)
-        );
         (0, import_function30.pipe)(
           uri,
           fetchTracks,
@@ -6963,9 +6960,7 @@ var sort;
           pMchain(Array_exports.map((x) => (0, import_function30.pipe)(x, toOptProp(name), Option_exports.isSome) ? Option_exports.some(x) : Option_exports.none)),
           pMchain(Array_exports.sequence(Option_exports.Applicative)),
           pMchain(Option_exports.map(Array_exports.sort(propOrd))),
-          pMchain(Option_exports.map(Array_exports.uniq(uriOrd))),
           pMchain(Option_exports.map(invertAscending ^ Number(CONFIG.ascending) ? import_function30.identity : Array_exports.reverse)),
-          pMchain(Option_exports.map(tapAny((queue) => void (lastSortedQueue = queue)))),
           pMchain(Option_exports.map(setQueue))
         );
       };
@@ -6978,13 +6973,25 @@ var sort;
         "shuffle",
         false
       );
+      starsOrd = (0, import_function30.pipe)(
+        number_exports.Ord,
+        Ord_exports.contramap((t) => globalThis.starRatings[t.uri] ?? 0)
+      );
+      starsSubmenu = new Spicetify.ContextMenu.Item(
+        "Stars",
+        (0, import_function30.tupled)((0, import_function30.flow)(fetchTracks, pMchain(Array_exports.sort(starsOrd)), pMchain(setQueue))),
+        // @ts-ignore
+        () => globalThis.starRatings !== void 0,
+        "heart-active",
+        false
+      );
       new Spicetify.ContextMenu.SubMenu(
         "Sort by",
         Array_exports.zipWith(
           values(SortBy),
           ["play", "heart", "list-view", "volume", "artist", "subtitles"],
           createSortByPropSubmenu
-        ).concat([shuffleSubmenu]),
+        ).concat([shuffleSubmenu, starsSubmenu]),
         (0, import_function30.tupled)(anyPass([URI15.isAlbum, URI15.isArtist, URI15.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")]))
       ).register();
       generatePlaylistName = async () => {

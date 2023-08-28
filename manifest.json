@@ -70,7 +70,7 @@
     },
     {
         "name": "sort-plus",
-        "description": "Sort tracks by Spotify {playcount,popularity} or LastFM {playcount,scrobbles,personal scrobbles}. Can shuffle too!",
+        "description": "Sort tracks by different metrics. Can shuffle too!",
         "preview": "extensions/sort-plus/assets/preview.png",
         "main": "dist/sort-plus.prism.js",
         "readme": "extensions/sort-plus/assets/README.md",

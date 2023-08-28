@@ -210,9 +210,15 @@ const Spicetify_setQueue = (queue: { uri: SpotifyURI }[]) => {
 
 let lastSortedQueue: TrackData[] = []
 const setQueue = async (queue: TrackData[]) => {
+    const uriOrd = p(
+        string.Ord,
+        ord.contramap((t: TrackData) => t.uri),
+    )
+
+    lastSortedQueue = p(queue, a.uniq(uriOrd))
+
     await Spicetify.Platform.PlayerAPI.clearQueue()
-    await Spicetify.Platform.PlayerAPI.addToQueue(queue)
-    // await Spicetify_setQueue(queue)
+    await Spicetify.Platform.PlayerAPI.addToQueue(lastSortedQueue)
     await Spicetify.Player.next()
 }
 
@@ -227,10 +233,6 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         number.Ord,
         ord.contramap((t: Required<TrackData>) => t[SortProp[name]]),
     )
-    const uriOrd = p(
-        string.Ord,
-        ord.contramap((t: TrackData) => t.uri),
-    )
 
     p(
         uri,
@@ -239,9 +241,7 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         pMchain(a.map(x => (p(x, toOptProp(name), o.isSome) ? o.some(x as Required<TrackData>) : o.none))),
         pMchain(a.sequence(o.Applicative)),
         pMchain(o.map(a.sort(propOrd))),
-        pMchain(o.map(a.uniq(uriOrd))),
         pMchain(o.map(invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)),
-        pMchain(o.map(tapAny(queue => void (lastSortedQueue = queue)))),
         pMchain(o.map(setQueue)),
     )
 }
@@ -261,6 +261,19 @@ const shuffleSubmenu = new Spicetify.ContextMenu.Item(
     false,
 )
 
+const starsOrd = p(
+    number.Ord,
+    ord.contramap((t: { uri: SpotifyURI }) => (globalThis as any).starRatings[t.uri] ?? 0),
+)
+const starsSubmenu = new Spicetify.ContextMenu.Item(
+    "Stars",
+    tupled(f(fetchTracks, pMchain(a.sort(starsOrd)), pMchain(setQueue))) as any,
+    // @ts-ignore
+    () => globalThis.starRatings !== undefined,
+    "heart-active",
+    false,
+)
+
 new Spicetify.ContextMenu.SubMenu(
     "Sort by",
     a
@@ -269,7 +282,7 @@ new Spicetify.ContextMenu.SubMenu(
             ["play", "heart", "list-view", "volume", "artist", "subtitles"],
             createSortByPropSubmenu,
         )
-        .concat([shuffleSubmenu]),
+        .concat([shuffleSubmenu, starsSubmenu]),
     tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")])) as any,
 ).register()
 
