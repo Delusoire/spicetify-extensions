@@ -160,7 +160,10 @@ Spicetify.Platform.History.listen(async ({ pathname }: { pathname: string }) => 
             document.body,
             lastCollectionPlayButton,
         )
-        if (!collectionPlayButton) return void Spicetify.showNotification("Couldn't grab this collection's play button")
+        if (!collectionPlayButton) {
+            return void Spicetify.showNotification("Couldn't grab this collection's play button")
+            debugger
+        }
         lastCollectionPlayButton = collectionPlayButton
 
         const [collectionStarsContainer, collectionStarsConstructs] = createStars("collection", STAR_SIZE * 2)

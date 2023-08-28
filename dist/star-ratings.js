@@ -17081,8 +17081,10 @@ var star;
             document.body,
             lastCollectionPlayButton
           );
-          if (!collectionPlayButton)
+          if (!collectionPlayButton) {
             return void Spicetify.showNotification("Couldn't grab this collection's play button");
+            debugger;
+          }
           lastCollectionPlayButton = collectionPlayButton;
           const [collectionStarsContainer2, collectionStarsConstructs] = createStars("collection", STAR_SIZE * 2);
           collectionPlayButton.after(collectionStarsContainer2);
