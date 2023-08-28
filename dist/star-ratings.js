@@ -17077,7 +17077,7 @@ var star;
         if (!collectionStarsContainer) {
           const collectionPlayButton = await waitForElement(
             ".main-actionBar-ActionBar .main-playButton-PlayButton",
-            Number.MAX_SAFE_INTEGER,
+            2 ** 31 - 1,
             document.body,
             lastCollectionPlayButton
           );
