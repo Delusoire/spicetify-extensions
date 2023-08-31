@@ -8,7 +8,7 @@ import { SpotifyURI, titleCase, waitForElement } from "../../shared/util"
 const { URI } = Spicetify
 
 export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
-    const uri = URI.from(pathname)
+    const uri = URI.fromString(pathname)
 
     if (!URI.isArtist(uri!)) return
 
@@ -39,7 +39,7 @@ export const updateArtistPage = async ({ pathname }: { pathname: string }) => {
 
 export const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[], src = null) => {
     const getArtistsGenres: (artistsUris: SpotifyURI[]) => Promise<string[]> = f(
-        a.map(uri => URI.from(uri)!.id!),
+        a.map(uri => URI.fromString(uri)!.id!),
         fetchWebArtistsSpot,
         pMchain(a.flatMap(artist => artist.genres)),
         pMchain(a.uniq(str.Eq)),

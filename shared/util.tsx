@@ -3,7 +3,8 @@
 // export interface SpotifyURI
 //     extends Newtype<{ readonly SpotifyURI: unique symbol }, string> {}
 
-import { constant } from "fp-ts/lib/function"
+import { array as a } from "fp-ts"
+import { constant, pipe as p } from "fp-ts/function"
 
 export const mustLoadForApi = ["CosmosAsync", "GraphQL", "Platform"]
 export const mustLoadForUtil = ["URI"]
@@ -107,3 +108,21 @@ export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, 
 
 export const getReactProps = (element: Element) =>
     element[Object.keys(element).find(k => k.startsWith("__reactProps$")) as keyof typeof element]
+
+export const isLiked = (uris: SpotifyURI[]) => Spicetify.Platform.LibraryAPI.contains(...uris) as Promise<boolean[]>
+
+export const setLiked = (uris: SpotifyURI[], liked: boolean) =>
+    Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"](...uris)
+
+export const toggleLiked = async (uris: SpotifyURI[]) => {
+    const liked = await isLiked(uris)
+
+    return await p(
+        uris,
+        a.reduceWithIndex(
+            [[] as SpotifyURI[], [] as SpotifyURI[]] as const,
+            (i, acc, uri) => (acc[Number(liked[i])].push(uri), acc),
+        ),
+        ([toAdd, toRem]) => Promise.all([setLiked(toAdd, true), setLiked(toRem, false)]),
+    )
+}

@@ -4911,7 +4911,7 @@ var search;
       ({ URI: URI7 } = Spicetify);
       YTVidIDCache = /* @__PURE__ */ new Map();
       showOnYouTube = async (uri) => {
-        const id = URI7.from(uri).id;
+        const id = URI7.fromString(uri).id;
         if (!YTVidIDCache.get(id)) {
           const track = parseAPITrackFromSpotify((await fetchWebTracksSpot([id]))[0]);
           const searchString = `${track.artistName} - ${track.name} music video`;

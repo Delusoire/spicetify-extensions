@@ -5,18 +5,16 @@ import { anyPass } from "fp-ts-std/Predicate"
 import { flow as f, identity, pipe as p } from "fp-ts/lib/function"
 import { get } from "spectacles-ts"
 import { fetchGQLAlbum, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents } from "../../shared/api"
-import { SpotifyURI, sleep, waitForElement } from "../../shared/util"
+import { SpotifyURI, waitForElement } from "../../shared/util"
 import { addRatingsListenersToStars, aggregateRatings, loadRatings, tracksRatings } from "./ratings"
 import { CONFIG } from "./settings"
 import { StarStops, createStars, setStarsGradientByRating } from "./stars"
 import {
     STAR_SIZE,
-    getFirstHeart,
+    getFirstPlus,
     getLastColIndex,
-    getNowPlayingHeart,
     getStarsContainer,
     getStarsStops,
-    getStarsStopsFromStarsContainer,
     getTrackListHeader,
     getTrackListTrackUri,
     getTrackListTracks,
@@ -48,7 +46,7 @@ export const updateTrackListStars = f(
         if (trackListTracks.length === 0) return
 
         const hasStars = (parent: HTMLElement) => parent.getElementsByClassName("stars").length > 0
-        const locationUri = URI.from(Spicetify.Platform.History.location.pathname)
+        const locationUri = URI.fromString(Spicetify.Platform.History.location.pathname)
 
         const firstElement = URI.isArtist(locationUri!)
             ? trackListTracks[0]
@@ -63,7 +61,7 @@ export const updateTrackListStars = f(
         p(
             trackListTracks,
             a.map(track => {
-                const heart = getFirstHeart(track)
+                const heart = getFirstPlus(track)
                 if (heart) heart.style.display = CONFIG.hideHearts ? "none" : "flex"
 
                 if (hasStars(track)) return
@@ -85,7 +83,7 @@ export const updateTrackListStars = f(
                 }
 
                 const trackUri = getTrackListTrackUri(track)
-                const uri = URI.from(trackUri)
+                const uri = URI.fromString(trackUri)
 
                 //TODO: Local Tracks support
                 if (!URI.isTrack(uri!)) return
@@ -132,7 +130,7 @@ new MutationObserver(() => {
 // COLLECTION
 
 export const updateCollectionStars = async (pathname: SpotifyURI, starsStops?: StarStops[]) => {
-    const uri = URI.from(pathname) as Required<Spicetify.URI>
+    const uri = URI.fromString(pathname) as Required<Spicetify.URI>
 
     if (!starsStops) starsStops = getStarsStops("collection")
 
@@ -193,8 +191,6 @@ export const createNowPlayingStars = () => {
 }
 
 createNowPlayingStars()
-const nowPlayingHeart = getNowPlayingHeart()
-if (nowPlayingHeart) nowPlayingHeart.style.display = CONFIG.hideHearts ? "none" : "flex"
 
 export const updateNowPlayingStars = () => {
     const trackUri = Spicetify.Player.data.track?.uri!

@@ -4683,7 +4683,7 @@ var show;
       init_Monoid();
       import_Semigroup3 = __toESM(require_Semigroup());
       init_Function();
-      none3 = (0, import_function18.flow)(not, (p5) => every(p5));
+      none3 = (0, import_function18.flow)(not, (p6) => every(p6));
       join = (x) => invoke("join")([x]);
       sum = concatAll4(MonoidSum);
       product = concatAll4(MonoidProduct);
@@ -4760,7 +4760,7 @@ var show;
       init_util();
       ({ URI: URI7 } = Spicetify);
       updateArtistPage = async ({ pathname }) => {
-        const uri = URI7.from(pathname);
+        const uri = URI7.fromString(pathname);
         if (!URI7.isArtist(uri))
           return;
         const genreContainer2 = document.createElement("div");
@@ -4782,7 +4782,7 @@ var show;
       };
       getArtistsGenresOrRelated = async (artistsUris, src = null) => {
         const getArtistsGenres = (0, import_function20.flow)(
-          Array_exports.map((uri) => URI7.from(uri).id),
+          Array_exports.map((uri) => URI7.fromString(uri).id),
           fetchWebArtistsSpot,
           pMchain(Array_exports.flatMap((artist) => artist.genres)),
           pMchain(Array_exports.uniq(string_exports.Eq))

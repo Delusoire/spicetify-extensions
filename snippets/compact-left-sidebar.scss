@@ -2,6 +2,10 @@
     padding: 4px 0px;
 }
 
-.sXeh8Jm1gvjUu3yjDK_P {
-    display: none;
+.main-yourLibraryX-collapseButton > button[aria-label="Collapse Your Library"] {
+    visibility: collapse;
+
+    > span {
+        visibility: visible;
+    }
 }

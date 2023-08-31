@@ -3311,7 +3311,7 @@ var keyboard;
       init_Option();
       init_Monoid();
       init_Semigroup();
-      none3 = (0, import_function11.flow)(not, (p) => every2(p));
+      none3 = (0, import_function11.flow)(not, (p2) => every2(p2));
       sum = concatAll5(MonoidSum);
       product = concatAll5(MonoidProduct);
       mean = (xs) => sum(xs) / xs.length;

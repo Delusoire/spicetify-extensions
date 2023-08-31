@@ -129,7 +129,7 @@ async function getArtistTracks(uri: SpotifyURI) {
 
 // ------------- For populateTracksSpot -------------
 const fetchAPITracksFromTracks: TracksPopulater = f(
-    a.map(({ uri }) => URI.from(uri)!.id!),
+    a.map(({ uri }) => URI.fromString(uri)!.id!),
     fetchWebTracksSpot,
     pMchain(a.map(parseAPITrackFromSpotify)),
 )
@@ -191,21 +191,20 @@ export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
     ],
 ])(constant(task.of([])))
 
-const Spicetify_setQueue = (queue: { uri: SpotifyURI }[]) => {
-    const { _queue, _client, createQueueItem } = Spicetify.Platform.PlayerAPI._queue
-    const { prevTracks, queueRevision } = _queue
+const Spicetify_setQueue = (queue: { uri: SpotifyURI }[], context?: SpotifyURI) => {
+    const ps = [Spicetify.Platform.PlayerAPI.addToQueue(queue)]
 
-    const providerIsQueue = true
+    if (context) {
+        const { sessionId } = Spicetify.Platform.PlayerAPI.getState()
+        ps.push(
+            Spicetify.Platform.PlayerAPI.updateContext(sessionId, {
+                uri: context,
+                url: "context://" + context,
+            }),
+        )
+    }
 
-    const nextTracks = queue
-        .concat([{ uri: "spotify:delimiter" } as TrackData])
-        .map(track => createQueueItem(track, providerIsQueue))
-
-    return _client.setQueue({
-        nextTracks,
-        prevTracks,
-        queueRevision,
-    })
+    return Promise.all(ps)
 }
 
 let lastSortedQueue: TrackData[] = []
@@ -286,7 +285,7 @@ new Spicetify.ContextMenu.SubMenu(
 ).register()
 
 const generatePlaylistName = async () => {
-    const uriToId = (uri: SpotifyURI) => URI.from(uri)!.id!
+    const uriToId = (uri: SpotifyURI) => URI.fromString(uri)!.id!
     const getName = (fn: Function) => async (id: SpotifyID) => (await fn([id]))[0].name
 
     const collectionName = await guard([

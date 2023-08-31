@@ -29,7 +29,7 @@ export default new (class {
         this.song = this.maid.handle(
             new Song(
                 {
-                    trackId: Spicetify.URI.from(uri)!.id,
+                    trackId: Spicetify.URI.fromString(uri)!.id,
                     duration: event.data.duration / 1000,
                     isLocal: metadata.is_local === "true",
                     isPlaying: !event.data.is_paused,

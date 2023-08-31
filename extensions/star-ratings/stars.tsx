@@ -6,7 +6,7 @@ import {
     removePlatPlaylistTracks,
     setPlatPlaylistVisibility,
 } from "../../shared/api"
-import { SpotifyLoc, SpotifyURI } from "../../shared/util"
+import { SpotifyLoc, SpotifyURI, isLiked, toggleLiked } from "../../shared/util"
 import { playlistUris, tracksRatings } from "./ratings"
 import { CONFIG } from "./settings"
 import {
@@ -121,10 +121,9 @@ export const onStarClick =
         const heartThreshold = starsS2N(CONFIG.heartThreshold)
         if (heartThreshold) {
             const shouldBeHearted = newRating >= heartThreshold
-            const [isHearted] = await Spicetify.Platform.LibraryAPI.contains(trackUri)
+            const [isHearted] = await isLiked([trackUri])
 
-            if (isHearted !== shouldBeHearted)
-                Spicetify.Platform.LibraryAPI[shouldBeHearted ? "add" : "remove"](trackUri)
+            if (isHearted !== shouldBeHearted) toggleLiked([trackUri])
         }
 
         if (oldRating === newRating) newRating = 0
@@ -153,7 +152,7 @@ export const onStarClick =
         }
 
         updateNowPlayingStars()
-        const trackStarsContainer = getStarsContainer(`${URI.from(trackUri)!.id}`)
+        const trackStarsContainer = getStarsContainer(`${URI.fromString(trackUri)!.id}`)
         if (trackStarsContainer) {
             p(trackStarsContainer, setStarsGradientFromContainerByRating(newRating))
             trackStarsContainer.style.visibility = newRating ? "visible" : "hidden"

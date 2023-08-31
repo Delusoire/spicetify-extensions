@@ -6328,9 +6328,9 @@ var star;
         __assign = Object.assign || function(t) {
           for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
-            for (var p6 in s)
-              if (Object.prototype.hasOwnProperty.call(s, p6))
-                t[p6] = s[p6];
+            for (var p7 in s)
+              if (Object.prototype.hasOwnProperty.call(s, p7))
+                t[p7] = s[p7];
           }
           return t;
         };
@@ -7526,11 +7526,12 @@ var star;
   });
 
   // shared/util.tsx
-  var import_function21, mustLoadForApi, mustLoadForUtil, mustLoadForSettings, SpotifyLoc, waitForElement, sleep;
+  var import_function21, mustLoadForApi, mustLoadForUtil, mustLoadForSettings, SpotifyLoc, waitForElement, sleep, isLiked, setLiked, toggleLiked;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
       import_function21 = __toESM(require_function());
+      init_es6();
       mustLoadForApi = ["CosmosAsync", "GraphQL", "Platform"];
       mustLoadForUtil = ["URI"];
       mustLoadForSettings = ["React", "ReactDOM"];
@@ -7574,6 +7575,19 @@ var star;
           setTimeout(() => res(null), timeout);
       });
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      isLiked = (uris) => Spicetify.Platform.LibraryAPI.contains(...uris);
+      setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"](...uris);
+      toggleLiked = async (uris) => {
+        const liked = await isLiked(uris);
+        return await (0, import_function21.pipe)(
+          uris,
+          Array_exports.reduceWithIndex(
+            [[], []],
+            (i, acc, uri) => (acc[Number(liked[i])].push(uri), acc)
+          ),
+          ([toAdd, toRem]) => Promise.all([setLiked(toAdd, true), setLiked(toRem, false)])
+        );
+      };
     }
   });
 
@@ -13507,8 +13521,8 @@ var star;
         var filter9 = function(ma, predicate) {
           return (0, exports.isLeft)(ma) ? ma : predicate(ma.right) ? ma : empty8;
         };
-        var partition8 = function(ma, p6) {
-          return (0, exports.isLeft)(ma) ? (0, Separated_1.separated)(ma, ma) : p6(ma.right) ? (0, Separated_1.separated)(empty8, (0, exports.right)(ma.right)) : (0, Separated_1.separated)((0, exports.right)(ma.right), empty8);
+        var partition8 = function(ma, p7) {
+          return (0, exports.isLeft)(ma) ? (0, Separated_1.separated)(ma, ma) : p7(ma.right) ? (0, Separated_1.separated)(empty8, (0, exports.right)(ma.right)) : (0, Separated_1.separated)((0, exports.right)(ma.right), empty8);
         };
         return {
           URI: exports.URI,
@@ -16675,7 +16689,7 @@ var star;
   });
 
   // extensions/star-ratings/util.tsx
-  var import_function26, RATINGS_FOLDER_NAME, STAR_SIZE, HALF_STAR_LENGTH, starsS2N, starsN2S, getNowPlayingHeart, getStarsFromStarsContainer, getStarStopsFromStar, getStarsStopsFromStarsContainer, setStarsGradientFromContainerByRating, getStarsContainer, getStars, getStarsStops, getTrackLists, getTrackListHeader, getTrackListTracks, getLastColIndex, getFirstHeart, getTrackListTrackUri, getRatingsFolder;
+  var import_function26, RATINGS_FOLDER_NAME, STAR_SIZE, HALF_STAR_LENGTH, starsS2N, starsN2S, getStarsFromStarsContainer, getStarStopsFromStar, getStarsStopsFromStarsContainer, setStarsGradientFromContainerByRating, getStarsContainer, getStars, getStarsStops, getTrackLists, getTrackListHeader, getTrackListTracks, getLastColIndex, getFirstPlus, getTrackListTrackUri, getRatingsFolder;
   var init_util2 = __esm({
     "extensions/star-ratings/util.tsx"() {
       "use strict";
@@ -16689,7 +16703,6 @@ var star;
       HALF_STAR_LENGTH = STAR_SIZE / 2;
       starsS2N = (S) => Number(S) * 2;
       starsN2S = (N) => (N / 2).toFixed(1);
-      getNowPlayingHeart = () => document.querySelector(".main-nowPlayingWidget-nowPlaying .control-button-heart");
       getStarsFromStarsContainer = (starsElement) => Array.from(starsElement.children);
       getStarStopsFromStar = (star) => Array.from(star.firstChild.firstChild.childNodes);
       getStarsStopsFromStarsContainer = (0, import_function26.flow)(getStarsFromStarsContainer, Array_exports.map(getStarStopsFromStar));
@@ -16705,8 +16718,8 @@ var star;
         const lastColIndex = Number(lastCol.getAttribute("aria-colindex"));
         return [lastColIndex, lastCol];
       };
-      getFirstHeart = (parent) => parent.querySelector(
-        ".Button-textSubdued-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle, .Button-textBrightAccent-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle"
+      getFirstPlus = (parent) => parent.querySelector(
+        ".Button-sm-16-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle, .Button-textBrightAccent-sm-16-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle"
       );
       getTrackListTrackUri = (track) => (track = Object.values(track)[0].child.child.child.child, track.pendingProps.uri ?? track.child.pendingProps.uri);
       getRatingsFolder = () => (0, import_function26.flow)(
@@ -16834,9 +16847,9 @@ var star;
         const heartThreshold = starsS2N(CONFIG.heartThreshold);
         if (heartThreshold) {
           const shouldBeHearted = newRating >= heartThreshold;
-          const [isHearted] = await Spicetify.Platform.LibraryAPI.contains(trackUri);
+          const [isHearted] = await isLiked([trackUri]);
           if (isHearted !== shouldBeHearted)
-            Spicetify.Platform.LibraryAPI[shouldBeHearted ? "add" : "remove"](trackUri);
+            toggleLiked([trackUri]);
         }
         if (oldRating === newRating)
           newRating = 0;
@@ -16860,7 +16873,7 @@ var star;
           addPlatPlaylistTracks(playlistUri, [trackUri]);
         }
         updateNowPlayingStars();
-        const trackStarsContainer = getStarsContainer(`${URI11.from(trackUri).id}`);
+        const trackStarsContainer = getStarsContainer(`${URI11.fromString(trackUri).id}`);
         if (trackStarsContainer) {
           (0, import_function27.pipe)(trackStarsContainer, setStarsGradientFromContainerByRating(newRating));
           trackStarsContainer.style.visibility = newRating ? "visible" : "hidden";
@@ -16916,7 +16929,7 @@ var star;
         );
         playlistUris = (0, import_function28.pipe)(
           ratingsFolder.items,
-          Array_exports.map((p6) => [p6.type, p6.uri, starsS2Narray[p6.name]]),
+          Array_exports.map((p7) => [p7.type, p7.uri, starsS2Narray[p7.name]]),
           Array_exports.reduce(
             [],
             (acc, [type, uri, starsN]) => (type === "playlist" && starsN ? acc[starsN] = uri : [], acc)
@@ -16955,7 +16968,7 @@ var star;
     updateNowPlayingStars: () => updateNowPlayingStars,
     updateTrackListStars: () => updateTrackListStars
   });
-  var import_function29, import_spectacles_ts, app_default, URI12, customTrackListColCss, updateTrackListStars, mainElement, mainElementObserver, updateCollectionStars, lastCollectionPlayButton, createNowPlayingStars, nowPlayingHeart, updateNowPlayingStars;
+  var import_function29, import_spectacles_ts, app_default, URI12, customTrackListColCss, updateTrackListStars, mainElement, mainElementObserver, updateCollectionStars, lastCollectionPlayButton, createNowPlayingStars, updateNowPlayingStars;
   var init_app = __esm({
     "extensions/star-ratings/app.tsx"() {
       "use strict";
@@ -16988,7 +17001,7 @@ var star;
           if (trackListTracks.length === 0)
             return;
           const hasStars = (parent) => parent.getElementsByClassName("stars").length > 0;
-          const locationUri = URI12.from(Spicetify.Platform.History.location.pathname);
+          const locationUri = URI12.fromString(Spicetify.Platform.History.location.pathname);
           const firstElement = URI12.isArtist(locationUri) ? trackListTracks[0] : getTrackListHeader(trackList) ?? trackListTracks[0];
           const [lastColIndex] = getLastColIndex(firstElement);
           const newTrackListColCss = customTrackListColCss[lastColIndex - (0, import_function29.pipe)(firstElement, hasStars, Number)];
@@ -16998,7 +17011,7 @@ var star;
           (0, import_function29.pipe)(
             trackListTracks,
             Array_exports.map((track) => {
-              const heart = getFirstHeart(track);
+              const heart = getFirstPlus(track);
               if (heart)
                 heart.style.display = CONFIG.hideHearts ? "none" : "flex";
               if (hasStars(track))
@@ -17018,7 +17031,7 @@ var star;
                 track.style.gridTemplateColumns = newTrackListColCss;
               }
               const trackUri = getTrackListTrackUri(track);
-              const uri = URI12.from(trackUri);
+              const uri = URI12.fromString(trackUri);
               if (!URI12.isTrack(uri))
                 return;
               const [starsContainer, starsConstructs] = createStars(uri.id, STAR_SIZE);
@@ -17055,7 +17068,7 @@ var star;
         subtree: true
       });
       updateCollectionStars = async (pathname, starsStops) => {
-        const uri = URI12.from(pathname);
+        const uri = URI12.fromString(pathname);
         if (!starsStops)
           starsStops = getStarsStops("collection");
         let uris;
@@ -17106,9 +17119,6 @@ var star;
         );
       };
       createNowPlayingStars();
-      nowPlayingHeart = getNowPlayingHeart();
-      if (nowPlayingHeart)
-        nowPlayingHeart.style.display = CONFIG.hideHearts ? "none" : "flex";
       updateNowPlayingStars = () => {
         const trackUri = Spicetify.Player.data.track?.uri;
         const nowPlayingStarsContainer = getStarsContainer("now-playing");

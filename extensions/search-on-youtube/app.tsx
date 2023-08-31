@@ -14,7 +14,7 @@ const { URI } = Spicetify
 const YTVidIDCache = new Map<SpotifyID, string>()
 
 const showOnYouTube = async (uri: SpotifyURI) => {
-    const id = URI.from(uri)!.id!
+    const id = URI.fromString(uri)!.id!
     if (!YTVidIDCache.get(id)) {
         const track = parseAPITrackFromSpotify((await fetchWebTracksSpot([id]))[0])
         const searchString = `${track.artistName} - ${track.name} music video`

@@ -1,7 +1,10 @@
-/* temp_stylePlugin:ni:sha-256;7DtHgI5neOE3UVG8b0ZOA8ADPylkSfdycYqFbItjCjg */
+/* temp_stylePlugin:ni:sha-256;_IZ9Mw6gHTZPQBGQ1mlVMjSkCFPr1u9vM7zF5P8u3CU */
 .main-yourLibraryX-navItems {
   padding: 4px 0px;
 }
-.sXeh8Jm1gvjUu3yjDK_P {
-  display: none;
+.main-yourLibraryX-collapseButton > button[aria-label="Collapse Your Library"] {
+  visibility: collapse;
+}
+.main-yourLibraryX-collapseButton > button[aria-label="Collapse Your Library"] > span {
+  visibility: visible;
 }

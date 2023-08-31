@@ -12,9 +12,6 @@ export const HALF_STAR_LENGTH = STAR_SIZE / 2
 export const starsS2N = (S: string) => Number(S) * 2
 export const starsN2S = (N: number) => (N / 2).toFixed(1)
 
-export const getNowPlayingHeart = () =>
-    document.querySelector<HTMLButtonElement>(".main-nowPlayingWidget-nowPlaying .control-button-heart")
-
 export const getStarsFromStarsContainer = (starsElement: HTMLSpanElement) =>
     Array.from(starsElement.children) as SVGSVGElement[]
 export const getStarStopsFromStar = (star: SVGSVGElement) =>
@@ -40,9 +37,9 @@ export const getLastColIndex = (parent: HTMLElement) => {
     return [lastColIndex, lastCol] as [number, HTMLDivElement]
 }
 
-export const getFirstHeart = (parent: HTMLElement) =>
+export const getFirstPlus = (parent: HTMLElement) =>
     parent.querySelector<HTMLButtonElement>(
-        ".Button-textSubdued-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle, .Button-textBrightAccent-sm-16-buttonTertiary-iconOnly-condensed-useBrowserDefaultFocusStyle",
+        ".Button-sm-16-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle, .Button-textBrightAccent-sm-16-buttonTertiary-iconOnly-useBrowserDefaultFocusStyle",
     )!
 
 export const getTrackListTrackUri = (track: HTMLDivElement) => (

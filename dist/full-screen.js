@@ -12092,9 +12092,9 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
         __assign = Object.assign || function __assign2(t) {
           for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
-            for (var p3 in s)
-              if (Object.prototype.hasOwnProperty.call(s, p3))
-                t[p3] = s[p3];
+            for (var p4 in s)
+              if (Object.prototype.hasOwnProperty.call(s, p4))
+                t[p4] = s[p4];
           }
           return t;
         };
@@ -12819,9 +12819,9 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
         extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
           d2.__proto__ = b2;
         } || function(d2, b2) {
-          for (var p3 in b2)
-            if (Object.prototype.hasOwnProperty.call(b2, p3))
-              d2[p3] = b2[p3];
+          for (var p4 in b2)
+            if (Object.prototype.hasOwnProperty.call(b2, p4))
+              d2[p4] = b2[p4];
         };
         return extendStatics(d, b);
       };
@@ -13203,8 +13203,8 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
           return extendStatics2 = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
             d2.__proto__ = b2;
           } || function(d2, b2) {
-            for (var p3 in b2)
-              b2.hasOwnProperty(p3) && (d2[p3] = b2[p3]);
+            for (var p4 in b2)
+              b2.hasOwnProperty(p4) && (d2[p4] = b2[p4]);
           }, extendStatics2(d, b);
         };
         function __extends2(d, b) {
@@ -13216,8 +13216,8 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
         var __assign2 = function() {
           return __assign2 = Object.assign || function(t) {
             for (var s, i = 1, n = arguments.length; i < n; i++)
-              for (var p3 in s = arguments[i])
-                Object.prototype.hasOwnProperty.call(s, p3) && (t[p3] = s[p3]);
+              for (var p4 in s = arguments[i])
+                Object.prototype.hasOwnProperty.call(s, p4) && (t[p4] = s[p4]);
             return t;
           }, __assign2.apply(this, arguments);
         };
@@ -13227,23 +13227,23 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
           return e;
         }
         function getControlPoints(idx, points, closed) {
-          var p0, p1, p22, p3, maxIndex = points.length - 1;
+          var p0, p1, p22, p32, maxIndex = points.length - 1;
           if (closed)
-            p0 = points[idx - 1 < 0 ? maxIndex : idx - 1], p1 = points[idx % points.length], p22 = points[(idx + 1) % points.length], p3 = points[(idx + 2) % points.length];
+            p0 = points[idx - 1 < 0 ? maxIndex : idx - 1], p1 = points[idx % points.length], p22 = points[(idx + 1) % points.length], p32 = points[(idx + 2) % points.length];
           else {
             if (idx === maxIndex)
               throw Error("There is no spline segment at this index for a closed curve!");
-            p1 = points[idx], p22 = points[idx + 1], p0 = idx > 0 ? points[idx - 1] : extrapolateControlPoint(p1, p22), p3 = idx < maxIndex - 1 ? points[idx + 2] : extrapolateControlPoint(p22, p1);
+            p1 = points[idx], p22 = points[idx + 1], p0 = idx > 0 ? points[idx - 1] : extrapolateControlPoint(p1, p22), p32 = idx < maxIndex - 1 ? points[idx + 2] : extrapolateControlPoint(p22, p1);
           }
-          return [p0, p1, p22, p3];
+          return [p0, p1, p22, p32];
         }
         function getSegmentIndexAndT(ct, points, closed) {
           void 0 === closed && (closed = false);
           var nPoints = closed ? points.length : points.length - 1;
           if (1 === ct)
             return { index: nPoints - 1, weight: 1 };
-          var p3 = nPoints * ct, index = Math.floor(p3);
-          return { index, weight: p3 - index };
+          var p4 = nPoints * ct, index = Math.floor(p4);
+          return { index, weight: p4 - index };
         }
         function fill(v, val) {
           for (var i = 0; i < v.length; i++)
@@ -13302,19 +13302,19 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
         function getCubicRoots(a, b, c, d) {
           if (Math.abs(a) < EPS)
             return getQuadRoots(b, c, d);
-          var roots, p3 = (3 * a * c - b * b) / (3 * a * a), q = (2 * b * b * b - 9 * a * b * c + 27 * a * a * d) / (27 * a * a * a);
-          if (Math.abs(p3) < EPS)
+          var roots, p4 = (3 * a * c - b * b) / (3 * a * a), q = (2 * b * b * b - 9 * a * b * c + 27 * a * a * d) / (27 * a * a * a);
+          if (Math.abs(p4) < EPS)
             roots = [cuberoot(-q)];
           else if (Math.abs(q) < EPS)
-            roots = [0].concat(p3 < 0 ? [Math.sqrt(-p3), -Math.sqrt(-p3)] : []);
+            roots = [0].concat(p4 < 0 ? [Math.sqrt(-p4), -Math.sqrt(-p4)] : []);
           else {
-            var D = q * q / 4 + p3 * p3 * p3 / 27;
+            var D = q * q / 4 + p4 * p4 * p4 / 27;
             if (Math.abs(D) < EPS)
-              roots = [-1.5 * q / p3, 3 * q / p3];
+              roots = [-1.5 * q / p4, 3 * q / p4];
             else if (D > 0) {
-              roots = [(u = cuberoot(-q / 2 - Math.sqrt(D))) - p3 / (3 * u)];
+              roots = [(u = cuberoot(-q / 2 - Math.sqrt(D))) - p4 / (3 * u)];
             } else {
-              var u = 2 * Math.sqrt(-p3 / 3), t = Math.acos(3 * q / p3 / u) / 3, k = 2 * Math.PI / 3;
+              var u = 2 * Math.sqrt(-p4 / 3), t = Math.acos(3 * q / p4 / u) / 3, k = 2 * Math.PI / 3;
               roots = [u * Math.cos(t), u * Math.cos(t - k), u * Math.cos(t - 2 * k)];
             }
           }
@@ -13325,9 +13325,9 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
         function dot(v1, v2) {
           if (v1.length !== v2.length)
             throw Error("Vectors must be of equal length!");
-          for (var p3 = 0, k = 0; k < v1.length; k++)
-            p3 += v1[k] * v2[k];
-          return p3;
+          for (var p4 = 0, k = 0; k < v1.length; k++)
+            p4 += v1[k] * v2[k];
+          return p4;
         }
         function cross(v1, v2, target) {
           if (!(v1.length > 3)) {
@@ -13364,17 +13364,17 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
           var u = target ? copyValues(v, target) : v, x = -u[1];
           return u[1] = u[0], u[0] = x, u;
         }
-        function calcKnotSequence(p0, p1, p22, p3, alpha) {
+        function calcKnotSequence(p0, p1, p22, p32, alpha) {
           if (void 0 === alpha && (alpha = 0), 0 === alpha)
             return [0, 1, 2, 3];
           var deltaT = function(u, v) {
             return Math.pow(sumOfSquares(u, v), 0.5 * alpha);
           }, t1 = deltaT(p1, p0), t2 = deltaT(p22, p1) + t1;
-          return [0, t1, t2, deltaT(p3, p22) + t2];
+          return [0, t1, t2, deltaT(p32, p22) + t2];
         }
-        function calculateCoefficients(p0, p1, p22, p3, options2) {
-          for (var tension = Number.isFinite(options2.tension) ? options2.tension : 0.5, alpha = Number.isFinite(options2.alpha) ? options2.alpha : null, knotSequence = alpha > 0 ? calcKnotSequence(p0, p1, p22, p3, alpha) : null, coefficientsList = new Array(p0.length), k = 0; k < p0.length; k++) {
-            var u = 0, v = 0, v0 = p0[k], v1 = p1[k], v2 = p22[k], v3 = p3[k];
+        function calculateCoefficients(p0, p1, p22, p32, options2) {
+          for (var tension = Number.isFinite(options2.tension) ? options2.tension : 0.5, alpha = Number.isFinite(options2.alpha) ? options2.alpha : null, knotSequence = alpha > 0 ? calcKnotSequence(p0, p1, p22, p32, alpha) : null, coefficientsList = new Array(p0.length), k = 0; k < p0.length; k++) {
+            var u = 0, v = 0, v0 = p0[k], v1 = p1[k], v2 = p22[k], v3 = p32[k];
             if (knotSequence) {
               var t0 = knotSequence[0], t1 = knotSequence[1], t2 = knotSequence[2], t3 = knotSequence[3];
               t1 - t2 != 0 && (t0 - t1 != 0 && t0 - t2 != 0 && (u = (1 - tension) * (t2 - t1) * ((v0 - v1) / (t0 - t1) - (v0 - v2) / (t0 - t2) + (v1 - v2) / (t1 - t2))), t1 - t3 != 0 && t2 - t3 != 0 && (v = (1 - tension) * (t2 - t1) * ((v1 - v2) / (t1 - t2) - (v1 - v3) / (t1 - t3) + (v2 - v3) / (t2 - t3))));
@@ -13461,8 +13461,8 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
           }, SegmentedCurveMapper2.prototype.computeArcLengths = function() {
             var current, lengths = [], last6 = this.evaluateForT(valueAtT, 0), sum = 0;
             lengths.push(0);
-            for (var p3 = 1; p3 <= this._subDivisions; p3++)
-              sum += distance(current = this.evaluateForT(valueAtT, p3 / this._subDivisions), last6), lengths.push(sum), last6 = current;
+            for (var p4 = 1; p4 <= this._subDivisions; p4++)
+              sum += distance(current = this.evaluateForT(valueAtT, p4 / this._subDivisions), last6), lengths.push(sum), last6 = current;
             return lengths;
           }, SegmentedCurveMapper2.prototype.lengthAt = function(u) {
             var arcLengths = this.arcLengths;
@@ -13861,8 +13861,8 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
           }, enumerable: false, configurable: true }), Point2;
         }(), CurveInterpolator2D = function(_super) {
           function CurveInterpolator2D2(points, tension, arcDivisions, closed, alpha) {
-            return void 0 === tension && (tension = 0.5), void 0 === arcDivisions && (arcDivisions = 300), void 0 === closed && (closed = false), void 0 === alpha && (alpha = 0), _super.call(this, points.map(function(p3) {
-              return [p3[0], p3[1]];
+            return void 0 === tension && (tension = 0.5), void 0 === arcDivisions && (arcDivisions = 300), void 0 === closed && (closed = false), void 0 === alpha && (alpha = 0), _super.call(this, points.map(function(p4) {
+              return [p4[0], p4[1]];
             }), { tension, alpha, arcDivisions, closed }) || this;
           }
           return __extends2(CurveInterpolator2D2, _super), CurveInterpolator2D2.prototype.x = function(y, max5, margin) {
@@ -13898,14 +13898,14 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
           for (var _a2 = __assign2({ tension: 0.5, alpha: 0, closed: false, from: 0, to: 1 }, options2), tension = _a2.tension, alpha = _a2.alpha, closed = _a2.closed, t0 = _a2.from, t1 = _a2.to, nPoints = closed ? points.length : points.length - 1, i0 = Math.floor(nPoints * t0), i1 = Math.ceil(nPoints * t1), start = getPointAtT(t0, points, { tension, alpha, closed }), end = getPointAtT(t1, points, { tension, alpha, closed }), min5 = [], max5 = [], c = 0; c < start.length; c++)
             min5[c] = Math.min(start[c], end[c]), max5[c] = Math.max(start[c], end[c]);
           for (var _loop_1 = function(i2) {
-            var _b = getControlPoints(i2 - 1, points, closed), p0 = _b[0], p1 = _b[1], p22 = _b[2], p3 = _b[3];
+            var _b = getControlPoints(i2 - 1, points, closed), p0 = _b[0], p1 = _b[1], p22 = _b[2], p32 = _b[3];
             if (i2 < i1)
               for (var c2 = 0; c2 < p22.length; c2++)
                 p22[c2] < min5[c2] && (min5[c2] = p22[c2]), p22[c2] > max5[c2] && (max5[c2] = p22[c2]);
             if (tension < 1) {
               var w0_1 = nPoints * t0 - (i2 - 1), w1_1 = nPoints * t1 - (i2 - 1), valid = function(t) {
                 return t > -EPS && t <= 1 + EPS && (i2 - 1 !== i0 || t > w0_1) && (i2 !== i1 || t < w1_1);
-              }, coefficients_1 = calculateCoefficients(p0, p1, p22, p3, { tension, alpha }), _loop_2 = function(c3) {
+              }, coefficients_1 = calculateCoefficients(p0, p1, p22, p32, { tension, alpha }), _loop_2 = function(c3) {
                 var _c = coefficients_1[c3];
                 getQuadRoots(3 * _c[0], 2 * _c[1], _c[2]).filter(valid).forEach(function(t) {
                   var v = valueAtT(t, coefficients_1[c3]);
@@ -14195,9 +14195,9 @@ ${config_default.get("lyricsDisplay") ? `<div id="BeautifulLyrics" class="Beauti
         return A;
       }
       function swapRows(m, k, l) {
-        let p3 = m[k];
+        let p4 = m[k];
         m[k] = m[l];
-        m[l] = p3;
+        m[l] = p4;
       }
     }
   });
@@ -16619,7 +16619,7 @@ ${content[index].words}`;
           this.song = this.maid.handle(
             new Song(
               {
-                trackId: Spicetify.URI.from(uri).id,
+                trackId: Spicetify.URI.fromString(uri).id,
                 duration: event.data.duration / 1e3,
                 isLocal: metadata.is_local === "true",
                 isPlaying: !event.data.is_paused,

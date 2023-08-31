@@ -3872,9 +3872,9 @@ var sort;
         __assign = Object.assign || function(t) {
           for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
-            for (var p4 in s)
-              if (Object.prototype.hasOwnProperty.call(s, p4))
-                t[p4] = s[p4];
+            for (var p5 in s)
+              if (Object.prototype.hasOwnProperty.call(s, p5))
+                t[p5] = s[p5];
           }
           return t;
         };
@@ -6293,8 +6293,8 @@ var sort;
         Fold2.prototype.composeIso = function(ab) {
           return this.compose(ab.asFold());
         };
-        Fold2.prototype.find = function(p4) {
-          return this.foldMapFirst(fromPredicate2(p4));
+        Fold2.prototype.find = function(p5) {
+          return this.foldMapFirst(fromPredicate2(p5));
         };
         Fold2.prototype.headOption = function(s) {
           return this.find(function() {
@@ -6888,7 +6888,7 @@ var sort;
       };
       getPlaylistTracks = (0, import_function30.flow)(fetchPlatPlaylistContents, pMchain(Array_exports.map(parseAPITrackFromPlaylist)));
       fetchAPITracksFromTracks = (0, import_function30.flow)(
-        Array_exports.map(({ uri }) => URI15.from(uri).id),
+        Array_exports.map(({ uri }) => URI15.fromString(uri).id),
         fetchWebTracksSpot,
         pMchain(Array_exports.map(parseAPITrackFromSpotify))
       );
@@ -6998,7 +6998,7 @@ var sort;
         (0, import_function30.tupled)(anyPass([URI15.isAlbum, URI15.isArtist, URI15.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")]))
       ).register();
       generatePlaylistName = async () => {
-        const uriToId = (uri) => URI15.from(uri).id;
+        const uriToId = (uri) => URI15.fromString(uri).id;
         const getName = (fn) => async (id6) => (await fn([id6]))[0].name;
         const collectionName = await guard4([
           [URI15.isAlbum, (0, import_function30.flow)(uriToId, getName(fetchWebAlbumsSpot))],
