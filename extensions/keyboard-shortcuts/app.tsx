@@ -2,6 +2,7 @@ import { enterSneak, keyList, listenSneakKeys, mousetrap, quitSneak } from "./sn
 import { appScroll, appScrollY, openPage, registerBind, resizeLeftSidebar, rotateSidebar } from "./util"
 
 import "./assets/styles.scss"
+import { toggleLiked } from "../../shared/util"
 
 const { KEYS } = Spicetify.Keyboard
 
@@ -32,7 +33,7 @@ registerBind("G", false, false, false, () => appScrollY(0))
 registerBind("G", false, true, false, () => appScrollY(Number.MAX_SAFE_INTEGER))
 
 // M to Like/Unlike track
-registerBind("M", false, false, false, Spicetify.Player.toggleHeart)
+registerBind("M", false, false, false, () => toggleLiked([Spicetify.Player.data.item.uri]))
 
 // Forward Slash to open search page
 registerBind("/", false, false, false, e => {

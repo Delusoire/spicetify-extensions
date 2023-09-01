@@ -3246,6 +3246,52 @@ var keyboard;
     }
   });
 
+  // shared/util.tsx
+  var import_function9, SpotifyLoc, sleep, isLiked, setLiked, toggleLiked;
+  var init_util = __esm({
+    "shared/util.tsx"() {
+      "use strict";
+      init_es6();
+      import_function9 = __toESM(require_function());
+      ((SpotifyLoc2) => {
+        let before;
+        ((before2) => {
+          before2.start = (0, import_function9.constant)({ before: "start" });
+          before2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          before2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(before = SpotifyLoc2.before || (SpotifyLoc2.before = {}));
+        let after;
+        ((after2) => {
+          after2.end = (0, import_function9.constant)({ after: "end" });
+          after2.fromUri = (uri) => ({
+            before: { uri }
+          });
+          after2.fromUid = (uid) => ({
+            before: { uid }
+          });
+        })(after = SpotifyLoc2.after || (SpotifyLoc2.after = {}));
+      })(SpotifyLoc || (SpotifyLoc = {}));
+      sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      isLiked = (uris) => Spicetify.Platform.LibraryAPI.contains(...uris);
+      setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"](...uris);
+      toggleLiked = async (uris) => {
+        const liked = await isLiked(uris);
+        return await (0, import_function9.pipe)(
+          uris,
+          Array_exports.reduceWithIndex(
+            [[], []],
+            (i, acc, uri) => (acc[Number(liked[i])].push(uri), acc)
+          ),
+          ([toAdd, toRem]) => Promise.all([setLiked(toAdd, true), setLiked(toRem, false)])
+        );
+      };
+    }
+  });
+
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
   var import_function10, URI3, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
@@ -3795,7 +3841,7 @@ var keyboard;
 
   // extensions/keyboard-shortcuts/util.tsx
   var import_function15, SCROLL_STEP, focusOnApp, appScroll, appScrollY, openPage, rotateSidebar, resizeLeftSidebar, registerBind;
-  var init_util = __esm({
+  var init_util2 = __esm({
     "extensions/keyboard-shortcuts/util.tsx"() {
       "use strict";
       import_function15 = __toESM(require_function());
@@ -3853,8 +3899,9 @@ var keyboard;
     "extensions/keyboard-shortcuts/app.tsx"() {
       "use strict";
       init_sneak();
-      init_util();
+      init_util2();
       init_styles();
+      init_util();
       ({ KEYS } = Spicetify.Keyboard);
       resizeLeftSidebar(200);
       registerBind("S", false, true, false, async () => {
@@ -3870,7 +3917,7 @@ var keyboard;
       registerBind("K", false, false, false, () => appScroll(-1));
       registerBind("G", false, false, false, () => appScrollY(0));
       registerBind("G", false, true, false, () => appScrollY(Number.MAX_SAFE_INTEGER));
-      registerBind("M", false, false, false, Spicetify.Player.toggleHeart);
+      registerBind("M", false, false, false, () => toggleLiked([Spicetify.Player.data.item.uri]));
       registerBind("/", false, false, false, (e) => {
         e.preventDefault();
         openPage("/search");
@@ -3891,35 +3938,7 @@ var keyboard;
   init_es6();
   init_Record();
   var import_function16 = __toESM(require_function());
-
-  // shared/util.tsx
-  var import_function9 = __toESM(require_function());
-  var SpotifyLoc;
-  ((SpotifyLoc2) => {
-    let before;
-    ((before2) => {
-      before2.start = (0, import_function9.constant)({ before: "start" });
-      before2.fromUri = (uri) => ({
-        before: { uri }
-      });
-      before2.fromUid = (uid) => ({
-        before: { uid }
-      });
-    })(before = SpotifyLoc2.before || (SpotifyLoc2.before = {}));
-    let after;
-    ((after2) => {
-      after2.end = (0, import_function9.constant)({ after: "end" });
-      after2.fromUri = (uri) => ({
-        before: { uri }
-      });
-      after2.fromUid = (uid) => ({
-        before: { uid }
-      });
-    })(after = SpotifyLoc2.after || (SpotifyLoc2.after = {}));
-  })(SpotifyLoc || (SpotifyLoc = {}));
-  var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-  // extensions/keyboard-shortcuts/entry.tsx
+  init_util();
   (async () => {
     const mustLoad = ["Keyboard", "Mousetrap", "Platform", "Player"];
     let timer = 0;
