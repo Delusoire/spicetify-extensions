@@ -176,12 +176,15 @@ const populateTrackLastFM = async (track: TrackData) => {
 
 // Fetching, Sorting and Playing
 
-export const fetchTracks = guard([
-    [URI.isAlbum, getAlbumTracks],
-    [URI.isArtist, getArtistTracks],
-    [URI.isPlaylistV1OrV2, getPlaylistTracks],
-    [startsWith("spotify:collection:tracks"), f(fetchPlatLikedTracks, pMchain(a.map(parsePlatLikedTracks)))],
-])(task.of([]))
+export const fetchTracks = f(
+    tapAny(uri => void (lastFetchedUri = uri)),
+    guard([
+        [URI.isAlbum, getAlbumTracks],
+        [URI.isArtist, getArtistTracks],
+        [URI.isPlaylistV1OrV2, getPlaylistTracks],
+        [startsWith("spotify:collection:tracks"), f(fetchPlatLikedTracks, pMchain(a.map(parsePlatLikedTracks)))],
+    ])(task.of([])),
+)
 
 export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
     [startsWith("Spotify"), populateTracksSpot],
@@ -202,17 +205,16 @@ const setQueue = async (queue: TrackData[]) => {
 
     await Spicetify.Platform.PlayerAPI.clearQueue()
     addToContextQueue(lastSortedQueue.map(t => t.uri))
-    setPlayingContext(lastSortedUri)
+    setPlayingContext(lastFetchedUri)
     Spicetify.Player.next()
 }
 
 const toOptProp = (prop: keyof typeof SortProp) => Optional.fromNullableProp<TrackData>()(SortProp[prop]).getOption
 
-let lastSortedUri: SpotifyURI = ""
-let lastSortedName: keyof typeof SortProp
+let lastFetchedUri: SpotifyURI
+let lastActionName: keyof typeof SortProp | "True Shuffle" | "Stars"
 export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
-    lastSortedUri = uri
-    lastSortedName = name
+    lastActionName = name
     const propOrd = p(
         number.Ord,
         ord.contramap((t: Required<TrackData>) => t[SortProp[name]]),
@@ -229,16 +231,29 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
     )
 }
 
+let invertAscending = 0
+window.addEventListener("keydown", event => {
+    if (!event.repeat && event.key == "Control") invertAscending = 1
+})
+
+window.addEventListener("keyup", event => {
+    if (!event.repeat && event.key == "Control") invertAscending = 0
+})
+
 // Menu
 
-const createSortByPropSubmenu = (name: keyof typeof SortProp, icon: any) =>
-    new Spicetify.ContextMenu.Item(name, tupled(sortByProp(name)) as any, constTrue, icon, false)
+const fetchSortQueue =
+    (name: typeof lastActionName, sortFn: (tracksIn: TrackData[]) => TrackData[]) =>
+    ([uri]: [SpotifyURI]) => {
+        lastActionName = name
+        p(uri, fetchTracks, pMchain(sortFn), pMchain(setQueue))
+    }
 
 const shuffle = <A,>(array: A[], l = array.length): A[] =>
     l == 0 ? [] : [array.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array)]
 const shuffleSubmenu = new Spicetify.ContextMenu.Item(
     "True Shuffle",
-    tupled(f(fetchTracks, pMchain(shuffle), pMchain(setQueue))) as any,
+    fetchSortQueue("True Shuffle", shuffle) as any,
     constTrue,
     "shuffle",
     false,
@@ -250,12 +265,14 @@ const starsOrd = p(
 )
 const starsSubmenu = new Spicetify.ContextMenu.Item(
     "Stars",
-    tupled(f(fetchTracks, pMchain(a.sort(starsOrd)), pMchain(tapAny(x => console.log(x))), pMchain(setQueue))) as any,
-    // @ts-ignore
-    () => globalThis.tracksRatings !== undefined,
+    fetchSortQueue("Stars", a.sort(starsOrd)) as any,
+    () => (globalThis as any).tracksRatings !== undefined,
     "heart-active",
     false,
 )
+
+const createSortByPropSubmenu = (name: keyof typeof SortProp, icon: any) =>
+    new Spicetify.ContextMenu.Item(name, tupled(sortByProp(name)) as any, constTrue, icon, false)
 
 new Spicetify.ContextMenu.SubMenu(
     "Sort by",
@@ -269,6 +286,8 @@ new Spicetify.ContextMenu.SubMenu(
     tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")])) as any,
 ).register()
 
+// Topbar
+
 const generatePlaylistName = async () => {
     const uriToId = (uri: SpotifyURI) => URI.fromString(uri)!.id!
     const getName = (fn: Function) => async (id: SpotifyID) => (await fn([id]))[0].name
@@ -278,9 +297,9 @@ const generatePlaylistName = async () => {
         [URI.isArtist, f(uriToId, getName(fetchWebArtistsSpot))],
         [URI.isPlaylistV1OrV2, f(uriToId, getName(fetchWebPlaylistsSpot))],
         [startsWith("spotify:collection:tracks"), task.of("Liked Tracks")],
-    ])(task.of("Unresolved"))(lastSortedUri)
+    ])(task.of("Unresolved"))(lastFetchedUri)
 
-    return `${collectionName} - ${lastSortedName}`
+    return `${collectionName} - ${lastActionName}`
 }
 new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
     if (lastSortedQueue.length === 0) return void Spicetify.showNotification("Must sort to queue beforehand")
@@ -305,24 +324,15 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
 
 new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
     if (lastSortedQueue.length === 0) return void Spicetify.showNotification("Must sort to queue beforehand")
-    if (!URI.isPlaylistV1OrV2(lastSortedUri))
+    if (!URI.isPlaylistV1OrV2(lastFetchedUri))
         return void Spicetify.showNotification("Last sorted queue must be a playlist")
 
     p(
         lastSortedQueue as unknown as Array<{ uid: string }>,
         withProgress(a.map<{ uid: string }, void>)(
-            t => void movePlatPlaylistTracks(lastSortedUri, [t], SpotifyLoc.after.end()),
+            t => void movePlatPlaylistTracks(lastFetchedUri, [t], SpotifyLoc.after.end()),
         ),
     )
-})
-
-let invertAscending = 0
-window.addEventListener("keydown", event => {
-    if (!event.repeat && event.key == "Control") invertAscending = 1
-})
-
-window.addEventListener("keyup", event => {
-    if (!event.repeat && event.key == "Control") invertAscending = 0
 })
 
 //TODO: add sort inside playlist's custom order

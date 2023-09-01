@@ -6858,7 +6858,7 @@ var sort;
     }
     return allTracks;
   }
-  var import_function30, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastSortedUri, lastSortedName, sortByProp, createSortByPropSubmenu, shuffle, shuffleSubmenu, starsOrd, starsSubmenu, generatePlaylistName, invertAscending;
+  var import_function30, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastFetchedUri, lastActionName, sortByProp, invertAscending, fetchSortQueue, shuffle, shuffleSubmenu, starsOrd, starsSubmenu, createSortByPropSubmenu, generatePlaylistName;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -6949,12 +6949,15 @@ var sort;
         track.personalScrobbles = Number(lastfmTrack.userplaycount);
         return track;
       };
-      fetchTracks = guard4([
-        [URI15.isAlbum, getAlbumTracks],
-        [URI15.isArtist, getArtistTracks],
-        [URI15.isPlaylistV1OrV2, getPlaylistTracks],
-        [startsWith("spotify:collection:tracks"), (0, import_function30.flow)(fetchPlatLikedTracks, pMchain(Array_exports.map(parsePlatLikedTracks)))]
-      ])(Task_exports.of([]));
+      fetchTracks = (0, import_function30.flow)(
+        tapAny((uri) => void (lastFetchedUri = uri)),
+        guard4([
+          [URI15.isAlbum, getAlbumTracks],
+          [URI15.isArtist, getArtistTracks],
+          [URI15.isPlaylistV1OrV2, getPlaylistTracks],
+          [startsWith("spotify:collection:tracks"), (0, import_function30.flow)(fetchPlatLikedTracks, pMchain(Array_exports.map(parsePlatLikedTracks)))]
+        ])(Task_exports.of([]))
+      );
       populateTracks = guard4([
         [startsWith("Spotify"), populateTracksSpot],
         [
@@ -6971,14 +6974,12 @@ var sort;
         lastSortedQueue = (0, import_function30.pipe)(queue, Array_exports.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? import_function30.identity : Array_exports.reverse);
         await Spicetify.Platform.PlayerAPI.clearQueue();
         addToContextQueue(lastSortedQueue.map((t) => t.uri));
-        setPlayingContext(lastSortedUri);
+        setPlayingContext(lastFetchedUri);
         Spicetify.Player.next();
       };
       toOptProp = (prop2) => Optional.fromNullableProp()(SortProp[prop2]).getOption;
-      lastSortedUri = "";
       sortByProp = (name) => async (uri) => {
-        lastSortedUri = uri;
-        lastSortedName = name;
+        lastActionName = name;
         const propOrd = (0, import_function30.pipe)(
           number_exports.Ord,
           Ord_exports.contramap((t) => t[SortProp[name]])
@@ -6993,11 +6994,23 @@ var sort;
           pMchain(Option_exports.map(setQueue))
         );
       };
-      createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, (0, import_function30.tupled)(sortByProp(name)), import_function30.constTrue, icon, false);
+      invertAscending = 0;
+      window.addEventListener("keydown", (event) => {
+        if (!event.repeat && event.key == "Control")
+          invertAscending = 1;
+      });
+      window.addEventListener("keyup", (event) => {
+        if (!event.repeat && event.key == "Control")
+          invertAscending = 0;
+      });
+      fetchSortQueue = (name, sortFn) => ([uri]) => {
+        lastActionName = name;
+        (0, import_function30.pipe)(uri, fetchTracks, pMchain(sortFn), pMchain(setQueue));
+      };
       shuffle = (array2, l = array2.length) => l == 0 ? [] : [array2.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array2)];
       shuffleSubmenu = new Spicetify.ContextMenu.Item(
         "True Shuffle",
-        (0, import_function30.tupled)((0, import_function30.flow)(fetchTracks, pMchain(shuffle), pMchain(setQueue))),
+        fetchSortQueue("True Shuffle", shuffle),
         import_function30.constTrue,
         "shuffle",
         false
@@ -7008,12 +7021,12 @@ var sort;
       );
       starsSubmenu = new Spicetify.ContextMenu.Item(
         "Stars",
-        (0, import_function30.tupled)((0, import_function30.flow)(fetchTracks, pMchain(Array_exports.sort(starsOrd)), pMchain(tapAny((x) => console.log(x))), pMchain(setQueue))),
-        // @ts-ignore
+        fetchSortQueue("Stars", Array_exports.sort(starsOrd)),
         () => globalThis.tracksRatings !== void 0,
         "heart-active",
         false
       );
+      createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, (0, import_function30.tupled)(sortByProp(name)), import_function30.constTrue, icon, false);
       new Spicetify.ContextMenu.SubMenu(
         "Sort by",
         Array_exports.zipWith(
@@ -7031,8 +7044,8 @@ var sort;
           [URI15.isArtist, (0, import_function30.flow)(uriToId, getName(fetchWebArtistsSpot))],
           [URI15.isPlaylistV1OrV2, (0, import_function30.flow)(uriToId, getName(fetchWebPlaylistsSpot))],
           [startsWith("spotify:collection:tracks"), Task_exports.of("Liked Tracks")]
-        ])(Task_exports.of("Unresolved"))(lastSortedUri);
-        return `${collectionName} - ${lastSortedName}`;
+        ])(Task_exports.of("Unresolved"))(lastFetchedUri);
+        return `${collectionName} - ${lastActionName}`;
       };
       new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
         if (lastSortedQueue.length === 0)
@@ -7055,23 +7068,14 @@ var sort;
       new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
         if (lastSortedQueue.length === 0)
           return void Spicetify.showNotification("Must sort to queue beforehand");
-        if (!URI15.isPlaylistV1OrV2(lastSortedUri))
+        if (!URI15.isPlaylistV1OrV2(lastFetchedUri))
           return void Spicetify.showNotification("Last sorted queue must be a playlist");
         (0, import_function30.pipe)(
           lastSortedQueue,
           withProgress(Array_exports.map)(
-            (t) => void movePlatPlaylistTracks(lastSortedUri, [t], SpotifyLoc.after.end())
+            (t) => void movePlatPlaylistTracks(lastFetchedUri, [t], SpotifyLoc.after.end())
           )
         );
-      });
-      invertAscending = 0;
-      window.addEventListener("keydown", (event) => {
-        if (!event.repeat && event.key == "Control")
-          invertAscending = 1;
-      });
-      window.addEventListener("keyup", (event) => {
-        if (!event.repeat && event.key == "Control")
-          invertAscending = 0;
       });
     }
   });
