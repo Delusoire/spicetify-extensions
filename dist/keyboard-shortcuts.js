@@ -3286,7 +3286,14 @@ var keyboard;
             [[], []],
             (i, acc, uri) => (acc[Number(liked[i])].push(uri), acc)
           ),
-          ([toAdd, toRem]) => Promise.all([setLiked(toAdd, true), setLiked(toRem, false)])
+          ([toAdd, toRem]) => {
+            const ps = [];
+            if (toAdd.length)
+              ps.push(setLiked(toAdd, true));
+            if (toRem.length)
+              ps.push(setLiked(toRem, false));
+            return Promise.all(ps);
+          }
         );
       };
     }
