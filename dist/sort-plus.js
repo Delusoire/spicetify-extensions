@@ -6973,9 +6973,9 @@ var sort;
         );
         lastSortedQueue = (0, import_function30.pipe)(queue, Array_exports.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? import_function30.identity : Array_exports.reverse);
         await Spicetify.Platform.PlayerAPI.clearQueue();
-        addToContextQueue(lastSortedQueue.map((t) => t.uri));
         setPlayingContext(lastFetchedUri);
-        Spicetify.Player.next();
+        await addToContextQueue(lastSortedQueue.map((t) => t.uri));
+        await Spicetify.Player.next();
       };
       toOptProp = (prop2) => Optional.fromNullableProp()(SortProp[prop2]).getOption;
       sortByProp = (name) => async (uri) => {

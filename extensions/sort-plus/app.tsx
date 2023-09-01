@@ -204,9 +204,9 @@ const setQueue = async (queue: TrackData[]) => {
     lastSortedQueue = p(queue, a.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)
 
     await Spicetify.Platform.PlayerAPI.clearQueue()
-    addToContextQueue(lastSortedQueue.map(t => t.uri))
     setPlayingContext(lastFetchedUri)
-    Spicetify.Player.next()
+    await addToContextQueue(lastSortedQueue.map(t => t.uri))
+    await Spicetify.Player.next()
 }
 
 const toOptProp = (prop: keyof typeof SortProp) => Optional.fromNullableProp<TrackData>()(SortProp[prop]).getOption
