@@ -7530,8 +7530,8 @@ var star;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
-      import_function21 = __toESM(require_function());
       init_es6();
+      import_function21 = __toESM(require_function());
       mustLoadForApi = ["CosmosAsync", "GraphQL", "Platform"];
       mustLoadForUtil = ["URI"];
       mustLoadForSettings = ["React", "ReactDOM"];

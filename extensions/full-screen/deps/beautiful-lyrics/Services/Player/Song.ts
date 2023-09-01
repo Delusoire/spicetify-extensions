@@ -249,7 +249,7 @@ export class Song implements Disposable {
         const onPlayPause = (event?: Event & { data: Spicetify.PlayerState }) => {
             if (event === undefined) return
 
-            if (this.Playing === event.data.is_paused) {
+            if (this.Playing === event.data.isPaused) {
                 this.Playing = !this.Playing
                 this.IsPlayingChangedSignal.fire(this.Playing)
 

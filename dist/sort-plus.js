@@ -4214,7 +4214,7 @@ var sort;
   });
 
   // shared/util.tsx
-  var import_function19, SpotifyLoc, sleep;
+  var import_function19, SpotifyLoc, sleep, addToContextQueue, setPlayingContext;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
@@ -4242,6 +4242,31 @@ var sort;
         })(after = SpotifyLoc3.after || (SpotifyLoc3.after = {}));
       })(SpotifyLoc || (SpotifyLoc = {}));
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      addToContextQueue = (queue) => {
+        const { _queue, _client } = Spicetify.Platform.PlayerAPI._queue;
+        const { prevTracks, queueRevision } = _queue;
+        const nextTracks = queue.map((uri) => ({
+          contextTrack: {
+            uri,
+            uid: "",
+            metadata: {
+              is_queued: "false"
+            }
+          },
+          removed: [],
+          blocked: [],
+          provider: "context"
+        }));
+        return _client.setQueue({
+          nextTracks,
+          prevTracks,
+          queueRevision
+        });
+      };
+      setPlayingContext = async (uri) => {
+        const { sessionId } = Spicetify.Platform.PlayerAPI.getState();
+        return Spicetify.Platform.PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri });
+      };
     }
   });
 
@@ -6945,8 +6970,9 @@ var sort;
         );
         lastSortedQueue = (0, import_function30.pipe)(queue, Array_exports.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? import_function30.identity : Array_exports.reverse);
         await Spicetify.Platform.PlayerAPI.clearQueue();
-        await Spicetify.Platform.PlayerAPI.addToQueue(lastSortedQueue);
-        await Spicetify.Player.next();
+        addToContextQueue(lastSortedQueue.map((t) => t.uri));
+        setPlayingContext(lastSortedUri);
+        Spicetify.Player.next();
       };
       toOptProp = (prop2) => Optional.fromNullableProp()(SortProp[prop2]).getOption;
       lastSortedUri = "";

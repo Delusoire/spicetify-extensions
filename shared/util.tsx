@@ -126,3 +126,32 @@ export const toggleLiked = async (uris: SpotifyURI[]) => {
         ([toAdd, toRem]) => Promise.all([setLiked(toAdd, true), setLiked(toRem, false)]),
     )
 }
+
+export const addToContextQueue = (queue: SpotifyURI[]) => {
+    const { _queue, _client } = Spicetify.Platform.PlayerAPI._queue
+    const { prevTracks, queueRevision } = _queue
+
+    const nextTracks = queue.map(uri => ({
+        contextTrack: {
+            uri,
+            uid: "",
+            metadata: {
+                is_queued: "false",
+            },
+        },
+        removed: [],
+        blocked: [],
+        provider: "context",
+    }))
+
+    return _client.setQueue({
+        nextTracks,
+        prevTracks,
+        queueRevision,
+    })
+}
+
+export const setPlayingContext = async (uri: SpotifyURI) => {
+    const { sessionId } = Spicetify.Platform.PlayerAPI.getState()
+    return Spicetify.Platform.PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri })
+}

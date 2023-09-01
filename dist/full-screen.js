@@ -16355,7 +16355,7 @@ ${content[index].words}`;
           const onPlayPause = (event) => {
             if (event === void 0)
               return;
-            if (this.Playing === event.data.is_paused) {
+            if (this.Playing === event.data.isPaused) {
               this.Playing = !this.Playing;
               this.IsPlayingChangedSignal.fire(this.Playing);
               if (this.Playing === false)

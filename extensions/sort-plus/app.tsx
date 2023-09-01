@@ -37,7 +37,7 @@ import {
     parseTopTrackFromArtist,
     parseTrackFromAlbum,
 } from "../../shared/parse"
-import { SpotifyID, SpotifyLoc, SpotifyURI } from "../../shared/util"
+import { SpotifyID, SpotifyLoc, SpotifyURI, addToContextQueue, setPlayingContext } from "../../shared/util"
 import { CONFIG } from "./settings"
 
 const { URI } = Spicetify
@@ -191,22 +191,6 @@ export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
     ],
 ])(constant(task.of([])))
 
-const Spicetify_setQueue = (queue: { uri: SpotifyURI }[], context?: SpotifyURI) => {
-    const ps = [Spicetify.Platform.PlayerAPI.addToQueue(queue)]
-
-    if (context) {
-        const { sessionId } = Spicetify.Platform.PlayerAPI.getState()
-        ps.push(
-            Spicetify.Platform.PlayerAPI.updateContext(sessionId, {
-                uri: context,
-                url: "context://" + context,
-            }),
-        )
-    }
-
-    return Promise.all(ps)
-}
-
 let lastSortedQueue: TrackData[] = []
 const setQueue = async (queue: TrackData[]) => {
     const uriOrd = p(
@@ -217,8 +201,9 @@ const setQueue = async (queue: TrackData[]) => {
     lastSortedQueue = p(queue, a.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)
 
     await Spicetify.Platform.PlayerAPI.clearQueue()
-    await Spicetify.Platform.PlayerAPI.addToQueue(lastSortedQueue)
-    await Spicetify.Player.next()
+    addToContextQueue(lastSortedQueue.map(t => t.uri))
+    setPlayingContext(lastSortedUri)
+    Spicetify.Player.next()
 }
 
 const toOptProp = (prop: keyof typeof SortProp) => Optional.fromNullableProp<TrackData>()(SortProp[prop]).getOption
