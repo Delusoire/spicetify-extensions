@@ -37,7 +37,15 @@ import {
     parseTopTrackFromArtist,
     parseTrackFromAlbum,
 } from "../../shared/parse"
-import { SpotifyID, SpotifyLoc, SpotifyURI, createQueueItem, setPlayingContext, setQueue } from "../../shared/util"
+import {
+    SpotifyID,
+    SpotifyLoc,
+    SpotifyURI,
+    createQueueItem,
+    setPlayingContext,
+    setQueue,
+    sleep,
+} from "../../shared/util"
 import { CONFIG } from "./settings"
 
 const { URI } = Spicetify
@@ -203,10 +211,10 @@ const _setQueue = async (queue: TrackData[]) => {
 
     lastSortedQueue = p(queue, a.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)
     await setPlayingContext(lastFetchedUri)
+    await sleep(150)
     await p(
         lastSortedQueue,
         a.map(t => t.uri),
-        a.concat(["spotify:separator"]),
         a.map(createQueueItem(false)),
         setQueue,
     )

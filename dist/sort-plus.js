@@ -14307,10 +14307,10 @@ var sort;
         );
         lastSortedQueue = (0, import_function29.pipe)(queue, Array_exports.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? import_function29.identity : Array_exports.reverse);
         await setPlayingContext(lastFetchedUri);
+        await sleep(150);
         await (0, import_function29.pipe)(
           lastSortedQueue,
           Array_exports.map((t) => t.uri),
-          Array_exports.concat(["spotify:separator"]),
           Array_exports.map(createQueueItem(false)),
           setQueue
         );
