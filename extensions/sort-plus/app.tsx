@@ -200,8 +200,10 @@ const setQueue = async (queue: TrackData[]) => {
     )
 
     lastSortedQueue = p(queue, a.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)
+    console.log("🚀 ~ file: app.tsx:203 ~ setQueue ~ lastSortedQueue:", lastSortedQueue)
     await Spicetify.Platform.PlayerAPI.clearQueue()
     await setPlayingContext(lastFetchedUri)
+    console.log("🚀 ~ file: app.tsx:206 ~ setQueue ~ lastFetchedUri:", lastFetchedUri)
     await addToContextQueue(lastSortedQueue.map(t => t.uri).concat("spotify:separator"))
     await Spicetify.Platform.PlayerAPI.skipToNext()
 }
