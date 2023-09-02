@@ -1,5 +1,9 @@
 import { task } from "fp-ts"
 import { SettingsSection } from "../../shared/settings"
+import { createPlatFolder } from "../../shared/api"
+import { SpotifyURI } from "../../shared/util"
+
+const SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists"
 
 const settings = new SettingsSection("Sort+", "sort-plus")
     .addToggle("ascending", "Ascending", task.of(false))
@@ -12,6 +16,11 @@ const settings = new SettingsSection("Sort+", "sort-plus")
     .addToggle("artistLikedTracks", "Liked Tracks", task.of(false))
     .addInput("lastFmUsername", "Last.fm Username", task.of("Delusoire"))
     .addInput("LFMApiKey", "Last.fm API Key", task.of("44654ea047786d90338c17331a5f5d95"))
+    .addInput(
+        "sortedPlaylistsFolderUri",
+        "Sorted Playlists folder uri",
+        async () => (await createPlatFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri,
+    )
 
 settings.pushSettings()
 
@@ -26,4 +35,5 @@ export const CONFIG = settings.toObject() as {
     artistLikedTracks: boolean
     lastFmUserName: string
     LFMApiKey: string
+    sortedPlaylistsFolderUri: SpotifyURI
 }

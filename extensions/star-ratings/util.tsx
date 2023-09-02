@@ -1,7 +1,5 @@
-import { array as a, taskOption } from "fp-ts"
+import { array as a } from "fp-ts"
 import { flow } from "fp-ts/function"
-import { fetchPlatFolder } from "../../shared/api"
-import { CONFIG } from "./settings"
 import { StarStops, setStarsGradientByRating } from "./stars"
 
 export const RATINGS_FOLDER_NAME = "Ratings"
@@ -46,10 +44,3 @@ export const getTrackListTrackUri = (track: HTMLDivElement) => (
     (track = Object.values(track)[0].child.child.child.child),
     (track as any).pendingProps.uri ?? (track as any).child.pendingProps.uri
 )
-
-export const getRatingsFolder = () =>
-    flow(
-        () => () => fetchPlatFolder(CONFIG.ratingsFolderUri),
-        taskOption.tryCatch,
-        taskOption.getOrElse(() => fetchPlatFolder),
-    )()()

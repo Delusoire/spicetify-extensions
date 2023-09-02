@@ -1,11 +1,12 @@
 import { array as a, readonlyArray, record } from "fp-ts"
 import { range } from "fp-ts/NonEmptyArray"
 import { flow as f, flip, pipe as p } from "fp-ts/function"
-import { fetchPlatPlaylistContents } from "../../shared/api"
+import { fetchPlatFolder, fetchPlatPlaylistContents, fetchPlatRootFolder } from "../../shared/api"
 import { pMchain } from "../../shared/fp"
 import { SpotifyURI } from "../../shared/util"
+import { CONFIG } from "./settings"
 import { StarStops, calculateRatingFromMouseEvent, createStars, onStarClick, setStarsGradientByRating } from "./stars"
-import { getRatingsFolder, starsN2S } from "./util"
+import { starsN2S } from "./util"
 
 const w = (n: number) => Math.exp(n)
 export const aggregateRatings = (uris: SpotifyURI[]) =>
@@ -44,7 +45,7 @@ export const addRatingsListenersToStars = (
 }
 
 export const loadRatings = async () => {
-    const ratingsFolder = await getRatingsFolder()
+    const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri).catch(fetchPlatRootFolder)
 
     const starsS2Narray = p(
         range(0, 10),

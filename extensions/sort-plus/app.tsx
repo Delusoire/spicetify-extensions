@@ -16,6 +16,7 @@ import {
     fetchGQLArtistDiscography,
     fetchGQLArtistOverview,
     fetchPlatArtistLikedTracks,
+    fetchPlatFolder,
     fetchPlatLikedTracks,
     fetchPlatPlaylistContents,
     fetchPlatRootFolder,
@@ -321,19 +322,14 @@ const generatePlaylistName = async () => {
 new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
     if (lastSortedQueue.length === 0) return void Spicetify.showNotification("Must sort to queue beforehand")
 
-    const rootFolder = await fetchPlatRootFolder()
-    const sortedPlaylistsFolderUri = await p(
-        rootFolder.items!,
-        a.findFirst(item => item.type === "folder" && item.name === "Sorted Playlists"),
-        o.getOrElseW<any>(() => createPlatFolder("Sorted Playlists")),
-        pMchain((x: any) => x.uri),
-    )
+    const sortedPlaylistsFolder = await fetchPlatFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchPlatRootFolder)
+
     const playlistName = await generatePlaylistName()
 
     await createSPPlaylistFromTracks(
         playlistName,
         lastSortedQueue.map(t => t.uri),
-        sortedPlaylistsFolderUri,
+        sortedPlaylistsFolder.uri,
     )
 
     Spicetify.showNotification(`Playlist ${playlistName} created`)

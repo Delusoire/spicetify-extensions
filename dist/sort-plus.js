@@ -14129,13 +14129,19 @@ var sort;
   });
 
   // extensions/sort-plus/settings.tsx
-  var settings, CONFIG;
+  var SORTED_PLAYLISTS_FOLDER_NAME, settings, CONFIG;
   var init_settings2 = __esm({
     "extensions/sort-plus/settings.tsx"() {
       "use strict";
       init_es6();
       init_settings();
-      settings = new SettingsSection("Sort+", "sort-plus").addToggle("ascending", "Ascending", Task_exports.of(false)).addToggle("artistAllDiscography", "All of the artist's Discography", Task_exports.of(false)).addToggle("artistTopTracks", "Top Tracks").addToggle("artistPopularReleases", "Popular Releases", Task_exports.of(false)).addToggle("artistSingles", "Singles").addToggle("artistAlbums", "Albums").addToggle("artistCompilations", "Compilations").addToggle("artistLikedTracks", "Liked Tracks", Task_exports.of(false)).addInput("lastFmUsername", "Last.fm Username", Task_exports.of("Delusoire")).addInput("LFMApiKey", "Last.fm API Key", Task_exports.of("44654ea047786d90338c17331a5f5d95"));
+      init_api();
+      SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists";
+      settings = new SettingsSection("Sort+", "sort-plus").addToggle("ascending", "Ascending", Task_exports.of(false)).addToggle("artistAllDiscography", "All of the artist's Discography", Task_exports.of(false)).addToggle("artistTopTracks", "Top Tracks").addToggle("artistPopularReleases", "Popular Releases", Task_exports.of(false)).addToggle("artistSingles", "Singles").addToggle("artistAlbums", "Albums").addToggle("artistCompilations", "Compilations").addToggle("artistLikedTracks", "Liked Tracks", Task_exports.of(false)).addInput("lastFmUsername", "Last.fm Username", Task_exports.of("Delusoire")).addInput("LFMApiKey", "Last.fm API Key", Task_exports.of("44654ea047786d90338c17331a5f5d95")).addInput(
+        "sortedPlaylistsFolderUri",
+        "Sorted Playlists folder uri",
+        async () => (await createPlatFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri
+      );
       settings.pushSettings();
       CONFIG = settings.toObject();
     }
@@ -14394,18 +14400,12 @@ var sort;
       new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
         if (lastSortedQueue.length === 0)
           return void Spicetify.showNotification("Must sort to queue beforehand");
-        const rootFolder = await fetchPlatRootFolder();
-        const sortedPlaylistsFolderUri = await (0, import_function29.pipe)(
-          rootFolder.items,
-          Array_exports.findFirst((item) => item.type === "folder" && item.name === "Sorted Playlists"),
-          Option_exports.getOrElseW(() => createPlatFolder("Sorted Playlists")),
-          pMchain((x) => x.uri)
-        );
+        const sortedPlaylistsFolder = await fetchPlatFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchPlatRootFolder);
         const playlistName = await generatePlaylistName();
         await createSPPlaylistFromTracks(
           playlistName,
           lastSortedQueue.map((t) => t.uri),
-          sortedPlaylistsFolderUri
+          sortedPlaylistsFolder.uri
         );
         Spicetify.showNotification(`Playlist ${playlistName} created`);
       });

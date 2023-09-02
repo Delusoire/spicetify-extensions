@@ -3,6 +3,7 @@ import { createPlatFolder } from "../../shared/api"
 import { SettingsSection } from "../../shared/settings"
 import { loadRatings } from "./ratings"
 import { RATINGS_FOLDER_NAME } from "./util"
+import { SpotifyURI } from "../../shared/util"
 
 const settings = new SettingsSection("Star Ratings", "star-ratings")
     .addToggle("hideHearts", "Hide Hearts")
@@ -27,5 +28,5 @@ export const CONFIG = settings.toObject() as {
     nowPlayingStarsOnRight: boolean
     heartThreshold: string
     skipThreshold: string
-    ratingsFolderUri: string
+    ratingsFolderUri: SpotifyURI
 }
