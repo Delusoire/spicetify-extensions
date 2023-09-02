@@ -200,7 +200,7 @@ const setQueue = async (queue: TrackData[]) => {
     )
 
     lastSortedQueue = p(queue, a.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)
-
+    console.log(lastSortedQueue)
     await Spicetify.Platform.PlayerAPI.clearQueue()
     setPlayingContext(lastFetchedUri)
     await addToContextQueue(lastSortedQueue.map(t => t.uri))

@@ -14304,6 +14304,7 @@ var sort;
           Ord_exports.contramap((t) => t.uri)
         );
         lastSortedQueue = (0, import_function29.pipe)(queue, Array_exports.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? import_function29.identity : Array_exports.reverse);
+        console.log(lastSortedQueue);
         await Spicetify.Platform.PlayerAPI.clearQueue();
         setPlayingContext(lastFetchedUri);
         await addToContextQueue(lastSortedQueue.map((t) => t.uri));
