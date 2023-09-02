@@ -14137,7 +14137,7 @@ var sort;
       init_settings();
       init_api();
       SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists";
-      settings = new SettingsSection("Sort+", "sort-plus").addToggle("ascending", "Ascending", Task_exports.of(false)).addToggle("artistAllDiscography", "All of the artist's Discography", Task_exports.of(false)).addToggle("artistTopTracks", "Top Tracks").addToggle("artistPopularReleases", "Popular Releases", Task_exports.of(false)).addToggle("artistSingles", "Singles").addToggle("artistAlbums", "Albums").addToggle("artistCompilations", "Compilations").addToggle("artistLikedTracks", "Liked Tracks", Task_exports.of(false)).addInput("lastFmUsername", "Last.fm Username", Task_exports.of("Delusoire")).addInput("LFMApiKey", "Last.fm API Key", Task_exports.of("44654ea047786d90338c17331a5f5d95")).addInput(
+      settings = new SettingsSection("Sort+", "sort-plus").addToggle("descending", "Descending", Task_exports.of(true)).addToggle("artistAllDiscography", "All of the artist's Discography", Task_exports.of(false)).addToggle("artistTopTracks", "Top Tracks").addToggle("artistPopularReleases", "Popular Releases", Task_exports.of(false)).addToggle("artistSingles", "Singles").addToggle("artistAlbums", "Albums").addToggle("artistCompilations", "Compilations").addToggle("artistLikedTracks", "Liked Tracks", Task_exports.of(false)).addInput("lastFmUsername", "Last.fm Username", Task_exports.of("Delusoire")).addInput("LFMApiKey", "Last.fm API Key", Task_exports.of("44654ea047786d90338c17331a5f5d95")).addInput(
         "sortedPlaylistsFolderUri",
         "Sorted Playlists folder uri",
         async () => (await createPlatFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri
@@ -14196,7 +14196,7 @@ var sort;
     await (0, import_function29.pipe)(albumsLike, getTracksFromAlbums, pMchain(add));
     return await Promise.all(allTracks);
   }
-  var import_function29, import_string, import_spectacles_ts, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, _setQueue, toOptProp, lastFetchedUri, lastActionName, sortByProp, invertAscending, fetchSortQueue, shuffle, shuffleSubmenu, starsOrd, starsSubmenu, createSortByPropSubmenu, generatePlaylistName;
+  var import_function29, import_string, import_spectacles_ts, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, _setQueue, toOptProp, lastFetchedUri, lastActionName, sortByProp, invertOrder, fetchSortQueue, shuffle, shuffleSubmenu, starsOrd, starsSubmenu, createSortByPropSubmenu, generatePlaylistName;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -14308,7 +14308,7 @@ var sort;
       globalThis.lastSortedQueue = lastSortedQueue;
       _setQueue = (inverted) => async (queue) => {
         if (Spicetify.Platform.PlayerAPI._queue._queue === null)
-          return void Spicetify.showNotification("Qeueue is null!");
+          return void Spicetify.showNotification("Queue is null!", true);
         const uriOrd = (0, import_function29.pipe)(
           string_exports.Ord,
           Ord_exports.contramap((t) => t.uri)
@@ -14328,11 +14328,12 @@ var sort;
       toOptProp = (prop2) => Optional.fromNullableProp()(SortProp[prop2]).getOption;
       sortByProp = (name) => async (uri) => {
         lastActionName = name;
+        const descending = invertOrder ^ Number(CONFIG.descending);
+        console.info(`Sorting order is ${descending ? "descending" : "ascending"}`);
         const propOrd = (0, import_function29.pipe)(
           number_exports.Ord,
           Ord_exports.contramap((t) => t[SortProp[name]])
         );
-        const ascending = invertAscending ^ Number(CONFIG.ascending);
         (0, import_function29.pipe)(
           uri,
           fetchTracks,
@@ -14340,22 +14341,22 @@ var sort;
           pMchain(Array_exports.map((x) => (0, import_function29.pipe)(x, toOptProp(name), Option_exports.isSome) ? Option_exports.some(x) : Option_exports.none)),
           pMchain(Array_exports.sequence(Option_exports.Applicative)),
           pMchain(Option_exports.map(Array_exports.sort(propOrd))),
-          pMchain(Option_exports.map(_setQueue(!ascending)))
+          pMchain(Option_exports.map(_setQueue(!!descending)))
         );
       };
-      invertAscending = 0;
+      invertOrder = 0;
       window.addEventListener("keydown", (event) => {
-        if (!event.repeat && event.key == "Control")
-          invertAscending = 1;
+        if (!event.repeat && event.key === "Control")
+          invertOrder = 1;
       });
       window.addEventListener("keyup", (event) => {
-        if (!event.repeat && event.key == "Control")
-          invertAscending = 0;
+        if (!event.repeat && event.key === "Control")
+          invertOrder = 0;
       });
       fetchSortQueue = (name, sortFn) => ([uri]) => {
         lastActionName = name;
-        const ascending = invertAscending ^ Number(CONFIG.ascending);
-        (0, import_function29.pipe)(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!ascending)));
+        const descending = invertOrder ^ Number(CONFIG.descending);
+        (0, import_function29.pipe)(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!!descending)));
       };
       shuffle = (array2, l = array2.length) => l == 0 ? [] : [array2.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array2)];
       shuffleSubmenu = new Spicetify.ContextMenu.Item(

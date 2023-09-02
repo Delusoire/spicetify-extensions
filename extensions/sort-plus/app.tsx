@@ -204,7 +204,8 @@ export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
 let lastSortedQueue: TrackData[] = []
 ;(globalThis as any).lastSortedQueue = lastSortedQueue
 const _setQueue = (inverted: boolean) => async (queue: TrackData[]) => {
-    if (Spicetify.Platform.PlayerAPI._queue._queue === null) return void Spicetify.showNotification("Qeueue is null!")
+    if (Spicetify.Platform.PlayerAPI._queue._queue === null)
+        return void Spicetify.showNotification("Queue is null!", true)
 
     const uriOrd = p(
         string.Ord,
@@ -231,11 +232,13 @@ let lastFetchedUri: SpotifyURI
 let lastActionName: keyof typeof SortProp | "True Shuffle" | "Stars"
 export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
     lastActionName = name
+    const descending = invertOrder ^ Number(CONFIG.descending)
+    console.info(`Sorting order is ${descending ? "descending" : "ascending"}`)
+
     const propOrd = p(
         number.Ord,
         ord.contramap((t: Required<TrackData>) => t[SortProp[name]]),
     )
-    const ascending = invertAscending ^ Number(CONFIG.ascending)
 
     p(
         uri,
@@ -244,17 +247,17 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         pMchain(a.map(x => (p(x, toOptProp(name), o.isSome) ? o.some(x as Required<TrackData>) : o.none))),
         pMchain(a.sequence(o.Applicative)),
         pMchain(o.map(a.sort(propOrd))),
-        pMchain(o.map(_setQueue(!ascending))),
+        pMchain(o.map(_setQueue(!!descending))),
     )
 }
 
-let invertAscending = 0
+let invertOrder = 0
 window.addEventListener("keydown", event => {
-    if (!event.repeat && event.key == "Control") invertAscending = 1
+    if (!event.repeat && event.key === "Control") invertOrder = 1
 })
 
 window.addEventListener("keyup", event => {
-    if (!event.repeat && event.key == "Control") invertAscending = 0
+    if (!event.repeat && event.key === "Control") invertOrder = 0
 })
 
 // Menu
@@ -263,8 +266,8 @@ const fetchSortQueue =
     (name: typeof lastActionName, sortFn: (tracksIn: TrackData[]) => TrackData[]) =>
     ([uri]: [SpotifyURI]) => {
         lastActionName = name
-        const ascending = invertAscending ^ Number(CONFIG.ascending)
-        p(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!ascending)))
+        const descending = invertOrder ^ Number(CONFIG.descending)
+        p(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!!descending)))
     }
 
 const shuffle = <A,>(array: A[], l = array.length): A[] =>

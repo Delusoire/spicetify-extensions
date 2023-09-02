@@ -6,7 +6,7 @@ import { SpotifyURI } from "../../shared/util"
 const SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists"
 
 const settings = new SettingsSection("Sort+", "sort-plus")
-    .addToggle("ascending", "Ascending", task.of(false))
+    .addToggle("descending", "Descending", task.of(true))
     .addToggle("artistAllDiscography", "All of the artist's Discography", task.of(false))
     .addToggle("artistTopTracks", "Top Tracks")
     .addToggle("artistPopularReleases", "Popular Releases", task.of(false))
@@ -25,7 +25,6 @@ const settings = new SettingsSection("Sort+", "sort-plus")
 settings.pushSettings()
 
 export const CONFIG = settings.toObject() as {
-    ascending: boolean
     artistAllDiscography: boolean
     artistTopTracks: boolean
     artistPopularReleases: boolean
@@ -33,6 +32,7 @@ export const CONFIG = settings.toObject() as {
     artistAlbums: boolean
     artistCompilations: boolean
     artistLikedTracks: boolean
+    descending: boolean
     lastFmUserName: string
     LFMApiKey: string
     sortedPlaylistsFolderUri: SpotifyURI
