@@ -47,6 +47,11 @@ export const fetchGQLArtistRelated = async (uri: SpotifyURI) =>
 
 /*                          Spotify Web API                                   */
 
+export const removeWebPlaylistTracks = async (playlist: SpotifyID, tracks: SpotifyURI[]) =>
+    Spicetify.CosmosAsync.del(`https://api.spotify.com/v1/playlists/${playlist}/tracks`, {
+        tracks: tracks.map(uri => ({ uri })),
+    })
+
 export const fetchWebArtistsSpot = chunckify(50)(
     async (ids: SpotifyID[]) =>
         (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`))
@@ -105,13 +110,14 @@ export const likePlatPlaylist = async (uri: SpotifyURI) => await Spicetify.Platf
 export const createPlatPlaylist = async (name: string, location: SpotifyLoc = {}) =>
     await Spicetify.Platform.RootlistAPI.createPlaylist(name, location)
 
-export const createSPPlaylistFromTracks = (name: string, tracks: SpotifyURI[], folder: SpotifyURI = "") =>
-    Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
+export const createSPPlaylistFromTracks = (name: string, tracks: SpotifyURI[], folder?: SpotifyURI) =>
+    Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
         operation: "create",
+        after: folder,
+        ...(folder ? { after: folder } : {}),
+        name,
         playlist: true,
         uris: tracks,
-        name,
-        after: folder,
     })
 
 export const setPlatPlaylistVisibility = async (playlist: SpotifyURI, visibleForAll: boolean) =>
@@ -131,13 +137,6 @@ export const movePlatPlaylistTracks = async (
     tracks: Array<{ uid: string }>,
     location: SpotifyLoc = {},
 ) => await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location)
-
-export const removePlatPlaylistTracks = async (playlist: SpotifyURI, tracks: SpotifyURI[]) =>
-    Spicetify.CosmosAsync.del(`https://api.spotify.com/v1/playlists/${URI.from(playlist)!.id}/tracks`, {
-        tracks: tracks.map(uri => ({
-            uri,
-        })),
-    })
 
 export const fetchPlatPlaylistEnhancedSongs300 = async (uri: SpotifyURI, offset = 0, limit = 300) =>
     (await Spicetify.Platform.EnhanceAPI.getPage(uri, /* iteration */ 0, /* sessionId */ 0, offset, limit)).enhancePage

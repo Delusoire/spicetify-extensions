@@ -15683,7 +15683,7 @@ var star;
   });
 
   // shared/api.tsx
-  var import_function24, URI10, fetchGQLAlbum, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createPlatPlaylist, setPlatPlaylistVisibility, fetchPlatFolder, addPlatPlaylistTracks, removePlatPlaylistTracks, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
+  var import_function24, URI10, fetchGQLAlbum, removeWebPlaylistTracks, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createPlatPlaylist, setPlatPlaylistVisibility, fetchPlatFolder, addPlatPlaylistTracks, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -15698,6 +15698,9 @@ var star;
         offset,
         limit
       })).data.albumUnion;
+      removeWebPlaylistTracks = async (playlist, tracks) => Spicetify.CosmosAsync.del(`https://api.spotify.com/v1/playlists/${playlist}/tracks`, {
+        tracks: tracks.map((uri) => ({ uri }))
+      });
       fetchWebArtistsSpot = chunckify(50)(
         async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
       );
@@ -15720,11 +15723,6 @@ var star;
       setPlatPlaylistVisibility = async (playlist, visibleForAll) => await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
       fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
       addPlatPlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location);
-      removePlatPlaylistTracks = async (playlist, tracks) => Spicetify.CosmosAsync.del(`https://api.spotify.com/v1/playlists/${URI10.from(playlist).id}/tracks`, {
-        tracks: tracks.map((uri) => ({
-          uri
-        }))
-      });
       fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => (0, import_function24.pipe)(
         `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
           artist
@@ -16147,7 +16145,8 @@ var star;
           (0, import_function27.pipe)(
             playlistUris.slice(0, oldRating + 1),
             Array_exports.filter(Boolean),
-            Array_exports.map((playlistUri) => removePlatPlaylistTracks(playlistUri, [trackUri]))
+            Array_exports.map((playlistUri) => URI11.from(playlistUri).id),
+            Array_exports.map((playlistId) => removeWebPlaylistTracks(playlistId, [trackUri]))
           );
         tracksRatings[trackUri] = newRating;
         if (newRating) {

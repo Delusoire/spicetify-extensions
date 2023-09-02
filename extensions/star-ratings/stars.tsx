@@ -3,7 +3,7 @@ import { pipe as p } from "fp-ts/function"
 import {
     addPlatPlaylistTracks,
     createPlatPlaylist,
-    removePlatPlaylistTracks,
+    removeWebPlaylistTracks,
     setPlatPlaylistVisibility,
 } from "../../shared/api"
 import { SpotifyLoc, SpotifyURI, isLiked, toggleLiked } from "../../shared/util"
@@ -123,7 +123,8 @@ export const onStarClick =
             p(
                 playlistUris.slice(0, oldRating + 1),
                 a.filter(Boolean),
-                a.map(playlistUri => removePlatPlaylistTracks(playlistUri, [trackUri])),
+                a.map(playlistUri => URI.from(playlistUri)!.id),
+                a.map(playlistId => removeWebPlaylistTracks(playlistId, [trackUri])),
             )
 
         tracksRatings[trackUri] = newRating

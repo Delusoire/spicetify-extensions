@@ -13780,12 +13780,13 @@ var sort;
       fetchPlatArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items;
       fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
       createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
-      createSPPlaylistFromTracks = (name, tracks, folder = "") => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
+      createSPPlaylistFromTracks = (name, tracks, folder) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
         operation: "create",
-        playlist: true,
-        uris: tracks,
+        after: folder,
+        ...folder ? { after: folder } : {},
         name,
-        after: folder
+        playlist: true,
+        uris: tracks
       });
       fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
       fetchPlatRootFolder = () => fetchPlatFolder(void 0);

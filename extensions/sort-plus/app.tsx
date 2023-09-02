@@ -351,5 +351,3 @@ new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", 
         ),
     )
 })
-
-//TODO: add sort inside playlist's custom order
