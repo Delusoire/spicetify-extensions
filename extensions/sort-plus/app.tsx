@@ -202,7 +202,7 @@ export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
 
 let lastSortedQueue: TrackData[] = []
 ;(globalThis as any).lastSortedQueue = lastSortedQueue
-const _setQueue = async (queue: TrackData[]) => {
+const _setQueue = (inverted: boolean) => async (queue: TrackData[]) => {
     if (Spicetify.Platform.PlayerAPI._queue._queue === null) return void Spicetify.showNotification("Qeueue is null!")
 
     const uriOrd = p(
@@ -210,9 +210,7 @@ const _setQueue = async (queue: TrackData[]) => {
         ord.contramap((t: TrackData) => t.uri),
     )
 
-    console.log(invertAscending)
-    console.log(invertAscending ^ Number(CONFIG.ascending))
-    lastSortedQueue = p(queue, a.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)
+    lastSortedQueue = p(queue, a.uniq(uriOrd), inverted ? a.reverse : identity)
     ;(globalThis as any).lastSortedQueue = lastSortedQueue
 
     await setPlayingContext(lastFetchedUri)
@@ -236,6 +234,7 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         number.Ord,
         ord.contramap((t: Required<TrackData>) => t[SortProp[name]]),
     )
+    const ascending = invertAscending ^ Number(CONFIG.ascending)
 
     p(
         uri,
@@ -244,7 +243,7 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         pMchain(a.map(x => (p(x, toOptProp(name), o.isSome) ? o.some(x as Required<TrackData>) : o.none))),
         pMchain(a.sequence(o.Applicative)),
         pMchain(o.map(a.sort(propOrd))),
-        pMchain(o.map(_setQueue)),
+        pMchain(o.map(_setQueue(!ascending))),
     )
 }
 
@@ -263,7 +262,8 @@ const fetchSortQueue =
     (name: typeof lastActionName, sortFn: (tracksIn: TrackData[]) => TrackData[]) =>
     ([uri]: [SpotifyURI]) => {
         lastActionName = name
-        p(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue))
+        const ascending = invertAscending ^ Number(CONFIG.ascending)
+        p(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!ascending)))
     }
 
 const shuffle = <A,>(array: A[], l = array.length): A[] =>

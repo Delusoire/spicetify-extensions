@@ -14299,16 +14299,14 @@ var sort;
       ])((0, import_function29.constant)(Task_exports.of([])));
       lastSortedQueue = [];
       globalThis.lastSortedQueue = lastSortedQueue;
-      _setQueue = async (queue) => {
+      _setQueue = (inverted) => async (queue) => {
         if (Spicetify.Platform.PlayerAPI._queue._queue === null)
           return void Spicetify.showNotification("Qeueue is null!");
         const uriOrd = (0, import_function29.pipe)(
           string_exports.Ord,
           Ord_exports.contramap((t) => t.uri)
         );
-        console.log(invertAscending);
-        console.log(invertAscending ^ Number(CONFIG.ascending));
-        lastSortedQueue = (0, import_function29.pipe)(queue, Array_exports.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? import_function29.identity : Array_exports.reverse);
+        lastSortedQueue = (0, import_function29.pipe)(queue, Array_exports.uniq(uriOrd), inverted ? Array_exports.reverse : import_function29.identity);
         globalThis.lastSortedQueue = lastSortedQueue;
         await setPlayingContext(lastFetchedUri);
         await sleep(150);
@@ -14327,6 +14325,7 @@ var sort;
           number_exports.Ord,
           Ord_exports.contramap((t) => t[SortProp[name]])
         );
+        const ascending = invertAscending ^ Number(CONFIG.ascending);
         (0, import_function29.pipe)(
           uri,
           fetchTracks,
@@ -14334,7 +14333,7 @@ var sort;
           pMchain(Array_exports.map((x) => (0, import_function29.pipe)(x, toOptProp(name), Option_exports.isSome) ? Option_exports.some(x) : Option_exports.none)),
           pMchain(Array_exports.sequence(Option_exports.Applicative)),
           pMchain(Option_exports.map(Array_exports.sort(propOrd))),
-          pMchain(Option_exports.map(_setQueue))
+          pMchain(Option_exports.map(_setQueue(!ascending)))
         );
       };
       invertAscending = 0;
@@ -14348,7 +14347,8 @@ var sort;
       });
       fetchSortQueue = (name, sortFn) => ([uri]) => {
         lastActionName = name;
-        (0, import_function29.pipe)(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue));
+        const ascending = invertAscending ^ Number(CONFIG.ascending);
+        (0, import_function29.pipe)(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!ascending)));
       };
       shuffle = (array2, l = array2.length) => l == 0 ? [] : [array2.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array2)];
       shuffleSubmenu = new Spicetify.ContextMenu.Item(
