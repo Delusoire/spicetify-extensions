@@ -14405,12 +14405,12 @@ var sort;
           return void Spicetify.showNotification("Must sort to queue beforehand");
         const sortedPlaylistsFolder = await fetchPlatFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchPlatRootFolder);
         const playlistName = await generatePlaylistName();
-        const playlistUri = await createSPPlaylistFromTracks(
+        const { uri } = await createSPPlaylistFromTracks(
           playlistName,
           lastSortedQueue.map((t) => t.uri),
           sortedPlaylistsFolder.uri
         );
-        setPlatPlaylistVisibility(playlistUri, false);
+        setPlatPlaylistVisibility(uri, false);
         Spicetify.showNotification(`Playlist ${playlistName} created`);
       });
       new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {

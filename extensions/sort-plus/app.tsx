@@ -332,13 +332,13 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
 
     const playlistName = await generatePlaylistName()
 
-    const playlistUri = await createSPPlaylistFromTracks(
+    const { uri } = await createSPPlaylistFromTracks(
         playlistName,
         lastSortedQueue.map(t => t.uri),
         sortedPlaylistsFolder.uri,
     )
 
-    setPlatPlaylistVisibility(playlistUri, false)
+    setPlatPlaylistVisibility(uri, false)
 
     Spicetify.showNotification(`Playlist ${playlistName} created`)
 })
