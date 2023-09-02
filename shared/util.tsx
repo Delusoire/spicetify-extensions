@@ -153,10 +153,10 @@ export const addToContextQueue = (queue: SpotifyURI[]) => {
         nextTracks,
         prevTracks,
         queueRevision,
-    })
+    }) as Promise<{ error: number; reasons: string }>
 }
 
-export const setPlayingContext = async (uri: SpotifyURI) => {
+export const setPlayingContext = (uri: SpotifyURI) => {
     const { sessionId } = Spicetify.Platform.PlayerAPI.getState()
-    return Spicetify.Platform.PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri })
+    return Spicetify.Platform.PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri }) as Promise<undefined>
 }
