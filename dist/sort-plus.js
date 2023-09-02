@@ -14298,6 +14298,7 @@ var sort;
         ]
       ])((0, import_function29.constant)(Task_exports.of([])));
       lastSortedQueue = [];
+      globalThis.lastSortedQueue = lastSortedQueue;
       _setQueue = async (queue) => {
         if (Spicetify.Platform.PlayerAPI._queue._queue === null)
           return void Spicetify.showNotification("Qeueue is null!");
@@ -14306,6 +14307,7 @@ var sort;
           Ord_exports.contramap((t) => t.uri)
         );
         lastSortedQueue = (0, import_function29.pipe)(queue, Array_exports.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? import_function29.identity : Array_exports.reverse);
+        globalThis.lastSortedQueue = lastSortedQueue;
         await setPlayingContext(lastFetchedUri);
         await sleep(150);
         await (0, import_function29.pipe)(

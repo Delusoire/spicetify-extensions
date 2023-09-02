@@ -201,6 +201,7 @@ export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
 ])(constant(task.of([])))
 
 let lastSortedQueue: TrackData[] = []
+;(globalThis as any).lastSortedQueue = lastSortedQueue
 const _setQueue = async (queue: TrackData[]) => {
     if (Spicetify.Platform.PlayerAPI._queue._queue === null) return void Spicetify.showNotification("Qeueue is null!")
 
@@ -210,6 +211,8 @@ const _setQueue = async (queue: TrackData[]) => {
     )
 
     lastSortedQueue = p(queue, a.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)
+    ;(globalThis as any).lastSortedQueue = lastSortedQueue
+
     await setPlayingContext(lastFetchedUri)
     await sleep(150)
     await p(
