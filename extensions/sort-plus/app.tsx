@@ -210,6 +210,8 @@ const _setQueue = async (queue: TrackData[]) => {
         ord.contramap((t: TrackData) => t.uri),
     )
 
+    console.log(invertAscending)
+    console.log(invertAscending ^ Number(CONFIG.ascending))
     lastSortedQueue = p(queue, a.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)
     ;(globalThis as any).lastSortedQueue = lastSortedQueue
 

@@ -14306,6 +14306,8 @@ var sort;
           string_exports.Ord,
           Ord_exports.contramap((t) => t.uri)
         );
+        console.log(invertAscending);
+        console.log(invertAscending ^ Number(CONFIG.ascending));
         lastSortedQueue = (0, import_function29.pipe)(queue, Array_exports.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? import_function29.identity : Array_exports.reverse);
         globalThis.lastSortedQueue = lastSortedQueue;
         await setPlayingContext(lastFetchedUri);
