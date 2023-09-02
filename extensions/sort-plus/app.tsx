@@ -233,7 +233,9 @@ let lastActionName: keyof typeof SortProp | "True Shuffle" | "Stars"
 export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
     lastActionName = name
     const descending = invertOrder ^ Number(CONFIG.descending)
-    console.info(`Sorting order is ${descending ? "descending" : "ascending"}`)
+    console.log("🚀 ~ file: app.tsx:236 ~ sortByProp ~ descending:", descending)
+    console.log("🚀 ~ file: app.tsx:236 ~ sortByProp ~ invertOrder:", invertOrder)
+    console.log("🚀 ~ file: app.tsx:236 ~ sortByProp ~ CONFIG.descending:", CONFIG.descending)
 
     const propOrd = p(
         number.Ord,

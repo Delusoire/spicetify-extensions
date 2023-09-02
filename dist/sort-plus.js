@@ -14329,7 +14329,9 @@ var sort;
       sortByProp = (name) => async (uri) => {
         lastActionName = name;
         const descending = invertOrder ^ Number(CONFIG.descending);
-        console.info(`Sorting order is ${descending ? "descending" : "ascending"}`);
+        console.log("\u{1F680} ~ file: app.tsx:236 ~ sortByProp ~ descending:", descending);
+        console.log("\u{1F680} ~ file: app.tsx:236 ~ sortByProp ~ invertOrder:", invertOrder);
+        console.log("\u{1F680} ~ file: app.tsx:236 ~ sortByProp ~ CONFIG.descending:", CONFIG.descending);
         const propOrd = (0, import_function29.pipe)(
           number_exports.Ord,
           Ord_exports.contramap((t) => t[SortProp[name]])
