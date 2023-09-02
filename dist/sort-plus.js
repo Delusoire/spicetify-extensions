@@ -13734,7 +13734,7 @@ var sort;
   });
 
   // shared/api.tsx
-  var import_function27, URI14, fetchGQLAlbum, fetchGQLArtistOverview, fetchGQLArtistDiscography, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, movePlatPlaylistTracks, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
+  var import_function27, URI14, fetchGQLAlbum, fetchGQLArtistOverview, fetchGQLArtistDiscography, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatLikedTracks, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createSPPlaylistFromTracks, setPlatPlaylistVisibility, fetchPlatFolder, fetchPlatRootFolder, movePlatPlaylistTracks, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
   var init_api = __esm({
     "shared/api.tsx"() {
       "use strict";
@@ -13782,12 +13782,12 @@ var sort;
       createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
       createSPPlaylistFromTracks = (name, tracks, folder) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
         operation: "create",
-        after: folder,
         ...folder ? { after: folder } : {},
         name,
         playlist: true,
         uris: tracks
       });
+      setPlatPlaylistVisibility = async (playlist, visibleForAll) => await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
       fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
       fetchPlatRootFolder = () => fetchPlatFolder(void 0);
       movePlatPlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location);
@@ -14405,11 +14405,12 @@ var sort;
           return void Spicetify.showNotification("Must sort to queue beforehand");
         const sortedPlaylistsFolder = await fetchPlatFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchPlatRootFolder);
         const playlistName = await generatePlaylistName();
-        await createSPPlaylistFromTracks(
+        const playlistUri = await createSPPlaylistFromTracks(
           playlistName,
           lastSortedQueue.map((t) => t.uri),
           sortedPlaylistsFolder.uri
         );
+        setPlatPlaylistVisibility(playlistUri, false);
         Spicetify.showNotification(`Playlist ${playlistName} created`);
       });
       new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {

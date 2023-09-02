@@ -26,6 +26,7 @@ import {
     fetchWebPlaylistsSpot,
     fetchWebTracksSpot,
     movePlatPlaylistTracks,
+    setPlatPlaylistVisibility,
 } from "../../shared/api"
 import { objConcat, pMchain, tapAny, withProgress } from "../../shared/fp"
 import {
@@ -331,11 +332,13 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
 
     const playlistName = await generatePlaylistName()
 
-    await createSPPlaylistFromTracks(
+    const playlistUri = await createSPPlaylistFromTracks(
         playlistName,
         lastSortedQueue.map(t => t.uri),
         sortedPlaylistsFolder.uri,
     )
+
+    setPlatPlaylistVisibility(playlistUri, false)
 
     Spicetify.showNotification(`Playlist ${playlistName} created`)
 })

@@ -113,7 +113,6 @@ export const createPlatPlaylist = async (name: string, location: SpotifyLoc = {}
 export const createSPPlaylistFromTracks = (name: string, tracks: SpotifyURI[], folder?: SpotifyURI) =>
     Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
         operation: "create",
-        after: folder,
         ...(folder ? { after: folder } : {}),
         name,
         playlist: true,

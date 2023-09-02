@@ -3740,7 +3740,6 @@ var vaultify = (() => {
       likePlatPlaylist = async (uri) => await Spicetify.Platform.RootlistAPI.add([uri]);
       createSPPlaylistFromTracks = (name, tracks, folder) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
         operation: "create",
-        after: folder,
         ...folder ? { after: folder } : {},
         name,
         playlist: true,
