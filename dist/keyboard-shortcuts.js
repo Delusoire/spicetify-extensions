@@ -1,38 +1,15 @@
 "use strict";
 var keyboard;
 (keyboard ||= {}).shortcuts = (() => {
-  var __create = Object.create;
   var __defProp = Object.defineProperty;
-  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
   var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __getProtoOf = Object.getPrototypeOf;
-  var __hasOwnProp = Object.prototype.hasOwnProperty;
   var __esm = (fn, res) => function __init() {
     return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-  };
-  var __commonJS = (cb, mod2) => function __require() {
-    return mod2 || (0, cb[__getOwnPropNames(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
   };
   var __export = (target, all) => {
     for (var name in all)
       __defProp(target, name, { get: all[name], enumerable: true });
   };
-  var __copyProps = (to, from, except, desc) => {
-    if (from && typeof from === "object" || typeof from === "function") {
-      for (let key of __getOwnPropNames(from))
-        if (!__hasOwnProp.call(to, key) && key !== except)
-          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-    }
-    return to;
-  };
-  var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__getProtoOf(mod2)) : {}, __copyProps(
-    // If the importer is in node compatibility mode or this is not an ESM
-    // file that has been converted to a CommonJS file using a Babel-
-    // compatible transform (i.e. "__esModule" has not been set), then set
-    // "default" to the CommonJS "module.exports" for node compatibility.
-    isNodeMode || !mod2 || !mod2.__esModule ? __defProp(target, "default", { value: mod2, enumerable: true }) : target,
-    mod2
-  ));
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/function.js
   function identity(a) {
@@ -41,6 +18,20 @@ var keyboard;
   function constant(a) {
     return function() {
       return a;
+    };
+  }
+  function flip(f) {
+    return function() {
+      var args = [];
+      for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+      }
+      if (args.length > 1) {
+        return f(args[1], args[0]);
+      }
+      return function(a) {
+        return f(a)(args[0]);
+      };
     };
   }
   function flow(ab, bc, cd, de, ef, fg, gh, hi, ij) {
@@ -81,6 +72,11 @@ var keyboard;
         };
     }
     return;
+  }
+  function tupled(f) {
+    return function(a) {
+      return f.apply(void 0, a);
+    };
   }
   function pipe(a, ab, bc, cd, de, ef, fg, gh, hi) {
     switch (arguments.length) {
@@ -247,8 +243,8 @@ var keyboard;
   function flap(F) {
     return function(a) {
       return function(fab) {
-        return F.map(fab, function(f2) {
-          return f2(a);
+        return F.map(fab, function(f) {
+          return f(a);
         });
       };
     };
@@ -264,11 +260,11 @@ var keyboard;
     };
   }
   function let_(F) {
-    return function(name, f2) {
+    return function(name, f) {
       return function(fa) {
         return F.map(fa, function(a) {
           var _a;
-          return Object.assign({}, a, (_a = {}, _a[name] = f2(a), _a));
+          return Object.assign({}, a, (_a = {}, _a[name] = f(a), _a));
         });
       };
     };
@@ -293,10 +289,10 @@ var keyboard;
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Applicative.js
   function getApplicativeMonoid(F) {
-    var f2 = getApplySemigroup(F);
+    var f = getApplySemigroup(F);
     return function(M) {
       return {
-        concat: f2(M).concat,
+        concat: f(M).concat,
         empty: F.of(M.empty)
       };
     };
@@ -310,26 +306,26 @@ var keyboard;
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Chain.js
   function chainFirst(M) {
     var tapM = tap(M);
-    return function(f2) {
+    return function(f) {
       return function(first2) {
-        return tapM(first2, f2);
+        return tapM(first2, f);
       };
     };
   }
   function tap(M) {
-    return function(first2, f2) {
+    return function(first2, f) {
       return M.chain(first2, function(a) {
-        return M.map(f2(a), function() {
+        return M.map(f(a), function() {
           return a;
         });
       });
     };
   }
   function bind(M) {
-    return function(name, f2) {
+    return function(name, f) {
       return function(ma) {
         return M.chain(ma, function(a) {
-          return M.map(f2(a), function(b) {
+          return M.map(f(a), function(b) {
             var _a;
             return Object.assign({}, a, (_a = {}, _a[name] = b, _a));
           });
@@ -344,23 +340,23 @@ var keyboard;
 
   // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/FromEither.js
   function fromEitherK(F) {
-    return function(f2) {
-      return flow(f2, F.fromEither);
+    return function(f) {
+      return flow(f, F.fromEither);
     };
   }
   function chainEitherK(F, M) {
     var fromEitherKF = fromEitherK(F);
-    return function(f2) {
+    return function(f) {
       return function(ma) {
-        return M.chain(ma, fromEitherKF(f2));
+        return M.chain(ma, fromEitherKF(f));
       };
     };
   }
   function tapEither(F, M) {
     var fromEither3 = fromEitherK(F);
     var tapM = tap(M);
-    return function(self, f2) {
-      return tapM(self, fromEither3(f2));
+    return function(self, f) {
+      return tapM(self, fromEither3(f));
     };
   }
   var init_FromEither = __esm({
@@ -394,7 +390,7 @@ var keyboard;
   function compare(first2, second) {
     return first2 < second ? -1 : first2 > second ? 1 : 0;
   }
-  var equalsDefault, fromCompare, getSemigroup, getMonoid, min, max, strictOrd;
+  var equalsDefault, fromCompare, getSemigroup, getMonoid, min, max, clamp, strictOrd;
   var init_Ord = __esm({
     ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/es6/Ord.js"() {
       init_Eq();
@@ -437,6 +433,15 @@ var keyboard;
       max = function(O) {
         return function(first2, second) {
           return first2 === second || O.compare(first2, second) > -1 ? first2 : second;
+        };
+      };
+      clamp = function(O) {
+        var minO = min(O);
+        var maxO = max(O);
+        return function(low, hi) {
+          return function(a) {
+            return maxO(minO(a, hi), low);
+          };
         };
       };
       strictOrd = {
@@ -688,20 +693,20 @@ var keyboard;
             return copy(as3);
           }
           if (m < 0) {
-            var _a = splitAt(-m)(as3), f2 = _a[0], s = _a[1];
-            return pipe(s, concat(f2));
+            var _a = splitAt(-m)(as3), f = _a[0], s = _a[1];
+            return pipe(s, concat(f));
           } else {
             return rotate(m - len)(as3);
           }
         };
       };
       fromReadonlyNonEmptyArray2 = fromReadonlyNonEmptyArray;
-      makeBy = function(f2) {
+      makeBy = function(f) {
         return function(n) {
           var j = Math.max(0, Math.floor(n));
-          var out = [f2(0)];
+          var out = [f(0)];
           for (var i = 1; i < j; i++) {
-            out.push(f2(i));
+            out.push(f(i));
           }
           return out;
         };
@@ -735,13 +740,13 @@ var keyboard;
           return isNonEmpty3(rest) ? pipe(rest, prependAll2(middle), prepend2(head3(as3))) : copy(as3);
         };
       };
-      chop = function(f2) {
+      chop = function(f) {
         return function(as3) {
-          var _a = f2(as3), b = _a[0], rest = _a[1];
+          var _a = f(as3), b = _a[0], rest = _a[1];
           var out = [b];
           var next = rest;
           while (isNonEmpty3(next)) {
-            var _b = f2(next), b_1 = _b[0], rest_2 = _b[1];
+            var _b = f(next), b_1 = _b[0], rest_2 = _b[1];
             out.push(b_1);
             next = rest_2;
           }
@@ -875,16 +880,16 @@ var keyboard;
   function wiltDefault(T, C) {
     return function(F) {
       var traverseF = T.traverse(F);
-      return function(wa, f2) {
-        return F.map(traverseF(wa, f2), C.separate);
+      return function(wa, f) {
+        return F.map(traverseF(wa, f), C.separate);
       };
     };
   }
   function witherDefault(T, C) {
     return function(F) {
       var traverseF = T.traverse(F);
-      return function(wa, f2) {
-        return F.map(traverseF(wa, f2), C.compact);
+      return function(wa, f) {
+        return F.map(traverseF(wa, f), C.compact);
       };
     };
   }
@@ -1014,10 +1019,10 @@ var keyboard;
           return none;
         };
       };
-      findFirstMap = function(f2) {
+      findFirstMap = function(f) {
         return function(as3) {
           for (var i = 0; i < as3.length; i++) {
-            var out = f2(as3[i]);
+            var out = f(as3[i]);
             if (isSome(out)) {
               return out;
             }
@@ -1025,10 +1030,10 @@ var keyboard;
           return none;
         };
       };
-      findLastMap = function(f2) {
+      findLastMap = function(f) {
         return function(as3) {
           for (var i = as3.length - 1; i >= 0; i--) {
-            var out = f2(as3[i]);
+            var out = f(as3[i]);
             if (isSome(out)) {
               return out;
             }
@@ -1046,53 +1051,53 @@ var keyboard;
           return none;
         };
       };
-      _chainRecDepthFirst = function(a, f2) {
-        return pipe(a, chainRecDepthFirst(f2));
+      _chainRecDepthFirst = function(a, f) {
+        return pipe(a, chainRecDepthFirst(f));
       };
-      _chainRecBreadthFirst = function(a, f2) {
-        return pipe(a, chainRecBreadthFirst(f2));
+      _chainRecBreadthFirst = function(a, f) {
+        return pipe(a, chainRecBreadthFirst(f));
       };
       foldMapWithIndex2 = function(M) {
-        return function(f2) {
+        return function(f) {
           return function(fa) {
             return fa.reduce(function(b, a, i) {
-              return M.concat(b, f2(i, a));
+              return M.concat(b, f(i, a));
             }, M.empty);
           };
         };
       };
-      reduce2 = function(b, f2) {
+      reduce2 = function(b, f) {
         return reduceWithIndex2(b, function(_, b2, a) {
-          return f2(b2, a);
+          return f(b2, a);
         });
       };
       foldMap2 = function(M) {
         var foldMapWithIndexM = foldMapWithIndex2(M);
-        return function(f2) {
+        return function(f) {
           return foldMapWithIndexM(function(_, a) {
-            return f2(a);
+            return f(a);
           });
         };
       };
-      reduceWithIndex2 = function(b, f2) {
+      reduceWithIndex2 = function(b, f) {
         return function(fa) {
           var len = fa.length;
           var out = b;
           for (var i = 0; i < len; i++) {
-            out = f2(i, out, fa[i]);
+            out = f(i, out, fa[i]);
           }
           return out;
         };
       };
-      reduceRight2 = function(b, f2) {
+      reduceRight2 = function(b, f) {
         return reduceRightWithIndex2(b, function(_, a, b2) {
-          return f2(a, b2);
+          return f(a, b2);
         });
       };
-      reduceRightWithIndex2 = function(b, f2) {
+      reduceRightWithIndex2 = function(b, f) {
         return function(fa) {
           return fa.reduceRight(function(b2, a, i) {
-            return f2(i, a, b2);
+            return f(i, a, b2);
           }, b);
         };
       };
@@ -1124,14 +1129,14 @@ var keyboard;
           return Ord.compare(aLen, bLen);
         });
       };
-      chainRecDepthFirst = function(f2) {
+      chainRecDepthFirst = function(f) {
         return function(a) {
-          var todo = __spreadArray5([], f2(a), true);
+          var todo = __spreadArray5([], f(a), true);
           var out = [];
           while (todo.length > 0) {
             var e = todo.shift();
             if (isLeft(e)) {
-              todo.unshift.apply(todo, f2(e.left));
+              todo.unshift.apply(todo, f(e.left));
             } else {
               out.push(e.right);
             }
@@ -1139,14 +1144,14 @@ var keyboard;
           return out;
         };
       };
-      chainRecBreadthFirst = function(f2) {
+      chainRecBreadthFirst = function(f) {
         return function(a) {
-          var initial = f2(a);
+          var initial = f(a);
           var todo = [];
           var out = [];
           function go(e2) {
             if (isLeft(e2)) {
-              f2(e2.left).forEach(function(v) {
+              f(e2.left).forEach(function(v) {
                 return todo.push(v);
               });
             } else {
@@ -1387,7 +1392,7 @@ var keyboard;
       return [a, b];
     });
   }
-  function comprehension(input, f2, g) {
+  function comprehension(input, f, g) {
     if (g === void 0) {
       g = function() {
         return true;
@@ -1396,7 +1401,7 @@ var keyboard;
     var go = function(scope, input2) {
       return isNonEmpty5(input2) ? flatMap(head3(input2), function(a) {
         return go(pipe(scope, append3(a)), tail3(input2));
-      }) : g.apply(void 0, scope) ? [f2.apply(void 0, scope)] : [];
+      }) : g.apply(void 0, scope) ? [f.apply(void 0, scope)] : [];
     };
     return go([], input);
   }
@@ -1462,8 +1467,8 @@ var keyboard;
       prependW3 = prependW2;
       append3 = append;
       appendW3 = appendW;
-      makeBy3 = function(n, f2) {
-        return n <= 0 ? [] : makeBy(f2)(n);
+      makeBy3 = function(n, f) {
+        return n <= 0 ? [] : makeBy(f)(n);
       };
       replicate = function(n, a) {
         return makeBy3(n, function() {
@@ -1496,33 +1501,33 @@ var keyboard;
       };
       matchRight = matchRightW;
       foldRight = matchRight;
-      chainWithIndex = function(f2) {
+      chainWithIndex = function(f) {
         return function(as3) {
           var out = [];
           for (var i = 0; i < as3.length; i++) {
-            out.push.apply(out, f2(i, as3[i]));
+            out.push.apply(out, f(i, as3[i]));
           }
           return out;
         };
       };
-      scanLeft = function(b, f2) {
+      scanLeft = function(b, f) {
         return function(as3) {
           var len = as3.length;
           var out = new Array(len + 1);
           out[0] = b;
           for (var i = 0; i < len; i++) {
-            out[i + 1] = f2(out[i], as3[i]);
+            out[i + 1] = f(out[i], as3[i]);
           }
           return out;
         };
       };
-      scanRight = function(b, f2) {
+      scanRight = function(b, f) {
         return function(as3) {
           var len = as3.length;
           var out = new Array(len + 1);
           out[len] = b;
           for (var i = len - 1; i >= 0; i--) {
-            out[i] = f2(as3[i], out[i + 1]);
+            out[i] = f(as3[i], out[i + 1]);
           }
           return out;
         };
@@ -1592,9 +1597,9 @@ var keyboard;
           return isOutOfBound4(i, as3) ? none : some(unsafeDeleteAt(i, as3));
         };
       };
-      modifyAt = function(i, f2) {
+      modifyAt = function(i, f) {
         return function(as3) {
-          return isOutOfBound4(i, as3) ? none : some(unsafeUpdateAt3(i, f2(as3[i]), as3));
+          return isOutOfBound4(i, as3) ? none : some(unsafeUpdateAt3(i, f(as3[i]), as3));
         };
       };
       reverse2 = function(as3) {
@@ -1625,11 +1630,11 @@ var keyboard;
           return as3.length <= 1 ? copy2(as3) : as3.slice().sort(O.compare);
         };
       };
-      zipWith = function(fa, fb, f2) {
+      zipWith = function(fa, fb, f) {
         var fc = [];
         var len = Math.min(fa.length, fb.length);
         for (var i = 0; i < len; i++) {
-          fc[i] = f2(fa[i], fb[i]);
+          fc[i] = f(fa[i], fb[i]);
         }
         return fc;
       };
@@ -1643,38 +1648,38 @@ var keyboard;
         return [fa, fb];
       };
       prependAll3 = function(middle) {
-        var f2 = prependAll2(middle);
+        var f = prependAll2(middle);
         return function(as3) {
-          return isNonEmpty5(as3) ? f2(as3) : [];
+          return isNonEmpty5(as3) ? f(as3) : [];
         };
       };
       intersperse3 = function(middle) {
-        var f2 = intersperse2(middle);
+        var f = intersperse2(middle);
         return function(as3) {
-          return isNonEmpty5(as3) ? f2(as3) : copy2(as3);
+          return isNonEmpty5(as3) ? f(as3) : copy2(as3);
         };
       };
       rotate3 = function(n) {
-        var f2 = rotate(n);
+        var f = rotate(n);
         return function(as3) {
-          return isNonEmpty5(as3) ? f2(as3) : copy2(as3);
+          return isNonEmpty5(as3) ? f(as3) : copy2(as3);
         };
       };
       elem2 = elem;
       uniq3 = function(E) {
-        var f2 = uniq(E);
+        var f = uniq(E);
         return function(as3) {
-          return isNonEmpty5(as3) ? f2(as3) : copy2(as3);
+          return isNonEmpty5(as3) ? f(as3) : copy2(as3);
         };
       };
       sortBy3 = function(ords) {
-        var f2 = sortBy(ords);
+        var f = sortBy(ords);
         return function(as3) {
-          return isNonEmpty5(as3) ? f2(as3) : copy2(as3);
+          return isNonEmpty5(as3) ? f(as3) : copy2(as3);
         };
       };
-      chop3 = function(f2) {
-        var g = chop(f2);
+      chop3 = function(f) {
+        var g = chop(f);
         return function(as3) {
           return isNonEmpty5(as3) ? g(as3) : [];
         };
@@ -1685,18 +1690,18 @@ var keyboard;
         };
       };
       chunksOf3 = function(n) {
-        var f2 = chunksOf(n);
+        var f = chunksOf(n);
         return function(as3) {
-          return isNonEmpty5(as3) ? f2(as3) : [];
+          return isNonEmpty5(as3) ? f(as3) : [];
         };
       };
-      fromOptionK = function(f2) {
+      fromOptionK = function(f) {
         return function() {
           var a = [];
           for (var _i = 0; _i < arguments.length; _i++) {
             a[_i] = arguments[_i];
           }
-          return fromOption(f2.apply(void 0, a));
+          return fromOption(f.apply(void 0, a));
         };
       };
       concatW = function(second) {
@@ -1705,11 +1710,11 @@ var keyboard;
         };
       };
       concat2 = concatW;
-      _map = function(fa, f2) {
-        return pipe(fa, map(f2));
+      _map = function(fa, f) {
+        return pipe(fa, map(f));
       };
-      _mapWithIndex = function(fa, f2) {
-        return pipe(fa, mapWithIndex(f2));
+      _mapWithIndex = function(fa, f) {
+        return pipe(fa, mapWithIndex(f));
       };
       _ap = function(fab, fa) {
         return pipe(fab, ap2(fa));
@@ -1717,67 +1722,67 @@ var keyboard;
       _filter = function(fa, predicate) {
         return pipe(fa, filter(predicate));
       };
-      _filterMap = function(fa, f2) {
-        return pipe(fa, filterMap(f2));
+      _filterMap = function(fa, f) {
+        return pipe(fa, filterMap(f));
       };
       _partition = function(fa, predicate) {
         return pipe(fa, partition(predicate));
       };
-      _partitionMap = function(fa, f2) {
-        return pipe(fa, partitionMap(f2));
+      _partitionMap = function(fa, f) {
+        return pipe(fa, partitionMap(f));
       };
       _partitionWithIndex = function(fa, predicateWithIndex) {
         return pipe(fa, partitionWithIndex(predicateWithIndex));
       };
-      _partitionMapWithIndex = function(fa, f2) {
-        return pipe(fa, partitionMapWithIndex(f2));
+      _partitionMapWithIndex = function(fa, f) {
+        return pipe(fa, partitionMapWithIndex(f));
       };
       _alt = function(fa, that) {
         return pipe(fa, alt(that));
       };
-      _reduce = function(fa, b, f2) {
-        return pipe(fa, reduce3(b, f2));
+      _reduce = function(fa, b, f) {
+        return pipe(fa, reduce3(b, f));
       };
       _foldMap = function(M) {
         var foldMapM = foldMap3(M);
-        return function(fa, f2) {
-          return pipe(fa, foldMapM(f2));
+        return function(fa, f) {
+          return pipe(fa, foldMapM(f));
         };
       };
-      _reduceRight = function(fa, b, f2) {
-        return pipe(fa, reduceRight3(b, f2));
+      _reduceRight = function(fa, b, f) {
+        return pipe(fa, reduceRight3(b, f));
       };
-      _reduceWithIndex = function(fa, b, f2) {
-        return pipe(fa, reduceWithIndex3(b, f2));
+      _reduceWithIndex = function(fa, b, f) {
+        return pipe(fa, reduceWithIndex3(b, f));
       };
       _foldMapWithIndex = function(M) {
         var foldMapWithIndexM = foldMapWithIndex3(M);
-        return function(fa, f2) {
-          return pipe(fa, foldMapWithIndexM(f2));
+        return function(fa, f) {
+          return pipe(fa, foldMapWithIndexM(f));
         };
       };
-      _reduceRightWithIndex = function(fa, b, f2) {
-        return pipe(fa, reduceRightWithIndex3(b, f2));
+      _reduceRightWithIndex = function(fa, b, f) {
+        return pipe(fa, reduceRightWithIndex3(b, f));
       };
-      _filterMapWithIndex = function(fa, f2) {
-        return pipe(fa, filterMapWithIndex(f2));
+      _filterMapWithIndex = function(fa, f) {
+        return pipe(fa, filterMapWithIndex(f));
       };
       _filterWithIndex = function(fa, predicateWithIndex) {
         return pipe(fa, filterWithIndex(predicateWithIndex));
       };
-      _extend = function(fa, f2) {
-        return pipe(fa, extend(f2));
+      _extend = function(fa, f) {
+        return pipe(fa, extend(f));
       };
       _traverse = function(F) {
         var traverseF = traverse(F);
-        return function(ta, f2) {
-          return pipe(ta, traverseF(f2));
+        return function(ta, f) {
+          return pipe(ta, traverseF(f));
         };
       };
       _traverseWithIndex = function(F) {
         var traverseWithIndexF = traverseWithIndex(F);
-        return function(ta, f2) {
-          return pipe(ta, traverseWithIndexF(f2));
+        return function(ta, f) {
+          return pipe(ta, traverseWithIndexF(f));
         };
       };
       _chainRecDepthFirst2 = _chainRecDepthFirst;
@@ -1786,36 +1791,36 @@ var keyboard;
       zero = function() {
         return [];
       };
-      map = function(f2) {
+      map = function(f) {
         return function(fa) {
           return fa.map(function(a) {
-            return f2(a);
+            return f(a);
           });
         };
       };
       ap2 = function(fa) {
-        return flatMap(function(f2) {
-          return pipe(fa, map(f2));
+        return flatMap(function(f) {
+          return pipe(fa, map(f));
         });
       };
-      flatMap = /* @__PURE__ */ dual(2, function(ma, f2) {
+      flatMap = /* @__PURE__ */ dual(2, function(ma, f) {
         return pipe(ma, chainWithIndex(function(i, a) {
-          return f2(a, i);
+          return f(a, i);
         }));
       });
       flatten = /* @__PURE__ */ flatMap(identity);
-      mapWithIndex = function(f2) {
+      mapWithIndex = function(f) {
         return function(fa) {
           return fa.map(function(a, i) {
-            return f2(i, a);
+            return f(i, a);
           });
         };
       };
-      filterMapWithIndex = function(f2) {
+      filterMapWithIndex = function(f) {
         return function(fa) {
           var out = [];
           for (var i = 0; i < fa.length; i++) {
-            var optionB = f2(i, fa[i]);
+            var optionB = f(i, fa[i]);
             if (isSome(optionB)) {
               out.push(optionB.value);
             }
@@ -1823,9 +1828,9 @@ var keyboard;
           return out;
         };
       };
-      filterMap = function(f2) {
+      filterMap = function(f) {
         return filterMapWithIndex(function(_, a) {
-          return f2(a);
+          return f(a);
         });
       };
       compact = /* @__PURE__ */ filterMap(identity);
@@ -1867,17 +1872,17 @@ var keyboard;
           return separated(left, right);
         };
       };
-      partitionMap = function(f2) {
+      partitionMap = function(f) {
         return partitionMapWithIndex(function(_, a) {
-          return f2(a);
+          return f(a);
         });
       };
-      partitionMapWithIndex = function(f2) {
+      partitionMapWithIndex = function(f) {
         return function(fa) {
           var left = [];
           var right = [];
           for (var i = 0; i < fa.length; i++) {
-            var e = f2(i, fa[i]);
+            var e = f(i, fa[i]);
             if (e._tag === "Left") {
               left.push(e.left);
             } else {
@@ -1900,10 +1905,10 @@ var keyboard;
           });
         };
       };
-      extend = function(f2) {
+      extend = function(f) {
         return function(wa) {
           return wa.map(function(_, i) {
-            return f2(wa.slice(i));
+            return f(wa.slice(i));
           });
         };
       };
@@ -1916,9 +1921,9 @@ var keyboard;
       reduceRightWithIndex3 = reduceRightWithIndex2;
       traverse = function(F) {
         var traverseWithIndexF = traverseWithIndex(F);
-        return function(f2) {
+        return function(f) {
           return traverseWithIndexF(function(_, a) {
-            return f2(a);
+            return f(a);
           });
         };
       };
@@ -1934,37 +1939,37 @@ var keyboard;
         };
       };
       traverseWithIndex = function(F) {
-        return function(f2) {
+        return function(f) {
           return reduceWithIndex3(F.of(zero()), function(i, fbs, a) {
             return F.ap(F.map(fbs, function(bs) {
               return function(b) {
                 return pipe(bs, append3(b));
               };
-            }), f2(i, a));
+            }), f(i, a));
           });
         };
       };
       wither = function(F) {
         var _witherF = _wither(F);
-        return function(f2) {
+        return function(f) {
           return function(fa) {
-            return _witherF(fa, f2);
+            return _witherF(fa, f);
           };
         };
       };
       wilt = function(F) {
         var _wiltF = _wilt(F);
-        return function(f2) {
+        return function(f) {
           return function(fa) {
-            return _wiltF(fa, f2);
+            return _wiltF(fa, f);
           };
         };
       };
-      unfold = function(b, f2) {
+      unfold = function(b, f) {
         var out = [];
         var bb = b;
         while (true) {
-          var mt = f2(bb);
+          var mt = f(bb);
           if (isSome(mt)) {
             var _a = mt.value, a = _a[0], b_1 = _a[1];
             out.push(a);
@@ -2431,28 +2436,28 @@ var keyboard;
       getRight = function(ma) {
         return ma._tag === "Left" ? none2 : some3(ma.right);
       };
-      _map2 = function(fa, f2) {
-        return pipe(fa, map2(f2));
+      _map2 = function(fa, f) {
+        return pipe(fa, map2(f));
       };
       _ap2 = function(fab, fa) {
         return pipe(fab, ap3(fa));
       };
-      _reduce2 = function(fa, b, f2) {
-        return pipe(fa, reduce4(b, f2));
+      _reduce2 = function(fa, b, f) {
+        return pipe(fa, reduce4(b, f));
       };
       _foldMap2 = function(M) {
         var foldMapM = foldMap4(M);
-        return function(fa, f2) {
-          return pipe(fa, foldMapM(f2));
+        return function(fa, f) {
+          return pipe(fa, foldMapM(f));
         };
       };
-      _reduceRight2 = function(fa, b, f2) {
-        return pipe(fa, reduceRight4(b, f2));
+      _reduceRight2 = function(fa, b, f) {
+        return pipe(fa, reduceRight4(b, f));
       };
       _traverse2 = function(F) {
         var traverseF = traverse2(F);
-        return function(ta, f2) {
-          return pipe(ta, traverseF(f2));
+        return function(ta, f) {
+          return pipe(ta, traverseF(f));
         };
       };
       _alt2 = function(fa, that) {
@@ -2461,17 +2466,17 @@ var keyboard;
       _filter2 = function(fa, predicate) {
         return pipe(fa, filter2(predicate));
       };
-      _filterMap2 = function(fa, f2) {
-        return pipe(fa, filterMap2(f2));
+      _filterMap2 = function(fa, f) {
+        return pipe(fa, filterMap2(f));
       };
-      _extend2 = function(wa, f2) {
-        return pipe(wa, extend2(f2));
+      _extend2 = function(wa, f) {
+        return pipe(wa, extend2(f));
       };
       _partition2 = function(fa, predicate) {
         return pipe(fa, partition2(predicate));
       };
-      _partitionMap2 = function(fa, f2) {
-        return pipe(fa, partitionMap2(f2));
+      _partitionMap2 = function(fa, f) {
+        return pipe(fa, partitionMap2(f));
       };
       URI2 = "Option";
       getShow4 = function(S) {
@@ -2504,9 +2509,9 @@ var keyboard;
           empty: none2
         };
       };
-      map2 = function(f2) {
+      map2 = function(f) {
         return function(fa) {
-          return isNone2(fa) ? none2 : some3(f2(fa.value));
+          return isNone2(fa) ? none2 : some3(f(fa.value));
         };
       };
       Functor2 = {
@@ -2536,8 +2541,8 @@ var keyboard;
         ap: _ap2,
         of: of4
       };
-      flatMap2 = /* @__PURE__ */ dual(2, function(ma, f2) {
-        return isNone2(ma) ? none2 : f2(ma.value);
+      flatMap2 = /* @__PURE__ */ dual(2, function(ma, f) {
+        return isNone2(ma) ? none2 : f(ma.value);
       });
       Chain2 = {
         URI: URI2,
@@ -2552,21 +2557,21 @@ var keyboard;
         of: of4,
         chain: flatMap2
       };
-      reduce4 = function(b, f2) {
+      reduce4 = function(b, f) {
         return function(fa) {
-          return isNone2(fa) ? b : f2(b, fa.value);
+          return isNone2(fa) ? b : f(b, fa.value);
         };
       };
       foldMap4 = function(M) {
-        return function(f2) {
+        return function(f) {
           return function(fa) {
-            return isNone2(fa) ? M.empty : f2(fa.value);
+            return isNone2(fa) ? M.empty : f(fa.value);
           };
         };
       };
-      reduceRight4 = function(b, f2) {
+      reduceRight4 = function(b, f) {
         return function(fa) {
-          return isNone2(fa) ? b : f2(fa.value, b);
+          return isNone2(fa) ? b : f(fa.value, b);
         };
       };
       Foldable2 = {
@@ -2601,9 +2606,9 @@ var keyboard;
         alt: _alt2,
         zero: zero2
       };
-      extend2 = function(f2) {
+      extend2 = function(f) {
         return function(wa) {
-          return isNone2(wa) ? none2 : some3(f2(wa));
+          return isNone2(wa) ? none2 : some3(f(wa));
         };
       };
       Extend2 = {
@@ -2626,9 +2631,9 @@ var keyboard;
           return isNone2(fa) ? none2 : predicate(fa.value) ? fa : none2;
         };
       };
-      filterMap2 = function(f2) {
+      filterMap2 = function(f) {
         return function(fa) {
-          return isNone2(fa) ? none2 : f2(fa.value);
+          return isNone2(fa) ? none2 : f(fa.value);
         };
       };
       partition2 = function(predicate) {
@@ -2636,8 +2641,8 @@ var keyboard;
           return separated(_filter2(fa, not(predicate)), _filter2(fa, predicate));
         };
       };
-      partitionMap2 = function(f2) {
-        return flow(map2(f2), separate2);
+      partitionMap2 = function(f) {
+        return flow(map2(f), separate2);
       };
       Filterable2 = {
         URI: URI2,
@@ -2650,9 +2655,9 @@ var keyboard;
         partitionMap: _partitionMap2
       };
       traverse2 = function(F) {
-        return function(f2) {
+        return function(f) {
           return function(ta) {
-            return isNone2(ta) ? F.of(none2) : F.map(f2(ta.value), some3);
+            return isNone2(ta) ? F.of(none2) : F.map(f(ta.value), some3);
           };
         };
       };
@@ -2674,17 +2679,17 @@ var keyboard;
       _wilt2 = /* @__PURE__ */ wiltDefault(Traversable2, Compactable2);
       wither2 = function(F) {
         var _witherF = _wither2(F);
-        return function(f2) {
+        return function(f) {
           return function(fa) {
-            return _witherF(fa, f2);
+            return _witherF(fa, f);
           };
         };
       };
       wilt2 = function(F) {
         var _wiltF = _wilt2(F);
-        return function(f2) {
+        return function(f) {
           return function(fa) {
-            return _wiltF(fa, f2);
+            return _wiltF(fa, f);
           };
         };
       };
@@ -2752,30 +2757,30 @@ var keyboard;
       fromNullable = function(a) {
         return a == null ? none2 : some3(a);
       };
-      tryCatch = function(f2) {
+      tryCatch = function(f) {
         try {
-          return some3(f2());
+          return some3(f());
         } catch (e) {
           return none2;
         }
       };
-      tryCatchK = function(f2) {
+      tryCatchK = function(f) {
         return function() {
           var a = [];
           for (var _i = 0; _i < arguments.length; _i++) {
             a[_i] = arguments[_i];
           }
           return tryCatch(function() {
-            return f2.apply(void 0, a);
+            return f.apply(void 0, a);
           });
         };
       };
-      fromNullableK = function(f2) {
-        return flow(f2, fromNullable);
+      fromNullableK = function(f) {
+        return flow(f, fromNullable);
       };
-      chainNullableK = function(f2) {
+      chainNullableK = function(f) {
         return function(ma) {
-          return isNone2(ma) ? none2 : fromNullable(f2(ma.value));
+          return isNone2(ma) ? none2 : fromNullable(f(ma.value));
         };
       };
       toNullable = /* @__PURE__ */ match3(constNull, identity);
@@ -2791,15 +2796,15 @@ var keyboard;
       bind3 = /* @__PURE__ */ bind(Chain2);
       apS3 = /* @__PURE__ */ apS(Apply2);
       ApT = /* @__PURE__ */ of4(emptyReadonlyArray);
-      traverseReadonlyNonEmptyArrayWithIndex = function(f2) {
+      traverseReadonlyNonEmptyArrayWithIndex = function(f) {
         return function(as3) {
-          var o = f2(0, head(as3));
+          var o = f(0, head(as3));
           if (isNone2(o)) {
             return none2;
           }
           var out = [o.value];
           for (var i = 1; i < as3.length; i++) {
-            var o_1 = f2(i, as3[i]);
+            var o_1 = f(i, as3[i]);
             if (isNone2(o_1)) {
               return none2;
             }
@@ -2808,16 +2813,16 @@ var keyboard;
           return some3(out);
         };
       };
-      traverseReadonlyArrayWithIndex = function(f2) {
-        var g = traverseReadonlyNonEmptyArrayWithIndex(f2);
+      traverseReadonlyArrayWithIndex = function(f) {
+        var g = traverseReadonlyNonEmptyArrayWithIndex(f);
         return function(as3) {
           return isNonEmpty(as3) ? g(as3) : ApT;
         };
       };
       traverseArrayWithIndex = traverseReadonlyArrayWithIndex;
-      traverseArray = function(f2) {
+      traverseArray = function(f) {
         return traverseReadonlyArrayWithIndex(function(_, a) {
-          return f2(a);
+          return f(a);
         });
       };
       sequenceArray = /* @__PURE__ */ traverseArray(identity);
@@ -2955,308 +2960,17 @@ var keyboard;
     }
   });
 
-  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/function.js
-  var require_function = __commonJS({
-    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/function.js"(exports) {
-      "use strict";
-      var __spreadArray6 = exports && exports.__spreadArray || function(to, from, pack) {
-        if (pack || arguments.length === 2)
-          for (var i = 0, l = from.length, ar; i < l; i++) {
-            if (ar || !(i in from)) {
-              if (!ar)
-                ar = Array.prototype.slice.call(from, 0, i);
-              ar[i] = from[i];
-            }
-          }
-        return to.concat(ar || Array.prototype.slice.call(from));
-      };
-      Object.defineProperty(exports, "__esModule", { value: true });
-      exports.dual = exports.getEndomorphismMonoid = exports.not = exports.SK = exports.hole = exports.pipe = exports.untupled = exports.tupled = exports.absurd = exports.decrement = exports.increment = exports.tuple = exports.flow = exports.flip = exports.constVoid = exports.constUndefined = exports.constNull = exports.constFalse = exports.constTrue = exports.constant = exports.unsafeCoerce = exports.identity = exports.apply = exports.getRing = exports.getSemiring = exports.getMonoid = exports.getSemigroup = exports.getBooleanAlgebra = void 0;
-      var getBooleanAlgebra = function(B) {
-        return function() {
-          return {
-            meet: function(x, y) {
-              return function(a) {
-                return B.meet(x(a), y(a));
-              };
-            },
-            join: function(x, y) {
-              return function(a) {
-                return B.join(x(a), y(a));
-              };
-            },
-            zero: function() {
-              return B.zero;
-            },
-            one: function() {
-              return B.one;
-            },
-            implies: function(x, y) {
-              return function(a) {
-                return B.implies(x(a), y(a));
-              };
-            },
-            not: function(x) {
-              return function(a) {
-                return B.not(x(a));
-              };
-            }
-          };
-        };
-      };
-      exports.getBooleanAlgebra = getBooleanAlgebra;
-      var getSemigroup5 = function(S) {
-        return function() {
-          return {
-            concat: function(f2, g) {
-              return function(a) {
-                return S.concat(f2(a), g(a));
-              };
-            }
-          };
-        };
-      };
-      exports.getSemigroup = getSemigroup5;
-      var getMonoid6 = function(M) {
-        var getSemigroupM = (0, exports.getSemigroup)(M);
-        return function() {
-          return {
-            concat: getSemigroupM().concat,
-            empty: function() {
-              return M.empty;
-            }
-          };
-        };
-      };
-      exports.getMonoid = getMonoid6;
-      var getSemiring = function(S) {
-        return {
-          add: function(f2, g) {
-            return function(x) {
-              return S.add(f2(x), g(x));
-            };
-          },
-          zero: function() {
-            return S.zero;
-          },
-          mul: function(f2, g) {
-            return function(x) {
-              return S.mul(f2(x), g(x));
-            };
-          },
-          one: function() {
-            return S.one;
-          }
-        };
-      };
-      exports.getSemiring = getSemiring;
-      var getRing = function(R) {
-        var S = (0, exports.getSemiring)(R);
-        return {
-          add: S.add,
-          mul: S.mul,
-          one: S.one,
-          zero: S.zero,
-          sub: function(f2, g) {
-            return function(x) {
-              return R.sub(f2(x), g(x));
-            };
-          }
-        };
-      };
-      exports.getRing = getRing;
-      var apply2 = function(a) {
-        return function(f2) {
-          return f2(a);
-        };
-      };
-      exports.apply = apply2;
-      function identity4(a) {
-        return a;
-      }
-      exports.identity = identity4;
-      exports.unsafeCoerce = identity4;
-      function constant7(a) {
-        return function() {
-          return a;
-        };
-      }
-      exports.constant = constant7;
-      exports.constTrue = constant7(true);
-      exports.constFalse = constant7(false);
-      exports.constNull = constant7(null);
-      exports.constUndefined = constant7(void 0);
-      exports.constVoid = exports.constUndefined;
-      function flip4(f2) {
-        return function() {
-          var args = [];
-          for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-          }
-          if (args.length > 1) {
-            return f2(args[1], args[0]);
-          }
-          return function(a) {
-            return f2(a)(args[0]);
-          };
-        };
-      }
-      exports.flip = flip4;
-      function flow6(ab, bc, cd, de, ef, fg, gh, hi, ij) {
-        switch (arguments.length) {
-          case 1:
-            return ab;
-          case 2:
-            return function() {
-              return bc(ab.apply(this, arguments));
-            };
-          case 3:
-            return function() {
-              return cd(bc(ab.apply(this, arguments)));
-            };
-          case 4:
-            return function() {
-              return de(cd(bc(ab.apply(this, arguments))));
-            };
-          case 5:
-            return function() {
-              return ef(de(cd(bc(ab.apply(this, arguments)))));
-            };
-          case 6:
-            return function() {
-              return fg(ef(de(cd(bc(ab.apply(this, arguments))))));
-            };
-          case 7:
-            return function() {
-              return gh(fg(ef(de(cd(bc(ab.apply(this, arguments)))))));
-            };
-          case 8:
-            return function() {
-              return hi(gh(fg(ef(de(cd(bc(ab.apply(this, arguments))))))));
-            };
-          case 9:
-            return function() {
-              return ij(hi(gh(fg(ef(de(cd(bc(ab.apply(this, arguments)))))))));
-            };
-        }
-        return;
-      }
-      exports.flow = flow6;
-      function tuple2() {
-        var t = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-          t[_i] = arguments[_i];
-        }
-        return t;
-      }
-      exports.tuple = tuple2;
-      function increment2(n) {
-        return n + 1;
-      }
-      exports.increment = increment2;
-      function decrement2(n) {
-        return n - 1;
-      }
-      exports.decrement = decrement2;
-      function absurd(_) {
-        throw new Error("Called `absurd` function which should be uncallable");
-      }
-      exports.absurd = absurd;
-      function tupled2(f2) {
-        return function(a) {
-          return f2.apply(void 0, a);
-        };
-      }
-      exports.tupled = tupled2;
-      function untupled(f2) {
-        return function() {
-          var a = [];
-          for (var _i = 0; _i < arguments.length; _i++) {
-            a[_i] = arguments[_i];
-          }
-          return f2(a);
-        };
-      }
-      exports.untupled = untupled;
-      function pipe7(a, ab, bc, cd, de, ef, fg, gh, hi) {
-        switch (arguments.length) {
-          case 1:
-            return a;
-          case 2:
-            return ab(a);
-          case 3:
-            return bc(ab(a));
-          case 4:
-            return cd(bc(ab(a)));
-          case 5:
-            return de(cd(bc(ab(a))));
-          case 6:
-            return ef(de(cd(bc(ab(a)))));
-          case 7:
-            return fg(ef(de(cd(bc(ab(a))))));
-          case 8:
-            return gh(fg(ef(de(cd(bc(ab(a)))))));
-          case 9:
-            return hi(gh(fg(ef(de(cd(bc(ab(a))))))));
-          default: {
-            var ret = arguments[0];
-            for (var i = 1; i < arguments.length; i++) {
-              ret = arguments[i](ret);
-            }
-            return ret;
-          }
-        }
-      }
-      exports.pipe = pipe7;
-      exports.hole = absurd;
-      var SK2 = function(_, b) {
-        return b;
-      };
-      exports.SK = SK2;
-      function not2(predicate) {
-        return function(a) {
-          return !predicate(a);
-        };
-      }
-      exports.not = not2;
-      var getEndomorphismMonoid = function() {
-        return {
-          concat: function(first2, second) {
-            return flow6(first2, second);
-          },
-          empty: identity4
-        };
-      };
-      exports.getEndomorphismMonoid = getEndomorphismMonoid;
-      var dual2 = function(arity, body) {
-        var isDataFirst = typeof arity === "number" ? function(args) {
-          return args.length >= arity;
-        } : arity;
-        return function() {
-          var args = Array.from(arguments);
-          if (isDataFirst(arguments)) {
-            return body.apply(this, args);
-          }
-          return function(self) {
-            return body.apply(void 0, __spreadArray6([self], args, false));
-          };
-        };
-      };
-      exports.dual = dual2;
-    }
-  });
-
   // shared/util.tsx
-  var import_function9, SpotifyLoc, sleep, isLiked, setLiked, toggleLiked;
+  var SpotifyLoc, sleep, isLiked, setLiked, toggleLiked;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
       init_es6();
-      import_function9 = __toESM(require_function());
+      init_function();
       ((SpotifyLoc2) => {
         let before;
         ((before2) => {
-          before2.start = (0, import_function9.constant)({ before: "start" });
+          before2.start = constant({ before: "start" });
           before2.fromUri = (uri) => ({
             before: { uri }
           });
@@ -3266,7 +2980,7 @@ var keyboard;
         })(before = SpotifyLoc2.before || (SpotifyLoc2.before = {}));
         let after;
         ((after2) => {
-          after2.end = (0, import_function9.constant)({ after: "end" });
+          after2.end = constant({ after: "end" });
           after2.fromUri = (uri) => ({
             before: { uri }
           });
@@ -3280,7 +2994,7 @@ var keyboard;
       setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"](...uris);
       toggleLiked = async (uris) => {
         const liked = await isLiked(uris);
-        return await (0, import_function9.pipe)(
+        return await pipe(
           uris,
           Array_exports.reduceWithIndex(
             [[], []],
@@ -3300,10 +3014,10 @@ var keyboard;
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js
-  var import_function10, URI3, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+  var URI3, map4, Functor3, of5, ap4, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, unless, when, invoke, invokeNullary, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
   var init_Function = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Function.js"() {
-      import_function10 = __toESM(require_function());
+      init_function();
       init_Predicate();
       init_Endomorphism();
       init_Monoid();
@@ -3311,52 +3025,52 @@ var keyboard;
       init_Apply();
       init_Chain();
       URI3 = "Function";
-      map4 = (f2) => (g) => (0, import_function10.flow)(g, f2);
+      map4 = (f) => (g) => flow(g, f);
       Functor3 = {
         URI: URI3,
-        map: (f2, g) => map4(g)(f2)
+        map: (f, g) => map4(g)(f)
       };
-      of5 = import_function10.constant;
-      ap4 = (f2) => (g) => (x) => g(x)(f2(x));
+      of5 = constant;
+      ap4 = (f) => (g) => (x) => g(x)(f(x));
       Applicative3 = {
         ...Functor3,
         of: of5,
-        ap: (f2, g) => ap4(g)(f2)
+        ap: (f, g) => ap4(g)(f)
       };
       apFirst4 = apFirst(Applicative3);
       apSecond4 = apSecond(Applicative3);
-      chain3 = (f2) => (g) => (x) => f2(g(x))(x);
+      chain3 = (f) => (g) => (x) => f(g(x))(x);
       Monad3 = {
         ...Applicative3,
-        chain: (f2, g) => chain3(g)(f2)
+        chain: (f, g) => chain3(g)(f)
       };
       Do3 = of5({});
       bindTo4 = bindTo(Functor3);
       bind4 = bind(Monad3);
       apS4 = apS(Applicative3);
       let_4 = let_(Functor3);
-      unary = import_function10.tupled;
-      unless = (f2) => (onFalse) => (x) => f2(x) ? x : onFalse(x);
-      when = (0, import_function10.flow)(not, unless);
+      unary = tupled;
+      unless = (f) => (onFalse) => (x) => f(x) ? x : onFalse(x);
+      when = flow(not, unless);
       invoke = (x) => (ys) => (z) => z[x](...ys);
-      invokeNullary = (0, import_function10.flip)(invoke)([]);
-      curry2T = (f2) => (a) => (b) => f2([a, b]);
-      curry2 = (0, import_function10.flow)(unary, curry2T);
-      curry3T = (f2) => (a) => (b) => (c) => f2([a, b, c]);
-      curry3 = (0, import_function10.flow)(unary, curry3T);
-      curry4T = (f2) => (a) => (b) => (c) => (d) => f2([a, b, c, d]);
-      curry4 = (0, import_function10.flow)(unary, curry4T);
-      curry5T = (f2) => (a) => (b) => (c) => (d) => (e) => f2([a, b, c, d, e]);
-      curry5 = (0, import_function10.flow)(unary, curry5T);
+      invokeNullary = flip(invoke)([]);
+      curry2T = (f) => (a) => (b) => f([a, b]);
+      curry2 = flow(unary, curry2T);
+      curry3T = (f) => (a) => (b) => (c) => f([a, b, c]);
+      curry3 = flow(unary, curry3T);
+      curry4T = (f) => (a) => (b) => (c) => (d) => f([a, b, c, d]);
+      curry4 = flow(unary, curry4T);
+      curry5T = (f) => (a) => (b) => (c) => (d) => (e) => f([a, b, c, d, e]);
+      curry5 = flow(unary, curry5T);
       applyEvery = concatAll5(getMonoid4());
     }
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Array.js
-  var import_function11, none3, sum, product, mean, median, moveFrom, moveTo, minimum, maximum, fromIterable;
+  var none3, sum, product, mean, median, moveFrom, moveTo, minimum, maximum, fromIterable;
   var init_Array2 = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Array.js"() {
-      import_function11 = __toESM(require_function());
+      init_function();
       init_Predicate();
       init_number();
       init_NonEmptyArray();
@@ -3364,299 +3078,31 @@ var keyboard;
       init_Option();
       init_Monoid();
       init_Semigroup();
-      none3 = (0, import_function11.flow)(not, (p2) => every2(p2));
+      none3 = flow(not, (p) => every2(p));
       sum = concatAll5(MonoidSum);
       product = concatAll5(MonoidProduct);
       mean = (xs) => sum(xs) / xs.length;
-      median = (0, import_function11.flow)(sort(Ord), (xs) => {
+      median = flow(sort(Ord), (xs) => {
         const i = xs.length / 2;
         return i % 1 === 0 ? (xs[i - 1] + xs[i]) / 2 : xs[Math.floor(i)];
       });
-      moveFrom = (from) => (to) => (xs) => from >= xs.length || to >= xs.length ? none2 : from === to ? some3(xs) : (0, import_function11.pipe)(xs, lookup2(from), chain2((x) => (0, import_function11.pipe)(deleteAt(from)(xs), chain2(insertAt(to, x)))));
-      moveTo = (0, import_function11.flip)(moveFrom);
-      minimum = (0, import_function11.flow)(min2, concatAll4);
-      maximum = (0, import_function11.flow)(max2, concatAll4);
+      moveFrom = (from) => (to) => (xs) => from >= xs.length || to >= xs.length ? none2 : from === to ? some3(xs) : pipe(xs, lookup2(from), chain2((x) => pipe(deleteAt(from)(xs), chain2(insertAt(to, x)))));
+      moveTo = flip(moveFrom);
+      minimum = flow(min2, concatAll4);
+      maximum = flow(max2, concatAll4);
       fromIterable = Array.from;
     }
   });
 
-  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Eq.js
-  var require_Eq = __commonJS({
-    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Eq.js"(exports) {
-      "use strict";
-      Object.defineProperty(exports, "__esModule", { value: true });
-      exports.eqDate = exports.eqNumber = exports.eqString = exports.eqBoolean = exports.eq = exports.strictEqual = exports.getStructEq = exports.getTupleEq = exports.Contravariant = exports.getMonoid = exports.getSemigroup = exports.eqStrict = exports.URI = exports.contramap = exports.tuple = exports.struct = exports.fromEquals = void 0;
-      var function_1 = require_function();
-      var fromEquals2 = function(equals) {
-        return {
-          equals: function(x, y) {
-            return x === y || equals(x, y);
-          }
-        };
-      };
-      exports.fromEquals = fromEquals2;
-      var struct2 = function(eqs) {
-        return (0, exports.fromEquals)(function(first2, second) {
-          for (var key in eqs) {
-            if (!eqs[key].equals(first2[key], second[key])) {
-              return false;
-            }
-          }
-          return true;
-        });
-      };
-      exports.struct = struct2;
-      var tuple2 = function() {
-        var eqs = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-          eqs[_i] = arguments[_i];
-        }
-        return (0, exports.fromEquals)(function(first2, second) {
-          return eqs.every(function(E, i) {
-            return E.equals(first2[i], second[i]);
-          });
-        });
-      };
-      exports.tuple = tuple2;
-      var contramap_ = function(fa, f2) {
-        return (0, function_1.pipe)(fa, (0, exports.contramap)(f2));
-      };
-      var contramap = function(f2) {
-        return function(fa) {
-          return (0, exports.fromEquals)(function(x, y) {
-            return fa.equals(f2(x), f2(y));
-          });
-        };
-      };
-      exports.contramap = contramap;
-      exports.URI = "Eq";
-      exports.eqStrict = {
-        equals: function(a, b) {
-          return a === b;
-        }
-      };
-      var empty3 = {
-        equals: function() {
-          return true;
-        }
-      };
-      var getSemigroup5 = function() {
-        return {
-          concat: function(x, y) {
-            return (0, exports.fromEquals)(function(a, b) {
-              return x.equals(a, b) && y.equals(a, b);
-            });
-          }
-        };
-      };
-      exports.getSemigroup = getSemigroup5;
-      var getMonoid6 = function() {
-        return {
-          concat: (0, exports.getSemigroup)().concat,
-          empty: empty3
-        };
-      };
-      exports.getMonoid = getMonoid6;
-      exports.Contravariant = {
-        URI: exports.URI,
-        contramap: contramap_
-      };
-      exports.getTupleEq = exports.tuple;
-      exports.getStructEq = exports.struct;
-      exports.strictEqual = exports.eqStrict.equals;
-      exports.eq = exports.Contravariant;
-      exports.eqBoolean = exports.eqStrict;
-      exports.eqString = exports.eqStrict;
-      exports.eqNumber = exports.eqStrict;
-      exports.eqDate = {
-        equals: function(first2, second) {
-          return first2.valueOf() === second.valueOf();
-        }
-      };
-    }
-  });
-
-  // .yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Ord.js
-  var require_Ord = __commonJS({
-    ".yarn/cache/fp-ts-npm-2.16.1-8deb3ec2d6-94e8bb1d03.zip/node_modules/fp-ts/lib/Ord.js"(exports) {
-      "use strict";
-      Object.defineProperty(exports, "__esModule", { value: true });
-      exports.ordDate = exports.ordNumber = exports.ordString = exports.ordBoolean = exports.ord = exports.getDualOrd = exports.getTupleOrd = exports.between = exports.clamp = exports.max = exports.min = exports.geq = exports.leq = exports.gt = exports.lt = exports.equals = exports.trivial = exports.Contravariant = exports.getMonoid = exports.getSemigroup = exports.URI = exports.contramap = exports.reverse = exports.tuple = exports.fromCompare = exports.equalsDefault = void 0;
-      var Eq_1 = require_Eq();
-      var function_1 = require_function();
-      var equalsDefault2 = function(compare3) {
-        return function(first2, second) {
-          return first2 === second || compare3(first2, second) === 0;
-        };
-      };
-      exports.equalsDefault = equalsDefault2;
-      var fromCompare2 = function(compare3) {
-        return {
-          equals: (0, exports.equalsDefault)(compare3),
-          compare: function(first2, second) {
-            return first2 === second ? 0 : compare3(first2, second);
-          }
-        };
-      };
-      exports.fromCompare = fromCompare2;
-      var tuple2 = function() {
-        var ords = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-          ords[_i] = arguments[_i];
-        }
-        return (0, exports.fromCompare)(function(first2, second) {
-          var i = 0;
-          for (; i < ords.length - 1; i++) {
-            var r = ords[i].compare(first2[i], second[i]);
-            if (r !== 0) {
-              return r;
-            }
-          }
-          return ords[i].compare(first2[i], second[i]);
-        });
-      };
-      exports.tuple = tuple2;
-      var reverse4 = function(O) {
-        return (0, exports.fromCompare)(function(first2, second) {
-          return O.compare(second, first2);
-        });
-      };
-      exports.reverse = reverse4;
-      var contramap_ = function(fa, f2) {
-        return (0, function_1.pipe)(fa, (0, exports.contramap)(f2));
-      };
-      var contramap = function(f2) {
-        return function(fa) {
-          return (0, exports.fromCompare)(function(first2, second) {
-            return fa.compare(f2(first2), f2(second));
-          });
-        };
-      };
-      exports.contramap = contramap;
-      exports.URI = "Ord";
-      var getSemigroup5 = function() {
-        return {
-          concat: function(first2, second) {
-            return (0, exports.fromCompare)(function(a, b) {
-              var ox = first2.compare(a, b);
-              return ox !== 0 ? ox : second.compare(a, b);
-            });
-          }
-        };
-      };
-      exports.getSemigroup = getSemigroup5;
-      var getMonoid6 = function() {
-        return {
-          concat: (0, exports.getSemigroup)().concat,
-          empty: (0, exports.fromCompare)(function() {
-            return 0;
-          })
-        };
-      };
-      exports.getMonoid = getMonoid6;
-      exports.Contravariant = {
-        URI: exports.URI,
-        contramap: contramap_
-      };
-      exports.trivial = {
-        equals: function_1.constTrue,
-        compare: /* @__PURE__ */ (0, function_1.constant)(0)
-      };
-      var equals = function(O) {
-        return function(second) {
-          return function(first2) {
-            return first2 === second || O.compare(first2, second) === 0;
-          };
-        };
-      };
-      exports.equals = equals;
-      var lt = function(O) {
-        return function(first2, second) {
-          return O.compare(first2, second) === -1;
-        };
-      };
-      exports.lt = lt;
-      var gt = function(O) {
-        return function(first2, second) {
-          return O.compare(first2, second) === 1;
-        };
-      };
-      exports.gt = gt;
-      var leq = function(O) {
-        return function(first2, second) {
-          return O.compare(first2, second) !== 1;
-        };
-      };
-      exports.leq = leq;
-      var geq = function(O) {
-        return function(first2, second) {
-          return O.compare(first2, second) !== -1;
-        };
-      };
-      exports.geq = geq;
-      var min4 = function(O) {
-        return function(first2, second) {
-          return first2 === second || O.compare(first2, second) < 1 ? first2 : second;
-        };
-      };
-      exports.min = min4;
-      var max4 = function(O) {
-        return function(first2, second) {
-          return first2 === second || O.compare(first2, second) > -1 ? first2 : second;
-        };
-      };
-      exports.max = max4;
-      var clamp2 = function(O) {
-        var minO = (0, exports.min)(O);
-        var maxO = (0, exports.max)(O);
-        return function(low, hi) {
-          return function(a) {
-            return maxO(minO(a, hi), low);
-          };
-        };
-      };
-      exports.clamp = clamp2;
-      var between = function(O) {
-        var ltO = (0, exports.lt)(O);
-        var gtO = (0, exports.gt)(O);
-        return function(low, hi) {
-          return function(a) {
-            return ltO(a, low) || gtO(a, hi) ? false : true;
-          };
-        };
-      };
-      exports.between = between;
-      exports.getTupleOrd = exports.tuple;
-      exports.getDualOrd = exports.reverse;
-      exports.ord = exports.Contravariant;
-      function compare2(first2, second) {
-        return first2 < second ? -1 : first2 > second ? 1 : 0;
-      }
-      var strictOrd2 = {
-        equals: Eq_1.eqStrict.equals,
-        compare: compare2
-      };
-      exports.ordBoolean = strictOrd2;
-      exports.ordString = strictOrd2;
-      exports.ordNumber = strictOrd2;
-      exports.ordDate = (0, function_1.pipe)(
-        exports.ordNumber,
-        /* @__PURE__ */ (0, exports.contramap)(function(date) {
-          return date.valueOf();
-        })
-      );
-    }
-  });
-
   // extensions/keyboard-shortcuts/sneak.tsx
-  var import_function12, import_Ord3, mousetrap, keyList, getSneakKeys, clearSomeSneakKeys, clearSneakKeys, enterSneak, quitSneak, clickElement, listenSneakKeys, shouldListenToSneakBinds, listeningToSneakBinds, sneakOverlay;
+  var mousetrap, keyList, getSneakKeys, clearSomeSneakKeys, clearSneakKeys, enterSneak, quitSneak, clickElement, listenSneakKeys, shouldListenToSneakBinds, listeningToSneakBinds, sneakOverlay;
   var init_sneak = __esm({
     "extensions/keyboard-shortcuts/sneak.tsx"() {
       "use strict";
       init_es6();
-      import_function12 = __toESM(require_function());
+      init_function();
       init_Array2();
-      import_Ord3 = __toESM(require_Ord());
+      init_Ord();
       mousetrap = Spicetify.Mousetrap();
       keyList = "abcdefghijklmnopqrstuvwxyz".split("");
       getSneakKeys = () => Array.from(sneakOverlay.getElementsByClassName("sneak-key"));
@@ -3664,14 +3110,14 @@ var keyboard;
         if (sneakKeys.length === 0)
           return false;
         sneakOverlay.remove();
-        (0, import_function12.pipe)(
+        pipe(
           sneakKeys,
           Array_exports.map((e) => e.remove())
         );
         document.body.append(sneakOverlay);
         return true;
       };
-      clearSneakKeys = (0, import_function12.flow)(getSneakKeys, clearSomeSneakKeys);
+      clearSneakKeys = flow(getSneakKeys, clearSomeSneakKeys);
       enterSneak = (event) => {
         sneakOverlay.style.display = "block";
         if (clearSneakKeys())
@@ -3680,8 +3126,8 @@ var keyboard;
         const isElementInViewPort = (e) => {
           const c = document.body;
           const bound = e.getBoundingClientRect();
-          const within = (m, M) => (x) => x === (0, import_Ord3.clamp)(number_exports.Ord)(m, M)(x);
-          return (0, import_function12.pipe)(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) && (0, import_function12.pipe)(mean([bound.left, bound.right]), within(0, c.clientWidth));
+          const within = (m, M) => (x) => x === clamp(number_exports.Ord)(m, M)(x);
+          return pipe(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) && pipe(mean([bound.left, bound.right]), within(0, c.clientWidth));
         };
         const createSneakKey = (target, key, top, left) => {
           const sneakKey = document.createElement("span");
@@ -3694,7 +3140,7 @@ var keyboard;
         };
         const sneakKeysFragment = document.createDocumentFragment();
         const linkSelector = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`;
-        shouldListenToSneakBinds = (0, import_function12.pipe)(
+        shouldListenToSneakBinds = pipe(
           document.querySelectorAll(linkSelector),
           (x) => Array.from(x),
           Array_exports.filter(isElementVisible),
@@ -3754,22 +3200,22 @@ var keyboard;
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Lazy.js
-  var import_function13, URI4, _map4, _ap3, _chain, of6, chain4, flatten3, Functor4, flap4, Apply3, apFirst5, apSecond5, Chain3, chainFirst4, Do4, bindTo5, bind5, apS5, let_5, ApT2, traverseReadonlyNonEmptyArrayWithIndex2, traverseReadonlyArrayWithIndex2, traverseArray2, sequenceArray2;
+  var URI4, _map4, _ap3, _chain, of6, chain4, flatten3, Functor4, flap4, Apply3, apFirst5, apSecond5, Chain3, chainFirst4, Do4, bindTo5, bind5, apS5, let_5, ApT2, traverseReadonlyNonEmptyArrayWithIndex2, traverseReadonlyArrayWithIndex2, traverseArray2, sequenceArray2;
   var init_Lazy = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Lazy.js"() {
-      import_function13 = __toESM(require_function());
+      init_function();
       init_Functor();
       init_Apply();
       init_Chain();
       init_ReadonlyNonEmptyArray();
       init_ReadonlyArray();
       URI4 = "Lazy";
-      _map4 = (f2, g) => () => g(f2());
-      _ap3 = (f2, g) => () => f2()(g());
-      _chain = (f2, g) => g(f2());
-      of6 = import_function13.constant;
-      chain4 = (f2) => (ma) => _chain(ma, f2);
-      flatten3 = chain4(import_function13.identity);
+      _map4 = (f, g) => () => g(f());
+      _ap3 = (f, g) => () => f()(g());
+      _chain = (f, g) => g(f());
+      of6 = constant;
+      chain4 = (f) => (ma) => _chain(ma, f);
+      flatten3 = chain4(identity);
       Functor4 = {
         URI: URI4,
         map: _map4
@@ -3795,36 +3241,36 @@ var keyboard;
       apS5 = apS(Apply3);
       let_5 = let_(Functor4);
       ApT2 = of6([]);
-      traverseReadonlyNonEmptyArrayWithIndex2 = (f2) => (as3) => () => {
-        const out = [f2(0, head2(as3))()];
+      traverseReadonlyNonEmptyArrayWithIndex2 = (f) => (as3) => () => {
+        const out = [f(0, head2(as3))()];
         for (let i = 1; i < as3.length; i++) {
-          out.push(f2(i, as3[i])());
+          out.push(f(i, as3[i])());
         }
         return out;
       };
-      traverseReadonlyArrayWithIndex2 = (f2) => {
-        const g = traverseReadonlyNonEmptyArrayWithIndex2(f2);
+      traverseReadonlyArrayWithIndex2 = (f) => {
+        const g = traverseReadonlyNonEmptyArrayWithIndex2(f);
         return (as3) => isNonEmpty4(as3) ? g(as3) : ApT2;
       };
-      traverseArray2 = (f2) => traverseReadonlyArrayWithIndex2((_, a) => f2(a));
-      sequenceArray2 = traverseArray2(import_function13.identity);
+      traverseArray2 = (f) => traverseReadonlyArrayWithIndex2((_, a) => f(a));
+      sequenceArray2 = traverseArray2(identity);
     }
   });
 
   // .yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Number.js
-  var import_function14, isValid, fromStringWithRadix, fromString, floatFromString, increment, decrement, mod, isFinite, toFinite, BoundedSafe, EnumInt;
+  var isValid, fromStringWithRadix, fromString, floatFromString, increment, decrement, mod, isFinite, toFinite, BoundedSafe, EnumInt;
   var init_Number = __esm({
     ".yarn/__virtual__/fp-ts-std-virtual-08a4b07b6e/0/cache/fp-ts-std-npm-0.17.1-8c0fa4fe44-c9e2cba727.zip/node_modules/fp-ts-std/dist/esm/Number.js"() {
-      import_function14 = __toESM(require_function());
+      init_function();
       init_Predicate();
       init_Option();
       init_Function();
       init_number();
       init_Lazy();
       isValid = not(Number.isNaN);
-      fromStringWithRadix = (radix) => (string) => (0, import_function14.pipe)(Number.parseInt(string, radix), fromPredicate2(isValid));
+      fromStringWithRadix = (radix) => (string) => pipe(Number.parseInt(string, radix), fromPredicate2(isValid));
       fromString = fromStringWithRadix(10);
-      floatFromString = (0, import_function14.flow)(Number.parseFloat, fromPredicate2(isValid));
+      floatFromString = flow(Number.parseFloat, fromPredicate2(isValid));
       increment = (x) => x + 1;
       decrement = (x) => x - 1;
       mod = (divisor) => (dividend) => (dividend % divisor + divisor) % divisor;
@@ -3837,21 +3283,21 @@ var keyboard;
       };
       EnumInt = {
         ...BoundedSafe,
-        succ: (0, import_function14.flow)(fromPredicate2(and((n) => n < Number.MAX_SAFE_INTEGER)(Number.isInteger)), map2(increment)),
-        pred: (0, import_function14.flow)(fromPredicate2(and((n) => n > Number.MIN_SAFE_INTEGER)(Number.isInteger)), map2(decrement)),
+        succ: flow(fromPredicate2(and((n) => n < Number.MAX_SAFE_INTEGER)(Number.isInteger)), map2(increment)),
+        pred: flow(fromPredicate2(and((n) => n > Number.MIN_SAFE_INTEGER)(Number.isInteger)), map2(decrement)),
         toEnum: some3,
-        fromEnum: import_function14.identity,
+        fromEnum: identity,
         cardinality: of6(Infinity)
       };
     }
   });
 
   // extensions/keyboard-shortcuts/util.tsx
-  var import_function15, SCROLL_STEP, focusOnApp, appScroll, appScrollY, openPage, rotateSidebar, resizeLeftSidebar, registerBind;
+  var SCROLL_STEP, focusOnApp, appScroll, appScrollY, openPage, rotateSidebar, resizeLeftSidebar, registerBind;
   var init_util2 = __esm({
     "extensions/keyboard-shortcuts/util.tsx"() {
       "use strict";
-      import_function15 = __toESM(require_function());
+      init_function();
       init_sneak();
       init_Number();
       SCROLL_STEP = 25;
@@ -3865,10 +3311,10 @@ var keyboard;
       openPage = (page) => Spicetify.Platform.History.push({ pathname: page });
       rotateSidebar = (offset) => {
         const navLinks = Array.from(document.querySelectorAll(".main-yourLibraryX-navLink").values());
-        (0, import_function15.pipe)(
+        pipe(
           document.querySelector(".main-yourLibraryX-navLinkActive"),
           (active) => navLinks.findIndex((e) => e === active),
-          (x) => (0, import_function15.pipe)(x === -1 && offset <= 0 ? offset : x + offset, mod(navLinks.length)),
+          (x) => pipe(x === -1 && offset <= 0 ? offset : x + offset, mod(navLinks.length)),
           (x) => navLinks[x].click()
         );
       };
@@ -3944,14 +3390,14 @@ var keyboard;
   // extensions/keyboard-shortcuts/entry.tsx
   init_es6();
   init_Record();
-  var import_function16 = __toESM(require_function());
+  init_function();
   init_util();
   (async () => {
     const mustLoad = ["Keyboard", "Mousetrap", "Platform", "Player"];
     let timer = 0;
     while (mustLoad.some(
-      (0, import_function16.flow)(
-        (0, import_function16.flip)(lookup4)(
+      flow(
+        flip(lookup4)(
           Spicetify
         ),
         Option_exports.isNone

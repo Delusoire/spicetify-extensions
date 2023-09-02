@@ -1,5 +1,5 @@
 import { task } from "fp-ts"
-import { constVoid } from "fp-ts/lib/function"
+import { constVoid } from "fp-ts/function"
 import React, { useState } from "react"
 import ReactDOM from "react-dom"
 import { guard4, is } from "./fp"

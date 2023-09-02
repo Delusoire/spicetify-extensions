@@ -1,5 +1,5 @@
 import { array as a, taskOption } from "fp-ts"
-import { flow } from "fp-ts/lib/function"
+import { flow } from "fp-ts/function"
 import { fetchPlatFolder } from "../../shared/api"
 import { CONFIG } from "./settings"
 import { StarStops, setStarsGradientByRating } from "./stars"

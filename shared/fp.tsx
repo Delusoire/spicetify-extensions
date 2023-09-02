@@ -1,10 +1,9 @@
 import { array as a, eq, string } from "fp-ts"
-import { flow as f, pipe as p, tupled, untupled } from "fp-ts/function"
 import { guard, memoize } from "fp-ts-std/Function"
 import { getUnionSemigroup } from "fp-ts/Record"
 import { Refinement } from "fp-ts/Refinement"
-import { first } from "fp-ts/lib/Semigroup"
-import { HKT } from "fp-ts/HKT"
+import { first } from "fp-ts/Semigroup"
+import { flow as f, pipe as p, tupled, untupled } from "fp-ts/function"
 
 type refineBranch<A, B extends A, R> = [Refinement<A, B>, (x: B) => R]
 export const guard2 = <A, A1 extends A, A2 extends A, R>(branches: [refineBranch<A, A1, R>, refineBranch<A, A2, R>]) =>

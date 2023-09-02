@@ -2,7 +2,7 @@ export default {}
 
 import { array as a } from "fp-ts"
 import { anyPass } from "fp-ts-std/Predicate"
-import { flow as f, identity, pipe as p } from "fp-ts/lib/function"
+import { flow as f, identity, pipe as p } from "fp-ts/function"
 import { get } from "spectacles-ts"
 import { fetchGQLAlbum, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents } from "../../shared/api"
 import { SpotifyURI, waitForElement } from "../../shared/util"

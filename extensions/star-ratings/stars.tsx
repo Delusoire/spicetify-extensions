@@ -1,5 +1,5 @@
 import { array as a, nonEmptyArray } from "fp-ts"
-import { pipe as p } from "fp-ts/lib/function"
+import { pipe as p } from "fp-ts/function"
 import {
     addPlatPlaylistTracks,
     createPlatPlaylist,
@@ -7,19 +7,10 @@ import {
     setPlatPlaylistVisibility,
 } from "../../shared/api"
 import { SpotifyLoc, SpotifyURI, isLiked, toggleLiked } from "../../shared/util"
+import { updateNowPlayingStars } from "./app"
 import { playlistUris, tracksRatings } from "./ratings"
 import { CONFIG } from "./settings"
-import {
-    HALF_STAR_LENGTH,
-    getStarStopsFromStar,
-    getStarsContainer,
-    getStarsFromStarsContainer,
-    getStarsStopsFromStarsContainer,
-    setStarsGradientFromContainerByRating,
-    starsN2S,
-    starsS2N,
-} from "./util"
-import { updateNowPlayingStars } from "./app"
+import { HALF_STAR_LENGTH, getStarsContainer, setStarsGradientFromContainerByRating, starsN2S, starsS2N } from "./util"
 
 const { URI } = Spicetify
 

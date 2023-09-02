@@ -8,6 +8,7 @@ import { mapWithIndex } from "fp-ts/Record"
 import { constTrue, constant, flow as f, identity, pipe as p, tupled } from "fp-ts/function"
 import { startsWith } from "fp-ts/string"
 import { Lens, Optional } from "monocle-ts"
+import { set } from "spectacles-ts"
 import {
     createPlatFolder,
     createSPPlaylistFromTracks,
@@ -29,7 +30,6 @@ import { objConcat, pMchain, tapAny, withProgress } from "../../shared/fp"
 import {
     TrackData,
     TracksPopulater,
-    UnparsedTrack,
     parseAPITrackFromPlaylist,
     parseAPITrackFromSpotify,
     parsePlatLikedTracks,
@@ -71,9 +71,9 @@ const getAlbumTracks = async (uri: SpotifyURI) => {
         a.map(
             f(
                 parseTrackFromAlbum,
-                Lens.fromProp<TrackData>()("albumUri").set(albumRes.uri),
-                Lens.fromProp<TrackData>()("albumName").set(albumRes.name),
-                Lens.fromProp<TrackData>()("releaseDate").set(releaseDate),
+                set("albumUri", albumRes.uri),
+                set("albumName", albumRes.name),
+                set("releaseDate", releaseDate),
             ),
         ),
     )
@@ -82,49 +82,47 @@ const getAlbumTracks = async (uri: SpotifyURI) => {
 export const getPlaylistTracks = f(fetchPlatPlaylistContents, pMchain(a.map(parseAPITrackFromPlaylist)))
 
 async function getArtistTracks(uri: SpotifyURI) {
-    const extractUriFromReleases = (x: any) => x.releases.items[0].uri
-    const getTracksFromAlbum = f(a.map(getAlbumTracks), ps => Promise.all(ps), pMchain(a.flatten))
+    const extractUriFromReleases = (x: { releases: { items: Array<{ uri: SpotifyURI }> } }) => x.releases.items[0].uri
+    const getTracksFromAlbums = f(a.map(getAlbumTracks), ps => Promise.all(ps), pMchain(a.flatten))
 
-    const allTracks = new Array<TrackData>()
+    const allTracks = new Array<TrackData | Promise<TrackData>>()
 
-    const add = (tracks: TrackData[]): void => void Array.prototype.push.apply(allTracks, tracks)
+    const add = (tracks: TrackData[]) => {
+        allTracks.push(...tracks)
+    }
+
+    const albumsLike = []
+    const albumsLikeReleases = []
 
     if (CONFIG.artistAllDiscography) {
-        const allDisc = await fetchGQLArtistDiscography(uri)
-        await p(allDisc, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
+        const disc = await fetchGQLArtistDiscography(uri)
+        albumsLikeReleases.push(...disc)
     } else {
         const disc = (await fetchGQLArtistOverview(uri)).discography
 
-        const artistTopTracks: UnparsedTrack[] = disc.topTracks.items
-        const artistPopularReleases: UnparsedTrack[] = disc.popularReleasesAlbums.items
-        const artistAlbums: UnparsedTrack[] = disc.albums.items
-        const artistSingles: UnparsedTrack[] = disc.singles.items
-        const artistCompilations: UnparsedTrack[] = disc.compilations.items
+        if (CONFIG.artistLikedTracks) {
+            const likedTracks = await fetchPlatArtistLikedTracks(uri)
+            p(likedTracks, a.map(parsePlatTrackFromArtistLikedTracks), add)
+        }
 
         if (CONFIG.artistTopTracks)
-            await p(
-                artistTopTracks,
+            p(
+                disc.topTracks.items,
                 a.map(i => i.track),
                 a.map(parseTopTrackFromArtist),
                 add,
             )
-        if (CONFIG.artistPopularReleases)
-            await p(
-                artistPopularReleases,
-                a.map(r => r.uri),
-                getTracksFromAlbum,
-                pMchain(add),
-            )
-        if (CONFIG.artistSingles)
-            await p(artistSingles, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
-        if (CONFIG.artistAlbums) await p(artistAlbums, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
-        if (CONFIG.artistCompilations)
-            await p(artistCompilations, a.map(extractUriFromReleases), getTracksFromAlbum, pMchain(add))
-        if (CONFIG.artistLikedTracks)
-            await p(uri, fetchPlatArtistLikedTracks, pMchain(a.map(parsePlatTrackFromArtistLikedTracks)), pMchain(add))
+
+        if (CONFIG.artistPopularReleases) albumsLike.push(...disc.popularReleasesAlbums.items.map(r => r.uri))
+        if (CONFIG.artistSingles) albumsLikeReleases.push(...disc.singles.items)
+        if (CONFIG.artistAlbums) albumsLikeReleases.push(...disc.albums.items)
+        if (CONFIG.artistCompilations) albumsLikeReleases.push(...disc.compilations.items)
     }
 
-    return allTracks
+    albumsLike.push(...albumsLikeReleases.map(extractUriFromReleases))
+    await p(albumsLike, getTracksFromAlbums, pMchain(add))
+
+    return await Promise.all(allTracks)
 }
 
 // ------------- For populateTracksSpot -------------
@@ -178,7 +176,7 @@ const populateTrackLastFM = async (track: TrackData) => {
 
 export const fetchTracks = f(
     tapAny(uri => void (lastFetchedUri = uri)),
-    guard([
+    guard<SpotifyURI, Promise<TrackData[]>>([
         [URI.isAlbum, getAlbumTracks],
         [URI.isArtist, getArtistTracks],
         [URI.isPlaylistV1OrV2, getPlaylistTracks],

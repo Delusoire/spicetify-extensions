@@ -2,7 +2,7 @@ import { array as a, number } from "fp-ts"
 import { flow, pipe } from "fp-ts/function"
 import { MousetrapInstance } from "mousetrap"
 import { mean } from "fp-ts-std/Array"
-import { clamp } from "fp-ts/lib/Ord"
+import { clamp } from "fp-ts/Ord"
 
 type SneakKey = HTMLSpanElement & { target: HTMLElement }
 

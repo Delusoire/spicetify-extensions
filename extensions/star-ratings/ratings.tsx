@@ -1,9 +1,9 @@
-import { array as a, nonEmptyArray, readonlyArray, record } from "fp-ts"
+import { array as a, readonlyArray, record } from "fp-ts"
+import { range } from "fp-ts/NonEmptyArray"
 import { flow as f, flip, pipe as p } from "fp-ts/function"
-import { groupBy, range } from "fp-ts/lib/NonEmptyArray"
-import { fetchPlatPlaylistContents, movePlatPlaylistTracks } from "../../shared/api"
+import { fetchPlatPlaylistContents } from "../../shared/api"
 import { pMchain } from "../../shared/fp"
-import { SpotifyLoc, SpotifyURI } from "../../shared/util"
+import { SpotifyURI } from "../../shared/util"
 import { StarStops, calculateRatingFromMouseEvent, createStars, onStarClick, setStarsGradientByRating } from "./stars"
 import { getRatingsFolder, starsN2S } from "./util"
 
