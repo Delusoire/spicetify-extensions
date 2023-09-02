@@ -4192,7 +4192,7 @@ var sort;
   });
 
   // shared/util.tsx
-  var import_function18, SpotifyLoc, sleep, addToContextQueue, setPlayingContext;
+  var import_function18, SpotifyLoc, sleep, createQueueItem, setQueue, setPlayingContext;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
@@ -4220,21 +4220,21 @@ var sort;
         })(after = SpotifyLoc3.after || (SpotifyLoc3.after = {}));
       })(SpotifyLoc || (SpotifyLoc = {}));
       sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-      addToContextQueue = (queue) => {
+      createQueueItem = (queued) => (uri) => ({
+        contextTrack: {
+          uri,
+          uid: "",
+          metadata: {
+            is_queued: queued.toString()
+          }
+        },
+        removed: [],
+        blocked: [],
+        provider: queued ? "queue" : "context"
+      });
+      setQueue = async (nextTracks) => {
         const { _queue, _client } = Spicetify.Platform.PlayerAPI._queue;
         const { prevTracks, queueRevision } = _queue;
-        const nextTracks = queue.map((uri) => ({
-          contextTrack: {
-            uri,
-            uid: "",
-            metadata: {
-              is_queued: "false"
-            }
-          },
-          removed: [],
-          blocked: [],
-          provider: "context"
-        }));
         return _client.setQueue({
           nextTracks,
           prevTracks,
@@ -14189,7 +14189,7 @@ var sort;
     await (0, import_function29.pipe)(albumsLike, getTracksFromAlbums, pMchain(add));
     return await Promise.all(allTracks);
   }
-  var import_function29, import_string, import_spectacles_ts, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, setQueue, toOptProp, lastFetchedUri, lastActionName, sortByProp, invertAscending, fetchSortQueue, shuffle, shuffleSubmenu, starsOrd, starsSubmenu, createSortByPropSubmenu, generatePlaylistName;
+  var import_function29, import_string, import_spectacles_ts, app_default, URI15, SortBy, SortProp, getAlbumTracks, getPlaylistTracks, fetchAPITracksFromTracks, fetchAlbumTracksFromTracks, populateTracksSpot, populateTrackLastFM, fetchTracks, populateTracks, lastSortedQueue, _setQueue, toOptProp, lastFetchedUri, lastActionName, sortByProp, invertAscending, fetchSortQueue, shuffle, shuffleSubmenu, starsOrd, starsSubmenu, createSortByPropSubmenu, generatePlaylistName;
   var init_app = __esm({
     "extensions/sort-plus/app.tsx"() {
       "use strict";
@@ -14298,17 +14298,22 @@ var sort;
         ]
       ])((0, import_function29.constant)(Task_exports.of([])));
       lastSortedQueue = [];
-      setQueue = async (queue) => {
+      _setQueue = async (queue) => {
+        if (Spicetify.Platform.PlayerAPI._queue._queue === null)
+          return void Spicetify.showNotification("Qeueue is null!");
         const uriOrd = (0, import_function29.pipe)(
           string_exports.Ord,
           Ord_exports.contramap((t) => t.uri)
         );
         lastSortedQueue = (0, import_function29.pipe)(queue, Array_exports.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? import_function29.identity : Array_exports.reverse);
-        console.log("\u{1F680} ~ file: app.tsx:203 ~ setQueue ~ lastSortedQueue:", lastSortedQueue);
-        await Spicetify.Platform.PlayerAPI.clearQueue();
         await setPlayingContext(lastFetchedUri);
-        console.log("\u{1F680} ~ file: app.tsx:206 ~ setQueue ~ lastFetchedUri:", lastFetchedUri);
-        await addToContextQueue(lastSortedQueue.map((t) => t.uri).concat("spotify:separator"));
+        await (0, import_function29.pipe)(
+          lastSortedQueue,
+          Array_exports.map((t) => t.uri),
+          Array_exports.concat(["spotify:separator"]),
+          Array_exports.map(createQueueItem(false)),
+          setQueue
+        );
         await Spicetify.Platform.PlayerAPI.skipToNext();
       };
       toOptProp = (prop2) => Optional.fromNullableProp()(SortProp[prop2]).getOption;
@@ -14325,7 +14330,7 @@ var sort;
           pMchain(Array_exports.map((x) => (0, import_function29.pipe)(x, toOptProp(name), Option_exports.isSome) ? Option_exports.some(x) : Option_exports.none)),
           pMchain(Array_exports.sequence(Option_exports.Applicative)),
           pMchain(Option_exports.map(Array_exports.sort(propOrd))),
-          pMchain(Option_exports.map(setQueue))
+          pMchain(Option_exports.map(_setQueue))
         );
       };
       invertAscending = 0;
@@ -14339,7 +14344,7 @@ var sort;
       });
       fetchSortQueue = (name, sortFn) => ([uri]) => {
         lastActionName = name;
-        (0, import_function29.pipe)(uri, fetchTracks, pMchain(sortFn), pMchain(setQueue));
+        (0, import_function29.pipe)(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue));
       };
       shuffle = (array2, l = array2.length) => l == 0 ? [] : [array2.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array2)];
       shuffleSubmenu = new Spicetify.ContextMenu.Item(

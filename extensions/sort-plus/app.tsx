@@ -37,7 +37,7 @@ import {
     parseTopTrackFromArtist,
     parseTrackFromAlbum,
 } from "../../shared/parse"
-import { SpotifyID, SpotifyLoc, SpotifyURI, addToContextQueue, setPlayingContext } from "../../shared/util"
+import { SpotifyID, SpotifyLoc, SpotifyURI, createQueueItem, setPlayingContext, setQueue } from "../../shared/util"
 import { CONFIG } from "./settings"
 
 const { URI } = Spicetify
@@ -193,18 +193,23 @@ export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
 ])(constant(task.of([])))
 
 let lastSortedQueue: TrackData[] = []
-const setQueue = async (queue: TrackData[]) => {
+const _setQueue = async (queue: TrackData[]) => {
+    if (Spicetify.Platform.PlayerAPI._queue._queue === null) return void Spicetify.showNotification("Qeueue is null!")
+
     const uriOrd = p(
         string.Ord,
         ord.contramap((t: TrackData) => t.uri),
     )
 
     lastSortedQueue = p(queue, a.uniq(uriOrd), invertAscending ^ Number(CONFIG.ascending) ? identity : a.reverse)
-    console.log("🚀 ~ file: app.tsx:203 ~ setQueue ~ lastSortedQueue:", lastSortedQueue)
-    await Spicetify.Platform.PlayerAPI.clearQueue()
     await setPlayingContext(lastFetchedUri)
-    console.log("🚀 ~ file: app.tsx:206 ~ setQueue ~ lastFetchedUri:", lastFetchedUri)
-    await addToContextQueue(lastSortedQueue.map(t => t.uri).concat("spotify:separator"))
+    await p(
+        lastSortedQueue,
+        a.map(t => t.uri),
+        a.concat(["spotify:separator"]),
+        a.map(createQueueItem(false)),
+        setQueue,
+    )
     await Spicetify.Platform.PlayerAPI.skipToNext()
 }
 
@@ -226,7 +231,7 @@ export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyUR
         pMchain(a.map(x => (p(x, toOptProp(name), o.isSome) ? o.some(x as Required<TrackData>) : o.none))),
         pMchain(a.sequence(o.Applicative)),
         pMchain(o.map(a.sort(propOrd))),
-        pMchain(o.map(setQueue)),
+        pMchain(o.map(_setQueue)),
     )
 }
 
@@ -245,7 +250,7 @@ const fetchSortQueue =
     (name: typeof lastActionName, sortFn: (tracksIn: TrackData[]) => TrackData[]) =>
     ([uri]: [SpotifyURI]) => {
         lastActionName = name
-        p(uri, fetchTracks, pMchain(sortFn), pMchain(setQueue))
+        p(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue))
     }
 
 const shuffle = <A,>(array: A[], l = array.length): A[] =>
