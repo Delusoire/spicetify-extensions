@@ -213,14 +213,14 @@ const _setQueue = (inverted: boolean) => async (queue: TrackData[]) => {
     lastSortedQueue = p(queue, a.uniq(uriOrd), inverted ? a.reverse : identity)
     ;(globalThis as any).lastSortedQueue = lastSortedQueue
 
-    await setPlayingContext(lastFetchedUri)
-    await sleep(150)
     await p(
         lastSortedQueue,
         a.map(t => t.uri),
+        a.concat(["spotify:separator"]),
         a.map(createQueueItem(false)),
         setQueue,
     )
+    await setPlayingContext(lastFetchedUri)
     await Spicetify.Platform.PlayerAPI.skipToNext()
 }
 

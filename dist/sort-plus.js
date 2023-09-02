@@ -14308,14 +14308,14 @@ var sort;
         );
         lastSortedQueue = (0, import_function29.pipe)(queue, Array_exports.uniq(uriOrd), inverted ? Array_exports.reverse : import_function29.identity);
         globalThis.lastSortedQueue = lastSortedQueue;
-        await setPlayingContext(lastFetchedUri);
-        await sleep(150);
         await (0, import_function29.pipe)(
           lastSortedQueue,
           Array_exports.map((t) => t.uri),
+          Array_exports.concat(["spotify:separator"]),
           Array_exports.map(createQueueItem(false)),
           setQueue
         );
+        await setPlayingContext(lastFetchedUri);
         await Spicetify.Platform.PlayerAPI.skipToNext();
       };
       toOptProp = (prop2) => Optional.fromNullableProp()(SortProp[prop2]).getOption;
