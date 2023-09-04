@@ -214,6 +214,7 @@ const _setQueue = (inverted: boolean) => async (queue: TrackData[]) => {
     )
 
     lastSortedQueue = p(queue, a.uniq(uriOrd), inverted ? a.reverse : identity)
+    console.log("🚀 ~ file: app.tsx:217 ~ const_setQueue= ~ lastSortedQueue:", lastSortedQueue)
     ;(globalThis as any).lastSortedQueue = lastSortedQueue
 
     await p(
