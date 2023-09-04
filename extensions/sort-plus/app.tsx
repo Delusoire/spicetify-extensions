@@ -174,7 +174,7 @@ const populateTracksSpot = (propName: keyof typeof SortProp) => (tracks: TrackDa
     )
 
 const populateTrackLastFM = async (track: TrackData) => {
-    const lastfmTrack = (await fetchTrackLFMAPI(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUserName))
+    const lastfmTrack = (await fetchTrackLFMAPI(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUsername))
         .track
     track.lastfmPlaycount = Number(lastfmTrack.listeners)
     track.scrobbles = Number(lastfmTrack.playcount)

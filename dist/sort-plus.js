@@ -14282,7 +14282,7 @@ var sort;
         pMchain(Array_exports.map(objConcat()))
       );
       populateTrackLastFM = async (track) => {
-        const lastfmTrack = (await fetchTrackLFMAPI(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUserName)).track;
+        const lastfmTrack = (await fetchTrackLFMAPI(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUsername)).track;
         track.lastfmPlaycount = Number(lastfmTrack.listeners);
         track.scrobbles = Number(lastfmTrack.playcount);
         track.personalScrobbles = Number(lastfmTrack.userplaycount);
