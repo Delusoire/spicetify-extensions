@@ -33,7 +33,7 @@ export const CONFIG = settings.toObject() as {
     artistCompilations: boolean
     artistLikedTracks: boolean
     descending: boolean
-    lastFmUserName: string
+    lastFmUsername: string
     LFMApiKey: string
     sortedPlaylistsFolderUri: SpotifyURI
 }
