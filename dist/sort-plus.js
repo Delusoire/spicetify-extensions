@@ -14314,6 +14314,7 @@ var sort;
           Ord_exports.contramap((t) => t.uri)
         );
         lastSortedQueue = (0, import_function29.pipe)(queue, Array_exports.uniq(uriOrd), inverted ? Array_exports.reverse : import_function29.identity);
+        console.log("\u{1F680} ~ file: app.tsx:217 ~ const_setQueue= ~ inverted:", inverted);
         console.log("\u{1F680} ~ file: app.tsx:217 ~ const_setQueue= ~ lastSortedQueue:", lastSortedQueue);
         globalThis.lastSortedQueue = lastSortedQueue;
         await (0, import_function29.pipe)(
