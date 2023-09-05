@@ -14294,7 +14294,7 @@ var sort;
           [URI15.isAlbum, getAlbumTracks],
           [URI15.isArtist, getArtistTracks],
           [URI15.isPlaylistV1OrV2, getPlaylistTracks],
-          [(0, import_string.startsWith)("spotify:collection:tracks"), (0, import_function29.flow)(fetchPlatLikedTracks, pMchain(Array_exports.map(parsePlatLikedTracks)))]
+          [URI15.isCollection, (0, import_function29.flow)(fetchPlatLikedTracks, pMchain(Array_exports.map(parsePlatLikedTracks)))]
         ])(Task_exports.of([]))
       );
       populateTracks = guard4([
@@ -14317,14 +14317,16 @@ var sort;
         console.log("\u{1F680} ~ file: app.tsx:217 ~ const_setQueue= ~ inverted:", inverted);
         console.log("\u{1F680} ~ file: app.tsx:217 ~ const_setQueue= ~ lastSortedQueue:", lastSortedQueue);
         globalThis.lastSortedQueue = lastSortedQueue;
+        const isQueued = URI15.isCollection(lastFetchedUri);
         await (0, import_function29.pipe)(
           lastSortedQueue,
           Array_exports.map((t) => t.uri),
           Array_exports.concat(["spotify:separator"]),
-          Array_exports.map(createQueueItem(false)),
+          Array_exports.map(createQueueItem(isQueued)),
           setQueue
         );
-        await setPlayingContext(lastFetchedUri);
+        if (!isQueued)
+          await setPlayingContext(lastFetchedUri);
         await Spicetify.Platform.PlayerAPI.skipToNext();
       };
       toOptProp = (prop2) => Optional.fromNullableProp()(SortProp[prop2]).getOption;
@@ -14389,7 +14391,7 @@ var sort;
           ["play", "heart", "list-view", "volume", "artist", "subtitles"],
           createSortByPropSubmenu
         ).concat([shuffleSubmenu, starsSubmenu]),
-        (0, import_function29.tupled)(anyPass([URI15.isAlbum, URI15.isArtist, URI15.isPlaylistV1OrV2, (0, import_string.startsWith)("spotify:collection:tracks")]))
+        (0, import_function29.tupled)(anyPass([URI15.isAlbum, URI15.isArtist, URI15.isPlaylistV1OrV2, URI15.isCollection]))
       ).register();
       generatePlaylistName = async () => {
         const uriToId = (uri) => URI15.fromString(uri).id;
@@ -14398,7 +14400,7 @@ var sort;
           [URI15.isAlbum, (0, import_function29.flow)(uriToId, getName(fetchWebAlbumsSpot))],
           [URI15.isArtist, (0, import_function29.flow)(uriToId, getName(fetchWebArtistsSpot))],
           [URI15.isPlaylistV1OrV2, (0, import_function29.flow)(uriToId, getName(fetchWebPlaylistsSpot))],
-          [(0, import_string.startsWith)("spotify:collection:tracks"), Task_exports.of("Liked Tracks")]
+          [URI15.isCollection, Task_exports.of("Liked Tracks")]
         ])(Task_exports.of("Unresolved"))(lastFetchedUri);
         return `${collectionName} - ${lastActionName}`;
       };

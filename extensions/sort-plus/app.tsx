@@ -10,7 +10,6 @@ import { startsWith } from "fp-ts/string"
 import { Lens, Optional } from "monocle-ts"
 import { set } from "spectacles-ts"
 import {
-    createPlatFolder,
     createSPPlaylistFromTracks,
     fetchGQLAlbum,
     fetchGQLArtistDiscography,
@@ -39,15 +38,7 @@ import {
     parseTopTrackFromArtist,
     parseTrackFromAlbum,
 } from "../../shared/parse"
-import {
-    SpotifyID,
-    SpotifyLoc,
-    SpotifyURI,
-    createQueueItem,
-    setPlayingContext,
-    setQueue,
-    sleep,
-} from "../../shared/util"
+import { SpotifyID, SpotifyLoc, SpotifyURI, createQueueItem, setPlayingContext, setQueue } from "../../shared/util"
 import { CONFIG } from "./settings"
 
 const { URI } = Spicetify
@@ -190,7 +181,7 @@ export const fetchTracks = f(
         [URI.isAlbum, getAlbumTracks],
         [URI.isArtist, getArtistTracks],
         [URI.isPlaylistV1OrV2, getPlaylistTracks],
-        [startsWith("spotify:collection:tracks"), f(fetchPlatLikedTracks, pMchain(a.map(parsePlatLikedTracks)))],
+        [URI.isCollection, f(fetchPlatLikedTracks, pMchain(a.map(parsePlatLikedTracks)))],
     ])(task.of([])),
 )
 
@@ -218,14 +209,16 @@ const _setQueue = (inverted: boolean) => async (queue: TrackData[]) => {
     console.log("🚀 ~ file: app.tsx:217 ~ const_setQueue= ~ lastSortedQueue:", lastSortedQueue)
     ;(globalThis as any).lastSortedQueue = lastSortedQueue
 
+    const isQueued = URI.isCollection(lastFetchedUri)
+
     await p(
         lastSortedQueue,
         a.map(t => t.uri),
         a.concat(["spotify:separator"]),
-        a.map(createQueueItem(false)),
+        a.map(createQueueItem(isQueued)),
         setQueue,
     )
-    await setPlayingContext(lastFetchedUri)
+    if (!isQueued) await setPlayingContext(lastFetchedUri)
     await Spicetify.Platform.PlayerAPI.skipToNext()
 }
 
@@ -309,7 +302,7 @@ new Spicetify.ContextMenu.SubMenu(
             createSortByPropSubmenu,
         )
         .concat([shuffleSubmenu, starsSubmenu]),
-    tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, startsWith("spotify:collection:tracks")])) as any,
+    tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isCollection])) as any,
 ).register()
 
 // Topbar
@@ -322,7 +315,7 @@ const generatePlaylistName = async () => {
         [URI.isAlbum, f(uriToId, getName(fetchWebAlbumsSpot))],
         [URI.isArtist, f(uriToId, getName(fetchWebArtistsSpot))],
         [URI.isPlaylistV1OrV2, f(uriToId, getName(fetchWebPlaylistsSpot))],
-        [startsWith("spotify:collection:tracks"), task.of("Liked Tracks")],
+        [URI.isCollection, task.of("Liked Tracks")],
     ])(task.of("Unresolved"))(lastFetchedUri)
 
     return `${collectionName} - ${lastActionName}`
