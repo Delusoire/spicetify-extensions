@@ -9,3 +9,7 @@
 # Documentation here: https://yarnpkg.com/features/zero-installs
 !.yarn/cache
 #.pnp.*
+
+extensions/full-screen
+dist/full-screen.js
+dist/full-screen.prism.js
