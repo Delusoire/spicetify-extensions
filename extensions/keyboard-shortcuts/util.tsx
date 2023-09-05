@@ -33,16 +33,19 @@ export const resizeLeftSidebar = (pxs: number) => {
     htmlStyle.cssText = htmlStyle.cssText.replace(/(--left-sidebar-width: )[^;]+/, `$1${pxs}px`)
 }
 
-export const registerBind = (
-    keyName: Spicetify.Keyboard.ValidKey,
-    ctrl: boolean,
-    shift: boolean,
-    alt: boolean,
-    callback: (event: KeyboardEvent) => void,
-) => {
-    const key = Spicetify.Keyboard.KEYS[keyName]
+export class Bind {
+    private ctrl = false
+    private shift = false
+    private alt = false
+    constructor(private key: string, private callback: (event: KeyboardEvent) => void) {}
 
-    Spicetify.Keyboard.registerShortcut({ key, ctrl, shift, alt }, event => {
-        if (!listeningToSneakBinds) callback(event)
-    })
+    setCtrl = (required: boolean) => ((this.ctrl = required), this)
+    setShift = (required: boolean) => ((this.shift = required), this)
+    setAlt = (required: boolean) => ((this.alt = required), this)
+
+    register = () =>
+        Spicetify.Keyboard.registerShortcut(
+            { key: this.key, ctrl: this.ctrl, shift: this.shift, alt: this.alt },
+            event => void (!listeningToSneakBinds && this.callback(event)),
+        )
 }

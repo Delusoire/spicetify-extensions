@@ -25,7 +25,7 @@ const clearSomeSneakKeys = (sneakKeys: SneakKey[]) => {
 }
 const clearSneakKeys = flow(getSneakKeys, clearSomeSneakKeys)
 
-export const enterSneak = (event: KeyboardEvent) => {
+export const enterSneak = () => {
     sneakOverlay.style.display = "block"
 
     if (clearSneakKeys()) return
@@ -70,18 +70,13 @@ export const enterSneak = (event: KeyboardEvent) => {
     if (shouldListenToSneakBinds) sneakOverlay.append(sneakKeysFragment)
 }
 
-export const quitSneak = (event: KeyboardEvent) => {
+export const quitSneak = () => {
     sneakOverlay.style.display = "none"
     clearSneakKeys()
     listeningToSneakBinds = false
 }
 
-export const clickElement = (element: HTMLElement) => {
-    if (element.hasAttribute("href") || element.tagName === "BUTTON" || element.getAttribute("role") === "button")
-        return void element.click()
-}
-
-export const listenSneakKeys = (event: KeyboardEvent) => {
+export const listenSneakKeys = ({ key }: KeyboardEvent) => {
     if (!listeningToSneakBinds) {
         if (shouldListenToSneakBinds) {
             shouldListenToSneakBinds = false
@@ -91,23 +86,27 @@ export const listenSneakKeys = (event: KeyboardEvent) => {
     }
     const sneakKeys = getSneakKeys()
 
-    if (sneakKeys.length === 0) return void quitSneak(event)
+    if (sneakKeys.length === 0) return void quitSneak()
 
-    sneakOverlay.remove()
-    sneakKeys.forEach(sneakKey => {
-        const text = sneakKey.innerText.toLowerCase()
-        if (text[0] === event.key) {
-            sneakKey.innerText = text.slice(1)
+    {
+        sneakOverlay.remove()
 
-            if (sneakKey.innerText === "") {
-                clickElement(sneakKey.target)
-                return void quitSneak(event)
+        sneakKeys.map(sneakKey => {
+            const [k1, ...ks] = sneakKey.innerText.toLowerCase()
+            if (k1 !== key) return void sneakKey.remove()
+
+            if (ks.length === 0) {
+                sneakKey.target.click()
+                quitSneak()
+            } else {
+                sneakKey.innerText = ks.join("")
             }
-        } else sneakKey.remove()
-    })
-    document.body.append(sneakOverlay)
+        })
 
-    if (sneakOverlay.childNodes.length === 1) quitSneak(event)
+        document.body.append(sneakOverlay)
+    }
+
+    if (sneakOverlay.childNodes.length === 1) quitSneak()
 }
 
 let shouldListenToSneakBinds = false

@@ -3095,7 +3095,7 @@ var keyboard;
   });
 
   // extensions/keyboard-shortcuts/sneak.tsx
-  var mousetrap, keyList, getSneakKeys, clearSomeSneakKeys, clearSneakKeys, enterSneak, quitSneak, clickElement, listenSneakKeys, shouldListenToSneakBinds, listeningToSneakBinds, sneakOverlay;
+  var mousetrap, keyList, getSneakKeys, clearSomeSneakKeys, clearSneakKeys, enterSneak, quitSneak, listenSneakKeys, shouldListenToSneakBinds, listeningToSneakBinds, sneakOverlay;
   var init_sneak = __esm({
     "extensions/keyboard-shortcuts/sneak.tsx"() {
       "use strict";
@@ -3118,7 +3118,7 @@ var keyboard;
         return true;
       };
       clearSneakKeys = flow(getSneakKeys, clearSomeSneakKeys);
-      enterSneak = (event) => {
+      enterSneak = () => {
         sneakOverlay.style.display = "block";
         if (clearSneakKeys())
           return;
@@ -3155,16 +3155,12 @@ var keyboard;
         if (shouldListenToSneakBinds)
           sneakOverlay.append(sneakKeysFragment);
       };
-      quitSneak = (event) => {
+      quitSneak = () => {
         sneakOverlay.style.display = "none";
         clearSneakKeys();
         listeningToSneakBinds = false;
       };
-      clickElement = (element) => {
-        if (element.hasAttribute("href") || element.tagName === "BUTTON" || element.getAttribute("role") === "button")
-          return void element.click();
-      };
-      listenSneakKeys = (event) => {
+      listenSneakKeys = ({ key }) => {
         if (!listeningToSneakBinds) {
           if (shouldListenToSneakBinds) {
             shouldListenToSneakBinds = false;
@@ -3174,22 +3170,24 @@ var keyboard;
         }
         const sneakKeys = getSneakKeys();
         if (sneakKeys.length === 0)
-          return void quitSneak(event);
-        sneakOverlay.remove();
-        sneakKeys.forEach((sneakKey) => {
-          const text = sneakKey.innerText.toLowerCase();
-          if (text[0] === event.key) {
-            sneakKey.innerText = text.slice(1);
-            if (sneakKey.innerText === "") {
-              clickElement(sneakKey.target);
-              return void quitSneak(event);
+          return void quitSneak();
+        {
+          sneakOverlay.remove();
+          sneakKeys.map((sneakKey) => {
+            const [k1, ...ks] = sneakKey.innerText.toLowerCase();
+            if (k1 !== key)
+              return void sneakKey.remove();
+            if (ks.length === 0) {
+              sneakKey.target.click();
+              quitSneak();
+            } else {
+              sneakKey.innerText = ks.join("");
             }
-          } else
-            sneakKey.remove();
-        });
-        document.body.append(sneakOverlay);
+          });
+          document.body.append(sneakOverlay);
+        }
         if (sneakOverlay.childNodes.length === 1)
-          quitSneak(event);
+          quitSneak();
       };
       shouldListenToSneakBinds = false;
       listeningToSneakBinds = false;
@@ -3293,7 +3291,7 @@ var keyboard;
   });
 
   // extensions/keyboard-shortcuts/util.tsx
-  var SCROLL_STEP, focusOnApp, appScroll, appScrollY, openPage, rotateSidebar, resizeLeftSidebar, registerBind;
+  var SCROLL_STEP, focusOnApp, appScroll, appScrollY, openPage, rotateSidebar, Bind;
   var init_util2 = __esm({
     "extensions/keyboard-shortcuts/util.tsx"() {
       "use strict";
@@ -3318,16 +3316,21 @@ var keyboard;
           (x) => navLinks[x].click()
         );
       };
-      resizeLeftSidebar = (pxs) => {
-        const html = document.firstElementChild, htmlStyle = html.style;
-        htmlStyle.cssText = htmlStyle.cssText.replace(/(--left-sidebar-width: )[^;]+/, `$1${pxs}px`);
-      };
-      registerBind = (keyName, ctrl, shift, alt3, callback) => {
-        const key = Spicetify.Keyboard.KEYS[keyName];
-        Spicetify.Keyboard.registerShortcut({ key, ctrl, shift, alt: alt3 }, (event) => {
-          if (!listeningToSneakBinds)
-            callback(event);
-        });
+      Bind = class {
+        constructor(key, callback) {
+          this.key = key;
+          this.callback = callback;
+        }
+        ctrl = false;
+        shift = false;
+        alt = false;
+        setCtrl = (required) => (this.ctrl = required, this);
+        setShift = (required) => (this.shift = required, this);
+        setAlt = (required) => (this.alt = required, this);
+        register = () => Spicetify.Keyboard.registerShortcut(
+          { key: this.key, ctrl: this.ctrl, shift: this.shift, alt: this.alt },
+          (event) => void (!listeningToSneakBinds && this.callback(event))
+        );
       };
     }
   });
@@ -3347,7 +3350,7 @@ var keyboard;
 
   // extensions/keyboard-shortcuts/app.tsx
   var app_exports = {};
-  var KEYS, History;
+  var KEYS, binds;
   var init_app = __esm({
     "extensions/keyboard-shortcuts/app.tsx"() {
       "use strict";
@@ -3356,33 +3359,28 @@ var keyboard;
       init_styles();
       init_util();
       ({ KEYS } = Spicetify.Keyboard);
-      resizeLeftSidebar(200);
-      registerBind("S", false, true, false, async () => {
-        await Spicetify.Platform.UserAPI._product_state.putValues({ pairs: { "app-developer": "2" } });
-        Spicetify.Platform.UpdateAPI.applyUpdate();
-      });
-      registerBind("TAB", true, false, false, () => rotateSidebar(1));
-      registerBind("TAB", true, true, false, () => rotateSidebar(-1));
-      ({ History } = Spicetify.Platform);
-      registerBind("H", false, true, false, History.goBack);
-      registerBind("L", false, true, false, History.goForward);
-      registerBind("J", false, false, false, () => appScroll(1));
-      registerBind("K", false, false, false, () => appScroll(-1));
-      registerBind("G", false, false, false, () => appScrollY(0));
-      registerBind("G", false, true, false, () => appScrollY(Number.MAX_SAFE_INTEGER));
-      registerBind("M", false, false, false, () => toggleLiked([Spicetify.Player.data.item.uri]));
-      registerBind("/", false, false, false, (e) => {
-        e.preventDefault();
-        openPage("/search");
-      });
-      if (window.navigator.userAgent.indexOf("Win") === -1) {
-        registerBind("ARROW_RIGHT", true, false, false, Spicetify.Player.next);
-        registerBind("ARROW_LEFT", true, false, false, Spicetify.Player.back);
-        registerBind("ARROW_UP", true, false, false, Spicetify.Player.increaseVolume);
-        registerBind("ARROW_DOWN", true, false, false, Spicetify.Player.decreaseVolume);
-      }
+      binds = [
+        new Bind("S", enterSneak),
+        new Bind("S", async () => {
+          await Spicetify.Platform.UserAPI._product_state.putValues({ pairs: { "app-developer": "2" } });
+          Spicetify.Platform.UpdateAPI.applyUpdate();
+        }).setShift(true),
+        new Bind("TAB", () => rotateSidebar(1)),
+        new Bind("TAB", () => rotateSidebar(-1)).setShift(true),
+        new Bind("H", Spicetify.Platform.History.goBack).setShift(true),
+        new Bind("L", Spicetify.Platform.History.goForward).setShift(true),
+        new Bind("J", () => appScroll(1)),
+        new Bind("K", () => appScroll(-1)),
+        new Bind("G", () => appScrollY(0)),
+        new Bind("G", () => appScrollY(Number.MAX_SAFE_INTEGER)).setShift(true),
+        new Bind("M", () => toggleLiked([Spicetify.Player.data.item.uri])),
+        new Bind("/", (e) => {
+          e.preventDefault();
+          openPage("/search");
+        })
+      ];
+      binds.map((bind6) => bind6.register());
       mousetrap.bind(keyList, listenSneakKeys, "keypress");
-      registerBind("S", false, false, false, enterSneak);
       mousetrap.bind(KEYS.ESCAPE, quitSneak);
     }
   });
