@@ -3360,20 +3360,20 @@ var keyboard;
       init_util();
       ({ KEYS } = Spicetify.Keyboard);
       binds = [
-        new Bind("S", enterSneak),
-        new Bind("S", async () => {
+        new Bind("s", enterSneak),
+        new Bind("s", async () => {
           await Spicetify.Platform.UserAPI._product_state.putValues({ pairs: { "app-developer": "2" } });
           Spicetify.Platform.UpdateAPI.applyUpdate();
         }).setShift(true),
-        new Bind("TAB", () => rotateSidebar(1)),
-        new Bind("TAB", () => rotateSidebar(-1)).setShift(true),
-        new Bind("H", Spicetify.Platform.History.goBack).setShift(true),
-        new Bind("L", Spicetify.Platform.History.goForward).setShift(true),
-        new Bind("J", () => appScroll(1)),
-        new Bind("K", () => appScroll(-1)),
-        new Bind("G", () => appScrollY(0)),
-        new Bind("G", () => appScrollY(Number.MAX_SAFE_INTEGER)).setShift(true),
-        new Bind("M", () => toggleLiked([Spicetify.Player.data.item.uri])),
+        new Bind("tab", () => rotateSidebar(1)),
+        new Bind("tab", () => rotateSidebar(-1)).setShift(true),
+        new Bind("h", Spicetify.Platform.History.goBack).setShift(true),
+        new Bind("l", Spicetify.Platform.History.goForward).setShift(true),
+        new Bind("j", () => appScroll(1)),
+        new Bind("k", () => appScroll(-1)),
+        new Bind("g", () => appScrollY(0)),
+        new Bind("g", () => appScrollY(Number.MAX_SAFE_INTEGER)).setShift(true),
+        new Bind("m", () => toggleLiked([Spicetify.Player.data.item.uri])),
         new Bind("/", (e) => {
           e.preventDefault();
           openPage("/search");
