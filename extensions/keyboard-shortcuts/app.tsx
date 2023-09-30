@@ -9,7 +9,9 @@ const { KEYS } = Spicetify.Keyboard
 const binds = [
     new Bind("s", enterSneak),
     new Bind("s", async () => {
-        await Spicetify.Platform.UserAPI._product_state.putValues({ pairs: { "app-developer": "2" } })
+        // product_state was renamed to product_state_service in Spotify 1.2.21
+        const productState = Spicetify.Platform.UserAPI._product_state || Spicetify.Platform.UserAPI._product_state_service;
+        await productState.putValues({ pairs: { "app-developer": "2" } })
         Spicetify.Platform.UpdateAPI.applyUpdate()
     }).setShift(true),
     new Bind("tab", () => rotateSidebar(1)),
