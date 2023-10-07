@@ -6,7 +6,7 @@ import { lastFmTags, spotifyGenres } from "./app"
 
 export const genrePopup = () => {
     Spicetify.PopupModal.display({
-        title: `Genres of "${normalizeStr(Spicetify.Player.data.track?.metadata?.title!)}"`,
+        title: `Genres of "${Spicetify.Player.data.track?.metadata?.title}"`,
         content: (
             <div className="genres-popup">
                 {spotifyGenres.length === 0 ? <></> : <SpotifyGenresContainer />}
