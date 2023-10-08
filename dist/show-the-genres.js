@@ -3637,7 +3637,7 @@ var show;
   });
 
   // shared/util.tsx
-  var SpotifyLoc, escapeRegex, titleCase, normalizeStr, waitForElement, sleep;
+  var SpotifyLoc, escapeRegex, titleCase, waitForElement, sleep;
   var init_util = __esm({
     "shared/util.tsx"() {
       "use strict";
@@ -3666,7 +3666,6 @@ var show;
       })(SpotifyLoc || (SpotifyLoc = {}));
       escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
       titleCase = (str) => str.replace(/\b\w/g, (l) => l.toUpperCase());
-      normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
       waitForElement = (selector, timeout = 1e3, location = document.body, notEl) => new Promise((resolve) => {
         const res = (v) => {
           observer.disconnect();
@@ -3976,7 +3975,7 @@ var show;
       init_app();
       genrePopup = () => {
         Spicetify.PopupModal.display({
-          title: `Genres of "${normalizeStr(Spicetify.Player.data.track?.metadata?.title)}"`,
+          title: `Genres of: ${Spicetify.Player.data.track?.metadata?.title}`,
           content: /* @__PURE__ */ import_react.default.createElement("div", { className: "genres-popup" }, spotifyGenres.length === 0 ? /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null) : /* @__PURE__ */ import_react.default.createElement(SpotifyGenresContainer, null), lastFmTags.length === 0 ? /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null) : /* @__PURE__ */ import_react.default.createElement(LastFmTagsContainer, null)),
           isLarge: true
         });
@@ -4268,9 +4267,9 @@ var show;
     }
   });
 
-  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\show-the-genres\assets\styles.scss
+  // stylePlugin:C:\Users\delus\DevDrives\Unsupported\spicetify-extensions\extensions\show-the-genres\assets\styles.scss
   var init_styles = __esm({
-    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\show-the-genres\\assets\\styles.scss"() {
+    "stylePlugin:C:\\Users\\delus\\DevDrives\\Unsupported\\spicetify-extensions\\extensions\\show-the-genres\\assets\\styles.scss"() {
       init_ni_sha_256_F3zgswjydEILy2a_6lHDIyhG7Flt8_wqcPTy_caaMyI();
     }
   });

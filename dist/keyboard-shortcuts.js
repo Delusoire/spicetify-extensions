@@ -3341,9 +3341,9 @@ var keyboard;
     }
   });
 
-  // stylePlugin:C:\Users\Delusoire\Dev\spicetify-extensions\extensions\keyboard-shortcuts\assets\styles.scss
+  // stylePlugin:C:\Users\delus\DevDrives\Unsupported\spicetify-extensions\extensions\keyboard-shortcuts\assets\styles.scss
   var init_styles = __esm({
-    "stylePlugin:C:\\Users\\Delusoire\\Dev\\spicetify-extensions\\extensions\\keyboard-shortcuts\\assets\\styles.scss"() {
+    "stylePlugin:C:\\Users\\delus\\DevDrives\\Unsupported\\spicetify-extensions\\extensions\\keyboard-shortcuts\\assets\\styles.scss"() {
       init_ni_sha_256_QL9DDk7W4Cvd3SZxYVftCFUYJ34OOOMYJhq3PLAu_LA();
     }
   });
@@ -3362,7 +3362,8 @@ var keyboard;
       binds = [
         new Bind("s", enterSneak),
         new Bind("s", async () => {
-          await Spicetify.Platform.UserAPI._product_state.putValues({ pairs: { "app-developer": "2" } });
+          const productState = Spicetify.Platform.UserAPI._product_state || Spicetify.Platform.UserAPI._product_state_service;
+          await productState.putValues({ pairs: { "app-developer": "2" } });
           Spicetify.Platform.UpdateAPI.applyUpdate();
         }).setShift(true),
         new Bind("tab", () => rotateSidebar(1)),
