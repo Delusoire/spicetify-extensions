@@ -105,7 +105,7 @@ snippets.map(fullname => {
     const name = basename(fullname)
 
     const { css } = compile(fullname)
-    const snippetFile = Bun.file(join(out, name))
+    const snippetFile = Bun.file(join(out, name.replace(".scss", ".css")))
 
     Bun.write(snippetFile, css)
 })
