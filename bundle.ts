@@ -1,5 +1,9 @@
+const user_repo = "Delusoire/spicetify-extensions"
+
 import type { BunPlugin } from "bun"
 import { compile } from "sass"
+import postcss from "postcss"
+const autoprefixer = require("autoprefixer")
 
 // Helper functions
 
@@ -40,6 +44,7 @@ const stylesPlugin: BunPlugin = {
     async setup(build) {
         const { resolve } = await import("node:path")
         const { createHash } = await import("node:crypto")
+        const PostCSSProcessor = await postcss([autoprefixer])
         const namespace = stylesPlugin.name
 
         build.onResolve({ filter: /.\.(scss)$/ }, args => ({
@@ -48,11 +53,12 @@ const stylesPlugin: BunPlugin = {
         }))
 
         build.onLoad({ filter: /.*/, namespace }, args => {
-            const { css } = compile(args.path)
-            const hash = createHash("sha256").update(css).digest("base64url")
+            const compiledCss = compile(args.path).css
+            const processedCss = PostCSSProcessor.process(compiledCss, { from: args.path }).css
+            const hash = createHash("sha256").update(processedCss).digest("base64url")
 
             return {
-                contents: wrapInTag(hash, "style", String.raw`${css}`.trim()),
+                contents: wrapInTag(hash, "style", String.raw`${processedCss}`.trim()),
             }
         })
     },
@@ -83,11 +89,13 @@ extensions.map(async fullname => {
         naming: `${name}.[ext]`,
     })
 
+    console.log(buildOutput)
+
     const prismFile = Bun.file(join(out, `${name}.prism.js`))
     const prismContent = wrapInTag(
         `${name}`,
         "script",
-        `\${await fetch(\`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/${name}.js\`).then(res => res.json()).then(data => atob(data.content))}`,
+        `\${await fetch(\`https://api.github.com/repos/${user_repo}/contents/dist/${name}.js\`).then(res => res.json()).then(data => atob(data.content))}`,
     )
 
     Bun.write(prismFile, prismContent)
