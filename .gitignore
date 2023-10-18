@@ -1,15 +1,3 @@
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-
-# Swap the comments on the following lines if you don't wish to use zero-installs
-# Documentation here: https://yarnpkg.com/features/zero-installs
-!.yarn/cache
-#.pnp.*
-
 extensions/full-screen
 dist/full-screen.js
 dist/full-screen.prism.js
