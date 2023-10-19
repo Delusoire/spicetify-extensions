@@ -5591,39 +5591,11 @@ var init_settings2 = __esm(() => {
 // /home/delusoire/dev/spicetify-extensions/extensions/show-the-genres/assets/styles.scss
 var init_styles = __esm(() => {
   (async () => {
-    if (!document.getElementById(`F3zgswjydEILy2a_6lHDIyhG7Flt8-wqcPTy_caaMyI`)) {
+    const id = "F3zgswjydEILy2a_6lHDIyhG7Flt8-wqcPTy_caaMyI";
+    if (!document.getElementById(id)) {
       const el = document.createElement("style");
-      el.id = `F3zgswjydEILy2a_6lHDIyhG7Flt8-wqcPTy_caaMyI`;
-      el.textContent = `.genres-popup::after {
-  content: "";
-  display: table;
-  clear: both;
-}
-.genres-popup .title {
-  color: var(--spice-text);
-}
-.genres-popup .spaced-down {
-  margin-bottom: 20px;
-}
-.genres-popup .login-button {
-  background-color: var(--spice-button);
-  border-radius: 8px;
-  border-style: none;
-  color: var(--spice-text);
-  cursor: pointer;
-  font-size: 14px;
-  height: 40px;
-  margin: 10px;
-  padding: 5px 10px;
-  text-align: center;
-}
-.genres-popup .login-button:hover {
-  background-color: var(--spice-button-active);
-}
-
-.main-nowPlayingWidget-trackInfo.main-trackInfo-container {
-  grid-template: "title title" "badges subtitle" "genres genres"/auto 1fr auto;
-}`;
+      el.id = id;
+      el.textContent = ".genres-popup::after {\n  content: \"\";\n  display: table;\n  clear: both;\n}\n.genres-popup .title {\n  color: var(--spice-text);\n}\n.genres-popup .spaced-down {\n  margin-bottom: 20px;\n}\n.genres-popup .login-button {\n  background-color: var(--spice-button);\n  border-radius: 8px;\n  border-style: none;\n  color: var(--spice-text);\n  cursor: pointer;\n  font-size: 14px;\n  height: 40px;\n  margin: 10px;\n  padding: 5px 10px;\n  text-align: center;\n}\n.genres-popup .login-button:hover {\n  background-color: var(--spice-button-active);\n}\n\n.main-nowPlayingWidget-trackInfo.main-trackInfo-container {\n  grid-template: \"title title\" \"badges subtitle\" \"genres genres\"/auto 1fr auto;\n}";
       document.head.appendChild(el);
     }
   })();

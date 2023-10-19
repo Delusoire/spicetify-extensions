@@ -4344,28 +4344,11 @@ var init_util2 = __esm(() => {
 // /home/delusoire/dev/spicetify-extensions/extensions/keyboard-shortcuts/assets/styles.scss
 var init_styles = __esm(() => {
   (async () => {
-    if (!document.getElementById(`QL9DDk7W4Cvd3SZxYVftCFUYJ34OOOMYJhq3PLAu-LA`)) {
+    const id = "QL9DDk7W4Cvd3SZxYVftCFUYJ34OOOMYJhq3PLAu-LA";
+    if (!document.getElementById(id)) {
       const el = document.createElement("style");
-      el.id = `QL9DDk7W4Cvd3SZxYVftCFUYJ34OOOMYJhq3PLAu-LA`;
-      el.textContent = `#sneak-overlay {
-  z-index: 100000;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: none;
-}
-#sneak-overlay > .sneak-key {
-  position: fixed;
-  padding: 3px 6px;
-  background-color: black;
-  border-radius: 3px;
-  border: solid 2px white;
-  color: white;
-  text-transform: lowercase;
-  line-height: normal;
-  font-size: 14px;
-  font-weight: 500;
-}`;
+      el.id = id;
+      el.textContent = "#sneak-overlay {\n  z-index: 100000;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  display: none;\n}\n#sneak-overlay > .sneak-key {\n  position: fixed;\n  padding: 3px 6px;\n  background-color: black;\n  border-radius: 3px;\n  border: solid 2px white;\n  color: white;\n  text-transform: lowercase;\n  line-height: normal;\n  font-size: 14px;\n  font-weight: 500;\n}";
       document.head.appendChild(el);
     }
   })();

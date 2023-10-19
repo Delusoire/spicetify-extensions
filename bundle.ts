@@ -9,13 +9,20 @@ const autoprefixer = require("autoprefixer")
 
 const wrapInTag = (id: string, tag: string, content: string) =>
     `(async () => {
-    if (!document.getElementById(\`${id}\`)) {
+    const id = "${id}"
+    if (!document.getElementById(id)) {
         const el = document.createElement("${tag}")
-        el.id = \`${id}\`
-        el.textContent = \`${content}\`
+        el.id = id
+        el.textContent = ${content}
         document.head.appendChild(el)
     }
 })()`
+
+const createPrismContent = (pkgname: string) => {
+    const content = `(await fetch(\`https://api.github.com/repos/${user_repo}/contents/dist/${pkgname}.js\`).then(res => res.json()).then(data => atob(data.content)))`
+
+    return wrapInTag(pkgname, "script", `"{" + ${content} + "}"`)
+}
 
 // Build plugins
 
@@ -55,10 +62,11 @@ const stylesPlugin: BunPlugin = {
         build.onLoad({ filter: /.*/, namespace }, args => {
             const compiledCss = compile(args.path).css
             const processedCss = PostCSSProcessor.process(compiledCss, { from: args.path }).css
-            const hash = createHash("sha256").update(processedCss).digest("base64url")
+            const css = String.raw`${processedCss}`.trim()
+            const hash = createHash("sha256").update(css).digest("base64url")
 
             return {
-                contents: wrapInTag(hash, "style", String.raw`${processedCss}`.trim()),
+                contents: wrapInTag(hash, "style", JSON.stringify(css)),
             }
         })
     },
@@ -89,14 +97,14 @@ extensions.map(async fullname => {
         naming: `${name}.[ext]`,
     })
 
-    console.log(buildOutput)
+    if (!buildOutput.success) {
+        console.error(`Build failed for ${name}`)
+        console.log(buildOutput.logs)
+        return
+    }
 
     const prismFile = Bun.file(join(out, `${name}.prism.js`))
-    const prismContent = wrapInTag(
-        `${name}`,
-        "script",
-        `\${await fetch(\`https://api.github.com/repos/${user_repo}/contents/dist/${name}.js\`).then(res => res.json()).then(data => atob(data.content))}`,
-    )
+    const prismContent = createPrismContent(name)
 
     Bun.write(prismFile, prismContent)
 })
