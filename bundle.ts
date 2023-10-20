@@ -9,9 +9,9 @@ const autoprefixer = require("autoprefixer")
 
 const wrapInTag = (id: string, tag: string, content: string) =>
     `(async () => {
-    const id = "${id}"
+    const id = ${JSON.stringify(id)}
     if (!document.getElementById(id)) {
-        const el = document.createElement("${tag}")
+        const el = document.createElement(${JSON.stringify(tag)})
         el.id = id
         el.textContent = ${content}
         document.head.appendChild(el)
@@ -19,9 +19,16 @@ const wrapInTag = (id: string, tag: string, content: string) =>
 })()`
 
 const createPrismContent = (pkgname: string) => {
-    const content = `(await fetch(\`https://api.github.com/repos/${user_repo}/contents/dist/${pkgname}.js\`).then(res => res.json()).then(data => atob(data.content)))`
+    const content = `\`(async () => {
+\${
+        (await fetch("https://api.github.com/repos/${user_repo}/contents/dist/${pkgname}.js")
+            .then(res => res.json())
+            .then(data => atob(data.content))
+        ).replace(/^/gm, "  ")
+    }
+})()\``
 
-    return wrapInTag(pkgname, "script", `"{" + ${content} + "}"`)
+    return wrapInTag(pkgname, "script", content)
 }
 
 // Build plugins
