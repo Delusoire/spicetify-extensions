@@ -27,6 +27,7 @@
     "@types/web": "^0.0.118",
     "autoprefixer": "^10.4.16",
     "bun-types": "latest",
+    "front-matter": "^4.0.2",
     "postcss": "^8.4.31",
     "sass": "^1.69.4"
   },

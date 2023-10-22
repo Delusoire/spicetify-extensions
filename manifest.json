@@ -1,83 +1,33 @@
 [
     {
-        "name": "keyboard-shortcuts",
-        "description": "Vim-like keyboard shortcuts for spotify. Now with sneak mode.",
-        "preview": "extensions/keyboard-shortcuts/assets/preview.png",
-        "main": "dist/keyboard-shortcuts.prism.js",
-        "readme": "extensions/keyboard-shortcuts/assets/README.md",
+        "description": "Create anonymized radio-playlists for your favorite songs, playlists, artists and albums.",
         "authors": [
             {
                 "name": "Delusoire",
                 "url": "https://github.com/Delusoire"
+            },
+            {
+                "name": "BitesizedLion"
             }
         ],
         "tags": [
-            "keybind",
-            "keyboard",
-            "sneak",
-            "vim"
-        ]
-    },
-    {
-        "name": "play-enhanced-songs",
-        "description": "Play your playlists and others' with enhanced songs",
-        "preview": "extensions/play-enhanced-songs/assets/preview.png",
-        "main": "dist/play-enhanced-songs.prism.js",
-        "readme": "extensions/play-enhanced-songs/assets/README.md",
-        "authors": [
-            {
-                "name": "Delusoire",
-                "url": "https://github.com/Delusoire"
-            }
+            "radio",
+            "spoqify"
         ],
-        "tags": [
-            "enhanced"
-        ]
+        "name": "spoqify-radios",
+        "preview": "extensions/spoqify-radios/assets/preview.png",
+        "main": "dist/spoqify-radios.prism.js",
+        "readme": "extensions/spoqify-radios/assets/README.md"
     },
     {
-        "name": "search-on-youtube",
-        "description": "Search/Play the music video of the selected track on YouTube",
-        "preview": "extensions/search-on-youtube/assets/preview.png",
-        "main": "dist/search-on-youtube.prism.js",
-        "readme": "extensions/search-on-youtube/assets/README.md",
+        "description": "Sort your Playlists/Albums/Artists/Liked Songs on a bunch of metrics.",
         "authors": [
             {
                 "name": "Delusoire",
                 "url": "https://github.com/Delusoire"
-            }
-        ],
-        "tags": [
-            "search",
-            "youtube"
-        ]
-    },
-    {
-        "name": "show-the-genres",
-        "description": "Show the genres for the currently playing track and any artist page",
-        "preview": "extensions/show-the-genres/assets/preview.png",
-        "main": "dist/show-the-genres.prism.js",
-        "readme": "extensions/show-the-genres/assets/README.md",
-        "authors": [
+            },
             {
-                "name": "Delusoire",
-                "url": "https://github.com/Delusoire"
-            }
-        ],
-        "tags": [
-            "genres",
-            "lastfm"
-        ]
-    },
-    {
-        "name": "sort-plus",
-        "description": "Sort tracks by different metrics. Can shuffle too!",
-        "preview": "extensions/sort-plus/assets/preview.png",
-        "main": "dist/sort-plus.prism.js",
-        "readme": "extensions/sort-plus/assets/README.md",
-        "authors": [
-            {
-                "name": "Delusoire",
-                "url": "https://github.com/Delusoire"
+                "name": "Tetrax-10"
             }
         ],
         "tags": [
@@ -85,59 +35,141 @@
             "playcount",
             "lastfm",
             "shuffle"
-        ]
+        ],
+        "name": "sort-plus",
+        "preview": "extensions/sort-plus/assets/preview.png",
+        "main": "dist/sort-plus.prism.js",
+        "readme": "extensions/sort-plus/assets/README.md"
     },
     {
-        "name": "spoqify-radios",
-        "description": "Anonymized radios for your favorite songs, playlists ... Based on AnonymizedRadios, leverages spoqify.com.",
-        "preview": "extensions/spoqify-radios/assets/preview.png",
-        "main": "dist/spoqify-radios.prism.js",
-        "readme": "extensions/sopqify-radios/assets/README.md",
+        "description": "Search/Play the music video of the selected track on YouTube",
         "authors": [
             {
                 "name": "Delusoire",
                 "url": "https://github.com/Delusoire"
-            }
-        ],
-        "tags": [
-            "radio"
-        ]
-    },
-    {
-        "name": "star-ratings",
-        "description": "Rate your songs with stars! And show aggregated Show album/playlist/artist stars.",
-        "preview": "extensions/star-ratings/assets/preview.png",
-        "main": "dist/star-ratings.prism.js",
-        "readme": "extensions/star-ratings/assets/README.md",
-        "authors": [
+            },
             {
-                "name": "Delusoire",
-                "url": "https://github.com/Delusoire"
+                "name": "Tetrax-10"
             }
         ],
         "tags": [
-            "heart",
-            "star",
-            "rating"
-        ]
+            "search",
+            "youtube"
+        ],
+        "name": "search-on-youtube",
+        "preview": "extensions/search-on-youtube/assets/preview.png",
+        "main": "dist/search-on-youtube.prism.js",
+        "readme": "extensions/search-on-youtube/assets/README.md"
     },
     {
-        "name": "vaultify",
         "description": "Vault for your playlists and settings (Backup/Restore)",
-        "preview": "extensions/vaultify/assets/preview.png",
-        "main": "dist/vaultify.prism.js",
-        "readme": "extensions/vaultify/assets/README.md",
         "authors": [
             {
                 "name": "Delusoire",
                 "url": "https://github.com/Delusoire"
+            },
+            {
+                "name": "Tetrax-10"
             }
         ],
         "tags": [
             "save",
             "backup",
             "restore",
-            "settings"
-        ]
+            "setting",
+            "extension"
+        ],
+        "name": "vaultify",
+        "preview": "extensions/vaultify/assets/preview.png",
+        "main": "dist/vaultify.prism.js",
+        "readme": "extensions/vaultify/assets/README.md"
+    },
+    {
+        "description": "Vim-like keyboard shortcuts for spotify. Now with sneak mode.",
+        "authors": [
+            {
+                "name": "Delusoire",
+                "url": "https://github.com/Delusoire"
+            },
+            {
+                "name": "khanhas"
+            },
+            {
+                "name": "Tetrax-10"
+            }
+        ],
+        "tags": [
+            "keybind",
+            "keyboard",
+            "sneak",
+            "vim"
+        ],
+        "name": "keyboard-shortcuts",
+        "preview": "extensions/keyboard-shortcuts/assets/preview.png",
+        "main": "dist/keyboard-shortcuts.prism.js",
+        "readme": "extensions/keyboard-shortcuts/assets/README.md"
+    },
+    {
+        "description": "Show the genres for the currently playing track and any artist page",
+        "authors": [
+            {
+                "name": "Delusoire",
+                "url": "https://github.com/Delusoire"
+            },
+            {
+                "name": "Tetrax-10"
+            }
+        ],
+        "tags": [
+            "genres",
+            "lastfm"
+        ],
+        "name": "show-the-genres",
+        "preview": "extensions/show-the-genres/assets/preview.png",
+        "main": "dist/show-the-genres.prism.js",
+        "readme": "extensions/show-the-genres/assets/README.md"
+    },
+    {
+        "description": "Play your playlists and others' with enhanced songs",
+        "authors": [
+            {
+                "name": "Delusoire",
+                "url": "https://github.com/Delusoire"
+            },
+            {
+                "name": "khanhas"
+            },
+            {
+                "name": "Tetrax-10"
+            }
+        ],
+        "tags": [
+            "enhanced"
+        ],
+        "name": "play-enhanced-songs",
+        "preview": "extensions/play-enhanced-songs/assets/preview.png",
+        "main": "dist/play-enhanced-songs.prism.js",
+        "readme": "extensions/play-enhanced-songs/assets/README.md"
+    },
+    {
+        "description": "Rate your songs with stars! And show aggregated Show album/playlist/artist stars.",
+        "authors": [
+            {
+                "name": "Delusoire",
+                "url": "https://github.com/Delusoire"
+            },
+            {
+                "name": "Scott Duffey"
+            }
+        ],
+        "tags": [
+            "like",
+            "star",
+            "rate"
+        ],
+        "name": "star-ratings",
+        "preview": "extensions/star-ratings/assets/preview.png",
+        "main": "dist/star-ratings.prism.js",
+        "readme": "extensions/star-ratings/assets/README.md"
     }
 ]

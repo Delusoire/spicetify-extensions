@@ -84,6 +84,7 @@ const stylesPlugin: BunPlugin = {
 import { basename } from "node:path"
 import { readdirSync, mkdirSync } from "node:fs"
 import { join } from "node:path"
+import fm from "front-matter"
 
 const readdirFullPath = (path: string) => readdirSync(path).map(file => join(path, file))
 
@@ -94,11 +95,12 @@ const out = "dist"
 
 mkdirSync(out, { recursive: true })
 
-extensions.map(async fullname => {
+const extensionsData = extensions.map(async fullname => {
     const name = basename(fullname)
+    const entry = join(fullname, "entry.tsx")
 
     const buildOutput = await Bun.build({
-        entrypoints: [join(fullname, "entry.tsx")],
+        entrypoints: [entry],
         plugins: [externalGlobalPlugin, stylesPlugin],
         outdir: out,
         naming: `${name}.[ext]`,
@@ -110,10 +112,23 @@ extensions.map(async fullname => {
         return
     }
 
-    const prismFile = Bun.file(join(out, `${name}.prism.js`))
+    const prismPath = join(out, `${name}.prism.js`)
     const prismContent = createPrismContent(name)
 
-    Bun.write(prismFile, prismContent)
+    Bun.write(Bun.file(prismPath), prismContent)
+
+    const assets = join(fullname, "assets")
+    const readme = join(assets, "README.md")
+
+    const readmeContent = await Bun.file(readme).text()
+    const readmeFrontmatter = fm(readmeContent).attributes as {}
+
+    return Object.assign(readmeFrontmatter, {
+        name,
+        preview: join(assets, "preview.png"),
+        main: prismPath,
+        readme,
+    })
 })
 
 snippets.map(fullname => {
@@ -124,3 +139,6 @@ snippets.map(fullname => {
 
     Bun.write(snippetFile, css)
 })
+
+const manifest = await Promise.all(extensionsData)
+Bun.write(Bun.file("manifest.json"), JSON.stringify(manifest))
