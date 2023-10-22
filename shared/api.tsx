@@ -150,27 +150,29 @@ export const fetchLocalTracks = async () => await Spicetify.Platform.LocalFilesA
 
 /*                          Non Spotify                                       */
 
-export const fetchTrackLFMAPI = async (LFMApiKey: string, artist: string, trackName: string, lastFmUsername = "") =>
-    p(
-        `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(
-            artist,
-        )}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`,
-        fetch,
-        pMchain<Response, fetchTrackLFMAPIRes>(invokeNullary("json")),
-    )
+export const fetchTrackLFMAPI = async (LFMApiKey: string, artist: string, trackName: string, lastFmUsername = "") => {
+    const url = new URL("https://ws.audioscrobbler.com/2.0/")
+    url.searchParams.append("api_key", LFMApiKey)
+    url.searchParams.append("artist", artist)
+    url.searchParams.append("track", trackName)
+    url.searchParams.append("format", "json")
+    url.searchParams.append("username", lastFmUsername)
+
+    return (await fetch(url).then(res => res.json())) as fetchTrackLFMAPIRes
+}
 
 export const fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI)
 
-export const searchYoutube = async (YouTubeApiKey: string, searchString: string) =>
-    (
-        await (
-            await fetch(
-                `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(
-                    searchString,
-                )}&type=video&key=${YouTubeApiKey}`,
-            )
-        ).json()
-    ).items as any[]
+export const searchYoutube = async (YouTubeApiKey: string, searchString: string) => {
+    const url = new URL("https://www.googleapis.com/youtube/v3/search")
+    url.searchParams.append("part", "snippet")
+    url.searchParams.append("maxResults", "10")
+    url.searchParams.append("q", searchString)
+    url.searchParams.append("type", "video")
+    url.searchParams.append("key", YouTubeApiKey)
+
+    return (await fetch(url).then(res => res.json())) as any[]
+}
 
 /*                          Types                                             */
 

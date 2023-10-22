@@ -17639,10 +17639,8 @@ var init_fp = __esm(() => {
 });
 
 // shared/api.tsx
-var URI9, fetchGQLAlbum, removeWebPlaylistTracks, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createPlatPlaylist, setPlatPlaylistVisibility, fetchPlatFolder, fetchPlatRootFolder, addPlatPlaylistTracks, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
+var URI9, fetchGQLAlbum, removeWebPlaylistTracks, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createPlatPlaylist, setPlatPlaylistVisibility, fetchPlatFolder, addPlatPlaylistTracks, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
 var init_api = __esm(() => {
-  init_Function();
-  init_function();
   init_fp();
   init_util();
   ({ URI: URI9 } = Spicetify);
@@ -17667,9 +17665,16 @@ var init_api = __esm(() => {
   createPlatPlaylist = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createPlaylist(name, location);
   setPlatPlaylistVisibility = async (playlist, visibleForAll) => await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
   fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
-  fetchPlatRootFolder = () => fetchPlatFolder(undefined);
   addPlatPlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location);
-  fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => pipe(`https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`, fetch, pMchain(invokeNullary("json")));
+  fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+    const url = new URL("https://ws.audioscrobbler.com/2.0/");
+    url.searchParams.append("api_key", LFMApiKey);
+    url.searchParams.append("artist", artist);
+    url.searchParams.append("track", trackName);
+    url.searchParams.append("format", "json");
+    url.searchParams.append("username", lastFmUsername);
+    return await fetch(url).then((res) => res.json());
+  };
   fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
 });
 
@@ -18100,13 +18105,12 @@ var init_ratings = __esm(() => {
     }));
   };
   loadRatings = async () => {
-    const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri).catch(fetchPlatRootFolder);
+    const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri);
     const starsS2Narray = pipe(range2(0, 10), exports_Array.map((s) => [starsN2S(s), s]), exports_Record.fromEntries);
     playlistUris = pipe(ratingsFolder.items, exports_Array.map((p) => [p.type, p.uri, starsS2Narray[p.name]]), exports_Array.reduce([], (acc, [type, uri, starsN]) => (type === "playlist" && starsN ? acc[starsN] = uri : [], acc)));
-    tracksRatings = await pipe(playlistUris, exports_Array.map(fetchPlatPlaylistContents), (ps) => Promise.all(ps), pMchain(exports_Array.map((tracks) => tracks ?? [])), pMchain(exports_Array.map(exports_Array.map((t) => t.uri))), pMchain(exports_Array.flatMap((trackUris, rating) => trackUris.map((trackUri) => [trackUri, rating]))), pMchain(exports_Array.reduce({}, (acc, [trackUri, rating]) => Object.assign(acc, {
+    globalThis.tracksRatings = tracksRatings = await pipe(playlistUris, exports_Array.map(fetchPlatPlaylistContents), (ps) => Promise.all(ps), pMchain(exports_Array.map((tracks) => tracks ?? [])), pMchain(exports_Array.map(exports_Array.map((t) => t.uri))), pMchain(exports_Array.flatMap((trackUris, rating) => trackUris.map((trackUri) => [trackUri, rating]))), pMchain(exports_Array.reduce({}, (acc, [trackUri, rating]) => Object.assign(acc, {
       [trackUri]: Math.max(rating, acc[trackUri] ?? 0)
     }))));
-    globalThis.tracksRatings = tracksRatings;
   };
   playlistUris = [];
   tracksRatings = {};

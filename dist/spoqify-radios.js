@@ -4934,7 +4934,7 @@ var init_es6 = __esm(() => {
 });
 
 // shared/util.tsx
-var SpotifyLoc, normalizeStr, sleep;
+var SpotifyLoc, sleep;
 var init_util = __esm(() => {
   init_function();
   (function(SpotifyLoc) {
@@ -4959,9 +4959,18 @@ var init_util = __esm(() => {
       });
     })(after = SpotifyLoc.after || (SpotifyLoc.after = {}));
   })(SpotifyLoc || (SpotifyLoc = {}));
-  normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
   //! Does location actually point to document.body?
   sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+});
+
+// react
+var require_react = __commonJS((exports, module) => {
+  module.exports = Spicetify.React;
+});
+
+// react-dom
+var require_react_dom = __commonJS((exports, module) => {
+  module.exports = Spicetify.ReactDOM;
 });
 
 // node_modules/fp-ts-std/dist/esm/Function.js
@@ -5031,14 +5040,6 @@ var init_Function = __esm(() => {
   applyEvery = concatAll4(getMonoid6());
 });
 
-// node_modules/fp-ts-std/dist/esm/Predicate.js
-var anyPass;
-var init_Predicate2 = __esm(() => {
-  init_Predicate();
-  init_Monoid();
-  anyPass = (fs) => concatAll4(getMonoidAny())(fs);
-});
-
 // shared/fp.tsx
 var guard42, pMchain, is, chunckify, memoize2;
 var init_fp = __esm(() => {
@@ -5050,66 +5051,6 @@ var init_fp = __esm(() => {
   is = (c) => (a) => (field) => field[c] === a;
   chunckify = (n) => (g) => flow(exports_Array.chunksOf(n), exports_Array.map(g), (ps) => Promise.all(ps), pMchain(exports_Array.flatten));
   memoize2 = (fn) => pipe(fn, tupled, memoize(exports_Eq.contramap(JSON.stringify)(exports_string.Eq)), untupled);
-});
-
-// shared/api.tsx
-var URI6, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized, searchYoutube;
-var init_api = __esm(() => {
-  init_fp();
-  init_util();
-  ({ URI: URI6 } = Spicetify);
-  fetchWebArtistsSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists);
-  fetchWebPlaylistsSpot = chunckify(1)(async ([id]) => [
-    await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
-  ]);
-  fetchWebAlbumsSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums);
-  fetchWebTracksSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks);
-  fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
-    const url = new URL("https://ws.audioscrobbler.com/2.0/");
-    url.searchParams.append("api_key", LFMApiKey);
-    url.searchParams.append("artist", artist);
-    url.searchParams.append("track", trackName);
-    url.searchParams.append("format", "json");
-    url.searchParams.append("username", lastFmUsername);
-    return await fetch(url).then((res) => res.json());
-  };
-  fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
-  searchYoutube = async (YouTubeApiKey, searchString) => {
-    const url = new URL("https://www.googleapis.com/youtube/v3/search");
-    url.searchParams.append("part", "snippet");
-    url.searchParams.append("maxResults", "10");
-    url.searchParams.append("q", searchString);
-    url.searchParams.append("type", "video");
-    url.searchParams.append("key", YouTubeApiKey);
-    return await fetch(url).then((res) => res.json());
-  };
-});
-
-// shared/parse.tsx
-var parseAPITrackFromSpotify;
-var init_parse = __esm(() => {
-  parseAPITrackFromSpotify = (track) => ({
-    albumName: track.album.name,
-    albumUri: track.album.uri,
-    artistName: track.artists[0].name,
-    artistUri: track.artists[0].uri,
-    durationMilis: track.duration_ms,
-    name: track.name,
-    playcount: undefined,
-    popularity: track.popularity,
-    releaseDate: new Date(track.album.release_date).getTime(),
-    uri: track.uri
-  });
-});
-
-// react
-var require_react = __commonJS((exports, module) => {
-  module.exports = Spicetify.React;
-});
-
-// react-dom
-var require_react_dom = __commonJS((exports, module) => {
-  module.exports = Spicetify.ReactDOM;
 });
 
 // shared/settings.tsx
@@ -5360,17 +5301,51 @@ var init_settings = __esm(() => {
   })(FieldType || (FieldType = {}));
 });
 
-// extensions/search-on-youtube/settings.tsx
-var settings2, CONFIG;
+// shared/api.tsx
+var URI6, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, createPlatFolder, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
+var init_api = __esm(() => {
+  init_fp();
+  init_util();
+  ({ URI: URI6 } = Spicetify);
+  fetchWebArtistsSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists);
+  fetchWebPlaylistsSpot = chunckify(1)(async ([id]) => [
+    await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
+  ]);
+  fetchWebAlbumsSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums);
+  fetchWebTracksSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks);
+  createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
+  fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+    const url = new URL("https://ws.audioscrobbler.com/2.0/");
+    url.searchParams.append("api_key", LFMApiKey);
+    url.searchParams.append("artist", artist);
+    url.searchParams.append("track", trackName);
+    url.searchParams.append("format", "json");
+    url.searchParams.append("username", lastFmUsername);
+    return await fetch(url).then((res) => res.json());
+  };
+  fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
+});
+
+// extensions/spoqify-radios/settings.tsx
+var SORTED_PLAYLISTS_FOLDER_NAME, settings2, CONFIG;
 var init_settings2 = __esm(() => {
-  init_es6();
   init_settings();
-  settings2 = new SettingsSection("Search On YouTube", "search-on-youtube").addInput("YouTubeApiKey", "YouTube API Key", exports_Task.of("000000000000000000000000000000000000000"));
+  init_api();
+  SORTED_PLAYLISTS_FOLDER_NAME = "Anonymized Radios";
+  settings2 = new SettingsSection("Spoqify-radios", "spoqify-radios").addInput("anonymizedRadiosFolderUri", "Anonymized Radios folder uri", async () => (await createPlatFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri);
   settings2.pushSettings();
   CONFIG = settings2.toObject();
 });
 
-// extensions/search-on-youtube/app.tsx
+// node_modules/fp-ts-std/dist/esm/Predicate.js
+var anyPass;
+var init_Predicate2 = __esm(() => {
+  init_Predicate();
+  init_Monoid();
+  anyPass = (fs) => concatAll4(getMonoidAny())(fs);
+});
+
+// extensions/spoqify-radios/app.tsx
 var exports_app = {};
 __export(exports_app, {
   default: () => {
@@ -5379,47 +5354,33 @@ __export(exports_app, {
     }
   }
 });
-var app_default, URI7, YTVidIDCache, showOnYouTube;
+var app_default, URI7, createAnonRadio;
 var init_app = __esm(() => {
   init_function();
-  init_Predicate2();
-  init_api();
-  init_parse();
   init_util();
   init_settings2();
+  init_Predicate2();
   app_default = {};
   ({ URI: URI7 } = Spicetify);
-  YTVidIDCache = new Map;
-  showOnYouTube = async (uri) => {
-    const id = URI7.fromString(uri).id;
-    if (!YTVidIDCache.get(id)) {
-      const track = parseAPITrackFromSpotify((await fetchWebTracksSpot([id]))[0]);
-      const searchString = `${track.artistName} - ${track.name} music video`;
-      let videos = [];
-      if (CONFIG.YouTubeApiKey)
-        try {
-          videos = await searchYoutube(CONFIG.YouTubeApiKey, searchString);
-        } catch (_) {
-        }
-      if (!videos?.length)
-        return void window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(searchString)}`);
-      const normalizedTrackName = normalizeStr(track.name);
-      YTVidIDCache.set(id, videos.find((video) => {
-        normalizeStr(video.snippet.title).includes(normalizedTrackName);
-      })?.id.videoId ?? videos[0].id.videoId);
-    }
-    window.open(`https://www.youtube.com/watch?v=${YTVidIDCache.get(id)}`);
+  createAnonRadio = (uri) => {
+    const sse = new EventSource(`https://open.spoqify.com/anonymize?url=${uri.substring(8)}`);
+    sse.addEventListener("done", (e) => {
+      sse.close();
+      const anonUri = URI7.fromString(e.data);
+      Spicetify.Platform.History.push(anonUri.toURLPath(true));
+      Spicetify.Platform.PlaylistAPI.add(anonUri.toURI(), SpotifyLoc.after.fromUri(CONFIG.anonymizedRadiosFolderUri));
+    });
   };
-  new Spicetify.ContextMenu.Item("Search on YouTube", tupled(showOnYouTube), tupled(anyPass([URI7.isTrack])), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="19px" height="19px"><path fill="currentColor" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"/><path fill="var(--spice-main)" d="M20 31L20 17 32 24z"/></svg>`).register();
+  new Spicetify.ContextMenu.Item("Create anonymized radio", tupled(createAnonRadio), tupled(anyPass([URI7.isAlbum, URI7.isArtist, URI7.isPlaylistV1OrV2, URI7.isTrack])), "podcasts").register();
 });
 
-// extensions/search-on-youtube/entry.tsx
+// extensions/spoqify-radios/entry.tsx
 init_es6();
 init_Record();
 init_function();
 init_util();
 (async () => {
-  const mustLoad = ["ContextMenu", "CosmosAsync", "React", "ReactDOM"];
+  const mustLoad = ["ContextMenu", "CosmosAsync", "Platform", "showNotification"];
   let timer = 0;
   while (mustLoad.some(flow(flip(lookup6)(Spicetify), exports_Option.isNone)))
     await sleep(timer += 100);

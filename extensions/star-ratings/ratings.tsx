@@ -45,7 +45,7 @@ export const addRatingsListenersToStars = (
 }
 
 export const loadRatings = async () => {
-    const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri).catch(fetchPlatRootFolder)
+    const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri)
 
     const starsS2Narray = p(
         range(0, 10),
@@ -62,7 +62,8 @@ export const loadRatings = async () => {
         ),
     )
 
-    tracksRatings = await p(
+    // @ts-ignore
+    globalThis.tracksRatings = tracksRatings = await p(
         playlistUris,
         a.map(fetchPlatPlaylistContents),
         ps => Promise.all(ps), // Promise.all flips empty to undefined
@@ -77,9 +78,6 @@ export const loadRatings = async () => {
             ),
         ),
     )
-
-    // @ts-ignore
-    globalThis.tracksRatings = tracksRatings
 }
 
 export let playlistUris: SpotifyURI[] = []

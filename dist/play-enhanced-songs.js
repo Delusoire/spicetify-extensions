@@ -4442,8 +4442,6 @@ var init_fp = __esm(() => {
 // shared/api.tsx
 var URI5, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistEnhancedSongs300, fetchPlatPlaylistEnhancedSongs, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
 var init_api = __esm(() => {
-  init_Function();
-  init_function();
   init_fp();
   init_util();
   ({ URI: URI5 } = Spicetify);
@@ -4461,7 +4459,15 @@ var init_api = __esm(() => {
     else
       return nextPageItems.concat(fetchPlatPlaylistEnhancedSongs(uri, offset + 300));
   };
-  fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => pipe(`https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${LFMApiKey}&artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(trackName)}&format=json&username=${encodeURIComponent(lastFmUsername)}`, fetch, pMchain(invokeNullary("json")));
+  fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+    const url = new URL("https://ws.audioscrobbler.com/2.0/");
+    url.searchParams.append("api_key", LFMApiKey);
+    url.searchParams.append("artist", artist);
+    url.searchParams.append("track", trackName);
+    url.searchParams.append("format", "json");
+    url.searchParams.append("username", lastFmUsername);
+    return await fetch(url).then((res) => res.json());
+  };
   fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
 });
 
