@@ -7550,6 +7550,7 @@ var init_app = __esm(() => {
   import_react3 = __toESM(require_react(), 1);
   import_react_dom2 = __toESM(require_react_dom(), 1);
   init_styles();
+  init_function();
   app_default = {};
   debugger;
   ({ URI: URI7 } = Spicetify);
@@ -7588,15 +7589,7 @@ var init_app = __esm(() => {
         popper.appendChild(box);
         box.className = "main-contextMenu-tippy";
         box.appendChild(instance.props.content);
-        function onUpdate(prevProps, nextProps) {
-          if (prevProps.content !== nextProps.content) {
-            if (nextProps.allowHTML)
-              box.innerHTML = nextProps.content;
-            else
-              box.textContent = nextProps.content;
-          }
-        }
-        return { popper, onUpdate };
+        return { popper, onUpdate: constVoid };
       }
     });
   };

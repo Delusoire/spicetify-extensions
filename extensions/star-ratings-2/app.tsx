@@ -22,6 +22,7 @@ import {
 import React from "react"
 import ReactDOM from "react-dom"
 import "./assets/styles.scss"
+import { constVoid } from "fp-ts/function"
 
 const { URI } = Spicetify
 
@@ -64,14 +65,7 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
             box.className = "main-contextMenu-tippy"
             box.appendChild(instance.props.content)
 
-            function onUpdate(prevProps: any, nextProps: any) {
-                if (prevProps.content !== nextProps.content) {
-                    if (nextProps.allowHTML) box.innerHTML = nextProps.content
-                    else box.textContent = nextProps.content
-                }
-            }
-
-            return { popper, onUpdate }
+            return { popper, onUpdate: constVoid }
         },
     })
 }
