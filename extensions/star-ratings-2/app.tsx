@@ -5,22 +5,20 @@ import { anyPass } from "fp-ts-std/Predicate"
 import { flow as f, identity, pipe as p } from "fp-ts/function"
 import { get } from "spectacles-ts"
 import { fetchGQLAlbum, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents } from "../../shared/api"
-import { SpotifyURI, waitForElement } from "../../shared/util"
+import { waitForElement } from "../../shared/util"
 import { loadRatings, tracksRatings } from "./ratings"
 import { CONFIG } from "./settings"
-import {
-    getNowPlayingBar,
-    getPlaylistSVGButtonFrom,
-    getTrackListTrackUri,
-    getTrackListTracks,
-    getTrackLists,
-} from "./util"
+import { getNowPlayingBar, getTrackListTrackUri, getTrackListTracks, getTrackLists } from "./util"
 
 const { URI } = Spicetify
 
 loadRatings()
 
-// TRACKLISTS
+const colorByRating = ["#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
+
+const colorizePlaylistButton = (svg: SVGElement, rating: number) => {
+    svg.style.fill = colorByRating[rating]
+}
 
 export const updateTrackListControls = f(
     getTrackLists,
@@ -117,9 +115,3 @@ Spicetify.Player.addEventListener("songchange", () => {
     updateNowPlayingControls()
 })
 updateNowPlayingControls()
-
-const colorByRating = ["#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
-
-const colorizePlaylistButton = (svg: SVGElement, rating: number) => {
-    svg.style.fill = colorByRating[rating]
-}

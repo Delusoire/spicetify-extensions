@@ -13571,7 +13571,7 @@ __export(exports_app, {
     }
   }
 });
-var import_spectacles_ts, app_default, URI7, updateTrackListControls, updateCollectionControls, updateNowPlayingControls, mainElement, mainElementObserver, lastCollectionPlayButton, colorByRating, colorizePlaylistButton;
+var import_spectacles_ts, app_default, URI7, colorByRating, colorizePlaylistButton, updateTrackListControls, updateCollectionControls, updateNowPlayingControls, mainElement, mainElementObserver, lastCollectionPlayButton;
 var init_app = __esm(() => {
   init_es6();
   init_Predicate2();
@@ -13585,6 +13585,10 @@ var init_app = __esm(() => {
   app_default = {};
   ({ URI: URI7 } = Spicetify);
   loadRatings();
+  colorByRating = ["#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"];
+  colorizePlaylistButton = (svg, rating) => {
+    svg.style.fill = colorByRating[rating];
+  };
   updateTrackListControls = flow(getTrackLists, exports_Array.map((trackList) => {
     const trackListTracks = getTrackListTracks(trackList);
     trackListTracks.map((track) => {
@@ -13650,10 +13654,6 @@ var init_app = __esm(() => {
     updateNowPlayingControls();
   });
   updateNowPlayingControls();
-  colorByRating = ["#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"];
-  colorizePlaylistButton = (svg, rating) => {
-    svg.style.fill = colorByRating[rating];
-  };
 });
 
 // extensions/star-ratings-2/entry.tsx
