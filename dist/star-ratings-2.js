@@ -13602,6 +13602,7 @@ var init_app = __esm(() => {
     });
   }));
   updateCollectionControls = async (uri) => {
+    debugger;
     let uris;
     if (URI7.isAlbum(uri))
       uris = pipe(await fetchGQLAlbum(`${uri}`), identity, import_spectacles_ts.get("tracks.items"), exports_Array.map(flow(identity, import_spectacles_ts.get("track.uri"))));
