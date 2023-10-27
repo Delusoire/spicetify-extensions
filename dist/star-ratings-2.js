@@ -7567,7 +7567,7 @@ var init_app = __esm(() => {
       return;
     pb.setAttribute("dropdown-enabled", "");
     const div = document.createElement("div");
-    document.body.appendChild(div);
+    pb.appendChild(div);
     import_react_dom2.default.render(import_react3.default.createElement(Dropdown, {
       uri
     }), div);
