@@ -1,5 +1,7 @@
 export default {}
 
+debugger
+
 import { array as a } from "fp-ts"
 import { anyPass } from "fp-ts-std/Predicate"
 import { flow as f, identity, pipe as p } from "fp-ts/function"
@@ -36,11 +38,17 @@ const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
     svg.style.fill = colorByRating[rating] as string
 }
 
+const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI) => {
+    const div = document.createElement("div")
+    pb.appendChild(div)
+    ReactDOM.render(<Dropdown uri={uri} />, div)
+}
+
 export const updateNowPlayingControls = (newTrack: SpotifyURI) => {
     const npb = getNowPlayingBar()
     const pb = getPlaylistButton(npb)
     colorizePlaylistButton(pb, tracksRatings[newTrack])
-    ReactDOM.render(<Dropdown uri={newTrack} />, pb)
+    wrapDropdownInsidePlaylistButton(pb, newTrack)
 }
 
 export const updateTrackListControls = f(
@@ -58,7 +66,7 @@ export const updateTrackListControls = f(
             const pb = getPlaylistButton(track)
 
             colorizePlaylistButton(pb, r)
-            ReactDOM.render(<Dropdown uri={uri} />, pb)
+            wrapDropdownInsidePlaylistButton(pb, uri)
         })
     }),
 )

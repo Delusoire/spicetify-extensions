@@ -13552,14 +13552,15 @@ var init_ratings = __esm(() => {
 });
 
 // extensions/star-ratings-2/util.tsx
-var getTrackLists, getTrackListTracks, getTrackListTrackUri, getNowPlayingBar, getCollectionActionBarRow, getPlaylistButton, getCollectionPlaylistButton;
+var getTrackLists, getTrackListTracks, getTrackListTrackUri, getNowPlayingBar, getCollectionActionBarRow, playlistButtonSelector, getPlaylistButton, getCollectionPlaylistButton;
 var init_util2 = __esm(() => {
   getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-indexable"));
   getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll("div.main-trackList-trackListRow"));
   getTrackListTrackUri = (track) => (track = Object.values(track)[0].child.child.child.child, track.pendingProps.uri ?? track.child.pendingProps.uri);
   getNowPlayingBar = () => document.querySelector("div.main-nowPlayingBar-nowPlayingBar");
   getCollectionActionBarRow = () => document.querySelector(`div.main-actionBar-ActionBarRow`);
-  getPlaylistButton = (parent) => parent.querySelector(`button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`);
+  playlistButtonSelector = `button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`;
+  getPlaylistButton = (parent) => parent.querySelector(playlistButtonSelector);
   getCollectionPlaylistButton = () => {
     const ab = getCollectionActionBarRow();
     return ab.querySelector(`button[aria-label="Remove from Your Library"], button[aria-label="Save to Your Library"]`);
@@ -13572,6 +13573,7 @@ var init_dropdown = __esm(() => {
   ReadonlyNonEmptyArray2 = __toESM(require_ReadonlyNonEmptyArray(), 1);
   import_react2 = __toESM(require_react(), 1);
   init_ratings();
+  init_util2();
   RatingButton = ({ i, uri }) => import_react2.default.createElement("button", {
     className: "rating-button",
     onClick: () => toggleRating(uri, i)
@@ -13590,7 +13592,11 @@ var init_dropdown = __esm(() => {
     i,
     uri
   })));
-  Spicetify.Tippy("div.rating-dropdown", {
+  Spicetify.Tippy(playlistButtonSelector, {
+    content(ref) {
+      const dropdown = ref.querySelector("div.rating-dropdown");
+      return dropdown?.innerHTML;
+    },
     interactive: true,
     animateFill: false,
     offset: [0, 7],
@@ -13602,11 +13608,11 @@ var init_dropdown = __esm(() => {
 // /home/delusoire/dev/spicetify-extensions/extensions/star-ratings-2/assets/styles.scss
 var init_styles = __esm(() => {
   (async () => {
-    const id = "OpWtp9qTyHeOu8_7WfLgTr4epxB0WbrIkj0Ah5f74wc";
+    const id = "6llbIQb5F1nCYOd_rbhkc02PHZDmzF7fdok0_Ih97Wk";
     if (!document.getElementById(id)) {
       const el = document.createElement("style");
       el.id = id;
-      el.textContent = "svg.rating-1 {\n  fill: \"#ED5564\" !important;\n}\n\nsvg.rating-2 {\n  fill: \"#FFCE54\" !important;\n}\n\nsvg.rating-3 {\n  fill: \"A0D568\" !important;\n}\n\nsvg.rating-4 {\n  fill: \"#4FC1E8\" !important;\n}\n\nsvg.rating-5 {\n  fill: \"#AC92EB\" !important;\n}";
+      el.textContent = "svg.rating-1 {\n  fill: #ed5564 !important;\n}\n\nsvg.rating-2 {\n  fill: #ffce54 !important;\n}\n\nsvg.rating-3 {\n  fill: #a0d568 !important;\n}\n\nsvg.rating-4 {\n  fill: #4fc1e8 !important;\n}\n\nsvg.rating-5 {\n  fill: #ac92eb !important;\n}";
       document.head.appendChild(el);
     }
   })();
@@ -13636,7 +13642,7 @@ __export(exports_app, {
     }
   }
 });
-var import_spectacles_ts, import_react3, import_react_dom2, app_default, URI7, colorByRating, colorizePlaylistButton, updateNowPlayingControls, updateTrackListControls, updateCollectionControls2, mainElement, mainElementObserver;
+var import_spectacles_ts, import_react3, import_react_dom2, app_default, URI7, colorByRating, colorizePlaylistButton, wrapDropdownInsidePlaylistButton, updateNowPlayingControls, updateTrackListControls, updateCollectionControls2, mainElement, mainElementObserver;
 var init_app = __esm(() => {
   init_es6();
   init_Predicate2();
@@ -13651,6 +13657,7 @@ var init_app = __esm(() => {
   import_react3 = __toESM(require_react(), 1);
   import_react_dom2 = __toESM(require_react_dom(), 1);
   app_default = {};
+  debugger;
   ({ URI: URI7 } = Spicetify);
   loadRatings();
   colorByRating = [undefined, "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"];
@@ -13661,13 +13668,18 @@ var init_app = __esm(() => {
     const svg = btn.querySelector("svg");
     svg.style.fill = colorByRating[rating];
   };
+  wrapDropdownInsidePlaylistButton = (pb, uri) => {
+    const div = document.createElement("div");
+    pb.appendChild(div);
+    import_react_dom2.default.render(import_react3.default.createElement(Dropdown, {
+      uri
+    }), div);
+  };
   updateNowPlayingControls = (newTrack) => {
     const npb = getNowPlayingBar();
     const pb = getPlaylistButton(npb);
     colorizePlaylistButton(pb, tracksRatings[newTrack]);
-    import_react_dom2.default.render(import_react3.default.createElement(Dropdown, {
-      uri: newTrack
-    }), pb);
+    wrapDropdownInsidePlaylistButton(pb, newTrack);
   };
   updateTrackListControls = flow(getTrackLists, exports_Array.map((trackList) => {
     const trackListTracks = getTrackListTracks(trackList);
@@ -13678,9 +13690,7 @@ var init_app = __esm(() => {
       const r = tracksRatings[uri];
       const pb = getPlaylistButton(track);
       colorizePlaylistButton(pb, r);
-      import_react_dom2.default.render(import_react3.default.createElement(Dropdown, {
-        uri
-      }), pb);
+      wrapDropdownInsidePlaylistButton(pb, uri);
     });
   }));
   updateCollectionControls2 = async (uri) => {

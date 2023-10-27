@@ -2,6 +2,8 @@ import { range } from "fp-ts/lib/ReadonlyNonEmptyArray"
 import React from "react"
 import { SpotifyURI } from "../../shared/util"
 import { toggleRating } from "./ratings"
+import { playlistButtonSelector } from "./util"
+import { isTemplateExpression } from "typescript"
 
 const RatingButton = ({ i, uri }: { i: number; uri: SpotifyURI }) => (
     <button className="rating-button" onClick={() => toggleRating(uri, i)}>
@@ -25,7 +27,11 @@ export const Dropdown = ({ uri }: { uri: SpotifyURI }) => (
     </div>
 )
 
-Spicetify.Tippy("div.rating-dropdown", {
+Spicetify.Tippy(playlistButtonSelector, {
+    content(ref: HTMLButtonElement) {
+        const dropdown = ref.querySelector("div.rating-dropdown")
+        return dropdown?.innerHTML
+    },
     interactive: true,
     animateFill: false,
     offset: [0, 7],
