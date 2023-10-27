@@ -13612,7 +13612,7 @@ var init_app = __esm(() => {
     else
       throw "me out the window";
     const ratings3 = uris.map((uri2) => tracksRatings[uri2]).filter(Boolean);
-    const rating = Math.floor(ratings3.reduce((acc, r) => acc + r) / ratings3.length);
+    const rating = Math.round(ratings3.reduce((acc, r) => acc + r) / ratings3.length);
     const ab = document.querySelector(`div.main-actionBar-ActionBarRow`);
     const abPlaylistButton = ab.querySelector(`button[aria-label="Remove from Your Library"], button[aria-label="Save to Your Library"]`);
     colorizePlaylistButton(abPlaylistButton, rating);
