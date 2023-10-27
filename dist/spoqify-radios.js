@@ -5316,6 +5316,7 @@ var init_api = __esm(() => {
   createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
   fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
     const url = new URL("https://ws.audioscrobbler.com/2.0/");
+    url.searchParams.append("method", "track.getInfo");
     url.searchParams.append("api_key", LFMApiKey);
     url.searchParams.append("artist", artist);
     url.searchParams.append("track", trackName);

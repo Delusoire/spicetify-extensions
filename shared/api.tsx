@@ -152,6 +152,7 @@ export const fetchLocalTracks = async () => await Spicetify.Platform.LocalFilesA
 
 export const fetchTrackLFMAPI = async (LFMApiKey: string, artist: string, trackName: string, lastFmUsername = "") => {
     const url = new URL("https://ws.audioscrobbler.com/2.0/")
+    url.searchParams.append("method", "track.getInfo")
     url.searchParams.append("api_key", LFMApiKey)
     url.searchParams.append("artist", artist)
     url.searchParams.append("track", trackName)
