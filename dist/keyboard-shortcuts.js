@@ -4360,8 +4360,8 @@ var KEYS, binds;
 var init_app = __esm(() => {
   init_sneak();
   init_util2();
-  init_styles();
   init_util();
+  init_styles();
   ({ KEYS } = Spicetify.Keyboard);
   binds = [
     new Bind("s", enterSneak),

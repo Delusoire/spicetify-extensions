@@ -5,10 +5,22 @@ import { anyPass } from "fp-ts-std/Predicate"
 import { flow as f, identity, pipe as p } from "fp-ts/function"
 import { get } from "spectacles-ts"
 import { fetchGQLAlbum, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents } from "../../shared/api"
-import { waitForElement } from "../../shared/util"
+import { SpotifyURI } from "../../shared/util"
 import { loadRatings, tracksRatings } from "./ratings"
 import { CONFIG } from "./settings"
-import { getNowPlayingBar, getTrackListTrackUri, getTrackListTracks, getTrackLists } from "./util"
+import {
+    getCollectionPlaylistButton,
+    getNowPlayingBar,
+    getPlaylistButton,
+    getTrackListTrackUri,
+    getTrackListTracks,
+    getTrackLists,
+} from "./util"
+import { Dropdown } from "./dropdown"
+
+import "./assets/styles.scss"
+import React from "react"
+import ReactDOM from "react-dom"
 
 const { URI } = Spicetify
 
@@ -17,9 +29,18 @@ loadRatings()
 const colorByRating = [undefined, "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
 
 const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
-    btn.style.opacity = "1"
+    if (btn.style.fill === colorByRating[rating]) return
+
+    btn.style.opacity = rating > 0 ? "1" : (undefined as unknown as string)
     const svg = btn.querySelector<SVGElement>("svg")!
-    svg.style.fill = colorByRating[rating]
+    svg.style.fill = colorByRating[rating] as string
+}
+
+export const updateNowPlayingControls = (newTrack: SpotifyURI) => {
+    const npb = getNowPlayingBar()
+    const pb = getPlaylistButton(npb)
+    colorizePlaylistButton(pb, tracksRatings[newTrack])
+    ReactDOM.render(<Dropdown uri={newTrack} />, pb)
 }
 
 export const updateTrackListControls = f(
@@ -33,10 +54,11 @@ export const updateTrackListControls = f(
             //TODO: Local Tracks support
             if (!URI.isTrack(uri!)) return
 
-            const trackPlaylistButton = track.querySelector<HTMLButtonElement>(
-                `button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`,
-            )!
-            colorizePlaylistButton(trackPlaylistButton, tracksRatings[uri])
+            const r = tracksRatings[uri]
+            const pb = getPlaylistButton(track)
+
+            colorizePlaylistButton(pb, r)
+            ReactDOM.render(<Dropdown uri={uri} />, pb)
         })
     }),
 )
@@ -52,22 +74,21 @@ export const updateCollectionControls = async (uri: Spicetify.URI) => {
     const ratings = uris.map(uri => tracksRatings[uri]).filter(Boolean)
     const rating = Math.round(ratings.reduce((acc, r) => acc + r) / ratings.length)
 
-    const ab = document.querySelector<HTMLDivElement>(`div.main-actionBar-ActionBarRow`)!
-    const abPlaylistButton = ab.querySelector<HTMLButtonElement>(
-        `button[aria-label="Remove from Your Library"], button[aria-label="Save to Your Library"]`,
-    )!
-    colorizePlaylistButton(abPlaylistButton, rating)
+    const pb = getCollectionPlaylistButton()
+    colorizePlaylistButton(pb, rating)
 }
 
-export const updateNowPlayingControls = () => {
-    const currentTrackUri = Spicetify.Player.data.track?.uri!
+Spicetify.Player.addEventListener("songchange", () => {
+    const npTrack = Spicetify.Player.data.track?.uri!
+    if (
+        Number(CONFIG.skipThreshold) &&
+        (tracksRatings[npTrack] || Number.MAX_SAFE_INTEGER) <= Number(CONFIG.skipThreshold)
+    )
+        return void Spicetify.Player.next()
 
-    const npb = getNowPlayingBar()
-    const npbPlaylistButton = npb.querySelector<HTMLButtonElement>(
-        `button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`,
-    )!
-    colorizePlaylistButton(npbPlaylistButton, tracksRatings[currentTrackUri])
-}
+    updateNowPlayingControls(npTrack)
+})
+updateNowPlayingControls(Spicetify.Player.data.track?.uri!)
 
 let mainElement: HTMLElement
 const mainElementObserver = new MutationObserver(updateTrackListControls)
@@ -87,33 +108,9 @@ new MutationObserver(() => {
     subtree: true,
 })
 
-let lastCollectionPlayButton: Element
 Spicetify.Platform.History.listen(async ({ pathname }: { pathname: string }) => {
     const pageHasHeart = anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2])
     if (!pageHasHeart(pathname)) return
 
-    const collectionPlayButton = await waitForElement(
-        ".main-actionBar-ActionBar .main-playButton-PlayButton",
-        0,
-        document.body,
-        lastCollectionPlayButton,
-    )
-
-    if (!collectionPlayButton) return void Spicetify.showNotification("Error grabbing play button element", true)
-
-    lastCollectionPlayButton = collectionPlayButton
-
     updateCollectionControls(URI.fromString(pathname))
 })
-
-Spicetify.Player.addEventListener("songchange", () => {
-    const trackUri = Spicetify.Player.data.track?.uri!
-    if (
-        Number(CONFIG.skipThreshold) &&
-        (tracksRatings[trackUri] || Number.MAX_SAFE_INTEGER) <= Number(CONFIG.skipThreshold)
-    )
-        return void Spicetify.Player.next()
-
-    updateNowPlayingControls()
-})
-updateNowPlayingControls()

@@ -1,8 +1,8 @@
 import { enterSneak, keyList, listenSneakKeys, mousetrap, quitSneak } from "./sneak"
 import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util"
+import { toggleLiked } from "../../shared/util"
 
 import "./assets/styles.scss"
-import { toggleLiked } from "../../shared/util"
 
 const { KEYS } = Spicetify.Keyboard
 
@@ -10,7 +10,8 @@ const binds = [
     new Bind("s", enterSneak),
     new Bind("s", async () => {
         // product_state was renamed to product_state_service in Spotify 1.2.21
-        const productState = Spicetify.Platform.UserAPI._product_state || Spicetify.Platform.UserAPI._product_state_service;
+        const productState =
+            Spicetify.Platform.UserAPI._product_state || Spicetify.Platform.UserAPI._product_state_service
         await productState.putValues({ pairs: { "app-developer": "2" } })
         Spicetify.Platform.UpdateAPI.applyUpdate()
     }).setShift(true),

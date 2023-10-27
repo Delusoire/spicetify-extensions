@@ -4934,7 +4934,7 @@ var init_es6 = __esm(() => {
 });
 
 // shared/util.tsx
-var mustLoadForApi, mustLoadForUtil, mustLoadForSettings, SpotifyLoc, waitForElement, sleep;
+var mustLoadForApi, mustLoadForUtil, mustLoadForSettings, SpotifyLoc, sleep;
 var init_util = __esm(() => {
   init_function();
   mustLoadForApi = ["CosmosAsync", "GraphQL", "Platform"];
@@ -4963,23 +4963,6 @@ var init_util = __esm(() => {
     })(after = SpotifyLoc.after || (SpotifyLoc.after = {}));
   })(SpotifyLoc || (SpotifyLoc = {}));
   //! Does location actually point to document.body?
-  waitForElement = (selector, timeout = 1000, location = document.body, notEl) => new Promise((resolve) => {
-    const res = (v) => {
-      observer.disconnect();
-      resolve(v);
-    };
-    const observer = new MutationObserver(() => {
-      const el = document.querySelector(selector);
-      if (el && (!notEl || el !== notEl))
-        return res(el);
-    });
-    observer.observe(location, {
-      childList: true,
-      subtree: true
-    });
-    if (timeout)
-      setTimeout(() => res(null), timeout);
-  });
   sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 });
 
@@ -13214,7 +13197,7 @@ var init_fp = __esm(() => {
 });
 
 // shared/api.tsx
-var URI6, fetchGQLAlbum, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, fetchPlatFolder, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
+var URI6, fetchGQLAlbum, removeWebPlaylistTracks, fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents, createPlatFolder, createPlatPlaylist, setPlatPlaylistVisibility, fetchPlatFolder, addPlatPlaylistTracks, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
 var init_api = __esm(() => {
   init_fp();
   init_util();
@@ -13225,6 +13208,9 @@ var init_api = __esm(() => {
     offset,
     limit
   })).data.albumUnion;
+  removeWebPlaylistTracks = async (playlist, tracks) => Spicetify.CosmosAsync.del(`https://api.spotify.com/v1/playlists/${playlist}/tracks`, {
+    tracks: tracks.map((uri) => ({ uri }))
+  });
   fetchWebArtistsSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists);
   fetchWebPlaylistsSpot = chunckify(1)(async ([id]) => [
     await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
@@ -13234,7 +13220,10 @@ var init_api = __esm(() => {
   fetchPlatArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items;
   fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
   createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
+  createPlatPlaylist = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createPlaylist(name, location);
+  setPlatPlaylistVisibility = async (playlist, visibleForAll) => await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
   fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
+  addPlatPlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location);
   fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
     const url = new URL("https://ws.audioscrobbler.com/2.0/");
     url.searchParams.append("method", "track.getInfo");
@@ -13520,13 +13509,15 @@ var init_settings2 = __esm(() => {
 });
 
 // extensions/star-ratings-2/ratings.tsx
-var loadRatings, playlistUris, tracksRatings;
+var loadRatings, toggleRating, playlistUris, tracksRatings;
 var init_ratings = __esm(() => {
   init_es6();
   init_function();
   init_api();
   init_fp();
+  init_util();
   init_settings2();
+  init_app();
   loadRatings = async () => {
     const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri);
     playlistUris = pipe(ratingsFolder.items, exports_Array.map((p) => [p.uri, Number(p.name)]), exports_Array.reduce([], (uris, [uri, rating]) => (uris[rating] = uri, uris)));
@@ -13534,17 +13525,91 @@ var init_ratings = __esm(() => {
       [trackUri]: Math.max(rating, acc[trackUri] ?? 0)
     }))));
   };
+  toggleRating = async (uri, rating) => {
+    const currentRating = tracksRatings[uri];
+    if (currentRating === rating)
+      rating = 0;
+    if (currentRating) {
+      pipe(playlistUris.slice(0, currentRating + 1), exports_Array.filter(Boolean), exports_Array.map((playlistUri) => Spicetify.URI.fromString(playlistUri).id), exports_Array.map((playlistId) => removeWebPlaylistTracks(playlistId, [uri])));
+    }
+    tracksRatings[uri] = rating;
+    if (rating > 0) {
+      let playlistUri = playlistUris[rating];
+      if (!playlistUri) {
+        playlistUri = await createPlatPlaylist(rating.toFixed(0), SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri));
+        setPlatPlaylistVisibility(playlistUri, false);
+        playlistUris[rating] = playlistUri;
+      }
+      addPlatPlaylistTracks(playlistUri, [uri]);
+    }
+    const npTrack = Spicetify.Player.data.track?.uri;
+    if (npTrack === uri)
+      updateNowPlayingControls(npTrack);
+    updateTrackListControls();
+  };
   playlistUris = [];
   tracksRatings = {};
 });
 
 // extensions/star-ratings-2/util.tsx
-var getTrackLists, getTrackListTracks, getTrackListTrackUri, getNowPlayingBar;
+var getTrackLists, getTrackListTracks, getTrackListTrackUri, getNowPlayingBar, getCollectionActionBarRow, getPlaylistButton, getCollectionPlaylistButton;
 var init_util2 = __esm(() => {
   getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-indexable"));
   getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll("div.main-trackList-trackListRow"));
   getTrackListTrackUri = (track) => (track = Object.values(track)[0].child.child.child.child, track.pendingProps.uri ?? track.child.pendingProps.uri);
   getNowPlayingBar = () => document.querySelector("div.main-nowPlayingBar-nowPlayingBar");
+  getCollectionActionBarRow = () => document.querySelector(`div.main-actionBar-ActionBarRow`);
+  getPlaylistButton = (parent) => parent.querySelector(`button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`);
+  getCollectionPlaylistButton = () => {
+    const ab = getCollectionActionBarRow();
+    return ab.querySelector(`button[aria-label="Remove from Your Library"], button[aria-label="Save to Your Library"]`);
+  };
+});
+
+// extensions/star-ratings-2/dropdown.tsx
+var ReadonlyNonEmptyArray2, import_react2, RatingButton, Dropdown;
+var init_dropdown = __esm(() => {
+  ReadonlyNonEmptyArray2 = __toESM(require_ReadonlyNonEmptyArray(), 1);
+  import_react2 = __toESM(require_react(), 1);
+  init_ratings();
+  RatingButton = ({ i, uri }) => import_react2.default.createElement("button", {
+    className: "rating-button",
+    onClick: () => toggleRating(uri, i)
+  }, import_react2.default.createElement("svg", {
+    role: "img",
+    height: 16,
+    width: 16,
+    viewBox: "0 0 16 16",
+    className: `Svg-sc-ytk21e-0 Svg-img-icon rating-${i}`
+  }, import_react2.default.createElement("path", {
+    d: "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm11.748-1.97a.75.75 0 0 0-1.06-1.06l-4.47 4.47-1.405-1.406a.75.75 0 1 0-1.061 1.06l2.466 2.467 5.53-5.53z"
+  })));
+  Dropdown = ({ uri }) => import_react2.default.createElement("div", {
+    className: "rating-dropdown"
+  }, ReadonlyNonEmptyArray2.range(1, 5).map((i) => import_react2.default.createElement(RatingButton, {
+    i,
+    uri
+  })));
+  Spicetify.Tippy("div.rating-dropdown", {
+    interactive: true,
+    animateFill: false,
+    offset: [0, 7],
+    placement: "top",
+    animation: "fade"
+  });
+});
+
+// /home/delusoire/dev/spicetify-extensions/extensions/star-ratings-2/assets/styles.scss
+var init_styles = __esm(() => {
+  (async () => {
+    const id = "OpWtp9qTyHeOu8_7WfLgTr4epxB0WbrIkj0Ah5f74wc";
+    if (!document.getElementById(id)) {
+      const el = document.createElement("style");
+      el.id = id;
+      el.textContent = "svg.rating-1 {\n  fill: \"#ED5564\" !important;\n}\n\nsvg.rating-2 {\n  fill: \"#FFCE54\" !important;\n}\n\nsvg.rating-3 {\n  fill: \"A0D568\" !important;\n}\n\nsvg.rating-4 {\n  fill: \"#4FC1E8\" !important;\n}\n\nsvg.rating-5 {\n  fill: \"#AC92EB\" !important;\n}";
+      document.head.appendChild(el);
+    }
+  })();
 });
 
 // extensions/star-ratings-2/app.tsx
@@ -13562,7 +13627,7 @@ __export(exports_app, {
   },
   updateCollectionControls: () => {
     {
-      return updateCollectionControls;
+      return updateCollectionControls2;
     }
   },
   default: () => {
@@ -13571,25 +13636,38 @@ __export(exports_app, {
     }
   }
 });
-var import_spectacles_ts, app_default, URI7, colorByRating, colorizePlaylistButton, updateTrackListControls, updateCollectionControls, updateNowPlayingControls, mainElement, mainElementObserver, lastCollectionPlayButton;
+var import_spectacles_ts, import_react3, import_react_dom2, app_default, URI7, colorByRating, colorizePlaylistButton, updateNowPlayingControls, updateTrackListControls, updateCollectionControls2, mainElement, mainElementObserver;
 var init_app = __esm(() => {
   init_es6();
   init_Predicate2();
   init_function();
   import_spectacles_ts = __toESM(require_dist(), 1);
   init_api();
-  init_util();
   init_ratings();
   init_settings2();
   init_util2();
+  init_dropdown();
+  init_styles();
+  import_react3 = __toESM(require_react(), 1);
+  import_react_dom2 = __toESM(require_react_dom(), 1);
   app_default = {};
   ({ URI: URI7 } = Spicetify);
   loadRatings();
   colorByRating = [undefined, "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"];
   colorizePlaylistButton = (btn, rating) => {
-    btn.style.opacity = "1";
+    if (btn.style.fill === colorByRating[rating])
+      return;
+    btn.style.opacity = rating > 0 ? "1" : undefined;
     const svg = btn.querySelector("svg");
     svg.style.fill = colorByRating[rating];
+  };
+  updateNowPlayingControls = (newTrack) => {
+    const npb = getNowPlayingBar();
+    const pb = getPlaylistButton(npb);
+    colorizePlaylistButton(pb, tracksRatings[newTrack]);
+    import_react_dom2.default.render(import_react3.default.createElement(Dropdown, {
+      uri: newTrack
+    }), pb);
   };
   updateTrackListControls = flow(getTrackLists, exports_Array.map((trackList) => {
     const trackListTracks = getTrackListTracks(trackList);
@@ -13597,11 +13675,15 @@ var init_app = __esm(() => {
       const uri = URI7.fromString(getTrackListTrackUri(track)).toURI();
       if (!URI7.isTrack(uri))
         return;
-      const trackPlaylistButton = track.querySelector(`button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`);
-      colorizePlaylistButton(trackPlaylistButton, tracksRatings[uri]);
+      const r = tracksRatings[uri];
+      const pb = getPlaylistButton(track);
+      colorizePlaylistButton(pb, r);
+      import_react_dom2.default.render(import_react3.default.createElement(Dropdown, {
+        uri
+      }), pb);
     });
   }));
-  updateCollectionControls = async (uri) => {
+  updateCollectionControls2 = async (uri) => {
     let uris;
     if (URI7.isAlbum(uri))
       uris = pipe(await fetchGQLAlbum(`${uri}`), identity, import_spectacles_ts.get("tracks.items"), exports_Array.map(flow(identity, import_spectacles_ts.get("track.uri"))));
@@ -13611,18 +13693,18 @@ var init_app = __esm(() => {
       uris = pipe(await fetchPlatPlaylistContents(`${uri}`), exports_Array.map(import_spectacles_ts.get("uri")));
     else
       throw "me out the window";
-    const ratings3 = uris.map((uri2) => tracksRatings[uri2]).filter(Boolean);
-    const rating = Math.round(ratings3.reduce((acc, r) => acc + r) / ratings3.length);
-    const ab = document.querySelector(`div.main-actionBar-ActionBarRow`);
-    const abPlaylistButton = ab.querySelector(`button[aria-label="Remove from Your Library"], button[aria-label="Save to Your Library"]`);
-    colorizePlaylistButton(abPlaylistButton, rating);
+    const ratings4 = uris.map((uri2) => tracksRatings[uri2]).filter(Boolean);
+    const rating = Math.round(ratings4.reduce((acc, r) => acc + r) / ratings4.length);
+    const pb = getCollectionPlaylistButton();
+    colorizePlaylistButton(pb, rating);
   };
-  updateNowPlayingControls = () => {
-    const currentTrackUri = Spicetify.Player.data.track?.uri;
-    const npb = getNowPlayingBar();
-    const npbPlaylistButton = npb.querySelector(`button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`);
-    colorizePlaylistButton(npbPlaylistButton, tracksRatings[currentTrackUri]);
-  };
+  Spicetify.Player.addEventListener("songchange", () => {
+    const npTrack = Spicetify.Player.data.track?.uri;
+    if (Number(CONFIG.skipThreshold) && (tracksRatings[npTrack] || Number.MAX_SAFE_INTEGER) <= Number(CONFIG.skipThreshold))
+      return void Spicetify.Player.next();
+    updateNowPlayingControls(npTrack);
+  });
+  updateNowPlayingControls(Spicetify.Player.data.track?.uri);
   mainElementObserver = new MutationObserver(updateTrackListControls);
   new MutationObserver(() => {
     const nextMainElement = document.querySelector("main");
@@ -13643,19 +13725,8 @@ var init_app = __esm(() => {
     const pageHasHeart = anyPass([URI7.isAlbum, URI7.isArtist, URI7.isPlaylistV1OrV2]);
     if (!pageHasHeart(pathname))
       return;
-    const collectionPlayButton = await waitForElement(".main-actionBar-ActionBar .main-playButton-PlayButton", 0, document.body, lastCollectionPlayButton);
-    if (!collectionPlayButton)
-      return void Spicetify.showNotification("Error grabbing play button element", true);
-    lastCollectionPlayButton = collectionPlayButton;
-    updateCollectionControls(URI7.fromString(pathname));
+    updateCollectionControls2(URI7.fromString(pathname));
   });
-  Spicetify.Player.addEventListener("songchange", () => {
-    const trackUri = Spicetify.Player.data.track?.uri;
-    if (Number(CONFIG.skipThreshold) && (tracksRatings[trackUri] || Number.MAX_SAFE_INTEGER) <= Number(CONFIG.skipThreshold))
-      return void Spicetify.Player.next();
-    updateNowPlayingControls();
-  });
-  updateNowPlayingControls();
 });
 
 // extensions/star-ratings-2/entry.tsx

@@ -15,3 +15,16 @@ export const getPlaylistSVGButtonFrom = (element: HTMLElement) =>
     element.querySelector<SVGElement>(playlistButtonSelector)
 
 export const getNowPlayingBar = () => document.querySelector<HTMLDivElement>("div.main-nowPlayingBar-nowPlayingBar")!
+export const getCollectionActionBarRow = () =>
+    document.querySelector<HTMLDivElement>(`div.main-actionBar-ActionBarRow`)!
+
+export const getPlaylistButton = (parent: HTMLElement) =>
+    parent.querySelector<HTMLButtonElement>(
+        `button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`,
+    )!
+export const getCollectionPlaylistButton = () => {
+    const ab = getCollectionActionBarRow()
+    return ab.querySelector<HTMLButtonElement>(
+        `button[aria-label="Remove from Your Library"], button[aria-label="Save to Your Library"]`,
+    )!
+}
