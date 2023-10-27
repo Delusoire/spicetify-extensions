@@ -15,10 +15,6 @@ export const loadRatings = async () => {
         a.reduce([] as SpotifyURI[], (uris, [uri, rating]) => ((uris[rating] = uri), uris)),
     )
 
-    console.log(playlistUris)
-
-    debugger
-
     // @ts-ignore
     globalThis.tracksRatings = tracksRatings = await p(
         playlistUris,

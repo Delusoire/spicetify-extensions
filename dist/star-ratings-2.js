@@ -13530,8 +13530,6 @@ var init_ratings = __esm(() => {
   loadRatings = async () => {
     const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri);
     playlistUris = pipe(ratingsFolder.items, exports_Array.map((p) => [p.uri, Number(p.name)]), exports_Array.reduce([], (uris, [uri, rating]) => (uris[rating] = uri, uris)));
-    console.log(playlistUris);
-    debugger;
     globalThis.tracksRatings = tracksRatings = await pipe(playlistUris, exports_Array.map(fetchPlatPlaylistContents), (ps) => Promise.all(ps), pMchain(exports_Array.map((tracks) => tracks ?? [])), pMchain(exports_Array.map(exports_Array.map((t) => t.uri))), pMchain(exports_Array.flatMap((trackUris, rating) => trackUris.map((trackUri) => [trackUri, rating]))), pMchain(exports_Array.reduce({}, (acc, [trackUri, rating]) => Object.assign(acc, {
       [trackUri]: Math.max(rating, acc[trackUri] ?? 0)
     }))));
@@ -13589,6 +13587,7 @@ var init_app = __esm(() => {
   loadRatings();
   colorByRating = ["#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"];
   colorizePlaylistButton = (svg, rating) => {
+    svg.style.opacity = "1";
     svg.style.fill = colorByRating[rating];
   };
   updateTrackListControls = flow(getTrackLists, exports_Array.map((trackList) => {

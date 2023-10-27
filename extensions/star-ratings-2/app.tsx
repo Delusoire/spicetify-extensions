@@ -17,6 +17,7 @@ loadRatings()
 const colorByRating = ["#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
 
 const colorizePlaylistButton = (svg: SVGElement, rating: number) => {
+    svg.style.opacity = "1"
     svg.style.fill = colorByRating[rating]
 }
 
