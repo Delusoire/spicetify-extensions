@@ -42,7 +42,6 @@ export const updateTrackListControls = f(
 )
 
 export const updateCollectionControls = async (uri: Spicetify.URI) => {
-    debugger
     let uris
     if (URI.isAlbum(uri))
         uris = p(await fetchGQLAlbum(`${uri}`), identity, get("tracks.items"), a.map(f(identity, get("track.uri"))))
