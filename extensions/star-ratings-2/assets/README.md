@@ -3,7 +3,6 @@ description: Rate your songs with stars! And show aggregated Show album/playlist
 authors:
     - name: Delusoire
       url: https://github.com/Delusoire
-    - name: Scott Duffey
 tags:
     - like
     - star
