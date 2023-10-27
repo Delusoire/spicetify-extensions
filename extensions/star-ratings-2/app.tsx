@@ -14,7 +14,7 @@ const { URI } = Spicetify
 
 loadRatings()
 
-const colorByRating = ["#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
+const colorByRating = [undefined, "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
 
 const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
     btn.style.opacity = "1"

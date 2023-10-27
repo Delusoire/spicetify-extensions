@@ -13585,7 +13585,7 @@ var init_app = __esm(() => {
   app_default = {};
   ({ URI: URI7 } = Spicetify);
   loadRatings();
-  colorByRating = ["#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"];
+  colorByRating = [undefined, "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"];
   colorizePlaylistButton = (btn, rating) => {
     btn.style.opacity = "1";
     const svg = btn.querySelector("svg");
