@@ -3,10 +3,12 @@ import React from "react"
 import { SpotifyURI } from "../../shared/util"
 import { toggleRating } from "./ratings"
 import { playlistButtonSelector } from "./util"
-import { isTemplateExpression } from "typescript"
 
 const RatingButton = ({ i, uri }: { i: number; uri: SpotifyURI }) => (
-    <button className="rating-button" onClick={() => toggleRating(uri, i)}>
+    <button
+        className="Button-sc-1dqy6lx-0 Button-textBrightAccent-sm-16-buttonTertiary-iconOnly-condensed-isUsingKeyboard-useBrowserDefaultFocusStyle rating-button"
+        onClick={() => toggleRating(uri, i)}
+    >
         <svg
             role="img"
             height={16}
@@ -37,4 +39,5 @@ Spicetify.Tippy(playlistButtonSelector, {
     offset: [0, 7],
     placement: "top",
     animation: "fade",
+    trigger: "mouseenter focus",
 })

@@ -13575,7 +13575,7 @@ var init_dropdown = __esm(() => {
   init_ratings();
   init_util2();
   RatingButton = ({ i, uri }) => import_react2.default.createElement("button", {
-    className: "rating-button",
+    className: "Button-sc-1dqy6lx-0 Button-textBrightAccent-sm-16-buttonTertiary-iconOnly-condensed-isUsingKeyboard-useBrowserDefaultFocusStyle rating-button",
     onClick: () => toggleRating(uri, i)
   }, import_react2.default.createElement("svg", {
     role: "img",
@@ -13601,7 +13601,8 @@ var init_dropdown = __esm(() => {
     animateFill: false,
     offset: [0, 7],
     placement: "top",
-    animation: "fade"
+    animation: "fade",
+    trigger: "mouseenter focus"
   });
 });
 
