@@ -158,7 +158,6 @@ export const fetchTrackLFMAPI = async (LFMApiKey: string, artist: string, trackN
     url.searchParams.append("track", trackName)
     url.searchParams.append("format", "json")
     url.searchParams.append("username", lastFmUsername)
-    debugger
 
     return (await fetch(url).then(res => res.json())) as fetchTrackLFMAPIRes
 }
