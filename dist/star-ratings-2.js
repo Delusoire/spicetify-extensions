@@ -7567,12 +7567,12 @@ var init_app = __esm(() => {
       return;
     pb.setAttribute("dropdown-enabled", "");
     const div = document.createElement("div");
+    document.body.appendChild(div);
     import_react_dom2.default.render(import_react3.default.createElement(Dropdown, {
       uri
     }), div);
-    const dropdown2 = div.firstChild;
     Spicetify.Tippy(pb, {
-      content: dropdown2.innerHTML,
+      content: div,
       interactive: true,
       animateFill: false,
       offset: [0, 7],

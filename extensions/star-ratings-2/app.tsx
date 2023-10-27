@@ -40,11 +40,12 @@ const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
 const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI) => {
     if (pb.hasAttribute("dropdown-enabled")) return
     pb.setAttribute("dropdown-enabled", "")
+
     const div = document.createElement("div")
+    document.body.appendChild(div)
     ReactDOM.render(<Dropdown uri={uri} />, div)
-    const dropdown = div.firstChild as HTMLDivElement
     Spicetify.Tippy(pb, {
-        content: dropdown.innerHTML,
+        content: div,
         interactive: true,
         animateFill: false,
         offset: [0, 7],
