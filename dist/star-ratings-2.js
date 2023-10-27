@@ -7577,9 +7577,10 @@ var init_app = __esm(() => {
       interactive: true,
       animateFill: false,
       offset: [0, 7],
-      placement: "top",
+      placement: "left",
       animation: "fade",
       trigger: "mouseenter focus",
+      zIndex: 1e4,
       render(instance) {
         const popper = document.createElement("div");
         const box = document.createElement("div");
