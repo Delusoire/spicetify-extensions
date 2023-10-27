@@ -42,7 +42,7 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
     pb.setAttribute("dropdown-enabled", "")
 
     const div = document.createElement("div")
-    document.body.appendChild(div)
+    pb.appendChild(div)
     ReactDOM.render(<Dropdown uri={uri} />, div)
     Spicetify.Tippy(pb, {
         content: div,
