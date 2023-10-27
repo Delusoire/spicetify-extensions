@@ -7572,13 +7572,31 @@ var init_app = __esm(() => {
       uri
     }), div);
     Spicetify.Tippy(pb, {
+      ...Spicetify.TippyProps,
       content: div,
       interactive: true,
       animateFill: false,
       offset: [0, 7],
       placement: "top",
       animation: "fade",
-      trigger: "mouseenter focus"
+      trigger: "mouseenter focus",
+      render(instance) {
+        const popper = document.createElement("div");
+        const box = document.createElement("div");
+        popper.id = "context-menu";
+        popper.appendChild(box);
+        box.className = "main-contextMenu-tippy";
+        box.appendChild(instance.props.content);
+        function onUpdate(prevProps, nextProps) {
+          if (prevProps.content !== nextProps.content) {
+            if (nextProps.allowHTML)
+              box.innerHTML = nextProps.content;
+            else
+              box.textContent = nextProps.content;
+          }
+        }
+        return { popper, onUpdate };
+      }
     });
   };
   updateNowPlayingControls = (newTrack, updateDropdown = true) => {

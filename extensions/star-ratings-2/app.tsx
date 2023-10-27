@@ -45,6 +45,7 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
     pb.appendChild(div)
     ReactDOM.render(<Dropdown uri={uri} />, div)
     Spicetify.Tippy(pb, {
+        ...Spicetify.TippyProps,
         content: div,
         interactive: true,
         animateFill: false,
@@ -52,6 +53,25 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
         placement: "top",
         animation: "fade",
         trigger: "mouseenter focus",
+        render(instance: any) {
+            const popper = document.createElement("div")
+            const box = document.createElement("div")
+
+            popper.id = "context-menu"
+            popper.appendChild(box)
+
+            box.className = "main-contextMenu-tippy"
+            box.appendChild(instance.props.content)
+
+            function onUpdate(prevProps: any, nextProps: any) {
+                if (prevProps.content !== nextProps.content) {
+                    if (nextProps.allowHTML) box.innerHTML = nextProps.content
+                    else box.textContent = nextProps.content
+                }
+            }
+
+            return { popper, onUpdate }
+        },
     })
 }
 
