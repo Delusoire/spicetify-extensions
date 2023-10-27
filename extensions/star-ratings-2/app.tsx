@@ -4,10 +4,10 @@ debugger
 
 import { array as a } from "fp-ts"
 import { anyPass } from "fp-ts-std/Predicate"
-import { flow as f, identity, pipe as p } from "fp-ts/function"
-import { get } from "spectacles-ts"
+import { pipe as p } from "fp-ts/function"
 import { fetchGQLAlbum, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents } from "../../shared/api"
 import { SpotifyURI } from "../../shared/util"
+import { Dropdown } from "./dropdown"
 import { loadRatings, tracksRatings } from "./ratings"
 import { CONFIG } from "./settings"
 import {
@@ -18,11 +18,10 @@ import {
     getTrackListTracks,
     getTrackLists,
 } from "./util"
-import { Dropdown } from "./dropdown"
 
-import "./assets/styles.scss"
 import React from "react"
 import ReactDOM from "react-dom"
+import "./assets/styles.scss"
 
 const { URI } = Spicetify
 
@@ -39,14 +38,13 @@ const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
 }
 
 const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI) => {
+    if (pb.hasAttribute("dropdown-enabled")) return
+    pb.setAttribute("dropdown-enabled", "")
     const div = document.createElement("div")
-    pb.appendChild(div)
     ReactDOM.render(<Dropdown uri={uri} />, div)
+    const dropdown = div.firstChild as HTMLDivElement
     Spicetify.Tippy(pb, {
-        content(ref: HTMLButtonElement) {
-            const dropdown = ref.querySelector("div.rating-dropdown")
-            return dropdown?.innerHTML
-        },
+        content: dropdown.innerHTML,
         interactive: true,
         animateFill: false,
         offset: [0, 7],
@@ -56,39 +54,54 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
     })
 }
 
-export const updateNowPlayingControls = (newTrack: SpotifyURI) => {
+export const updateNowPlayingControls = (newTrack: SpotifyURI, updateDropdown = true) => {
     const npb = getNowPlayingBar()
     const pb = getPlaylistButton(npb)
     colorizePlaylistButton(pb, tracksRatings[newTrack])
-    wrapDropdownInsidePlaylistButton(pb, newTrack)
+    if (updateDropdown) wrapDropdownInsidePlaylistButton(pb, newTrack)
 }
 
-export const updateTrackListControls = f(
-    getTrackLists,
-    a.map(trackList => {
-        const trackListTracks = getTrackListTracks(trackList)
+export const updateTrackListControls = (updateDropdown = true) => {
+    const trackLists = getTrackLists()
+    p(
+        trackLists,
+        a.map(trackList => {
+            const trackListTracks = getTrackListTracks(trackList)
 
-        trackListTracks.map(track => {
-            const uri = URI.fromString(getTrackListTrackUri(track)).toURI()
+            trackListTracks.map(track => {
+                const uri = URI.fromString(getTrackListTrackUri(track)).toURI()
 
-            //TODO: Local Tracks support
-            if (!URI.isTrack(uri!)) return
+                //TODO: Local Tracks support
+                if (!URI.isTrack(uri!)) return
 
-            const r = tracksRatings[uri]
-            const pb = getPlaylistButton(track)
+                const r = tracksRatings[uri]
+                const pb = getPlaylistButton(track)
 
-            colorizePlaylistButton(pb, r)
-            wrapDropdownInsidePlaylistButton(pb, uri)
-        })
-    }),
-)
+                colorizePlaylistButton(pb, r)
+                if (updateDropdown) wrapDropdownInsidePlaylistButton(pb, uri)
+            })
+        }),
+    )
+}
 
 export const updateCollectionControls = async (uri: Spicetify.URI) => {
     let uris
     if (URI.isAlbum(uri))
-        uris = p(await fetchGQLAlbum(`${uri}`), identity, get("tracks.items"), a.map(f(identity, get("track.uri"))))
-    else if (URI.isArtist(uri)) uris = p(await fetchPlatArtistLikedTracks(`${uri}`), a.map(get("uri")))
-    else if (URI.isPlaylistV1OrV2(uri)) uris = p(await fetchPlatPlaylistContents(`${uri}`), a.map(get("uri")))
+        uris = p(
+            await fetchGQLAlbum(`${uri}`),
+            x => x.tracks.items,
+            a.map(x => x.track.uri),
+        )
+    else if (URI.isArtist(uri))
+        uris = p(
+            await fetchPlatArtistLikedTracks(`${uri}`),
+            a.map(x => x.uri),
+        )
+    else if (URI.isPlaylistV1OrV2(uri))
+        uris = p(
+            await fetchPlatPlaylistContents(`${uri}`),
+            a.map(x => x.uri),
+        )
     else throw "me out the window"
 
     const ratings = uris.map(uri => tracksRatings[uri]).filter(Boolean)
@@ -111,7 +124,7 @@ Spicetify.Player.addEventListener("songchange", () => {
 updateNowPlayingControls(Spicetify.Player.data.track?.uri!)
 
 let mainElement: HTMLElement
-const mainElementObserver = new MutationObserver(updateTrackListControls)
+const mainElementObserver = new MutationObserver(() => updateTrackListControls())
 
 new MutationObserver(() => {
     const nextMainElement = document.querySelector<HTMLElement>("main")
