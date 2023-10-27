@@ -13243,6 +13243,7 @@ var init_api = __esm(() => {
     url.searchParams.append("track", trackName);
     url.searchParams.append("format", "json");
     url.searchParams.append("username", lastFmUsername);
+    debugger;
     return await fetch(url).then((res) => res.json());
   };
   fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
