@@ -42,6 +42,18 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
     const div = document.createElement("div")
     pb.appendChild(div)
     ReactDOM.render(<Dropdown uri={uri} />, div)
+    Spicetify.Tippy(pb, {
+        content(ref: HTMLButtonElement) {
+            const dropdown = ref.querySelector("div.rating-dropdown")
+            return dropdown?.innerHTML
+        },
+        interactive: true,
+        animateFill: false,
+        offset: [0, 7],
+        placement: "top",
+        animation: "fade",
+        trigger: "mouseenter focus",
+    })
 }
 
 export const updateNowPlayingControls = (newTrack: SpotifyURI) => {

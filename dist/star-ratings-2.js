@@ -13573,7 +13573,6 @@ var init_dropdown = __esm(() => {
   ReadonlyNonEmptyArray2 = __toESM(require_ReadonlyNonEmptyArray(), 1);
   import_react2 = __toESM(require_react(), 1);
   init_ratings();
-  init_util2();
   RatingButton = ({ i, uri }) => import_react2.default.createElement("button", {
     className: "Button-sc-1dqy6lx-0 Button-textBrightAccent-sm-16-buttonTertiary-iconOnly-condensed-isUsingKeyboard-useBrowserDefaultFocusStyle rating-button",
     onClick: () => toggleRating(uri, i)
@@ -13592,18 +13591,6 @@ var init_dropdown = __esm(() => {
     i,
     uri
   })));
-  Spicetify.Tippy(playlistButtonSelector, {
-    content(ref) {
-      const dropdown = ref.querySelector("div.rating-dropdown");
-      return dropdown?.innerHTML;
-    },
-    interactive: true,
-    animateFill: false,
-    offset: [0, 7],
-    placement: "top",
-    animation: "fade",
-    trigger: "mouseenter focus"
-  });
 });
 
 // /home/delusoire/dev/spicetify-extensions/extensions/star-ratings-2/assets/styles.scss
@@ -13675,6 +13662,18 @@ var init_app = __esm(() => {
     import_react_dom2.default.render(import_react3.default.createElement(Dropdown, {
       uri
     }), div);
+    Spicetify.Tippy(pb, {
+      content(ref) {
+        const dropdown2 = ref.querySelector("div.rating-dropdown");
+        return dropdown2?.innerHTML;
+      },
+      interactive: true,
+      animateFill: false,
+      offset: [0, 7],
+      placement: "top",
+      animation: "fade",
+      trigger: "mouseenter focus"
+    });
   };
   updateNowPlayingControls = (newTrack) => {
     const npb = getNowPlayingBar();
