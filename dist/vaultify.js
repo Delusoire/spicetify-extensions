@@ -4950,7 +4950,7 @@ var init_es6 = __esm(() => {
 });
 
 // shared/util.tsx
-var SpotifyLoc, sleep, getReactProps;
+var SpotifyLoc, sleep, getReactProps, setLiked;
 var init_util = __esm(() => {
   init_function();
   (function(SpotifyLoc) {
@@ -4978,6 +4978,7 @@ var init_util = __esm(() => {
   //! Does location actually point to document.body?
   sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   getReactProps = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactProps$"))];
+  setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"](...uris);
 });
 
 // node_modules/fp-ts-std/dist/esm/Function.js
@@ -5361,7 +5362,7 @@ var settings2;
 var init_settings2 = __esm(() => {
   init_settings();
   init_app();
-  settings2 = new SettingsSection("Vaultify", "vaultify").addButton("backup", "Backup Playlists and Settings", "Backup to clipboard", backup).addButton("restorePlaylists", "Restore Playlists", "Restore from clipboard", restore("playlists")).addButton("restoreExtensions", "Restore Extensions", "Restore from clipboard", restore("extensions")).addButton("restoreSettings", "Restore Settings", "Restore from clipboard", restore("settings"));
+  settings2 = new SettingsSection("Vaultify", "vaultify").addButton("backup", "Backup Library, Extensions and Settings", "Backup to clipboard", backup).addButton("restoreLibrary", "Restore Library", "Restore from clipboard", restore("library")).addButton("restoreExtensions", "Restore Extensions", "Restore from clipboard", restore("extensions")).addButton("restoreSettings", "Restore Settings", "Restore from clipboard", restore("settings"));
   settings2.pushSettings();
 });
 
@@ -5384,7 +5385,7 @@ __export(exports_app, {
     }
   }
 });
-var app_default, isType, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, backup, restore;
+var app_default, isType, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, allowedExtDataRegex, backup, restore;
 var init_app = __esm(() => {
   init_es6();
   init_Array();
@@ -5423,9 +5424,27 @@ var init_app = __esm(() => {
       subleaf.forEach(restorePlaylistseRecur);
     });
   };
+  allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/;
   backup = async () => {
+    const extractItemsUris = (a) => a.items.map((item) => item.uri);
+    const rawLibraryTracks = await Spicetify.Platform.LibraryAPI.getTracks({
+      limit: -1,
+      sort: { field: "ADDED_AT", order: "ASC" }
+    });
+    const libraryTracks = extractItemsUris(rawLibraryTracks);
+    const rawLibraryAlbums = await Spicetify.Platform.LibraryAPI.getAlbums({
+      limit: 1073741824,
+      sort: { field: "ADDED_AT" }
+    });
+    const libraryAlbums = extractItemsUris(rawLibraryAlbums);
+    const rawLibraryArtists = await Spicetify.Platform.LibraryAPI.getArtists({
+      limit: 1073741824,
+      sort: {
+        field: "ADDED_AT"
+      }
+    });
+    const libraryArtists = extractItemsUris(rawLibraryArtists);
     const playlists = await pipe(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur);
-    const allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/;
     const localStore = pipe(localStorage, toUnfoldable(exports_Array), exports_Array.filter(([key]) => allowedExtDataRegex.test(key)));
     const { items, namespace } = Spicetify.Platform.LocalStorageAPI;
     const localStoreAPI = pipe(items, toUnfoldable(exports_Array), exports_Array.filter(([key]) => key.startsWith(namespace)), exports_Array.map(([key, value]) => [key.split(":")[1], value]));
@@ -5441,14 +5460,25 @@ var init_app = __esm(() => {
         return [[id, "select", setting.value]];
       return [];
     }));
-    await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({ playlists, localStore, localStoreAPI, settings: settings3 }));
+    await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({
+      libraryTracks,
+      libraryAlbums,
+      libraryArtists,
+      playlists,
+      localStore,
+      localStoreAPI,
+      settings: settings3
+    }));
     Spicetify.showNotification("Backed up Playlists, Extensions and Settings");
   };
   restore = (mode) => async () => {
     let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
-    if (mode === "playlists") {
+    if (mode === "library") {
+      setLiked(vault.libraryTracks, true);
+      setLiked(vault.libraryAlbums, true);
+      setLiked(vault.libraryArtists, true);
       await restorePlaylistseRecur(vault.playlists);
-      Spicetify.showNotification("Restored Playlists");
+      Spicetify.showNotification("Restored Library");
     }
     if (mode === "extensions") {
       map(tupled(Spicetify.LocalStorage.set))(vault.localStore);

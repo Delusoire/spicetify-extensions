@@ -11,7 +11,7 @@ import {
     likePlatPlaylist,
 } from "../../shared/api"
 import { guard2, is, pMchain } from "../../shared/fp"
-import { SpotifyURI, getReactProps } from "../../shared/util"
+import { SpotifyURI, getReactProps, setLiked } from "../../shared/util"
 import { Folder, Playlist, PoF } from "./util"
 
 const isType = is<PoF>("type")
@@ -60,10 +60,31 @@ const restorePlaylistseRecur = async (leaf: PersonalFolder | PersonalPlaylist | 
     })
 }
 
+const allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/
 export const backup = async () => {
-    const playlists = await p((await fetchPlatRootFolder()) as any, extractLikedPlaylistTreeRecur)
+    const extractItemsUris = (a: any) => a.items.map((item: any) => item.uri)
 
-    const allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/
+    const rawLibraryTracks = await Spicetify.Platform.LibraryAPI.getTracks({
+        limit: -1,
+        sort: { field: "ADDED_AT", order: "ASC" },
+    })
+    const libraryTracks = extractItemsUris(rawLibraryTracks)
+
+    const rawLibraryAlbums = await Spicetify.Platform.LibraryAPI.getAlbums({
+        limit: 2 ** 30,
+        sort: { field: "ADDED_AT" },
+    })
+    const libraryAlbums = extractItemsUris(rawLibraryAlbums)
+
+    const rawLibraryArtists = await Spicetify.Platform.LibraryAPI.getArtists({
+        limit: 2 ** 30,
+        sort: {
+            field: "ADDED_AT",
+        },
+    })
+    const libraryArtists = extractItemsUris(rawLibraryArtists)
+
+    const playlists = await p((await fetchPlatRootFolder()) as any, extractLikedPlaylistTreeRecur)
 
     const localStore = p(
         localStorage,
@@ -97,23 +118,37 @@ export const backup = async () => {
     )
 
     await Spicetify.Platform.ClipboardAPI.copy(
-        JSON.stringify({ playlists, localStore, localStoreAPI, settings } as Vault),
+        JSON.stringify({
+            libraryTracks,
+            libraryAlbums,
+            libraryArtists,
+            playlists,
+            localStore,
+            localStoreAPI,
+            settings,
+        } as Vault),
     )
     Spicetify.showNotification("Backed up Playlists, Extensions and Settings")
 }
 
 type Vault = {
+    libraryTracks: Array<SpotifyURI>
+    libraryAlbums: Array<SpotifyURI>
+    libraryArtists: Array<SpotifyURI>
     playlists: PersonalFolder
     localStore: Array<[string, string]>
     localStoreAPI: Array<[string, string]>
     settings: Array<[string, string, any]>
 }
-export const restore = (mode: "playlists" | "extensions" | "settings") => async () => {
+export const restore = (mode: "library" | "extensions" | "settings") => async () => {
     let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste()) as Vault
 
-    if (mode === "playlists") {
+    if (mode === "library") {
+        setLiked(vault.libraryTracks, true)
+        setLiked(vault.libraryAlbums, true)
+        setLiked(vault.libraryArtists, true)
         await restorePlaylistseRecur(vault.playlists)
-        Spicetify.showNotification("Restored Playlists")
+        Spicetify.showNotification("Restored Library")
     }
     if (mode === "extensions") {
         map(tupled(Spicetify.LocalStorage.set))(vault.localStore)
