@@ -10,8 +10,8 @@ export const getTrackListTrackUri = (track: HTMLDivElement) => (
 )
 
 const playlistButtonSelector = `button[aria-label="Add to playlist"] svg, button[aria-label="Add to Liked Songs"] svg, button[aria-label="Remove from Your Library"] svg`
-export const getPlaylistSVGButton = () => document.querySelector(playlistButtonSelector) as SVGElement
+export const getPlaylistSVGButton = () => document.querySelector<SVGElement>(playlistButtonSelector)
 export const getPlaylistSVGButtonFrom = (element: HTMLElement) =>
-    element.querySelector(playlistButtonSelector) as SVGElement
+    element.querySelector<SVGElement>(playlistButtonSelector)
 
-export const getNowPlayingBar = () => document.querySelector("div.main-nowPlayingBar-nowPlayingBar") as HTMLDivElement
+export const getNowPlayingBar = () => document.querySelector<HTMLDivElement>("div.main-nowPlayingBar-nowPlayingBar")!

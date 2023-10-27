@@ -114,7 +114,7 @@ const mainElementObserver = new MutationObserver(() => (CONFIG.showInTrackLists 
 
 new MutationObserver(() => {
     const oldMainElement = mainElement
-    mainElement = document.querySelector("main") as HTMLElement
+    mainElement = document.querySelector<HTMLElement>("main")!
     if (mainElement && !mainElement.isEqualNode(oldMainElement)) {
         if (oldMainElement) mainElementObserver.disconnect()
         mainElementObserver.observe(mainElement, {

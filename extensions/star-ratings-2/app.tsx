@@ -16,8 +16,9 @@ loadRatings()
 
 const colorByRating = ["#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
 
-const colorizePlaylistButton = (svg: SVGElement, rating: number) => {
-    svg.style.opacity = "1"
+const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
+    btn.style.opacity = "1"
+    const svg = btn.querySelector<SVGElement>("svg")!
     svg.style.fill = colorByRating[rating]
 }
 
@@ -32,10 +33,10 @@ export const updateTrackListControls = f(
             //TODO: Local Tracks support
             if (!URI.isTrack(uri!)) return
 
-            const trackPlaylistButtonSVG = track.querySelector(
-                `button[aria-label="Add to Liked Songs"] svg, button[aria-label="Add to playlist"] svg`,
-            ) as SVGElement
-            colorizePlaylistButton(trackPlaylistButtonSVG, tracksRatings[uri])
+            const trackPlaylistButton = track.querySelector<HTMLButtonElement>(
+                `button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`,
+            )!
+            colorizePlaylistButton(trackPlaylistButton, tracksRatings[uri])
         })
     }),
 )
@@ -52,28 +53,28 @@ export const updateCollectionControls = async (uri: Spicetify.URI) => {
     const ratings = uris.map(uri => tracksRatings[uri]).filter(Boolean)
     const rating = Math.floor(ratings.reduce((acc, r) => acc + r) / ratings.length)
 
-    const ab = document.querySelector(`div.main-actionBar-ActionBarRow`) as HTMLDivElement
-    const abPlaylistButtonSVG = ab.querySelector(
-        `button[aria-label="Remove from Your Library"] svg, button[aria-label="Save to Your Library"] svg`,
-    ) as SVGElement
-    colorizePlaylistButton(abPlaylistButtonSVG, rating)
+    const ab = document.querySelector<HTMLDivElement>(`div.main-actionBar-ActionBarRow`)!
+    const abPlaylistButton = ab.querySelector<HTMLButtonElement>(
+        `button[aria-label="Remove from Your Library"], button[aria-label="Save to Your Library"]`,
+    )!
+    colorizePlaylistButton(abPlaylistButton, rating)
 }
 
 export const updateNowPlayingControls = () => {
     const currentTrackUri = Spicetify.Player.data.track?.uri!
 
     const npb = getNowPlayingBar()
-    const npbPlaylistButtonSVG = npb.querySelector(
-        `button[aria-label="Add to Liked Songs"] svg, button[aria-label="Add to playlist"] svg`,
-    ) as SVGElement
-    colorizePlaylistButton(npbPlaylistButtonSVG, tracksRatings[currentTrackUri])
+    const npbPlaylistButton = npb.querySelector<HTMLButtonElement>(
+        `button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`,
+    )!
+    colorizePlaylistButton(npbPlaylistButton, tracksRatings[currentTrackUri])
 }
 
 let mainElement: HTMLElement
 const mainElementObserver = new MutationObserver(updateTrackListControls)
 
 new MutationObserver(() => {
-    const nextMainElement = document.querySelector("main") as HTMLElement
+    const nextMainElement = document.querySelector<HTMLElement>("main")
     if (nextMainElement && !nextMainElement.isEqualNode(mainElement)) {
         if (mainElement) mainElementObserver.disconnect()
         mainElement = nextMainElement

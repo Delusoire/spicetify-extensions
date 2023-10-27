@@ -13586,8 +13586,9 @@ var init_app = __esm(() => {
   ({ URI: URI7 } = Spicetify);
   loadRatings();
   colorByRating = ["#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"];
-  colorizePlaylistButton = (svg, rating) => {
-    svg.style.opacity = "1";
+  colorizePlaylistButton = (btn, rating) => {
+    btn.style.opacity = "1";
+    const svg = btn.querySelector("svg");
     svg.style.fill = colorByRating[rating];
   };
   updateTrackListControls = flow(getTrackLists, exports_Array.map((trackList) => {
@@ -13596,8 +13597,8 @@ var init_app = __esm(() => {
       const uri = URI7.fromString(getTrackListTrackUri(track)).toURI();
       if (!URI7.isTrack(uri))
         return;
-      const trackPlaylistButtonSVG = track.querySelector(`button[aria-label="Add to Liked Songs"] svg, button[aria-label="Add to playlist"] svg`);
-      colorizePlaylistButton(trackPlaylistButtonSVG, tracksRatings[uri]);
+      const trackPlaylistButton = track.querySelector(`button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`);
+      colorizePlaylistButton(trackPlaylistButton, tracksRatings[uri]);
     });
   }));
   updateCollectionControls = async (uri) => {
@@ -13614,14 +13615,14 @@ var init_app = __esm(() => {
     const ratings3 = uris.map((uri2) => tracksRatings[uri2]).filter(Boolean);
     const rating = Math.floor(ratings3.reduce((acc, r) => acc + r) / ratings3.length);
     const ab = document.querySelector(`div.main-actionBar-ActionBarRow`);
-    const abPlaylistButtonSVG = ab.querySelector(`button[aria-label="Remove from Your Library"] svg, button[aria-label="Save to Your Library"] svg`);
-    colorizePlaylistButton(abPlaylistButtonSVG, rating);
+    const abPlaylistButton = ab.querySelector(`button[aria-label="Remove from Your Library"], button[aria-label="Save to Your Library"]`);
+    colorizePlaylistButton(abPlaylistButton, rating);
   };
   updateNowPlayingControls = () => {
     const currentTrackUri = Spicetify.Player.data.track?.uri;
     const npb = getNowPlayingBar();
-    const npbPlaylistButtonSVG = npb.querySelector(`button[aria-label="Add to Liked Songs"] svg, button[aria-label="Add to playlist"] svg`);
-    colorizePlaylistButton(npbPlaylistButtonSVG, tracksRatings[currentTrackUri]);
+    const npbPlaylistButton = npb.querySelector(`button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`);
+    colorizePlaylistButton(npbPlaylistButton, tracksRatings[currentTrackUri]);
   };
   mainElementObserver = new MutationObserver(updateTrackListControls);
   new MutationObserver(() => {
