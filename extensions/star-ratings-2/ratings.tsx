@@ -11,12 +11,13 @@ export const loadRatings = async () => {
 
     playlistUris = p(
         ratingsFolder!.items!,
-        a.map(p => [p.type, p.uri, Number(p.name!)] as [string, SpotifyURI, number]),
-        a.reduce(
-            [] as SpotifyURI[],
-            (acc, [type, uri, rating]) => (type === "playlist" && rating ? (acc[rating] = uri) : [], acc),
-        ),
+        a.map(p => [p.uri, Number(p.name!)] as [SpotifyURI, number]),
+        a.reduce([] as SpotifyURI[], (uris, [uri, rating]) => ((uris[rating] = uri), uris)),
     )
+
+    console.log(playlistUris)
+
+    debugger
 
     // @ts-ignore
     globalThis.tracksRatings = tracksRatings = await p(

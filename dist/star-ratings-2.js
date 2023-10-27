@@ -13529,7 +13529,9 @@ var init_ratings = __esm(() => {
   init_settings2();
   loadRatings = async () => {
     const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri);
-    playlistUris = pipe(ratingsFolder.items, exports_Array.map((p) => [p.type, p.uri, Number(p.name)]), exports_Array.reduce([], (acc, [type, uri, rating]) => (type === "playlist" && rating ? acc[rating] = uri : [], acc)));
+    playlistUris = pipe(ratingsFolder.items, exports_Array.map((p) => [p.uri, Number(p.name)]), exports_Array.reduce([], (uris, [uri, rating]) => (uris[rating] = uri, uris)));
+    console.log(playlistUris);
+    debugger;
     globalThis.tracksRatings = tracksRatings = await pipe(playlistUris, exports_Array.map(fetchPlatPlaylistContents), (ps) => Promise.all(ps), pMchain(exports_Array.map((tracks) => tracks ?? [])), pMchain(exports_Array.map(exports_Array.map((t) => t.uri))), pMchain(exports_Array.flatMap((trackUris, rating) => trackUris.map((trackUri) => [trackUri, rating]))), pMchain(exports_Array.reduce({}, (acc, [trackUri, rating]) => Object.assign(acc, {
       [trackUri]: Math.max(rating, acc[trackUri] ?? 0)
     }))));
