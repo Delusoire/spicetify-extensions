@@ -7578,10 +7578,8 @@ var init_app = __esm(() => {
       content: div,
       interactive: true,
       animateFill: false,
-      offset: [0, 7],
       placement: "left",
       animation: "fade",
-      trigger: "mouseenter focus",
       zIndex: 1e4,
       delay: [200, 0],
       render(instance) {

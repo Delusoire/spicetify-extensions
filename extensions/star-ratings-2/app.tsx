@@ -50,10 +50,10 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
         content: div,
         interactive: true,
         animateFill: false,
-        offset: [0, 7],
+        //offset: [0, 7],
         placement: "left",
         animation: "fade",
-        trigger: "mouseenter focus",
+        //trigger: "mouseenter focus",
         zIndex: 10000,
         delay: [200, 0],
         render(instance: any) {
