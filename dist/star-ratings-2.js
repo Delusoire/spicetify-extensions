@@ -7593,14 +7593,14 @@ var init_app = __esm(() => {
       },
       onShow(instance) {
         instance.popper.firstChild.classList.add("main-contextMenu-tippyEnter");
-        const children = instance.reference.parentElement.children;
-        const element = children.item(children.length - 2);
-        element.style.marginRight = "0px";
       },
       onMount(instance) {
         requestAnimationFrame(() => {
           instance.popper.firstChild.classList.remove("main-contextMenu-tippyEnter");
           instance.popper.firstChild.classList.add("main-contextMenu-tippyEnterActive");
+          const children = instance.reference.parentElement.children;
+          const element = children.item(children.length - 2);
+          element.style.marginRight = "0px";
         });
       },
       onHide(instance) {
