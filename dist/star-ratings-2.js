@@ -7607,8 +7607,8 @@ var init_app = __esm(() => {
       },
       onHide(instance) {
         requestAnimationFrame(() => {
-          instance.popper.firstChild.classList.remove("main-contextMenu-tippyEnter");
-          instance.popper.firstChild.classList.add("main-contextMenu-tippyEnterActive");
+          instance.popper.firstChild.classList.remove("main-contextMenu-tippyEnterActive");
+          instance.unmount();
           const children = instance.reference.parentElement.children;
           const element = children.item(children.length - 2);
           element.style.marginRight = "unset";

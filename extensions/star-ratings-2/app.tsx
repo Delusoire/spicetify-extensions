@@ -83,8 +83,8 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
         },
         onHide(instance: any) {
             requestAnimationFrame(() => {
-                instance.popper.firstChild.classList.remove("main-contextMenu-tippyEnter")
-                instance.popper.firstChild.classList.add("main-contextMenu-tippyEnterActive")
+                instance.popper.firstChild.classList.remove("main-contextMenu-tippyEnterActive")
+                instance.unmount()
 
                 const children = (instance.reference.parentElement as HTMLDivElement).children
                 const element = children.item(children.length - 2) as HTMLButtonElement
