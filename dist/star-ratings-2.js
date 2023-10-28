@@ -7503,11 +7503,11 @@ var init_util2 = __esm(() => {
 // /home/delusoire/dev/spicetify-extensions/extensions/star-ratings-2/assets/styles.scss
 var init_styles = __esm(() => {
   (async () => {
-    const id = "6llbIQb5F1nCYOd_rbhkc02PHZDmzF7fdok0_Ih97Wk";
+    const id = "1u0KV9CPcLowADYW4FCC8nU3gNe8VYBqcvKEj1bgfjg";
     if (!document.getElementById(id)) {
       const el = document.createElement("style");
       el.id = id;
-      el.textContent = "svg.rating-1 {\n  fill: #ed5564 !important;\n}\n\nsvg.rating-2 {\n  fill: #ffce54 !important;\n}\n\nsvg.rating-3 {\n  fill: #a0d568 !important;\n}\n\nsvg.rating-4 {\n  fill: #4fc1e8 !important;\n}\n\nsvg.rating-5 {\n  fill: #ac92eb !important;\n}";
+      el.textContent = "svg.rating-1 {\n  fill: #ed5564 !important;\n}\n\nsvg.rating-2 {\n  fill: #ffce54 !important;\n}\n\nsvg.rating-3 {\n  fill: #a0d568 !important;\n}\n\nsvg.rating-4 {\n  fill: #4fc1e8 !important;\n}\n\nsvg.rating-5 {\n  fill: #ac92eb !important;\n}\n\n[dir=ltr] .main-trackList-rowSectionEnd > :nth-last-child(2) {\n  margin-right: 0px;\n}";
       document.head.appendChild(el);
     }
   })();
@@ -7563,10 +7563,12 @@ var init_app = __esm(() => {
     const svg = btn.querySelector("svg");
     svg.style.fill = colorByRating[rating];
   };
-  wrapDropdownInsidePlaylistButton = (pb, uri) => {
-    if (pb.hasAttribute("dropdown-enabled"))
-      return;
-    pb.setAttribute("dropdown-enabled", "");
+  wrapDropdownInsidePlaylistButton = (pb, uri, forced = false) => {
+    if (pb.hasAttribute("dropdown-enabled")) {
+      if (!forced)
+        return;
+    } else
+      pb.setAttribute("dropdown-enabled", "");
     const div = document.createElement("div");
     pb.appendChild(div);
     import_react_dom2.default.render(import_react3.default.createElement(Dropdown, {
@@ -7598,7 +7600,7 @@ var init_app = __esm(() => {
     const pb = getPlaylistButton(npb);
     colorizePlaylistButton(pb, tracksRatings[newTrack]);
     if (updateDropdown)
-      wrapDropdownInsidePlaylistButton(pb, newTrack);
+      wrapDropdownInsidePlaylistButton(pb, newTrack, true);
   };
   updateTrackListControls = (updateDropdown = true) => {
     const trackLists = getTrackLists();

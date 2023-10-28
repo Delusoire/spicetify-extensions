@@ -23,3 +23,7 @@ svg.rating-4 {
 svg.rating-5 {
     fill: #ac92eb !important;
 }
+
+[dir="ltr"] .main-trackList-rowSectionEnd > :nth-last-child(2) {
+    margin-right: 0px;
+}

@@ -38,9 +38,10 @@ const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
     svg.style.fill = colorByRating[rating] as string
 }
 
-const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI) => {
-    if (pb.hasAttribute("dropdown-enabled")) return
-    pb.setAttribute("dropdown-enabled", "")
+const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI, forced = false) => {
+    if (pb.hasAttribute("dropdown-enabled")) {
+        if (!forced) return
+    } else pb.setAttribute("dropdown-enabled", "")
 
     const div = document.createElement("div")
     pb.appendChild(div)
@@ -74,7 +75,7 @@ export const updateNowPlayingControls = (newTrack: SpotifyURI, updateDropdown = 
     const npb = getNowPlayingBar()
     const pb = getPlaylistButton(npb)
     colorizePlaylistButton(pb, tracksRatings[newTrack])
-    if (updateDropdown) wrapDropdownInsidePlaylistButton(pb, newTrack)
+    if (updateDropdown) wrapDropdownInsidePlaylistButton(pb, newTrack, true)
 }
 
 export const updateTrackListControls = (updateDropdown = true) => {
