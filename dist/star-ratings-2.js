@@ -7594,7 +7594,7 @@ var init_app = __esm(() => {
       onShow(instance) {
         instance.popper.firstChild.classList.add("main-contextMenu-tippyEnter");
         const children = instance.reference.parentElement.children;
-        const element = children.item(children.length - 2);
+        const element = children.item(children.length - 1);
         element.style.marginRight = "0px";
       },
       onMount(instance) {

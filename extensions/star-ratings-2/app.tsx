@@ -72,7 +72,7 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
             instance.popper.firstChild.classList.add("main-contextMenu-tippyEnter")
 
             const children = (instance.reference.parentElement as HTMLDivElement).children
-            const element = children.item(children.length - 2) as HTMLButtonElement
+            const element = children.item(children.length - 1) as HTMLButtonElement
             element.style.marginRight = "0px"
         },
         onMount(instance: any) {
