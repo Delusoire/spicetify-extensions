@@ -47,7 +47,6 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
     pb.appendChild(div)
     ReactDOM.render(<Dropdown uri={uri} />, div)
     Spicetify.Tippy(pb, {
-        ...Spicetify.TippyProps,
         content: div,
         interactive: true,
         animateFill: false,
@@ -56,6 +55,7 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
         animation: "fade",
         trigger: "mouseenter focus",
         zIndex: 10000,
+        delay: [200, 0],
         render(instance: any) {
             const popper = document.createElement("div")
             const box = document.createElement("div")
@@ -67,6 +67,29 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
             box.appendChild(instance.props.content)
 
             return { popper, onUpdate: constVoid }
+        },
+        onShow(instance: any) {
+            instance.popper.firstChild.classList.add("main-contextMenu-tippyEnter")
+        },
+        onMount(instance: any) {
+            requestAnimationFrame(() => {
+                instance.popper.firstChild.classList.remove("main-contextMenu-tippyEnter")
+                instance.popper.firstChild.classList.add("main-contextMenu-tippyEnterActive")
+
+                const children = (instance.reference.parentElement as HTMLDivElement).children
+                const element = children.item(children.length - 2) as HTMLButtonElement
+                element.style.marginRight = "0px"
+            })
+        },
+        onHide(instance: any) {
+            requestAnimationFrame(() => {
+                instance.popper.firstChild.classList.remove("main-contextMenu-tippyEnter")
+                instance.popper.firstChild.classList.add("main-contextMenu-tippyEnterActive")
+
+                const children = (instance.reference.parentElement as HTMLDivElement).children
+                const element = children.item(children.length - 2) as HTMLButtonElement
+                element.style.marginRight = "unset"
+            })
         },
     })
 }
