@@ -7555,11 +7555,11 @@ var init_app = __esm(() => {
   debugger;
   ({ URI: URI7 } = Spicetify);
   loadRatings();
-  colorByRating = [undefined, "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"];
+  colorByRating = ["unset", "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"];
   colorizePlaylistButton = (btn, rating) => {
     if (btn.style.fill === colorByRating[rating])
       return;
-    btn.style.opacity = rating > 0 ? "1" : undefined;
+    btn.style.opacity = rating > 0 ? "1" : "unset";
     const svg = btn.querySelector("svg");
     svg.style.fill = colorByRating[rating];
   };

@@ -28,14 +28,14 @@ const { URI } = Spicetify
 
 loadRatings()
 
-const colorByRating = [undefined, "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
+const colorByRating = ["unset", "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
 
 const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
     if (btn.style.fill === colorByRating[rating]) return
 
-    btn.style.opacity = rating > 0 ? "1" : (undefined as unknown as string)
+    btn.style.opacity = rating > 0 ? "1" : "unset"
     const svg = btn.querySelector<SVGElement>("svg")!
-    svg.style.fill = colorByRating[rating] as string
+    svg.style.fill = colorByRating[rating]
 }
 
 const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI, forced = false) => {
