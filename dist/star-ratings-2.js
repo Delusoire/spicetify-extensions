@@ -7607,11 +7607,11 @@ var init_app = __esm(() => {
       },
       onHide(instance) {
         requestAnimationFrame(() => {
-          instance.popper.firstChild.classList.remove("main-contextMenu-tippyEnterActive");
-          instance.unmount();
           const children = instance.reference.parentElement.children;
           const element = children.item(children.length - 2);
           element.style.marginRight = "unset";
+          instance.popper.firstChild.classList.remove("main-contextMenu-tippyEnterActive");
+          instance.unmount();
         });
       }
     });
