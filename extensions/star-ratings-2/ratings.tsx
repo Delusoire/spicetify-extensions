@@ -10,8 +10,8 @@ import {
 } from "../../shared/api"
 import { pMchain } from "../../shared/fp"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util"
+import { updateNowPlayingControls, updateTrackListControls } from "./controls"
 import { CONFIG } from "./settings"
-import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./app"
 
 export const loadRatings = async () => {
     const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri)
