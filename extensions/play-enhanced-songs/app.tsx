@@ -1,5 +1,3 @@
-export default {}
-
 import { anyPass } from "fp-ts-std/Predicate"
 import { tupled } from "fp-ts/function"
 import { fetchPlatPlaylistEnhancedSongs } from "../../shared/api"

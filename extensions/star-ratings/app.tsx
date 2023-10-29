@@ -1,5 +1,3 @@
-export default {}
-
 import { array as a } from "fp-ts"
 import { anyPass } from "fp-ts-std/Predicate"
 import { flow as f, identity, pipe as p } from "fp-ts/function"

@@ -131,7 +131,7 @@ function pipe(a, ab, bc, cd, de, ef, fg, gh, hi) {
     }
   }
 }
-var __spreadArray, getSemigroup, getMonoid, apply, constNull, constUndefined, constVoid, dual;
+var __spreadArray, getSemigroup, getMonoid, apply, constUndefined, constVoid, dual;
 var init_function = __esm(() => {
   __spreadArray = function(to, from, pack) {
     if (pack || arguments.length === 2)
@@ -171,7 +171,6 @@ var init_function = __esm(() => {
       return f(a);
     };
   };
-  constNull = constant(null);
   constUndefined = constant(undefined);
   constVoid = constUndefined;
   dual = function(arity, body) {
@@ -191,7 +190,7 @@ var init_function = __esm(() => {
 });
 
 // node_modules/fp-ts/es6/internal.js
-var __spreadArray2, isNone, isSome, none, some, isLeft, singleton, isNonEmpty, head, tail, emptyReadonlyArray, emptyRecord, has, fromReadonlyNonEmptyArray, flatMapIO;
+var __spreadArray2, isNone, isSome, none, some, isLeft, singleton, isNonEmpty, head, tail, emptyReadonlyArray, emptyRecord, fromReadonlyNonEmptyArray, flatMapIO;
 var init_internal = __esm(() => {
   init_function();
   __spreadArray2 = function(to, from, pack) {
@@ -232,7 +231,6 @@ var init_internal = __esm(() => {
   };
   emptyReadonlyArray = [];
   emptyRecord = {};
-  has = Object.prototype.hasOwnProperty;
   fromReadonlyNonEmptyArray = function(as) {
     return __spreadArray2([as[0]], as.slice(1), true);
   };
@@ -394,14 +392,6 @@ var init_Chain = __esm(() => {
 function fromEitherK(F) {
   return function(f) {
     return flow(f, F.fromEither);
-  };
-}
-function chainEitherK(F, M) {
-  var fromEitherKF = fromEitherK(F);
-  return function(f) {
-    return function(ma) {
-      return M.chain(ma, fromEitherKF(f));
-    };
   };
 }
 function tapEither(F, M) {
@@ -649,7 +639,7 @@ var init_Magma = __esm(() => {
 });
 
 // node_modules/fp-ts/es6/Semigroup.js
-var constant2, first, last, concatAll2, semigroupVoid, semigroupAll, semigroupAny, semigroupString, semigroupSum, semigroupProduct;
+var constant2, first, concatAll2, semigroupVoid, semigroupAll, semigroupAny, semigroupString, semigroupSum, semigroupProduct;
 var init_Semigroup = __esm(() => {
   init_function();
   init_Magma();
@@ -662,11 +652,6 @@ var init_Semigroup = __esm(() => {
   };
   first = function() {
     return { concat: identity };
-  };
-  last = function() {
-    return { concat: function(_, y) {
-      return y;
-    } };
   };
   concatAll2 = concatAll;
   semigroupVoid = constant2(undefined);
@@ -698,7 +683,7 @@ var init_Semigroup = __esm(() => {
 });
 
 // node_modules/fp-ts/es6/ReadonlyNonEmptyArray.js
-var __spreadArray3, isNonEmpty2, isOutOfBound, prependW, prepend, prependAll, intersperse, extract, head2, tail2, last2, concatAll3, intercalate;
+var __spreadArray3, isNonEmpty2, isOutOfBound, prependW, prepend, prependAll, intersperse, extract, head2, tail2, last, concatAll3, intercalate;
 var init_ReadonlyNonEmptyArray = __esm(() => {
   init_function();
   init_internal();
@@ -741,7 +726,7 @@ var init_ReadonlyNonEmptyArray = __esm(() => {
   extract = head;
   head2 = extract;
   tail2 = tail;
-  last2 = function(as2) {
+  last = function(as2) {
     return as2[as2.length - 1];
   };
   concatAll3 = function(S) {
@@ -766,7 +751,7 @@ function concat(x, y) {
 function cons(head3, tail3) {
   return tail3 === undefined ? prepend2(head3) : pipe(tail3, prepend2(head3));
 }
-var __spreadArray4, isNonEmpty3, isOutOfBound2, prependW2, prepend2, appendW, append, unsafeInsertAt, unsafeUpdateAt, uniq, sortBy, union, rotate, fromReadonlyNonEmptyArray2, makeBy, range, sort, copy, of, prependAll2, intersperse2, chop, splitAt, chunksOf, head3, tail3, last3, init, snoc;
+var __spreadArray4, isNonEmpty3, isOutOfBound2, prependW2, prepend2, appendW, append, unsafeInsertAt, unsafeUpdateAt, uniq, sortBy, union, rotate, fromReadonlyNonEmptyArray2, makeBy, range, sort, copy, of, prependAll2, intersperse2, chop, splitAt, chunksOf, head3, tail3, last2, init, snoc;
 var init_NonEmptyArray = __esm(() => {
   init_function();
   init_internal();
@@ -931,7 +916,7 @@ var init_NonEmptyArray = __esm(() => {
   tail3 = function(as2) {
     return as2.slice(1);
   };
-  last3 = last2;
+  last2 = last;
   init = function(as2) {
     return as2.slice(0, -1);
   };
@@ -1104,7 +1089,7 @@ function every(predicate) {
     return as2.every(predicate);
   };
 }
-var __spreadArray5, isNonEmpty4, matchW, match, isOutOfBound3, head4, last4, findIndex, findFirstMap, findLastMap, findLastIndex, _chainRecDepthFirst, _chainRecBreadthFirst, foldMapWithIndex2, reduce2, foldMap2, reduceWithIndex2, reduceRight2, reduceRightWithIndex2, getShow2, getEq2, getOrd, chainRecDepthFirst, chainRecBreadthFirst, intercalate2;
+var __spreadArray5, isNonEmpty4, matchW, match, isOutOfBound3, head4, last3, findIndex, findFirstMap, findLastMap, findLastIndex, _chainRecDepthFirst, _chainRecBreadthFirst, foldMapWithIndex2, reduce2, foldMap2, reduceWithIndex2, reduceRight2, reduceRightWithIndex2, getShow2, getEq2, getOrd, chainRecDepthFirst, chainRecBreadthFirst, intercalate2;
 var init_ReadonlyArray = __esm(() => {
   init_Eq();
   init_function();
@@ -1134,8 +1119,8 @@ var init_ReadonlyArray = __esm(() => {
   head4 = function(as2) {
     return isNonEmpty4(as2) ? some(head2(as2)) : none;
   };
-  last4 = function(as2) {
-    return isNonEmpty4(as2) ? some(last2(as2)) : none;
+  last3 = function(as2) {
+    return isNonEmpty4(as2) ? some(last(as2)) : none;
   };
   findIndex = function(predicate) {
     return function(as2) {
@@ -1616,7 +1601,7 @@ __export(exports_Array, {
   },
   last: () => {
     {
-      return last5;
+      return last4;
     }
   },
   isOutOfBound: () => {
@@ -2228,7 +2213,7 @@ function difference(E) {
     });
   };
 }
-var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last5, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt, updateAt, deleteAt, modifyAt, reverse2, rights, lefts, sort2, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI2, getShow3, getSemigroup4, getMonoid4, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor2, flap2, Pointed, FunctorWithIndex, Apply3, apFirst2, apSecond2, Applicative, Chain3, chainFirst2, Monad, Unfoldable, Alt, Zero2, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable2, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither2, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty3, cons3, snoc3, prependToAll, array;
+var isEmpty, isNonEmpty5, prepend3, prependW3, append3, appendW3, makeBy3, replicate, fromOption, fromEither, matchW2, match2, matchLeftW, matchLeft, foldLeft, matchRightW, matchRight, foldRight, chainWithIndex, scanLeft, scanRight, size, isOutOfBound4, lookup2, head5, last4, tail4, init3, takeLeft, takeRight, spanLeftIndex, dropLeft, dropRight, findIndex2, findFirstMap2, findLastMap2, findLastIndex2, copy2, insertAt, updateAt, deleteAt, modifyAt, reverse2, rights, lefts, sort2, zipWith, unzip, prependAll3, intersperse3, rotate3, elem2, uniq3, sortBy3, chop3, splitAt3, chunksOf3, fromOptionK, concatW, concat2, _map, _mapWithIndex, _ap, _filter, _filterMap, _partition, _partitionMap, _partitionWithIndex, _partitionMapWithIndex, _alt, _reduce, _foldMap, _reduceRight, _reduceWithIndex, _foldMapWithIndex, _reduceRightWithIndex, _filterMapWithIndex, _filterWithIndex, _extend, _traverse, _traverseWithIndex, _chainRecDepthFirst2, _chainRecBreadthFirst2, of3, zero, map, ap2, flatMap, flatten, mapWithIndex, filterMapWithIndex, filterMap, compact, separate, filter, partition, partitionWithIndex, partitionMap, partitionMapWithIndex, altW, alt, filterWithIndex, extend, duplicate, foldMap3, foldMapWithIndex3, reduce3, reduceWithIndex3, reduceRight3, reduceRightWithIndex3, traverse, sequence, traverseWithIndex, wither, wilt, unfold, URI2, getShow3, getSemigroup4, getMonoid4, getEq3, getOrd2, getUnionSemigroup, getUnionMonoid, getIntersectionSemigroup, getDifferenceMagma, Functor2, flap2, Pointed, FunctorWithIndex, Apply3, apFirst2, apSecond2, Applicative, Chain3, chainFirst2, Monad, Unfoldable, Alt, Zero2, guard2, Alternative, Extend, Compactable, Filterable, FilterableWithIndex, Foldable, FoldableWithIndex, Traversable, TraversableWithIndex, _wither, _wilt, Witherable2, chainRecDepthFirst2, ChainRecDepthFirst, chainRecBreadthFirst2, ChainRecBreadthFirst, filterE2, FromEither2, fromEitherK2, unsafeInsertAt3, unsafeUpdateAt3, unsafeDeleteAt, every2, some2, exists, intercalate3, Do, bindTo2, let_2, bind2, apS2, chain, range3, empty3, cons3, snoc3, prependToAll, array;
 var init_Array = __esm(() => {
   init_Apply();
   init_Chain();
@@ -2278,7 +2263,7 @@ var init_Array = __esm(() => {
   foldLeft = matchLeft;
   matchRightW = function(onEmpty, onNonEmpty) {
     return function(as2) {
-      return isNonEmpty5(as2) ? onNonEmpty(init(as2), last3(as2)) : onEmpty();
+      return isNonEmpty5(as2) ? onNonEmpty(init(as2), last2(as2)) : onEmpty();
     };
   };
   matchRight = matchRightW;
@@ -2320,7 +2305,7 @@ var init_Array = __esm(() => {
   isOutOfBound4 = isOutOfBound2;
   lookup2 = lookup;
   head5 = head4;
-  last5 = last4;
+  last4 = last3;
   tail4 = function(as2) {
     return isNonEmpty5(as2) ? some(tail3(as2)) : none;
   };
@@ -3060,554 +3045,20 @@ var init_Predicate = __esm(() => {
 });
 
 // node_modules/fp-ts/es6/Option.js
-var exports_Option = {};
-__export(exports_Option, {
-  zero: () => {
-    {
-      return zero2;
-    }
-  },
-  wither: () => {
-    {
-      return wither2;
-    }
-  },
-  wilt: () => {
-    {
-      return wilt2;
-    }
-  },
-  tryCatchK: () => {
-    {
-      return tryCatchK;
-    }
-  },
-  tryCatch: () => {
-    {
-      return tryCatch;
-    }
-  },
-  traverseReadonlyNonEmptyArrayWithIndex: () => {
-    {
-      return traverseReadonlyNonEmptyArrayWithIndex;
-    }
-  },
-  traverseReadonlyArrayWithIndex: () => {
-    {
-      return traverseReadonlyArrayWithIndex;
-    }
-  },
-  traverseArrayWithIndex: () => {
-    {
-      return traverseArrayWithIndex;
-    }
-  },
-  traverseArray: () => {
-    {
-      return traverseArray;
-    }
-  },
-  traverse: () => {
-    {
-      return traverse2;
-    }
-  },
-  toUndefined: () => {
-    {
-      return toUndefined;
-    }
-  },
-  toNullable: () => {
-    {
-      return toNullable;
-    }
-  },
-  throwError: () => {
-    {
-      return throwError;
-    }
-  },
-  tapEither: () => {
-    {
-      return tapEither2;
-    }
-  },
-  tap: () => {
-    {
-      return tap2;
-    }
-  },
-  some: () => {
-    {
-      return some3;
-    }
-  },
-  sequenceArray: () => {
-    {
-      return sequenceArray;
-    }
-  },
-  sequence: () => {
-    {
-      return sequence2;
-    }
-  },
-  separate: () => {
-    {
-      return separate2;
-    }
-  },
-  reduceRight: () => {
-    {
-      return reduceRight4;
-    }
-  },
-  reduce: () => {
-    {
-      return reduce4;
-    }
-  },
-  partitionMap: () => {
-    {
-      return partitionMap2;
-    }
-  },
-  partition: () => {
-    {
-      return partition2;
-    }
-  },
-  orElse: () => {
-    {
-      return orElse;
-    }
-  },
-  option: () => {
-    {
-      return option;
-    }
-  },
-  of: () => {
-    {
-      return of4;
-    }
-  },
-  none: () => {
-    {
-      return none2;
-    }
-  },
-  matchW: () => {
-    {
-      return matchW3;
-    }
-  },
-  match: () => {
-    {
-      return match3;
-    }
-  },
-  mapNullable: () => {
-    {
-      return mapNullable;
-    }
-  },
-  map: () => {
-    {
-      return map2;
-    }
-  },
-  let: () => {
-    {
-      return let_3;
-    }
-  },
-  isSome: () => {
-    {
-      return isSome2;
-    }
-  },
-  isNone: () => {
-    {
-      return isNone2;
-    }
-  },
-  guard: () => {
-    {
-      return guard3;
-    }
-  },
-  getShow: () => {
-    {
-      return getShow4;
-    }
-  },
-  getRight: () => {
-    {
-      return getRight;
-    }
-  },
-  getRefinement: () => {
-    {
-      return getRefinement;
-    }
-  },
-  getOrd: () => {
-    {
-      return getOrd3;
-    }
-  },
-  getOrElseW: () => {
-    {
-      return getOrElseW;
-    }
-  },
-  getOrElse: () => {
-    {
-      return getOrElse;
-    }
-  },
-  getMonoid: () => {
-    {
-      return getMonoid5;
-    }
-  },
-  getLeft: () => {
-    {
-      return getLeft;
-    }
-  },
-  getLastMonoid: () => {
-    {
-      return getLastMonoid;
-    }
-  },
-  getFirstMonoid: () => {
-    {
-      return getFirstMonoid;
-    }
-  },
-  getEq: () => {
-    {
-      return getEq4;
-    }
-  },
-  getApplySemigroup: () => {
-    {
-      return getApplySemigroup2;
-    }
-  },
-  getApplyMonoid: () => {
-    {
-      return getApplyMonoid;
-    }
-  },
-  fromPredicate: () => {
-    {
-      return fromPredicate2;
-    }
-  },
-  fromNullableK: () => {
-    {
-      return fromNullableK;
-    }
-  },
-  fromNullable: () => {
-    {
-      return fromNullable;
-    }
-  },
-  fromEitherK: () => {
-    {
-      return fromEitherK3;
-    }
-  },
-  fromEither: () => {
-    {
-      return fromEither2;
-    }
-  },
-  foldW: () => {
-    {
-      return foldW;
-    }
-  },
-  foldMap: () => {
-    {
-      return foldMap4;
-    }
-  },
-  fold: () => {
-    {
-      return fold;
-    }
-  },
-  flatten: () => {
-    {
-      return flatten2;
-    }
-  },
-  flatMap: () => {
-    {
-      return flatMap2;
-    }
-  },
-  flap: () => {
-    {
-      return flap3;
-    }
-  },
-  filterMap: () => {
-    {
-      return filterMap2;
-    }
-  },
-  filter: () => {
-    {
-      return filter2;
-    }
-  },
-  extend: () => {
-    {
-      return extend2;
-    }
-  },
-  exists: () => {
-    {
-      return exists2;
-    }
-  },
-  elem: () => {
-    {
-      return elem3;
-    }
-  },
-  duplicate: () => {
-    {
-      return duplicate2;
-    }
-  },
-  compact: () => {
-    {
-      return compact2;
-    }
-  },
-  chainNullableK: () => {
-    {
-      return chainNullableK;
-    }
-  },
-  chainFirstEitherK: () => {
-    {
-      return chainFirstEitherK;
-    }
-  },
-  chainFirst: () => {
-    {
-      return chainFirst3;
-    }
-  },
-  chainEitherK: () => {
-    {
-      return chainEitherK2;
-    }
-  },
-  chain: () => {
-    {
-      return chain2;
-    }
-  },
-  bindTo: () => {
-    {
-      return bindTo3;
-    }
-  },
-  bind: () => {
-    {
-      return bind3;
-    }
-  },
-  asUnit: () => {
-    {
-      return asUnit2;
-    }
-  },
-  as: () => {
-    {
-      return as2;
-    }
-  },
-  apSecond: () => {
-    {
-      return apSecond3;
-    }
-  },
-  apS: () => {
-    {
-      return apS3;
-    }
-  },
-  apFirst: () => {
-    {
-      return apFirst3;
-    }
-  },
-  ap: () => {
-    {
-      return ap3;
-    }
-  },
-  altW: () => {
-    {
-      return altW2;
-    }
-  },
-  alt: () => {
-    {
-      return alt2;
-    }
-  },
-  Zero: () => {
-    {
-      return Zero4;
-    }
-  },
-  Witherable: () => {
-    {
-      return Witherable4;
-    }
-  },
-  URI: () => {
-    {
-      return URI3;
-    }
-  },
-  Traversable: () => {
-    {
-      return Traversable2;
-    }
-  },
-  Pointed: () => {
-    {
-      return Pointed2;
-    }
-  },
-  MonadThrow: () => {
-    {
-      return MonadThrow;
-    }
-  },
-  Monad: () => {
-    {
-      return Monad2;
-    }
-  },
-  Functor: () => {
-    {
-      return Functor4;
-    }
-  },
-  FromEither: () => {
-    {
-      return FromEither4;
-    }
-  },
-  Foldable: () => {
-    {
-      return Foldable2;
-    }
-  },
-  Filterable: () => {
-    {
-      return Filterable2;
-    }
-  },
-  Extend: () => {
-    {
-      return Extend2;
-    }
-  },
-  Do: () => {
-    {
-      return Do2;
-    }
-  },
-  Compactable: () => {
-    {
-      return Compactable2;
-    }
-  },
-  Chain: () => {
-    {
-      return Chain4;
-    }
-  },
-  Apply: () => {
-    {
-      return Apply5;
-    }
-  },
-  Applicative: () => {
-    {
-      return Applicative3;
-    }
-  },
-  ApT: () => {
-    {
-      return ApT;
-    }
-  },
-  Alternative: () => {
-    {
-      return Alternative2;
-    }
-  },
-  Alt: () => {
-    {
-      return Alt2;
-    }
-  }
-});
 function fromPredicate2(predicate) {
   return function(a) {
     return predicate(a) ? some3(a) : none2;
   };
 }
-function elem3(E) {
-  return function(a, ma) {
-    if (ma === undefined) {
-      var elemE_1 = elem3(E);
-      return function(ma2) {
-        return elemE_1(a, ma2);
-      };
-    }
-    return isNone2(ma) ? false : E.equals(a, ma.value);
-  };
-}
-function getRefinement(getOption) {
-  return function(a) {
-    return isSome2(getOption(a));
-  };
-}
-var none2, some3, getLeft, getRight, _map2, _ap2, _reduce2, _foldMap2, _reduceRight2, _traverse2, _alt2, _filter2, _filterMap2, _extend2, _partition2, _partitionMap2, URI3, getShow4, getEq4, getOrd3, getMonoid5, map2, Functor4, as2, asUnit2, of4, Pointed2, ap3, Apply5, Applicative3, flatMap2, Chain4, Monad2, reduce4, foldMap4, reduceRight4, Foldable2, orElse, altW2, alt2, Alt2, zero2, Zero4, guard3, Alternative2, extend2, Extend2, compact2, defaultSeparated, separate2, Compactable2, filter2, filterMap2, partition2, partitionMap2, Filterable2, traverse2, sequence2, Traversable2, _wither2, _wilt2, wither2, wilt2, Witherable4, throwError, MonadThrow, fromEither2, FromEither4, isSome2, isNone2, matchW3, foldW, match3, fold, getOrElseW, getOrElse, flap3, apFirst3, apSecond3, flatten2, tap2, tapEither2, duplicate2, fromEitherK3, chainEitherK2, chainFirstEitherK, fromNullable, tryCatch, tryCatchK, fromNullableK, chainNullableK, toNullable, toUndefined, exists2, Do2, bindTo3, let_3, bind3, apS3, ApT, traverseReadonlyNonEmptyArrayWithIndex, traverseReadonlyArrayWithIndex, traverseArrayWithIndex, traverseArray, sequenceArray, chain2, chainFirst3, mapNullable, option, getApplySemigroup2, getApplyMonoid, getFirstMonoid, getLastMonoid;
+var none2, some3, getRight, _map2, _ap2, URI3, getMonoid5, map2, Functor4, as2, asUnit2, ap3, flatMap2, Chain4, orElse, fromEither2, FromEither4, isSome2, isNone2, getOrElseW, getOrElse, tap2, tapEither2;
 var init_Option = __esm(() => {
-  init_Applicative();
-  init_Apply();
   init_Chain();
   init_FromEither();
   init_function();
   init_Functor();
   init_internal();
-  init_Predicate();
-  init_Semigroup();
-  init_Separated();
-  init_Witherable();
-  init_Zero();
   none2 = none;
   some3 = some;
-  getLeft = function(ma) {
-    return ma._tag === "Right" ? none2 : some3(ma.left);
-  };
   getRight = function(ma) {
     return ma._tag === "Left" ? none2 : some3(ma.right);
   };
@@ -3617,65 +3068,7 @@ var init_Option = __esm(() => {
   _ap2 = function(fab, fa) {
     return pipe(fab, ap3(fa));
   };
-  _reduce2 = function(fa, b, f) {
-    return pipe(fa, reduce4(b, f));
-  };
-  _foldMap2 = function(M) {
-    var foldMapM = foldMap4(M);
-    return function(fa, f) {
-      return pipe(fa, foldMapM(f));
-    };
-  };
-  _reduceRight2 = function(fa, b, f) {
-    return pipe(fa, reduceRight4(b, f));
-  };
-  _traverse2 = function(F) {
-    var traverseF = traverse2(F);
-    return function(ta, f) {
-      return pipe(ta, traverseF(f));
-    };
-  };
-  _alt2 = function(fa, that) {
-    return pipe(fa, alt2(that));
-  };
-  _filter2 = function(fa, predicate) {
-    return pipe(fa, filter2(predicate));
-  };
-  _filterMap2 = function(fa, f) {
-    return pipe(fa, filterMap2(f));
-  };
-  _extend2 = function(wa, f) {
-    return pipe(wa, extend2(f));
-  };
-  _partition2 = function(fa, predicate) {
-    return pipe(fa, partition2(predicate));
-  };
-  _partitionMap2 = function(fa, f) {
-    return pipe(fa, partitionMap2(f));
-  };
   URI3 = "Option";
-  getShow4 = function(S) {
-    return {
-      show: function(ma) {
-        return isNone2(ma) ? "none" : "some(".concat(S.show(ma.value), ")");
-      }
-    };
-  };
-  getEq4 = function(E) {
-    return {
-      equals: function(x, y) {
-        return x === y || (isNone2(x) ? isNone2(y) : isNone2(y) ? false : E.equals(x.value, y.value));
-      }
-    };
-  };
-  getOrd3 = function(O) {
-    return {
-      equals: getEq4(O).equals,
-      compare: function(x, y) {
-        return x === y ? 0 : isSome2(x) ? isSome2(y) ? O.compare(x.value, y.value) : 1 : -1;
-      }
-    };
-  };
   getMonoid5 = function(S) {
     return {
       concat: function(x, y) {
@@ -3695,26 +3088,10 @@ var init_Option = __esm(() => {
   };
   as2 = dual(2, as(Functor4));
   asUnit2 = asUnit(Functor4);
-  of4 = some3;
-  Pointed2 = {
-    URI: URI3,
-    of: of4
-  };
   ap3 = function(fa) {
     return function(fab) {
       return isNone2(fab) ? none2 : isNone2(fa) ? none2 : some3(fab.value(fa.value));
     };
-  };
-  Apply5 = {
-    URI: URI3,
-    map: _map2,
-    ap: _ap2
-  };
-  Applicative3 = {
-    URI: URI3,
-    map: _map2,
-    ap: _ap2,
-    of: of4
   };
   flatMap2 = dual(2, function(ma, f) {
     return isNone2(ma) ? none2 : f(ma.value);
@@ -3725,177 +3102,9 @@ var init_Option = __esm(() => {
     ap: _ap2,
     chain: flatMap2
   };
-  Monad2 = {
-    URI: URI3,
-    map: _map2,
-    ap: _ap2,
-    of: of4,
-    chain: flatMap2
-  };
-  reduce4 = function(b, f) {
-    return function(fa) {
-      return isNone2(fa) ? b : f(b, fa.value);
-    };
-  };
-  foldMap4 = function(M) {
-    return function(f) {
-      return function(fa) {
-        return isNone2(fa) ? M.empty : f(fa.value);
-      };
-    };
-  };
-  reduceRight4 = function(b, f) {
-    return function(fa) {
-      return isNone2(fa) ? b : f(fa.value, b);
-    };
-  };
-  Foldable2 = {
-    URI: URI3,
-    reduce: _reduce2,
-    foldMap: _foldMap2,
-    reduceRight: _reduceRight2
-  };
   orElse = dual(2, function(self, that) {
     return isNone2(self) ? that() : self;
   });
-  altW2 = orElse;
-  alt2 = orElse;
-  Alt2 = {
-    URI: URI3,
-    map: _map2,
-    alt: _alt2
-  };
-  zero2 = function() {
-    return none2;
-  };
-  Zero4 = {
-    URI: URI3,
-    zero: zero2
-  };
-  guard3 = guard(Zero4, Pointed2);
-  Alternative2 = {
-    URI: URI3,
-    map: _map2,
-    ap: _ap2,
-    of: of4,
-    alt: _alt2,
-    zero: zero2
-  };
-  extend2 = function(f) {
-    return function(wa) {
-      return isNone2(wa) ? none2 : some3(f(wa));
-    };
-  };
-  Extend2 = {
-    URI: URI3,
-    map: _map2,
-    extend: _extend2
-  };
-  compact2 = flatMap2(identity);
-  defaultSeparated = separated(none2, none2);
-  separate2 = function(ma) {
-    return isNone2(ma) ? defaultSeparated : separated(getLeft(ma.value), getRight(ma.value));
-  };
-  Compactable2 = {
-    URI: URI3,
-    compact: compact2,
-    separate: separate2
-  };
-  filter2 = function(predicate) {
-    return function(fa) {
-      return isNone2(fa) ? none2 : predicate(fa.value) ? fa : none2;
-    };
-  };
-  filterMap2 = function(f) {
-    return function(fa) {
-      return isNone2(fa) ? none2 : f(fa.value);
-    };
-  };
-  partition2 = function(predicate) {
-    return function(fa) {
-      return separated(_filter2(fa, not(predicate)), _filter2(fa, predicate));
-    };
-  };
-  partitionMap2 = function(f) {
-    return flow(map2(f), separate2);
-  };
-  Filterable2 = {
-    URI: URI3,
-    map: _map2,
-    compact: compact2,
-    separate: separate2,
-    filter: _filter2,
-    filterMap: _filterMap2,
-    partition: _partition2,
-    partitionMap: _partitionMap2
-  };
-  traverse2 = function(F) {
-    return function(f) {
-      return function(ta) {
-        return isNone2(ta) ? F.of(none2) : F.map(f(ta.value), some3);
-      };
-    };
-  };
-  sequence2 = function(F) {
-    return function(ta) {
-      return isNone2(ta) ? F.of(none2) : F.map(ta.value, some3);
-    };
-  };
-  Traversable2 = {
-    URI: URI3,
-    map: _map2,
-    reduce: _reduce2,
-    foldMap: _foldMap2,
-    reduceRight: _reduceRight2,
-    traverse: _traverse2,
-    sequence: sequence2
-  };
-  _wither2 = witherDefault(Traversable2, Compactable2);
-  _wilt2 = wiltDefault(Traversable2, Compactable2);
-  wither2 = function(F) {
-    var _witherF = _wither2(F);
-    return function(f) {
-      return function(fa) {
-        return _witherF(fa, f);
-      };
-    };
-  };
-  wilt2 = function(F) {
-    var _wiltF = _wilt2(F);
-    return function(f) {
-      return function(fa) {
-        return _wiltF(fa, f);
-      };
-    };
-  };
-  Witherable4 = {
-    URI: URI3,
-    map: _map2,
-    reduce: _reduce2,
-    foldMap: _foldMap2,
-    reduceRight: _reduceRight2,
-    traverse: _traverse2,
-    sequence: sequence2,
-    compact: compact2,
-    separate: separate2,
-    filter: _filter2,
-    filterMap: _filterMap2,
-    partition: _partition2,
-    partitionMap: _partitionMap2,
-    wither: _wither2,
-    wilt: _wilt2
-  };
-  throwError = function() {
-    return none2;
-  };
-  MonadThrow = {
-    URI: URI3,
-    map: _map2,
-    ap: _ap2,
-    of: of4,
-    chain: flatMap2,
-    throwError
-  };
   fromEither2 = getRight;
   FromEither4 = {
     URI: URI3,
@@ -3905,137 +3114,14 @@ var init_Option = __esm(() => {
   isNone2 = function(fa) {
     return fa._tag === "None";
   };
-  matchW3 = function(onNone, onSome) {
-    return function(ma) {
-      return isNone2(ma) ? onNone() : onSome(ma.value);
-    };
-  };
-  foldW = matchW3;
-  match3 = matchW3;
-  fold = match3;
   getOrElseW = function(onNone) {
     return function(ma) {
       return isNone2(ma) ? onNone() : ma.value;
     };
   };
   getOrElse = getOrElseW;
-  flap3 = flap(Functor4);
-  apFirst3 = apFirst(Apply5);
-  apSecond3 = apSecond(Apply5);
-  flatten2 = compact2;
   tap2 = dual(2, tap(Chain4));
   tapEither2 = dual(2, tapEither(FromEither4, Chain4));
-  duplicate2 = extend2(identity);
-  fromEitherK3 = fromEitherK(FromEither4);
-  chainEitherK2 = chainEitherK(FromEither4, Chain4);
-  chainFirstEitherK = tapEither2;
-  fromNullable = function(a) {
-    return a == null ? none2 : some3(a);
-  };
-  tryCatch = function(f) {
-    try {
-      return some3(f());
-    } catch (e) {
-      return none2;
-    }
-  };
-  tryCatchK = function(f) {
-    return function() {
-      var a = [];
-      for (var _i = 0;_i < arguments.length; _i++) {
-        a[_i] = arguments[_i];
-      }
-      return tryCatch(function() {
-        return f.apply(undefined, a);
-      });
-    };
-  };
-  fromNullableK = function(f) {
-    return flow(f, fromNullable);
-  };
-  chainNullableK = function(f) {
-    return function(ma) {
-      return isNone2(ma) ? none2 : fromNullable(f(ma.value));
-    };
-  };
-  toNullable = match3(constNull, identity);
-  toUndefined = match3(constUndefined, identity);
-  exists2 = function(predicate) {
-    return function(ma) {
-      return isNone2(ma) ? false : predicate(ma.value);
-    };
-  };
-  Do2 = of4(emptyRecord);
-  bindTo3 = bindTo(Functor4);
-  let_3 = let_(Functor4);
-  bind3 = bind(Chain4);
-  apS3 = apS(Apply5);
-  ApT = of4(emptyReadonlyArray);
-  traverseReadonlyNonEmptyArrayWithIndex = function(f) {
-    return function(as3) {
-      var o = f(0, head(as3));
-      if (isNone2(o)) {
-        return none2;
-      }
-      var out = [o.value];
-      for (var i = 1;i < as3.length; i++) {
-        var o_1 = f(i, as3[i]);
-        if (isNone2(o_1)) {
-          return none2;
-        }
-        out.push(o_1.value);
-      }
-      return some3(out);
-    };
-  };
-  traverseReadonlyArrayWithIndex = function(f) {
-    var g = traverseReadonlyNonEmptyArrayWithIndex(f);
-    return function(as3) {
-      return isNonEmpty(as3) ? g(as3) : ApT;
-    };
-  };
-  traverseArrayWithIndex = traverseReadonlyArrayWithIndex;
-  traverseArray = function(f) {
-    return traverseReadonlyArrayWithIndex(function(_, a) {
-      return f(a);
-    });
-  };
-  sequenceArray = traverseArray(identity);
-  chain2 = flatMap2;
-  chainFirst3 = tap2;
-  mapNullable = chainNullableK;
-  option = {
-    URI: URI3,
-    map: _map2,
-    of: of4,
-    ap: _ap2,
-    chain: flatMap2,
-    reduce: _reduce2,
-    foldMap: _foldMap2,
-    reduceRight: _reduceRight2,
-    traverse: _traverse2,
-    sequence: sequence2,
-    zero: zero2,
-    alt: _alt2,
-    extend: _extend2,
-    compact: compact2,
-    separate: separate2,
-    filter: _filter2,
-    filterMap: _filterMap2,
-    partition: _partition2,
-    partitionMap: _partitionMap2,
-    wither: _wither2,
-    wilt: _wilt2,
-    throwError
-  };
-  getApplySemigroup2 = getApplySemigroup(Apply5);
-  getApplyMonoid = getApplicativeMonoid(Applicative3);
-  getFirstMonoid = function() {
-    return getMonoid5(first());
-  };
-  getLastMonoid = function() {
-    return getMonoid5(last());
-  };
 });
 
 // node_modules/fp-ts/es6/Endomorphism.js
@@ -4178,7 +3264,7 @@ __export(exports_Task, {
   },
   traverseReadonlyNonEmptyArrayWithIndex: () => {
     {
-      return traverseReadonlyNonEmptyArrayWithIndex2;
+      return traverseReadonlyNonEmptyArrayWithIndex;
     }
   },
   traverseReadonlyArrayWithIndexSeq: () => {
@@ -4188,17 +3274,17 @@ __export(exports_Task, {
   },
   traverseReadonlyArrayWithIndex: () => {
     {
-      return traverseReadonlyArrayWithIndex2;
+      return traverseReadonlyArrayWithIndex;
     }
   },
   traverseArrayWithIndex: () => {
     {
-      return traverseArrayWithIndex2;
+      return traverseArrayWithIndex;
     }
   },
   traverseArray: () => {
     {
-      return traverseArray2;
+      return traverseArray;
     }
   },
   taskSeq: () => {
@@ -4228,12 +3314,12 @@ __export(exports_Task, {
   },
   sequenceArray: () => {
     {
-      return sequenceArray2;
+      return sequenceArray;
     }
   },
   of: () => {
     {
-      return of5;
+      return of4;
     }
   },
   never: () => {
@@ -4248,7 +3334,7 @@ __export(exports_Task, {
   },
   let: () => {
     {
-      return let_4;
+      return let_3;
     }
   },
   getSemigroup: () => {
@@ -4283,7 +3369,7 @@ __export(exports_Task, {
   },
   flatten: () => {
     {
-      return flatten3;
+      return flatten2;
     }
   },
   flatMapIO: () => {
@@ -4298,7 +3384,7 @@ __export(exports_Task, {
   },
   flap: () => {
     {
-      return flap4;
+      return flap3;
     }
   },
   delay: () => {
@@ -4318,22 +3404,22 @@ __export(exports_Task, {
   },
   chainFirst: () => {
     {
-      return chainFirst4;
+      return chainFirst3;
     }
   },
   chain: () => {
     {
-      return chain3;
+      return chain2;
     }
   },
   bindTo: () => {
     {
-      return bindTo4;
+      return bindTo3;
     }
   },
   bind: () => {
     {
-      return bind4;
+      return bind3;
     }
   },
   asUnit: () => {
@@ -4348,17 +3434,17 @@ __export(exports_Task, {
   },
   apSecond: () => {
     {
-      return apSecond4;
+      return apSecond3;
     }
   },
   apS: () => {
     {
-      return apS4;
+      return apS3;
     }
   },
   apFirst: () => {
     {
-      return apFirst4;
+      return apFirst3;
     }
   },
   ap: () => {
@@ -4373,7 +3459,7 @@ __export(exports_Task, {
   },
   Pointed: () => {
     {
-      return Pointed3;
+      return Pointed2;
     }
   },
   MonadTask: () => {
@@ -4388,7 +3474,7 @@ __export(exports_Task, {
   },
   Monad: () => {
     {
-      return Monad3;
+      return Monad2;
     }
   },
   Functor: () => {
@@ -4408,7 +3494,7 @@ __export(exports_Task, {
   },
   Do: () => {
     {
-      return Do3;
+      return Do2;
     }
   },
   Chain: () => {
@@ -4438,7 +3524,7 @@ __export(exports_Task, {
   },
   ApT: () => {
     {
-      return ApT2;
+      return ApT;
     }
   }
 });
@@ -4463,7 +3549,7 @@ function getRaceMonoid() {
     empty: never
   };
 }
-var fromIO, _map3, _apPar, _apSeq, map3, ap4, of5, flatMap3, flatten3, URI4, Functor6, as3, asUnit3, flap4, Pointed3, ApplyPar, apFirst4, apSecond4, ApplicativePar, ApplySeq, ApplicativeSeq, Chain6, Monad3, MonadIO, fromTask, MonadTask, FromIO2, _FlatMap, _FromIO, flatMapIO2, tap3, tapIO2, fromIOK2, chainIOK, chainFirstIOK, FromTask, never, Do3, bindTo4, let_4, bind4, apS4, ApT2, traverseReadonlyNonEmptyArrayWithIndex2, traverseReadonlyArrayWithIndex2, traverseReadonlyNonEmptyArrayWithIndexSeq, traverseReadonlyArrayWithIndexSeq, traverseArrayWithIndex2, traverseArray2, sequenceArray2, traverseSeqArrayWithIndex, traverseSeqArray, sequenceSeqArray, chain3, chainFirst4, task, taskSeq, getSemigroup6, getMonoid7;
+var fromIO, _map3, _apPar, _apSeq, map3, ap4, of4, flatMap3, flatten2, URI4, Functor6, as3, asUnit3, flap3, Pointed2, ApplyPar, apFirst3, apSecond3, ApplicativePar, ApplySeq, ApplicativeSeq, Chain6, Monad2, MonadIO, fromTask, MonadTask, FromIO2, _FlatMap, _FromIO, flatMapIO2, tap3, tapIO2, fromIOK2, chainIOK, chainFirstIOK, FromTask, never, Do2, bindTo3, let_3, bind3, apS3, ApT, traverseReadonlyNonEmptyArrayWithIndex, traverseReadonlyArrayWithIndex, traverseReadonlyNonEmptyArrayWithIndexSeq, traverseReadonlyArrayWithIndexSeq, traverseArrayWithIndex, traverseArray, sequenceArray, traverseSeqArrayWithIndex, traverseSeqArray, sequenceSeqArray, chain2, chainFirst3, task, taskSeq, getSemigroup6, getMonoid7;
 var init_Task = __esm(() => {
   init_Applicative();
   init_Apply();
@@ -4505,7 +3591,7 @@ var init_Task = __esm(() => {
       };
     };
   };
-  of5 = function(a) {
+  of4 = function(a) {
     return function() {
       return Promise.resolve(a);
     };
@@ -4517,7 +3603,7 @@ var init_Task = __esm(() => {
       });
     };
   });
-  flatten3 = flatMap3(identity);
+  flatten2 = flatMap3(identity);
   URI4 = "Task";
   Functor6 = {
     URI: URI4,
@@ -4525,23 +3611,23 @@ var init_Task = __esm(() => {
   };
   as3 = dual(2, as(Functor6));
   asUnit3 = asUnit(Functor6);
-  flap4 = flap(Functor6);
-  Pointed3 = {
+  flap3 = flap(Functor6);
+  Pointed2 = {
     URI: URI4,
-    of: of5
+    of: of4
   };
   ApplyPar = {
     URI: URI4,
     map: _map3,
     ap: _apPar
   };
-  apFirst4 = apFirst(ApplyPar);
-  apSecond4 = apSecond(ApplyPar);
+  apFirst3 = apFirst(ApplyPar);
+  apSecond3 = apSecond(ApplyPar);
   ApplicativePar = {
     URI: URI4,
     map: _map3,
     ap: _apPar,
-    of: of5
+    of: of4
   };
   ApplySeq = {
     URI: URI4,
@@ -4552,7 +3638,7 @@ var init_Task = __esm(() => {
     URI: URI4,
     map: _map3,
     ap: _apSeq,
-    of: of5
+    of: of4
   };
   Chain6 = {
     URI: URI4,
@@ -4560,17 +3646,17 @@ var init_Task = __esm(() => {
     ap: _apPar,
     chain: flatMap3
   };
-  Monad3 = {
+  Monad2 = {
     URI: URI4,
     map: _map3,
-    of: of5,
+    of: of4,
     ap: _apPar,
     chain: flatMap3
   };
   MonadIO = {
     URI: URI4,
     map: _map3,
-    of: of5,
+    of: of4,
     ap: _apPar,
     chain: flatMap3,
     fromIO
@@ -4579,7 +3665,7 @@ var init_Task = __esm(() => {
   MonadTask = {
     URI: URI4,
     map: _map3,
-    of: of5,
+    of: of4,
     ap: _apPar,
     chain: flatMap3,
     fromIO,
@@ -4611,13 +3697,13 @@ var init_Task = __esm(() => {
       return;
     });
   };
-  Do3 = of5(emptyRecord);
-  bindTo4 = bindTo(Functor6);
-  let_4 = let_(Functor6);
-  bind4 = bind(Chain6);
-  apS4 = apS(ApplyPar);
-  ApT2 = of5(emptyReadonlyArray);
-  traverseReadonlyNonEmptyArrayWithIndex2 = function(f) {
+  Do2 = of4(emptyRecord);
+  bindTo3 = bindTo(Functor6);
+  let_3 = let_(Functor6);
+  bind3 = bind(Chain6);
+  apS3 = apS(ApplyPar);
+  ApT = of4(emptyReadonlyArray);
+  traverseReadonlyNonEmptyArrayWithIndex = function(f) {
     return function(as4) {
       return function() {
         return Promise.all(as4.map(function(a, i) {
@@ -4628,10 +3714,10 @@ var init_Task = __esm(() => {
       };
     };
   };
-  traverseReadonlyArrayWithIndex2 = function(f) {
-    var g = traverseReadonlyNonEmptyArrayWithIndex2(f);
+  traverseReadonlyArrayWithIndex = function(f) {
+    var g = traverseReadonlyNonEmptyArrayWithIndex(f);
     return function(as4) {
-      return isNonEmpty(as4) ? g(as4) : ApT2;
+      return isNonEmpty(as4) ? g(as4) : ApT;
     };
   };
   traverseReadonlyNonEmptyArrayWithIndexSeq = function(f) {
@@ -4651,16 +3737,16 @@ var init_Task = __esm(() => {
   traverseReadonlyArrayWithIndexSeq = function(f) {
     var g = traverseReadonlyNonEmptyArrayWithIndexSeq(f);
     return function(as4) {
-      return isNonEmpty(as4) ? g(as4) : ApT2;
+      return isNonEmpty(as4) ? g(as4) : ApT;
     };
   };
-  traverseArrayWithIndex2 = traverseReadonlyArrayWithIndex2;
-  traverseArray2 = function(f) {
-    return traverseReadonlyArrayWithIndex2(function(_, a) {
+  traverseArrayWithIndex = traverseReadonlyArrayWithIndex;
+  traverseArray = function(f) {
+    return traverseReadonlyArrayWithIndex(function(_, a) {
       return f(a);
     });
   };
-  sequenceArray2 = traverseArray2(identity);
+  sequenceArray = traverseArray(identity);
   traverseSeqArrayWithIndex = traverseReadonlyArrayWithIndexSeq;
   traverseSeqArray = function(f) {
     return traverseReadonlyArrayWithIndexSeq(function(_, a) {
@@ -4668,12 +3754,12 @@ var init_Task = __esm(() => {
     });
   };
   sequenceSeqArray = traverseSeqArray(identity);
-  chain3 = flatMap3;
-  chainFirst4 = tap3;
+  chain2 = flatMap3;
+  chainFirst3 = tap3;
   task = {
     URI: URI4,
     map: _map3,
-    of: of5,
+    of: of4,
     ap: _apPar,
     chain: flatMap3,
     fromIO,
@@ -4682,7 +3768,7 @@ var init_Task = __esm(() => {
   taskSeq = {
     URI: URI4,
     map: _map3,
-    of: of5,
+    of: of4,
     ap: _apSeq,
     chain: flatMap3,
     fromIO,
@@ -4777,7 +3863,7 @@ __export(exports_string, {
   },
   Semigroup: () => {
     {
-      return Semigroup2;
+      return Semigroup;
     }
   },
   Ord: () => {
@@ -4796,7 +3882,7 @@ __export(exports_string, {
     }
   }
 });
-var Eq4, Semigroup2, empty6, Monoid, Ord4, Show, isString, toUpperCase, toLowerCase, replace, trim, trimLeft, trimRight, slice, isEmpty3, size3, split, includes, startsWith, endsWith;
+var Eq4, Semigroup, empty6, Monoid, Ord4, Show, isString, toUpperCase, toLowerCase, replace, trim, trimLeft, trimRight, slice, isEmpty3, size3, split, includes, startsWith, endsWith;
 var init_string = __esm(() => {
   init_ReadonlyNonEmptyArray();
   Eq4 = {
@@ -4804,14 +3890,14 @@ var init_string = __esm(() => {
       return first2 === second;
     }
   };
-  Semigroup2 = {
+  Semigroup = {
     concat: function(first2, second) {
       return first2 + second;
     }
   };
   empty6 = "";
   Monoid = {
-    concat: Semigroup2.concat,
+    concat: Semigroup.concat,
     empty: empty6
   };
   Ord4 = {
@@ -4882,19 +3968,6 @@ var init_string = __esm(() => {
   };
 });
 
-// node_modules/fp-ts/es6/ReadonlyRecord.js
-function lookup5(k, r) {
-  if (r === undefined) {
-    return function(r2) {
-      return lookup5(k, r2);
-    };
-  }
-  return has.call(r, k) ? some(r[k]) : none;
-}
-var init_ReadonlyRecord = __esm(() => {
-  init_internal();
-});
-
 // node_modules/fp-ts/es6/Record.js
 function collect(O) {
   if (typeof O === "function") {
@@ -4921,10 +3994,9 @@ function toUnfoldable(U) {
     });
   };
 }
-var keys_, toArray, lookup6;
+var keys_, toArray;
 var init_Record = __esm(() => {
   init_internal();
-  init_ReadonlyRecord();
   init_string();
   keys_ = function(O) {
     return function(r) {
@@ -4937,16 +4009,95 @@ var init_Record = __esm(() => {
       a
     ];
   });
-  lookup6 = lookup5;
 });
 
 // node_modules/fp-ts/es6/index.js
 var init_es6 = __esm(() => {
   init_Array();
   init_Eq();
-  init_Option();
   init_string();
   init_Task();
+});
+
+// node_modules/fp-ts-std/dist/esm/Function.js
+var URI5, map4, Functor8, of5, ap5, Applicative3, apFirst4, apSecond4, chain3, Monad3, Do3, bindTo4, bind4, apS4, let_4, unary, guard3, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
+var init_Function = __esm(() => {
+  init_Option();
+  init_Map();
+  init_Array();
+  init_function();
+  init_Predicate();
+  init_Endomorphism();
+  init_Monoid();
+  init_Semigroup();
+  init_Functor();
+  init_Apply();
+  init_Chain();
+  URI5 = "Function";
+  map4 = (f) => (g) => flow(g, f);
+  Functor8 = {
+    URI: URI5,
+    map: (f, g) => map4(g)(f)
+  };
+  of5 = constant;
+  ap5 = (f) => (g) => (x) => g(x)(f(x));
+  Applicative3 = {
+    ...Functor8,
+    of: of5,
+    ap: (f, g) => ap5(g)(f)
+  };
+  apFirst4 = apFirst(Applicative3);
+  apSecond4 = apSecond(Applicative3);
+  chain3 = (f) => (g) => (x) => f(g(x))(x);
+  Monad3 = {
+    ...Applicative3,
+    chain: (f, g) => chain3(g)(f)
+  };
+  Do3 = of5({});
+  bindTo4 = bindTo(Functor8);
+  bind4 = bind(Monad3);
+  apS4 = apS(Applicative3);
+  let_4 = let_(Functor8);
+  unary = tupled;
+  guard3 = (branches) => (fallback) => (input) => pipe(branches, map(([f, g]) => flow(fromPredicate2(f), map2(g))), concatAll4(getMonoid(getMonoid5(first()))()), apply(input), getOrElse(() => fallback(input)));
+  unless = (f) => (onFalse) => (x) => f(x) ? x : onFalse(x);
+  when = flow(not, unless);
+  invoke = (x) => (ys) => (z) => z[x](...ys);
+  invokeNullary = flip(invoke)([]);
+  memoize = (eq2) => (f) => {
+    const cache = new Map;
+    return (k) => {
+      const cached = lookup4(eq2)(k)(cache);
+      if (isSome2(cached))
+        return cached.value;
+      const val = f(k);
+      cache.set(k, val);
+      return val;
+    };
+  };
+  curry2T = (f) => (a) => (b) => f([a, b]);
+  curry2 = flow(unary, curry2T);
+  curry3T = (f) => (a) => (b) => (c) => f([a, b, c]);
+  curry3 = flow(unary, curry3T);
+  curry4T = (f) => (a) => (b) => (c) => (d) => f([a, b, c, d]);
+  curry4 = flow(unary, curry4T);
+  curry5T = (f) => (a) => (b) => (c) => (d) => (e) => f([a, b, c, d, e]);
+  curry5 = flow(unary, curry5T);
+  applyEvery = concatAll4(getMonoid6());
+});
+
+// shared/fp.tsx
+var guard22, guard4, pMchain, is, chunckify, memoize2;
+var init_fp = __esm(() => {
+  init_es6();
+  init_Function();
+  init_function();
+  guard22 = (branches) => guard3(branches);
+  guard4 = (branches) => guard3(branches);
+  pMchain = (f) => async (fa) => f(await fa);
+  is = (c) => (a) => (field) => field[c] === a;
+  chunckify = (n) => (g) => flow(exports_Array.chunksOf(n), exports_Array.map(g), (ps) => Promise.all(ps), pMchain(exports_Array.flatten));
+  memoize2 = (fn) => pipe(fn, tupled, memoize(exports_Eq.contramap(JSON.stringify)(exports_string.Eq)), untupled);
 });
 
 // shared/util.tsx
@@ -4979,87 +4130,6 @@ var init_util = __esm(() => {
   sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   getReactProps = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactProps$"))];
   setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"](...uris);
-});
-
-// node_modules/fp-ts-std/dist/esm/Function.js
-var URI5, map5, Functor8, of6, ap5, Applicative5, apFirst5, apSecond5, chain4, Monad4, Do4, bindTo5, bind5, apS5, let_5, unary, guard4, unless, when, invoke, invokeNullary, memoize, curry2T, curry2, curry3T, curry3, curry4T, curry4, curry5T, curry5, applyEvery;
-var init_Function = __esm(() => {
-  init_Option();
-  init_Map();
-  init_Array();
-  init_function();
-  init_Predicate();
-  init_Endomorphism();
-  init_Monoid();
-  init_Semigroup();
-  init_Functor();
-  init_Apply();
-  init_Chain();
-  URI5 = "Function";
-  map5 = (f) => (g) => flow(g, f);
-  Functor8 = {
-    URI: URI5,
-    map: (f, g) => map5(g)(f)
-  };
-  of6 = constant;
-  ap5 = (f) => (g) => (x) => g(x)(f(x));
-  Applicative5 = {
-    ...Functor8,
-    of: of6,
-    ap: (f, g) => ap5(g)(f)
-  };
-  apFirst5 = apFirst(Applicative5);
-  apSecond5 = apSecond(Applicative5);
-  chain4 = (f) => (g) => (x) => f(g(x))(x);
-  Monad4 = {
-    ...Applicative5,
-    chain: (f, g) => chain4(g)(f)
-  };
-  Do4 = of6({});
-  bindTo5 = bindTo(Functor8);
-  bind5 = bind(Monad4);
-  apS5 = apS(Applicative5);
-  let_5 = let_(Functor8);
-  unary = tupled;
-  guard4 = (branches) => (fallback) => (input) => pipe(branches, map(([f, g]) => flow(fromPredicate2(f), map2(g))), concatAll4(getMonoid(getMonoid5(first()))()), apply(input), getOrElse(() => fallback(input)));
-  unless = (f) => (onFalse) => (x) => f(x) ? x : onFalse(x);
-  when = flow(not, unless);
-  invoke = (x) => (ys) => (z) => z[x](...ys);
-  invokeNullary = flip(invoke)([]);
-  memoize = (eq2) => (f) => {
-    const cache = new Map;
-    return (k) => {
-      const cached = lookup4(eq2)(k)(cache);
-      if (isSome2(cached))
-        return cached.value;
-      const val = f(k);
-      cache.set(k, val);
-      return val;
-    };
-  };
-  curry2T = (f) => (a) => (b) => f([a, b]);
-  curry2 = flow(unary, curry2T);
-  curry3T = (f) => (a) => (b) => (c) => f([a, b, c]);
-  curry3 = flow(unary, curry3T);
-  curry4T = (f) => (a) => (b) => (c) => (d) => f([a, b, c, d]);
-  curry4 = flow(unary, curry4T);
-  curry5T = (f) => (a) => (b) => (c) => (d) => (e) => f([a, b, c, d, e]);
-  curry5 = flow(unary, curry5T);
-  applyEvery = concatAll4(getMonoid6());
-});
-
-// shared/fp.tsx
-var guard22, guard42, pMchain, is, chunckify, memoize2;
-var init_fp = __esm(() => {
-  init_es6();
-  init_Function();
-  init_function();
-  guard22 = (branches) => guard4(branches);
-  guard42 = (branches) => guard4(branches);
-  pMchain = (f) => async (fa) => f(await fa);
-  is = (c) => (a) => (field) => field[c] === a;
-  chunckify = (n) => (g) => flow(exports_Array.chunksOf(n), exports_Array.map(g), (ps) => Promise.all(ps), pMchain(exports_Array.flatten));
-  memoize2 = (fn) => pipe(fn, tupled, memoize(exports_Eq.contramap(JSON.stringify)(exports_string.Eq)), untupled);
 });
 
 // shared/api.tsx
@@ -5267,7 +4337,7 @@ class SettingsSection {
       description: field.description
     }), import_react.default.createElement("div", {
       className: "x-settings-secondColumn"
-    }, guard42([
+    }, guard4([
       [isType(FieldType.INPUT), this.SettingInputField],
       [isType(FieldType.BUTTON), this.SettingButtonField],
       [isType(FieldType.TOGGLE), this.SettingToggleField],
@@ -5333,10 +4403,10 @@ class SettingsSection {
         setValue(e.currentTarget.selectedIndex);
         field.events.onChange?.(e);
       }
-    }, field.options.map((option2, i) => import_react.default.createElement("option", {
+    }, field.options.map((option, i) => import_react.default.createElement("option", {
       selected: i === SettingsSection.getFieldValue(field.id),
       value: i + 1
-    }, option2)));
+    }, option)));
   };
   SettingHidden = () => import_react.default.createElement(import_react.default.Fragment, null);
 }
@@ -5368,25 +4438,7 @@ var init_settings2 = __esm(() => {
 });
 
 // extensions/vaultify/app.tsx
-var exports_app = {};
-__export(exports_app, {
-  restore: () => {
-    {
-      return restore;
-    }
-  },
-  default: () => {
-    {
-      return app_default;
-    }
-  },
-  backup: () => {
-    {
-      return backup;
-    }
-  }
-});
-var app_default, isType, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, allowedExtDataRegex, backup, restore;
+var isType, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, allowedExtDataRegex, backup, restore;
 var init_app = __esm(() => {
   init_es6();
   init_Array();
@@ -5395,7 +4447,6 @@ var init_app = __esm(() => {
   init_api();
   init_fp();
   init_util();
-  app_default = {};
   isType = is("type");
   extractLikedPlaylistTreeRecur = (leaf) => guard22([
     [
@@ -5507,23 +4558,9 @@ var init_app = __esm(() => {
   };
   Promise.resolve().then(() => init_settings2());
 });
+init_app();
 
-// extensions/vaultify/entry.tsx
-init_es6();
-init_Record();
-init_function();
-init_util();
-(async () => {
-  const mustLoad = [
-    "CosmosAsync",
-    "LocalStorage",
-    "Platform",
-    "React",
-    "ReactDOM",
-    "showNotification"
-  ];
-  let timer = 0;
-  while (mustLoad.some(flow(flip(lookup6)(Spicetify), exports_Option.isNone)))
-    await sleep(timer += 100);
-  await Promise.resolve().then(() => (init_app(), exports_app));
-})();
+export {
+  restore,
+  backup
+};

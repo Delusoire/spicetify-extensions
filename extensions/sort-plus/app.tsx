@@ -1,4 +1,3 @@
-export default {}
 import { array as a, eq, number, option as o, ord, string, task } from "fp-ts"
 import { guard } from "fp-ts-std/Function"
 import { anyPass } from "fp-ts-std/Predicate"

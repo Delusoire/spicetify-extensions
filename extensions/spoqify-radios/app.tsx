@@ -1,4 +1,3 @@
-export default {}
 import { tupled } from "fp-ts/function"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util"
 import { CONFIG } from "./settings"

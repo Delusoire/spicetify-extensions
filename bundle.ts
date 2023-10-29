@@ -97,7 +97,7 @@ mkdirSync(out, { recursive: true })
 
 const extensionsData = extensions.map(async fullname => {
     const name = basename(fullname)
-    const entry = join(fullname, "entry.tsx")
+    const entry = join(fullname, "app.tsx")
 
     const buildOutput = await Bun.build({
         entrypoints: [entry],

@@ -1,4 +1,3 @@
-export default {}
 import { array as a } from "fp-ts"
 import { flip, pipe as p, tupled } from "fp-ts/function"
 import { startsWith } from "fp-ts/string"

@@ -1,5 +1,4 @@
-export default {}
-import { array as a, array, set, task } from "fp-ts"
+import { array as a, task } from "fp-ts"
 import { map } from "fp-ts/Array"
 import { toUnfoldable } from "fp-ts/Record"
 import { pipe as p, tupled } from "fp-ts/function"

@@ -1,5 +1,3 @@
-export default {}
-
 debugger
 
 import { array as a } from "fp-ts"

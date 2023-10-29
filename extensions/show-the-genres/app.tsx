@@ -1,5 +1,3 @@
-export default {}
-
 import { array as a, string as str } from "fp-ts"
 import { pipe as p } from "fp-ts/function"
 import { fetchTrackLFMAPI, fetchWebSoundOfSpotifyPlaylist } from "../../shared/api"
