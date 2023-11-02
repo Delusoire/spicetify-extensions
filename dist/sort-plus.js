@@ -15413,6 +15413,7 @@ async function getArtistTracks(uri) {
   await pipe(albumsLike, getTracksFromAlbums, pMchain(add));
   return await Promise.all(allTracks);
 }
+debugger;
 var { URI: URI15 } = Spicetify;
 var SortBy;
 (function(SortBy2) {
