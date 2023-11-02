@@ -44,7 +44,7 @@ import { CONFIG } from "./settings"
 
 const { URI } = Spicetify
 
-export enum SortBy {
+enum SortBy {
     SPOTIFY_PLAYCOUNT = "Spotify - Play Count",
     SPOTIFY_POPULARITY = "Spotify - Popularity",
     SPOTIFY_RELEASEDATE = "Spotify - Release Date",
@@ -53,7 +53,7 @@ export enum SortBy {
     LASTFM_PLAYCOUNT = "LastFM - Play Count",
 }
 
-export enum SortProp {
+enum SortProp {
     "Spotify - Play Count" = "playcount",
     "Spotify - Popularity" = "popularity",
     "Spotify - Release Date" = "releaseDate",
@@ -81,7 +81,7 @@ const getAlbumTracks = async (uri: SpotifyURI) => {
     )
 }
 
-export const getPlaylistTracks = f(fetchPlatPlaylistContents, pMchain(a.map(parseAPITrackFromPlaylist)))
+const getPlaylistTracks = f(fetchPlatPlaylistContents, pMchain(a.map(parseAPITrackFromPlaylist)))
 
 async function getArtistTracks(uri: SpotifyURI) {
     const extractUriFromReleases = (x: { releases: { items: Array<{ uri: SpotifyURI }> } }) => x.releases.items[0].uri
@@ -176,7 +176,7 @@ const populateTrackLastFM = async (track: TrackData) => {
 
 // Fetching, Sorting and Playing
 
-export const fetchTracks = f(
+const fetchTracks = f(
     tapAny(uri => void (lastFetchedUri = uri)),
     guard<SpotifyURI, Promise<TrackData[]>>([
         [URI.isAlbum, getAlbumTracks],
@@ -186,7 +186,7 @@ export const fetchTracks = f(
     ])(task.of([])),
 )
 
-export const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
+const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
     [startsWith("Spotify"), populateTracksSpot],
     [
         startsWith("LastFM"),
@@ -227,7 +227,7 @@ const toOptProp = (prop: keyof typeof SortProp) => Optional.fromNullableProp<Tra
 
 let lastFetchedUri: SpotifyURI
 let lastActionName: keyof typeof SortProp | "True Shuffle" | "Stars"
-export const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
+const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
     lastActionName = name
     const descending = invertOrder ^ Number(CONFIG.descending)
     console.log("🚀 ~ file: app.tsx:236 ~ sortByProp ~ descending:", descending)

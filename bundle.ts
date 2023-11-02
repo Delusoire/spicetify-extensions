@@ -104,6 +104,8 @@ const extensionsData = extensions.map(async fullname => {
         plugins: [externalGlobalPlugin, stylesPlugin],
         outdir: out,
         naming: `${name}.[ext]`,
+        sourcemap: "inline",
+        minify: true,
     })
 
     if (!buildOutput.success) {
@@ -111,6 +113,15 @@ const extensionsData = extensions.map(async fullname => {
         console.log(buildOutput.logs)
         return
     }
+
+    const isJsExtension = /[^(prism)].js$/
+    const exportBlock = /^export {[^;]+};$/gm
+    readdirFullPath(out).map(async fullname => {
+        if (!isJsExtension.test(fullname)) return
+        const file = Bun.file(fullname)
+        const content = await file.text()
+        Bun.write(file, content.replace(exportBlock, ""))
+    })
 
     const prismPath = join(out, `${name}.prism.js`)
     const prismContent = createPrismContent(name)

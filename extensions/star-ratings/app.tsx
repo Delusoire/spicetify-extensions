@@ -37,7 +37,7 @@ loadRatings()
 
 // TRACKLISTS
 
-export const updateTrackListStars = f(
+const updateTrackListStars = f(
     getTrackLists,
     a.map(trackList => {
         const trackListTracks = getTrackListTracks(trackList)
@@ -127,7 +127,7 @@ new MutationObserver(() => {
 
 // COLLECTION
 
-export const updateCollectionStars = async (pathname: SpotifyURI, starsStops?: StarStops[]) => {
+const updateCollectionStars = async (pathname: SpotifyURI, starsStops?: StarStops[]) => {
     const uri = URI.fromString(pathname) as Required<Spicetify.URI>
 
     if (!starsStops) starsStops = getStarsStops("collection")
@@ -165,7 +165,7 @@ Spicetify.Platform.History.listen(async ({ pathname }: { pathname: string }) => 
 
 // NOW PLAYING
 
-export const createNowPlayingStars = () => {
+const createNowPlayingStars = () => {
     if (document.querySelectorAll(".stars-now-playing").length !== 0) return
 
     const nowPlayingElementSelector = CONFIG.nowPlayingStarsOnRight
