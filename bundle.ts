@@ -104,7 +104,7 @@ const extensionsData = extensions.map(async fullname => {
         plugins: [externalGlobalPlugin, stylesPlugin],
         outdir: out,
         naming: `${name}.[ext]`,
-        sourcemap: "inline",
+        sourcemap: "external",
         minify: true,
     })
 
