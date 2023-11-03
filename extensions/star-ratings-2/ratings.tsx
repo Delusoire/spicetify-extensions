@@ -10,7 +10,7 @@ import {
 } from "../../shared/api"
 import { pMchain } from "../../shared/fp"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util"
-import { updateNowPlayingControls, updateTrackListControls } from "./controls"
+import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls"
 import { CONFIG } from "./settings"
 
 export const loadRatings = async () => {
@@ -73,6 +73,8 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
 
     // TODO: Optimize this, find a way to directly target the pbs for that uri
     updateTrackListControls()
+    const { pathname } = Spicetify.Platform.History.location
+    updateCollectionControls(Spicetify.URI.fromString(pathname))
 }
 
 export let playlistUris: SpotifyURI[] = []
