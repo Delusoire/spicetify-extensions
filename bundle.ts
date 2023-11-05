@@ -7,29 +7,26 @@ const autoprefixer = require("autoprefixer")
 
 // Helper functions
 
-const wrapInTag = (id: string, tag: string, content: string) =>
+const runtimeInject = (id: string, tag: string, content: string, props = {}) =>
     `(async () => {
-    const id = ${JSON.stringify(id)}
-    if (!document.getElementById(id)) {
-        const el = document.createElement(${JSON.stringify(tag)})
-        el.id = id
-        el.textContent = ${content}
-        document.head.appendChild(el)
-    }
-})()`
+    if (!document.getElementById("${id}"))
+        document.head.insertAdjacentHTML("beforeend", <${tag}${Object.entries(props).reduce(
+        (acc, [k, v]) => `${acc} ${k}="${v}"`,
+        "",
+    )} id="${id}">${content}</${tag}>)
+})`
 
-const createPrismContent = (pkgname: string) => {
-    const content = `\`(async () => {
-\${
-        (await fetch("https://api.github.com/repos/${user_repo}/contents/dist/${pkgname}.js")
-            .then(res => res.json())
-            .then(data => atob(data.content))
-        ).replace(/^/gm, "  ")
-    }
-})()\``
+const wrapInCssTag = (id: string, css: string) => runtimeInject(id, "style", JSON.stringify(css))
 
-    return wrapInTag(pkgname, "script", content)
-}
+const createPrismContent = (id: string) =>
+    runtimeInject(
+        id,
+        "style",
+        `await fetch(\`https://api.github.com/repos/${USER_REPO}/contents/dist/\${id}.js\`)
+    .then(res => res.json())
+    .then(data => atob(data.content))`,
+        { type: "module" },
+    )
 
 // Build plugins
 
