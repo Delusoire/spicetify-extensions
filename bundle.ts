@@ -112,7 +112,7 @@ const extensionsData = extensions.map(async fullname => {
     }
 
     const isJsExtension = /[^(prism)].js$/
-    const exportBlock = /^export {[^;]+};$/gm
+    const exportBlock = /^export\s*{[^;]+}/gm
     readdirFullPath(out).map(async fullname => {
         if (!isJsExtension.test(fullname)) return
         const file = Bun.file(fullname)
