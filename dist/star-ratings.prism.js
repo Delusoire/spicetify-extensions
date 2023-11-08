@@ -1,16 +1,6 @@
 (async () => {
-    const id = "star-ratings"
-    if (!document.getElementById(id)) {
-        const el = document.createElement("script")
-        el.id = id
-        el.textContent = `(async () => {
-${
-        (await fetch("https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/star-ratings.js")
-            .then(res => res.json())
-            .then(data => atob(data.content))
-        ).replace(/^/gm, "  ")
-    }
-})()`
-        document.head.appendChild(el)
-    }
-})()
+    if (!document.getElementById("star-ratings"))
+        document.head.insertAdjacentHTML("beforeend", String.raw`<style type="module" id="star-ratings">await fetch(\`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/\${id}.js\`)
+    .then(res => res.json())
+    .then(data => atob(data.content))</style>`)
+})

@@ -1,4 +1,4 @@
-const user_repo = "Delusoire/spicetify-extensions"
+const USER_REPO = "Delusoire/spicetify-extensions"
 
 import type { BunPlugin } from "bun"
 import { compile } from "sass"
@@ -7,14 +7,21 @@ const autoprefixer = require("autoprefixer")
 
 // Helper functions
 
-const runtimeInject = (id: string, tag: string, content: string, props = {}) =>
-    `(async () => {
+const rawest = (str: string) => "String.raw`" + str.replace(/(\$\{|\`)/gm, "\\$1") + "`"
+
+const runtimeInject = (id: string, tag: string, content: string, props = {}) => {
+    const html = rawest(
+        `<${tag}${Object.entries(props).reduce((acc, [k, v]) => `${acc} ${k}="${v}"`, "")} id="${id}">${content.replace(
+            /"/gm,
+            "\\'",
+        )}</${tag}>`,
+    )
+
+    return `(async () => {
     if (!document.getElementById("${id}"))
-        document.head.insertAdjacentHTML("beforeend", <${tag}${Object.entries(props).reduce(
-        (acc, [k, v]) => `${acc} ${k}="${v}"`,
-        "",
-    )} id="${id}">${content}</${tag}>)
+        document.head.insertAdjacentHTML("beforeend", ${html})
 })`
+}
 
 const wrapInCssTag = (id: string, css: string) => runtimeInject(id, "style", JSON.stringify(css))
 
@@ -70,7 +77,7 @@ const stylesPlugin: BunPlugin = {
             const hash = createHash("sha256").update(css).digest("base64url")
 
             return {
-                contents: wrapInTag(hash, "style", JSON.stringify(css)),
+                contents: wrapInCssTag(hash, css),
             }
         })
     },
@@ -102,7 +109,7 @@ const extensionsData = extensions.map(async fullname => {
         outdir: out,
         naming: `${name}.[ext]`,
         sourcemap: "external",
-        minify: true,
+        // minify: true,
     })
 
     if (!buildOutput.success) {
@@ -110,15 +117,6 @@ const extensionsData = extensions.map(async fullname => {
         console.log(buildOutput.logs)
         return
     }
-
-    const isJsExtension = /[^(prism)].js$/
-    const exportBlock = /^export\s*{[^;]+}/gm
-    readdirFullPath(out).map(async fullname => {
-        if (!isJsExtension.test(fullname)) return
-        const file = Bun.file(fullname)
-        const content = await file.text()
-        Bun.write(file, content.replace(exportBlock, ""))
-    })
 
     const prismPath = join(out, `${name}.prism.js`)
     const prismContent = createPrismContent(name)

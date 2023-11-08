@@ -1,4 +1,3348 @@
-var $7=Object.defineProperty;var M0=($,Q)=>{for(var X in Q)$7($,X,{get:Q[X],enumerable:!0,configurable:!0,set:(Y)=>Q[X]=()=>Y})};function K($){return $}function W($){return function(){return $}}function I1($){return function(){var Q=[];for(var X=0;X<arguments.length;X++)Q[X]=arguments[X];if(Q.length>1)return $(Q[1],Q[0]);return function(Y){return $(Y)(Q[0])}}}function L($,Q,X,Y,V,H,Z,D,v){switch(arguments.length){case 1:return $;case 2:return function(){return Q($.apply(this,arguments))};case 3:return function(){return X(Q($.apply(this,arguments)))};case 4:return function(){return Y(X(Q($.apply(this,arguments))))};case 5:return function(){return V(Y(X(Q($.apply(this,arguments)))))};case 6:return function(){return H(V(Y(X(Q($.apply(this,arguments))))))};case 7:return function(){return Z(H(V(Y(X(Q($.apply(this,arguments)))))))};case 8:return function(){return D(Z(H(V(Y(X(Q($.apply(this,arguments))))))))};case 9:return function(){return v(D(Z(H(V(Y(X(Q($.apply(this,arguments)))))))))}}return}function A($){return function(Q){return $.apply(void 0,Q)}}function E1($){return function(){var Q=[];for(var X=0;X<arguments.length;X++)Q[X]=arguments[X];return $(Q)}}function J($,Q,X,Y,V,H,Z,D,v){switch(arguments.length){case 1:return $;case 2:return Q($);case 3:return X(Q($));case 4:return Y(X(Q($)));case 5:return V(Y(X(Q($))));case 6:return H(V(Y(X(Q($)))));case 7:return Z(H(V(Y(X(Q($))))));case 8:return D(Z(H(V(Y(X(Q($)))))));case 9:return v(D(Z(H(V(Y(X(Q($))))))));default:{var B=arguments[0];for(var p=1;p<arguments.length;p++)B=arguments[p](B);return B}}}var Q7=function($,Q,X){if(X||arguments.length===2){for(var Y=0,V=Q.length,H;Y<V;Y++)if(H||!(Y in Q)){if(!H)H=Array.prototype.slice.call(Q,0,Y);H[Y]=Q[Y]}}return $.concat(H||Array.prototype.slice.call(Q))};var W1=W(!1);var w=function($,Q){var X=typeof $==="number"?function(Y){return Y.length>=$}:$;return function(){var Y=Array.from(arguments);if(X(arguments))return Q.apply(this,Y);return function(V){return Q.apply(void 0,Q7([V],Y,!1))}}};var X7=function(){return{concat:function($,Q){return J($,Y7(Q))}}},k1=function(){return{concat:X7().concat,empty:W1}};var x1=function($){return function(Q){return!$(Q)}},Y7=function($){return function(Q){return function(X){return Q(X)||$(X)}}};var V7=function($,Q,X){if(X||arguments.length===2){for(var Y=0,V=Q.length,H;Y<V;Y++)if(H||!(Y in Q)){if(!H)H=Array.prototype.slice.call(Q,0,Y);H[Y]=Q[Y]}}return $.concat(H||Array.prototype.slice.call(Q))},H0=function($){return $._tag==="None"},U=function($){return $._tag==="Some"},G={_tag:"None"},P=function($){return{_tag:"Some",value:$}},I=function($){return $._tag==="Left"};var W0=function($){return $.length>0},I0=function($){return $[0]},y1=function($){return $.slice(1)};var E={};var E0=function($){return V7([$[0]],$.slice(1),!0)};function V0($){return function(Q){return function(X){return $.ap($.map(X,function(Y){return function(){return Y}}),Q)}}}function J0($){return function(Q){return function(X){return $.ap($.map(X,function(){return function(Y){return Y}}),Q)}}}function Z0($){return function(Q,X){return function(Y){return $.ap($.map(Y,function(V){return function(H){var Z;return Object.assign({},V,(Z={},Z[Q]=H,Z))}}),X)}}}function k0($){return function(Q){return function(X){return $.map(X,function(Y){return Y(Q)})}}}function r($){return function(Q){return function(X){return $.map(X,function(Y){var V;return V={},V[Q]=Y,V})}}}var o=function($){return function(Q,X){return function(Y){return $.map(Y,function(V){var H;return Object.assign({},V,(H={},H[Q]=X(V),H))})}}};function x0($){return function(Q,X){return $.map(Q,function(){return X})}}function b1($){var Q=x0($);return function(X){return Q(X,void 0)}}function h1($){var Q=f($);return function(X){return function(Y){return Q(Y,X)}}}function f($){return function(Q,X){return $.chain(Q,function(Y){return $.map(X(Y),function(){return Y})})}}function s($){return function(Q,X){return function(Y){return $.chain(Y,function(V){return $.map(X(V),function(H){var Z;return Object.assign({},V,(Z={},Z[Q]=H,Z))})})}}}function j0($){return function(Q){return L(Q,$.fromEither)}}function u1($,Q){var X=j0($),Y=f(Q);return function(V,H){return Y(V,X(H))}}var l1=function($){return function(Q){return function(X){return X.reduce(function(Y,V){return $.concat(Y,V)},Q)}}};var G0={};M0(G0,{tuple:()=>{{return m1}},struct:()=>{{return c1}},strictEqual:()=>{{return L7}},getTupleEq:()=>{{return P7}},getStructEq:()=>{{return z7}},getSemigroup:()=>{{return n1}},getMonoid:()=>{{return D7}},fromEquals:()=>{{return R}},eqString:()=>{{return B7}},eqStrict:()=>{{return O}},eqNumber:()=>{{return v7}},eqDate:()=>{{return w7}},eqBoolean:()=>{{return C7}},eq:()=>{{return q7}},contramap:()=>{{return _1}},URI:()=>{{return d1}},Contravariant:()=>{{return p1}}});var R=function($){return{equals:function(Q,X){return Q===X||$(Q,X)}}},c1=function($){return R(function(Q,X){for(var Y in $)if(!$[Y].equals(Q[Y],X[Y]))return!1;return!0})},m1=function(){var $=[];for(var Q=0;Q<arguments.length;Q++)$[Q]=arguments[Q];return R(function(X,Y){return $.every(function(V,H){return V.equals(X[H],Y[H])})})},j7=function($,Q){return J($,_1(Q))},_1=function($){return function(Q){return R(function(X,Y){return Q.equals($(X),$(Y))})}},d1="Eq",O={equals:function($,Q){return $===Q}},G7={equals:function(){return!0}},n1=function(){return{concat:function($,Q){return R(function(X,Y){return $.equals(X,Y)&&Q.equals(X,Y)})}}},D7=function(){return{concat:n1().concat,empty:G7}},p1={URI:d1,contramap:j7},P7=m1,z7=c1,L7=O.equals,q7=p1,C7=O,B7=O,v7=O,w7={equals:function($,Q){return $.valueOf()===Q.valueOf()}};var U7=function($,Q){return $<Q?-1:$>Q?1:0},K7=function($){return function(Q,X){return Q===X||$(Q,X)===0}},D0=function($){return{equals:K7($),compare:function(Q,X){return Q===X?0:$(Q,X)}}};var T7=function(){return{concat:function($,Q){return D0(function(X,Y){var V=$.compare(X,Y);return V!==0?V:Q.compare(X,Y)})}}},r1=function(){return{concat:T7().concat,empty:D0(function(){return 0})}};var OQ={equals:O.equals,compare:U7};var N7=function($){return{concat:function(){return $}}};var o1=l1,f1=N7(void 0);var s1={concat:function($,Q){return $&&Q}},t1={concat:function($,Q){return $||Q}};var i1={concat:function($,Q){return $+Q}},e1={concat:function($,Q){return $+Q}},a1={concat:function($,Q){return $*Q}};var P0=function($,Q){return{left:$,right:Q}};function $5($,Q){return function(X){var Y=$.traverse(X);return function(V,H){return X.map(Y(V,H),Q.separate)}}}function Q5($,Q){return function(X){var Y=$.traverse(X);return function(V,H){return X.map(Y(V,H),Q.compact)}}}function X5($){return function(Q){var X=$.wither(Q);return function(Y){return function(V){return X(V,function(H){return Q.map(Y(H),function(Z){return Z?P(H):G})})}}}}function Y5($,Q){return function(X){return X?Q.of(void 0):$.zero()}}var t=G,y0=P;var R7=function($){return $._tag==="Left"?t:y0($.right)},H5=function($,Q){return J($,z0(Q))},O7=function($,Q){return J($,g7(Q))};var b0="Option";var z0=function($){return function(Q){return i(Q)?t:y0($(Q.value))}},V5={URI:b0,map:H5},uQ=w(2,x0(V5)),lQ=b1(V5);var g7=function($){return function(Q){return i(Q)?t:i($)?t:y0(Q.value($.value))}};var F7=w(2,function($,Q){return i($)?t:Q($.value)}),J5={URI:b0,map:H5,ap:O7,chain:F7};var cQ=w(2,function($,Q){return i($)?Q():$});var M7=R7,W7={URI:b0,fromEither:M7},Z5=U,i=function($){return $._tag==="None"};var mQ=w(2,f(J5)),_Q=w(2,u1(W7,J5));function G5($){return function(Q,X){if(X===void 0){var Y=G5($);return function(B){return Y(Q,B)}}var V=X.entries(),H;while(!(H=V.next()).done){var Z=H.value,D=Z[0],v=Z[1];if($.equals(D,Q))return P([D,v])}return G}}function h0($){var Q=G5($);return function(X,Y){if(Y===void 0){var V=h0($);return function(H){return V(X,H)}}return J(Q(X,Y),z0(function(H){var Z=H[0],D=H[1];return D}))}}var D5=h0;var _={};M0(_,{zipWith:()=>{{return G4}},zip:()=>{{return D4}},zero:()=>{{return l}},wither:()=>{{return _9}},wilt:()=>{{return d9}},updateAt:()=>{{return N9}},unzip:()=>{{return F9}},unsafeUpdateAt:()=>{{return m4}},unsafeInsertAt:()=>{{return c4}},unsafeDeleteAt:()=>{{return _4}},uniq:()=>{{return I9}},union:()=>{{return Z1}},unfold:()=>{{return N1}},traverseWithIndex:()=>{{return U1}},traverse:()=>{{return k4}},takeRight:()=>{{return G9}},takeLeftWhile:()=>{{return D9}},takeLeft:()=>{{return j9}},tail:()=>{{return J9}},splitAt:()=>{{return z4}},spanLeft:()=>{{return P9}},sortBy:()=>{{return E9}},sort:()=>{{return g9}},some:()=>{{return d4}},snoc:()=>{{return E$}},size:()=>{{return X9}},sequence:()=>{{return X0}},separate:()=>{{return m}},scanRight:()=>{{return Q9}},scanLeft:()=>{{return $9}},rotate:()=>{{return W9}},rights:()=>{{return R9}},reverse:()=>{{return S9}},replicate:()=>{{return s7}},reduceWithIndex:()=>{{return T1}},reduceRightWithIndex:()=>{{return E4}},reduceRight:()=>{{return I4}},reduce:()=>{{return W4}},range:()=>{{return M$}},prependW:()=>{{return o7}},prependToAll:()=>{{return k$}},prependAll:()=>{{return P4}},prepend:()=>{{return r7}},partitionWithIndex:()=>{{return v1}},partitionMapWithIndex:()=>{{return w1}},partitionMap:()=>{{return S4}},partition:()=>{{return A4}},of:()=>{{return M}},modifyAt:()=>{{return j4}},matchW:()=>{{return Q4}},matchRightW:()=>{{return H4}},matchRight:()=>{{return V4}},matchLeftW:()=>{{return X4}},matchLeft:()=>{{return Y4}},match:()=>{{return i7}},mapWithIndex:()=>{{return U4}},map:()=>{{return q1}},makeBy:()=>{{return e5}},lookup:()=>{{return Y9}},let:()=>{{return R$}},lefts:()=>{{return O9}},last:()=>{{return V9}},isOutOfBound:()=>{{return Q0}},isNonEmpty:()=>{{return z}},isEmpty:()=>{{return g}},intersperse:()=>{{return M9}},intersection:()=>{{return j1}},intercalate:()=>{{return N$}},insertAt:()=>{{return U9}},init:()=>{{return Z9}},head:()=>{{return H9}},guard:()=>{{return J$}},getUnionSemigroup:()=>{{return y4}},getUnionMonoid:()=>{{return f9}},getShow:()=>{{return n9}},getSemigroup:()=>{{return x4}},getOrd:()=>{{return o9}},getMonoid:()=>{{return p9}},getIntersectionSemigroup:()=>{{return s9}},getEq:()=>{{return r9}},getDifferenceMagma:()=>{{return t9}},fromPredicate:()=>{{return t7}},fromOptionK:()=>{{return y9}},fromOption:()=>{{return a5}},fromEitherK:()=>{{return K$}},fromEither:()=>{{return $4}},foldRight:()=>{{return a7}},foldMapWithIndex:()=>{{return M4}},foldMap:()=>{{return F4}},foldLeft:()=>{{return e7}},flatten:()=>{{return c9}},flatMap:()=>{{return T}},flap:()=>{{return i9}},findLastMap:()=>{{return K9}},findLastIndex:()=>{{return T9}},findLast:()=>{{return w9}},findIndex:()=>{{return C9}},findFirstMap:()=>{{return v9}},findFirst:()=>{{return B9}},filterWithIndex:()=>{{return g4}},filterMapWithIndex:()=>{{return C1}},filterMap:()=>{{return B1}},filterE:()=>{{return w$}},filter:()=>{{return N4}},extend:()=>{{return K1}},exists:()=>{{return U$}},every:()=>{{return T$}},empty:()=>{{return W$}},elem:()=>{{return J1}},duplicate:()=>{{return m9}},dropRight:()=>{{return L9}},dropLeftWhile:()=>{{return q9}},dropLeft:()=>{{return z9}},difference:()=>{{return G1}},deleteAt:()=>{{return A9}},copy:()=>{{return C}},cons:()=>{{return I$}},concatW:()=>{{return L4}},concat:()=>{{return h9}},comprehension:()=>{{return b9}},compact:()=>{{return c}},chunksOf:()=>{{return x9}},chop:()=>{{return k9}},chainWithIndex:()=>{{return J4}},chainRecDepthFirst:()=>{{return q$}},chainRecBreadthFirst:()=>{{return B$}},chainFirst:()=>{{return X$}},chain:()=>{{return F$}},bindTo:()=>{{return S$}},bind:()=>{{return O$}},array:()=>{{return x$}},appendW:()=>{{return f7}},append:()=>{{return C0}},apSecond:()=>{{return $$}},apS:()=>{{return g$}},apFirst:()=>{{return a9}},ap:()=>{{return T4}},altW:()=>{{return R4}},alt:()=>{{return O4}},Zero:()=>{{return h4}},Witherable:()=>{{return u4}},Unfoldable:()=>{{return H$}},URI:()=>{{return j}},TraversableWithIndex:()=>{{return L$}},Traversable:()=>{{return R1}},Pointed:()=>{{return b4}},Monad:()=>{{return Y$}},FunctorWithIndex:()=>{{return e9}},Functor:()=>{{return N0}},FromEither:()=>{{return l4}},FoldableWithIndex:()=>{{return z$}},Foldable:()=>{{return P$}},FilterableWithIndex:()=>{{return D$}},Filterable:()=>{{return G$}},Extend:()=>{{return j$}},Do:()=>{{return A$}},Compactable:()=>{{return S1}},ChainRecDepthFirst:()=>{{return C$}},ChainRecBreadthFirst:()=>{{return v$}},Chain:()=>{{return A1}},Apply:()=>{{return A0}},Applicative:()=>{{return Q$}},Alternative:()=>{{return Z$}},Alt:()=>{{return V$}}});var y7=function($,Q,X){if(X||arguments.length===2){for(var Y=0,V=Q.length,H;Y<V;Y++)if(H||!(Y in Q)){if(!H)H=Array.prototype.slice.call(Q,0,Y);H[Y]=Q[Y]}}return $.concat(H||Array.prototype.slice.call(Q))};var e=W0,P5=function($,Q){return $<0||$>=Q.length},z5=function($){return function(Q){return y7([$],Q,!0)}},L5=z5;var q5=function($){return function(Q){var X=[$,Q[0]];for(var Y=1;Y<Q.length;Y++)X.push($,Q[Y]);return X}},C5=function($){return function(Q){var X=B5(Q);return e(X)?J(X,q5($),L5(a(Q))):Q}};var b7=I0;var a=b7,B5=y1,L0=function($){return $[$.length-1]};var v5=function($){return function(Q){return Q.reduce($.concat)}};var u0=function($){var Q=v5($);return function(X){return L(C5(X),Q)}};function S5($,Q){return Q?$.concat(Q):function(X){return X.concat($)}}function M5($,Q){return Q===void 0?k($):J(Q,k($))}var l0=function($,Q,X){if(X||arguments.length===2){for(var Y=0,V=Q.length,H;Y<V;Y++)if(H||!(Y in Q)){if(!H)H=Array.prototype.slice.call(Q,0,Y);H[Y]=Q[Y]}}return $.concat(H||Array.prototype.slice.call(Q))},x=function($){return $.length>0},c0=function($,Q){return $<0||$>=Q.length},m0=function($){return function(Q){return l0([$],Q,!0)}},k=m0,_0=function($){return function(Q){return l0(l0([],Q,!0),[$],!1)}},d0=_0,K5=function($,Q,X){if(x(X)){var Y=r0(X);return Y.splice($,0,Q),Y}return[Q]},T5=function($,Q,X){var Y=r0(X);return Y[$]=Q,Y},n0=function($){return function(Q){if(Q.length===1)return $0(Q);var X=[y(Q)],Y=b(Q),V=function(v){if(X.every(function(B){return!$.equals(B,v)}))X.push(v)};for(var H=0,Z=Y;H<Z.length;H++){var D=Z[H];V(D)}return X}},U5=function($){if(x($)){var Q=r1();return h7($.reduce(Q.concat,Q.empty))}return $0},N5=function($){var Q=n0($);return function(X){return function(Y){return Q(J(Y,S5(X)))}}},p0=function($){return function(Q){var X=Q.length,Y=Math.round($)%X;if(c0(Math.abs(Y),Q)||Y===0)return $0(Q);if(Y<0){var V=q0(-Y)(Q),H=V[0],Z=V[1];return J(Z,S5(H))}else return p0(Y-X)(Q)}},r0=E0;var o0=function($){return function(Q){var X=Math.max(0,Math.floor(Q)),Y=[$(0)];for(var V=1;V<X;V++)Y.push($(V));return Y}};var A5=function($,Q){return $<=Q?o0(function(X){return $+X})(Q-$+1):[$]};var h7=function($){return function(Q){return Q.slice().sort($.compare)}};var $0=r0,R5=function($){return[$]};var f0=function($){return function(Q){var X=[$,Q[0]];for(var Y=1;Y<Q.length;Y++)X.push($,Q[Y]);return X}},O5=function($){return function(Q){var X=b(Q);return x(X)?J(X,f0($),k(y(Q))):$0(Q)}};var s0=function($){return function(Q){var X=$(Q),Y=X[0],V=X[1],H=[Y],Z=V;while(x(Z)){var D=$(Z),v=D[0],B=D[1];H.push(v),Z=B}return H}},q0=function($){return function(Q){var X=Math.max(1,$);return X>=Q.length?[$0(Q),[]]:[J(Q.slice(1,X),k(y(Q))),Q.slice(X)]}},g5=function($){return s0(q0($))};var y=a,b=function($){return $.slice(1)},F5=L0,t0=function($){return $.slice(0,-1)};var W5=function($,Q){return J($,d0(Q))};var I5={equals:function($,Q){return $===Q}},i0={equals:I5.equals,compare:function($,Q){return $<Q?-1:$>Q?1:0}},NX={equals:I5.equals,compare:i0.compare,top:Infinity,bottom:(-Infinity)};var l7={concat:function($,Q){return $-Q}},E5={concat:function($,Q){return $+Q}},k5={concat:function($,Q){return $*Q}},AX={concat:E5.concat,empty:0},SX={concat:k5.concat,empty:1},RX={add:E5.concat,zero:0,mul:k5.concat,one:1,sub:l7.concat,degree:function($){return 1},div:function($,Q){return $/Q},mod:function($,Q){return $%Q}};function a0($,Q){return Q===void 0?function(X){return a0($,X)}:n7($,Q)?G:P(Q[$])}function h5($){return function(Q){for(var X=0;X<Q.length;X++)if($(Q[X]))return P(Q[X]);return G}}function l5($){return function(Q){for(var X=Q.length-1;X>=0;X--)if($(Q[X]))return P(Q[X]);return G}}function $1($){return function(Q,X){if(X===void 0){var Y=$1($);return function(Z){return Y(Q,Z)}}var V=function(Z){return $.equals(Z,Q)},H=0;for(;H<X.length;H++)if(V(X[H]))return!0;return!1}}function t5($){return function(Q){return Q.every($)}}var m7=function($,Q,X){if(X||arguments.length===2){for(var Y=0,V=Q.length,H;Y<V;Y++)if(H||!(Y in Q)){if(!H)H=Array.prototype.slice.call(Q,0,Y);H[Y]=Q[Y]}}return $.concat(H||Array.prototype.slice.call(Q))};var e0=e;var _7=function($,Q){return function(X){return e0(X)?Q(X):$()}},d7=_7;var n7=P5,x5=function($){return e0($)?P(a($)):G},y5=function($){return e0($)?P(L0($)):G};var b5=function($){return function(Q){for(var X=0;X<Q.length;X++)if($(Q[X]))return P(X);return G}},u5=function($){return function(Q){for(var X=0;X<Q.length;X++){var Y=$(Q[X]);if(U(Y))return Y}return G}},c5=function($){return function(Q){for(var X=Q.length-1;X>=0;X--){var Y=$(Q[X]);if(U(Y))return Y}return G}},m5=function($){return function(Q){for(var X=Q.length-1;X>=0;X--)if($(Q[X]))return P(X);return G}};var _5=function($,Q){return J($,H1(Q))},d5=function($,Q){return J($,V1(Q))};var Q1=function($){return function(Q){return function(X){return X.reduce(function(Y,V,H){return $.concat(Y,Q(H,V))},$.empty)}}},n5=function($,Q){return X1($,function(X,Y,V){return Q(Y,V)})},p5=function($){var Q=Q1($);return function(X){return Q(function(Y,V){return X(V)})}},X1=function($,Q){return function(X){var Y=X.length,V=$;for(var H=0;H<Y;H++)V=Q(H,V,X[H]);return V}},r5=function($,Q){return Y1($,function(X,Y,V){return Q(Y,V)})},Y1=function($,Q){return function(X){return X.reduceRight(function(Y,V,H){return Q(H,V,Y)},$)}};var o5=function($){return{show:function(Q){return"[".concat(Q.map($.show).join(", "),"]")}}};var f5=function($){return R(function(Q,X){return Q.length===X.length&&Q.every(function(Y,V){return $.equals(Y,X[V])})})},s5=function($){return D0(function(Q,X){var Y=Q.length,V=X.length,H=Math.min(Y,V);for(var Z=0;Z<H;Z++){var D=$.compare(Q[Z],X[Z]);if(D!==0)return D}return i0.compare(Y,V)})};var H1=function($){return function(Q){var X=m7([],$(Q),!0),Y=[];while(X.length>0){var V=X.shift();if(I(V))X.unshift.apply(X,$(V.left));else Y.push(V.right)}return Y}};var V1=function($){return function(Q){var X=$(Q),Y=[],V=[];function H(B){if(I(B))$(B.left).forEach(function(p){return Y.push(p)});else V.push(B.right)}for(var Z=0,D=X;Z<D.length;Z++){var v=D[Z];H(v)}while(Y.length>0)H(Y.shift());return V}};var i5=function($){var Q=u0($);return function(X){return d7(function(){return $.empty},Q(X))}};function t7($){return function(Q){return $(Q)?[Q]:[]}}function D9($){return function(Q){var X=[];for(var Y=0,V=Q;Y<V.length;Y++){var H=V[Y];if(!$(H))break;X.push(H)}return X}}function P9($){return function(Q){var X=z4(Z4(Q,$))(Q),Y=X[0],V=X[1];return{init:Y,rest:V}}}function q9($){return function(Q){return Q.slice(Z4(Q,$))}}function B9($){return h5($)}function w9($){return l5($)}function D4($,Q){if(Q===void 0)return function(X){return D4(X,$)};return G4($,Q,function(X,Y){return[X,Y]})}function b9($,Q,X){if(X===void 0)X=function(){return!0};var Y=function(V,H){return z(H)?T(y(H),function(Z){return Y(J(V,C0(Z)),b(H))}):X.apply(void 0,V)?[Q.apply(void 0,V)]:[]};return Y([],$)}function Z1($){var Q=N5($);return function(X,Y){if(Y===void 0){var V=Z1($);return function(H){return V(H,X)}}return z(X)&&z(Y)?Q(Y)(X):z(X)?C(X):C(Y)}}function j1($){var Q=J1($);return function(X,Y){if(Y===void 0){var V=j1($);return function(H){return V(H,X)}}return X.filter(function(H){return Q(H,Y)})}}function G1($){var Q=J1($);return function(X,Y){if(Y===void 0){var V=G1($);return function(H){return V(H,X)}}return X.filter(function(H){return!Q(H,Y)})}}var g=function($){return $.length===0},z=x,r7=k,o7=m0,C0=d0,f7=_0,e5=function($,Q){return $<=0?[]:o0(Q)($)},s7=function($,Q){return e5($,function(){return Q})},a5=function($){return H0($)?[]:[$.value]},$4=function($){return I($)?[]:[$.right]},Q4=function($,Q){return function(X){return z(X)?Q(X):$()}},i7=Q4,X4=function($,Q){return function(X){return z(X)?Q(y(X),b(X)):$()}},Y4=X4,e7=Y4,H4=function($,Q){return function(X){return z(X)?Q(t0(X),F5(X)):$()}},V4=H4,a7=V4,J4=function($){return function(Q){var X=[];for(var Y=0;Y<Q.length;Y++)X.push.apply(X,$(Y,Q[Y]));return X}},$9=function($,Q){return function(X){var Y=X.length,V=new Array(Y+1);V[0]=$;for(var H=0;H<Y;H++)V[H+1]=Q(V[H],X[H]);return V}},Q9=function($,Q){return function(X){var Y=X.length,V=new Array(Y+1);V[Y]=$;for(var H=Y-1;H>=0;H--)V[H]=Q(X[H],V[H+1]);return V}},X9=function($){return $.length},Q0=c0,Y9=a0,H9=x5,V9=y5,J9=function($){return z($)?P(b($)):G},Z9=function($){return z($)?P(t0($)):G},j9=function($){return function(Q){return Q0($,Q)?C(Q):Q.slice(0,$)}},G9=function($){return function(Q){return Q0($,Q)?C(Q):$===0?[]:Q.slice(-$)}},Z4=function($,Q){var X=$.length,Y=0;for(;Y<X;Y++)if(!Q($[Y]))break;return Y},z9=function($){return function(Q){return $<=0||g(Q)?C(Q):$>=Q.length?[]:Q.slice($,Q.length)}},L9=function($){return function(Q){return $<=0||g(Q)?C(Q):$>=Q.length?[]:Q.slice(0,Q.length-$)}},C9=b5,v9=u5,K9=c5,T9=m5,C=function($){return $.slice()},U9=function($,Q){return function(X){return $<0||$>X.length?G:P(c4($,Q,X))}},N9=function($,Q){return j4($,function(){return Q})},A9=function($){return function(Q){return Q0($,Q)?G:P(_4($,Q))}},j4=function($,Q){return function(X){return Q0($,X)?G:P(m4($,Q(X[$]),X))}},S9=function($){return g($)?[]:$.slice().reverse()},R9=function($){var Q=[];for(var X=0;X<$.length;X++){var Y=$[X];if(Y._tag==="Right")Q.push(Y.right)}return Q},O9=function($){var Q=[];for(var X=0;X<$.length;X++){var Y=$[X];if(Y._tag==="Left")Q.push(Y.left)}return Q},g9=function($){return function(Q){return Q.length<=1?C(Q):Q.slice().sort($.compare)}},G4=function($,Q,X){var Y=[],V=Math.min($.length,Q.length);for(var H=0;H<V;H++)Y[H]=X($[H],Q[H]);return Y},F9=function($){var Q=[],X=[];for(var Y=0;Y<$.length;Y++)Q[Y]=$[Y][0],X[Y]=$[Y][1];return[Q,X]},P4=function($){var Q=f0($);return function(X){return z(X)?Q(X):[]}},M9=function($){var Q=O5($);return function(X){return z(X)?Q(X):C(X)}},W9=function($){var Q=p0($);return function(X){return z(X)?Q(X):C(X)}},J1=$1,I9=function($){var Q=n0($);return function(X){return z(X)?Q(X):C(X)}},E9=function($){var Q=U5($);return function(X){return z(X)?Q(X):C(X)}},k9=function($){var Q=s0($);return function(X){return z(X)?Q(X):[]}},z4=function($){return function(Q){return $>=1&&z(Q)?q0($)(Q):g(Q)?[C(Q),[]]:[[],C(Q)]}},x9=function($){var Q=g5($);return function(X){return z(X)?Q(X):[]}},y9=function($){return function(){var Q=[];for(var X=0;X<arguments.length;X++)Q[X]=arguments[X];return a5($.apply(void 0,Q))}},L4=function($){return function(Q){return g(Q)?C($):g($)?C(Q):Q.concat($)}},h9=L4,q=function($,Q){return J($,q1(Q))},B0=function($,Q){return J($,U4(Q))},N=function($,Q){return J($,T4(Q))},v0=function($,Q){return J($,N4(Q))},w0=function($,Q){return J($,B1(Q))},K0=function($,Q){return J($,A4(Q))},T0=function($,Q){return J($,S4(Q))},q4=function($,Q){return J($,v1(Q))},C4=function($,Q){return J($,w1(Q))},D1=function($,Q){return J($,O4(Q))},F=function($,Q,X){return J($,W4(Q,X))},h=function($){var Q=F4($);return function(X,Y){return J(X,Q(Y))}},u=function($,Q,X){return J($,I4(Q,X))},P1=function($,Q,X){return J($,T1(Q,X))},z1=function($){var Q=M4($);return function(X,Y){return J(X,Q(Y))}},L1=function($,Q,X){return J($,E4(Q,X))},B4=function($,Q){return J($,C1(Q))},v4=function($,Q){return J($,g4(Q))},w4=function($,Q){return J($,K1(Q))},U0=function($){var Q=k4($);return function(X,Y){return J(X,Q(Y))}},K4=function($){var Q=U1($);return function(X,Y){return J(X,Q(Y))}},u9=_5,l9=d5,M=R5,l=function(){return[]},q1=function($){return function(Q){return Q.map(function(X){return $(X)})}},T4=function($){return T(function(Q){return J($,q1(Q))})},T=w(2,function($,Q){return J($,J4(function(X,Y){return Q(Y,X)}))}),c9=T(K),U4=function($){return function(Q){return Q.map(function(X,Y){return $(Y,X)})}},C1=function($){return function(Q){var X=[];for(var Y=0;Y<Q.length;Y++){var V=$(Y,Q[Y]);if(U(V))X.push(V.value)}return X}},B1=function($){return C1(function(Q,X){return $(X)})},c=B1(K),m=function($){var Q=[],X=[];for(var Y=0,V=$;Y<V.length;Y++){var H=V[Y];if(H._tag==="Left")Q.push(H.left);else X.push(H.right)}return P0(Q,X)},N4=function($){return function(Q){return Q.filter($)}},A4=function($){return v1(function(Q,X){return $(X)})},v1=function($){return function(Q){var X=[],Y=[];for(var V=0;V<Q.length;V++){var H=Q[V];if($(V,H))Y.push(H);else X.push(H)}return P0(X,Y)}},S4=function($){return w1(function(Q,X){return $(X)})},w1=function($){return function(Q){var X=[],Y=[];for(var V=0;V<Q.length;V++){var H=$(V,Q[V]);if(H._tag==="Left")X.push(H.left);else Y.push(H.right)}return P0(X,Y)}},R4=function($){return function(Q){return Q.concat($())}},O4=R4,g4=function($){return function(Q){return Q.filter(function(X,Y){return $(Y,X)})}},K1=function($){return function(Q){return Q.map(function(X,Y){return $(Q.slice(Y))})}},m9=K1(K),F4=p5,M4=Q1,W4=n5,T1=X1,I4=r5,E4=Y1,k4=function($){var Q=U1($);return function(X){return Q(function(Y,V){return X(V)})}},X0=function($){return function(Q){return F(Q,$.of(l()),function(X,Y){return $.ap($.map(X,function(V){return function(H){return J(V,C0(H))}}),Y)})}},U1=function($){return function(Q){return T1($.of(l()),function(X,Y,V){return $.ap($.map(Y,function(H){return function(Z){return J(H,C0(Z))}}),Q(X,V))})}},_9=function($){var Q=O1($);return function(X){return function(Y){return Q(Y,X)}}},d9=function($){var Q=g1($);return function(X){return function(Y){return Q(Y,X)}}},N1=function($,Q){var X=[],Y=$;while(!0){var V=Q(Y);if(U(V)){var H=V.value,Z=H[0],D=H[1];X.push(Z),Y=D}else break}return X},j="Array",n9=o5,x4=function(){return{concat:function($,Q){return $.concat(Q)}}},p9=function(){return{concat:x4().concat,empty:[]}},r9=f5,o9=s5,y4=function($){var Q=Z1($);return{concat:function(X,Y){return Q(Y)(X)}}},f9=function($){return{concat:y4($).concat,empty:[]}},s9=function($){var Q=j1($);return{concat:function(X,Y){return Q(Y)(X)}}},t9=function($){var Q=G1($);return{concat:function(X,Y){return Q(Y)(X)}}},N0={URI:j,map:q},i9=k0(N0),b4={URI:j,of:M},e9={URI:j,map:q,mapWithIndex:B0},A0={URI:j,map:q,ap:N},a9=V0(A0),$$=J0(A0),Q$={URI:j,map:q,ap:N,of:M},A1={URI:j,map:q,ap:N,chain:T},X$=h1(A1),Y$={URI:j,map:q,ap:N,of:M,chain:T},H$={URI:j,unfold:N1},V$={URI:j,map:q,alt:D1},h4={URI:j,zero:l},J$=Y5(h4,b4),Z$={URI:j,map:q,ap:N,of:M,alt:D1,zero:l},j$={URI:j,map:q,extend:w4},S1={URI:j,compact:c,separate:m},G$={URI:j,map:q,compact:c,separate:m,filter:v0,filterMap:w0,partition:K0,partitionMap:T0},D$={URI:j,map:q,mapWithIndex:B0,compact:c,separate:m,filter:v0,filterMap:w0,partition:K0,partitionMap:T0,partitionMapWithIndex:C4,partitionWithIndex:q4,filterMapWithIndex:B4,filterWithIndex:v4},P$={URI:j,reduce:F,foldMap:h,reduceRight:u},z$={URI:j,reduce:F,foldMap:h,reduceRight:u,reduceWithIndex:P1,foldMapWithIndex:z1,reduceRightWithIndex:L1},R1={URI:j,map:q,reduce:F,foldMap:h,reduceRight:u,traverse:U0,sequence:X0},L$={URI:j,map:q,mapWithIndex:B0,reduce:F,foldMap:h,reduceRight:u,reduceWithIndex:P1,foldMapWithIndex:z1,reduceRightWithIndex:L1,traverse:U0,sequence:X0,traverseWithIndex:K4},O1=Q5(R1,S1),g1=$5(R1,S1),u4={URI:j,map:q,compact:c,separate:m,filter:v0,filterMap:w0,partition:K0,partitionMap:T0,reduce:F,foldMap:h,reduceRight:u,traverse:U0,sequence:X0,wither:O1,wilt:g1},q$=H1,C$={URI:j,map:q,ap:N,chain:T,chainRec:u9},B$=V1,v$={URI:j,map:q,ap:N,chain:T,chainRec:l9},w$=X5(u4),l4={URI:j,fromEither:$4},K$=j0(l4),c4=K5,m4=function($,Q,X){return z(X)?T5($,Q,X):[]},_4=function($,Q){var X=Q.slice();return X.splice($,1),X},T$=t5,d4=function($){return function(Q){return Q.some($)}},U$=d4,N$=i5,A$=M(E),S$=r(N0),R$=o(N0);var O$=s(A1),g$=Z0(A0),F$=T,M$=A5,W$=[],I$=M5,E$=W5,k$=P4,x$={URI:j,compact:c,separate:m,map:q,ap:N,of:M,chain:T,filter:v0,filterMap:w0,partition:K0,partitionMap:T0,mapWithIndex:B0,partitionMapWithIndex:C4,partitionWithIndex:q4,filterMapWithIndex:B4,filterWithIndex:v4,alt:D1,zero:l,unfold:N1,reduce:F,foldMap:h,reduceRight:u,traverse:U0,sequence:X0,reduceWithIndex:P1,foldMapWithIndex:z1,reduceRightWithIndex:L1,traverseWithIndex:K4,extend:w4,wither:O1,wilt:g1};var y$=function(){return{concat:function($,Q){return L($,Q)}}},n4=function(){return{concat:y$().concat,empty:K}};var S0=function($){return o1($)($.empty)},j3={concat:f1.concat,empty:void 0};var G3={concat:s1.concat,empty:!0},D3={concat:t1.concat,empty:!1};var P3={concat:i1.concat,empty:""},z3={concat:e1.concat,empty:0},L3={concat:a1.concat,empty:1};var b$="Function",h$=($)=>(Q)=>L(Q,$),F1={URI:b$,map:($,Q)=>h$(Q)($)},p4=W,u$=($)=>(Q)=>(X)=>Q(X)($(X)),R0={...F1,of:p4,ap:($,Q)=>u$(Q)($)},F3=V0(R0),M3=J0(R0),l$=($)=>(Q)=>(X)=>$(Q(X))(X);var c$={...R0,chain:($,Q)=>l$(Q)($)},W3=p4({}),I3=r(F1),E3=s(c$),k3=Z0(R0),x3=o(F1);var O0=A;var m$=($)=>(Q)=>(X)=>$(X)?X:Q(X),y3=L(x1,m$);var _$=($)=>(Q)=>(X)=>X[$](...Q),b3=I1(_$)([]);var r4=($)=>(Q)=>{const X=new Map;return(Y)=>{const V=D5($)(Y)(X);if(Z5(V))return V.value;const H=Q(Y);return X.set(Y,H),H}},d$=($)=>(Q)=>(X)=>$([Q,X]),h3=L(O0,d$),n$=($)=>(Q)=>(X)=>(Y)=>$([Q,X,Y]),u3=L(O0,n$),p$=($)=>(Q)=>(X)=>(Y)=>(V)=>$([Q,X,Y,V]),l3=L(O0,p$),r$=($)=>(Q)=>(X)=>(Y)=>(V)=>(H)=>$([Q,X,Y,V,H]),c3=L(O0,r$);var m3=S0(n4());var o4=($)=>S0(k1())($);var g0={};M0(g0,{trimRight:()=>{{return XQ}},trimLeft:()=>{{return QQ}},trim:()=>{{return $Q}},toUpperCase:()=>{{return i$}},toLowerCase:()=>{{return e$}},startsWith:()=>{{return jQ}},split:()=>{{return JQ}},slice:()=>{{return YQ}},size:()=>{{return VQ}},replace:()=>{{return a$}},isString:()=>{{return t$}},isEmpty:()=>{{return HQ}},includes:()=>{{return ZQ}},endsWith:()=>{{return GQ}},empty:()=>{{return t4}},Show:()=>{{return s$}},Semigroup:()=>{{return s4}},Ord:()=>{{return f$}},Monoid:()=>{{return o$}},Eq:()=>{{return f4}}});var f4={equals:function($,Q){return $===Q}},s4={concat:function($,Q){return $+Q}},t4="",o$={concat:s4.concat,empty:t4},f$={equals:f4.equals,compare:function($,Q){return $<Q?-1:$>Q?1:0}},s$={show:function($){return JSON.stringify($)}},t$=function($){return typeof $==="string"},i$=function($){return $.toUpperCase()},e$=function($){return $.toLowerCase()},a$=function($,Q){return function(X){return X.replace($,Q)}},$Q=function($){return $.trim()},QQ=function($){return $.trimLeft()},XQ=function($){return $.trimRight()},YQ=function($,Q){return function(X){return X.slice($,Q)}},HQ=function($){return $.length===0},VQ=function($){return $.length},JQ=function($){return function(Q){var X=Q.split($);return e(X)?X:[Q]}},ZQ=function($,Q){return function(X){return X.includes($,Q)}},jQ=function($,Q){return function(X){return X.startsWith($,Q)}},GQ=function($,Q){return function(X){return X.endsWith($,Q)}};var DQ=($)=>async(Q)=>$(await Q);var Y0=($)=>(Q)=>L(_.chunksOf($),_.map(Q),(X)=>Promise.all(X),DQ(_.flatten));var i4=($)=>J($,A,r4(G0.contramap(JSON.stringify)(g0.Eq)),E1);var e4;(function(F0){let $;(function(d){d.start=W({before:"start"}),d.fromUri=(H)=>({before:{uri:H}}),d.fromUid=(H)=>({before:{uid:H}})})($=F0.before||(F0.before={}));let Q;(function(n){n.end=W({after:"end"}),n.fromUri=(H)=>({before:{uri:H}}),n.fromUid=(H)=>({before:{uid:H}})})(Q=F0.after||(F0.after={}))})(e4||(e4={}));//! Does location actually point to document.body?
-var{URI:j6}=Spicetify;var G6=Y0(50)(async($)=>(await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${$.join(",")}`)).artists),D6=Y0(1)(async([$])=>[await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${$}`)]),P6=Y0(50)(async($)=>(await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${$.join(",")}`)).albums),z6=Y0(50)(async($)=>(await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${$.join(",")}`)).tracks);var PQ=async($,Q=0,X=300)=>(await Spicetify.Platform.EnhanceAPI.getPage($,0,0,Q,X)).enhancePage.pageItems,M1=async($,Q=0)=>{const X=await PQ($,Q);if(X?.length<300)return X;else return X.concat(M1($,Q+300))};var zQ=async($,Q,X,Y="")=>{const V=new URL("https://ws.audioscrobbler.com/2.0/");return V.searchParams.append("method","track.getInfo"),V.searchParams.append("api_key",$),V.searchParams.append("artist",Q),V.searchParams.append("track",X),V.searchParams.append("format","json"),V.searchParams.append("username",Y),await fetch(V).then((H)=>H.json())},L6=i4(zQ);var{URI:LQ}=Spicetify,a4=new Array,qQ=async($)=>{a4=await M1($),Spicetify.Platform.PlayerAPI.clearQueue(),Spicetify.Platform.PlayerAPI.addToQueue(a4)};new Spicetify.ContextMenu.Item("Play enhanced songs",A(qQ),A(o4([LQ.isPlaylistV1OrV2])),"enhance").register();
+var __defProp = Object.defineProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, {
+      get: all[name],
+      enumerable: true,
+      configurable: true,
+      set: (newValue) => all[name] = () => newValue
+    });
+};
 
-//# debugId=01B712A8EB31AE5364756e2164756e21
+// node_modules/fp-ts/es6/function.js
+function identity(a) {
+  return a;
+}
+function constant(a) {
+  return function() {
+    return a;
+  };
+}
+function flip(f) {
+  return function() {
+    var args = [];
+    for (var _i = 0;_i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+    if (args.length > 1) {
+      return f(args[1], args[0]);
+    }
+    return function(a) {
+      return f(a)(args[0]);
+    };
+  };
+}
+function flow(ab, bc, cd, de, ef, fg, gh, hi, ij) {
+  switch (arguments.length) {
+    case 1:
+      return ab;
+    case 2:
+      return function() {
+        return bc(ab.apply(this, arguments));
+      };
+    case 3:
+      return function() {
+        return cd(bc(ab.apply(this, arguments)));
+      };
+    case 4:
+      return function() {
+        return de(cd(bc(ab.apply(this, arguments))));
+      };
+    case 5:
+      return function() {
+        return ef(de(cd(bc(ab.apply(this, arguments)))));
+      };
+    case 6:
+      return function() {
+        return fg(ef(de(cd(bc(ab.apply(this, arguments))))));
+      };
+    case 7:
+      return function() {
+        return gh(fg(ef(de(cd(bc(ab.apply(this, arguments)))))));
+      };
+    case 8:
+      return function() {
+        return hi(gh(fg(ef(de(cd(bc(ab.apply(this, arguments))))))));
+      };
+    case 9:
+      return function() {
+        return ij(hi(gh(fg(ef(de(cd(bc(ab.apply(this, arguments)))))))));
+      };
+  }
+  return;
+}
+function tupled(f) {
+  return function(a) {
+    return f.apply(undefined, a);
+  };
+}
+function untupled(f) {
+  return function() {
+    var a = [];
+    for (var _i = 0;_i < arguments.length; _i++) {
+      a[_i] = arguments[_i];
+    }
+    return f(a);
+  };
+}
+function pipe(a, ab, bc, cd, de, ef, fg, gh, hi) {
+  switch (arguments.length) {
+    case 1:
+      return a;
+    case 2:
+      return ab(a);
+    case 3:
+      return bc(ab(a));
+    case 4:
+      return cd(bc(ab(a)));
+    case 5:
+      return de(cd(bc(ab(a))));
+    case 6:
+      return ef(de(cd(bc(ab(a)))));
+    case 7:
+      return fg(ef(de(cd(bc(ab(a))))));
+    case 8:
+      return gh(fg(ef(de(cd(bc(ab(a)))))));
+    case 9:
+      return hi(gh(fg(ef(de(cd(bc(ab(a))))))));
+    default: {
+      var ret = arguments[0];
+      for (var i = 1;i < arguments.length; i++) {
+        ret = arguments[i](ret);
+      }
+      return ret;
+    }
+  }
+}
+var __spreadArray = function(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar;i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
+      }
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var constFalse = constant(false);
+var dual = function(arity, body) {
+  var isDataFirst = typeof arity === "number" ? function(args) {
+    return args.length >= arity;
+  } : arity;
+  return function() {
+    var args = Array.from(arguments);
+    if (isDataFirst(arguments)) {
+      return body.apply(this, args);
+    }
+    return function(self) {
+      return body.apply(undefined, __spreadArray([self], args, false));
+    };
+  };
+};
+
+// node_modules/fp-ts/es6/Predicate.js
+var getSemigroupAny = function() {
+  return {
+    concat: function(first, second) {
+      return pipe(first, or(second));
+    }
+  };
+};
+var getMonoidAny = function() {
+  return {
+    concat: getSemigroupAny().concat,
+    empty: constFalse
+  };
+};
+var not = function(predicate) {
+  return function(a) {
+    return !predicate(a);
+  };
+};
+var or = function(second) {
+  return function(first) {
+    return function(a) {
+      return first(a) || second(a);
+    };
+  };
+};
+
+// node_modules/fp-ts/es6/internal.js
+var __spreadArray2 = function(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar;i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
+      }
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var isNone = function(fa) {
+  return fa._tag === "None";
+};
+var isSome = function(fa) {
+  return fa._tag === "Some";
+};
+var none = { _tag: "None" };
+var some = function(a) {
+  return { _tag: "Some", value: a };
+};
+var isLeft = function(ma) {
+  return ma._tag === "Left";
+};
+var isNonEmpty = function(as) {
+  return as.length > 0;
+};
+var head = function(as) {
+  return as[0];
+};
+var tail = function(as) {
+  return as.slice(1);
+};
+var emptyRecord = {};
+var fromReadonlyNonEmptyArray = function(as) {
+  return __spreadArray2([as[0]], as.slice(1), true);
+};
+
+// node_modules/fp-ts/es6/Apply.js
+function apFirst(A) {
+  return function(second) {
+    return function(first) {
+      return A.ap(A.map(first, function(a) {
+        return function() {
+          return a;
+        };
+      }), second);
+    };
+  };
+}
+function apSecond(A) {
+  return function(second) {
+    return function(first) {
+      return A.ap(A.map(first, function() {
+        return function(b) {
+          return b;
+        };
+      }), second);
+    };
+  };
+}
+function apS(F) {
+  return function(name, fb) {
+    return function(fa) {
+      return F.ap(F.map(fa, function(a) {
+        return function(b) {
+          var _a;
+          return Object.assign({}, a, (_a = {}, _a[name] = b, _a));
+        };
+      }), fb);
+    };
+  };
+}
+
+// node_modules/fp-ts/es6/Functor.js
+function flap(F) {
+  return function(a) {
+    return function(fab) {
+      return F.map(fab, function(f) {
+        return f(a);
+      });
+    };
+  };
+}
+function bindTo(F) {
+  return function(name) {
+    return function(fa) {
+      return F.map(fa, function(a) {
+        var _a;
+        return _a = {}, _a[name] = a, _a;
+      });
+    };
+  };
+}
+var let_ = function(F) {
+  return function(name, f) {
+    return function(fa) {
+      return F.map(fa, function(a) {
+        var _a;
+        return Object.assign({}, a, (_a = {}, _a[name] = f(a), _a));
+      });
+    };
+  };
+};
+function as(F) {
+  return function(self, b) {
+    return F.map(self, function() {
+      return b;
+    });
+  };
+}
+function asUnit(F) {
+  var asM = as(F);
+  return function(self) {
+    return asM(self, undefined);
+  };
+}
+
+// node_modules/fp-ts/es6/Chain.js
+function chainFirst(M) {
+  var tapM = tap(M);
+  return function(f) {
+    return function(first) {
+      return tapM(first, f);
+    };
+  };
+}
+function tap(M) {
+  return function(first, f) {
+    return M.chain(first, function(a) {
+      return M.map(f(a), function() {
+        return a;
+      });
+    });
+  };
+}
+function bind(M) {
+  return function(name, f) {
+    return function(ma) {
+      return M.chain(ma, function(a) {
+        return M.map(f(a), function(b) {
+          var _a;
+          return Object.assign({}, a, (_a = {}, _a[name] = b, _a));
+        });
+      });
+    };
+  };
+}
+
+// node_modules/fp-ts/es6/FromEither.js
+function fromEitherK(F) {
+  return function(f) {
+    return flow(f, F.fromEither);
+  };
+}
+function tapEither(F, M) {
+  var fromEither = fromEitherK(F);
+  var tapM = tap(M);
+  return function(self, f) {
+    return tapM(self, fromEither(f));
+  };
+}
+
+// node_modules/fp-ts/es6/Magma.js
+var concatAll = function(M) {
+  return function(startWith) {
+    return function(as2) {
+      return as2.reduce(function(a, acc) {
+        return M.concat(a, acc);
+      }, startWith);
+    };
+  };
+};
+
+// node_modules/fp-ts/es6/Eq.js
+var exports_Eq = {};
+__export(exports_Eq, {
+  tuple: () => {
+    {
+      return tuple;
+    }
+  },
+  struct: () => {
+    {
+      return struct;
+    }
+  },
+  strictEqual: () => {
+    {
+      return strictEqual;
+    }
+  },
+  getTupleEq: () => {
+    {
+      return getTupleEq;
+    }
+  },
+  getStructEq: () => {
+    {
+      return getStructEq;
+    }
+  },
+  getSemigroup: () => {
+    {
+      return getSemigroup;
+    }
+  },
+  getMonoid: () => {
+    {
+      return getMonoid;
+    }
+  },
+  fromEquals: () => {
+    {
+      return fromEquals;
+    }
+  },
+  eqString: () => {
+    {
+      return eqString;
+    }
+  },
+  eqStrict: () => {
+    {
+      return eqStrict;
+    }
+  },
+  eqNumber: () => {
+    {
+      return eqNumber;
+    }
+  },
+  eqDate: () => {
+    {
+      return eqDate;
+    }
+  },
+  eqBoolean: () => {
+    {
+      return eqBoolean;
+    }
+  },
+  eq: () => {
+    {
+      return eq;
+    }
+  },
+  contramap: () => {
+    {
+      return contramap;
+    }
+  },
+  URI: () => {
+    {
+      return URI;
+    }
+  },
+  Contravariant: () => {
+    {
+      return Contravariant;
+    }
+  }
+});
+var fromEquals = function(equals) {
+  return {
+    equals: function(x, y) {
+      return x === y || equals(x, y);
+    }
+  };
+};
+var struct = function(eqs) {
+  return fromEquals(function(first, second) {
+    for (var key in eqs) {
+      if (!eqs[key].equals(first[key], second[key])) {
+        return false;
+      }
+    }
+    return true;
+  });
+};
+var tuple = function() {
+  var eqs = [];
+  for (var _i = 0;_i < arguments.length; _i++) {
+    eqs[_i] = arguments[_i];
+  }
+  return fromEquals(function(first, second) {
+    return eqs.every(function(E, i) {
+      return E.equals(first[i], second[i]);
+    });
+  });
+};
+var contramap_ = function(fa, f) {
+  return pipe(fa, contramap(f));
+};
+var contramap = function(f) {
+  return function(fa) {
+    return fromEquals(function(x, y) {
+      return fa.equals(f(x), f(y));
+    });
+  };
+};
+var URI = "Eq";
+var eqStrict = {
+  equals: function(a, b) {
+    return a === b;
+  }
+};
+var empty = {
+  equals: function() {
+    return true;
+  }
+};
+var getSemigroup = function() {
+  return {
+    concat: function(x, y) {
+      return fromEquals(function(a, b) {
+        return x.equals(a, b) && y.equals(a, b);
+      });
+    }
+  };
+};
+var getMonoid = function() {
+  return {
+    concat: getSemigroup().concat,
+    empty
+  };
+};
+var Contravariant = {
+  URI,
+  contramap: contramap_
+};
+var getTupleEq = tuple;
+var getStructEq = struct;
+var strictEqual = eqStrict.equals;
+var eq = Contravariant;
+var eqBoolean = eqStrict;
+var eqString = eqStrict;
+var eqNumber = eqStrict;
+var eqDate = {
+  equals: function(first, second) {
+    return first.valueOf() === second.valueOf();
+  }
+};
+
+// node_modules/fp-ts/es6/Ord.js
+var compare = function(first, second) {
+  return first < second ? -1 : first > second ? 1 : 0;
+};
+var equalsDefault = function(compare2) {
+  return function(first, second) {
+    return first === second || compare2(first, second) === 0;
+  };
+};
+var fromCompare = function(compare2) {
+  return {
+    equals: equalsDefault(compare2),
+    compare: function(first, second) {
+      return first === second ? 0 : compare2(first, second);
+    }
+  };
+};
+var getSemigroup2 = function() {
+  return {
+    concat: function(first, second) {
+      return fromCompare(function(a, b) {
+        var ox = first.compare(a, b);
+        return ox !== 0 ? ox : second.compare(a, b);
+      });
+    }
+  };
+};
+var getMonoid2 = function() {
+  return {
+    concat: getSemigroup2().concat,
+    empty: fromCompare(function() {
+      return 0;
+    })
+  };
+};
+var strictOrd = {
+  equals: eqStrict.equals,
+  compare
+};
+
+// node_modules/fp-ts/es6/Semigroup.js
+var constant2 = function(a) {
+  return {
+    concat: function() {
+      return a;
+    }
+  };
+};
+var concatAll2 = concatAll;
+var semigroupVoid = constant2(undefined);
+var semigroupAll = {
+  concat: function(x, y) {
+    return x && y;
+  }
+};
+var semigroupAny = {
+  concat: function(x, y) {
+    return x || y;
+  }
+};
+var semigroupString = {
+  concat: function(x, y) {
+    return x + y;
+  }
+};
+var semigroupSum = {
+  concat: function(x, y) {
+    return x + y;
+  }
+};
+var semigroupProduct = {
+  concat: function(x, y) {
+    return x * y;
+  }
+};
+
+// node_modules/fp-ts/es6/Separated.js
+var separated = function(left, right) {
+  return { left, right };
+};
+
+// node_modules/fp-ts/es6/Witherable.js
+function wiltDefault(T, C) {
+  return function(F) {
+    var traverseF = T.traverse(F);
+    return function(wa, f) {
+      return F.map(traverseF(wa, f), C.separate);
+    };
+  };
+}
+function witherDefault(T, C) {
+  return function(F) {
+    var traverseF = T.traverse(F);
+    return function(wa, f) {
+      return F.map(traverseF(wa, f), C.compact);
+    };
+  };
+}
+function filterE(W) {
+  return function(F) {
+    var witherF = W.wither(F);
+    return function(predicate) {
+      return function(ga) {
+        return witherF(ga, function(a) {
+          return F.map(predicate(a), function(b) {
+            return b ? some(a) : none;
+          });
+        });
+      };
+    };
+  };
+}
+
+// node_modules/fp-ts/es6/Zero.js
+function guard(F, P) {
+  return function(b) {
+    return b ? P.of(undefined) : F.zero();
+  };
+}
+
+// node_modules/fp-ts/es6/Option.js
+var none2 = none;
+var some2 = some;
+var getRight = function(ma) {
+  return ma._tag === "Left" ? none2 : some2(ma.right);
+};
+var _map = function(fa, f) {
+  return pipe(fa, map(f));
+};
+var _ap = function(fab, fa) {
+  return pipe(fab, ap(fa));
+};
+var URI2 = "Option";
+var map = function(f) {
+  return function(fa) {
+    return isNone2(fa) ? none2 : some2(f(fa.value));
+  };
+};
+var Functor2 = {
+  URI: URI2,
+  map: _map
+};
+var as2 = dual(2, as(Functor2));
+var asUnit2 = asUnit(Functor2);
+var ap = function(fa) {
+  return function(fab) {
+    return isNone2(fab) ? none2 : isNone2(fa) ? none2 : some2(fab.value(fa.value));
+  };
+};
+var flatMap = dual(2, function(ma, f) {
+  return isNone2(ma) ? none2 : f(ma.value);
+});
+var Chain2 = {
+  URI: URI2,
+  map: _map,
+  ap: _ap,
+  chain: flatMap
+};
+var orElse = dual(2, function(self, that) {
+  return isNone2(self) ? that() : self;
+});
+var fromEither = getRight;
+var FromEither2 = {
+  URI: URI2,
+  fromEither
+};
+var isSome2 = isSome;
+var isNone2 = function(fa) {
+  return fa._tag === "None";
+};
+var tap2 = dual(2, tap(Chain2));
+var tapEither2 = dual(2, tapEither(FromEither2, Chain2));
+
+// node_modules/fp-ts/es6/ReadonlyMap.js
+function lookupWithKey(E) {
+  return function(k, m) {
+    if (m === undefined) {
+      var lookupWithKeyE_1 = lookupWithKey(E);
+      return function(m2) {
+        return lookupWithKeyE_1(k, m2);
+      };
+    }
+    var entries = m.entries();
+    var e;
+    while (!(e = entries.next()).done) {
+      var _a = e.value, ka = _a[0], a = _a[1];
+      if (E.equals(ka, k)) {
+        return some([ka, a]);
+      }
+    }
+    return none;
+  };
+}
+function lookup(E) {
+  var lookupWithKeyE = lookupWithKey(E);
+  return function(k, m) {
+    if (m === undefined) {
+      var lookupE_1 = lookup(E);
+      return function(m2) {
+        return lookupE_1(k, m2);
+      };
+    }
+    return pipe(lookupWithKeyE(k, m), map(function(_a) {
+      var _ = _a[0], a = _a[1];
+      return a;
+    }));
+  };
+}
+var empty2 = new Map;
+
+// node_modules/fp-ts/es6/Map.js
+var lookup2 = lookup;
+var empty3 = new Map;
+
+// node_modules/fp-ts/es6/Array.js
+var exports_Array = {};
+__export(exports_Array, {
+  zipWith: () => {
+    {
+      return zipWith;
+    }
+  },
+  zip: () => {
+    {
+      return zip;
+    }
+  },
+  zero: () => {
+    {
+      return zero;
+    }
+  },
+  wither: () => {
+    {
+      return wither;
+    }
+  },
+  wilt: () => {
+    {
+      return wilt;
+    }
+  },
+  updateAt: () => {
+    {
+      return updateAt;
+    }
+  },
+  unzip: () => {
+    {
+      return unzip;
+    }
+  },
+  unsafeUpdateAt: () => {
+    {
+      return unsafeUpdateAt3;
+    }
+  },
+  unsafeInsertAt: () => {
+    {
+      return unsafeInsertAt3;
+    }
+  },
+  unsafeDeleteAt: () => {
+    {
+      return unsafeDeleteAt;
+    }
+  },
+  uniq: () => {
+    {
+      return uniq3;
+    }
+  },
+  union: () => {
+    {
+      return union4;
+    }
+  },
+  unfold: () => {
+    {
+      return unfold;
+    }
+  },
+  traverseWithIndex: () => {
+    {
+      return traverseWithIndex;
+    }
+  },
+  traverse: () => {
+    {
+      return traverse;
+    }
+  },
+  takeRight: () => {
+    {
+      return takeRight;
+    }
+  },
+  takeLeftWhile: () => {
+    {
+      return takeLeftWhile;
+    }
+  },
+  takeLeft: () => {
+    {
+      return takeLeft;
+    }
+  },
+  tail: () => {
+    {
+      return tail4;
+    }
+  },
+  splitAt: () => {
+    {
+      return splitAt3;
+    }
+  },
+  spanLeft: () => {
+    {
+      return spanLeft;
+    }
+  },
+  sortBy: () => {
+    {
+      return sortBy3;
+    }
+  },
+  sort: () => {
+    {
+      return sort2;
+    }
+  },
+  some: () => {
+    {
+      return some3;
+    }
+  },
+  snoc: () => {
+    {
+      return snoc3;
+    }
+  },
+  size: () => {
+    {
+      return size2;
+    }
+  },
+  sequence: () => {
+    {
+      return sequence;
+    }
+  },
+  separate: () => {
+    {
+      return separate;
+    }
+  },
+  scanRight: () => {
+    {
+      return scanRight;
+    }
+  },
+  scanLeft: () => {
+    {
+      return scanLeft;
+    }
+  },
+  rotate: () => {
+    {
+      return rotate3;
+    }
+  },
+  rights: () => {
+    {
+      return rights;
+    }
+  },
+  reverse: () => {
+    {
+      return reverse2;
+    }
+  },
+  replicate: () => {
+    {
+      return replicate;
+    }
+  },
+  reduceWithIndex: () => {
+    {
+      return reduceWithIndex4;
+    }
+  },
+  reduceRightWithIndex: () => {
+    {
+      return reduceRightWithIndex4;
+    }
+  },
+  reduceRight: () => {
+    {
+      return reduceRight4;
+    }
+  },
+  reduce: () => {
+    {
+      return reduce4;
+    }
+  },
+  range: () => {
+    {
+      return range3;
+    }
+  },
+  prependW: () => {
+    {
+      return prependW3;
+    }
+  },
+  prependToAll: () => {
+    {
+      return prependToAll;
+    }
+  },
+  prependAll: () => {
+    {
+      return prependAll3;
+    }
+  },
+  prepend: () => {
+    {
+      return prepend3;
+    }
+  },
+  partitionWithIndex: () => {
+    {
+      return partitionWithIndex;
+    }
+  },
+  partitionMapWithIndex: () => {
+    {
+      return partitionMapWithIndex;
+    }
+  },
+  partitionMap: () => {
+    {
+      return partitionMap;
+    }
+  },
+  partition: () => {
+    {
+      return partition;
+    }
+  },
+  of: () => {
+    {
+      return of3;
+    }
+  },
+  modifyAt: () => {
+    {
+      return modifyAt;
+    }
+  },
+  matchW: () => {
+    {
+      return matchW2;
+    }
+  },
+  matchRightW: () => {
+    {
+      return matchRightW;
+    }
+  },
+  matchRight: () => {
+    {
+      return matchRight;
+    }
+  },
+  matchLeftW: () => {
+    {
+      return matchLeftW;
+    }
+  },
+  matchLeft: () => {
+    {
+      return matchLeft;
+    }
+  },
+  match: () => {
+    {
+      return match2;
+    }
+  },
+  mapWithIndex: () => {
+    {
+      return mapWithIndex;
+    }
+  },
+  map: () => {
+    {
+      return map2;
+    }
+  },
+  makeBy: () => {
+    {
+      return makeBy3;
+    }
+  },
+  lookup: () => {
+    {
+      return lookup4;
+    }
+  },
+  let: () => {
+    {
+      return let_2;
+    }
+  },
+  lefts: () => {
+    {
+      return lefts;
+    }
+  },
+  last: () => {
+    {
+      return last4;
+    }
+  },
+  isOutOfBound: () => {
+    {
+      return isOutOfBound4;
+    }
+  },
+  isNonEmpty: () => {
+    {
+      return isNonEmpty5;
+    }
+  },
+  isEmpty: () => {
+    {
+      return isEmpty2;
+    }
+  },
+  intersperse: () => {
+    {
+      return intersperse3;
+    }
+  },
+  intersection: () => {
+    {
+      return intersection2;
+    }
+  },
+  intercalate: () => {
+    {
+      return intercalate3;
+    }
+  },
+  insertAt: () => {
+    {
+      return insertAt;
+    }
+  },
+  init: () => {
+    {
+      return init3;
+    }
+  },
+  head: () => {
+    {
+      return head5;
+    }
+  },
+  guard: () => {
+    {
+      return guard2;
+    }
+  },
+  getUnionSemigroup: () => {
+    {
+      return getUnionSemigroup;
+    }
+  },
+  getUnionMonoid: () => {
+    {
+      return getUnionMonoid;
+    }
+  },
+  getShow: () => {
+    {
+      return getShow4;
+    }
+  },
+  getSemigroup: () => {
+    {
+      return getSemigroup3;
+    }
+  },
+  getOrd: () => {
+    {
+      return getOrd2;
+    }
+  },
+  getMonoid: () => {
+    {
+      return getMonoid3;
+    }
+  },
+  getIntersectionSemigroup: () => {
+    {
+      return getIntersectionSemigroup;
+    }
+  },
+  getEq: () => {
+    {
+      return getEq4;
+    }
+  },
+  getDifferenceMagma: () => {
+    {
+      return getDifferenceMagma;
+    }
+  },
+  fromPredicate: () => {
+    {
+      return fromPredicate;
+    }
+  },
+  fromOptionK: () => {
+    {
+      return fromOptionK;
+    }
+  },
+  fromOption: () => {
+    {
+      return fromOption;
+    }
+  },
+  fromEitherK: () => {
+    {
+      return fromEitherK2;
+    }
+  },
+  fromEither: () => {
+    {
+      return fromEither2;
+    }
+  },
+  foldRight: () => {
+    {
+      return foldRight;
+    }
+  },
+  foldMapWithIndex: () => {
+    {
+      return foldMapWithIndex4;
+    }
+  },
+  foldMap: () => {
+    {
+      return foldMap4;
+    }
+  },
+  foldLeft: () => {
+    {
+      return foldLeft;
+    }
+  },
+  flatten: () => {
+    {
+      return flatten;
+    }
+  },
+  flatMap: () => {
+    {
+      return flatMap2;
+    }
+  },
+  flap: () => {
+    {
+      return flap2;
+    }
+  },
+  findLastMap: () => {
+    {
+      return findLastMap2;
+    }
+  },
+  findLastIndex: () => {
+    {
+      return findLastIndex2;
+    }
+  },
+  findLast: () => {
+    {
+      return findLast2;
+    }
+  },
+  findIndex: () => {
+    {
+      return findIndex2;
+    }
+  },
+  findFirstMap: () => {
+    {
+      return findFirstMap2;
+    }
+  },
+  findFirst: () => {
+    {
+      return findFirst2;
+    }
+  },
+  filterWithIndex: () => {
+    {
+      return filterWithIndex;
+    }
+  },
+  filterMapWithIndex: () => {
+    {
+      return filterMapWithIndex;
+    }
+  },
+  filterMap: () => {
+    {
+      return filterMap;
+    }
+  },
+  filterE: () => {
+    {
+      return filterE2;
+    }
+  },
+  filter: () => {
+    {
+      return filter;
+    }
+  },
+  extend: () => {
+    {
+      return extend;
+    }
+  },
+  exists: () => {
+    {
+      return exists;
+    }
+  },
+  every: () => {
+    {
+      return every2;
+    }
+  },
+  empty: () => {
+    {
+      return empty5;
+    }
+  },
+  elem: () => {
+    {
+      return elem3;
+    }
+  },
+  duplicate: () => {
+    {
+      return duplicate;
+    }
+  },
+  dropRight: () => {
+    {
+      return dropRight;
+    }
+  },
+  dropLeftWhile: () => {
+    {
+      return dropLeftWhile;
+    }
+  },
+  dropLeft: () => {
+    {
+      return dropLeft;
+    }
+  },
+  difference: () => {
+    {
+      return difference2;
+    }
+  },
+  deleteAt: () => {
+    {
+      return deleteAt;
+    }
+  },
+  copy: () => {
+    {
+      return copy2;
+    }
+  },
+  cons: () => {
+    {
+      return cons3;
+    }
+  },
+  concatW: () => {
+    {
+      return concatW;
+    }
+  },
+  concat: () => {
+    {
+      return concat2;
+    }
+  },
+  comprehension: () => {
+    {
+      return comprehension;
+    }
+  },
+  compact: () => {
+    {
+      return compact;
+    }
+  },
+  chunksOf: () => {
+    {
+      return chunksOf3;
+    }
+  },
+  chop: () => {
+    {
+      return chop3;
+    }
+  },
+  chainWithIndex: () => {
+    {
+      return chainWithIndex;
+    }
+  },
+  chainRecDepthFirst: () => {
+    {
+      return chainRecDepthFirst2;
+    }
+  },
+  chainRecBreadthFirst: () => {
+    {
+      return chainRecBreadthFirst2;
+    }
+  },
+  chainFirst: () => {
+    {
+      return chainFirst2;
+    }
+  },
+  chain: () => {
+    {
+      return chain;
+    }
+  },
+  bindTo: () => {
+    {
+      return bindTo2;
+    }
+  },
+  bind: () => {
+    {
+      return bind2;
+    }
+  },
+  array: () => {
+    {
+      return array;
+    }
+  },
+  appendW: () => {
+    {
+      return appendW3;
+    }
+  },
+  append: () => {
+    {
+      return append3;
+    }
+  },
+  apSecond: () => {
+    {
+      return apSecond2;
+    }
+  },
+  apS: () => {
+    {
+      return apS2;
+    }
+  },
+  apFirst: () => {
+    {
+      return apFirst2;
+    }
+  },
+  ap: () => {
+    {
+      return ap2;
+    }
+  },
+  altW: () => {
+    {
+      return altW;
+    }
+  },
+  alt: () => {
+    {
+      return alt;
+    }
+  },
+  Zero: () => {
+    {
+      return Zero2;
+    }
+  },
+  Witherable: () => {
+    {
+      return Witherable2;
+    }
+  },
+  Unfoldable: () => {
+    {
+      return Unfoldable;
+    }
+  },
+  URI: () => {
+    {
+      return URI3;
+    }
+  },
+  TraversableWithIndex: () => {
+    {
+      return TraversableWithIndex;
+    }
+  },
+  Traversable: () => {
+    {
+      return Traversable;
+    }
+  },
+  Pointed: () => {
+    {
+      return Pointed;
+    }
+  },
+  Monad: () => {
+    {
+      return Monad;
+    }
+  },
+  FunctorWithIndex: () => {
+    {
+      return FunctorWithIndex;
+    }
+  },
+  Functor: () => {
+    {
+      return Functor4;
+    }
+  },
+  FromEither: () => {
+    {
+      return FromEither4;
+    }
+  },
+  FoldableWithIndex: () => {
+    {
+      return FoldableWithIndex;
+    }
+  },
+  Foldable: () => {
+    {
+      return Foldable;
+    }
+  },
+  FilterableWithIndex: () => {
+    {
+      return FilterableWithIndex;
+    }
+  },
+  Filterable: () => {
+    {
+      return Filterable;
+    }
+  },
+  Extend: () => {
+    {
+      return Extend;
+    }
+  },
+  Do: () => {
+    {
+      return Do;
+    }
+  },
+  Compactable: () => {
+    {
+      return Compactable;
+    }
+  },
+  ChainRecDepthFirst: () => {
+    {
+      return ChainRecDepthFirst;
+    }
+  },
+  ChainRecBreadthFirst: () => {
+    {
+      return ChainRecBreadthFirst;
+    }
+  },
+  Chain: () => {
+    {
+      return Chain4;
+    }
+  },
+  Apply: () => {
+    {
+      return Apply2;
+    }
+  },
+  Applicative: () => {
+    {
+      return Applicative;
+    }
+  },
+  Alternative: () => {
+    {
+      return Alternative;
+    }
+  },
+  Alt: () => {
+    {
+      return Alt;
+    }
+  }
+});
+
+// node_modules/fp-ts/es6/ReadonlyNonEmptyArray.js
+var __spreadArray3 = function(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar;i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
+      }
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var isNonEmpty2 = isNonEmpty;
+var isOutOfBound = function(i, as3) {
+  return i < 0 || i >= as3.length;
+};
+var prependW = function(head2) {
+  return function(tail2) {
+    return __spreadArray3([head2], tail2, true);
+  };
+};
+var prepend = prependW;
+var prependAll = function(middle) {
+  return function(as3) {
+    var out = [middle, as3[0]];
+    for (var i = 1;i < as3.length; i++) {
+      out.push(middle, as3[i]);
+    }
+    return out;
+  };
+};
+var intersperse = function(middle) {
+  return function(as3) {
+    var rest = tail2(as3);
+    return isNonEmpty2(rest) ? pipe(rest, prependAll(middle), prepend(head2(as3))) : as3;
+  };
+};
+var extract = head;
+var head2 = extract;
+var tail2 = tail;
+var last = function(as3) {
+  return as3[as3.length - 1];
+};
+var concatAll3 = function(S) {
+  return function(as3) {
+    return as3.reduce(S.concat);
+  };
+};
+var intercalate = function(S) {
+  var concatAllS = concatAll3(S);
+  return function(middle) {
+    return flow(intersperse(middle), concatAllS);
+  };
+};
+
+// node_modules/fp-ts/es6/NonEmptyArray.js
+function concat(x, y) {
+  return y ? x.concat(y) : function(y2) {
+    return y2.concat(x);
+  };
+}
+function cons(head3, tail3) {
+  return tail3 === undefined ? prepend2(head3) : pipe(tail3, prepend2(head3));
+}
+var __spreadArray4 = function(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar;i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
+      }
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var isNonEmpty3 = function(as3) {
+  return as3.length > 0;
+};
+var isOutOfBound2 = function(i, as3) {
+  return i < 0 || i >= as3.length;
+};
+var prependW2 = function(head3) {
+  return function(tail3) {
+    return __spreadArray4([head3], tail3, true);
+  };
+};
+var prepend2 = prependW2;
+var appendW = function(end) {
+  return function(init) {
+    return __spreadArray4(__spreadArray4([], init, true), [end], false);
+  };
+};
+var append = appendW;
+var unsafeInsertAt = function(i, a, as3) {
+  if (isNonEmpty3(as3)) {
+    var xs = fromReadonlyNonEmptyArray2(as3);
+    xs.splice(i, 0, a);
+    return xs;
+  }
+  return [a];
+};
+var unsafeUpdateAt = function(i, a, as3) {
+  var xs = fromReadonlyNonEmptyArray2(as3);
+  xs[i] = a;
+  return xs;
+};
+var uniq = function(E) {
+  return function(as3) {
+    if (as3.length === 1) {
+      return copy(as3);
+    }
+    var out = [head3(as3)];
+    var rest = tail3(as3);
+    var _loop_1 = function(a2) {
+      if (out.every(function(o) {
+        return !E.equals(o, a2);
+      })) {
+        out.push(a2);
+      }
+    };
+    for (var _i = 0, rest_1 = rest;_i < rest_1.length; _i++) {
+      var a = rest_1[_i];
+      _loop_1(a);
+    }
+    return out;
+  };
+};
+var sortBy = function(ords) {
+  if (isNonEmpty3(ords)) {
+    var M = getMonoid2();
+    return sort(ords.reduce(M.concat, M.empty));
+  }
+  return copy;
+};
+var union2 = function(E) {
+  var uniqE = uniq(E);
+  return function(second) {
+    return function(first) {
+      return uniqE(pipe(first, concat(second)));
+    };
+  };
+};
+var rotate = function(n) {
+  return function(as3) {
+    var len = as3.length;
+    var m = Math.round(n) % len;
+    if (isOutOfBound2(Math.abs(m), as3) || m === 0) {
+      return copy(as3);
+    }
+    if (m < 0) {
+      var _a = splitAt(-m)(as3), f = _a[0], s = _a[1];
+      return pipe(s, concat(f));
+    } else {
+      return rotate(m - len)(as3);
+    }
+  };
+};
+var fromReadonlyNonEmptyArray2 = fromReadonlyNonEmptyArray;
+var makeBy = function(f) {
+  return function(n) {
+    var j = Math.max(0, Math.floor(n));
+    var out = [f(0)];
+    for (var i = 1;i < j; i++) {
+      out.push(f(i));
+    }
+    return out;
+  };
+};
+var range = function(start, end) {
+  return start <= end ? makeBy(function(i) {
+    return start + i;
+  })(end - start + 1) : [start];
+};
+var sort = function(O) {
+  return function(as3) {
+    return as3.slice().sort(O.compare);
+  };
+};
+var copy = fromReadonlyNonEmptyArray2;
+var of = function(a) {
+  return [a];
+};
+var prependAll2 = function(middle) {
+  return function(as3) {
+    var out = [middle, as3[0]];
+    for (var i = 1;i < as3.length; i++) {
+      out.push(middle, as3[i]);
+    }
+    return out;
+  };
+};
+var intersperse2 = function(middle) {
+  return function(as3) {
+    var rest = tail3(as3);
+    return isNonEmpty3(rest) ? pipe(rest, prependAll2(middle), prepend2(head3(as3))) : copy(as3);
+  };
+};
+var chop = function(f) {
+  return function(as3) {
+    var _a = f(as3), b = _a[0], rest = _a[1];
+    var out = [b];
+    var next = rest;
+    while (isNonEmpty3(next)) {
+      var _b = f(next), b_1 = _b[0], rest_2 = _b[1];
+      out.push(b_1);
+      next = rest_2;
+    }
+    return out;
+  };
+};
+var splitAt = function(n) {
+  return function(as3) {
+    var m = Math.max(1, n);
+    return m >= as3.length ? [copy(as3), []] : [pipe(as3.slice(1, m), prepend2(head3(as3))), as3.slice(m)];
+  };
+};
+var chunksOf = function(n) {
+  return chop(splitAt(n));
+};
+var head3 = head2;
+var tail3 = function(as3) {
+  return as3.slice(1);
+};
+var last2 = last;
+var init = function(as3) {
+  return as3.slice(0, -1);
+};
+var snoc = function(init2, end) {
+  return pipe(init2, append(end));
+};
+
+// node_modules/fp-ts/es6/number.js
+var Eq2 = {
+  equals: function(first, second) {
+    return first === second;
+  }
+};
+var Ord2 = {
+  equals: Eq2.equals,
+  compare: function(first, second) {
+    return first < second ? -1 : first > second ? 1 : 0;
+  }
+};
+var Bounded = {
+  equals: Eq2.equals,
+  compare: Ord2.compare,
+  top: Infinity,
+  bottom: (-Infinity)
+};
+var MagmaSub = {
+  concat: function(first, second) {
+    return first - second;
+  }
+};
+var SemigroupSum = {
+  concat: function(first, second) {
+    return first + second;
+  }
+};
+var SemigroupProduct = {
+  concat: function(first, second) {
+    return first * second;
+  }
+};
+var MonoidSum = {
+  concat: SemigroupSum.concat,
+  empty: 0
+};
+var MonoidProduct = {
+  concat: SemigroupProduct.concat,
+  empty: 1
+};
+var Field = {
+  add: SemigroupSum.concat,
+  zero: 0,
+  mul: SemigroupProduct.concat,
+  one: 1,
+  sub: MagmaSub.concat,
+  degree: function(_) {
+    return 1;
+  },
+  div: function(first, second) {
+    return first / second;
+  },
+  mod: function(first, second) {
+    return first % second;
+  }
+};
+
+// node_modules/fp-ts/es6/ReadonlyArray.js
+function lookup3(i, as3) {
+  return as3 === undefined ? function(as4) {
+    return lookup3(i, as4);
+  } : isOutOfBound3(i, as3) ? none : some(as3[i]);
+}
+function findFirst(predicate) {
+  return function(as3) {
+    for (var i = 0;i < as3.length; i++) {
+      if (predicate(as3[i])) {
+        return some(as3[i]);
+      }
+    }
+    return none;
+  };
+}
+function findLast(predicate) {
+  return function(as3) {
+    for (var i = as3.length - 1;i >= 0; i--) {
+      if (predicate(as3[i])) {
+        return some(as3[i]);
+      }
+    }
+    return none;
+  };
+}
+function elem2(E) {
+  return function(a, as3) {
+    if (as3 === undefined) {
+      var elemE_1 = elem2(E);
+      return function(as4) {
+        return elemE_1(a, as4);
+      };
+    }
+    var predicate = function(element) {
+      return E.equals(element, a);
+    };
+    var i = 0;
+    for (;i < as3.length; i++) {
+      if (predicate(as3[i])) {
+        return true;
+      }
+    }
+    return false;
+  };
+}
+function every(predicate) {
+  return function(as3) {
+    return as3.every(predicate);
+  };
+}
+var __spreadArray5 = function(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar;i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
+      }
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var isNonEmpty4 = isNonEmpty2;
+var matchW = function(onEmpty, onNonEmpty) {
+  return function(as3) {
+    return isNonEmpty4(as3) ? onNonEmpty(as3) : onEmpty();
+  };
+};
+var match = matchW;
+var isOutOfBound3 = isOutOfBound;
+var head4 = function(as3) {
+  return isNonEmpty4(as3) ? some(head2(as3)) : none;
+};
+var last3 = function(as3) {
+  return isNonEmpty4(as3) ? some(last(as3)) : none;
+};
+var findIndex = function(predicate) {
+  return function(as3) {
+    for (var i = 0;i < as3.length; i++) {
+      if (predicate(as3[i])) {
+        return some(i);
+      }
+    }
+    return none;
+  };
+};
+var findFirstMap = function(f) {
+  return function(as3) {
+    for (var i = 0;i < as3.length; i++) {
+      var out = f(as3[i]);
+      if (isSome(out)) {
+        return out;
+      }
+    }
+    return none;
+  };
+};
+var findLastMap = function(f) {
+  return function(as3) {
+    for (var i = as3.length - 1;i >= 0; i--) {
+      var out = f(as3[i]);
+      if (isSome(out)) {
+        return out;
+      }
+    }
+    return none;
+  };
+};
+var findLastIndex = function(predicate) {
+  return function(as3) {
+    for (var i = as3.length - 1;i >= 0; i--) {
+      if (predicate(as3[i])) {
+        return some(i);
+      }
+    }
+    return none;
+  };
+};
+var _chainRecDepthFirst = function(a, f) {
+  return pipe(a, chainRecDepthFirst(f));
+};
+var _chainRecBreadthFirst = function(a, f) {
+  return pipe(a, chainRecBreadthFirst(f));
+};
+var foldMapWithIndex3 = function(M) {
+  return function(f) {
+    return function(fa) {
+      return fa.reduce(function(b, a, i) {
+        return M.concat(b, f(i, a));
+      }, M.empty);
+    };
+  };
+};
+var reduce3 = function(b, f) {
+  return reduceWithIndex3(b, function(_, b2, a) {
+    return f(b2, a);
+  });
+};
+var foldMap3 = function(M) {
+  var foldMapWithIndexM = foldMapWithIndex3(M);
+  return function(f) {
+    return foldMapWithIndexM(function(_, a) {
+      return f(a);
+    });
+  };
+};
+var reduceWithIndex3 = function(b, f) {
+  return function(fa) {
+    var len = fa.length;
+    var out = b;
+    for (var i = 0;i < len; i++) {
+      out = f(i, out, fa[i]);
+    }
+    return out;
+  };
+};
+var reduceRight3 = function(b, f) {
+  return reduceRightWithIndex3(b, function(_, a, b2) {
+    return f(a, b2);
+  });
+};
+var reduceRightWithIndex3 = function(b, f) {
+  return function(fa) {
+    return fa.reduceRight(function(b2, a, i) {
+      return f(i, a, b2);
+    }, b);
+  };
+};
+var getShow3 = function(S) {
+  return {
+    show: function(as3) {
+      return "[".concat(as3.map(S.show).join(", "), "]");
+    }
+  };
+};
+var getEq3 = function(E) {
+  return fromEquals(function(xs, ys) {
+    return xs.length === ys.length && xs.every(function(x, i) {
+      return E.equals(x, ys[i]);
+    });
+  });
+};
+var getOrd = function(O) {
+  return fromCompare(function(a, b) {
+    var aLen = a.length;
+    var bLen = b.length;
+    var len = Math.min(aLen, bLen);
+    for (var i = 0;i < len; i++) {
+      var ordering = O.compare(a[i], b[i]);
+      if (ordering !== 0) {
+        return ordering;
+      }
+    }
+    return Ord2.compare(aLen, bLen);
+  });
+};
+var chainRecDepthFirst = function(f) {
+  return function(a) {
+    var todo = __spreadArray5([], f(a), true);
+    var out = [];
+    while (todo.length > 0) {
+      var e = todo.shift();
+      if (isLeft(e)) {
+        todo.unshift.apply(todo, f(e.left));
+      } else {
+        out.push(e.right);
+      }
+    }
+    return out;
+  };
+};
+var chainRecBreadthFirst = function(f) {
+  return function(a) {
+    var initial = f(a);
+    var todo = [];
+    var out = [];
+    function go(e2) {
+      if (isLeft(e2)) {
+        f(e2.left).forEach(function(v) {
+          return todo.push(v);
+        });
+      } else {
+        out.push(e2.right);
+      }
+    }
+    for (var _i = 0, initial_1 = initial;_i < initial_1.length; _i++) {
+      var e = initial_1[_i];
+      go(e);
+    }
+    while (todo.length > 0) {
+      go(todo.shift());
+    }
+    return out;
+  };
+};
+var intercalate2 = function(M) {
+  var intercalateM = intercalate(M);
+  return function(middle) {
+    return match(function() {
+      return M.empty;
+    }, intercalateM(middle));
+  };
+};
+
+// node_modules/fp-ts/es6/Array.js
+function fromPredicate(predicate) {
+  return function(a) {
+    return predicate(a) ? [a] : [];
+  };
+}
+function takeLeftWhile(predicate) {
+  return function(as3) {
+    var out = [];
+    for (var _i = 0, as_1 = as3;_i < as_1.length; _i++) {
+      var a = as_1[_i];
+      if (!predicate(a)) {
+        break;
+      }
+      out.push(a);
+    }
+    return out;
+  };
+}
+function spanLeft(predicate) {
+  return function(as3) {
+    var _a = splitAt3(spanLeftIndex(as3, predicate))(as3), init3 = _a[0], rest = _a[1];
+    return { init: init3, rest };
+  };
+}
+function dropLeftWhile(predicate) {
+  return function(as3) {
+    return as3.slice(spanLeftIndex(as3, predicate));
+  };
+}
+function findFirst2(predicate) {
+  return findFirst(predicate);
+}
+function findLast2(predicate) {
+  return findLast(predicate);
+}
+function zip(as3, bs) {
+  if (bs === undefined) {
+    return function(bs2) {
+      return zip(bs2, as3);
+    };
+  }
+  return zipWith(as3, bs, function(a, b) {
+    return [a, b];
+  });
+}
+function comprehension(input, f, g) {
+  if (g === undefined) {
+    g = function() {
+      return true;
+    };
+  }
+  var go = function(scope, input2) {
+    return isNonEmpty5(input2) ? flatMap2(head3(input2), function(a) {
+      return go(pipe(scope, append3(a)), tail3(input2));
+    }) : g.apply(undefined, scope) ? [f.apply(undefined, scope)] : [];
+  };
+  return go([], input);
+}
+function union4(E) {
+  var unionE = union2(E);
+  return function(first, second) {
+    if (second === undefined) {
+      var unionE_1 = union4(E);
+      return function(second2) {
+        return unionE_1(second2, first);
+      };
+    }
+    return isNonEmpty5(first) && isNonEmpty5(second) ? unionE(second)(first) : isNonEmpty5(first) ? copy2(first) : copy2(second);
+  };
+}
+function intersection2(E) {
+  var elemE = elem3(E);
+  return function(xs, ys) {
+    if (ys === undefined) {
+      var intersectionE_1 = intersection2(E);
+      return function(ys2) {
+        return intersectionE_1(ys2, xs);
+      };
+    }
+    return xs.filter(function(a) {
+      return elemE(a, ys);
+    });
+  };
+}
+function difference2(E) {
+  var elemE = elem3(E);
+  return function(xs, ys) {
+    if (ys === undefined) {
+      var differenceE_1 = difference2(E);
+      return function(ys2) {
+        return differenceE_1(ys2, xs);
+      };
+    }
+    return xs.filter(function(a) {
+      return !elemE(a, ys);
+    });
+  };
+}
+var isEmpty2 = function(as3) {
+  return as3.length === 0;
+};
+var isNonEmpty5 = isNonEmpty3;
+var prepend3 = prepend2;
+var prependW3 = prependW2;
+var append3 = append;
+var appendW3 = appendW;
+var makeBy3 = function(n, f) {
+  return n <= 0 ? [] : makeBy(f)(n);
+};
+var replicate = function(n, a) {
+  return makeBy3(n, function() {
+    return a;
+  });
+};
+var fromOption = function(ma) {
+  return isNone(ma) ? [] : [ma.value];
+};
+var fromEither2 = function(e) {
+  return isLeft(e) ? [] : [e.right];
+};
+var matchW2 = function(onEmpty, onNonEmpty) {
+  return function(as3) {
+    return isNonEmpty5(as3) ? onNonEmpty(as3) : onEmpty();
+  };
+};
+var match2 = matchW2;
+var matchLeftW = function(onEmpty, onNonEmpty) {
+  return function(as3) {
+    return isNonEmpty5(as3) ? onNonEmpty(head3(as3), tail3(as3)) : onEmpty();
+  };
+};
+var matchLeft = matchLeftW;
+var foldLeft = matchLeft;
+var matchRightW = function(onEmpty, onNonEmpty) {
+  return function(as3) {
+    return isNonEmpty5(as3) ? onNonEmpty(init(as3), last2(as3)) : onEmpty();
+  };
+};
+var matchRight = matchRightW;
+var foldRight = matchRight;
+var chainWithIndex = function(f) {
+  return function(as3) {
+    var out = [];
+    for (var i = 0;i < as3.length; i++) {
+      out.push.apply(out, f(i, as3[i]));
+    }
+    return out;
+  };
+};
+var scanLeft = function(b, f) {
+  return function(as3) {
+    var len = as3.length;
+    var out = new Array(len + 1);
+    out[0] = b;
+    for (var i = 0;i < len; i++) {
+      out[i + 1] = f(out[i], as3[i]);
+    }
+    return out;
+  };
+};
+var scanRight = function(b, f) {
+  return function(as3) {
+    var len = as3.length;
+    var out = new Array(len + 1);
+    out[len] = b;
+    for (var i = len - 1;i >= 0; i--) {
+      out[i] = f(as3[i], out[i + 1]);
+    }
+    return out;
+  };
+};
+var size2 = function(as3) {
+  return as3.length;
+};
+var isOutOfBound4 = isOutOfBound2;
+var lookup4 = lookup3;
+var head5 = head4;
+var last4 = last3;
+var tail4 = function(as3) {
+  return isNonEmpty5(as3) ? some(tail3(as3)) : none;
+};
+var init3 = function(as3) {
+  return isNonEmpty5(as3) ? some(init(as3)) : none;
+};
+var takeLeft = function(n) {
+  return function(as3) {
+    return isOutOfBound4(n, as3) ? copy2(as3) : as3.slice(0, n);
+  };
+};
+var takeRight = function(n) {
+  return function(as3) {
+    return isOutOfBound4(n, as3) ? copy2(as3) : n === 0 ? [] : as3.slice(-n);
+  };
+};
+var spanLeftIndex = function(as3, predicate) {
+  var l = as3.length;
+  var i = 0;
+  for (;i < l; i++) {
+    if (!predicate(as3[i])) {
+      break;
+    }
+  }
+  return i;
+};
+var dropLeft = function(n) {
+  return function(as3) {
+    return n <= 0 || isEmpty2(as3) ? copy2(as3) : n >= as3.length ? [] : as3.slice(n, as3.length);
+  };
+};
+var dropRight = function(n) {
+  return function(as3) {
+    return n <= 0 || isEmpty2(as3) ? copy2(as3) : n >= as3.length ? [] : as3.slice(0, as3.length - n);
+  };
+};
+var findIndex2 = findIndex;
+var findFirstMap2 = findFirstMap;
+var findLastMap2 = findLastMap;
+var findLastIndex2 = findLastIndex;
+var copy2 = function(as3) {
+  return as3.slice();
+};
+var insertAt = function(i, a) {
+  return function(as3) {
+    return i < 0 || i > as3.length ? none : some(unsafeInsertAt3(i, a, as3));
+  };
+};
+var updateAt = function(i, a) {
+  return modifyAt(i, function() {
+    return a;
+  });
+};
+var deleteAt = function(i) {
+  return function(as3) {
+    return isOutOfBound4(i, as3) ? none : some(unsafeDeleteAt(i, as3));
+  };
+};
+var modifyAt = function(i, f) {
+  return function(as3) {
+    return isOutOfBound4(i, as3) ? none : some(unsafeUpdateAt3(i, f(as3[i]), as3));
+  };
+};
+var reverse2 = function(as3) {
+  return isEmpty2(as3) ? [] : as3.slice().reverse();
+};
+var rights = function(as3) {
+  var r = [];
+  for (var i = 0;i < as3.length; i++) {
+    var a = as3[i];
+    if (a._tag === "Right") {
+      r.push(a.right);
+    }
+  }
+  return r;
+};
+var lefts = function(as3) {
+  var r = [];
+  for (var i = 0;i < as3.length; i++) {
+    var a = as3[i];
+    if (a._tag === "Left") {
+      r.push(a.left);
+    }
+  }
+  return r;
+};
+var sort2 = function(O) {
+  return function(as3) {
+    return as3.length <= 1 ? copy2(as3) : as3.slice().sort(O.compare);
+  };
+};
+var zipWith = function(fa, fb, f) {
+  var fc = [];
+  var len = Math.min(fa.length, fb.length);
+  for (var i = 0;i < len; i++) {
+    fc[i] = f(fa[i], fb[i]);
+  }
+  return fc;
+};
+var unzip = function(as3) {
+  var fa = [];
+  var fb = [];
+  for (var i = 0;i < as3.length; i++) {
+    fa[i] = as3[i][0];
+    fb[i] = as3[i][1];
+  }
+  return [fa, fb];
+};
+var prependAll3 = function(middle) {
+  var f = prependAll2(middle);
+  return function(as3) {
+    return isNonEmpty5(as3) ? f(as3) : [];
+  };
+};
+var intersperse3 = function(middle) {
+  var f = intersperse2(middle);
+  return function(as3) {
+    return isNonEmpty5(as3) ? f(as3) : copy2(as3);
+  };
+};
+var rotate3 = function(n) {
+  var f = rotate(n);
+  return function(as3) {
+    return isNonEmpty5(as3) ? f(as3) : copy2(as3);
+  };
+};
+var elem3 = elem2;
+var uniq3 = function(E) {
+  var f = uniq(E);
+  return function(as3) {
+    return isNonEmpty5(as3) ? f(as3) : copy2(as3);
+  };
+};
+var sortBy3 = function(ords) {
+  var f = sortBy(ords);
+  return function(as3) {
+    return isNonEmpty5(as3) ? f(as3) : copy2(as3);
+  };
+};
+var chop3 = function(f) {
+  var g = chop(f);
+  return function(as3) {
+    return isNonEmpty5(as3) ? g(as3) : [];
+  };
+};
+var splitAt3 = function(n) {
+  return function(as3) {
+    return n >= 1 && isNonEmpty5(as3) ? splitAt(n)(as3) : isEmpty2(as3) ? [copy2(as3), []] : [[], copy2(as3)];
+  };
+};
+var chunksOf3 = function(n) {
+  var f = chunksOf(n);
+  return function(as3) {
+    return isNonEmpty5(as3) ? f(as3) : [];
+  };
+};
+var fromOptionK = function(f) {
+  return function() {
+    var a = [];
+    for (var _i = 0;_i < arguments.length; _i++) {
+      a[_i] = arguments[_i];
+    }
+    return fromOption(f.apply(undefined, a));
+  };
+};
+var concatW = function(second) {
+  return function(first) {
+    return isEmpty2(first) ? copy2(second) : isEmpty2(second) ? copy2(first) : first.concat(second);
+  };
+};
+var concat2 = concatW;
+var _map2 = function(fa, f) {
+  return pipe(fa, map2(f));
+};
+var _mapWithIndex = function(fa, f) {
+  return pipe(fa, mapWithIndex(f));
+};
+var _ap2 = function(fab, fa) {
+  return pipe(fab, ap2(fa));
+};
+var _filter = function(fa, predicate) {
+  return pipe(fa, filter(predicate));
+};
+var _filterMap = function(fa, f) {
+  return pipe(fa, filterMap(f));
+};
+var _partition = function(fa, predicate) {
+  return pipe(fa, partition(predicate));
+};
+var _partitionMap = function(fa, f) {
+  return pipe(fa, partitionMap(f));
+};
+var _partitionWithIndex = function(fa, predicateWithIndex) {
+  return pipe(fa, partitionWithIndex(predicateWithIndex));
+};
+var _partitionMapWithIndex = function(fa, f) {
+  return pipe(fa, partitionMapWithIndex(f));
+};
+var _alt = function(fa, that) {
+  return pipe(fa, alt(that));
+};
+var _reduce = function(fa, b, f) {
+  return pipe(fa, reduce4(b, f));
+};
+var _foldMap = function(M) {
+  var foldMapM = foldMap4(M);
+  return function(fa, f) {
+    return pipe(fa, foldMapM(f));
+  };
+};
+var _reduceRight = function(fa, b, f) {
+  return pipe(fa, reduceRight4(b, f));
+};
+var _reduceWithIndex = function(fa, b, f) {
+  return pipe(fa, reduceWithIndex4(b, f));
+};
+var _foldMapWithIndex = function(M) {
+  var foldMapWithIndexM = foldMapWithIndex4(M);
+  return function(fa, f) {
+    return pipe(fa, foldMapWithIndexM(f));
+  };
+};
+var _reduceRightWithIndex = function(fa, b, f) {
+  return pipe(fa, reduceRightWithIndex4(b, f));
+};
+var _filterMapWithIndex = function(fa, f) {
+  return pipe(fa, filterMapWithIndex(f));
+};
+var _filterWithIndex = function(fa, predicateWithIndex) {
+  return pipe(fa, filterWithIndex(predicateWithIndex));
+};
+var _extend = function(fa, f) {
+  return pipe(fa, extend(f));
+};
+var _traverse = function(F) {
+  var traverseF = traverse(F);
+  return function(ta, f) {
+    return pipe(ta, traverseF(f));
+  };
+};
+var _traverseWithIndex = function(F) {
+  var traverseWithIndexF = traverseWithIndex(F);
+  return function(ta, f) {
+    return pipe(ta, traverseWithIndexF(f));
+  };
+};
+var _chainRecDepthFirst2 = _chainRecDepthFirst;
+var _chainRecBreadthFirst2 = _chainRecBreadthFirst;
+var of3 = of;
+var zero = function() {
+  return [];
+};
+var map2 = function(f) {
+  return function(fa) {
+    return fa.map(function(a) {
+      return f(a);
+    });
+  };
+};
+var ap2 = function(fa) {
+  return flatMap2(function(f) {
+    return pipe(fa, map2(f));
+  });
+};
+var flatMap2 = dual(2, function(ma, f) {
+  return pipe(ma, chainWithIndex(function(i, a) {
+    return f(a, i);
+  }));
+});
+var flatten = flatMap2(identity);
+var mapWithIndex = function(f) {
+  return function(fa) {
+    return fa.map(function(a, i) {
+      return f(i, a);
+    });
+  };
+};
+var filterMapWithIndex = function(f) {
+  return function(fa) {
+    var out = [];
+    for (var i = 0;i < fa.length; i++) {
+      var optionB = f(i, fa[i]);
+      if (isSome(optionB)) {
+        out.push(optionB.value);
+      }
+    }
+    return out;
+  };
+};
+var filterMap = function(f) {
+  return filterMapWithIndex(function(_, a) {
+    return f(a);
+  });
+};
+var compact = filterMap(identity);
+var separate = function(fa) {
+  var left = [];
+  var right = [];
+  for (var _i = 0, fa_1 = fa;_i < fa_1.length; _i++) {
+    var e = fa_1[_i];
+    if (e._tag === "Left") {
+      left.push(e.left);
+    } else {
+      right.push(e.right);
+    }
+  }
+  return separated(left, right);
+};
+var filter = function(predicate) {
+  return function(as3) {
+    return as3.filter(predicate);
+  };
+};
+var partition = function(predicate) {
+  return partitionWithIndex(function(_, a) {
+    return predicate(a);
+  });
+};
+var partitionWithIndex = function(predicateWithIndex) {
+  return function(as3) {
+    var left = [];
+    var right = [];
+    for (var i = 0;i < as3.length; i++) {
+      var b = as3[i];
+      if (predicateWithIndex(i, b)) {
+        right.push(b);
+      } else {
+        left.push(b);
+      }
+    }
+    return separated(left, right);
+  };
+};
+var partitionMap = function(f) {
+  return partitionMapWithIndex(function(_, a) {
+    return f(a);
+  });
+};
+var partitionMapWithIndex = function(f) {
+  return function(fa) {
+    var left = [];
+    var right = [];
+    for (var i = 0;i < fa.length; i++) {
+      var e = f(i, fa[i]);
+      if (e._tag === "Left") {
+        left.push(e.left);
+      } else {
+        right.push(e.right);
+      }
+    }
+    return separated(left, right);
+  };
+};
+var altW = function(that) {
+  return function(fa) {
+    return fa.concat(that());
+  };
+};
+var alt = altW;
+var filterWithIndex = function(predicateWithIndex) {
+  return function(as3) {
+    return as3.filter(function(b, i) {
+      return predicateWithIndex(i, b);
+    });
+  };
+};
+var extend = function(f) {
+  return function(wa) {
+    return wa.map(function(_, i) {
+      return f(wa.slice(i));
+    });
+  };
+};
+var duplicate = extend(identity);
+var foldMap4 = foldMap3;
+var foldMapWithIndex4 = foldMapWithIndex3;
+var reduce4 = reduce3;
+var reduceWithIndex4 = reduceWithIndex3;
+var reduceRight4 = reduceRight3;
+var reduceRightWithIndex4 = reduceRightWithIndex3;
+var traverse = function(F) {
+  var traverseWithIndexF = traverseWithIndex(F);
+  return function(f) {
+    return traverseWithIndexF(function(_, a) {
+      return f(a);
+    });
+  };
+};
+var sequence = function(F) {
+  return function(ta) {
+    return _reduce(ta, F.of(zero()), function(fas, fa) {
+      return F.ap(F.map(fas, function(as3) {
+        return function(a) {
+          return pipe(as3, append3(a));
+        };
+      }), fa);
+    });
+  };
+};
+var traverseWithIndex = function(F) {
+  return function(f) {
+    return reduceWithIndex4(F.of(zero()), function(i, fbs, a) {
+      return F.ap(F.map(fbs, function(bs) {
+        return function(b) {
+          return pipe(bs, append3(b));
+        };
+      }), f(i, a));
+    });
+  };
+};
+var wither = function(F) {
+  var _witherF = _wither(F);
+  return function(f) {
+    return function(fa) {
+      return _witherF(fa, f);
+    };
+  };
+};
+var wilt = function(F) {
+  var _wiltF = _wilt(F);
+  return function(f) {
+    return function(fa) {
+      return _wiltF(fa, f);
+    };
+  };
+};
+var unfold = function(b, f) {
+  var out = [];
+  var bb = b;
+  while (true) {
+    var mt = f(bb);
+    if (isSome(mt)) {
+      var _a = mt.value, a = _a[0], b_1 = _a[1];
+      out.push(a);
+      bb = b_1;
+    } else {
+      break;
+    }
+  }
+  return out;
+};
+var URI3 = "Array";
+var getShow4 = getShow3;
+var getSemigroup3 = function() {
+  return {
+    concat: function(first, second) {
+      return first.concat(second);
+    }
+  };
+};
+var getMonoid3 = function() {
+  return {
+    concat: getSemigroup3().concat,
+    empty: []
+  };
+};
+var getEq4 = getEq3;
+var getOrd2 = getOrd;
+var getUnionSemigroup = function(E) {
+  var unionE = union4(E);
+  return {
+    concat: function(first, second) {
+      return unionE(second)(first);
+    }
+  };
+};
+var getUnionMonoid = function(E) {
+  return {
+    concat: getUnionSemigroup(E).concat,
+    empty: []
+  };
+};
+var getIntersectionSemigroup = function(E) {
+  var intersectionE = intersection2(E);
+  return {
+    concat: function(first, second) {
+      return intersectionE(second)(first);
+    }
+  };
+};
+var getDifferenceMagma = function(E) {
+  var differenceE = difference2(E);
+  return {
+    concat: function(first, second) {
+      return differenceE(second)(first);
+    }
+  };
+};
+var Functor4 = {
+  URI: URI3,
+  map: _map2
+};
+var flap2 = flap(Functor4);
+var Pointed = {
+  URI: URI3,
+  of: of3
+};
+var FunctorWithIndex = {
+  URI: URI3,
+  map: _map2,
+  mapWithIndex: _mapWithIndex
+};
+var Apply2 = {
+  URI: URI3,
+  map: _map2,
+  ap: _ap2
+};
+var apFirst2 = apFirst(Apply2);
+var apSecond2 = apSecond(Apply2);
+var Applicative = {
+  URI: URI3,
+  map: _map2,
+  ap: _ap2,
+  of: of3
+};
+var Chain4 = {
+  URI: URI3,
+  map: _map2,
+  ap: _ap2,
+  chain: flatMap2
+};
+var chainFirst2 = chainFirst(Chain4);
+var Monad = {
+  URI: URI3,
+  map: _map2,
+  ap: _ap2,
+  of: of3,
+  chain: flatMap2
+};
+var Unfoldable = {
+  URI: URI3,
+  unfold
+};
+var Alt = {
+  URI: URI3,
+  map: _map2,
+  alt: _alt
+};
+var Zero2 = {
+  URI: URI3,
+  zero
+};
+var guard2 = guard(Zero2, Pointed);
+var Alternative = {
+  URI: URI3,
+  map: _map2,
+  ap: _ap2,
+  of: of3,
+  alt: _alt,
+  zero
+};
+var Extend = {
+  URI: URI3,
+  map: _map2,
+  extend: _extend
+};
+var Compactable = {
+  URI: URI3,
+  compact,
+  separate
+};
+var Filterable = {
+  URI: URI3,
+  map: _map2,
+  compact,
+  separate,
+  filter: _filter,
+  filterMap: _filterMap,
+  partition: _partition,
+  partitionMap: _partitionMap
+};
+var FilterableWithIndex = {
+  URI: URI3,
+  map: _map2,
+  mapWithIndex: _mapWithIndex,
+  compact,
+  separate,
+  filter: _filter,
+  filterMap: _filterMap,
+  partition: _partition,
+  partitionMap: _partitionMap,
+  partitionMapWithIndex: _partitionMapWithIndex,
+  partitionWithIndex: _partitionWithIndex,
+  filterMapWithIndex: _filterMapWithIndex,
+  filterWithIndex: _filterWithIndex
+};
+var Foldable = {
+  URI: URI3,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight
+};
+var FoldableWithIndex = {
+  URI: URI3,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight,
+  reduceWithIndex: _reduceWithIndex,
+  foldMapWithIndex: _foldMapWithIndex,
+  reduceRightWithIndex: _reduceRightWithIndex
+};
+var Traversable = {
+  URI: URI3,
+  map: _map2,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight,
+  traverse: _traverse,
+  sequence
+};
+var TraversableWithIndex = {
+  URI: URI3,
+  map: _map2,
+  mapWithIndex: _mapWithIndex,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight,
+  reduceWithIndex: _reduceWithIndex,
+  foldMapWithIndex: _foldMapWithIndex,
+  reduceRightWithIndex: _reduceRightWithIndex,
+  traverse: _traverse,
+  sequence,
+  traverseWithIndex: _traverseWithIndex
+};
+var _wither = witherDefault(Traversable, Compactable);
+var _wilt = wiltDefault(Traversable, Compactable);
+var Witherable2 = {
+  URI: URI3,
+  map: _map2,
+  compact,
+  separate,
+  filter: _filter,
+  filterMap: _filterMap,
+  partition: _partition,
+  partitionMap: _partitionMap,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight,
+  traverse: _traverse,
+  sequence,
+  wither: _wither,
+  wilt: _wilt
+};
+var chainRecDepthFirst2 = chainRecDepthFirst;
+var ChainRecDepthFirst = {
+  URI: URI3,
+  map: _map2,
+  ap: _ap2,
+  chain: flatMap2,
+  chainRec: _chainRecDepthFirst2
+};
+var chainRecBreadthFirst2 = chainRecBreadthFirst;
+var ChainRecBreadthFirst = {
+  URI: URI3,
+  map: _map2,
+  ap: _ap2,
+  chain: flatMap2,
+  chainRec: _chainRecBreadthFirst2
+};
+var filterE2 = filterE(Witherable2);
+var FromEither4 = {
+  URI: URI3,
+  fromEither: fromEither2
+};
+var fromEitherK2 = fromEitherK(FromEither4);
+var unsafeInsertAt3 = unsafeInsertAt;
+var unsafeUpdateAt3 = function(i, a, as3) {
+  return isNonEmpty5(as3) ? unsafeUpdateAt(i, a, as3) : [];
+};
+var unsafeDeleteAt = function(i, as3) {
+  var xs = as3.slice();
+  xs.splice(i, 1);
+  return xs;
+};
+var every2 = every;
+var some3 = function(predicate) {
+  return function(as3) {
+    return as3.some(predicate);
+  };
+};
+var exists = some3;
+var intercalate3 = intercalate2;
+var Do = of3(emptyRecord);
+var bindTo2 = bindTo(Functor4);
+var let_2 = let_(Functor4);
+var bind2 = bind(Chain4);
+var apS2 = apS(Apply2);
+var chain = flatMap2;
+var range3 = range;
+var empty5 = [];
+var cons3 = cons;
+var snoc3 = snoc;
+var prependToAll = prependAll3;
+var array = {
+  URI: URI3,
+  compact,
+  separate,
+  map: _map2,
+  ap: _ap2,
+  of: of3,
+  chain: flatMap2,
+  filter: _filter,
+  filterMap: _filterMap,
+  partition: _partition,
+  partitionMap: _partitionMap,
+  mapWithIndex: _mapWithIndex,
+  partitionMapWithIndex: _partitionMapWithIndex,
+  partitionWithIndex: _partitionWithIndex,
+  filterMapWithIndex: _filterMapWithIndex,
+  filterWithIndex: _filterWithIndex,
+  alt: _alt,
+  zero,
+  unfold,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight,
+  traverse: _traverse,
+  sequence,
+  reduceWithIndex: _reduceWithIndex,
+  foldMapWithIndex: _foldMapWithIndex,
+  reduceRightWithIndex: _reduceRightWithIndex,
+  traverseWithIndex: _traverseWithIndex,
+  extend: _extend,
+  wither: _wither,
+  wilt: _wilt
+};
+
+// node_modules/fp-ts/es6/Endomorphism.js
+var getSemigroup4 = function() {
+  return {
+    concat: function(first, second) {
+      return flow(first, second);
+    }
+  };
+};
+var getMonoid4 = function() {
+  return {
+    concat: getSemigroup4().concat,
+    empty: identity
+  };
+};
+
+// node_modules/fp-ts/es6/Monoid.js
+var concatAll4 = function(M) {
+  return concatAll2(M)(M.empty);
+};
+var monoidVoid = {
+  concat: semigroupVoid.concat,
+  empty: undefined
+};
+var monoidAll = {
+  concat: semigroupAll.concat,
+  empty: true
+};
+var monoidAny = {
+  concat: semigroupAny.concat,
+  empty: false
+};
+var monoidString = {
+  concat: semigroupString.concat,
+  empty: ""
+};
+var monoidSum = {
+  concat: semigroupSum.concat,
+  empty: 0
+};
+var monoidProduct = {
+  concat: semigroupProduct.concat,
+  empty: 1
+};
+
+// node_modules/fp-ts-std/dist/esm/Function.js
+var URI4 = "Function";
+var map3 = (f) => (g) => flow(g, f);
+var Functor6 = {
+  URI: URI4,
+  map: (f, g) => map3(g)(f)
+};
+var of4 = constant;
+var ap3 = (f) => (g) => (x) => g(x)(f(x));
+var Applicative2 = {
+  ...Functor6,
+  of: of4,
+  ap: (f, g) => ap3(g)(f)
+};
+var apFirst3 = apFirst(Applicative2);
+var apSecond3 = apSecond(Applicative2);
+var chain2 = (f) => (g) => (x) => f(g(x))(x);
+var Monad2 = {
+  ...Applicative2,
+  chain: (f, g) => chain2(g)(f)
+};
+var Do2 = of4({});
+var bindTo3 = bindTo(Functor6);
+var bind3 = bind(Monad2);
+var apS3 = apS(Applicative2);
+var let_3 = let_(Functor6);
+var unary = tupled;
+var unless = (f) => (onFalse) => (x) => f(x) ? x : onFalse(x);
+var when = flow(not, unless);
+var invoke = (x) => (ys) => (z) => z[x](...ys);
+var invokeNullary = flip(invoke)([]);
+var memoize = (eq2) => (f) => {
+  const cache = new Map;
+  return (k) => {
+    const cached = lookup2(eq2)(k)(cache);
+    if (isSome2(cached))
+      return cached.value;
+    const val = f(k);
+    cache.set(k, val);
+    return val;
+  };
+};
+var curry2T = (f) => (a) => (b) => f([a, b]);
+var curry2 = flow(unary, curry2T);
+var curry3T = (f) => (a) => (b) => (c) => f([a, b, c]);
+var curry3 = flow(unary, curry3T);
+var curry4T = (f) => (a) => (b) => (c) => (d) => f([a, b, c, d]);
+var curry4 = flow(unary, curry4T);
+var curry5T = (f) => (a) => (b) => (c) => (d) => (e) => f([a, b, c, d, e]);
+var curry5 = flow(unary, curry5T);
+var applyEvery = concatAll4(getMonoid4());
+
+// node_modules/fp-ts-std/dist/esm/Predicate.js
+var anyPass = (fs) => concatAll4(getMonoidAny())(fs);
+
+// node_modules/fp-ts/es6/string.js
+var exports_string = {};
+__export(exports_string, {
+  trimRight: () => {
+    {
+      return trimRight;
+    }
+  },
+  trimLeft: () => {
+    {
+      return trimLeft;
+    }
+  },
+  trim: () => {
+    {
+      return trim;
+    }
+  },
+  toUpperCase: () => {
+    {
+      return toUpperCase;
+    }
+  },
+  toLowerCase: () => {
+    {
+      return toLowerCase;
+    }
+  },
+  startsWith: () => {
+    {
+      return startsWith;
+    }
+  },
+  split: () => {
+    {
+      return split;
+    }
+  },
+  slice: () => {
+    {
+      return slice;
+    }
+  },
+  size: () => {
+    {
+      return size3;
+    }
+  },
+  replace: () => {
+    {
+      return replace;
+    }
+  },
+  isString: () => {
+    {
+      return isString;
+    }
+  },
+  isEmpty: () => {
+    {
+      return isEmpty3;
+    }
+  },
+  includes: () => {
+    {
+      return includes;
+    }
+  },
+  endsWith: () => {
+    {
+      return endsWith;
+    }
+  },
+  empty: () => {
+    {
+      return empty6;
+    }
+  },
+  Show: () => {
+    {
+      return Show;
+    }
+  },
+  Semigroup: () => {
+    {
+      return Semigroup;
+    }
+  },
+  Ord: () => {
+    {
+      return Ord4;
+    }
+  },
+  Monoid: () => {
+    {
+      return Monoid3;
+    }
+  },
+  Eq: () => {
+    {
+      return Eq4;
+    }
+  }
+});
+var Eq4 = {
+  equals: function(first, second) {
+    return first === second;
+  }
+};
+var Semigroup = {
+  concat: function(first, second) {
+    return first + second;
+  }
+};
+var empty6 = "";
+var Monoid3 = {
+  concat: Semigroup.concat,
+  empty: empty6
+};
+var Ord4 = {
+  equals: Eq4.equals,
+  compare: function(first, second) {
+    return first < second ? -1 : first > second ? 1 : 0;
+  }
+};
+var Show = {
+  show: function(s) {
+    return JSON.stringify(s);
+  }
+};
+var isString = function(u) {
+  return typeof u === "string";
+};
+var toUpperCase = function(s) {
+  return s.toUpperCase();
+};
+var toLowerCase = function(s) {
+  return s.toLowerCase();
+};
+var replace = function(searchValue, replaceValue) {
+  return function(s) {
+    return s.replace(searchValue, replaceValue);
+  };
+};
+var trim = function(s) {
+  return s.trim();
+};
+var trimLeft = function(s) {
+  return s.trimLeft();
+};
+var trimRight = function(s) {
+  return s.trimRight();
+};
+var slice = function(start, end) {
+  return function(s) {
+    return s.slice(start, end);
+  };
+};
+var isEmpty3 = function(s) {
+  return s.length === 0;
+};
+var size3 = function(s) {
+  return s.length;
+};
+var split = function(separator) {
+  return function(s) {
+    var out = s.split(separator);
+    return isNonEmpty2(out) ? out : [s];
+  };
+};
+var includes = function(searchString, position) {
+  return function(s) {
+    return s.includes(searchString, position);
+  };
+};
+var startsWith = function(searchString, position) {
+  return function(s) {
+    return s.startsWith(searchString, position);
+  };
+};
+var endsWith = function(searchString, position) {
+  return function(s) {
+    return s.endsWith(searchString, position);
+  };
+};
+
+// shared/fp.tsx
+var pMchain = (f) => async (fa) => f(await fa);
+var chunckify = (n) => (g) => flow(exports_Array.chunksOf(n), exports_Array.map(g), (ps) => Promise.all(ps), pMchain(exports_Array.flatten));
+var memoize2 = (fn) => pipe(fn, tupled, memoize(exports_Eq.contramap(JSON.stringify)(exports_string.Eq)), untupled);
+
+// shared/util.tsx
+var SpotifyLoc;
+(function(SpotifyLoc) {
+  let before;
+  (function(before) {
+    before.start = constant({ before: "start" });
+    before.fromUri = (uri) => ({
+      before: { uri }
+    });
+    before.fromUid = (uid) => ({
+      before: { uid }
+    });
+  })(before = SpotifyLoc.before || (SpotifyLoc.before = {}));
+  let after;
+  (function(after) {
+    after.end = constant({ after: "end" });
+    after.fromUri = (uri) => ({
+      before: { uri }
+    });
+    after.fromUid = (uid) => ({
+      before: { uid }
+    });
+  })(after = SpotifyLoc.after || (SpotifyLoc.after = {}));
+})(SpotifyLoc || (SpotifyLoc = {}));
+//! Does location actually point to document.body?
+
+// shared/api.tsx
+var { URI: URI5 } = Spicetify;
+var fetchWebArtistsSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists);
+var fetchWebPlaylistsSpot = chunckify(1)(async ([id]) => [
+  await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
+]);
+var fetchWebAlbumsSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums);
+var fetchWebTracksSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks);
+var fetchPlatPlaylistEnhancedSongs300 = async (uri, offset = 0, limit = 300) => (await Spicetify.Platform.EnhanceAPI.getPage(uri, 0, 0, offset, limit)).enhancePage.pageItems;
+var fetchPlatPlaylistEnhancedSongs = async (uri, offset = 0) => {
+  const nextPageItems = await fetchPlatPlaylistEnhancedSongs300(uri, offset);
+  if (nextPageItems?.length < 300)
+    return nextPageItems;
+  else
+    return nextPageItems.concat(fetchPlatPlaylistEnhancedSongs(uri, offset + 300));
+};
+var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+  const url = new URL("https://ws.audioscrobbler.com/2.0/");
+  url.searchParams.append("method", "track.getInfo");
+  url.searchParams.append("api_key", LFMApiKey);
+  url.searchParams.append("artist", artist);
+  url.searchParams.append("track", trackName);
+  url.searchParams.append("format", "json");
+  url.searchParams.append("username", lastFmUsername);
+  return await fetch(url).then((res) => res.json());
+};
+var fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
+
+// extensions/play-enhanced-songs/app.tsx
+var { URI: URI6 } = Spicetify;
+var queue = new Array;
+var playEnhancedSongs = async (uri) => {
+  queue = await fetchPlatPlaylistEnhancedSongs(uri);
+  Spicetify.Platform.PlayerAPI.clearQueue();
+  Spicetify.Platform.PlayerAPI.addToQueue(queue);
+};
+new Spicetify.ContextMenu.Item("Play enhanced songs", tupled(playEnhancedSongs), tupled(anyPass([URI6.isPlaylistV1OrV2])), "enhance").register();
+
+//# debugId=9E28595EA2C4DFF964756e2164756e21

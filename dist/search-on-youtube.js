@@ -1,4 +1,4279 @@
-var V9=Object.create;var{defineProperty:H1,getPrototypeOf:q9,getOwnPropertyNames:B9}=Object;var K9=Object.prototype.hasOwnProperty;var G4=($,Q,X)=>{X=$!=null?V9(q9($)):{};const H=Q||!$||!$.__esModule?H1(X,"default",{value:$,enumerable:!0}):X;for(let J of B9($))if(!K9.call(H,J))H1(H,J,{get:()=>$[J],enumerable:!0});return H};var P4=($,Q)=>()=>(Q||$((Q={exports:{}}).exports,Q),Q.exports);var W0=($,Q)=>{for(var X in Q)H1($,X,{get:Q[X],enumerable:!0,configurable:!0,set:(H)=>Q[X]=()=>H})};var Y9=P4((VH,j9)=>{j9.exports=Spicetify.React});var P9=P4((qH,G9)=>{G9.exports=Spicetify.ReactDOM});function K($){return $}function k($){return function(){return $}}function J1($){return function(){var Q=[];for(var X=0;X<arguments.length;X++)Q[X]=arguments[X];if(Q.length>1)return $(Q[1],Q[0]);return function(H){return $(H)(Q[0])}}}function V($,Q,X,H,J,Z,j,z,T){switch(arguments.length){case 1:return $;case 2:return function(){return Q($.apply(this,arguments))};case 3:return function(){return X(Q($.apply(this,arguments)))};case 4:return function(){return H(X(Q($.apply(this,arguments))))};case 5:return function(){return J(H(X(Q($.apply(this,arguments)))))};case 6:return function(){return Z(J(H(X(Q($.apply(this,arguments))))))};case 7:return function(){return j(Z(J(H(X(Q($.apply(this,arguments)))))))};case 8:return function(){return z(j(Z(J(H(X(Q($.apply(this,arguments))))))))};case 9:return function(){return T(z(j(Z(J(H(X(Q($.apply(this,arguments)))))))))}}return}function y($){return function(Q){return $.apply(void 0,Q)}}function B4($){return function(){var Q=[];for(var X=0;X<arguments.length;X++)Q[X]=arguments[X];return $(Q)}}function Y($,Q,X,H,J,Z,j,z,T){switch(arguments.length){case 1:return $;case 2:return Q($);case 3:return X(Q($));case 4:return H(X(Q($)));case 5:return J(H(X(Q($))));case 6:return Z(J(H(X(Q($)))));case 7:return j(Z(J(H(X(Q($))))));case 8:return z(j(Z(J(H(X(Q($)))))));case 9:return T(z(j(Z(J(H(X(Q($))))))));default:{var N=arguments[0];for(var L0=1;L0<arguments.length;L0++)N=arguments[L0](N);return N}}}var w9=function($,Q,X){if(X||arguments.length===2){for(var H=0,J=Q.length,Z;H<J;H++)if(Z||!(H in Q)){if(!Z)Z=Array.prototype.slice.call(Q,0,H);Z[H]=Q[H]}}return $.concat(Z||Array.prototype.slice.call(Q))};var D4=function($){return function(){return{concat:function(Q,X){return function(H){return $.concat(Q(H),X(H))}}}}},z4=function($){var Q=D4($);return function(){return{concat:Q().concat,empty:function(){return $.empty}}}};var L4=function($){return function(Q){return Q($)}};var V4=k(!1);var q4=k(void 0),V0=q4;var B=function($,Q){var X=typeof $==="number"?function(H){return H.length>=$}:$;return function(){var H=Array.from(arguments);if(X(arguments))return Q.apply(this,H);return function(J){return Q.apply(void 0,w9([J],H,!1))}}};var C9=function($,Q,X){if(X||arguments.length===2){for(var H=0,J=Q.length,Z;H<J;H++)if(Z||!(H in Q)){if(!Z)Z=Array.prototype.slice.call(Q,0,H);Z[H]=Q[H]}}return $.concat(Z||Array.prototype.slice.call(Q))},M0=function($){return $._tag==="None"},W=function($){return $._tag==="Some"},P={_tag:"None"},L=function($){return{_tag:"Some",value:$}},s=function($){return $._tag==="Left"};var Z1=function($){return[$]},t=function($){return $.length>0},q0=function($){return $[0]},F0=function($){return $.slice(1)},E0=[],F={};var j1=function($){return C9([$[0]],$.slice(1),!0)};var K4=function($,Q){return B(2,function(X,H){return Q.flatMap(X,function(J){return $.fromIO(H(J))})})};function i($){return function(Q){return function(X){return $.ap($.map(X,function(H){return function(){return H}}),Q)}}}function e($){return function(Q){return function(X){return $.ap($.map(X,function(){return function(H){return H}}),Q)}}}function a($){return function(Q,X){return function(H){return $.ap($.map(H,function(J){return function(Z){var j;return Object.assign({},J,(j={},j[Q]=Z,j))}}),X)}}}function I0($){return function(Q){return{concat:function(X,H){return $.ap($.map(X,function(J){return function(Z){return Q.concat(J,Z)}}),H)}}}}function B0($){return function(Q){return function(X){return $.map(X,function(H){return H(Q)})}}}function b($){return function(Q){return function(X){return $.map(X,function(H){var J;return J={},J[Q]=H,J})}}}var h=function($){return function(Q,X){return function(H){return $.map(H,function(J){var Z;return Object.assign({},J,(Z={},Z[Q]=X(J),Z))})}}};function K0($){return function(Q,X){return $.map(Q,function(){return X})}}function x0($){var Q=K0($);return function(X){return Q(X,void 0)}}function w4($){var Q=I0($);return function(X){return{concat:Q(X).concat,empty:$.of(X.empty)}}}var p={};W0(p,{zipWith:()=>{{return m5}},zip:()=>{{return _5}},zero:()=>{{return j0}},wither:()=>{{return p3}},wilt:()=>{{return n3}},updateAt:()=>{{return R3}},unzip:()=>{{return F3}},unsafeUpdateAt:()=>{{return w7}},unsafeInsertAt:()=>{{return K7}},unsafeDeleteAt:()=>{{return C7}},uniq:()=>{{return x3}},union:()=>{{return F1}},unfold:()=>{{return n1}},traverseWithIndex:()=>{{return p1}},traverse:()=>{{return P7}},takeRight:()=>{{return z3}},takeLeftWhile:()=>{{return L3}},takeLeft:()=>{{return D3}},tail:()=>{{return G3}},splitAt:()=>{{return d5}},spanLeft:()=>{{return V3}},sortBy:()=>{{return k3}},sort:()=>{{return M3}},some:()=>{{return v7}},snoc:()=>{{return k6}},size:()=>{{return J3}},sequence:()=>{{return T0}},separate:()=>{{return G0}},scanRight:()=>{{return H3}},scanLeft:()=>{{return X3}},rotate:()=>{{return I3}},rights:()=>{{return g3}},reverse:()=>{{return S3}},replicate:()=>{{return M5}},reduceWithIndex:()=>{{return d1}},reduceRightWithIndex:()=>{{return G7}},reduceRight:()=>{{return Y7}},reduce:()=>{{return c1}},range:()=>{{return E6}},prependW:()=>{{return t9}},prependToAll:()=>{{return y6}},prependAll:()=>{{return c5}},prepend:()=>{{return s9}},partitionWithIndex:()=>{{return l1}},partitionMapWithIndex:()=>{{return m1}},partitionMap:()=>{{return Q7}},partition:()=>{{return $7}},of:()=>{{return d}},modifyAt:()=>{{return l5}},matchW:()=>{{return I5}},matchRightW:()=>{{return y5}},matchRight:()=>{{return b5}},matchLeftW:()=>{{return x5}},matchLeft:()=>{{return k5}},match:()=>{{return a9}},mapWithIndex:()=>{{return e5}},map:()=>{{return N0}},makeBy:()=>{{return W5}},lookup:()=>{{return Z3}},let:()=>{{return g6}},lefts:()=>{{return W3}},last:()=>{{return Y3}},isOutOfBound:()=>{{return U0}},isNonEmpty:()=>{{return q}},isEmpty:()=>{{return _}},intersperse:()=>{{return E3}},intersection:()=>{{return E1}},intercalate:()=>{{return R6}},insertAt:()=>{{return A3}},init:()=>{{return P3}},head:()=>{{return j3}},guard:()=>{{return G6}},getUnionSemigroup:()=>{{return z7}},getUnionMonoid:()=>{{return t3}},getShow:()=>{{return o3}},getSemigroup:()=>{{return D7}},getOrd:()=>{{return s3}},getMonoid:()=>{{return r3}},getIntersectionSemigroup:()=>{{return i3}},getEq:()=>{{return f3}},getDifferenceMagma:()=>{{return e3}},fromPredicate:()=>{{return e9}},fromOptionK:()=>{{return h3}},fromOption:()=>{{return F5}},fromEitherK:()=>{{return N6}},fromEither:()=>{{return E5}},foldRight:()=>{{return Q3}},foldMapWithIndex:()=>{{return j7}},foldMap:()=>{{return Z7}},foldLeft:()=>{{return $3}},flatten:()=>{{return c3}},flatMap:()=>{{return g}},flap:()=>{{return a3}},findLastMap:()=>{{return N3}},findLastIndex:()=>{{return T3}},findLast:()=>{{return U3}},findIndex:()=>{{return w3}},findFirstMap:()=>{{return v3}},findFirst:()=>{{return C3}},filterWithIndex:()=>{{return J7}},filterMapWithIndex:()=>{{return h1}},filterMap:()=>{{return u1}},filterE:()=>{{return U6}},filter:()=>{{return a5}},extend:()=>{{return _1}},exists:()=>{{return A6}},every:()=>{{return T6}},empty:()=>{{return I6}},elem:()=>{{return M1}},duplicate:()=>{{return d3}},dropRight:()=>{{return B3}},dropLeftWhile:()=>{{return K3}},dropLeft:()=>{{return q3}},difference:()=>{{return I1}},deleteAt:()=>{{return O3}},copy:()=>{{return C}},cons:()=>{{return x6}},concatW:()=>{{return p5}},concat:()=>{{return l3}},comprehension:()=>{{return u3}},compact:()=>{{return Y0}},chunksOf:()=>{{return b3}},chop:()=>{{return y3}},chainWithIndex:()=>{{return h5}},chainRecDepthFirst:()=>{{return K6}},chainRecBreadthFirst:()=>{{return C6}},chainFirst:()=>{{return J6}},chain:()=>{{return F6}},bindTo:()=>{{return S6}},bind:()=>{{return W6}},array:()=>{{return b6}},appendW:()=>{{return i9}},append:()=>{{return m0}},apSecond:()=>{{return X6}},apS:()=>{{return M6}},apFirst:()=>{{return Q6}},ap:()=>{{return i5}},altW:()=>{{return X7}},alt:()=>{{return H7}},Zero:()=>{{return V7}},Witherable:()=>{{return q7}},Unfoldable:()=>{{return j6}},URI:()=>{{return G}},TraversableWithIndex:()=>{{return B6}},Traversable:()=>{{return f1}},Pointed:()=>{{return L7}},Monad:()=>{{return Z6}},FunctorWithIndex:()=>{{return $6}},Functor:()=>{{return r0}},FromEither:()=>{{return B7}},FoldableWithIndex:()=>{{return q6}},Foldable:()=>{{return V6}},FilterableWithIndex:()=>{{return L6}},Filterable:()=>{{return z6}},Extend:()=>{{return D6}},Do:()=>{{return O6}},Compactable:()=>{{return r1}},ChainRecDepthFirst:()=>{{return w6}},ChainRecBreadthFirst:()=>{{return v6}},Chain:()=>{{return o1}},Apply:()=>{{return f0}},Applicative:()=>{{return H6}},Alternative:()=>{{return P6}},Alt:()=>{{return Y6}}});function C4($){var Q=M($);return function(X){return function(H){return Q(H,X)}}}function M($){return function(Q,X){return $.chain(Q,function(H){return $.map(X(H),function(){return H})})}}function u($){return function(Q,X){return function(H){return $.chain(H,function(J){return $.map(X(J),function(Z){var j;return Object.assign({},J,(j={},j[Q]=Z,j))})})}}}function k0($){return function(Q){return V(Q,$.fromEither)}}function U4($,Q){var X=k0($),H=M(Q);return function(J,Z){return H(J,X(Z))}}var y0={};W0(y0,{tuple:()=>{{return T4}},struct:()=>{{return N4}},strictEqual:()=>{{return R9}},getTupleEq:()=>{{return T9}},getStructEq:()=>{{return A9}},getSemigroup:()=>{{return O4}},getMonoid:()=>{{return N9}},fromEquals:()=>{{return l}},eqString:()=>{{return g9}},eqStrict:()=>{{return m}},eqNumber:()=>{{return W9}},eqDate:()=>{{return M9}},eqBoolean:()=>{{return S9}},eq:()=>{{return O9}},contramap:()=>{{return A4}},URI:()=>{{return R4}},Contravariant:()=>{{return S4}}});var l=function($){return{equals:function(Q,X){return Q===X||$(Q,X)}}},N4=function($){return l(function(Q,X){for(var H in $)if(!$[H].equals(Q[H],X[H]))return!1;return!0})},T4=function(){var $=[];for(var Q=0;Q<arguments.length;Q++)$[Q]=arguments[Q];return l(function(X,H){return $.every(function(J,Z){return J.equals(X[Z],H[Z])})})},v9=function($,Q){return Y($,A4(Q))},A4=function($){return function(Q){return l(function(X,H){return Q.equals($(X),$(H))})}},R4="Eq",m={equals:function($,Q){return $===Q}},U9={equals:function(){return!0}},O4=function(){return{concat:function($,Q){return l(function(X,H){return $.equals(X,H)&&Q.equals(X,H)})}}},N9=function(){return{concat:O4().concat,empty:U9}},S4={URI:R4,contramap:v9},T9=T4,A9=N4,R9=m.equals,O9=S4,S9=m,g9=m,W9=m,M9={equals:function($,Q){return $.valueOf()===Q.valueOf()}};var I9=function($,Q){return $<Q?-1:$>Q?1:0},F9=function($){return function(Q,X){return Q===X||$(Q,X)===0}},b0=function($){return{equals:F9($),compare:function(Q,X){return Q===X?0:$(Q,X)}}};var E9=function(){return{concat:function($,Q){return b0(function(X,H){var J=$.compare(X,H);return J!==0?J:Q.compare(X,H)})}}},g4=function(){return{concat:E9().concat,empty:b0(function(){return 0})}};var U$={equals:m.equals,compare:I9};var W4=function($){return function(Q){return function(X){return X.reduce(function(H,J){return $.concat(H,J)},Q)}}};var k9=function($){return{concat:function(){return $}}};var M4=function(){return{concat:K}};var F4=W4,E4=k9(void 0);var I4={concat:function($,Q){return $&&Q}},x4={concat:function($,Q){return $||Q}};var k4={concat:function($,Q){return $+Q}},y4={concat:function($,Q){return $+Q}},b4={concat:function($,Q){return $*Q}};var u9=function($,Q,X){if(X||arguments.length===2){for(var H=0,J=Q.length,Z;H<J;H++)if(Z||!(H in Q)){if(!Z)Z=Array.prototype.slice.call(Q,0,H);Z[H]=Q[H]}}return $.concat(Z||Array.prototype.slice.call(Q))};var w0=t,h4=function($,Q){return $<0||$>=Q.length},u4=function($){return function(Q){return u9([$],Q,!0)}},l4=u4;var m4=function($){return function(Q){var X=[$,Q[0]];for(var H=1;H<Q.length;H++)X.push($,Q[H]);return X}},_4=function($){return function(Q){var X=c4(Q);return w0(X)?Y(X,m4($),l4(C0(Q))):Q}};var l9=q0;var C0=l9,c4=F0,h0=function($){return $[$.length-1]};var d4=function($){return function(Q){return Q.reduce($.concat)}};var Y1=function($){var Q=d4($);return function(X){return V(_4(X),Q)}};function t4($,Q){return Q?$.concat(Q):function(X){return X.concat($)}}function Q5($,Q){return Q===void 0?$0($):Y(Q,$0($))}var G1=function($,Q,X){if(X||arguments.length===2){for(var H=0,J=Q.length,Z;H<J;H++)if(Z||!(H in Q)){if(!Z)Z=Array.prototype.slice.call(Q,0,H);Z[H]=Q[H]}}return $.concat(Z||Array.prototype.slice.call(Q))},Q0=function($){return $.length>0},P1=function($,Q){return $<0||$>=Q.length},D1=function($){return function(Q){return G1([$],Q,!0)}},$0=D1,z1=function($){return function(Q){return G1(G1([],Q,!0),[$],!1)}},L1=z1,n4=function($,Q,X){if(Q0(X)){var H=B1(X);return H.splice($,0,Q),H}return[Q]},o4=function($,Q,X){var H=B1(X);return H[$]=Q,H},V1=function($){return function(Q){if(Q.length===1)return v0(Q);var X=[X0(Q)],H=H0(Q),J=function(T){if(X.every(function(N){return!$.equals(N,T)}))X.push(T)};for(var Z=0,j=H;Z<j.length;Z++){var z=j[Z];J(z)}return X}},r4=function($){if(Q0($)){var Q=g4();return m9($.reduce(Q.concat,Q.empty))}return v0},f4=function($){var Q=V1($);return function(X){return function(H){return Q(Y(H,t4(X)))}}},q1=function($){return function(Q){var X=Q.length,H=Math.round($)%X;if(P1(Math.abs(H),Q)||H===0)return v0(Q);if(H<0){var J=u0(-H)(Q),Z=J[0],j=J[1];return Y(j,t4(Z))}else return q1(H-X)(Q)}},B1=j1;var K1=function($){return function(Q){var X=Math.max(0,Math.floor(Q)),H=[$(0)];for(var J=1;J<X;J++)H.push($(J));return H}};var s4=function($,Q){return $<=Q?K1(function(X){return $+X})(Q-$+1):[$]};var m9=function($){return function(Q){return Q.slice().sort($.compare)}};var v0=B1,i4=function($){return[$]};var w1=function($){return function(Q){var X=[$,Q[0]];for(var H=1;H<Q.length;H++)X.push($,Q[H]);return X}},e4=function($){return function(Q){var X=H0(Q);return Q0(X)?Y(X,w1($),$0(X0(Q))):v0(Q)}};var C1=function($){return function(Q){var X=$(Q),H=X[0],J=X[1],Z=[H],j=J;while(Q0(j)){var z=$(j),T=z[0],N=z[1];Z.push(T),j=N}return Z}},u0=function($){return function(Q){var X=Math.max(1,$);return X>=Q.length?[v0(Q),[]]:[Y(Q.slice(1,X),$0(X0(Q))),Q.slice(X)]}},a4=function($){return C1(u0($))};var X0=C0,H0=function($){return $.slice(1)},$5=h0,v1=function($){return $.slice(0,-1)};var X5=function($,Q){return Y($,L1(Q))};var H5={equals:function($,Q){return $===Q}},U1={equals:H5.equals,compare:function($,Q){return $<Q?-1:$>Q?1:0}},h$={equals:H5.equals,compare:U1.compare,top:Infinity,bottom:(-Infinity)};var c9={concat:function($,Q){return $-Q}},J5={concat:function($,Q){return $+Q}},Z5={concat:function($,Q){return $*Q}},u$={concat:J5.concat,empty:0},l$={concat:Z5.concat,empty:1},m$={add:J5.concat,zero:0,mul:Z5.concat,one:1,sub:c9.concat,degree:function($){return 1},div:function($,Q){return $/Q},mod:function($,Q){return $%Q}};var l0=function($,Q){return{left:$,right:Q}};function j5($,Q){return function(X){var H=$.traverse(X);return function(J,Z){return X.map(H(J,Z),Q.separate)}}}function Y5($,Q){return function(X){var H=$.traverse(X);return function(J,Z){return X.map(H(J,Z),Q.compact)}}}function G5($){return function(Q){var X=$.wither(Q);return function(H){return function(J){return X(J,function(Z){return Q.map(H(Z),function(j){return j?L(Z):P})})}}}}function P5($,Q){return function(X){return X?Q.of(void 0):$.zero()}}function T1($,Q){return Q===void 0?function(X){return T1($,X)}:r9($,Q)?P:L(Q[$])}function V5($){return function(Q){for(var X=0;X<Q.length;X++)if($(Q[X]))return L(Q[X]);return P}}function B5($){return function(Q){for(var X=Q.length-1;X>=0;X--)if($(Q[X]))return L(Q[X]);return P}}function A1($){return function(Q,X){if(X===void 0){var H=A1($);return function(j){return H(Q,j)}}var J=function(j){return $.equals(j,Q)},Z=0;for(;Z<X.length;Z++)if(J(X[Z]))return!0;return!1}}function S5($){return function(Q){return Q.every($)}}var p9=function($,Q,X){if(X||arguments.length===2){for(var H=0,J=Q.length,Z;H<J;H++)if(Z||!(H in Q)){if(!Z)Z=Array.prototype.slice.call(Q,0,H);Z[H]=Q[H]}}return $.concat(Z||Array.prototype.slice.call(Q))};var N1=w0;var n9=function($,Q){return function(X){return N1(X)?Q(X):$()}},o9=n9;var r9=h4,D5=function($){return N1($)?L(C0($)):P},z5=function($){return N1($)?L(h0($)):P};var L5=function($){return function(Q){for(var X=0;X<Q.length;X++)if($(Q[X]))return L(X);return P}},q5=function($){return function(Q){for(var X=0;X<Q.length;X++){var H=$(Q[X]);if(W(H))return H}return P}},K5=function($){return function(Q){for(var X=Q.length-1;X>=0;X--){var H=$(Q[X]);if(W(H))return H}return P}},w5=function($){return function(Q){for(var X=Q.length-1;X>=0;X--)if($(Q[X]))return L(X);return P}};var C5=function($,Q){return Y($,g1(Q))},v5=function($,Q){return Y($,W1(Q))};var R1=function($){return function(Q){return function(X){return X.reduce(function(H,J,Z){return $.concat(H,Q(Z,J))},$.empty)}}},U5=function($,Q){return O1($,function(X,H,J){return Q(H,J)})},N5=function($){var Q=R1($);return function(X){return Q(function(H,J){return X(J)})}},O1=function($,Q){return function(X){var H=X.length,J=$;for(var Z=0;Z<H;Z++)J=Q(Z,J,X[Z]);return J}},T5=function($,Q){return S1($,function(X,H,J){return Q(H,J)})},S1=function($,Q){return function(X){return X.reduceRight(function(H,J,Z){return Q(Z,J,H)},$)}};var A5=function($){return{show:function(Q){return"[".concat(Q.map($.show).join(", "),"]")}}};var R5=function($){return l(function(Q,X){return Q.length===X.length&&Q.every(function(H,J){return $.equals(H,X[J])})})},O5=function($){return b0(function(Q,X){var H=Q.length,J=X.length,Z=Math.min(H,J);for(var j=0;j<Z;j++){var z=$.compare(Q[j],X[j]);if(z!==0)return z}return U1.compare(H,J)})};var g1=function($){return function(Q){var X=p9([],$(Q),!0),H=[];while(X.length>0){var J=X.shift();if(s(J))X.unshift.apply(X,$(J.left));else H.push(J.right)}return H}};var W1=function($){return function(Q){var X=$(Q),H=[],J=[];function Z(N){if(s(N))$(N.left).forEach(function(L0){return H.push(L0)});else J.push(N.right)}for(var j=0,z=X;j<z.length;j++){var T=z[j];Z(T)}while(H.length>0)Z(H.shift());return J}};var g5=function($){var Q=Y1($);return function(X){return o9(function(){return $.empty},Q(X))}};function e9($){return function(Q){return $(Q)?[Q]:[]}}function L3($){return function(Q){var X=[];for(var H=0,J=Q;H<J.length;H++){var Z=J[H];if(!$(Z))break;X.push(Z)}return X}}function V3($){return function(Q){var X=d5(u5(Q,$))(Q),H=X[0],J=X[1];return{init:H,rest:J}}}function K3($){return function(Q){return Q.slice(u5(Q,$))}}function C3($){return V5($)}function U3($){return B5($)}function _5($,Q){if(Q===void 0)return function(X){return _5(X,$)};return m5($,Q,function(X,H){return[X,H]})}function u3($,Q,X){if(X===void 0)X=function(){return!0};var H=function(J,Z){return q(Z)?g(X0(Z),function(j){return H(Y(J,m0(j)),H0(Z))}):X.apply(void 0,J)?[Q.apply(void 0,J)]:[]};return H([],$)}function F1($){var Q=f4($);return function(X,H){if(H===void 0){var J=F1($);return function(Z){return J(Z,X)}}return q(X)&&q(H)?Q(H)(X):q(X)?C(X):C(H)}}function E1($){var Q=M1($);return function(X,H){if(H===void 0){var J=E1($);return function(Z){return J(Z,X)}}return X.filter(function(Z){return Q(Z,H)})}}function I1($){var Q=M1($);return function(X,H){if(H===void 0){var J=I1($);return function(Z){return J(Z,X)}}return X.filter(function(Z){return!Q(Z,H)})}}var _=function($){return $.length===0},q=Q0,s9=$0,t9=D1,m0=L1,i9=z1,W5=function($,Q){return $<=0?[]:K1(Q)($)},M5=function($,Q){return W5($,function(){return Q})},F5=function($){return M0($)?[]:[$.value]},E5=function($){return s($)?[]:[$.right]},I5=function($,Q){return function(X){return q(X)?Q(X):$()}},a9=I5,x5=function($,Q){return function(X){return q(X)?Q(X0(X),H0(X)):$()}},k5=x5,$3=k5,y5=function($,Q){return function(X){return q(X)?Q(v1(X),$5(X)):$()}},b5=y5,Q3=b5,h5=function($){return function(Q){var X=[];for(var H=0;H<Q.length;H++)X.push.apply(X,$(H,Q[H]));return X}},X3=function($,Q){return function(X){var H=X.length,J=new Array(H+1);J[0]=$;for(var Z=0;Z<H;Z++)J[Z+1]=Q(J[Z],X[Z]);return J}},H3=function($,Q){return function(X){var H=X.length,J=new Array(H+1);J[H]=$;for(var Z=H-1;Z>=0;Z--)J[Z]=Q(X[Z],J[Z+1]);return J}},J3=function($){return $.length},U0=P1,Z3=T1,j3=D5,Y3=z5,G3=function($){return q($)?L(H0($)):P},P3=function($){return q($)?L(v1($)):P},D3=function($){return function(Q){return U0($,Q)?C(Q):Q.slice(0,$)}},z3=function($){return function(Q){return U0($,Q)?C(Q):$===0?[]:Q.slice(-$)}},u5=function($,Q){var X=$.length,H=0;for(;H<X;H++)if(!Q($[H]))break;return H},q3=function($){return function(Q){return $<=0||_(Q)?C(Q):$>=Q.length?[]:Q.slice($,Q.length)}},B3=function($){return function(Q){return $<=0||_(Q)?C(Q):$>=Q.length?[]:Q.slice(0,Q.length-$)}},w3=L5,v3=q5,N3=K5,T3=w5,C=function($){return $.slice()},A3=function($,Q){return function(X){return $<0||$>X.length?P:L(K7($,Q,X))}},R3=function($,Q){return l5($,function(){return Q})},O3=function($){return function(Q){return U0($,Q)?P:L(C7($,Q))}},l5=function($,Q){return function(X){return U0($,X)?P:L(w7($,Q(X[$]),X))}},S3=function($){return _($)?[]:$.slice().reverse()},g3=function($){var Q=[];for(var X=0;X<$.length;X++){var H=$[X];if(H._tag==="Right")Q.push(H.right)}return Q},W3=function($){var Q=[];for(var X=0;X<$.length;X++){var H=$[X];if(H._tag==="Left")Q.push(H.left)}return Q},M3=function($){return function(Q){return Q.length<=1?C(Q):Q.slice().sort($.compare)}},m5=function($,Q,X){var H=[],J=Math.min($.length,Q.length);for(var Z=0;Z<J;Z++)H[Z]=X($[Z],Q[Z]);return H},F3=function($){var Q=[],X=[];for(var H=0;H<$.length;H++)Q[H]=$[H][0],X[H]=$[H][1];return[Q,X]},c5=function($){var Q=w1($);return function(X){return q(X)?Q(X):[]}},E3=function($){var Q=e4($);return function(X){return q(X)?Q(X):C(X)}},I3=function($){var Q=q1($);return function(X){return q(X)?Q(X):C(X)}},M1=A1,x3=function($){var Q=V1($);return function(X){return q(X)?Q(X):C(X)}},k3=function($){var Q=r4($);return function(X){return q(X)?Q(X):C(X)}},y3=function($){var Q=C1($);return function(X){return q(X)?Q(X):[]}},d5=function($){return function(Q){return $>=1&&q(Q)?u0($)(Q):_(Q)?[C(Q),[]]:[[],C(Q)]}},b3=function($){var Q=a4($);return function(X){return q(X)?Q(X):[]}},h3=function($){return function(){var Q=[];for(var X=0;X<arguments.length;X++)Q[X]=arguments[X];return F5($.apply(void 0,Q))}},p5=function($){return function(Q){return _(Q)?C($):_($)?C(Q):Q.concat($)}},l3=p5,w=function($,Q){return Y($,N0(Q))},_0=function($,Q){return Y($,e5(Q))},I=function($,Q){return Y($,i5(Q))},c0=function($,Q){return Y($,a5(Q))},d0=function($,Q){return Y($,u1(Q))},p0=function($,Q){return Y($,$7(Q))},n0=function($,Q){return Y($,Q7(Q))},n5=function($,Q){return Y($,l1(Q))},o5=function($,Q){return Y($,m1(Q))},x1=function($,Q){return Y($,H7(Q))},c=function($,Q,X){return Y($,c1(Q,X))},J0=function($){var Q=Z7($);return function(X,H){return Y(X,Q(H))}},Z0=function($,Q,X){return Y($,Y7(Q,X))},k1=function($,Q,X){return Y($,d1(Q,X))},y1=function($){var Q=j7($);return function(X,H){return Y(X,Q(H))}},b1=function($,Q,X){return Y($,G7(Q,X))},r5=function($,Q){return Y($,h1(Q))},f5=function($,Q){return Y($,J7(Q))},s5=function($,Q){return Y($,_1(Q))},o0=function($){var Q=P7($);return function(X,H){return Y(X,Q(H))}},t5=function($){var Q=p1($);return function(X,H){return Y(X,Q(H))}},m3=C5,_3=v5,d=i4,j0=function(){return[]},N0=function($){return function(Q){return Q.map(function(X){return $(X)})}},i5=function($){return g(function(Q){return Y($,N0(Q))})},g=B(2,function($,Q){return Y($,h5(function(X,H){return Q(H,X)}))}),c3=g(K),e5=function($){return function(Q){return Q.map(function(X,H){return $(H,X)})}},h1=function($){return function(Q){var X=[];for(var H=0;H<Q.length;H++){var J=$(H,Q[H]);if(W(J))X.push(J.value)}return X}},u1=function($){return h1(function(Q,X){return $(X)})},Y0=u1(K),G0=function($){var Q=[],X=[];for(var H=0,J=$;H<J.length;H++){var Z=J[H];if(Z._tag==="Left")Q.push(Z.left);else X.push(Z.right)}return l0(Q,X)},a5=function($){return function(Q){return Q.filter($)}},$7=function($){return l1(function(Q,X){return $(X)})},l1=function($){return function(Q){var X=[],H=[];for(var J=0;J<Q.length;J++){var Z=Q[J];if($(J,Z))H.push(Z);else X.push(Z)}return l0(X,H)}},Q7=function($){return m1(function(Q,X){return $(X)})},m1=function($){return function(Q){var X=[],H=[];for(var J=0;J<Q.length;J++){var Z=$(J,Q[J]);if(Z._tag==="Left")X.push(Z.left);else H.push(Z.right)}return l0(X,H)}},X7=function($){return function(Q){return Q.concat($())}},H7=X7,J7=function($){return function(Q){return Q.filter(function(X,H){return $(H,X)})}},_1=function($){return function(Q){return Q.map(function(X,H){return $(Q.slice(H))})}},d3=_1(K),Z7=N5,j7=R1,c1=U5,d1=O1,Y7=T5,G7=S1,P7=function($){var Q=p1($);return function(X){return Q(function(H,J){return X(J)})}},T0=function($){return function(Q){return c(Q,$.of(j0()),function(X,H){return $.ap($.map(X,function(J){return function(Z){return Y(J,m0(Z))}}),H)})}},p1=function($){return function(Q){return d1($.of(j0()),function(X,H,J){return $.ap($.map(H,function(Z){return function(j){return Y(Z,m0(j))}}),Q(X,J))})}},p3=function($){var Q=s1($);return function(X){return function(H){return Q(H,X)}}},n3=function($){var Q=t1($);return function(X){return function(H){return Q(H,X)}}},n1=function($,Q){var X=[],H=$;while(!0){var J=Q(H);if(W(J)){var Z=J.value,j=Z[0],z=Z[1];X.push(j),H=z}else break}return X},G="Array",o3=A5,D7=function(){return{concat:function($,Q){return $.concat(Q)}}},r3=function(){return{concat:D7().concat,empty:[]}},f3=R5,s3=O5,z7=function($){var Q=F1($);return{concat:function(X,H){return Q(H)(X)}}},t3=function($){return{concat:z7($).concat,empty:[]}},i3=function($){var Q=E1($);return{concat:function(X,H){return Q(H)(X)}}},e3=function($){var Q=I1($);return{concat:function(X,H){return Q(H)(X)}}},r0={URI:G,map:w},a3=B0(r0),L7={URI:G,of:d},$6={URI:G,map:w,mapWithIndex:_0},f0={URI:G,map:w,ap:I},Q6=i(f0),X6=e(f0),H6={URI:G,map:w,ap:I,of:d},o1={URI:G,map:w,ap:I,chain:g},J6=C4(o1),Z6={URI:G,map:w,ap:I,of:d,chain:g},j6={URI:G,unfold:n1},Y6={URI:G,map:w,alt:x1},V7={URI:G,zero:j0},G6=P5(V7,L7),P6={URI:G,map:w,ap:I,of:d,alt:x1,zero:j0},D6={URI:G,map:w,extend:s5},r1={URI:G,compact:Y0,separate:G0},z6={URI:G,map:w,compact:Y0,separate:G0,filter:c0,filterMap:d0,partition:p0,partitionMap:n0},L6={URI:G,map:w,mapWithIndex:_0,compact:Y0,separate:G0,filter:c0,filterMap:d0,partition:p0,partitionMap:n0,partitionMapWithIndex:o5,partitionWithIndex:n5,filterMapWithIndex:r5,filterWithIndex:f5},V6={URI:G,reduce:c,foldMap:J0,reduceRight:Z0},q6={URI:G,reduce:c,foldMap:J0,reduceRight:Z0,reduceWithIndex:k1,foldMapWithIndex:y1,reduceRightWithIndex:b1},f1={URI:G,map:w,reduce:c,foldMap:J0,reduceRight:Z0,traverse:o0,sequence:T0},B6={URI:G,map:w,mapWithIndex:_0,reduce:c,foldMap:J0,reduceRight:Z0,reduceWithIndex:k1,foldMapWithIndex:y1,reduceRightWithIndex:b1,traverse:o0,sequence:T0,traverseWithIndex:t5},s1=Y5(f1,r1),t1=j5(f1,r1),q7={URI:G,map:w,compact:Y0,separate:G0,filter:c0,filterMap:d0,partition:p0,partitionMap:n0,reduce:c,foldMap:J0,reduceRight:Z0,traverse:o0,sequence:T0,wither:s1,wilt:t1},K6=g1,w6={URI:G,map:w,ap:I,chain:g,chainRec:m3},C6=W1,v6={URI:G,map:w,ap:I,chain:g,chainRec:_3},U6=G5(q7),B7={URI:G,fromEither:E5},N6=k0(B7),K7=n4,w7=function($,Q,X){return q(X)?o4($,Q,X):[]},C7=function($,Q){var X=Q.slice();return X.splice($,1),X},T6=S5,v7=function($){return function(Q){return Q.some($)}},A6=v7,R6=g5,O6=d(F),S6=b(r0),g6=h(r0);var W6=u(o1),M6=a(f0),F6=g,E6=s4,I6=[],x6=Q5,k6=X5,y6=c5,b6={URI:G,compact:Y0,separate:G0,map:w,ap:I,of:d,chain:g,filter:c0,filterMap:d0,partition:p0,partitionMap:n0,mapWithIndex:_0,partitionMapWithIndex:o5,partitionWithIndex:n5,filterMapWithIndex:r5,filterWithIndex:f5,alt:x1,zero:j0,unfold:n1,reduce:c,foldMap:J0,reduceRight:Z0,traverse:o0,sequence:T0,reduceWithIndex:k1,foldMapWithIndex:y1,reduceRightWithIndex:b1,traverseWithIndex:t5,extend:s5,wither:s1,wilt:t1};var h6=function(){return{concat:function($,Q){return Y($,u6(Q))}}},U7=function(){return{concat:h6().concat,empty:V4}};var N7=function($){return function(Q){return!$(Q)}},u6=function($){return function(Q){return function(X){return Q(X)||$(X)}}};function T7($){return function(Q){return $(Q)?A0(Q):n}}var n=P,A0=L;var m6=function($){return $._tag==="Left"?n:A0($.right)},A7=function($,Q){return Y($,R0(Q))},_6=function($,Q){return Y($,c6(Q))};var i1="Option";var R7=function($){return{concat:function(Q,X){return x(Q)?X:x(X)?Q:A0($.concat(Q.value,X.value))},empty:n}},R0=function($){return function(Q){return x(Q)?n:A0($(Q.value))}},O7={URI:i1,map:A7},SQ=B(2,K0(O7)),gQ=x0(O7);var c6=function($){return function(Q){return x(Q)?n:x($)?n:A0(Q.value($.value))}};var d6=B(2,function($,Q){return x($)?n:Q($.value)}),S7={URI:i1,map:A7,ap:_6,chain:d6};var WQ=B(2,function($,Q){return x($)?Q():$});var p6=m6,n6={URI:i1,fromEither:p6},g7=W,x=function($){return $._tag==="None"};var o6=function($){return function(Q){return x(Q)?$():Q.value}},W7=o6;var MQ=B(2,M(S7)),FQ=B(2,U4(n6,S7));var r6=function(){return{concat:function($,Q){return V($,Q)}}},F7=function(){return{concat:r6().concat,empty:K}};function E7($){return function(Q){return V(Q,$.fromIO)}}function I7($,Q){var X=M(Q);return function(H,J){return X(H,V(J,$.fromIO))}}function x7($){return function(Q,X){if(X===void 0){var H=x7($);return function(N){return H(Q,N)}}var J=X.entries(),Z;while(!(Z=J.next()).done){var j=Z.value,z=j[0],T=j[1];if($.equals(z,Q))return L([z,T])}return P}}function e1($){var Q=x7($);return function(X,H){if(H===void 0){var J=e1($);return function(Z){return J(X,Z)}}return Y(Q(X,H),R0(function(Z){var j=Z[0],z=Z[1];return z}))}}var k7=e1;var O0=function($){return F4($)($.empty)},jX={concat:E4.concat,empty:void 0};var YX={concat:I4.concat,empty:!0},GX={concat:x4.concat,empty:!1};var PX={concat:k4.concat,empty:""},DX={concat:y4.concat,empty:0},zX={concat:b4.concat,empty:1};var f={};W0(f,{traverseSeqArrayWithIndex:()=>{{return T8}},traverseSeqArray:()=>{{return n7}},traverseReadonlyNonEmptyArrayWithIndexSeq:()=>{{return d7}},traverseReadonlyNonEmptyArrayWithIndex:()=>{{return c7}},traverseReadonlyArrayWithIndexSeq:()=>{{return H4}},traverseReadonlyArrayWithIndex:()=>{{return X4}},traverseArrayWithIndex:()=>{{return U8}},traverseArray:()=>{{return p7}},taskSeq:()=>{{return g8}},task:()=>{{return S8}},tapIO:()=>{{return m7}},tap:()=>{{return l7}},sequenceSeqArray:()=>{{return A8}},sequenceArray:()=>{{return N8}},of:()=>{{return R}},never:()=>{{return _7}},map:()=>{{return $4}},let:()=>{{return w8}},getSemigroup:()=>{{return W8}},getRaceMonoid:()=>{{return e6}},getMonoid:()=>{{return M8}},fromTask:()=>{{return S0}},fromIOK:()=>{{return z8}},fromIO:()=>{{return o}},flatten:()=>{{return i6}},flatMapIO:()=>{{return u7}},flatMap:()=>{{return O}},flap:()=>{{return Q8}},delay:()=>{{return t6}},chainIOK:()=>{{return L8}},chainFirstIOK:()=>{{return V8}},chainFirst:()=>{{return O8}},chain:()=>{{return R8}},bindTo:()=>{{return K8}},bind:()=>{{return C8}},asUnit:()=>{{return $8}},as:()=>{{return a6}},apSecond:()=>{{return J8}},apS:()=>{{return v8}},apFirst:()=>{{return H8}},ap:()=>{{return y7}},URI:()=>{{return v}},Pointed:()=>{{return X8}},MonadTask:()=>{{return G8}},MonadIO:()=>{{return Y8}},Monad:()=>{{return j8}},Functor:()=>{{return P0}},FromTask:()=>{{return q8}},FromIO:()=>{{return i0}},Do:()=>{{return B8}},Chain:()=>{{return t0}},ApplySeq:()=>{{return b7}},ApplyPar:()=>{{return s0}},ApplicativeSeq:()=>{{return h7}},ApplicativePar:()=>{{return Z8}},ApT:()=>{{return Q4}}});function t6($){return function(Q){return function(){return new Promise(function(X){setTimeout(function(){Promise.resolve().then(Q).then(X)},$)})}}}function e6(){return{concat:function($,Q){return function(){return Promise.race([Promise.resolve().then($),Promise.resolve().then(Q)])}},empty:_7}}var o=function($){return function(){return Promise.resolve().then($)}},A=function($,Q){return Y($,$4(Q))},r=function($,Q){return Y($,y7(Q))},a1=function($,Q){return O($,function(X){return Y(Q,$4(X))})},$4=function($){return function(Q){return function(){return Promise.resolve().then(Q).then($)}}},y7=function($){return function(Q){return function(){return Promise.all([Promise.resolve().then(Q),Promise.resolve().then($)]).then(function(X){var H=X[0],J=X[1];return H(J)})}}},R=function($){return function(){return Promise.resolve($)}},O=B(2,function($,Q){return function(){return Promise.resolve().then($).then(function(X){return Q(X)()})}}),i6=O(K),v="Task",P0={URI:v,map:A},a6=B(2,K0(P0)),$8=x0(P0),Q8=B0(P0),X8={URI:v,of:R},s0={URI:v,map:A,ap:r},H8=i(s0),J8=e(s0),Z8={URI:v,map:A,ap:r,of:R},b7={URI:v,map:A,ap:a1},h7={URI:v,map:A,ap:a1,of:R},t0={URI:v,map:A,ap:r,chain:O},j8={URI:v,map:A,of:R,ap:r,chain:O},Y8={URI:v,map:A,of:R,ap:r,chain:O,fromIO:o},S0=K,G8={URI:v,map:A,of:R,ap:r,chain:O,fromIO:o,fromTask:S0},i0={URI:v,fromIO:o},P8={flatMap:O},D8={fromIO:i0.fromIO},u7=K4(D8,P8),l7=B(2,M(t0)),m7=B(2,I7(i0,t0)),z8=E7(i0),L8=u7,V8=m7,q8={URI:v,fromIO:o,fromTask:S0},_7=function(){return new Promise(function($){return})},B8=R(F),K8=b(P0),w8=h(P0);var C8=u(t0),v8=a(s0),Q4=R(E0),c7=function($){return function(Q){return function(){return Promise.all(Q.map(function(X,H){return Promise.resolve().then(function(){return $(H,X)()})}))}}},X4=function($){var Q=c7($);return function(X){return t(X)?Q(X):Q4}},d7=function($){return function(Q){return function(){return F0(Q).reduce(function(X,H,J){return X.then(function(Z){return Promise.resolve().then($(J+1,H)).then(function(j){return Z.push(j),Z})})},Promise.resolve().then($(0,q0(Q))).then(Z1))}}},H4=function($){var Q=d7($);return function(X){return t(X)?Q(X):Q4}},U8=X4,p7=function($){return X4(function(Q,X){return $(X)})},N8=p7(K),T8=H4,n7=function($){return H4(function(Q,X){return $(X)})},A8=n7(K),R8=O,O8=l7,S8={URI:v,map:A,of:R,ap:r,chain:O,fromIO:o,fromTask:S0},g8={URI:v,map:A,of:R,ap:a1,chain:O,fromIO:o,fromTask:S0},W8=I0(b7),M8=w4(h7);var e0={};W0(e0,{trimRight:()=>{{return l8}},trimLeft:()=>{{return u8}},trim:()=>{{return h8}},toUpperCase:()=>{{return k8}},toLowerCase:()=>{{return y8}},startsWith:()=>{{return n8}},split:()=>{{return d8}},slice:()=>{{return m8}},size:()=>{{return c8}},replace:()=>{{return b8}},isString:()=>{{return x8}},isEmpty:()=>{{return _8}},includes:()=>{{return p8}},endsWith:()=>{{return o8}},empty:()=>{{return f7}},Show:()=>{{return I8}},Semigroup:()=>{{return r7}},Ord:()=>{{return E8}},Monoid:()=>{{return F8}},Eq:()=>{{return o7}}});var o7={equals:function($,Q){return $===Q}},r7={concat:function($,Q){return $+Q}},f7="",F8={concat:r7.concat,empty:f7},E8={equals:o7.equals,compare:function($,Q){return $<Q?-1:$>Q?1:0}},I8={show:function($){return JSON.stringify($)}},x8=function($){return typeof $==="string"},k8=function($){return $.toUpperCase()},y8=function($){return $.toLowerCase()},b8=function($,Q){return function(X){return X.replace($,Q)}},h8=function($){return $.trim()},u8=function($){return $.trimLeft()},l8=function($){return $.trimRight()},m8=function($,Q){return function(X){return X.slice($,Q)}},_8=function($){return $.length===0},c8=function($){return $.length},d8=function($){return function(Q){var X=Q.split($);return w0(X)?X:[Q]}},p8=function($,Q){return function(X){return X.includes($,Q)}},n8=function($,Q){return function(X){return X.startsWith($,Q)}},o8=function($,Q){return function(X){return X.endsWith($,Q)}};var r8="Function",f8=($)=>(Q)=>V(Q,$),J4={URI:r8,map:($,Q)=>f8(Q)($)},s7=k,s8=($)=>(Q)=>(X)=>Q(X)($(X)),a0={...J4,of:s7,ap:($,Q)=>s8(Q)($)},MX=i(a0),FX=e(a0),t8=($)=>(Q)=>(X)=>$(Q(X))(X);var i8={...a0,chain:($,Q)=>t8(Q)($)},EX=s7({}),IX=b(J4),xX=u(i8),kX=a(a0),yX=h(J4);var $1=y,t7=($)=>(Q)=>(X)=>Y($,N0(([H,J])=>V(T7(H),R0(J))),O0(z4(R7(M4()))()),L4(X),W7(()=>Q(X)));var e8=($)=>(Q)=>(X)=>$(X)?X:Q(X),bX=V(N7,e8);var a8=($)=>(Q)=>(X)=>X[$](...Q),hX=J1(a8)([]);var i7=($)=>(Q)=>{const X=new Map;return(H)=>{const J=k7($)(H)(X);if(g7(J))return J.value;const Z=Q(H);return X.set(H,Z),Z}},$$=($)=>(Q)=>(X)=>$([Q,X]),uX=V($1,$$),Q$=($)=>(Q)=>(X)=>(H)=>$([Q,X,H]),lX=V($1,Q$),X$=($)=>(Q)=>(X)=>(H)=>(J)=>$([Q,X,H,J]),mX=V($1,X$),H$=($)=>(Q)=>(X)=>(H)=>(J)=>(Z)=>$([Q,X,H,J,Z]),_X=V($1,H$);var cX=O0(F7());var e7=($)=>O0(U7())($);var a7=($)=>t7($);var J$=($)=>async(Q)=>$(await Q),$9=($)=>(Q)=>(X)=>X[$]===Q;var g0=($)=>(Q)=>V(p.chunksOf($),p.map(Q),(X)=>Promise.all(X),J$(p.flatten));var Q9=($)=>Y($,y,i7(y0.contramap(JSON.stringify)(e0.Eq)),B4);var X9;(function(Q1){let $;(function(D0){D0.start=k({before:"start"}),D0.fromUri=(Z)=>({before:{uri:Z}}),D0.fromUid=(Z)=>({before:{uid:Z}})})($=Q1.before||(Q1.before={}));let Q;(function(z0){z0.end=k({after:"end"}),z0.fromUri=(Z)=>({before:{uri:Z}}),z0.fromUid=(Z)=>({before:{uid:Z}})})(Q=Q1.after||(Q1.after={}))})(X9||(X9={}));var Z4=($)=>$.normalize("NFKD").replace(/\(.*\)/g,"").replace(/\[.*\]/g,"").replace(/-_,/g," ").replace(/[^a-zA-Z0-9 ]/g,"").replace(/\s+/g," ").toLowerCase().trim();//! Does location actually point to document.body?
-var X1=($)=>new Promise((Q)=>setTimeout(Q,$));var{URI:jH}=Spicetify;var YH=g0(50)(async($)=>(await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${$.join(",")}`)).artists),GH=g0(1)(async([$])=>[await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${$}`)]),PH=g0(50)(async($)=>(await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${$.join(",")}`)).albums),H9=g0(50)(async($)=>(await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${$.join(",")}`)).tracks);var Z$=async($,Q,X,H="")=>{const J=new URL("https://ws.audioscrobbler.com/2.0/");return J.searchParams.append("method","track.getInfo"),J.searchParams.append("api_key",$),J.searchParams.append("artist",Q),J.searchParams.append("track",X),J.searchParams.append("format","json"),J.searchParams.append("username",H),await fetch(J).then((Z)=>Z.json())},DH=Q9(Z$),J9=async($,Q)=>{const X=new URL("https://www.googleapis.com/youtube/v3/search");return X.searchParams.append("part","snippet"),X.searchParams.append("maxResults","10"),X.searchParams.append("q",Q),X.searchParams.append("type","video"),X.searchParams.append("key",$),await fetch(X).then((H)=>H.json())};var Z9=($)=>({albumName:$.album.name,albumUri:$.album.uri,artistName:$.artists[0].name,artistUri:$.artists[0].uri,durationMilis:$.duration_ms,name:$.name,playcount:void 0,popularity:$.popularity,releaseDate:new Date($.album.release_date).getTime(),uri:$.uri});var D=G4(Y9(),1),D9=G4(P9(),1);class U{$;Q;X;stopHistoryListener;setRerender=null;constructor($,Q,X={}){this.name=$;this.sectionId=Q;this.sectionFields=X}static waitForReact=async()=>{while(!(Spicetify.React&&Spicetify.ReactDOM))X1(100);return this};pushSettings=async()=>{while(!Spicetify?.Platform?.History?.listen)await X1(100);if(this.stopHistoryListener)this.stopHistoryListener();if(this.stopHistoryListener=Spicetify.Platform.History.listen(({pathname:$=""})=>{if($==="/preferences")this.render()}),Spicetify.Platform.History.location.pathname==="/preferences")await this.render()};toObject=()=>new Proxy({},{get:($,Q)=>U.getFieldValue(this.getId(Q.toString()))});rerender=()=>{if(this.setRerender)this.setRerender(Math.random())};render=async()=>{while(!document.getElementById("desktop.settings.selectLanguage")){if(Spicetify.Platform.History.location.pathname!=="/preferences")return;await X1(100)}const $=document.querySelector(".x-settings-container");let Q=Array.from($.children).find(({id:X})=>X===this.sectionId);if(!Q)Q=document.createElement("div"),Q.id=this.sectionId,Q.className="settingsContainer",$.appendChild(Q);D9.default.render(D.default.createElement(this.FieldsContainer,null),Q)};addButton=($,Q,X,H=V0,J={})=>{const Z=this.getId($);return J.onClick=H,this.sectionFields[$]={id:Z,type:S.BUTTON,description:Q,text:X,events:J},this};addToggle=($,Q,X=f.of(!0),H=V0,J={})=>{const Z=this.getId($);return U.setDefaultFieldValue(Z,X),J.onChange=H,this.sectionFields[$]={id:Z,type:S.TOGGLE,description:Q,events:J},this};addInput=($,Q,X,H=V0,J="text",Z={})=>{const j=this.getId($);return U.setDefaultFieldValue(j,X),Z.onChange=H,this.sectionFields[$]={id:j,type:S.INPUT,description:Q,inputType:J,events:Z},this};addDropDown=($,Q,X,H=f.of(0),J=V0,Z={})=>{const j=this.getId($);return U.setDefaultFieldValue(j,H),Z.onChange=J,this.sectionFields[$]={id:j,type:S.DROPDOWN,description:Q,options:X,events:Z},this};addHidden=($,Q)=>{const X=this.getId($);return U.setDefaultFieldValue(X,Q),this.sectionFields[$]={id:X,type:S.HIDDEN,description:""},this};getId=($)=>`extensions:${this.sectionId}:${$}`;useStateFor=($)=>{const[Q,X]=D.useState(U.getFieldValue($));return[Q,(H)=>{if(H!==void 0)X(H),U.setFieldValue($,H)}]};static getFieldValue=($)=>{return JSON.parse(Spicetify.LocalStorage.get($)??"null")};static setFieldValue=($,Q)=>{Spicetify.LocalStorage.set($,JSON.stringify(Q))};static setDefaultFieldValue=async($,Q)=>{if(U.getFieldValue($)===null)U.setFieldValue($,await Q())};FieldsContainer=()=>{const[$,Q]=D.useState(0);return this.setRerender=Q,D.default.createElement("div",{className:"x-settings-section",key:$},D.default.createElement("h2",{className:"Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type"},this.name),Object.entries(this.sectionFields).map(([X,H])=>{return D.default.createElement(this.Field,{field:H})}))};Field=({field:$})=>{const Q=$9("type");return D.default.createElement("div",{className:"x-settings-row"},D.default.createElement(this.SettingDescription,{id:$.id,description:$.description}),D.default.createElement("div",{className:"x-settings-secondColumn"},a7([[Q(S.INPUT),this.SettingInputField],[Q(S.BUTTON),this.SettingButtonField],[Q(S.TOGGLE),this.SettingToggleField],[Q(S.DROPDOWN),this.SettingDropdownField]])(this.SettingHidden)($)))};SettingDescription=({id:$,description:Q})=>D.default.createElement("div",{className:"x-settings-firstColumn"},D.default.createElement("label",{className:"Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",htmlFor:$},Q));SettingButtonField=($)=>D.default.createElement("span",{className:""},D.default.createElement("button",{id:$.id,className:"Button-sc-y0gtbx-0 Button-sm-buttonSecondary-useBrowserDefaultFocusStyle x-settings-button",...$.events,type:$.type},$.text));SettingToggleField=($)=>{const[Q,X]=this.useStateFor($.id);return D.default.createElement("label",{className:"x-settings-secondColumn x-toggle-wrapper"},D.default.createElement("input",{id:$.id,className:"x-toggle-input",type:"checkbox",checked:U.getFieldValue($.id),...$.events,onChange:(H)=>{X(H.currentTarget.checked),$.events.onChange?.(H)}}),D.default.createElement("span",{className:"x-toggle-indicatorWrapper"},D.default.createElement("span",{className:"x-toggle-indicator"})))};SettingInputField=($)=>{const[Q,X]=this.useStateFor($.id);return D.default.createElement("input",{className:"x-settings-input",id:$.id,dir:"ltr",value:U.getFieldValue($.id),type:$.inputType,...$.events,onChange:(H)=>{X(H.currentTarget.value),$.events.onChange?.(H)}})};SettingDropdownField=($)=>{const[Q,X]=this.useStateFor($.id);return D.default.createElement("select",{className:"main-dropDown-dropDown",id:$.id,...$.events,onChange:(H)=>{X(H.currentTarget.selectedIndex),$.events.onChange?.(H)}},$.options.map((H,J)=>D.default.createElement("option",{selected:J===U.getFieldValue($.id),value:J+1},H)))};SettingHidden=()=>D.default.createElement(D.default.Fragment,null)}var S;(function(Z){Z["HIDDEN"]="hidden";Z["INPUT"]="input";Z["DROPDOWN"]="dropdown";Z["BUTTON"]="button";Z["TOGGLE"]="toggle"})(S||(S={}));var z9=new U("Search On YouTube","search-on-youtube").addInput("YouTubeApiKey","YouTube API Key",f.of("000000000000000000000000000000000000000"));z9.pushSettings();var j4=z9.toObject();var{URI:L9}=Spicetify,Y4=new Map,j$=async($)=>{const Q=L9.fromString($).id;if(!Y4.get(Q)){const X=Z9((await H9([Q]))[0]),H=`${X.artistName} - ${X.name} music video`;let J=[];if(j4.YouTubeApiKey)try{J=await J9(j4.YouTubeApiKey,H)}catch(j){}if(!J?.length)return void window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(H)}`);const Z=Z4(X.name);Y4.set(Q,J.find((j)=>{Z4(j.snippet.title).includes(Z)})?.id.videoId??J[0].id.videoId)}window.open(`https://www.youtube.com/watch?v=${Y4.get(Q)}`)};new Spicetify.ContextMenu.Item("Search on YouTube",y(j$),y(e7([L9.isTrack])),'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="19px" height="19px"><path fill="currentColor" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"/><path fill="var(--spice-main)" d="M20 31L20 17 32 24z"/></svg>').register();
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getProtoOf = Object.getPrototypeOf;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __toESM = (mod, isNodeMode, target) => {
+  target = mod != null ? __create(__getProtoOf(mod)) : {};
+  const to = isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target;
+  for (let key of __getOwnPropNames(mod))
+    if (!__hasOwnProp.call(to, key))
+      __defProp(to, key, {
+        get: () => mod[key],
+        enumerable: true
+      });
+  return to;
+};
+var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, {
+      get: all[name],
+      enumerable: true,
+      configurable: true,
+      set: (newValue) => all[name] = () => newValue
+    });
+};
 
-//# debugId=F6E564F9CF6F02A464756e2164756e21
+// react
+var require_react = __commonJS((exports, module) => {
+  module.exports = Spicetify.React;
+});
+
+// react-dom
+var require_react_dom = __commonJS((exports, module) => {
+  module.exports = Spicetify.ReactDOM;
+});
+
+// node_modules/fp-ts/es6/function.js
+function identity(a) {
+  return a;
+}
+function constant(a) {
+  return function() {
+    return a;
+  };
+}
+function flip(f) {
+  return function() {
+    var args = [];
+    for (var _i = 0;_i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+    if (args.length > 1) {
+      return f(args[1], args[0]);
+    }
+    return function(a) {
+      return f(a)(args[0]);
+    };
+  };
+}
+function flow(ab, bc, cd, de, ef, fg, gh, hi, ij) {
+  switch (arguments.length) {
+    case 1:
+      return ab;
+    case 2:
+      return function() {
+        return bc(ab.apply(this, arguments));
+      };
+    case 3:
+      return function() {
+        return cd(bc(ab.apply(this, arguments)));
+      };
+    case 4:
+      return function() {
+        return de(cd(bc(ab.apply(this, arguments))));
+      };
+    case 5:
+      return function() {
+        return ef(de(cd(bc(ab.apply(this, arguments)))));
+      };
+    case 6:
+      return function() {
+        return fg(ef(de(cd(bc(ab.apply(this, arguments))))));
+      };
+    case 7:
+      return function() {
+        return gh(fg(ef(de(cd(bc(ab.apply(this, arguments)))))));
+      };
+    case 8:
+      return function() {
+        return hi(gh(fg(ef(de(cd(bc(ab.apply(this, arguments))))))));
+      };
+    case 9:
+      return function() {
+        return ij(hi(gh(fg(ef(de(cd(bc(ab.apply(this, arguments)))))))));
+      };
+  }
+  return;
+}
+function tupled(f) {
+  return function(a) {
+    return f.apply(undefined, a);
+  };
+}
+function untupled(f) {
+  return function() {
+    var a = [];
+    for (var _i = 0;_i < arguments.length; _i++) {
+      a[_i] = arguments[_i];
+    }
+    return f(a);
+  };
+}
+function pipe(a, ab, bc, cd, de, ef, fg, gh, hi) {
+  switch (arguments.length) {
+    case 1:
+      return a;
+    case 2:
+      return ab(a);
+    case 3:
+      return bc(ab(a));
+    case 4:
+      return cd(bc(ab(a)));
+    case 5:
+      return de(cd(bc(ab(a))));
+    case 6:
+      return ef(de(cd(bc(ab(a)))));
+    case 7:
+      return fg(ef(de(cd(bc(ab(a))))));
+    case 8:
+      return gh(fg(ef(de(cd(bc(ab(a)))))));
+    case 9:
+      return hi(gh(fg(ef(de(cd(bc(ab(a))))))));
+    default: {
+      var ret = arguments[0];
+      for (var i = 1;i < arguments.length; i++) {
+        ret = arguments[i](ret);
+      }
+      return ret;
+    }
+  }
+}
+var __spreadArray = function(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar;i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
+      }
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var getSemigroup = function(S) {
+  return function() {
+    return {
+      concat: function(f, g) {
+        return function(a) {
+          return S.concat(f(a), g(a));
+        };
+      }
+    };
+  };
+};
+var getMonoid = function(M) {
+  var getSemigroupM = getSemigroup(M);
+  return function() {
+    return {
+      concat: getSemigroupM().concat,
+      empty: function() {
+        return M.empty;
+      }
+    };
+  };
+};
+var apply = function(a) {
+  return function(f) {
+    return f(a);
+  };
+};
+var constFalse = constant(false);
+var constUndefined = constant(undefined);
+var constVoid = constUndefined;
+var dual = function(arity, body) {
+  var isDataFirst = typeof arity === "number" ? function(args) {
+    return args.length >= arity;
+  } : arity;
+  return function() {
+    var args = Array.from(arguments);
+    if (isDataFirst(arguments)) {
+      return body.apply(this, args);
+    }
+    return function(self) {
+      return body.apply(undefined, __spreadArray([self], args, false));
+    };
+  };
+};
+
+// node_modules/fp-ts/es6/internal.js
+var __spreadArray2 = function(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar;i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
+      }
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var isNone = function(fa) {
+  return fa._tag === "None";
+};
+var isSome = function(fa) {
+  return fa._tag === "Some";
+};
+var none = { _tag: "None" };
+var some = function(a) {
+  return { _tag: "Some", value: a };
+};
+var isLeft = function(ma) {
+  return ma._tag === "Left";
+};
+var singleton = function(a) {
+  return [a];
+};
+var isNonEmpty = function(as) {
+  return as.length > 0;
+};
+var head = function(as) {
+  return as[0];
+};
+var tail = function(as) {
+  return as.slice(1);
+};
+var emptyReadonlyArray = [];
+var emptyRecord = {};
+var fromReadonlyNonEmptyArray = function(as) {
+  return __spreadArray2([as[0]], as.slice(1), true);
+};
+var flatMapIO = function(F, M) {
+  return dual(2, function(self, f) {
+    return M.flatMap(self, function(a) {
+      return F.fromIO(f(a));
+    });
+  });
+};
+
+// node_modules/fp-ts/es6/Apply.js
+function apFirst(A) {
+  return function(second) {
+    return function(first) {
+      return A.ap(A.map(first, function(a) {
+        return function() {
+          return a;
+        };
+      }), second);
+    };
+  };
+}
+function apSecond(A) {
+  return function(second) {
+    return function(first) {
+      return A.ap(A.map(first, function() {
+        return function(b) {
+          return b;
+        };
+      }), second);
+    };
+  };
+}
+function apS(F) {
+  return function(name, fb) {
+    return function(fa) {
+      return F.ap(F.map(fa, function(a) {
+        return function(b) {
+          var _a;
+          return Object.assign({}, a, (_a = {}, _a[name] = b, _a));
+        };
+      }), fb);
+    };
+  };
+}
+function getApplySemigroup(F) {
+  return function(S) {
+    return {
+      concat: function(first, second) {
+        return F.ap(F.map(first, function(x) {
+          return function(y) {
+            return S.concat(x, y);
+          };
+        }), second);
+      }
+    };
+  };
+}
+
+// node_modules/fp-ts/es6/Functor.js
+function flap(F) {
+  return function(a) {
+    return function(fab) {
+      return F.map(fab, function(f) {
+        return f(a);
+      });
+    };
+  };
+}
+function bindTo(F) {
+  return function(name) {
+    return function(fa) {
+      return F.map(fa, function(a) {
+        var _a;
+        return _a = {}, _a[name] = a, _a;
+      });
+    };
+  };
+}
+var let_ = function(F) {
+  return function(name, f) {
+    return function(fa) {
+      return F.map(fa, function(a) {
+        var _a;
+        return Object.assign({}, a, (_a = {}, _a[name] = f(a), _a));
+      });
+    };
+  };
+};
+function as(F) {
+  return function(self, b) {
+    return F.map(self, function() {
+      return b;
+    });
+  };
+}
+function asUnit(F) {
+  var asM = as(F);
+  return function(self) {
+    return asM(self, undefined);
+  };
+}
+
+// node_modules/fp-ts/es6/Applicative.js
+function getApplicativeMonoid(F) {
+  var f = getApplySemigroup(F);
+  return function(M) {
+    return {
+      concat: f(M).concat,
+      empty: F.of(M.empty)
+    };
+  };
+}
+
+// node_modules/fp-ts/es6/Array.js
+var exports_Array = {};
+__export(exports_Array, {
+  zipWith: () => {
+    {
+      return zipWith;
+    }
+  },
+  zip: () => {
+    {
+      return zip;
+    }
+  },
+  zero: () => {
+    {
+      return zero;
+    }
+  },
+  wither: () => {
+    {
+      return wither;
+    }
+  },
+  wilt: () => {
+    {
+      return wilt;
+    }
+  },
+  updateAt: () => {
+    {
+      return updateAt;
+    }
+  },
+  unzip: () => {
+    {
+      return unzip;
+    }
+  },
+  unsafeUpdateAt: () => {
+    {
+      return unsafeUpdateAt3;
+    }
+  },
+  unsafeInsertAt: () => {
+    {
+      return unsafeInsertAt3;
+    }
+  },
+  unsafeDeleteAt: () => {
+    {
+      return unsafeDeleteAt;
+    }
+  },
+  uniq: () => {
+    {
+      return uniq3;
+    }
+  },
+  union: () => {
+    {
+      return union3;
+    }
+  },
+  unfold: () => {
+    {
+      return unfold;
+    }
+  },
+  traverseWithIndex: () => {
+    {
+      return traverseWithIndex;
+    }
+  },
+  traverse: () => {
+    {
+      return traverse;
+    }
+  },
+  takeRight: () => {
+    {
+      return takeRight;
+    }
+  },
+  takeLeftWhile: () => {
+    {
+      return takeLeftWhile;
+    }
+  },
+  takeLeft: () => {
+    {
+      return takeLeft;
+    }
+  },
+  tail: () => {
+    {
+      return tail4;
+    }
+  },
+  splitAt: () => {
+    {
+      return splitAt3;
+    }
+  },
+  spanLeft: () => {
+    {
+      return spanLeft;
+    }
+  },
+  sortBy: () => {
+    {
+      return sortBy3;
+    }
+  },
+  sort: () => {
+    {
+      return sort2;
+    }
+  },
+  some: () => {
+    {
+      return some2;
+    }
+  },
+  snoc: () => {
+    {
+      return snoc3;
+    }
+  },
+  size: () => {
+    {
+      return size;
+    }
+  },
+  sequence: () => {
+    {
+      return sequence;
+    }
+  },
+  separate: () => {
+    {
+      return separate;
+    }
+  },
+  scanRight: () => {
+    {
+      return scanRight;
+    }
+  },
+  scanLeft: () => {
+    {
+      return scanLeft;
+    }
+  },
+  rotate: () => {
+    {
+      return rotate3;
+    }
+  },
+  rights: () => {
+    {
+      return rights;
+    }
+  },
+  reverse: () => {
+    {
+      return reverse2;
+    }
+  },
+  replicate: () => {
+    {
+      return replicate;
+    }
+  },
+  reduceWithIndex: () => {
+    {
+      return reduceWithIndex3;
+    }
+  },
+  reduceRightWithIndex: () => {
+    {
+      return reduceRightWithIndex3;
+    }
+  },
+  reduceRight: () => {
+    {
+      return reduceRight3;
+    }
+  },
+  reduce: () => {
+    {
+      return reduce3;
+    }
+  },
+  range: () => {
+    {
+      return range3;
+    }
+  },
+  prependW: () => {
+    {
+      return prependW3;
+    }
+  },
+  prependToAll: () => {
+    {
+      return prependToAll;
+    }
+  },
+  prependAll: () => {
+    {
+      return prependAll3;
+    }
+  },
+  prepend: () => {
+    {
+      return prepend3;
+    }
+  },
+  partitionWithIndex: () => {
+    {
+      return partitionWithIndex;
+    }
+  },
+  partitionMapWithIndex: () => {
+    {
+      return partitionMapWithIndex;
+    }
+  },
+  partitionMap: () => {
+    {
+      return partitionMap;
+    }
+  },
+  partition: () => {
+    {
+      return partition;
+    }
+  },
+  of: () => {
+    {
+      return of3;
+    }
+  },
+  modifyAt: () => {
+    {
+      return modifyAt;
+    }
+  },
+  matchW: () => {
+    {
+      return matchW2;
+    }
+  },
+  matchRightW: () => {
+    {
+      return matchRightW;
+    }
+  },
+  matchRight: () => {
+    {
+      return matchRight;
+    }
+  },
+  matchLeftW: () => {
+    {
+      return matchLeftW;
+    }
+  },
+  matchLeft: () => {
+    {
+      return matchLeft;
+    }
+  },
+  match: () => {
+    {
+      return match2;
+    }
+  },
+  mapWithIndex: () => {
+    {
+      return mapWithIndex;
+    }
+  },
+  map: () => {
+    {
+      return map;
+    }
+  },
+  makeBy: () => {
+    {
+      return makeBy3;
+    }
+  },
+  lookup: () => {
+    {
+      return lookup2;
+    }
+  },
+  let: () => {
+    {
+      return let_2;
+    }
+  },
+  lefts: () => {
+    {
+      return lefts;
+    }
+  },
+  last: () => {
+    {
+      return last4;
+    }
+  },
+  isOutOfBound: () => {
+    {
+      return isOutOfBound4;
+    }
+  },
+  isNonEmpty: () => {
+    {
+      return isNonEmpty5;
+    }
+  },
+  isEmpty: () => {
+    {
+      return isEmpty;
+    }
+  },
+  intersperse: () => {
+    {
+      return intersperse3;
+    }
+  },
+  intersection: () => {
+    {
+      return intersection;
+    }
+  },
+  intercalate: () => {
+    {
+      return intercalate3;
+    }
+  },
+  insertAt: () => {
+    {
+      return insertAt;
+    }
+  },
+  init: () => {
+    {
+      return init3;
+    }
+  },
+  head: () => {
+    {
+      return head5;
+    }
+  },
+  guard: () => {
+    {
+      return guard2;
+    }
+  },
+  getUnionSemigroup: () => {
+    {
+      return getUnionSemigroup;
+    }
+  },
+  getUnionMonoid: () => {
+    {
+      return getUnionMonoid;
+    }
+  },
+  getShow: () => {
+    {
+      return getShow3;
+    }
+  },
+  getSemigroup: () => {
+    {
+      return getSemigroup4;
+    }
+  },
+  getOrd: () => {
+    {
+      return getOrd2;
+    }
+  },
+  getMonoid: () => {
+    {
+      return getMonoid4;
+    }
+  },
+  getIntersectionSemigroup: () => {
+    {
+      return getIntersectionSemigroup;
+    }
+  },
+  getEq: () => {
+    {
+      return getEq3;
+    }
+  },
+  getDifferenceMagma: () => {
+    {
+      return getDifferenceMagma;
+    }
+  },
+  fromPredicate: () => {
+    {
+      return fromPredicate;
+    }
+  },
+  fromOptionK: () => {
+    {
+      return fromOptionK;
+    }
+  },
+  fromOption: () => {
+    {
+      return fromOption;
+    }
+  },
+  fromEitherK: () => {
+    {
+      return fromEitherK2;
+    }
+  },
+  fromEither: () => {
+    {
+      return fromEither;
+    }
+  },
+  foldRight: () => {
+    {
+      return foldRight;
+    }
+  },
+  foldMapWithIndex: () => {
+    {
+      return foldMapWithIndex3;
+    }
+  },
+  foldMap: () => {
+    {
+      return foldMap3;
+    }
+  },
+  foldLeft: () => {
+    {
+      return foldLeft;
+    }
+  },
+  flatten: () => {
+    {
+      return flatten;
+    }
+  },
+  flatMap: () => {
+    {
+      return flatMap;
+    }
+  },
+  flap: () => {
+    {
+      return flap2;
+    }
+  },
+  findLastMap: () => {
+    {
+      return findLastMap2;
+    }
+  },
+  findLastIndex: () => {
+    {
+      return findLastIndex2;
+    }
+  },
+  findLast: () => {
+    {
+      return findLast2;
+    }
+  },
+  findIndex: () => {
+    {
+      return findIndex2;
+    }
+  },
+  findFirstMap: () => {
+    {
+      return findFirstMap2;
+    }
+  },
+  findFirst: () => {
+    {
+      return findFirst2;
+    }
+  },
+  filterWithIndex: () => {
+    {
+      return filterWithIndex;
+    }
+  },
+  filterMapWithIndex: () => {
+    {
+      return filterMapWithIndex;
+    }
+  },
+  filterMap: () => {
+    {
+      return filterMap;
+    }
+  },
+  filterE: () => {
+    {
+      return filterE2;
+    }
+  },
+  filter: () => {
+    {
+      return filter;
+    }
+  },
+  extend: () => {
+    {
+      return extend;
+    }
+  },
+  exists: () => {
+    {
+      return exists;
+    }
+  },
+  every: () => {
+    {
+      return every2;
+    }
+  },
+  empty: () => {
+    {
+      return empty3;
+    }
+  },
+  elem: () => {
+    {
+      return elem2;
+    }
+  },
+  duplicate: () => {
+    {
+      return duplicate;
+    }
+  },
+  dropRight: () => {
+    {
+      return dropRight;
+    }
+  },
+  dropLeftWhile: () => {
+    {
+      return dropLeftWhile;
+    }
+  },
+  dropLeft: () => {
+    {
+      return dropLeft;
+    }
+  },
+  difference: () => {
+    {
+      return difference;
+    }
+  },
+  deleteAt: () => {
+    {
+      return deleteAt;
+    }
+  },
+  copy: () => {
+    {
+      return copy2;
+    }
+  },
+  cons: () => {
+    {
+      return cons3;
+    }
+  },
+  concatW: () => {
+    {
+      return concatW;
+    }
+  },
+  concat: () => {
+    {
+      return concat2;
+    }
+  },
+  comprehension: () => {
+    {
+      return comprehension;
+    }
+  },
+  compact: () => {
+    {
+      return compact;
+    }
+  },
+  chunksOf: () => {
+    {
+      return chunksOf3;
+    }
+  },
+  chop: () => {
+    {
+      return chop3;
+    }
+  },
+  chainWithIndex: () => {
+    {
+      return chainWithIndex;
+    }
+  },
+  chainRecDepthFirst: () => {
+    {
+      return chainRecDepthFirst2;
+    }
+  },
+  chainRecBreadthFirst: () => {
+    {
+      return chainRecBreadthFirst2;
+    }
+  },
+  chainFirst: () => {
+    {
+      return chainFirst2;
+    }
+  },
+  chain: () => {
+    {
+      return chain;
+    }
+  },
+  bindTo: () => {
+    {
+      return bindTo2;
+    }
+  },
+  bind: () => {
+    {
+      return bind2;
+    }
+  },
+  array: () => {
+    {
+      return array;
+    }
+  },
+  appendW: () => {
+    {
+      return appendW3;
+    }
+  },
+  append: () => {
+    {
+      return append3;
+    }
+  },
+  apSecond: () => {
+    {
+      return apSecond2;
+    }
+  },
+  apS: () => {
+    {
+      return apS2;
+    }
+  },
+  apFirst: () => {
+    {
+      return apFirst2;
+    }
+  },
+  ap: () => {
+    {
+      return ap2;
+    }
+  },
+  altW: () => {
+    {
+      return altW;
+    }
+  },
+  alt: () => {
+    {
+      return alt;
+    }
+  },
+  Zero: () => {
+    {
+      return Zero2;
+    }
+  },
+  Witherable: () => {
+    {
+      return Witherable2;
+    }
+  },
+  Unfoldable: () => {
+    {
+      return Unfoldable;
+    }
+  },
+  URI: () => {
+    {
+      return URI2;
+    }
+  },
+  TraversableWithIndex: () => {
+    {
+      return TraversableWithIndex;
+    }
+  },
+  Traversable: () => {
+    {
+      return Traversable;
+    }
+  },
+  Pointed: () => {
+    {
+      return Pointed;
+    }
+  },
+  Monad: () => {
+    {
+      return Monad;
+    }
+  },
+  FunctorWithIndex: () => {
+    {
+      return FunctorWithIndex;
+    }
+  },
+  Functor: () => {
+    {
+      return Functor2;
+    }
+  },
+  FromEither: () => {
+    {
+      return FromEither2;
+    }
+  },
+  FoldableWithIndex: () => {
+    {
+      return FoldableWithIndex;
+    }
+  },
+  Foldable: () => {
+    {
+      return Foldable;
+    }
+  },
+  FilterableWithIndex: () => {
+    {
+      return FilterableWithIndex;
+    }
+  },
+  Filterable: () => {
+    {
+      return Filterable;
+    }
+  },
+  Extend: () => {
+    {
+      return Extend;
+    }
+  },
+  Do: () => {
+    {
+      return Do;
+    }
+  },
+  Compactable: () => {
+    {
+      return Compactable;
+    }
+  },
+  ChainRecDepthFirst: () => {
+    {
+      return ChainRecDepthFirst;
+    }
+  },
+  ChainRecBreadthFirst: () => {
+    {
+      return ChainRecBreadthFirst;
+    }
+  },
+  Chain: () => {
+    {
+      return Chain3;
+    }
+  },
+  Apply: () => {
+    {
+      return Apply3;
+    }
+  },
+  Applicative: () => {
+    {
+      return Applicative;
+    }
+  },
+  Alternative: () => {
+    {
+      return Alternative;
+    }
+  },
+  Alt: () => {
+    {
+      return Alt;
+    }
+  }
+});
+
+// node_modules/fp-ts/es6/Chain.js
+function chainFirst(M) {
+  var tapM = tap(M);
+  return function(f) {
+    return function(first) {
+      return tapM(first, f);
+    };
+  };
+}
+function tap(M) {
+  return function(first, f) {
+    return M.chain(first, function(a) {
+      return M.map(f(a), function() {
+        return a;
+      });
+    });
+  };
+}
+function bind(M) {
+  return function(name, f) {
+    return function(ma) {
+      return M.chain(ma, function(a) {
+        return M.map(f(a), function(b) {
+          var _a;
+          return Object.assign({}, a, (_a = {}, _a[name] = b, _a));
+        });
+      });
+    };
+  };
+}
+
+// node_modules/fp-ts/es6/FromEither.js
+function fromEitherK(F) {
+  return function(f) {
+    return flow(f, F.fromEither);
+  };
+}
+function tapEither(F, M) {
+  var fromEither = fromEitherK(F);
+  var tapM = tap(M);
+  return function(self, f) {
+    return tapM(self, fromEither(f));
+  };
+}
+
+// node_modules/fp-ts/es6/Eq.js
+var exports_Eq = {};
+__export(exports_Eq, {
+  tuple: () => {
+    {
+      return tuple;
+    }
+  },
+  struct: () => {
+    {
+      return struct;
+    }
+  },
+  strictEqual: () => {
+    {
+      return strictEqual;
+    }
+  },
+  getTupleEq: () => {
+    {
+      return getTupleEq;
+    }
+  },
+  getStructEq: () => {
+    {
+      return getStructEq;
+    }
+  },
+  getSemigroup: () => {
+    {
+      return getSemigroup2;
+    }
+  },
+  getMonoid: () => {
+    {
+      return getMonoid2;
+    }
+  },
+  fromEquals: () => {
+    {
+      return fromEquals;
+    }
+  },
+  eqString: () => {
+    {
+      return eqString;
+    }
+  },
+  eqStrict: () => {
+    {
+      return eqStrict;
+    }
+  },
+  eqNumber: () => {
+    {
+      return eqNumber;
+    }
+  },
+  eqDate: () => {
+    {
+      return eqDate;
+    }
+  },
+  eqBoolean: () => {
+    {
+      return eqBoolean;
+    }
+  },
+  eq: () => {
+    {
+      return eq;
+    }
+  },
+  contramap: () => {
+    {
+      return contramap;
+    }
+  },
+  URI: () => {
+    {
+      return URI;
+    }
+  },
+  Contravariant: () => {
+    {
+      return Contravariant;
+    }
+  }
+});
+var fromEquals = function(equals) {
+  return {
+    equals: function(x, y) {
+      return x === y || equals(x, y);
+    }
+  };
+};
+var struct = function(eqs) {
+  return fromEquals(function(first, second) {
+    for (var key in eqs) {
+      if (!eqs[key].equals(first[key], second[key])) {
+        return false;
+      }
+    }
+    return true;
+  });
+};
+var tuple = function() {
+  var eqs = [];
+  for (var _i = 0;_i < arguments.length; _i++) {
+    eqs[_i] = arguments[_i];
+  }
+  return fromEquals(function(first, second) {
+    return eqs.every(function(E, i) {
+      return E.equals(first[i], second[i]);
+    });
+  });
+};
+var contramap_ = function(fa, f) {
+  return pipe(fa, contramap(f));
+};
+var contramap = function(f) {
+  return function(fa) {
+    return fromEquals(function(x, y) {
+      return fa.equals(f(x), f(y));
+    });
+  };
+};
+var URI = "Eq";
+var eqStrict = {
+  equals: function(a, b) {
+    return a === b;
+  }
+};
+var empty = {
+  equals: function() {
+    return true;
+  }
+};
+var getSemigroup2 = function() {
+  return {
+    concat: function(x, y) {
+      return fromEquals(function(a, b) {
+        return x.equals(a, b) && y.equals(a, b);
+      });
+    }
+  };
+};
+var getMonoid2 = function() {
+  return {
+    concat: getSemigroup2().concat,
+    empty
+  };
+};
+var Contravariant = {
+  URI,
+  contramap: contramap_
+};
+var getTupleEq = tuple;
+var getStructEq = struct;
+var strictEqual = eqStrict.equals;
+var eq = Contravariant;
+var eqBoolean = eqStrict;
+var eqString = eqStrict;
+var eqNumber = eqStrict;
+var eqDate = {
+  equals: function(first, second) {
+    return first.valueOf() === second.valueOf();
+  }
+};
+
+// node_modules/fp-ts/es6/Ord.js
+var compare = function(first, second) {
+  return first < second ? -1 : first > second ? 1 : 0;
+};
+var equalsDefault = function(compare2) {
+  return function(first, second) {
+    return first === second || compare2(first, second) === 0;
+  };
+};
+var fromCompare = function(compare2) {
+  return {
+    equals: equalsDefault(compare2),
+    compare: function(first, second) {
+      return first === second ? 0 : compare2(first, second);
+    }
+  };
+};
+var getSemigroup3 = function() {
+  return {
+    concat: function(first, second) {
+      return fromCompare(function(a, b) {
+        var ox = first.compare(a, b);
+        return ox !== 0 ? ox : second.compare(a, b);
+      });
+    }
+  };
+};
+var getMonoid3 = function() {
+  return {
+    concat: getSemigroup3().concat,
+    empty: fromCompare(function() {
+      return 0;
+    })
+  };
+};
+var strictOrd = {
+  equals: eqStrict.equals,
+  compare
+};
+
+// node_modules/fp-ts/es6/Magma.js
+var concatAll = function(M) {
+  return function(startWith) {
+    return function(as2) {
+      return as2.reduce(function(a, acc) {
+        return M.concat(a, acc);
+      }, startWith);
+    };
+  };
+};
+
+// node_modules/fp-ts/es6/Semigroup.js
+var constant2 = function(a) {
+  return {
+    concat: function() {
+      return a;
+    }
+  };
+};
+var first = function() {
+  return { concat: identity };
+};
+var concatAll2 = concatAll;
+var semigroupVoid = constant2(undefined);
+var semigroupAll = {
+  concat: function(x, y) {
+    return x && y;
+  }
+};
+var semigroupAny = {
+  concat: function(x, y) {
+    return x || y;
+  }
+};
+var semigroupString = {
+  concat: function(x, y) {
+    return x + y;
+  }
+};
+var semigroupSum = {
+  concat: function(x, y) {
+    return x + y;
+  }
+};
+var semigroupProduct = {
+  concat: function(x, y) {
+    return x * y;
+  }
+};
+
+// node_modules/fp-ts/es6/ReadonlyNonEmptyArray.js
+var __spreadArray3 = function(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar;i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
+      }
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var isNonEmpty2 = isNonEmpty;
+var isOutOfBound = function(i, as2) {
+  return i < 0 || i >= as2.length;
+};
+var prependW = function(head2) {
+  return function(tail2) {
+    return __spreadArray3([head2], tail2, true);
+  };
+};
+var prepend = prependW;
+var prependAll = function(middle) {
+  return function(as2) {
+    var out = [middle, as2[0]];
+    for (var i = 1;i < as2.length; i++) {
+      out.push(middle, as2[i]);
+    }
+    return out;
+  };
+};
+var intersperse = function(middle) {
+  return function(as2) {
+    var rest = tail2(as2);
+    return isNonEmpty2(rest) ? pipe(rest, prependAll(middle), prepend(head2(as2))) : as2;
+  };
+};
+var extract = head;
+var head2 = extract;
+var tail2 = tail;
+var last = function(as2) {
+  return as2[as2.length - 1];
+};
+var concatAll3 = function(S) {
+  return function(as2) {
+    return as2.reduce(S.concat);
+  };
+};
+var intercalate = function(S) {
+  var concatAllS = concatAll3(S);
+  return function(middle) {
+    return flow(intersperse(middle), concatAllS);
+  };
+};
+
+// node_modules/fp-ts/es6/NonEmptyArray.js
+function concat(x, y) {
+  return y ? x.concat(y) : function(y2) {
+    return y2.concat(x);
+  };
+}
+function cons(head3, tail3) {
+  return tail3 === undefined ? prepend2(head3) : pipe(tail3, prepend2(head3));
+}
+var __spreadArray4 = function(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar;i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
+      }
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var isNonEmpty3 = function(as2) {
+  return as2.length > 0;
+};
+var isOutOfBound2 = function(i, as2) {
+  return i < 0 || i >= as2.length;
+};
+var prependW2 = function(head3) {
+  return function(tail3) {
+    return __spreadArray4([head3], tail3, true);
+  };
+};
+var prepend2 = prependW2;
+var appendW = function(end) {
+  return function(init) {
+    return __spreadArray4(__spreadArray4([], init, true), [end], false);
+  };
+};
+var append = appendW;
+var unsafeInsertAt = function(i, a, as2) {
+  if (isNonEmpty3(as2)) {
+    var xs = fromReadonlyNonEmptyArray2(as2);
+    xs.splice(i, 0, a);
+    return xs;
+  }
+  return [a];
+};
+var unsafeUpdateAt = function(i, a, as2) {
+  var xs = fromReadonlyNonEmptyArray2(as2);
+  xs[i] = a;
+  return xs;
+};
+var uniq = function(E) {
+  return function(as2) {
+    if (as2.length === 1) {
+      return copy(as2);
+    }
+    var out = [head3(as2)];
+    var rest = tail3(as2);
+    var _loop_1 = function(a2) {
+      if (out.every(function(o) {
+        return !E.equals(o, a2);
+      })) {
+        out.push(a2);
+      }
+    };
+    for (var _i = 0, rest_1 = rest;_i < rest_1.length; _i++) {
+      var a = rest_1[_i];
+      _loop_1(a);
+    }
+    return out;
+  };
+};
+var sortBy = function(ords) {
+  if (isNonEmpty3(ords)) {
+    var M = getMonoid3();
+    return sort(ords.reduce(M.concat, M.empty));
+  }
+  return copy;
+};
+var union = function(E) {
+  var uniqE = uniq(E);
+  return function(second) {
+    return function(first2) {
+      return uniqE(pipe(first2, concat(second)));
+    };
+  };
+};
+var rotate = function(n) {
+  return function(as2) {
+    var len = as2.length;
+    var m = Math.round(n) % len;
+    if (isOutOfBound2(Math.abs(m), as2) || m === 0) {
+      return copy(as2);
+    }
+    if (m < 0) {
+      var _a = splitAt(-m)(as2), f = _a[0], s = _a[1];
+      return pipe(s, concat(f));
+    } else {
+      return rotate(m - len)(as2);
+    }
+  };
+};
+var fromReadonlyNonEmptyArray2 = fromReadonlyNonEmptyArray;
+var makeBy = function(f) {
+  return function(n) {
+    var j = Math.max(0, Math.floor(n));
+    var out = [f(0)];
+    for (var i = 1;i < j; i++) {
+      out.push(f(i));
+    }
+    return out;
+  };
+};
+var range = function(start, end) {
+  return start <= end ? makeBy(function(i) {
+    return start + i;
+  })(end - start + 1) : [start];
+};
+var sort = function(O) {
+  return function(as2) {
+    return as2.slice().sort(O.compare);
+  };
+};
+var copy = fromReadonlyNonEmptyArray2;
+var of = function(a) {
+  return [a];
+};
+var prependAll2 = function(middle) {
+  return function(as2) {
+    var out = [middle, as2[0]];
+    for (var i = 1;i < as2.length; i++) {
+      out.push(middle, as2[i]);
+    }
+    return out;
+  };
+};
+var intersperse2 = function(middle) {
+  return function(as2) {
+    var rest = tail3(as2);
+    return isNonEmpty3(rest) ? pipe(rest, prependAll2(middle), prepend2(head3(as2))) : copy(as2);
+  };
+};
+var chop = function(f) {
+  return function(as2) {
+    var _a = f(as2), b = _a[0], rest = _a[1];
+    var out = [b];
+    var next = rest;
+    while (isNonEmpty3(next)) {
+      var _b = f(next), b_1 = _b[0], rest_2 = _b[1];
+      out.push(b_1);
+      next = rest_2;
+    }
+    return out;
+  };
+};
+var splitAt = function(n) {
+  return function(as2) {
+    var m = Math.max(1, n);
+    return m >= as2.length ? [copy(as2), []] : [pipe(as2.slice(1, m), prepend2(head3(as2))), as2.slice(m)];
+  };
+};
+var chunksOf = function(n) {
+  return chop(splitAt(n));
+};
+var head3 = head2;
+var tail3 = function(as2) {
+  return as2.slice(1);
+};
+var last2 = last;
+var init = function(as2) {
+  return as2.slice(0, -1);
+};
+var snoc = function(init2, end) {
+  return pipe(init2, append(end));
+};
+
+// node_modules/fp-ts/es6/number.js
+var Eq2 = {
+  equals: function(first2, second) {
+    return first2 === second;
+  }
+};
+var Ord2 = {
+  equals: Eq2.equals,
+  compare: function(first2, second) {
+    return first2 < second ? -1 : first2 > second ? 1 : 0;
+  }
+};
+var Bounded = {
+  equals: Eq2.equals,
+  compare: Ord2.compare,
+  top: Infinity,
+  bottom: (-Infinity)
+};
+var MagmaSub = {
+  concat: function(first2, second) {
+    return first2 - second;
+  }
+};
+var SemigroupSum = {
+  concat: function(first2, second) {
+    return first2 + second;
+  }
+};
+var SemigroupProduct = {
+  concat: function(first2, second) {
+    return first2 * second;
+  }
+};
+var MonoidSum = {
+  concat: SemigroupSum.concat,
+  empty: 0
+};
+var MonoidProduct = {
+  concat: SemigroupProduct.concat,
+  empty: 1
+};
+var Field = {
+  add: SemigroupSum.concat,
+  zero: 0,
+  mul: SemigroupProduct.concat,
+  one: 1,
+  sub: MagmaSub.concat,
+  degree: function(_) {
+    return 1;
+  },
+  div: function(first2, second) {
+    return first2 / second;
+  },
+  mod: function(first2, second) {
+    return first2 % second;
+  }
+};
+
+// node_modules/fp-ts/es6/Separated.js
+var separated = function(left, right) {
+  return { left, right };
+};
+
+// node_modules/fp-ts/es6/Witherable.js
+function wiltDefault(T, C) {
+  return function(F) {
+    var traverseF = T.traverse(F);
+    return function(wa, f) {
+      return F.map(traverseF(wa, f), C.separate);
+    };
+  };
+}
+function witherDefault(T, C) {
+  return function(F) {
+    var traverseF = T.traverse(F);
+    return function(wa, f) {
+      return F.map(traverseF(wa, f), C.compact);
+    };
+  };
+}
+function filterE(W) {
+  return function(F) {
+    var witherF = W.wither(F);
+    return function(predicate) {
+      return function(ga) {
+        return witherF(ga, function(a) {
+          return F.map(predicate(a), function(b) {
+            return b ? some(a) : none;
+          });
+        });
+      };
+    };
+  };
+}
+
+// node_modules/fp-ts/es6/Zero.js
+function guard(F, P) {
+  return function(b) {
+    return b ? P.of(undefined) : F.zero();
+  };
+}
+
+// node_modules/fp-ts/es6/ReadonlyArray.js
+function lookup(i, as2) {
+  return as2 === undefined ? function(as3) {
+    return lookup(i, as3);
+  } : isOutOfBound3(i, as2) ? none : some(as2[i]);
+}
+function findFirst(predicate) {
+  return function(as2) {
+    for (var i = 0;i < as2.length; i++) {
+      if (predicate(as2[i])) {
+        return some(as2[i]);
+      }
+    }
+    return none;
+  };
+}
+function findLast(predicate) {
+  return function(as2) {
+    for (var i = as2.length - 1;i >= 0; i--) {
+      if (predicate(as2[i])) {
+        return some(as2[i]);
+      }
+    }
+    return none;
+  };
+}
+function elem(E) {
+  return function(a, as2) {
+    if (as2 === undefined) {
+      var elemE_1 = elem(E);
+      return function(as3) {
+        return elemE_1(a, as3);
+      };
+    }
+    var predicate = function(element) {
+      return E.equals(element, a);
+    };
+    var i = 0;
+    for (;i < as2.length; i++) {
+      if (predicate(as2[i])) {
+        return true;
+      }
+    }
+    return false;
+  };
+}
+function every(predicate) {
+  return function(as2) {
+    return as2.every(predicate);
+  };
+}
+var __spreadArray5 = function(to, from, pack) {
+  if (pack || arguments.length === 2)
+    for (var i = 0, l = from.length, ar;i < l; i++) {
+      if (ar || !(i in from)) {
+        if (!ar)
+          ar = Array.prototype.slice.call(from, 0, i);
+        ar[i] = from[i];
+      }
+    }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var isNonEmpty4 = isNonEmpty2;
+var matchW = function(onEmpty, onNonEmpty) {
+  return function(as2) {
+    return isNonEmpty4(as2) ? onNonEmpty(as2) : onEmpty();
+  };
+};
+var match = matchW;
+var isOutOfBound3 = isOutOfBound;
+var head4 = function(as2) {
+  return isNonEmpty4(as2) ? some(head2(as2)) : none;
+};
+var last3 = function(as2) {
+  return isNonEmpty4(as2) ? some(last(as2)) : none;
+};
+var findIndex = function(predicate) {
+  return function(as2) {
+    for (var i = 0;i < as2.length; i++) {
+      if (predicate(as2[i])) {
+        return some(i);
+      }
+    }
+    return none;
+  };
+};
+var findFirstMap = function(f) {
+  return function(as2) {
+    for (var i = 0;i < as2.length; i++) {
+      var out = f(as2[i]);
+      if (isSome(out)) {
+        return out;
+      }
+    }
+    return none;
+  };
+};
+var findLastMap = function(f) {
+  return function(as2) {
+    for (var i = as2.length - 1;i >= 0; i--) {
+      var out = f(as2[i]);
+      if (isSome(out)) {
+        return out;
+      }
+    }
+    return none;
+  };
+};
+var findLastIndex = function(predicate) {
+  return function(as2) {
+    for (var i = as2.length - 1;i >= 0; i--) {
+      if (predicate(as2[i])) {
+        return some(i);
+      }
+    }
+    return none;
+  };
+};
+var _chainRecDepthFirst = function(a, f) {
+  return pipe(a, chainRecDepthFirst(f));
+};
+var _chainRecBreadthFirst = function(a, f) {
+  return pipe(a, chainRecBreadthFirst(f));
+};
+var foldMapWithIndex2 = function(M) {
+  return function(f) {
+    return function(fa) {
+      return fa.reduce(function(b, a, i) {
+        return M.concat(b, f(i, a));
+      }, M.empty);
+    };
+  };
+};
+var reduce2 = function(b, f) {
+  return reduceWithIndex2(b, function(_, b2, a) {
+    return f(b2, a);
+  });
+};
+var foldMap2 = function(M) {
+  var foldMapWithIndexM = foldMapWithIndex2(M);
+  return function(f) {
+    return foldMapWithIndexM(function(_, a) {
+      return f(a);
+    });
+  };
+};
+var reduceWithIndex2 = function(b, f) {
+  return function(fa) {
+    var len = fa.length;
+    var out = b;
+    for (var i = 0;i < len; i++) {
+      out = f(i, out, fa[i]);
+    }
+    return out;
+  };
+};
+var reduceRight2 = function(b, f) {
+  return reduceRightWithIndex2(b, function(_, a, b2) {
+    return f(a, b2);
+  });
+};
+var reduceRightWithIndex2 = function(b, f) {
+  return function(fa) {
+    return fa.reduceRight(function(b2, a, i) {
+      return f(i, a, b2);
+    }, b);
+  };
+};
+var getShow2 = function(S) {
+  return {
+    show: function(as2) {
+      return "[".concat(as2.map(S.show).join(", "), "]");
+    }
+  };
+};
+var getEq2 = function(E) {
+  return fromEquals(function(xs, ys) {
+    return xs.length === ys.length && xs.every(function(x, i) {
+      return E.equals(x, ys[i]);
+    });
+  });
+};
+var getOrd = function(O) {
+  return fromCompare(function(a, b) {
+    var aLen = a.length;
+    var bLen = b.length;
+    var len = Math.min(aLen, bLen);
+    for (var i = 0;i < len; i++) {
+      var ordering = O.compare(a[i], b[i]);
+      if (ordering !== 0) {
+        return ordering;
+      }
+    }
+    return Ord2.compare(aLen, bLen);
+  });
+};
+var chainRecDepthFirst = function(f) {
+  return function(a) {
+    var todo = __spreadArray5([], f(a), true);
+    var out = [];
+    while (todo.length > 0) {
+      var e = todo.shift();
+      if (isLeft(e)) {
+        todo.unshift.apply(todo, f(e.left));
+      } else {
+        out.push(e.right);
+      }
+    }
+    return out;
+  };
+};
+var chainRecBreadthFirst = function(f) {
+  return function(a) {
+    var initial = f(a);
+    var todo = [];
+    var out = [];
+    function go(e2) {
+      if (isLeft(e2)) {
+        f(e2.left).forEach(function(v) {
+          return todo.push(v);
+        });
+      } else {
+        out.push(e2.right);
+      }
+    }
+    for (var _i = 0, initial_1 = initial;_i < initial_1.length; _i++) {
+      var e = initial_1[_i];
+      go(e);
+    }
+    while (todo.length > 0) {
+      go(todo.shift());
+    }
+    return out;
+  };
+};
+var intercalate2 = function(M) {
+  var intercalateM = intercalate(M);
+  return function(middle) {
+    return match(function() {
+      return M.empty;
+    }, intercalateM(middle));
+  };
+};
+
+// node_modules/fp-ts/es6/Array.js
+function fromPredicate(predicate) {
+  return function(a) {
+    return predicate(a) ? [a] : [];
+  };
+}
+function takeLeftWhile(predicate) {
+  return function(as2) {
+    var out = [];
+    for (var _i = 0, as_1 = as2;_i < as_1.length; _i++) {
+      var a = as_1[_i];
+      if (!predicate(a)) {
+        break;
+      }
+      out.push(a);
+    }
+    return out;
+  };
+}
+function spanLeft(predicate) {
+  return function(as2) {
+    var _a = splitAt3(spanLeftIndex(as2, predicate))(as2), init3 = _a[0], rest = _a[1];
+    return { init: init3, rest };
+  };
+}
+function dropLeftWhile(predicate) {
+  return function(as2) {
+    return as2.slice(spanLeftIndex(as2, predicate));
+  };
+}
+function findFirst2(predicate) {
+  return findFirst(predicate);
+}
+function findLast2(predicate) {
+  return findLast(predicate);
+}
+function zip(as2, bs) {
+  if (bs === undefined) {
+    return function(bs2) {
+      return zip(bs2, as2);
+    };
+  }
+  return zipWith(as2, bs, function(a, b) {
+    return [a, b];
+  });
+}
+function comprehension(input, f, g) {
+  if (g === undefined) {
+    g = function() {
+      return true;
+    };
+  }
+  var go = function(scope, input2) {
+    return isNonEmpty5(input2) ? flatMap(head3(input2), function(a) {
+      return go(pipe(scope, append3(a)), tail3(input2));
+    }) : g.apply(undefined, scope) ? [f.apply(undefined, scope)] : [];
+  };
+  return go([], input);
+}
+function union3(E) {
+  var unionE = union(E);
+  return function(first2, second) {
+    if (second === undefined) {
+      var unionE_1 = union3(E);
+      return function(second2) {
+        return unionE_1(second2, first2);
+      };
+    }
+    return isNonEmpty5(first2) && isNonEmpty5(second) ? unionE(second)(first2) : isNonEmpty5(first2) ? copy2(first2) : copy2(second);
+  };
+}
+function intersection(E) {
+  var elemE = elem2(E);
+  return function(xs, ys) {
+    if (ys === undefined) {
+      var intersectionE_1 = intersection(E);
+      return function(ys2) {
+        return intersectionE_1(ys2, xs);
+      };
+    }
+    return xs.filter(function(a) {
+      return elemE(a, ys);
+    });
+  };
+}
+function difference(E) {
+  var elemE = elem2(E);
+  return function(xs, ys) {
+    if (ys === undefined) {
+      var differenceE_1 = difference(E);
+      return function(ys2) {
+        return differenceE_1(ys2, xs);
+      };
+    }
+    return xs.filter(function(a) {
+      return !elemE(a, ys);
+    });
+  };
+}
+var isEmpty = function(as2) {
+  return as2.length === 0;
+};
+var isNonEmpty5 = isNonEmpty3;
+var prepend3 = prepend2;
+var prependW3 = prependW2;
+var append3 = append;
+var appendW3 = appendW;
+var makeBy3 = function(n, f) {
+  return n <= 0 ? [] : makeBy(f)(n);
+};
+var replicate = function(n, a) {
+  return makeBy3(n, function() {
+    return a;
+  });
+};
+var fromOption = function(ma) {
+  return isNone(ma) ? [] : [ma.value];
+};
+var fromEither = function(e) {
+  return isLeft(e) ? [] : [e.right];
+};
+var matchW2 = function(onEmpty, onNonEmpty) {
+  return function(as2) {
+    return isNonEmpty5(as2) ? onNonEmpty(as2) : onEmpty();
+  };
+};
+var match2 = matchW2;
+var matchLeftW = function(onEmpty, onNonEmpty) {
+  return function(as2) {
+    return isNonEmpty5(as2) ? onNonEmpty(head3(as2), tail3(as2)) : onEmpty();
+  };
+};
+var matchLeft = matchLeftW;
+var foldLeft = matchLeft;
+var matchRightW = function(onEmpty, onNonEmpty) {
+  return function(as2) {
+    return isNonEmpty5(as2) ? onNonEmpty(init(as2), last2(as2)) : onEmpty();
+  };
+};
+var matchRight = matchRightW;
+var foldRight = matchRight;
+var chainWithIndex = function(f) {
+  return function(as2) {
+    var out = [];
+    for (var i = 0;i < as2.length; i++) {
+      out.push.apply(out, f(i, as2[i]));
+    }
+    return out;
+  };
+};
+var scanLeft = function(b, f) {
+  return function(as2) {
+    var len = as2.length;
+    var out = new Array(len + 1);
+    out[0] = b;
+    for (var i = 0;i < len; i++) {
+      out[i + 1] = f(out[i], as2[i]);
+    }
+    return out;
+  };
+};
+var scanRight = function(b, f) {
+  return function(as2) {
+    var len = as2.length;
+    var out = new Array(len + 1);
+    out[len] = b;
+    for (var i = len - 1;i >= 0; i--) {
+      out[i] = f(as2[i], out[i + 1]);
+    }
+    return out;
+  };
+};
+var size = function(as2) {
+  return as2.length;
+};
+var isOutOfBound4 = isOutOfBound2;
+var lookup2 = lookup;
+var head5 = head4;
+var last4 = last3;
+var tail4 = function(as2) {
+  return isNonEmpty5(as2) ? some(tail3(as2)) : none;
+};
+var init3 = function(as2) {
+  return isNonEmpty5(as2) ? some(init(as2)) : none;
+};
+var takeLeft = function(n) {
+  return function(as2) {
+    return isOutOfBound4(n, as2) ? copy2(as2) : as2.slice(0, n);
+  };
+};
+var takeRight = function(n) {
+  return function(as2) {
+    return isOutOfBound4(n, as2) ? copy2(as2) : n === 0 ? [] : as2.slice(-n);
+  };
+};
+var spanLeftIndex = function(as2, predicate) {
+  var l = as2.length;
+  var i = 0;
+  for (;i < l; i++) {
+    if (!predicate(as2[i])) {
+      break;
+    }
+  }
+  return i;
+};
+var dropLeft = function(n) {
+  return function(as2) {
+    return n <= 0 || isEmpty(as2) ? copy2(as2) : n >= as2.length ? [] : as2.slice(n, as2.length);
+  };
+};
+var dropRight = function(n) {
+  return function(as2) {
+    return n <= 0 || isEmpty(as2) ? copy2(as2) : n >= as2.length ? [] : as2.slice(0, as2.length - n);
+  };
+};
+var findIndex2 = findIndex;
+var findFirstMap2 = findFirstMap;
+var findLastMap2 = findLastMap;
+var findLastIndex2 = findLastIndex;
+var copy2 = function(as2) {
+  return as2.slice();
+};
+var insertAt = function(i, a) {
+  return function(as2) {
+    return i < 0 || i > as2.length ? none : some(unsafeInsertAt3(i, a, as2));
+  };
+};
+var updateAt = function(i, a) {
+  return modifyAt(i, function() {
+    return a;
+  });
+};
+var deleteAt = function(i) {
+  return function(as2) {
+    return isOutOfBound4(i, as2) ? none : some(unsafeDeleteAt(i, as2));
+  };
+};
+var modifyAt = function(i, f) {
+  return function(as2) {
+    return isOutOfBound4(i, as2) ? none : some(unsafeUpdateAt3(i, f(as2[i]), as2));
+  };
+};
+var reverse2 = function(as2) {
+  return isEmpty(as2) ? [] : as2.slice().reverse();
+};
+var rights = function(as2) {
+  var r = [];
+  for (var i = 0;i < as2.length; i++) {
+    var a = as2[i];
+    if (a._tag === "Right") {
+      r.push(a.right);
+    }
+  }
+  return r;
+};
+var lefts = function(as2) {
+  var r = [];
+  for (var i = 0;i < as2.length; i++) {
+    var a = as2[i];
+    if (a._tag === "Left") {
+      r.push(a.left);
+    }
+  }
+  return r;
+};
+var sort2 = function(O) {
+  return function(as2) {
+    return as2.length <= 1 ? copy2(as2) : as2.slice().sort(O.compare);
+  };
+};
+var zipWith = function(fa, fb, f) {
+  var fc = [];
+  var len = Math.min(fa.length, fb.length);
+  for (var i = 0;i < len; i++) {
+    fc[i] = f(fa[i], fb[i]);
+  }
+  return fc;
+};
+var unzip = function(as2) {
+  var fa = [];
+  var fb = [];
+  for (var i = 0;i < as2.length; i++) {
+    fa[i] = as2[i][0];
+    fb[i] = as2[i][1];
+  }
+  return [fa, fb];
+};
+var prependAll3 = function(middle) {
+  var f = prependAll2(middle);
+  return function(as2) {
+    return isNonEmpty5(as2) ? f(as2) : [];
+  };
+};
+var intersperse3 = function(middle) {
+  var f = intersperse2(middle);
+  return function(as2) {
+    return isNonEmpty5(as2) ? f(as2) : copy2(as2);
+  };
+};
+var rotate3 = function(n) {
+  var f = rotate(n);
+  return function(as2) {
+    return isNonEmpty5(as2) ? f(as2) : copy2(as2);
+  };
+};
+var elem2 = elem;
+var uniq3 = function(E) {
+  var f = uniq(E);
+  return function(as2) {
+    return isNonEmpty5(as2) ? f(as2) : copy2(as2);
+  };
+};
+var sortBy3 = function(ords) {
+  var f = sortBy(ords);
+  return function(as2) {
+    return isNonEmpty5(as2) ? f(as2) : copy2(as2);
+  };
+};
+var chop3 = function(f) {
+  var g = chop(f);
+  return function(as2) {
+    return isNonEmpty5(as2) ? g(as2) : [];
+  };
+};
+var splitAt3 = function(n) {
+  return function(as2) {
+    return n >= 1 && isNonEmpty5(as2) ? splitAt(n)(as2) : isEmpty(as2) ? [copy2(as2), []] : [[], copy2(as2)];
+  };
+};
+var chunksOf3 = function(n) {
+  var f = chunksOf(n);
+  return function(as2) {
+    return isNonEmpty5(as2) ? f(as2) : [];
+  };
+};
+var fromOptionK = function(f) {
+  return function() {
+    var a = [];
+    for (var _i = 0;_i < arguments.length; _i++) {
+      a[_i] = arguments[_i];
+    }
+    return fromOption(f.apply(undefined, a));
+  };
+};
+var concatW = function(second) {
+  return function(first2) {
+    return isEmpty(first2) ? copy2(second) : isEmpty(second) ? copy2(first2) : first2.concat(second);
+  };
+};
+var concat2 = concatW;
+var _map = function(fa, f) {
+  return pipe(fa, map(f));
+};
+var _mapWithIndex = function(fa, f) {
+  return pipe(fa, mapWithIndex(f));
+};
+var _ap = function(fab, fa) {
+  return pipe(fab, ap2(fa));
+};
+var _filter = function(fa, predicate) {
+  return pipe(fa, filter(predicate));
+};
+var _filterMap = function(fa, f) {
+  return pipe(fa, filterMap(f));
+};
+var _partition = function(fa, predicate) {
+  return pipe(fa, partition(predicate));
+};
+var _partitionMap = function(fa, f) {
+  return pipe(fa, partitionMap(f));
+};
+var _partitionWithIndex = function(fa, predicateWithIndex) {
+  return pipe(fa, partitionWithIndex(predicateWithIndex));
+};
+var _partitionMapWithIndex = function(fa, f) {
+  return pipe(fa, partitionMapWithIndex(f));
+};
+var _alt = function(fa, that) {
+  return pipe(fa, alt(that));
+};
+var _reduce = function(fa, b, f) {
+  return pipe(fa, reduce3(b, f));
+};
+var _foldMap = function(M) {
+  var foldMapM = foldMap3(M);
+  return function(fa, f) {
+    return pipe(fa, foldMapM(f));
+  };
+};
+var _reduceRight = function(fa, b, f) {
+  return pipe(fa, reduceRight3(b, f));
+};
+var _reduceWithIndex = function(fa, b, f) {
+  return pipe(fa, reduceWithIndex3(b, f));
+};
+var _foldMapWithIndex = function(M) {
+  var foldMapWithIndexM = foldMapWithIndex3(M);
+  return function(fa, f) {
+    return pipe(fa, foldMapWithIndexM(f));
+  };
+};
+var _reduceRightWithIndex = function(fa, b, f) {
+  return pipe(fa, reduceRightWithIndex3(b, f));
+};
+var _filterMapWithIndex = function(fa, f) {
+  return pipe(fa, filterMapWithIndex(f));
+};
+var _filterWithIndex = function(fa, predicateWithIndex) {
+  return pipe(fa, filterWithIndex(predicateWithIndex));
+};
+var _extend = function(fa, f) {
+  return pipe(fa, extend(f));
+};
+var _traverse = function(F) {
+  var traverseF = traverse(F);
+  return function(ta, f) {
+    return pipe(ta, traverseF(f));
+  };
+};
+var _traverseWithIndex = function(F) {
+  var traverseWithIndexF = traverseWithIndex(F);
+  return function(ta, f) {
+    return pipe(ta, traverseWithIndexF(f));
+  };
+};
+var _chainRecDepthFirst2 = _chainRecDepthFirst;
+var _chainRecBreadthFirst2 = _chainRecBreadthFirst;
+var of3 = of;
+var zero = function() {
+  return [];
+};
+var map = function(f) {
+  return function(fa) {
+    return fa.map(function(a) {
+      return f(a);
+    });
+  };
+};
+var ap2 = function(fa) {
+  return flatMap(function(f) {
+    return pipe(fa, map(f));
+  });
+};
+var flatMap = dual(2, function(ma, f) {
+  return pipe(ma, chainWithIndex(function(i, a) {
+    return f(a, i);
+  }));
+});
+var flatten = flatMap(identity);
+var mapWithIndex = function(f) {
+  return function(fa) {
+    return fa.map(function(a, i) {
+      return f(i, a);
+    });
+  };
+};
+var filterMapWithIndex = function(f) {
+  return function(fa) {
+    var out = [];
+    for (var i = 0;i < fa.length; i++) {
+      var optionB = f(i, fa[i]);
+      if (isSome(optionB)) {
+        out.push(optionB.value);
+      }
+    }
+    return out;
+  };
+};
+var filterMap = function(f) {
+  return filterMapWithIndex(function(_, a) {
+    return f(a);
+  });
+};
+var compact = filterMap(identity);
+var separate = function(fa) {
+  var left = [];
+  var right = [];
+  for (var _i = 0, fa_1 = fa;_i < fa_1.length; _i++) {
+    var e = fa_1[_i];
+    if (e._tag === "Left") {
+      left.push(e.left);
+    } else {
+      right.push(e.right);
+    }
+  }
+  return separated(left, right);
+};
+var filter = function(predicate) {
+  return function(as2) {
+    return as2.filter(predicate);
+  };
+};
+var partition = function(predicate) {
+  return partitionWithIndex(function(_, a) {
+    return predicate(a);
+  });
+};
+var partitionWithIndex = function(predicateWithIndex) {
+  return function(as2) {
+    var left = [];
+    var right = [];
+    for (var i = 0;i < as2.length; i++) {
+      var b = as2[i];
+      if (predicateWithIndex(i, b)) {
+        right.push(b);
+      } else {
+        left.push(b);
+      }
+    }
+    return separated(left, right);
+  };
+};
+var partitionMap = function(f) {
+  return partitionMapWithIndex(function(_, a) {
+    return f(a);
+  });
+};
+var partitionMapWithIndex = function(f) {
+  return function(fa) {
+    var left = [];
+    var right = [];
+    for (var i = 0;i < fa.length; i++) {
+      var e = f(i, fa[i]);
+      if (e._tag === "Left") {
+        left.push(e.left);
+      } else {
+        right.push(e.right);
+      }
+    }
+    return separated(left, right);
+  };
+};
+var altW = function(that) {
+  return function(fa) {
+    return fa.concat(that());
+  };
+};
+var alt = altW;
+var filterWithIndex = function(predicateWithIndex) {
+  return function(as2) {
+    return as2.filter(function(b, i) {
+      return predicateWithIndex(i, b);
+    });
+  };
+};
+var extend = function(f) {
+  return function(wa) {
+    return wa.map(function(_, i) {
+      return f(wa.slice(i));
+    });
+  };
+};
+var duplicate = extend(identity);
+var foldMap3 = foldMap2;
+var foldMapWithIndex3 = foldMapWithIndex2;
+var reduce3 = reduce2;
+var reduceWithIndex3 = reduceWithIndex2;
+var reduceRight3 = reduceRight2;
+var reduceRightWithIndex3 = reduceRightWithIndex2;
+var traverse = function(F) {
+  var traverseWithIndexF = traverseWithIndex(F);
+  return function(f) {
+    return traverseWithIndexF(function(_, a) {
+      return f(a);
+    });
+  };
+};
+var sequence = function(F) {
+  return function(ta) {
+    return _reduce(ta, F.of(zero()), function(fas, fa) {
+      return F.ap(F.map(fas, function(as2) {
+        return function(a) {
+          return pipe(as2, append3(a));
+        };
+      }), fa);
+    });
+  };
+};
+var traverseWithIndex = function(F) {
+  return function(f) {
+    return reduceWithIndex3(F.of(zero()), function(i, fbs, a) {
+      return F.ap(F.map(fbs, function(bs) {
+        return function(b) {
+          return pipe(bs, append3(b));
+        };
+      }), f(i, a));
+    });
+  };
+};
+var wither = function(F) {
+  var _witherF = _wither(F);
+  return function(f) {
+    return function(fa) {
+      return _witherF(fa, f);
+    };
+  };
+};
+var wilt = function(F) {
+  var _wiltF = _wilt(F);
+  return function(f) {
+    return function(fa) {
+      return _wiltF(fa, f);
+    };
+  };
+};
+var unfold = function(b, f) {
+  var out = [];
+  var bb = b;
+  while (true) {
+    var mt = f(bb);
+    if (isSome(mt)) {
+      var _a = mt.value, a = _a[0], b_1 = _a[1];
+      out.push(a);
+      bb = b_1;
+    } else {
+      break;
+    }
+  }
+  return out;
+};
+var URI2 = "Array";
+var getShow3 = getShow2;
+var getSemigroup4 = function() {
+  return {
+    concat: function(first2, second) {
+      return first2.concat(second);
+    }
+  };
+};
+var getMonoid4 = function() {
+  return {
+    concat: getSemigroup4().concat,
+    empty: []
+  };
+};
+var getEq3 = getEq2;
+var getOrd2 = getOrd;
+var getUnionSemigroup = function(E) {
+  var unionE = union3(E);
+  return {
+    concat: function(first2, second) {
+      return unionE(second)(first2);
+    }
+  };
+};
+var getUnionMonoid = function(E) {
+  return {
+    concat: getUnionSemigroup(E).concat,
+    empty: []
+  };
+};
+var getIntersectionSemigroup = function(E) {
+  var intersectionE = intersection(E);
+  return {
+    concat: function(first2, second) {
+      return intersectionE(second)(first2);
+    }
+  };
+};
+var getDifferenceMagma = function(E) {
+  var differenceE = difference(E);
+  return {
+    concat: function(first2, second) {
+      return differenceE(second)(first2);
+    }
+  };
+};
+var Functor2 = {
+  URI: URI2,
+  map: _map
+};
+var flap2 = flap(Functor2);
+var Pointed = {
+  URI: URI2,
+  of: of3
+};
+var FunctorWithIndex = {
+  URI: URI2,
+  map: _map,
+  mapWithIndex: _mapWithIndex
+};
+var Apply3 = {
+  URI: URI2,
+  map: _map,
+  ap: _ap
+};
+var apFirst2 = apFirst(Apply3);
+var apSecond2 = apSecond(Apply3);
+var Applicative = {
+  URI: URI2,
+  map: _map,
+  ap: _ap,
+  of: of3
+};
+var Chain3 = {
+  URI: URI2,
+  map: _map,
+  ap: _ap,
+  chain: flatMap
+};
+var chainFirst2 = chainFirst(Chain3);
+var Monad = {
+  URI: URI2,
+  map: _map,
+  ap: _ap,
+  of: of3,
+  chain: flatMap
+};
+var Unfoldable = {
+  URI: URI2,
+  unfold
+};
+var Alt = {
+  URI: URI2,
+  map: _map,
+  alt: _alt
+};
+var Zero2 = {
+  URI: URI2,
+  zero
+};
+var guard2 = guard(Zero2, Pointed);
+var Alternative = {
+  URI: URI2,
+  map: _map,
+  ap: _ap,
+  of: of3,
+  alt: _alt,
+  zero
+};
+var Extend = {
+  URI: URI2,
+  map: _map,
+  extend: _extend
+};
+var Compactable = {
+  URI: URI2,
+  compact,
+  separate
+};
+var Filterable = {
+  URI: URI2,
+  map: _map,
+  compact,
+  separate,
+  filter: _filter,
+  filterMap: _filterMap,
+  partition: _partition,
+  partitionMap: _partitionMap
+};
+var FilterableWithIndex = {
+  URI: URI2,
+  map: _map,
+  mapWithIndex: _mapWithIndex,
+  compact,
+  separate,
+  filter: _filter,
+  filterMap: _filterMap,
+  partition: _partition,
+  partitionMap: _partitionMap,
+  partitionMapWithIndex: _partitionMapWithIndex,
+  partitionWithIndex: _partitionWithIndex,
+  filterMapWithIndex: _filterMapWithIndex,
+  filterWithIndex: _filterWithIndex
+};
+var Foldable = {
+  URI: URI2,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight
+};
+var FoldableWithIndex = {
+  URI: URI2,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight,
+  reduceWithIndex: _reduceWithIndex,
+  foldMapWithIndex: _foldMapWithIndex,
+  reduceRightWithIndex: _reduceRightWithIndex
+};
+var Traversable = {
+  URI: URI2,
+  map: _map,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight,
+  traverse: _traverse,
+  sequence
+};
+var TraversableWithIndex = {
+  URI: URI2,
+  map: _map,
+  mapWithIndex: _mapWithIndex,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight,
+  reduceWithIndex: _reduceWithIndex,
+  foldMapWithIndex: _foldMapWithIndex,
+  reduceRightWithIndex: _reduceRightWithIndex,
+  traverse: _traverse,
+  sequence,
+  traverseWithIndex: _traverseWithIndex
+};
+var _wither = witherDefault(Traversable, Compactable);
+var _wilt = wiltDefault(Traversable, Compactable);
+var Witherable2 = {
+  URI: URI2,
+  map: _map,
+  compact,
+  separate,
+  filter: _filter,
+  filterMap: _filterMap,
+  partition: _partition,
+  partitionMap: _partitionMap,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight,
+  traverse: _traverse,
+  sequence,
+  wither: _wither,
+  wilt: _wilt
+};
+var chainRecDepthFirst2 = chainRecDepthFirst;
+var ChainRecDepthFirst = {
+  URI: URI2,
+  map: _map,
+  ap: _ap,
+  chain: flatMap,
+  chainRec: _chainRecDepthFirst2
+};
+var chainRecBreadthFirst2 = chainRecBreadthFirst;
+var ChainRecBreadthFirst = {
+  URI: URI2,
+  map: _map,
+  ap: _ap,
+  chain: flatMap,
+  chainRec: _chainRecBreadthFirst2
+};
+var filterE2 = filterE(Witherable2);
+var FromEither2 = {
+  URI: URI2,
+  fromEither
+};
+var fromEitherK2 = fromEitherK(FromEither2);
+var unsafeInsertAt3 = unsafeInsertAt;
+var unsafeUpdateAt3 = function(i, a, as2) {
+  return isNonEmpty5(as2) ? unsafeUpdateAt(i, a, as2) : [];
+};
+var unsafeDeleteAt = function(i, as2) {
+  var xs = as2.slice();
+  xs.splice(i, 1);
+  return xs;
+};
+var every2 = every;
+var some2 = function(predicate) {
+  return function(as2) {
+    return as2.some(predicate);
+  };
+};
+var exists = some2;
+var intercalate3 = intercalate2;
+var Do = of3(emptyRecord);
+var bindTo2 = bindTo(Functor2);
+var let_2 = let_(Functor2);
+var bind2 = bind(Chain3);
+var apS2 = apS(Apply3);
+var chain = flatMap;
+var range3 = range;
+var empty3 = [];
+var cons3 = cons;
+var snoc3 = snoc;
+var prependToAll = prependAll3;
+var array = {
+  URI: URI2,
+  compact,
+  separate,
+  map: _map,
+  ap: _ap,
+  of: of3,
+  chain: flatMap,
+  filter: _filter,
+  filterMap: _filterMap,
+  partition: _partition,
+  partitionMap: _partitionMap,
+  mapWithIndex: _mapWithIndex,
+  partitionMapWithIndex: _partitionMapWithIndex,
+  partitionWithIndex: _partitionWithIndex,
+  filterMapWithIndex: _filterMapWithIndex,
+  filterWithIndex: _filterWithIndex,
+  alt: _alt,
+  zero,
+  unfold,
+  reduce: _reduce,
+  foldMap: _foldMap,
+  reduceRight: _reduceRight,
+  traverse: _traverse,
+  sequence,
+  reduceWithIndex: _reduceWithIndex,
+  foldMapWithIndex: _foldMapWithIndex,
+  reduceRightWithIndex: _reduceRightWithIndex,
+  traverseWithIndex: _traverseWithIndex,
+  extend: _extend,
+  wither: _wither,
+  wilt: _wilt
+};
+
+// node_modules/fp-ts/es6/Predicate.js
+var getSemigroupAny = function() {
+  return {
+    concat: function(first2, second) {
+      return pipe(first2, or(second));
+    }
+  };
+};
+var getMonoidAny = function() {
+  return {
+    concat: getSemigroupAny().concat,
+    empty: constFalse
+  };
+};
+var not = function(predicate) {
+  return function(a) {
+    return !predicate(a);
+  };
+};
+var or = function(second) {
+  return function(first2) {
+    return function(a) {
+      return first2(a) || second(a);
+    };
+  };
+};
+
+// node_modules/fp-ts/es6/Option.js
+function fromPredicate2(predicate) {
+  return function(a) {
+    return predicate(a) ? some3(a) : none2;
+  };
+}
+var none2 = none;
+var some3 = some;
+var getRight = function(ma) {
+  return ma._tag === "Left" ? none2 : some3(ma.right);
+};
+var _map2 = function(fa, f) {
+  return pipe(fa, map2(f));
+};
+var _ap2 = function(fab, fa) {
+  return pipe(fab, ap3(fa));
+};
+var URI3 = "Option";
+var getMonoid5 = function(S) {
+  return {
+    concat: function(x, y) {
+      return isNone2(x) ? y : isNone2(y) ? x : some3(S.concat(x.value, y.value));
+    },
+    empty: none2
+  };
+};
+var map2 = function(f) {
+  return function(fa) {
+    return isNone2(fa) ? none2 : some3(f(fa.value));
+  };
+};
+var Functor4 = {
+  URI: URI3,
+  map: _map2
+};
+var as2 = dual(2, as(Functor4));
+var asUnit2 = asUnit(Functor4);
+var ap3 = function(fa) {
+  return function(fab) {
+    return isNone2(fab) ? none2 : isNone2(fa) ? none2 : some3(fab.value(fa.value));
+  };
+};
+var flatMap2 = dual(2, function(ma, f) {
+  return isNone2(ma) ? none2 : f(ma.value);
+});
+var Chain4 = {
+  URI: URI3,
+  map: _map2,
+  ap: _ap2,
+  chain: flatMap2
+};
+var orElse = dual(2, function(self, that) {
+  return isNone2(self) ? that() : self;
+});
+var fromEither2 = getRight;
+var FromEither4 = {
+  URI: URI3,
+  fromEither: fromEither2
+};
+var isSome2 = isSome;
+var isNone2 = function(fa) {
+  return fa._tag === "None";
+};
+var getOrElseW = function(onNone) {
+  return function(ma) {
+    return isNone2(ma) ? onNone() : ma.value;
+  };
+};
+var getOrElse = getOrElseW;
+var tap2 = dual(2, tap(Chain4));
+var tapEither2 = dual(2, tapEither(FromEither4, Chain4));
+
+// node_modules/fp-ts/es6/Endomorphism.js
+var getSemigroup5 = function() {
+  return {
+    concat: function(first2, second) {
+      return flow(first2, second);
+    }
+  };
+};
+var getMonoid6 = function() {
+  return {
+    concat: getSemigroup5().concat,
+    empty: identity
+  };
+};
+
+// node_modules/fp-ts/es6/FromIO.js
+function fromIOK(F) {
+  return function(f) {
+    return flow(f, F.fromIO);
+  };
+}
+function tapIO(F, M) {
+  var chainFirstM = tap(M);
+  return function(self, f) {
+    return chainFirstM(self, flow(f, F.fromIO));
+  };
+}
+
+// node_modules/fp-ts/es6/ReadonlyMap.js
+function lookupWithKey(E) {
+  return function(k, m) {
+    if (m === undefined) {
+      var lookupWithKeyE_1 = lookupWithKey(E);
+      return function(m2) {
+        return lookupWithKeyE_1(k, m2);
+      };
+    }
+    var entries = m.entries();
+    var e;
+    while (!(e = entries.next()).done) {
+      var _a = e.value, ka = _a[0], a = _a[1];
+      if (E.equals(ka, k)) {
+        return some([ka, a]);
+      }
+    }
+    return none;
+  };
+}
+function lookup3(E) {
+  var lookupWithKeyE = lookupWithKey(E);
+  return function(k, m) {
+    if (m === undefined) {
+      var lookupE_1 = lookup3(E);
+      return function(m2) {
+        return lookupE_1(k, m2);
+      };
+    }
+    return pipe(lookupWithKeyE(k, m), map2(function(_a) {
+      var _ = _a[0], a = _a[1];
+      return a;
+    }));
+  };
+}
+var empty4 = new Map;
+
+// node_modules/fp-ts/es6/Map.js
+var lookup4 = lookup3;
+var empty5 = new Map;
+
+// node_modules/fp-ts/es6/Monoid.js
+var concatAll4 = function(M) {
+  return concatAll2(M)(M.empty);
+};
+var monoidVoid = {
+  concat: semigroupVoid.concat,
+  empty: undefined
+};
+var monoidAll = {
+  concat: semigroupAll.concat,
+  empty: true
+};
+var monoidAny = {
+  concat: semigroupAny.concat,
+  empty: false
+};
+var monoidString = {
+  concat: semigroupString.concat,
+  empty: ""
+};
+var monoidSum = {
+  concat: semigroupSum.concat,
+  empty: 0
+};
+var monoidProduct = {
+  concat: semigroupProduct.concat,
+  empty: 1
+};
+
+// node_modules/fp-ts/es6/Task.js
+var exports_Task = {};
+__export(exports_Task, {
+  traverseSeqArrayWithIndex: () => {
+    {
+      return traverseSeqArrayWithIndex;
+    }
+  },
+  traverseSeqArray: () => {
+    {
+      return traverseSeqArray;
+    }
+  },
+  traverseReadonlyNonEmptyArrayWithIndexSeq: () => {
+    {
+      return traverseReadonlyNonEmptyArrayWithIndexSeq;
+    }
+  },
+  traverseReadonlyNonEmptyArrayWithIndex: () => {
+    {
+      return traverseReadonlyNonEmptyArrayWithIndex;
+    }
+  },
+  traverseReadonlyArrayWithIndexSeq: () => {
+    {
+      return traverseReadonlyArrayWithIndexSeq;
+    }
+  },
+  traverseReadonlyArrayWithIndex: () => {
+    {
+      return traverseReadonlyArrayWithIndex;
+    }
+  },
+  traverseArrayWithIndex: () => {
+    {
+      return traverseArrayWithIndex;
+    }
+  },
+  traverseArray: () => {
+    {
+      return traverseArray;
+    }
+  },
+  taskSeq: () => {
+    {
+      return taskSeq;
+    }
+  },
+  task: () => {
+    {
+      return task;
+    }
+  },
+  tapIO: () => {
+    {
+      return tapIO2;
+    }
+  },
+  tap: () => {
+    {
+      return tap3;
+    }
+  },
+  sequenceSeqArray: () => {
+    {
+      return sequenceSeqArray;
+    }
+  },
+  sequenceArray: () => {
+    {
+      return sequenceArray;
+    }
+  },
+  of: () => {
+    {
+      return of4;
+    }
+  },
+  never: () => {
+    {
+      return never;
+    }
+  },
+  map: () => {
+    {
+      return map3;
+    }
+  },
+  let: () => {
+    {
+      return let_3;
+    }
+  },
+  getSemigroup: () => {
+    {
+      return getSemigroup6;
+    }
+  },
+  getRaceMonoid: () => {
+    {
+      return getRaceMonoid;
+    }
+  },
+  getMonoid: () => {
+    {
+      return getMonoid7;
+    }
+  },
+  fromTask: () => {
+    {
+      return fromTask;
+    }
+  },
+  fromIOK: () => {
+    {
+      return fromIOK2;
+    }
+  },
+  fromIO: () => {
+    {
+      return fromIO;
+    }
+  },
+  flatten: () => {
+    {
+      return flatten2;
+    }
+  },
+  flatMapIO: () => {
+    {
+      return flatMapIO2;
+    }
+  },
+  flatMap: () => {
+    {
+      return flatMap3;
+    }
+  },
+  flap: () => {
+    {
+      return flap3;
+    }
+  },
+  delay: () => {
+    {
+      return delay;
+    }
+  },
+  chainIOK: () => {
+    {
+      return chainIOK;
+    }
+  },
+  chainFirstIOK: () => {
+    {
+      return chainFirstIOK;
+    }
+  },
+  chainFirst: () => {
+    {
+      return chainFirst3;
+    }
+  },
+  chain: () => {
+    {
+      return chain2;
+    }
+  },
+  bindTo: () => {
+    {
+      return bindTo3;
+    }
+  },
+  bind: () => {
+    {
+      return bind3;
+    }
+  },
+  asUnit: () => {
+    {
+      return asUnit3;
+    }
+  },
+  as: () => {
+    {
+      return as3;
+    }
+  },
+  apSecond: () => {
+    {
+      return apSecond3;
+    }
+  },
+  apS: () => {
+    {
+      return apS3;
+    }
+  },
+  apFirst: () => {
+    {
+      return apFirst3;
+    }
+  },
+  ap: () => {
+    {
+      return ap4;
+    }
+  },
+  URI: () => {
+    {
+      return URI4;
+    }
+  },
+  Pointed: () => {
+    {
+      return Pointed2;
+    }
+  },
+  MonadTask: () => {
+    {
+      return MonadTask;
+    }
+  },
+  MonadIO: () => {
+    {
+      return MonadIO;
+    }
+  },
+  Monad: () => {
+    {
+      return Monad2;
+    }
+  },
+  Functor: () => {
+    {
+      return Functor6;
+    }
+  },
+  FromTask: () => {
+    {
+      return FromTask;
+    }
+  },
+  FromIO: () => {
+    {
+      return FromIO2;
+    }
+  },
+  Do: () => {
+    {
+      return Do2;
+    }
+  },
+  Chain: () => {
+    {
+      return Chain6;
+    }
+  },
+  ApplySeq: () => {
+    {
+      return ApplySeq;
+    }
+  },
+  ApplyPar: () => {
+    {
+      return ApplyPar;
+    }
+  },
+  ApplicativeSeq: () => {
+    {
+      return ApplicativeSeq;
+    }
+  },
+  ApplicativePar: () => {
+    {
+      return ApplicativePar;
+    }
+  },
+  ApT: () => {
+    {
+      return ApT;
+    }
+  }
+});
+function delay(millis) {
+  return function(ma) {
+    return function() {
+      return new Promise(function(resolve) {
+        setTimeout(function() {
+          Promise.resolve().then(ma).then(resolve);
+        }, millis);
+      });
+    };
+  };
+}
+function getRaceMonoid() {
+  return {
+    concat: function(x, y) {
+      return function() {
+        return Promise.race([Promise.resolve().then(x), Promise.resolve().then(y)]);
+      };
+    },
+    empty: never
+  };
+}
+var fromIO = function(ma) {
+  return function() {
+    return Promise.resolve().then(ma);
+  };
+};
+var _map3 = function(fa, f) {
+  return pipe(fa, map3(f));
+};
+var _apPar = function(fab, fa) {
+  return pipe(fab, ap4(fa));
+};
+var _apSeq = function(fab, fa) {
+  return flatMap3(fab, function(f) {
+    return pipe(fa, map3(f));
+  });
+};
+var map3 = function(f) {
+  return function(fa) {
+    return function() {
+      return Promise.resolve().then(fa).then(f);
+    };
+  };
+};
+var ap4 = function(fa) {
+  return function(fab) {
+    return function() {
+      return Promise.all([Promise.resolve().then(fab), Promise.resolve().then(fa)]).then(function(_a) {
+        var f = _a[0], a = _a[1];
+        return f(a);
+      });
+    };
+  };
+};
+var of4 = function(a) {
+  return function() {
+    return Promise.resolve(a);
+  };
+};
+var flatMap3 = dual(2, function(ma, f) {
+  return function() {
+    return Promise.resolve().then(ma).then(function(a) {
+      return f(a)();
+    });
+  };
+});
+var flatten2 = flatMap3(identity);
+var URI4 = "Task";
+var Functor6 = {
+  URI: URI4,
+  map: _map3
+};
+var as3 = dual(2, as(Functor6));
+var asUnit3 = asUnit(Functor6);
+var flap3 = flap(Functor6);
+var Pointed2 = {
+  URI: URI4,
+  of: of4
+};
+var ApplyPar = {
+  URI: URI4,
+  map: _map3,
+  ap: _apPar
+};
+var apFirst3 = apFirst(ApplyPar);
+var apSecond3 = apSecond(ApplyPar);
+var ApplicativePar = {
+  URI: URI4,
+  map: _map3,
+  ap: _apPar,
+  of: of4
+};
+var ApplySeq = {
+  URI: URI4,
+  map: _map3,
+  ap: _apSeq
+};
+var ApplicativeSeq = {
+  URI: URI4,
+  map: _map3,
+  ap: _apSeq,
+  of: of4
+};
+var Chain6 = {
+  URI: URI4,
+  map: _map3,
+  ap: _apPar,
+  chain: flatMap3
+};
+var Monad2 = {
+  URI: URI4,
+  map: _map3,
+  of: of4,
+  ap: _apPar,
+  chain: flatMap3
+};
+var MonadIO = {
+  URI: URI4,
+  map: _map3,
+  of: of4,
+  ap: _apPar,
+  chain: flatMap3,
+  fromIO
+};
+var fromTask = identity;
+var MonadTask = {
+  URI: URI4,
+  map: _map3,
+  of: of4,
+  ap: _apPar,
+  chain: flatMap3,
+  fromIO,
+  fromTask
+};
+var FromIO2 = {
+  URI: URI4,
+  fromIO
+};
+var _FlatMap = {
+  flatMap: flatMap3
+};
+var _FromIO = {
+  fromIO: FromIO2.fromIO
+};
+var flatMapIO2 = flatMapIO(_FromIO, _FlatMap);
+var tap3 = dual(2, tap(Chain6));
+var tapIO2 = dual(2, tapIO(FromIO2, Chain6));
+var fromIOK2 = fromIOK(FromIO2);
+var chainIOK = flatMapIO2;
+var chainFirstIOK = tapIO2;
+var FromTask = {
+  URI: URI4,
+  fromIO,
+  fromTask
+};
+var never = function() {
+  return new Promise(function(_) {
+    return;
+  });
+};
+var Do2 = of4(emptyRecord);
+var bindTo3 = bindTo(Functor6);
+var let_3 = let_(Functor6);
+var bind3 = bind(Chain6);
+var apS3 = apS(ApplyPar);
+var ApT = of4(emptyReadonlyArray);
+var traverseReadonlyNonEmptyArrayWithIndex = function(f) {
+  return function(as4) {
+    return function() {
+      return Promise.all(as4.map(function(a, i) {
+        return Promise.resolve().then(function() {
+          return f(i, a)();
+        });
+      }));
+    };
+  };
+};
+var traverseReadonlyArrayWithIndex = function(f) {
+  var g = traverseReadonlyNonEmptyArrayWithIndex(f);
+  return function(as4) {
+    return isNonEmpty(as4) ? g(as4) : ApT;
+  };
+};
+var traverseReadonlyNonEmptyArrayWithIndexSeq = function(f) {
+  return function(as4) {
+    return function() {
+      return tail(as4).reduce(function(acc, a, i) {
+        return acc.then(function(bs) {
+          return Promise.resolve().then(f(i + 1, a)).then(function(b) {
+            bs.push(b);
+            return bs;
+          });
+        });
+      }, Promise.resolve().then(f(0, head(as4))).then(singleton));
+    };
+  };
+};
+var traverseReadonlyArrayWithIndexSeq = function(f) {
+  var g = traverseReadonlyNonEmptyArrayWithIndexSeq(f);
+  return function(as4) {
+    return isNonEmpty(as4) ? g(as4) : ApT;
+  };
+};
+var traverseArrayWithIndex = traverseReadonlyArrayWithIndex;
+var traverseArray = function(f) {
+  return traverseReadonlyArrayWithIndex(function(_, a) {
+    return f(a);
+  });
+};
+var sequenceArray = traverseArray(identity);
+var traverseSeqArrayWithIndex = traverseReadonlyArrayWithIndexSeq;
+var traverseSeqArray = function(f) {
+  return traverseReadonlyArrayWithIndexSeq(function(_, a) {
+    return f(a);
+  });
+};
+var sequenceSeqArray = traverseSeqArray(identity);
+var chain2 = flatMap3;
+var chainFirst3 = tap3;
+var task = {
+  URI: URI4,
+  map: _map3,
+  of: of4,
+  ap: _apPar,
+  chain: flatMap3,
+  fromIO,
+  fromTask
+};
+var taskSeq = {
+  URI: URI4,
+  map: _map3,
+  of: of4,
+  ap: _apSeq,
+  chain: flatMap3,
+  fromIO,
+  fromTask
+};
+var getSemigroup6 = getApplySemigroup(ApplySeq);
+var getMonoid7 = getApplicativeMonoid(ApplicativeSeq);
+
+// node_modules/fp-ts/es6/string.js
+var exports_string = {};
+__export(exports_string, {
+  trimRight: () => {
+    {
+      return trimRight;
+    }
+  },
+  trimLeft: () => {
+    {
+      return trimLeft;
+    }
+  },
+  trim: () => {
+    {
+      return trim;
+    }
+  },
+  toUpperCase: () => {
+    {
+      return toUpperCase;
+    }
+  },
+  toLowerCase: () => {
+    {
+      return toLowerCase;
+    }
+  },
+  startsWith: () => {
+    {
+      return startsWith;
+    }
+  },
+  split: () => {
+    {
+      return split;
+    }
+  },
+  slice: () => {
+    {
+      return slice;
+    }
+  },
+  size: () => {
+    {
+      return size3;
+    }
+  },
+  replace: () => {
+    {
+      return replace;
+    }
+  },
+  isString: () => {
+    {
+      return isString;
+    }
+  },
+  isEmpty: () => {
+    {
+      return isEmpty3;
+    }
+  },
+  includes: () => {
+    {
+      return includes;
+    }
+  },
+  endsWith: () => {
+    {
+      return endsWith;
+    }
+  },
+  empty: () => {
+    {
+      return empty6;
+    }
+  },
+  Show: () => {
+    {
+      return Show;
+    }
+  },
+  Semigroup: () => {
+    {
+      return Semigroup;
+    }
+  },
+  Ord: () => {
+    {
+      return Ord4;
+    }
+  },
+  Monoid: () => {
+    {
+      return Monoid;
+    }
+  },
+  Eq: () => {
+    {
+      return Eq4;
+    }
+  }
+});
+var Eq4 = {
+  equals: function(first2, second) {
+    return first2 === second;
+  }
+};
+var Semigroup = {
+  concat: function(first2, second) {
+    return first2 + second;
+  }
+};
+var empty6 = "";
+var Monoid = {
+  concat: Semigroup.concat,
+  empty: empty6
+};
+var Ord4 = {
+  equals: Eq4.equals,
+  compare: function(first2, second) {
+    return first2 < second ? -1 : first2 > second ? 1 : 0;
+  }
+};
+var Show = {
+  show: function(s) {
+    return JSON.stringify(s);
+  }
+};
+var isString = function(u) {
+  return typeof u === "string";
+};
+var toUpperCase = function(s) {
+  return s.toUpperCase();
+};
+var toLowerCase = function(s) {
+  return s.toLowerCase();
+};
+var replace = function(searchValue, replaceValue) {
+  return function(s) {
+    return s.replace(searchValue, replaceValue);
+  };
+};
+var trim = function(s) {
+  return s.trim();
+};
+var trimLeft = function(s) {
+  return s.trimLeft();
+};
+var trimRight = function(s) {
+  return s.trimRight();
+};
+var slice = function(start, end) {
+  return function(s) {
+    return s.slice(start, end);
+  };
+};
+var isEmpty3 = function(s) {
+  return s.length === 0;
+};
+var size3 = function(s) {
+  return s.length;
+};
+var split = function(separator) {
+  return function(s) {
+    var out = s.split(separator);
+    return isNonEmpty2(out) ? out : [s];
+  };
+};
+var includes = function(searchString, position) {
+  return function(s) {
+    return s.includes(searchString, position);
+  };
+};
+var startsWith = function(searchString, position) {
+  return function(s) {
+    return s.startsWith(searchString, position);
+  };
+};
+var endsWith = function(searchString, position) {
+  return function(s) {
+    return s.endsWith(searchString, position);
+  };
+};
+
+// node_modules/fp-ts-std/dist/esm/Function.js
+var URI5 = "Function";
+var map4 = (f) => (g) => flow(g, f);
+var Functor8 = {
+  URI: URI5,
+  map: (f, g) => map4(g)(f)
+};
+var of5 = constant;
+var ap5 = (f) => (g) => (x) => g(x)(f(x));
+var Applicative3 = {
+  ...Functor8,
+  of: of5,
+  ap: (f, g) => ap5(g)(f)
+};
+var apFirst4 = apFirst(Applicative3);
+var apSecond4 = apSecond(Applicative3);
+var chain3 = (f) => (g) => (x) => f(g(x))(x);
+var Monad3 = {
+  ...Applicative3,
+  chain: (f, g) => chain3(g)(f)
+};
+var Do3 = of5({});
+var bindTo4 = bindTo(Functor8);
+var bind4 = bind(Monad3);
+var apS4 = apS(Applicative3);
+var let_4 = let_(Functor8);
+var unary = tupled;
+var guard3 = (branches) => (fallback) => (input) => pipe(branches, map(([f, g]) => flow(fromPredicate2(f), map2(g))), concatAll4(getMonoid(getMonoid5(first()))()), apply(input), getOrElse(() => fallback(input)));
+var unless = (f) => (onFalse) => (x) => f(x) ? x : onFalse(x);
+var when = flow(not, unless);
+var invoke = (x) => (ys) => (z) => z[x](...ys);
+var invokeNullary = flip(invoke)([]);
+var memoize = (eq2) => (f) => {
+  const cache = new Map;
+  return (k) => {
+    const cached = lookup4(eq2)(k)(cache);
+    if (isSome2(cached))
+      return cached.value;
+    const val = f(k);
+    cache.set(k, val);
+    return val;
+  };
+};
+var curry2T = (f) => (a) => (b) => f([a, b]);
+var curry2 = flow(unary, curry2T);
+var curry3T = (f) => (a) => (b) => (c) => f([a, b, c]);
+var curry3 = flow(unary, curry3T);
+var curry4T = (f) => (a) => (b) => (c) => (d) => f([a, b, c, d]);
+var curry4 = flow(unary, curry4T);
+var curry5T = (f) => (a) => (b) => (c) => (d) => (e) => f([a, b, c, d, e]);
+var curry5 = flow(unary, curry5T);
+var applyEvery = concatAll4(getMonoid6());
+
+// node_modules/fp-ts-std/dist/esm/Predicate.js
+var anyPass = (fs) => concatAll4(getMonoidAny())(fs);
+
+// shared/fp.tsx
+var guard4 = (branches) => guard3(branches);
+var pMchain = (f) => async (fa) => f(await fa);
+var is = (c) => (a) => (field) => field[c] === a;
+var chunckify = (n) => (g) => flow(exports_Array.chunksOf(n), exports_Array.map(g), (ps) => Promise.all(ps), pMchain(exports_Array.flatten));
+var memoize2 = (fn) => pipe(fn, tupled, memoize(exports_Eq.contramap(JSON.stringify)(exports_string.Eq)), untupled);
+
+// shared/util.tsx
+var SpotifyLoc;
+(function(SpotifyLoc) {
+  let before;
+  (function(before) {
+    before.start = constant({ before: "start" });
+    before.fromUri = (uri) => ({
+      before: { uri }
+    });
+    before.fromUid = (uid) => ({
+      before: { uid }
+    });
+  })(before = SpotifyLoc.before || (SpotifyLoc.before = {}));
+  let after;
+  (function(after) {
+    after.end = constant({ after: "end" });
+    after.fromUri = (uri) => ({
+      before: { uri }
+    });
+    after.fromUid = (uid) => ({
+      before: { uid }
+    });
+  })(after = SpotifyLoc.after || (SpotifyLoc.after = {}));
+})(SpotifyLoc || (SpotifyLoc = {}));
+var normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
+//! Does location actually point to document.body?
+var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// shared/api.tsx
+var { URI: URI6 } = Spicetify;
+var fetchWebArtistsSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists);
+var fetchWebPlaylistsSpot = chunckify(1)(async ([id]) => [
+  await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
+]);
+var fetchWebAlbumsSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums);
+var fetchWebTracksSpot = chunckify(50)(async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks);
+var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+  const url = new URL("https://ws.audioscrobbler.com/2.0/");
+  url.searchParams.append("method", "track.getInfo");
+  url.searchParams.append("api_key", LFMApiKey);
+  url.searchParams.append("artist", artist);
+  url.searchParams.append("track", trackName);
+  url.searchParams.append("format", "json");
+  url.searchParams.append("username", lastFmUsername);
+  return await fetch(url).then((res) => res.json());
+};
+var fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
+var searchYoutube = async (YouTubeApiKey, searchString) => {
+  const url = new URL("https://www.googleapis.com/youtube/v3/search");
+  url.searchParams.append("part", "snippet");
+  url.searchParams.append("maxResults", "10");
+  url.searchParams.append("q", searchString);
+  url.searchParams.append("type", "video");
+  url.searchParams.append("key", YouTubeApiKey);
+  return await fetch(url).then((res) => res.json());
+};
+
+// shared/parse.tsx
+var parseAPITrackFromSpotify = (track) => ({
+  albumName: track.album.name,
+  albumUri: track.album.uri,
+  artistName: track.artists[0].name,
+  artistUri: track.artists[0].uri,
+  durationMilis: track.duration_ms,
+  name: track.name,
+  playcount: undefined,
+  popularity: track.popularity,
+  releaseDate: new Date(track.album.release_date).getTime(),
+  uri: track.uri
+});
+
+// shared/settings.tsx
+var import_react = __toESM(require_react(), 1);
+var import_react_dom = __toESM(require_react_dom(), 1);
+class SettingsSection {
+  name;
+  sectionId;
+  sectionFields;
+  stopHistoryListener;
+  setRerender = null;
+  constructor(name, sectionId, sectionFields = {}) {
+    this.name = name;
+    this.sectionId = sectionId;
+    this.sectionFields = sectionFields;
+  }
+  static waitForReact = async () => {
+    while (!(Spicetify.React && Spicetify.ReactDOM))
+      sleep(100);
+    return this;
+  };
+  pushSettings = async () => {
+    while (!Spicetify?.Platform?.History?.listen)
+      await sleep(100);
+    if (this.stopHistoryListener)
+      this.stopHistoryListener();
+    this.stopHistoryListener = Spicetify.Platform.History.listen(({ pathname = "" }) => {
+      if (pathname === "/preferences")
+        this.render();
+    });
+    if (Spicetify.Platform.History.location.pathname === "/preferences")
+      await this.render();
+  };
+  toObject = () => new Proxy({}, {
+    get: (target, prop) => SettingsSection.getFieldValue(this.getId(prop.toString()))
+  });
+  rerender = () => {
+    if (this.setRerender)
+      this.setRerender(Math.random());
+  };
+  render = async () => {
+    while (!document.getElementById("desktop.settings.selectLanguage")) {
+      if (Spicetify.Platform.History.location.pathname !== "/preferences")
+        return;
+      await sleep(100);
+    }
+    const allSettingsContainer = document.querySelector(".x-settings-container");
+    let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.sectionId);
+    if (!pluginSettingsContainer) {
+      pluginSettingsContainer = document.createElement("div");
+      pluginSettingsContainer.id = this.sectionId;
+      pluginSettingsContainer.className = "settingsContainer";
+      allSettingsContainer.appendChild(pluginSettingsContainer);
+    }
+    import_react_dom.default.render(import_react.default.createElement(this.FieldsContainer, null), pluginSettingsContainer);
+  };
+  addButton = (nameId, description, text, onClick = constVoid, events = {}) => {
+    const id = this.getId(nameId);
+    events.onClick = onClick;
+    this.sectionFields[nameId] = {
+      id,
+      type: FieldType.BUTTON,
+      description,
+      text,
+      events
+    };
+    return this;
+  };
+  addToggle = (nameId, description, defaultValue = exports_Task.of(true), onChange = constVoid, events = {}) => {
+    const id = this.getId(nameId);
+    SettingsSection.setDefaultFieldValue(id, defaultValue);
+    events.onChange = onChange;
+    this.sectionFields[nameId] = {
+      id,
+      type: FieldType.TOGGLE,
+      description,
+      events
+    };
+    return this;
+  };
+  addInput = (nameId, description, defaultValue, onChange = constVoid, inputType = "text", events = {}) => {
+    const id = this.getId(nameId);
+    SettingsSection.setDefaultFieldValue(id, defaultValue);
+    events.onChange = onChange;
+    this.sectionFields[nameId] = {
+      id,
+      type: FieldType.INPUT,
+      description,
+      inputType,
+      events
+    };
+    return this;
+  };
+  addDropDown = (nameId, description, options, defaultValue = exports_Task.of(0), onChange = constVoid, events = {}) => {
+    const id = this.getId(nameId);
+    SettingsSection.setDefaultFieldValue(id, defaultValue);
+    events.onChange = onChange;
+    this.sectionFields[nameId] = {
+      id,
+      type: FieldType.DROPDOWN,
+      description,
+      options,
+      events
+    };
+    return this;
+  };
+  addHidden = (nameId, defaultValue) => {
+    const id = this.getId(nameId);
+    SettingsSection.setDefaultFieldValue(id, defaultValue);
+    this.sectionFields[nameId] = {
+      id,
+      type: FieldType.HIDDEN,
+      description: ""
+    };
+    return this;
+  };
+  getId = (nameId) => `extensions:${this.sectionId}:${nameId}`;
+  useStateFor = (id) => {
+    const [value, setValueState] = import_react.useState(SettingsSection.getFieldValue(id));
+    return [
+      value,
+      (newValue) => {
+        if (newValue !== undefined) {
+          setValueState(newValue);
+          SettingsSection.setFieldValue(id, newValue);
+        }
+      }
+    ];
+  };
+  static getFieldValue = (id) => {
+    return JSON.parse(Spicetify.LocalStorage.get(id) ?? "null");
+  };
+  static setFieldValue = (id, newValue) => {
+    Spicetify.LocalStorage.set(id, JSON.stringify(newValue));
+  };
+  static setDefaultFieldValue = async (id, defaultValue) => {
+    if (SettingsSection.getFieldValue(id) === null)
+      SettingsSection.setFieldValue(id, await defaultValue());
+  };
+  FieldsContainer = () => {
+    const [rerender, setRerender] = import_react.useState(0);
+    this.setRerender = setRerender;
+    return import_react.default.createElement("div", {
+      className: "x-settings-section",
+      key: rerender
+    }, import_react.default.createElement("h2", {
+      className: "Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type"
+    }, this.name), Object.entries(this.sectionFields).map(([nameId, field]) => {
+      return import_react.default.createElement(this.Field, {
+        field
+      });
+    }));
+  };
+  Field = ({ field }) => {
+    const isType = is("type");
+    return import_react.default.createElement("div", {
+      className: "x-settings-row"
+    }, import_react.default.createElement(this.SettingDescription, {
+      id: field.id,
+      description: field.description
+    }), import_react.default.createElement("div", {
+      className: "x-settings-secondColumn"
+    }, guard4([
+      [isType(FieldType.INPUT), this.SettingInputField],
+      [isType(FieldType.BUTTON), this.SettingButtonField],
+      [isType(FieldType.TOGGLE), this.SettingToggleField],
+      [isType(FieldType.DROPDOWN), this.SettingDropdownField]
+    ])(this.SettingHidden)(field)));
+  };
+  SettingDescription = ({ id, description }) => import_react.default.createElement("div", {
+    className: "x-settings-firstColumn"
+  }, import_react.default.createElement("label", {
+    className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
+    htmlFor: id
+  }, description));
+  SettingButtonField = (field) => import_react.default.createElement("span", {
+    className: ""
+  }, import_react.default.createElement("button", {
+    id: field.id,
+    className: "Button-sc-y0gtbx-0 Button-sm-buttonSecondary-useBrowserDefaultFocusStyle x-settings-button",
+    ...field.events,
+    type: field.type
+  }, field.text));
+  SettingToggleField = (field) => {
+    const [value, setValue] = this.useStateFor(field.id);
+    return import_react.default.createElement("label", {
+      className: "x-settings-secondColumn x-toggle-wrapper"
+    }, import_react.default.createElement("input", {
+      id: field.id,
+      className: "x-toggle-input",
+      type: "checkbox",
+      checked: SettingsSection.getFieldValue(field.id),
+      ...field.events,
+      onChange: (e) => {
+        setValue(e.currentTarget.checked);
+        field.events.onChange?.(e);
+      }
+    }), import_react.default.createElement("span", {
+      className: "x-toggle-indicatorWrapper"
+    }, import_react.default.createElement("span", {
+      className: "x-toggle-indicator"
+    })));
+  };
+  SettingInputField = (field) => {
+    const [value, setValue] = this.useStateFor(field.id);
+    return import_react.default.createElement("input", {
+      className: "x-settings-input",
+      id: field.id,
+      dir: "ltr",
+      value: SettingsSection.getFieldValue(field.id),
+      type: field.inputType,
+      ...field.events,
+      onChange: (e) => {
+        setValue(e.currentTarget.value);
+        field.events.onChange?.(e);
+      }
+    });
+  };
+  SettingDropdownField = (field) => {
+    const [value, setValue] = this.useStateFor(field.id);
+    return import_react.default.createElement("select", {
+      className: "main-dropDown-dropDown",
+      id: field.id,
+      ...field.events,
+      onChange: (e) => {
+        setValue(e.currentTarget.selectedIndex);
+        field.events.onChange?.(e);
+      }
+    }, field.options.map((option, i) => import_react.default.createElement("option", {
+      selected: i === SettingsSection.getFieldValue(field.id),
+      value: i + 1
+    }, option)));
+  };
+  SettingHidden = () => import_react.default.createElement(import_react.default.Fragment, null);
+}
+var FieldType;
+(function(FieldType2) {
+  FieldType2["HIDDEN"] = "hidden";
+  FieldType2["INPUT"] = "input";
+  FieldType2["DROPDOWN"] = "dropdown";
+  FieldType2["BUTTON"] = "button";
+  FieldType2["TOGGLE"] = "toggle";
+})(FieldType || (FieldType = {}));
+
+// extensions/search-on-youtube/settings.tsx
+var settings2 = new SettingsSection("Search On YouTube", "search-on-youtube").addInput("YouTubeApiKey", "YouTube API Key", exports_Task.of("000000000000000000000000000000000000000"));
+settings2.pushSettings();
+var CONFIG = settings2.toObject();
+
+// extensions/search-on-youtube/app.tsx
+var { URI: URI7 } = Spicetify;
+var YTVidIDCache = new Map;
+var showOnYouTube = async (uri) => {
+  const id = URI7.fromString(uri).id;
+  if (!YTVidIDCache.get(id)) {
+    const track = parseAPITrackFromSpotify((await fetchWebTracksSpot([id]))[0]);
+    const searchString = `${track.artistName} - ${track.name} music video`;
+    let videos = [];
+    if (CONFIG.YouTubeApiKey)
+      try {
+        videos = await searchYoutube(CONFIG.YouTubeApiKey, searchString);
+      } catch (_) {
+      }
+    if (!videos?.length)
+      return void window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(searchString)}`);
+    const normalizedTrackName = normalizeStr(track.name);
+    YTVidIDCache.set(id, videos.find((video) => {
+      normalizeStr(video.snippet.title).includes(normalizedTrackName);
+    })?.id.videoId ?? videos[0].id.videoId);
+  }
+  window.open(`https://www.youtube.com/watch?v=${YTVidIDCache.get(id)}`);
+};
+new Spicetify.ContextMenu.Item("Search on YouTube", tupled(showOnYouTube), tupled(anyPass([URI7.isTrack])), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="19px" height="19px"><path fill="currentColor" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"/><path fill="var(--spice-main)" d="M20 31L20 17 32 24z"/></svg>`).register();
+
+//# debugId=C4633F99D2564DAB64756e2164756e21

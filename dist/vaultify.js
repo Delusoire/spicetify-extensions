@@ -1,4 +1,5144 @@
-var D3=Object.create;var{defineProperty:N1,getPrototypeOf:z3,getOwnPropertyNames:P3}=Object;var V3=Object.prototype.hasOwnProperty;var E4=($,Q,X)=>{X=$!=null?D3(z3($)):{};const Y=Q||!$||!$.__esModule?N1(X,"default",{value:$,enumerable:!0}):X;for(let H of P3($))if(!V3.call(Y,H))N1(Y,H,{get:()=>$[H],enumerable:!0});return Y};var I4=($,Q)=>()=>(Q||$((Q={exports:{}}).exports,Q),Q.exports);var y0=($,Q)=>{for(var X in Q)N1($,X,{get:Q[X],enumerable:!0,configurable:!0,set:(Y)=>Q[X]=()=>Y})};var G=($,Q)=>()=>($&&(Q=$($=0)),Q);function w($){return $}function X0($){return function(){return $}}function y4($){return function(){var Q=[];for(var X=0;X<arguments.length;X++)Q[X]=arguments[X];if(Q.length>1)return $(Q[1],Q[0]);return function(Y){return $(Y)(Q[0])}}}function q($,Q,X,Y,H,j,J,D,O){switch(arguments.length){case 1:return $;case 2:return function(){return Q($.apply(this,arguments))};case 3:return function(){return X(Q($.apply(this,arguments)))};case 4:return function(){return Y(X(Q($.apply(this,arguments))))};case 5:return function(){return H(Y(X(Q($.apply(this,arguments)))))};case 6:return function(){return j(H(Y(X(Q($.apply(this,arguments))))))};case 7:return function(){return J(j(H(Y(X(Q($.apply(this,arguments)))))))};case 8:return function(){return D(J(j(H(Y(X(Q($.apply(this,arguments))))))))};case 9:return function(){return O(D(J(j(H(Y(X(Q($.apply(this,arguments)))))))))}}return}function _($){return function(Q){return $.apply(void 0,Q)}}function u4($){return function(){var Q=[];for(var X=0;X<arguments.length;X++)Q[X]=arguments[X];return $(Q)}}function Z($,Q,X,Y,H,j,J,D,O){switch(arguments.length){case 1:return $;case 2:return Q($);case 3:return X(Q($));case 4:return Y(X(Q($)));case 5:return H(Y(X(Q($))));case 6:return j(H(Y(X(Q($)))));case 7:return J(j(H(Y(X(Q($))))));case 8:return D(J(j(H(Y(X(Q($)))))));case 9:return O(D(J(j(H(Y(X(Q($))))))));default:{var U=arguments[0];for(var c=1;c<arguments.length;c++)U=arguments[c](U);return U}}}var L3,x4,k4,b4,h4,N0,C;var B=G(()=>{L3=function($,Q,X){if(X||arguments.length===2){for(var Y=0,H=Q.length,j;Y<H;Y++)if(j||!(Y in Q)){if(!j)j=Array.prototype.slice.call(Q,0,Y);j[Y]=Q[Y]}}return $.concat(j||Array.prototype.slice.call(Q))},x4=function($){return function(){return{concat:function(Q,X){return function(Y){return $.concat(Q(Y),X(Y))}}}}},k4=function($){var Q=x4($);return function(){return{concat:Q().concat,empty:function(){return $.empty}}}},b4=function($){return function(Q){return Q($)}},h4=X0(void 0),N0=h4,C=function($,Q){var X=typeof $==="number"?function(Y){return Y.length>=$}:$;return function(){var Y=Array.from(arguments);if(X(arguments))return Q.apply(this,Y);return function(H){return Q.apply(void 0,L3([H],Y,!1))}}}});var q3,U0,x,z,V,Y0,U1,H0,T0,u0,m0,y,T1,m4;var E=G(()=>{B();q3=function($,Q,X){if(X||arguments.length===2){for(var Y=0,H=Q.length,j;Y<H;Y++)if(j||!(Y in Q)){if(!j)j=Array.prototype.slice.call(Q,0,Y);j[Y]=Q[Y]}}return $.concat(j||Array.prototype.slice.call(Q))},U0=function($){return $._tag==="None"},x=function($){return $._tag==="Some"},z={_tag:"None"},V=function($){return{_tag:"Some",value:$}},Y0=function($){return $._tag==="Left"},U1=function($){return[$]},H0=function($){return $.length>0},T0=function($){return $[0]},u0=function($){return $.slice(1)},m0=[],y={},T1=function($){return q3([$[0]],$.slice(1),!0)},m4=function($,Q){return C(2,function(X,Y){return Q.flatMap(X,function(H){return $.fromIO(Y(H))})})}});function j0($){return function(Q){return function(X){return $.ap($.map(X,function(Y){return function(){return Y}}),Q)}}}function J0($){return function(Q){return function(X){return $.ap($.map(X,function(){return function(Y){return Y}}),Q)}}}function Z0($){return function(Q,X){return function(Y){return $.ap($.map(Y,function(H){return function(j){var J;return Object.assign({},H,(J={},J[Q]=j,J))}}),X)}}}function c0($){return function(Q){return{concat:function(X,Y){return $.ap($.map(X,function(H){return function(j){return Q.concat(H,j)}}),Y)}}}}var A0=G(()=>{});function S0($){return function(Q){return function(X){return $.map(X,function(Y){return Y(Q)})}}}function d($){return function(Q){return function(X){return $.map(X,function(Y){var H;return H={},H[Q]=Y,H})}}}function R0($){return function(Q,X){return $.map(Q,function(){return X})}}function l0($){var Q=R0($);return function(X){return Q(X,void 0)}}var p;var O0=G(()=>{p=function($){return function(Q,X){return function(Y){return $.map(Y,function(H){var j;return Object.assign({},H,(j={},j[Q]=X(H),j))})}}}});function c4($){var Q=c0($);return function(X){return{concat:Q(X).concat,empty:$.of(X.empty)}}}var l4=G(()=>{A0()});function _4($){var Q=b($);return function(X){return function(Y){return Q(Y,X)}}}function b($){return function(Q,X){return $.chain(Q,function(Y){return $.map(X(Y),function(){return Y})})}}function n($){return function(Q,X){return function(Y){return $.chain(Y,function(H){return $.map(X(H),function(j){var J;return Object.assign({},H,(J={},J[Q]=j,J))})})}}}var o=G(()=>{});function _0($){return function(Q){return q(Q,$.fromEither)}}function p4($,Q){var X=_0($),Y=b(Q);return function(H,j){return Y(H,X(j))}}var A1=G(()=>{o();B()});var d0={};y0(d0,{tuple:()=>{{return o4}},struct:()=>{{return n4}},strictEqual:()=>{{return N3}},getTupleEq:()=>{{return w3}},getStructEq:()=>{{return v3}},getSemigroup:()=>{{return s4}},getMonoid:()=>{{return C3}},fromEquals:()=>{{return r}},eqString:()=>{{return A3}},eqStrict:()=>{{return f}},eqNumber:()=>{{return S3}},eqDate:()=>{{return R3}},eqBoolean:()=>{{return T3}},eq:()=>{{return U3}},contramap:()=>{{return r4}},URI:()=>{{return f4}},Contravariant:()=>{{return t4}}});var r,n4,o4,B3,r4,f4,f,K3,s4,C3,t4,w3,v3,N3,U3,T3,A3,S3,R3;var p0=G(()=>{B();r=function($){return{equals:function(Q,X){return Q===X||$(Q,X)}}},n4=function($){return r(function(Q,X){for(var Y in $)if(!$[Y].equals(Q[Y],X[Y]))return!1;return!0})},o4=function(){var $=[];for(var Q=0;Q<arguments.length;Q++)$[Q]=arguments[Q];return r(function(X,Y){return $.every(function(H,j){return H.equals(X[j],Y[j])})})},B3=function($,Q){return Z($,r4(Q))},r4=function($){return function(Q){return r(function(X,Y){return Q.equals($(X),$(Y))})}},f4="Eq",f={equals:function($,Q){return $===Q}},K3={equals:function(){return!0}},s4=function(){return{concat:function($,Q){return r(function(X,Y){return $.equals(X,Y)&&Q.equals(X,Y)})}}},C3=function(){return{concat:s4().concat,empty:K3}},t4={URI:f4,contramap:B3},w3=o4,v3=n4,N3=f.equals,U3=t4,T3=f,A3=f,S3=f,R3={equals:function($,Q){return $.valueOf()===Q.valueOf()}}});var W3,O3,n0,g3,i4,K6;var S1=G(()=>{p0();W3=function($,Q){return $<Q?-1:$>Q?1:0},O3=function($){return function(Q,X){return Q===X||$(Q,X)===0}},n0=function($){return{equals:O3($),compare:function(Q,X){return Q===X?0:$(Q,X)}}},g3=function(){return{concat:function($,Q){return n0(function(X,Y){var H=$.compare(X,Y);return H!==0?H:Q.compare(X,Y)})}}},i4=function(){return{concat:g3().concat,empty:n0(function(){return 0})}},K6={equals:f.equals,compare:W3}});var e4;var a4=G(()=>{e4=function($){return function(Q){return function(X){return X.reduce(function(Y,H){return $.concat(Y,H)},Q)}}}});var M3,$5,Q5,X5,Y5,H5,j5,J5,Z5;var R1=G(()=>{B();a4();M3=function($){return{concat:function(){return $}}},$5=function(){return{concat:w}},Q5=e4,X5=M3(void 0),Y5={concat:function($,Q){return $&&Q}},H5={concat:function($,Q){return $||Q}},j5={concat:function($,Q){return $+Q}},J5={concat:function($,Q){return $+Q}},Z5={concat:function($,Q){return $*Q}}});var x3,g0,D5,z5,P5,V5,L5,k3,W0,q5,o0,B5,O1;var r0=G(()=>{B();E();x3=function($,Q,X){if(X||arguments.length===2){for(var Y=0,H=Q.length,j;Y<H;Y++)if(j||!(Y in Q)){if(!j)j=Array.prototype.slice.call(Q,0,Y);j[Y]=Q[Y]}}return $.concat(j||Array.prototype.slice.call(Q))},g0=H0,D5=function($,Q){return $<0||$>=Q.length},z5=function($){return function(Q){return x3([$],Q,!0)}},P5=z5,V5=function($){return function(Q){var X=[$,Q[0]];for(var Y=1;Y<Q.length;Y++)X.push($,Q[Y]);return X}},L5=function($){return function(Q){var X=q5(Q);return g0(X)?Z(X,V5($),P5(W0(Q))):Q}},k3=T0,W0=k3,q5=u0,o0=function($){return $[$.length-1]},B5=function($){return function(Q){return Q.reduce($.concat)}},O1=function($){var Q=B5($);return function(X){return q(L5(X),Q)}}});function T5($,Q){return Q?$.concat(Q):function(X){return X.concat($)}}function g5($,Q){return Q===void 0?G0($):Z(Q,G0($))}var g1,D0,W1,F1,G0,M1,E1,C5,w5,I1,v5,N5,x1,k1,b1,U5,b3,F0,A5,h1,S5,y1,f0,R5,z0,P0,O5,u1,W5;var F5=G(()=>{B();E();S1();r0();g1=function($,Q,X){if(X||arguments.length===2){for(var Y=0,H=Q.length,j;Y<H;Y++)if(j||!(Y in Q)){if(!j)j=Array.prototype.slice.call(Q,0,Y);j[Y]=Q[Y]}}return $.concat(j||Array.prototype.slice.call(Q))},D0=function($){return $.length>0},W1=function($,Q){return $<0||$>=Q.length},F1=function($){return function(Q){return g1([$],Q,!0)}},G0=F1,M1=function($){return function(Q){return g1(g1([],Q,!0),[$],!1)}},E1=M1,C5=function($,Q,X){if(D0(X)){var Y=k1(X);return Y.splice($,0,Q),Y}return[Q]},w5=function($,Q,X){var Y=k1(X);return Y[$]=Q,Y},I1=function($){return function(Q){if(Q.length===1)return F0(Q);var X=[z0(Q)],Y=P0(Q),H=function(O){if(X.every(function(U){return!$.equals(U,O)}))X.push(O)};for(var j=0,J=Y;j<J.length;j++){var D=J[j];H(D)}return X}},v5=function($){if(D0($)){var Q=i4();return b3($.reduce(Q.concat,Q.empty))}return F0},N5=function($){var Q=I1($);return function(X){return function(Y){return Q(Z(Y,T5(X)))}}},x1=function($){return function(Q){var X=Q.length,Y=Math.round($)%X;if(W1(Math.abs(Y),Q)||Y===0)return F0(Q);if(Y<0){var H=f0(-Y)(Q),j=H[0],J=H[1];return Z(J,T5(j))}else return x1(Y-X)(Q)}},k1=T1,b1=function($){return function(Q){var X=Math.max(0,Math.floor(Q)),Y=[$(0)];for(var H=1;H<X;H++)Y.push($(H));return Y}},U5=function($,Q){return $<=Q?b1(function(X){return $+X})(Q-$+1):[$]},b3=function($){return function(Q){return Q.slice().sort($.compare)}},F0=k1,A5=function($){return[$]},h1=function($){return function(Q){var X=[$,Q[0]];for(var Y=1;Y<Q.length;Y++)X.push($,Q[Y]);return X}},S5=function($){return function(Q){var X=P0(Q);return D0(X)?Z(X,h1($),G0(z0(Q))):F0(Q)}},y1=function($){return function(Q){var X=$(Q),Y=X[0],H=X[1],j=[Y],J=H;while(D0(J)){var D=$(J),O=D[0],U=D[1];j.push(O),J=U}return j}},f0=function($){return function(Q){var X=Math.max(1,$);return X>=Q.length?[F0(Q),[]]:[Z(Q.slice(1,X),G0(z0(Q))),Q.slice(X)]}},R5=function($){return y1(f0($))},z0=W0,P0=function($){return $.slice(1)},O5=o0,u1=function($){return $.slice(0,-1)},W5=function($,Q){return Z($,E1(Q))}});var M5,m1,x6,y3,E5,I5,k6,b6,h6;var x5=G(()=>{M5={equals:function($,Q){return $===Q}},m1={equals:M5.equals,compare:function($,Q){return $<Q?-1:$>Q?1:0}},x6={equals:M5.equals,compare:m1.compare,top:Infinity,bottom:(-Infinity)},y3={concat:function($,Q){return $-Q}},E5={concat:function($,Q){return $+Q}},I5={concat:function($,Q){return $*Q}},k6={concat:E5.concat,empty:0},b6={concat:I5.concat,empty:1},h6={add:E5.concat,zero:0,mul:I5.concat,one:1,sub:y3.concat,degree:function($){return 1},div:function($,Q){return $/Q},mod:function($,Q){return $%Q}}});var s0;var k5=G(()=>{s0=function($,Q){return{left:$,right:Q}}});function b5($,Q){return function(X){var Y=$.traverse(X);return function(H,j){return X.map(Y(H,j),Q.separate)}}}function h5($,Q){return function(X){var Y=$.traverse(X);return function(H,j){return X.map(Y(H,j),Q.compact)}}}function y5($){return function(Q){var X=$.wither(Q);return function(Y){return function(H){return X(H,function(j){return Q.map(Y(j),function(J){return J?V(j):z})})}}}}var u5=G(()=>{E()});function m5($,Q){return function(X){return X?Q.of(void 0):$.zero()}}var c5=G(()=>{});function l1($,Q){return Q===void 0?function(X){return l1($,X)}:_3($,Q)?z:V(Q[$])}function p5($){return function(Q){for(var X=0;X<Q.length;X++)if($(Q[X]))return V(Q[X]);return z}}function o5($){return function(Q){for(var X=Q.length-1;X>=0;X--)if($(Q[X]))return V(Q[X]);return z}}function _1($){return function(Q,X){if(X===void 0){var Y=_1($);return function(J){return Y(Q,J)}}var H=function(J){return $.equals(J,Q)},j=0;for(;j<X.length;j++)if(H(X[j]))return!0;return!1}}function Y7($){return function(Q){return Q.every($)}}var m3,c1,c3,l3,_3,l5,_5,d5,n5,r5,f5,s5,t5,d1,i5,e5,p1,a5,n1,$7,Q7,X7,o1,r1,H7;var j7=G(()=>{p0();B();E();x5();S1();r0();m3=function($,Q,X){if(X||arguments.length===2){for(var Y=0,H=Q.length,j;Y<H;Y++)if(j||!(Y in Q)){if(!j)j=Array.prototype.slice.call(Q,0,Y);j[Y]=Q[Y]}}return $.concat(j||Array.prototype.slice.call(Q))},c1=g0,c3=function($,Q){return function(X){return c1(X)?Q(X):$()}},l3=c3,_3=D5,l5=function($){return c1($)?V(W0($)):z},_5=function($){return c1($)?V(o0($)):z},d5=function($){return function(Q){for(var X=0;X<Q.length;X++)if($(Q[X]))return V(X);return z}},n5=function($){return function(Q){for(var X=0;X<Q.length;X++){var Y=$(Q[X]);if(x(Y))return Y}return z}},r5=function($){return function(Q){for(var X=Q.length-1;X>=0;X--){var Y=$(Q[X]);if(x(Y))return Y}return z}},f5=function($){return function(Q){for(var X=Q.length-1;X>=0;X--)if($(Q[X]))return V(X);return z}},s5=function($,Q){return Z($,o1(Q))},t5=function($,Q){return Z($,r1(Q))},d1=function($){return function(Q){return function(X){return X.reduce(function(Y,H,j){return $.concat(Y,Q(j,H))},$.empty)}}},i5=function($,Q){return p1($,function(X,Y,H){return Q(Y,H)})},e5=function($){var Q=d1($);return function(X){return Q(function(Y,H){return X(H)})}},p1=function($,Q){return function(X){var Y=X.length,H=$;for(var j=0;j<Y;j++)H=Q(j,H,X[j]);return H}},a5=function($,Q){return n1($,function(X,Y,H){return Q(Y,H)})},n1=function($,Q){return function(X){return X.reduceRight(function(Y,H,j){return Q(j,H,Y)},$)}},$7=function($){return{show:function(Q){return"[".concat(Q.map($.show).join(", "),"]")}}},Q7=function($){return r(function(Q,X){return Q.length===X.length&&Q.every(function(Y,H){return $.equals(Y,X[H])})})},X7=function($){return n0(function(Q,X){var Y=Q.length,H=X.length,j=Math.min(Y,H);for(var J=0;J<j;J++){var D=$.compare(Q[J],X[J]);if(D!==0)return D}return m1.compare(Y,H)})},o1=function($){return function(Q){var X=m3([],$(Q),!0),Y=[];while(X.length>0){var H=X.shift();if(Y0(H))X.unshift.apply(X,$(H.left));else Y.push(H.right)}return Y}},r1=function($){return function(Q){var X=$(Q),Y=[],H=[];function j(U){if(Y0(U))$(U.left).forEach(function(c){return Y.push(c)});else H.push(U.right)}for(var J=0,D=X;J<D.length;J++){var O=D[J];j(O)}while(Y.length>0)j(Y.shift());return H}},H7=function($){var Q=O1($);return function(X){return l3(function(){return $.empty},Q(X))}}});var A={};y0(A,{zipWith:()=>{{return w7}},zip:()=>{{return v7}},zero:()=>{{return q0}},wither:()=>{{return m$}},wilt:()=>{{return c$}},updateAt:()=>{{return v$}},unzip:()=>{{return R$}},unsafeUpdateAt:()=>{{return s7}},unsafeInsertAt:()=>{{return f7}},unsafeDeleteAt:()=>{{return t7}},uniq:()=>{{return W$}},union:()=>{{return s1}},unfold:()=>{{return z4}},traverseWithIndex:()=>{{return D4}},traverse:()=>{{return l7}},takeRight:()=>{{return J$}},takeLeftWhile:()=>{{return Z$}},takeLeft:()=>{{return j$}},tail:()=>{{return Y$}},splitAt:()=>{{return U7}},spanLeft:()=>{{return G$}},sortBy:()=>{{return F$}},sort:()=>{{return S$}},some:()=>{{return i7}},snoc:()=>{{return FQ}},size:()=>{{return a3}},sequence:()=>{{return E0}},separate:()=>{{return K0}},scanRight:()=>{{return e3}},scanLeft:()=>{{return i3}},rotate:()=>{{return g$}},rights:()=>{{return T$}},reverse:()=>{{return U$}},replicate:()=>{{return Z7}},reduceWithIndex:()=>{{return G4}},reduceRightWithIndex:()=>{{return c7}},reduceRight:()=>{{return m7}},reduce:()=>{{return Z4}},range:()=>{{return OQ}},prependW:()=>{{return n3}},prependToAll:()=>{{return MQ}},prependAll:()=>{{return N7}},prepend:()=>{{return p3}},partitionWithIndex:()=>{{return H4}},partitionMapWithIndex:()=>{{return j4}},partitionMap:()=>{{return x7}},partition:()=>{{return I7}},of:()=>{{return i}},modifyAt:()=>{{return C7}},matchW:()=>{{return z7}},matchRightW:()=>{{return L7}},matchRight:()=>{{return q7}},matchLeftW:()=>{{return P7}},matchLeft:()=>{{return V7}},match:()=>{{return f3}},mapWithIndex:()=>{{return M7}},map:()=>{{return h}},makeBy:()=>{{return J7}},lookup:()=>{{return $$}},let:()=>{{return TQ}},lefts:()=>{{return A$}},last:()=>{{return X$}},isOutOfBound:()=>{{return M0}},isNonEmpty:()=>{{return K}},isEmpty:()=>{{return s}},intersperse:()=>{{return O$}},intersection:()=>{{return t1}},intercalate:()=>{{return vQ}},insertAt:()=>{{return w$}},init:()=>{{return H$}},head:()=>{{return Q$}},guard:()=>{{return YQ}},getUnionSemigroup:()=>{{return d7}},getUnionMonoid:()=>{{return n$}},getShow:()=>{{return l$}},getSemigroup:()=>{{return _7}},getOrd:()=>{{return p$}},getMonoid:()=>{{return _$}},getIntersectionSemigroup:()=>{{return o$}},getEq:()=>{{return d$}},getDifferenceMagma:()=>{{return r$}},fromPredicate:()=>{{return r3}},fromOptionK:()=>{{return I$}},fromOption:()=>{{return G7}},fromEitherK:()=>{{return KQ}},fromEither:()=>{{return D7}},foldRight:()=>{{return t3}},foldMapWithIndex:()=>{{return u7}},foldMap:()=>{{return y7}},foldLeft:()=>{{return s3}},flatten:()=>{{return y$}},flatMap:()=>{{return I}},flap:()=>{{return f$}},findLastMap:()=>{{return K$}},findLastIndex:()=>{{return C$}},findLast:()=>{{return B$}},findIndex:()=>{{return V$}},findFirstMap:()=>{{return q$}},findFirst:()=>{{return L$}},filterWithIndex:()=>{{return h7}},filterMapWithIndex:()=>{{return X4}},filterMap:()=>{{return Y4}},filterE:()=>{{return BQ}},filter:()=>{{return E7}},extend:()=>{{return J4}},exists:()=>{{return wQ}},every:()=>{{return CQ}},empty:()=>{{return gQ}},elem:()=>{{return f1}},duplicate:()=>{{return u$}},dropRight:()=>{{return z$}},dropLeftWhile:()=>{{return P$}},dropLeft:()=>{{return D$}},difference:()=>{{return i1}},deleteAt:()=>{{return N$}},copy:()=>{{return N}},cons:()=>{{return WQ}},concatW:()=>{{return T7}},concat:()=>{{return k$}},comprehension:()=>{{return x$}},compact:()=>{{return B0}},chunksOf:()=>{{return E$}},chop:()=>{{return M$}},chainWithIndex:()=>{{return B7}},chainRecDepthFirst:()=>{{return PQ}},chainRecBreadthFirst:()=>{{return LQ}},chainFirst:()=>{{return a$}},chain:()=>{{return RQ}},bindTo:()=>{{return UQ}},bind:()=>{{return AQ}},array:()=>{{return EQ}},appendW:()=>{{return o3}},append:()=>{{return t0}},apSecond:()=>{{return i$}},apS:()=>{{return SQ}},apFirst:()=>{{return t$}},ap:()=>{{return F7}},altW:()=>{{return k7}},alt:()=>{{return b7}},Zero:()=>{{return n7}},Witherable:()=>{{return o7}},Unfoldable:()=>{{return QQ}},URI:()=>{{return P}},TraversableWithIndex:()=>{{return zQ}},Traversable:()=>{{return L4}},Pointed:()=>{{return p7}},Monad:()=>{{return $Q}},FunctorWithIndex:()=>{{return s$}},Functor:()=>{{return Y1}},FromEither:()=>{{return r7}},FoldableWithIndex:()=>{{return DQ}},Foldable:()=>{{return GQ}},FilterableWithIndex:()=>{{return ZQ}},Filterable:()=>{{return JQ}},Extend:()=>{{return jQ}},Do:()=>{{return NQ}},Compactable:()=>{{return V4}},ChainRecDepthFirst:()=>{{return VQ}},ChainRecBreadthFirst:()=>{{return qQ}},Chain:()=>{{return P4}},Apply:()=>{{return H1}},Applicative:()=>{{return e$}},Alternative:()=>{{return HQ}},Alt:()=>{{return XQ}}});function r3($){return function(Q){return $(Q)?[Q]:[]}}function Z$($){return function(Q){var X=[];for(var Y=0,H=Q;Y<H.length;Y++){var j=H[Y];if(!$(j))break;X.push(j)}return X}}function G$($){return function(Q){var X=U7(K7(Q,$))(Q),Y=X[0],H=X[1];return{init:Y,rest:H}}}function P$($){return function(Q){return Q.slice(K7(Q,$))}}function L$($){return p5($)}function B$($){return o5($)}function v7($,Q){if(Q===void 0)return function(X){return v7(X,$)};return w7($,Q,function(X,Y){return[X,Y]})}function x$($,Q,X){if(X===void 0)X=function(){return!0};var Y=function(H,j){return K(j)?I(z0(j),function(J){return Y(Z(H,t0(J)),P0(j))}):X.apply(void 0,H)?[Q.apply(void 0,H)]:[]};return Y([],$)}function s1($){var Q=N5($);return function(X,Y){if(Y===void 0){var H=s1($);return function(j){return H(j,X)}}return K(X)&&K(Y)?Q(Y)(X):K(X)?N(X):N(Y)}}function t1($){var Q=f1($);return function(X,Y){if(Y===void 0){var H=t1($);return function(j){return H(j,X)}}return X.filter(function(j){return Q(j,Y)})}}function i1($){var Q=f1($);return function(X,Y){if(Y===void 0){var H=i1($);return function(j){return H(j,X)}}return X.filter(function(j){return!Q(j,Y)})}}var s,K,p3,n3,t0,o3,J7,Z7,G7,D7,z7,f3,P7,V7,s3,L7,q7,t3,B7,i3,e3,a3,M0,$$,Q$,X$,Y$,H$,j$,J$,K7,D$,z$,V$,q$,K$,C$,N,w$,v$,N$,C7,U$,T$,A$,S$,w7,R$,N7,O$,g$,f1,W$,F$,M$,U7,E$,I$,T7,k$,v,i0,u,e0,a0,$1,Q1,A7,S7,e1,t,V0,L0,a1,$4,Q4,R7,O7,g7,X1,W7,b$,h$,i,q0,h,F7,I,y$,M7,X4,Y4,B0,K0,E7,I7,H4,x7,j4,k7,b7,h7,J4,u$,y7,u7,Z4,G4,m7,c7,l7,E0,D4,m$,c$,z4,P,l$,_7,_$,d$,p$,d7,n$,o$,r$,Y1,f$,p7,s$,H1,t$,i$,e$,P4,a$,$Q,QQ,XQ,n7,YQ,HQ,jQ,V4,JQ,ZQ,GQ,DQ,L4,zQ,q4,B4,o7,PQ,VQ,LQ,qQ,BQ,r7,KQ,f7,s7,t7,CQ,i7,wQ,vQ,NQ,UQ,TQ,AQ,SQ,RQ,OQ,gQ,WQ,FQ,MQ,EQ;var j1=G(()=>{A0();o();A1();B();O0();E();F5();j7();k5();u5();c5();s=function($){return $.length===0},K=D0,p3=G0,n3=F1,t0=E1,o3=M1,J7=function($,Q){return $<=0?[]:b1(Q)($)},Z7=function($,Q){return J7($,function(){return Q})},G7=function($){return U0($)?[]:[$.value]},D7=function($){return Y0($)?[]:[$.right]},z7=function($,Q){return function(X){return K(X)?Q(X):$()}},f3=z7,P7=function($,Q){return function(X){return K(X)?Q(z0(X),P0(X)):$()}},V7=P7,s3=V7,L7=function($,Q){return function(X){return K(X)?Q(u1(X),O5(X)):$()}},q7=L7,t3=q7,B7=function($){return function(Q){var X=[];for(var Y=0;Y<Q.length;Y++)X.push.apply(X,$(Y,Q[Y]));return X}},i3=function($,Q){return function(X){var Y=X.length,H=new Array(Y+1);H[0]=$;for(var j=0;j<Y;j++)H[j+1]=Q(H[j],X[j]);return H}},e3=function($,Q){return function(X){var Y=X.length,H=new Array(Y+1);H[Y]=$;for(var j=Y-1;j>=0;j--)H[j]=Q(X[j],H[j+1]);return H}},a3=function($){return $.length},M0=W1,$$=l1,Q$=l5,X$=_5,Y$=function($){return K($)?V(P0($)):z},H$=function($){return K($)?V(u1($)):z},j$=function($){return function(Q){return M0($,Q)?N(Q):Q.slice(0,$)}},J$=function($){return function(Q){return M0($,Q)?N(Q):$===0?[]:Q.slice(-$)}},K7=function($,Q){var X=$.length,Y=0;for(;Y<X;Y++)if(!Q($[Y]))break;return Y},D$=function($){return function(Q){return $<=0||s(Q)?N(Q):$>=Q.length?[]:Q.slice($,Q.length)}},z$=function($){return function(Q){return $<=0||s(Q)?N(Q):$>=Q.length?[]:Q.slice(0,Q.length-$)}},V$=d5,q$=n5,K$=r5,C$=f5,N=function($){return $.slice()},w$=function($,Q){return function(X){return $<0||$>X.length?z:V(f7($,Q,X))}},v$=function($,Q){return C7($,function(){return Q})},N$=function($){return function(Q){return M0($,Q)?z:V(t7($,Q))}},C7=function($,Q){return function(X){return M0($,X)?z:V(s7($,Q(X[$]),X))}},U$=function($){return s($)?[]:$.slice().reverse()},T$=function($){var Q=[];for(var X=0;X<$.length;X++){var Y=$[X];if(Y._tag==="Right")Q.push(Y.right)}return Q},A$=function($){var Q=[];for(var X=0;X<$.length;X++){var Y=$[X];if(Y._tag==="Left")Q.push(Y.left)}return Q},S$=function($){return function(Q){return Q.length<=1?N(Q):Q.slice().sort($.compare)}},w7=function($,Q,X){var Y=[],H=Math.min($.length,Q.length);for(var j=0;j<H;j++)Y[j]=X($[j],Q[j]);return Y},R$=function($){var Q=[],X=[];for(var Y=0;Y<$.length;Y++)Q[Y]=$[Y][0],X[Y]=$[Y][1];return[Q,X]},N7=function($){var Q=h1($);return function(X){return K(X)?Q(X):[]}},O$=function($){var Q=S5($);return function(X){return K(X)?Q(X):N(X)}},g$=function($){var Q=x1($);return function(X){return K(X)?Q(X):N(X)}},f1=_1,W$=function($){var Q=I1($);return function(X){return K(X)?Q(X):N(X)}},F$=function($){var Q=v5($);return function(X){return K(X)?Q(X):N(X)}},M$=function($){var Q=y1($);return function(X){return K(X)?Q(X):[]}},U7=function($){return function(Q){return $>=1&&K(Q)?f0($)(Q):s(Q)?[N(Q),[]]:[[],N(Q)]}},E$=function($){var Q=R5($);return function(X){return K(X)?Q(X):[]}},I$=function($){return function(){var Q=[];for(var X=0;X<arguments.length;X++)Q[X]=arguments[X];return G7($.apply(void 0,Q))}},T7=function($){return function(Q){return s(Q)?N($):s($)?N(Q):Q.concat($)}},k$=T7,v=function($,Q){return Z($,h(Q))},i0=function($,Q){return Z($,M7(Q))},u=function($,Q){return Z($,F7(Q))},e0=function($,Q){return Z($,E7(Q))},a0=function($,Q){return Z($,Y4(Q))},$1=function($,Q){return Z($,I7(Q))},Q1=function($,Q){return Z($,x7(Q))},A7=function($,Q){return Z($,H4(Q))},S7=function($,Q){return Z($,j4(Q))},e1=function($,Q){return Z($,b7(Q))},t=function($,Q,X){return Z($,Z4(Q,X))},V0=function($){var Q=y7($);return function(X,Y){return Z(X,Q(Y))}},L0=function($,Q,X){return Z($,m7(Q,X))},a1=function($,Q,X){return Z($,G4(Q,X))},$4=function($){var Q=u7($);return function(X,Y){return Z(X,Q(Y))}},Q4=function($,Q,X){return Z($,c7(Q,X))},R7=function($,Q){return Z($,X4(Q))},O7=function($,Q){return Z($,h7(Q))},g7=function($,Q){return Z($,J4(Q))},X1=function($){var Q=l7($);return function(X,Y){return Z(X,Q(Y))}},W7=function($){var Q=D4($);return function(X,Y){return Z(X,Q(Y))}},b$=s5,h$=t5,i=A5,q0=function(){return[]},h=function($){return function(Q){return Q.map(function(X){return $(X)})}},F7=function($){return I(function(Q){return Z($,h(Q))})},I=C(2,function($,Q){return Z($,B7(function(X,Y){return Q(Y,X)}))}),y$=I(w),M7=function($){return function(Q){return Q.map(function(X,Y){return $(Y,X)})}},X4=function($){return function(Q){var X=[];for(var Y=0;Y<Q.length;Y++){var H=$(Y,Q[Y]);if(x(H))X.push(H.value)}return X}},Y4=function($){return X4(function(Q,X){return $(X)})},B0=Y4(w),K0=function($){var Q=[],X=[];for(var Y=0,H=$;Y<H.length;Y++){var j=H[Y];if(j._tag==="Left")Q.push(j.left);else X.push(j.right)}return s0(Q,X)},E7=function($){return function(Q){return Q.filter($)}},I7=function($){return H4(function(Q,X){return $(X)})},H4=function($){return function(Q){var X=[],Y=[];for(var H=0;H<Q.length;H++){var j=Q[H];if($(H,j))Y.push(j);else X.push(j)}return s0(X,Y)}},x7=function($){return j4(function(Q,X){return $(X)})},j4=function($){return function(Q){var X=[],Y=[];for(var H=0;H<Q.length;H++){var j=$(H,Q[H]);if(j._tag==="Left")X.push(j.left);else Y.push(j.right)}return s0(X,Y)}},k7=function($){return function(Q){return Q.concat($())}},b7=k7,h7=function($){return function(Q){return Q.filter(function(X,Y){return $(Y,X)})}},J4=function($){return function(Q){return Q.map(function(X,Y){return $(Q.slice(Y))})}},u$=J4(w),y7=e5,u7=d1,Z4=i5,G4=p1,m7=a5,c7=n1,l7=function($){var Q=D4($);return function(X){return Q(function(Y,H){return X(H)})}},E0=function($){return function(Q){return t(Q,$.of(q0()),function(X,Y){return $.ap($.map(X,function(H){return function(j){return Z(H,t0(j))}}),Y)})}},D4=function($){return function(Q){return G4($.of(q0()),function(X,Y,H){return $.ap($.map(Y,function(j){return function(J){return Z(j,t0(J))}}),Q(X,H))})}},m$=function($){var Q=q4($);return function(X){return function(Y){return Q(Y,X)}}},c$=function($){var Q=B4($);return function(X){return function(Y){return Q(Y,X)}}},z4=function($,Q){var X=[],Y=$;while(!0){var H=Q(Y);if(x(H)){var j=H.value,J=j[0],D=j[1];X.push(J),Y=D}else break}return X},P="Array",l$=$7,_7=function(){return{concat:function($,Q){return $.concat(Q)}}},_$=function(){return{concat:_7().concat,empty:[]}},d$=Q7,p$=X7,d7=function($){var Q=s1($);return{concat:function(X,Y){return Q(Y)(X)}}},n$=function($){return{concat:d7($).concat,empty:[]}},o$=function($){var Q=t1($);return{concat:function(X,Y){return Q(Y)(X)}}},r$=function($){var Q=i1($);return{concat:function(X,Y){return Q(Y)(X)}}},Y1={URI:P,map:v},f$=S0(Y1),p7={URI:P,of:i},s$={URI:P,map:v,mapWithIndex:i0},H1={URI:P,map:v,ap:u},t$=j0(H1),i$=J0(H1),e$={URI:P,map:v,ap:u,of:i},P4={URI:P,map:v,ap:u,chain:I},a$=_4(P4),$Q={URI:P,map:v,ap:u,of:i,chain:I},QQ={URI:P,unfold:z4},XQ={URI:P,map:v,alt:e1},n7={URI:P,zero:q0},YQ=m5(n7,p7),HQ={URI:P,map:v,ap:u,of:i,alt:e1,zero:q0},jQ={URI:P,map:v,extend:g7},V4={URI:P,compact:B0,separate:K0},JQ={URI:P,map:v,compact:B0,separate:K0,filter:e0,filterMap:a0,partition:$1,partitionMap:Q1},ZQ={URI:P,map:v,mapWithIndex:i0,compact:B0,separate:K0,filter:e0,filterMap:a0,partition:$1,partitionMap:Q1,partitionMapWithIndex:S7,partitionWithIndex:A7,filterMapWithIndex:R7,filterWithIndex:O7},GQ={URI:P,reduce:t,foldMap:V0,reduceRight:L0},DQ={URI:P,reduce:t,foldMap:V0,reduceRight:L0,reduceWithIndex:a1,foldMapWithIndex:$4,reduceRightWithIndex:Q4},L4={URI:P,map:v,reduce:t,foldMap:V0,reduceRight:L0,traverse:X1,sequence:E0},zQ={URI:P,map:v,mapWithIndex:i0,reduce:t,foldMap:V0,reduceRight:L0,reduceWithIndex:a1,foldMapWithIndex:$4,reduceRightWithIndex:Q4,traverse:X1,sequence:E0,traverseWithIndex:W7},q4=h5(L4,V4),B4=b5(L4,V4),o7={URI:P,map:v,compact:B0,separate:K0,filter:e0,filterMap:a0,partition:$1,partitionMap:Q1,reduce:t,foldMap:V0,reduceRight:L0,traverse:X1,sequence:E0,wither:q4,wilt:B4},PQ=o1,VQ={URI:P,map:v,ap:u,chain:I,chainRec:b$},LQ=r1,qQ={URI:P,map:v,ap:u,chain:I,chainRec:h$},BQ=y5(o7),r7={URI:P,fromEither:D7},KQ=_0(r7),f7=C5,s7=function($,Q,X){return K(X)?w5($,Q,X):[]},t7=function($,Q){var X=Q.slice();return X.splice($,1),X},CQ=Y7,i7=function($){return function(Q){return Q.some($)}},wQ=i7,vQ=H7,NQ=i(y),UQ=d(Y1),TQ=p(Y1),AQ=n(P4),SQ=Z0(H1),RQ=I,OQ=U5,gQ=[],WQ=g5,FQ=W5,MQ=N7,EQ={URI:P,compact:B0,separate:K0,map:v,ap:u,of:i,chain:I,filter:e0,filterMap:a0,partition:$1,partitionMap:Q1,mapWithIndex:i0,partitionMapWithIndex:S7,partitionWithIndex:A7,filterMapWithIndex:R7,filterWithIndex:O7,alt:e1,zero:q0,unfold:z4,reduce:t,foldMap:V0,reduceRight:L0,traverse:X1,sequence:E0,reduceWithIndex:a1,foldMapWithIndex:$4,reduceRightWithIndex:Q4,traverseWithIndex:W7,extend:g7,wither:q4,wilt:B4}});var e7;var a7=G(()=>{e7=function($){return function(Q){return!$(Q)}}});function $9($){return function(Q){return $(Q)?I0(Q):e}}var e,I0,IQ,Q9,xQ,K4,X9,x0,Y9,U8,T8,kQ,bQ,H9,A8,hQ,yQ,j9,m,uQ,J9,S8,R8;var C4=G(()=>{o();A1();B();O0();E();e=z,I0=V,IQ=function($){return $._tag==="Left"?e:I0($.right)},Q9=function($,Q){return Z($,x0(Q))},xQ=function($,Q){return Z($,kQ(Q))},K4="Option",X9=function($){return{concat:function(Q,X){return m(Q)?X:m(X)?Q:I0($.concat(Q.value,X.value))},empty:e}},x0=function($){return function(Q){return m(Q)?e:I0($(Q.value))}},Y9={URI:K4,map:Q9},U8=C(2,R0(Y9)),T8=l0(Y9),kQ=function($){return function(Q){return m(Q)?e:m($)?e:I0(Q.value($.value))}},bQ=C(2,function($,Q){return m($)?e:Q($.value)}),H9={URI:K4,map:Q9,ap:xQ,chain:bQ},A8=C(2,function($,Q){return m($)?Q():$}),hQ=IQ,yQ={URI:K4,fromEither:hQ},j9=x,m=function($){return $._tag==="None"},uQ=function($){return function(Q){return m(Q)?$():Q.value}},J9=uQ,S8=C(2,b(H9)),R8=C(2,p4(yQ,H9))});var mQ,G9;var D9=G(()=>{B();mQ=function(){return{concat:function($,Q){return q($,Q)}}},G9=function(){return{concat:mQ().concat,empty:w}}});function z9($){return function(Q){return q(Q,$.fromIO)}}function P9($,Q){var X=b(Q);return function(Y,H){return X(Y,q(H,$.fromIO))}}var V9=G(()=>{o();B()});function L9($){return function(Q,X){if(X===void 0){var Y=L9($);return function(U){return Y(Q,U)}}var H=X.entries(),j;while(!(j=H.next()).done){var J=j.value,D=J[0],O=J[1];if($.equals(D,Q))return V([D,O])}return z}}function w4($){var Q=L9($);return function(X,Y){if(Y===void 0){var H=w4($);return function(j){return H(X,j)}}return Z(Q(X,Y),x0(function(j){var J=j[0],D=j[1];return D}))}}var q9=G(()=>{B();E();C4()});var B9;var K9=G(()=>{q9();B9=w4});var v4,QY,XY,YY,HY,jY,JY;var C9=G(()=>{R1();v4=function($){return Q5($)($.empty)},QY={concat:X5.concat,empty:void 0},XY={concat:Y5.concat,empty:!0},YY={concat:H5.concat,empty:!1},HY={concat:j5.concat,empty:""},jY={concat:J5.concat,empty:0},JY={concat:Z5.concat,empty:1}});var Q0={};y0(Q0,{traverseSeqArrayWithIndex:()=>{{return qX}},traverseSeqArray:()=>{{return W9}},traverseReadonlyNonEmptyArrayWithIndexSeq:()=>{{return O9}},traverseReadonlyNonEmptyArrayWithIndex:()=>{{return R9}},traverseReadonlyArrayWithIndexSeq:()=>{{return S4}},traverseReadonlyArrayWithIndex:()=>{{return A4}},traverseArrayWithIndex:()=>{{return VX}},traverseArray:()=>{{return g9}},taskSeq:()=>{{return vX}},task:()=>{{return wX}},tapIO:()=>{{return A9}},tap:()=>{{return T9}},sequenceSeqArray:()=>{{return BX}},sequenceArray:()=>{{return LX}},of:()=>{{return W}},never:()=>{{return S9}},map:()=>{{return U4}},let:()=>{{return DX}},getSemigroup:()=>{{return NX}},getRaceMonoid:()=>{{return pQ}},getMonoid:()=>{{return UX}},fromTask:()=>{{return k0}},fromIOK:()=>{{return YX}},fromIO:()=>{{return a}},flatten:()=>{{return dQ}},flatMapIO:()=>{{return U9}},flatMap:()=>{{return F}},flap:()=>{{return rQ}},delay:()=>{{return _Q}},chainIOK:()=>{{return HX}},chainFirstIOK:()=>{{return jX}},chainFirst:()=>{{return CX}},chain:()=>{{return KX}},bindTo:()=>{{return GX}},bind:()=>{{return zX}},asUnit:()=>{{return oQ}},as:()=>{{return nQ}},apSecond:()=>{{return tQ}},apS:()=>{{return PX}},apFirst:()=>{{return sQ}},ap:()=>{{return w9}},URI:()=>{{return S}},Pointed:()=>{{return fQ}},MonadTask:()=>{{return $X}},MonadIO:()=>{{return aQ}},Monad:()=>{{return eQ}},Functor:()=>{{return C0}},FromTask:()=>{{return JX}},FromIO:()=>{{return G1}},Do:()=>{{return ZX}},Chain:()=>{{return Z1}},ApplySeq:()=>{{return v9}},ApplyPar:()=>{{return J1}},ApplicativeSeq:()=>{{return N9}},ApplicativePar:()=>{{return iQ}},ApT:()=>{{return T4}}});function _Q($){return function(Q){return function(){return new Promise(function(X){setTimeout(function(){Promise.resolve().then(Q).then(X)},$)})}}}function pQ(){return{concat:function($,Q){return function(){return Promise.race([Promise.resolve().then($),Promise.resolve().then(Q)])}},empty:S9}}var a,g,$0,N4,U4,w9,W,F,dQ,S,C0,nQ,oQ,rQ,fQ,J1,sQ,tQ,iQ,v9,N9,Z1,eQ,aQ,k0,$X,G1,QX,XX,U9,T9,A9,YX,HX,jX,JX,S9,ZX,GX,DX,zX,PX,T4,R9,A4,O9,S4,VX,g9,LX,qX,W9,BX,KX,CX,wX,vX,NX,UX;var F9=G(()=>{l4();A0();o();V9();B();O0();E();a=function($){return function(){return Promise.resolve().then($)}},g=function($,Q){return Z($,U4(Q))},$0=function($,Q){return Z($,w9(Q))},N4=function($,Q){return F($,function(X){return Z(Q,U4(X))})},U4=function($){return function(Q){return function(){return Promise.resolve().then(Q).then($)}}},w9=function($){return function(Q){return function(){return Promise.all([Promise.resolve().then(Q),Promise.resolve().then($)]).then(function(X){var Y=X[0],H=X[1];return Y(H)})}}},W=function($){return function(){return Promise.resolve($)}},F=C(2,function($,Q){return function(){return Promise.resolve().then($).then(function(X){return Q(X)()})}}),dQ=F(w),S="Task",C0={URI:S,map:g},nQ=C(2,R0(C0)),oQ=l0(C0),rQ=S0(C0),fQ={URI:S,of:W},J1={URI:S,map:g,ap:$0},sQ=j0(J1),tQ=J0(J1),iQ={URI:S,map:g,ap:$0,of:W},v9={URI:S,map:g,ap:N4},N9={URI:S,map:g,ap:N4,of:W},Z1={URI:S,map:g,ap:$0,chain:F},eQ={URI:S,map:g,of:W,ap:$0,chain:F},aQ={URI:S,map:g,of:W,ap:$0,chain:F,fromIO:a},k0=w,$X={URI:S,map:g,of:W,ap:$0,chain:F,fromIO:a,fromTask:k0},G1={URI:S,fromIO:a},QX={flatMap:F},XX={fromIO:G1.fromIO},U9=m4(XX,QX),T9=C(2,b(Z1)),A9=C(2,P9(G1,Z1)),YX=z9(G1),HX=U9,jX=A9,JX={URI:S,fromIO:a,fromTask:k0},S9=function(){return new Promise(function($){return})},ZX=W(y),GX=d(C0),DX=p(C0),zX=n(Z1),PX=Z0(J1),T4=W(m0),R9=function($){return function(Q){return function(){return Promise.all(Q.map(function(X,Y){return Promise.resolve().then(function(){return $(Y,X)()})}))}}},A4=function($){var Q=R9($);return function(X){return H0(X)?Q(X):T4}},O9=function($){return function(Q){return function(){return u0(Q).reduce(function(X,Y,H){return X.then(function(j){return Promise.resolve().then($(H+1,Y)).then(function(J){return j.push(J),j})})},Promise.resolve().then($(0,T0(Q))).then(U1))}}},S4=function($){var Q=O9($);return function(X){return H0(X)?Q(X):T4}},VX=A4,g9=function($){return A4(function(Q,X){return $(X)})},LX=g9(w),qX=S4,W9=function($){return S4(function(Q,X){return $(X)})},BX=W9(w),KX=F,CX=T9,wX={URI:S,map:g,of:W,ap:$0,chain:F,fromIO:a,fromTask:k0},vX={URI:S,map:g,of:W,ap:N4,chain:F,fromIO:a,fromTask:k0},NX=c0(v9),UX=c4(N9)});var b0={};y0(b0,{trimRight:()=>{{return MX}},trimLeft:()=>{{return FX}},trim:()=>{{return WX}},toUpperCase:()=>{{return RX}},toLowerCase:()=>{{return OX}},startsWith:()=>{{return hX}},split:()=>{{return kX}},slice:()=>{{return EX}},size:()=>{{return xX}},replace:()=>{{return gX}},isString:()=>{{return SX}},isEmpty:()=>{{return IX}},includes:()=>{{return bX}},endsWith:()=>{{return yX}},empty:()=>{{return I9}},Show:()=>{{return AX}},Semigroup:()=>{{return E9}},Ord:()=>{{return D1}},Monoid:()=>{{return TX}},Eq:()=>{{return M9}}});var M9,E9,I9,TX,D1,AX,SX,RX,OX,gX,WX,FX,MX,EX,IX,xX,kX,bX,hX,yX;var R4=G(()=>{r0();M9={equals:function($,Q){return $===Q}},E9={concat:function($,Q){return $+Q}},I9="",TX={concat:E9.concat,empty:I9},D1={equals:M9.equals,compare:function($,Q){return $<Q?-1:$>Q?1:0}},AX={show:function($){return JSON.stringify($)}},SX=function($){return typeof $==="string"},RX=function($){return $.toUpperCase()},OX=function($){return $.toLowerCase()},gX=function($,Q){return function(X){return X.replace($,Q)}},WX=function($){return $.trim()},FX=function($){return $.trimLeft()},MX=function($){return $.trimRight()},EX=function($,Q){return function(X){return X.slice($,Q)}},IX=function($){return $.length===0},xX=function($){return $.length},kX=function($){return function(Q){var X=Q.split($);return g0(X)?X:[Q]}},bX=function($,Q){return function(X){return X.includes($,Q)}},hX=function($,Q){return function(X){return X.startsWith($,Q)}},yX=function($,Q){return function(X){return X.endsWith($,Q)}}});function x9($){if(typeof $==="function")return x9(D1)($);var Q=uX($);return function(X){return function(Y){var H=[];for(var j=0,J=Q(Y);j<J.length;j++){var D=J[j];H.push(X(D,Y[D]))}return H}}}function O4($){return function(Q){var X=mX(Q),Y=X.length;return $.unfold(0,function(H){return H<Y?V([X[H],H+1]):z})}}var uX,mX;var k9=G(()=>{E();R4();uX=function($){return function(Q){return Object.keys(Q).sort($.compare)}},mX=x9(D1)(function($,Q){return[$,Q]})});var z1=G(()=>{j1();p0();R4();F9()});var cX,lX,g4,b9,_X,P1,RY,OY,dX,pX,gY,WY,FY,MY,EY,V1,W4,nX,IY,oX,xY,h9,rX,kY,fX,bY,sX,hY,tX,yY,uY;var y9=G(()=>{C4();K9();j1();B();a7();D9();C9();R1();O0();A0();o();cX="Function",lX=($)=>(Q)=>q(Q,$),g4={URI:cX,map:($,Q)=>lX(Q)($)},b9=X0,_X=($)=>(Q)=>(X)=>Q(X)($(X)),P1={...g4,of:b9,ap:($,Q)=>_X(Q)($)},RY=j0(P1),OY=J0(P1),dX=($)=>(Q)=>(X)=>$(Q(X))(X),pX={...P1,chain:($,Q)=>dX(Q)($)},gY=b9({}),WY=d(g4),FY=n(pX),MY=Z0(P1),EY=p(g4),V1=_,W4=($)=>(Q)=>(X)=>Z($,h(([Y,H])=>q($9(Y),x0(H))),v4(k4(X9($5()))()),b4(X),J9(()=>Q(X))),nX=($)=>(Q)=>(X)=>$(X)?X:Q(X),IY=q(e7,nX),oX=($)=>(Q)=>(X)=>X[$](...Q),xY=y4(oX)([]),h9=($)=>(Q)=>{const X=new Map;return(Y)=>{const H=B9($)(Y)(X);if(j9(H))return H.value;const j=Q(Y);return X.set(Y,j),j}},rX=($)=>(Q)=>(X)=>$([Q,X]),kY=q(V1,rX),fX=($)=>(Q)=>(X)=>(Y)=>$([Q,X,Y]),bY=q(V1,fX),sX=($)=>(Q)=>(X)=>(Y)=>(H)=>$([Q,X,Y,H]),hY=q(V1,sX),tX=($)=>(Q)=>(X)=>(Y)=>(H)=>(j)=>$([Q,X,Y,H,j]),yY=q(V1,tX),uY=v4(G9())});var u9,m9,F4,L1,h0,c9;var q1=G(()=>{z1();y9();B();u9=($)=>W4($),m9=($)=>W4($),F4=($)=>async(Q)=>$(await Q),L1=($)=>(Q)=>(X)=>X[$]===Q,h0=($)=>(Q)=>q(A.chunksOf($),A.map(Q),(X)=>Promise.all(X),F4(A.flatten)),c9=($)=>Z($,_,h9(d0.contramap(JSON.stringify)(b0.Eq)),u4)});var l9,K1,_9,C1;var w1=G(()=>{B();(function(B1){let $;(function(w0){w0.start=X0({before:"start"}),w0.fromUri=(j)=>({before:{uri:j}}),w0.fromUid=(j)=>({before:{uid:j}})})($=B1.before||(B1.before={}));let Q;(function(v0){v0.end=X0({after:"end"}),v0.fromUri=(j)=>({before:{uri:j}}),v0.fromUid=(j)=>({before:{uid:j}})})(Q=B1.after||(B1.after={}))})(l9||(l9={}));//! Does location actually point to document.body?
-K1=($)=>new Promise((Q)=>setTimeout(Q,$)),_9=($)=>$[Object.keys($).find((Q)=>Q.startsWith("__reactProps$"))],C1=($,Q)=>Spicetify.Platform.LibraryAPI[Q?"add":"remove"](...$)});var aY,$H,QH,XH,YH,d9,p9,n9,o9,iX,r9,eX,HH;var f9=G(()=>{q1();w1();({URI:aY}=Spicetify),$H=h0(50)(async($)=>(await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${$.join(",")}`)).artists),QH=h0(1)(async([$])=>[await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${$}`)]),XH=h0(50)(async($)=>(await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${$.join(",")}`)).albums),YH=h0(50)(async($)=>(await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${$.join(",")}`)).tracks),d9=async($)=>(await Spicetify.Platform.PlaylistAPI.getContents($)).items,p9=async($,Q={})=>await Spicetify.Platform.RootlistAPI.createFolder($,Q),n9=async($)=>await Spicetify.Platform.RootlistAPI.add([$]),o9=($,Q,X)=>Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson",{operation:"create",...X?{after:X}:{},name:$,playlist:!0,uris:Q}),iX=async($)=>await Spicetify.Platform.RootlistAPI.getContents({folderUri:$}),r9=()=>iX(void 0),eX=async($,Q,X,Y="")=>{const H=new URL("https://ws.audioscrobbler.com/2.0/");return H.searchParams.append("method","track.getInfo"),H.searchParams.append("api_key",$),H.searchParams.append("artist",Q),H.searchParams.append("track",X),H.searchParams.append("format","json"),H.searchParams.append("username",Y),await fetch(H).then((j)=>j.json())},HH=c9(eX)});var t9=I4((JH,s9)=>{s9.exports=Spicetify.React});var e9=I4((ZH,i9)=>{i9.exports=Spicetify.ReactDOM});class R{$;Q;X;stopHistoryListener;setRerender=null;constructor($,Q,X={}){this.name=$;this.sectionId=Q;this.sectionFields=X}static waitForReact=async()=>{while(!(Spicetify.React&&Spicetify.ReactDOM))K1(100);return this};pushSettings=async()=>{while(!Spicetify?.Platform?.History?.listen)await K1(100);if(this.stopHistoryListener)this.stopHistoryListener();if(this.stopHistoryListener=Spicetify.Platform.History.listen(({pathname:$=""})=>{if($==="/preferences")this.render()}),Spicetify.Platform.History.location.pathname==="/preferences")await this.render()};toObject=()=>new Proxy({},{get:($,Q)=>R.getFieldValue(this.getId(Q.toString()))});rerender=()=>{if(this.setRerender)this.setRerender(Math.random())};render=async()=>{while(!document.getElementById("desktop.settings.selectLanguage")){if(Spicetify.Platform.History.location.pathname!=="/preferences")return;await K1(100)}const $=document.querySelector(".x-settings-container");let Q=Array.from($.children).find(({id:X})=>X===this.sectionId);if(!Q)Q=document.createElement("div"),Q.id=this.sectionId,Q.className="settingsContainer",$.appendChild(Q);a9.default.render(L.default.createElement(this.FieldsContainer,null),Q)};addButton=($,Q,X,Y=N0,H={})=>{const j=this.getId($);return H.onClick=Y,this.sectionFields[$]={id:j,type:M.BUTTON,description:Q,text:X,events:H},this};addToggle=($,Q,X=Q0.of(!0),Y=N0,H={})=>{const j=this.getId($);return R.setDefaultFieldValue(j,X),H.onChange=Y,this.sectionFields[$]={id:j,type:M.TOGGLE,description:Q,events:H},this};addInput=($,Q,X,Y=N0,H="text",j={})=>{const J=this.getId($);return R.setDefaultFieldValue(J,X),j.onChange=Y,this.sectionFields[$]={id:J,type:M.INPUT,description:Q,inputType:H,events:j},this};addDropDown=($,Q,X,Y=Q0.of(0),H=N0,j={})=>{const J=this.getId($);return R.setDefaultFieldValue(J,Y),j.onChange=H,this.sectionFields[$]={id:J,type:M.DROPDOWN,description:Q,options:X,events:j},this};addHidden=($,Q)=>{const X=this.getId($);return R.setDefaultFieldValue(X,Q),this.sectionFields[$]={id:X,type:M.HIDDEN,description:""},this};getId=($)=>`extensions:${this.sectionId}:${$}`;useStateFor=($)=>{const[Q,X]=L.useState(R.getFieldValue($));return[Q,(Y)=>{if(Y!==void 0)X(Y),R.setFieldValue($,Y)}]};static getFieldValue=($)=>{return JSON.parse(Spicetify.LocalStorage.get($)??"null")};static setFieldValue=($,Q)=>{Spicetify.LocalStorage.set($,JSON.stringify(Q))};static setDefaultFieldValue=async($,Q)=>{if(R.getFieldValue($)===null)R.setFieldValue($,await Q())};FieldsContainer=()=>{const[$,Q]=L.useState(0);return this.setRerender=Q,L.default.createElement("div",{className:"x-settings-section",key:$},L.default.createElement("h2",{className:"Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type"},this.name),Object.entries(this.sectionFields).map(([X,Y])=>{return L.default.createElement(this.Field,{field:Y})}))};Field=({field:$})=>{const Q=L1("type");return L.default.createElement("div",{className:"x-settings-row"},L.default.createElement(this.SettingDescription,{id:$.id,description:$.description}),L.default.createElement("div",{className:"x-settings-secondColumn"},m9([[Q(M.INPUT),this.SettingInputField],[Q(M.BUTTON),this.SettingButtonField],[Q(M.TOGGLE),this.SettingToggleField],[Q(M.DROPDOWN),this.SettingDropdownField]])(this.SettingHidden)($)))};SettingDescription=({id:$,description:Q})=>L.default.createElement("div",{className:"x-settings-firstColumn"},L.default.createElement("label",{className:"Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",htmlFor:$},Q));SettingButtonField=($)=>L.default.createElement("span",{className:""},L.default.createElement("button",{id:$.id,className:"Button-sc-y0gtbx-0 Button-sm-buttonSecondary-useBrowserDefaultFocusStyle x-settings-button",...$.events,type:$.type},$.text));SettingToggleField=($)=>{const[Q,X]=this.useStateFor($.id);return L.default.createElement("label",{className:"x-settings-secondColumn x-toggle-wrapper"},L.default.createElement("input",{id:$.id,className:"x-toggle-input",type:"checkbox",checked:R.getFieldValue($.id),...$.events,onChange:(Y)=>{X(Y.currentTarget.checked),$.events.onChange?.(Y)}}),L.default.createElement("span",{className:"x-toggle-indicatorWrapper"},L.default.createElement("span",{className:"x-toggle-indicator"})))};SettingInputField=($)=>{const[Q,X]=this.useStateFor($.id);return L.default.createElement("input",{className:"x-settings-input",id:$.id,dir:"ltr",value:R.getFieldValue($.id),type:$.inputType,...$.events,onChange:(Y)=>{X(Y.currentTarget.value),$.events.onChange?.(Y)}})};SettingDropdownField=($)=>{const[Q,X]=this.useStateFor($.id);return L.default.createElement("select",{className:"main-dropDown-dropDown",id:$.id,...$.events,onChange:(Y)=>{X(Y.currentTarget.selectedIndex),$.events.onChange?.(Y)}},$.options.map((Y,H)=>L.default.createElement("option",{selected:H===R.getFieldValue($.id),value:H+1},Y)))};SettingHidden=()=>L.default.createElement(L.default.Fragment,null)}var L,a9,M;var $3=G(()=>{z1();B();L=E4(t9(),1),a9=E4(e9(),1);q1();w1();(function(j){j["HIDDEN"]="hidden";j["INPUT"]="input";j["DROPDOWN"]="dropdown";j["BUTTON"]="button";j["TOGGLE"]="toggle"})(M||(M={}))});var $6={};var aX;var Q3=G(()=>{$3();Y3();aX=new R("Vaultify","vaultify").addButton("backup","Backup Library, Extensions and Settings","Backup to clipboard",X3).addButton("restoreLibrary","Restore Library","Restore from clipboard",v1("library")).addButton("restoreExtensions","Restore Extensions","Restore from clipboard",v1("extensions")).addButton("restoreSettings","Restore Settings","Restore from clipboard",v1("settings"));aX.pushSettings()});var H3,j3,Q6,J3,X6,X3,v1;var Y3=G(()=>{z1();j1();k9();B();f9();q1();w1();H3=L1("type"),j3=($)=>u9([[H3("playlist"),async(Q)=>({[Q.name]:Q.isOwnedBySelf?await Z(Q.uri,d9,F4(A.map((X)=>X.uri))):Q.uri})],[H3("folder"),async(Q)=>({[Q.name]:await Z(Q.items,h(j3),(X)=>Promise.all(X))})]])(Q0.of({}))($),Q6=($)=>typeof $[0]==="string"&&Spicetify.URI.isTrack($[0]),J3=async($)=>{Object.keys($).forEach((Q)=>{const X=$[Q];if(!Array.isArray(X))return void n9(X);if(X.length===0)return;if(Q6(X))return void o9(Q,X);p9(Q),X.forEach(J3)})},X6=/^(?:marketplace:)|(?:extensions:)|(?:spicetify)/,X3=async()=>{const $=(T)=>T.items.map((l)=>l.uri),Q=await Spicetify.Platform.LibraryAPI.getTracks({limit:-1,sort:{field:"ADDED_AT",order:"ASC"}}),X=$(Q),Y=await Spicetify.Platform.LibraryAPI.getAlbums({limit:1073741824,sort:{field:"ADDED_AT"}}),H=$(Y),j=await Spicetify.Platform.LibraryAPI.getArtists({limit:1073741824,sort:{field:"ADDED_AT"}}),J=$(j),D=await Z(await r9(),j3),O=Z(localStorage,O4(A),A.filter(([T])=>X6.test(T))),{items:U,namespace:c}=Spicetify.Platform.LocalStorageAPI,Z3=Z(U,O4(A),A.filter(([T])=>T.startsWith(c)),A.map(([T,l])=>[T.split(":")[1],l])),G3=Z(document.querySelectorAll('[id^="settings."],[id^="desktop."],[class^="network."]'),Array.from,A.flatMap((T)=>{const l=T.getAttribute("id");if(T instanceof HTMLInputElement){const M4=T.getAttribute("type");if(M4==="checkbox")return[[l,"checkbox",T.checked]];else if(M4==="text")return[[l,"text",T.value]]}else if(T instanceof HTMLSelectElement)return[[l,"select",T.value]];return[]}));await Spicetify.Platform.ClipboardAPI.copy(JSON.stringify({libraryTracks:X,libraryAlbums:H,libraryArtists:J,playlists:D,localStore:O,localStoreAPI:Z3,settings:G3})),Spicetify.showNotification("Backed up Playlists, Extensions and Settings")},v1=($)=>async()=>{let Q=JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());if($==="library")C1(Q.libraryTracks,!0),C1(Q.libraryAlbums,!0),C1(Q.libraryArtists,!0),await J3(Q.playlists),Spicetify.showNotification("Restored Library");if($==="extensions")h(_(Spicetify.LocalStorage.set))(Q.localStore),h(_(Spicetify.Platform.LocalStorageAPI.setItem))(Q.localStoreAPI),Spicetify.showNotification("Restored Extensions");if($==="settings")Q.settings.map(([X,Y,H])=>{const j=document.querySelector(`[id="${X}"]`);if(!j)return console.warn(`Setting for ${X} wasn't found`);if(Y==="text")j.value=H;else if(Y==="checkbox")j.checked=H;else if(Y==="select")j.value=H;else return;_9(j).onChange({target:j})}),Spicetify.showNotification("Restored Settings")};Promise.resolve().then(() => Q3())});Y3();;
+var __create = Object.create
+var __defProp = Object.defineProperty
+var __getProtoOf = Object.getPrototypeOf
+var __getOwnPropNames = Object.getOwnPropertyNames
+var __hasOwnProp = Object.prototype.hasOwnProperty
+var __toESM = (mod, isNodeMode, target) => {
+    target = mod != null ? __create(__getProtoOf(mod)) : {}
+    const to =
+        isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target
+    for (let key of __getOwnPropNames(mod))
+        if (!__hasOwnProp.call(to, key))
+            __defProp(to, key, {
+                get: () => mod[key],
+                enumerable: true,
+            })
+    return to
+}
+var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports)
+var __export = (target, all) => {
+    for (var name in all)
+        __defProp(target, name, {
+            get: all[name],
+            enumerable: true,
+            configurable: true,
+            set: newValue => (all[name] = () => newValue),
+        })
+}
+var __esm = (fn, res) => () => (fn && (res = fn((fn = 0))), res)
 
-//# debugId=160FF232017C0A9364756e2164756e21
+// node_modules/fp-ts/es6/function.js
+function identity(a) {
+    return a
+}
+function constant(a) {
+    return function () {
+        return a
+    }
+}
+function flip(f) {
+    return function () {
+        var args = []
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i]
+        }
+        if (args.length > 1) {
+            return f(args[1], args[0])
+        }
+        return function (a) {
+            return f(a)(args[0])
+        }
+    }
+}
+function flow(ab, bc, cd, de, ef, fg, gh, hi, ij) {
+    switch (arguments.length) {
+        case 1:
+            return ab
+        case 2:
+            return function () {
+                return bc(ab.apply(this, arguments))
+            }
+        case 3:
+            return function () {
+                return cd(bc(ab.apply(this, arguments)))
+            }
+        case 4:
+            return function () {
+                return de(cd(bc(ab.apply(this, arguments))))
+            }
+        case 5:
+            return function () {
+                return ef(de(cd(bc(ab.apply(this, arguments)))))
+            }
+        case 6:
+            return function () {
+                return fg(ef(de(cd(bc(ab.apply(this, arguments))))))
+            }
+        case 7:
+            return function () {
+                return gh(fg(ef(de(cd(bc(ab.apply(this, arguments)))))))
+            }
+        case 8:
+            return function () {
+                return hi(gh(fg(ef(de(cd(bc(ab.apply(this, arguments))))))))
+            }
+        case 9:
+            return function () {
+                return ij(hi(gh(fg(ef(de(cd(bc(ab.apply(this, arguments)))))))))
+            }
+    }
+    return
+}
+function tupled(f) {
+    return function (a) {
+        return f.apply(undefined, a)
+    }
+}
+function untupled(f) {
+    return function () {
+        var a = []
+        for (var _i = 0; _i < arguments.length; _i++) {
+            a[_i] = arguments[_i]
+        }
+        return f(a)
+    }
+}
+function pipe(a, ab, bc, cd, de, ef, fg, gh, hi) {
+    switch (arguments.length) {
+        case 1:
+            return a
+        case 2:
+            return ab(a)
+        case 3:
+            return bc(ab(a))
+        case 4:
+            return cd(bc(ab(a)))
+        case 5:
+            return de(cd(bc(ab(a))))
+        case 6:
+            return ef(de(cd(bc(ab(a)))))
+        case 7:
+            return fg(ef(de(cd(bc(ab(a))))))
+        case 8:
+            return gh(fg(ef(de(cd(bc(ab(a)))))))
+        case 9:
+            return hi(gh(fg(ef(de(cd(bc(ab(a))))))))
+        default: {
+            var ret = arguments[0]
+            for (var i = 1; i < arguments.length; i++) {
+                ret = arguments[i](ret)
+            }
+            return ret
+        }
+    }
+}
+var __spreadArray, getSemigroup, getMonoid, apply, constUndefined, constVoid, dual
+var init_function = __esm(() => {
+    __spreadArray = function (to, from, pack) {
+        if (pack || arguments.length === 2)
+            for (var i = 0, l = from.length, ar; i < l; i++) {
+                if (ar || !(i in from)) {
+                    if (!ar) ar = Array.prototype.slice.call(from, 0, i)
+                    ar[i] = from[i]
+                }
+            }
+        return to.concat(ar || Array.prototype.slice.call(from))
+    }
+    getSemigroup = function (S) {
+        return function () {
+            return {
+                concat: function (f, g) {
+                    return function (a) {
+                        return S.concat(f(a), g(a))
+                    }
+                },
+            }
+        }
+    }
+    getMonoid = function (M) {
+        var getSemigroupM = getSemigroup(M)
+        return function () {
+            return {
+                concat: getSemigroupM().concat,
+                empty: function () {
+                    return M.empty
+                },
+            }
+        }
+    }
+    apply = function (a) {
+        return function (f) {
+            return f(a)
+        }
+    }
+    constUndefined = constant(undefined)
+    constVoid = constUndefined
+    dual = function (arity, body) {
+        var isDataFirst =
+            typeof arity === "number"
+                ? function (args) {
+                      return args.length >= arity
+                  }
+                : arity
+        return function () {
+            var args = Array.from(arguments)
+            if (isDataFirst(arguments)) {
+                return body.apply(this, args)
+            }
+            return function (self) {
+                return body.apply(undefined, __spreadArray([self], args, false))
+            }
+        }
+    }
+})
+
+// node_modules/fp-ts/es6/internal.js
+var __spreadArray2,
+    isNone,
+    isSome,
+    none,
+    some,
+    isLeft,
+    singleton,
+    isNonEmpty,
+    head,
+    tail,
+    emptyReadonlyArray,
+    emptyRecord,
+    fromReadonlyNonEmptyArray,
+    flatMapIO
+var init_internal = __esm(() => {
+    init_function()
+    __spreadArray2 = function (to, from, pack) {
+        if (pack || arguments.length === 2)
+            for (var i = 0, l = from.length, ar; i < l; i++) {
+                if (ar || !(i in from)) {
+                    if (!ar) ar = Array.prototype.slice.call(from, 0, i)
+                    ar[i] = from[i]
+                }
+            }
+        return to.concat(ar || Array.prototype.slice.call(from))
+    }
+    isNone = function (fa) {
+        return fa._tag === "None"
+    }
+    isSome = function (fa) {
+        return fa._tag === "Some"
+    }
+    none = { _tag: "None" }
+    some = function (a) {
+        return { _tag: "Some", value: a }
+    }
+    isLeft = function (ma) {
+        return ma._tag === "Left"
+    }
+    singleton = function (a) {
+        return [a]
+    }
+    isNonEmpty = function (as) {
+        return as.length > 0
+    }
+    head = function (as) {
+        return as[0]
+    }
+    tail = function (as) {
+        return as.slice(1)
+    }
+    emptyReadonlyArray = []
+    emptyRecord = {}
+    fromReadonlyNonEmptyArray = function (as) {
+        return __spreadArray2([as[0]], as.slice(1), true)
+    }
+    flatMapIO = function (F, M) {
+        return dual(2, function (self, f) {
+            return M.flatMap(self, function (a) {
+                return F.fromIO(f(a))
+            })
+        })
+    }
+})
+
+// node_modules/fp-ts/es6/Apply.js
+function apFirst(A) {
+    return function (second) {
+        return function (first) {
+            return A.ap(
+                A.map(first, function (a) {
+                    return function () {
+                        return a
+                    }
+                }),
+                second,
+            )
+        }
+    }
+}
+function apSecond(A) {
+    return function (second) {
+        return function (first) {
+            return A.ap(
+                A.map(first, function () {
+                    return function (b) {
+                        return b
+                    }
+                }),
+                second,
+            )
+        }
+    }
+}
+function apS(F) {
+    return function (name, fb) {
+        return function (fa) {
+            return F.ap(
+                F.map(fa, function (a) {
+                    return function (b) {
+                        var _a
+                        return Object.assign({}, a, ((_a = {}), (_a[name] = b), _a))
+                    }
+                }),
+                fb,
+            )
+        }
+    }
+}
+function getApplySemigroup(F) {
+    return function (S) {
+        return {
+            concat: function (first, second) {
+                return F.ap(
+                    F.map(first, function (x) {
+                        return function (y) {
+                            return S.concat(x, y)
+                        }
+                    }),
+                    second,
+                )
+            },
+        }
+    }
+}
+var init_Apply = __esm(() => {})
+
+// node_modules/fp-ts/es6/Functor.js
+function flap(F) {
+    return function (a) {
+        return function (fab) {
+            return F.map(fab, function (f) {
+                return f(a)
+            })
+        }
+    }
+}
+function bindTo(F) {
+    return function (name) {
+        return function (fa) {
+            return F.map(fa, function (a) {
+                var _a
+                return (_a = {}), (_a[name] = a), _a
+            })
+        }
+    }
+}
+function as(F) {
+    return function (self, b) {
+        return F.map(self, function () {
+            return b
+        })
+    }
+}
+function asUnit(F) {
+    var asM = as(F)
+    return function (self) {
+        return asM(self, undefined)
+    }
+}
+var let_
+var init_Functor = __esm(() => {
+    let_ = function (F) {
+        return function (name, f) {
+            return function (fa) {
+                return F.map(fa, function (a) {
+                    var _a
+                    return Object.assign({}, a, ((_a = {}), (_a[name] = f(a)), _a))
+                })
+            }
+        }
+    }
+})
+
+// node_modules/fp-ts/es6/Applicative.js
+function getApplicativeMonoid(F) {
+    var f = getApplySemigroup(F)
+    return function (M) {
+        return {
+            concat: f(M).concat,
+            empty: F.of(M.empty),
+        }
+    }
+}
+var init_Applicative = __esm(() => {
+    init_Apply()
+})
+
+// node_modules/fp-ts/es6/Chain.js
+function chainFirst(M) {
+    var tapM = tap(M)
+    return function (f) {
+        return function (first) {
+            return tapM(first, f)
+        }
+    }
+}
+function tap(M) {
+    return function (first, f) {
+        return M.chain(first, function (a) {
+            return M.map(f(a), function () {
+                return a
+            })
+        })
+    }
+}
+function bind(M) {
+    return function (name, f) {
+        return function (ma) {
+            return M.chain(ma, function (a) {
+                return M.map(f(a), function (b) {
+                    var _a
+                    return Object.assign({}, a, ((_a = {}), (_a[name] = b), _a))
+                })
+            })
+        }
+    }
+}
+var init_Chain = __esm(() => {})
+
+// node_modules/fp-ts/es6/FromEither.js
+function fromEitherK(F) {
+    return function (f) {
+        return flow(f, F.fromEither)
+    }
+}
+function tapEither(F, M) {
+    var fromEither = fromEitherK(F)
+    var tapM = tap(M)
+    return function (self, f) {
+        return tapM(self, fromEither(f))
+    }
+}
+var init_FromEither = __esm(() => {
+    init_Chain()
+    init_function()
+})
+
+// node_modules/fp-ts/es6/Eq.js
+var exports_Eq = {}
+__export(exports_Eq, {
+    tuple: () => {
+        {
+            return tuple
+        }
+    },
+    struct: () => {
+        {
+            return struct
+        }
+    },
+    strictEqual: () => {
+        {
+            return strictEqual
+        }
+    },
+    getTupleEq: () => {
+        {
+            return getTupleEq
+        }
+    },
+    getStructEq: () => {
+        {
+            return getStructEq
+        }
+    },
+    getSemigroup: () => {
+        {
+            return getSemigroup2
+        }
+    },
+    getMonoid: () => {
+        {
+            return getMonoid2
+        }
+    },
+    fromEquals: () => {
+        {
+            return fromEquals
+        }
+    },
+    eqString: () => {
+        {
+            return eqString
+        }
+    },
+    eqStrict: () => {
+        {
+            return eqStrict
+        }
+    },
+    eqNumber: () => {
+        {
+            return eqNumber
+        }
+    },
+    eqDate: () => {
+        {
+            return eqDate
+        }
+    },
+    eqBoolean: () => {
+        {
+            return eqBoolean
+        }
+    },
+    eq: () => {
+        {
+            return eq
+        }
+    },
+    contramap: () => {
+        {
+            return contramap
+        }
+    },
+    URI: () => {
+        {
+            return URI
+        }
+    },
+    Contravariant: () => {
+        {
+            return Contravariant
+        }
+    },
+})
+var fromEquals,
+    struct,
+    tuple,
+    contramap_,
+    contramap,
+    URI,
+    eqStrict,
+    empty,
+    getSemigroup2,
+    getMonoid2,
+    Contravariant,
+    getTupleEq,
+    getStructEq,
+    strictEqual,
+    eq,
+    eqBoolean,
+    eqString,
+    eqNumber,
+    eqDate
+var init_Eq = __esm(() => {
+    init_function()
+    fromEquals = function (equals) {
+        return {
+            equals: function (x, y) {
+                return x === y || equals(x, y)
+            },
+        }
+    }
+    struct = function (eqs) {
+        return fromEquals(function (first, second) {
+            for (var key in eqs) {
+                if (!eqs[key].equals(first[key], second[key])) {
+                    return false
+                }
+            }
+            return true
+        })
+    }
+    tuple = function () {
+        var eqs = []
+        for (var _i = 0; _i < arguments.length; _i++) {
+            eqs[_i] = arguments[_i]
+        }
+        return fromEquals(function (first, second) {
+            return eqs.every(function (E, i) {
+                return E.equals(first[i], second[i])
+            })
+        })
+    }
+    contramap_ = function (fa, f) {
+        return pipe(fa, contramap(f))
+    }
+    contramap = function (f) {
+        return function (fa) {
+            return fromEquals(function (x, y) {
+                return fa.equals(f(x), f(y))
+            })
+        }
+    }
+    URI = "Eq"
+    eqStrict = {
+        equals: function (a, b) {
+            return a === b
+        },
+    }
+    empty = {
+        equals: function () {
+            return true
+        },
+    }
+    getSemigroup2 = function () {
+        return {
+            concat: function (x, y) {
+                return fromEquals(function (a, b) {
+                    return x.equals(a, b) && y.equals(a, b)
+                })
+            },
+        }
+    }
+    getMonoid2 = function () {
+        return {
+            concat: getSemigroup2().concat,
+            empty,
+        }
+    }
+    Contravariant = {
+        URI,
+        contramap: contramap_,
+    }
+    getTupleEq = tuple
+    getStructEq = struct
+    strictEqual = eqStrict.equals
+    eq = Contravariant
+    eqBoolean = eqStrict
+    eqString = eqStrict
+    eqNumber = eqStrict
+    eqDate = {
+        equals: function (first, second) {
+            return first.valueOf() === second.valueOf()
+        },
+    }
+})
+
+// node_modules/fp-ts/es6/Ord.js
+var compare, equalsDefault, fromCompare, getSemigroup3, getMonoid3, strictOrd
+var init_Ord = __esm(() => {
+    init_Eq()
+    compare = function (first, second) {
+        return first < second ? -1 : first > second ? 1 : 0
+    }
+    equalsDefault = function (compare2) {
+        return function (first, second) {
+            return first === second || compare2(first, second) === 0
+        }
+    }
+    fromCompare = function (compare2) {
+        return {
+            equals: equalsDefault(compare2),
+            compare: function (first, second) {
+                return first === second ? 0 : compare2(first, second)
+            },
+        }
+    }
+    getSemigroup3 = function () {
+        return {
+            concat: function (first, second) {
+                return fromCompare(function (a, b) {
+                    var ox = first.compare(a, b)
+                    return ox !== 0 ? ox : second.compare(a, b)
+                })
+            },
+        }
+    }
+    getMonoid3 = function () {
+        return {
+            concat: getSemigroup3().concat,
+            empty: fromCompare(function () {
+                return 0
+            }),
+        }
+    }
+    strictOrd = {
+        equals: eqStrict.equals,
+        compare,
+    }
+})
+
+// node_modules/fp-ts/es6/Magma.js
+var concatAll
+var init_Magma = __esm(() => {
+    concatAll = function (M) {
+        return function (startWith) {
+            return function (as2) {
+                return as2.reduce(function (a, acc) {
+                    return M.concat(a, acc)
+                }, startWith)
+            }
+        }
+    }
+})
+
+// node_modules/fp-ts/es6/Semigroup.js
+var constant2,
+    first,
+    concatAll2,
+    semigroupVoid,
+    semigroupAll,
+    semigroupAny,
+    semigroupString,
+    semigroupSum,
+    semigroupProduct
+var init_Semigroup = __esm(() => {
+    init_function()
+    init_Magma()
+    constant2 = function (a) {
+        return {
+            concat: function () {
+                return a
+            },
+        }
+    }
+    first = function () {
+        return { concat: identity }
+    }
+    concatAll2 = concatAll
+    semigroupVoid = constant2(undefined)
+    semigroupAll = {
+        concat: function (x, y) {
+            return x && y
+        },
+    }
+    semigroupAny = {
+        concat: function (x, y) {
+            return x || y
+        },
+    }
+    semigroupString = {
+        concat: function (x, y) {
+            return x + y
+        },
+    }
+    semigroupSum = {
+        concat: function (x, y) {
+            return x + y
+        },
+    }
+    semigroupProduct = {
+        concat: function (x, y) {
+            return x * y
+        },
+    }
+})
+
+// node_modules/fp-ts/es6/ReadonlyNonEmptyArray.js
+var __spreadArray3,
+    isNonEmpty2,
+    isOutOfBound,
+    prependW,
+    prepend,
+    prependAll,
+    intersperse,
+    extract,
+    head2,
+    tail2,
+    last,
+    concatAll3,
+    intercalate
+var init_ReadonlyNonEmptyArray = __esm(() => {
+    init_function()
+    init_internal()
+    __spreadArray3 = function (to, from, pack) {
+        if (pack || arguments.length === 2)
+            for (var i = 0, l = from.length, ar; i < l; i++) {
+                if (ar || !(i in from)) {
+                    if (!ar) ar = Array.prototype.slice.call(from, 0, i)
+                    ar[i] = from[i]
+                }
+            }
+        return to.concat(ar || Array.prototype.slice.call(from))
+    }
+    isNonEmpty2 = isNonEmpty
+    isOutOfBound = function (i, as2) {
+        return i < 0 || i >= as2.length
+    }
+    prependW = function (head2) {
+        return function (tail2) {
+            return __spreadArray3([head2], tail2, true)
+        }
+    }
+    prepend = prependW
+    prependAll = function (middle) {
+        return function (as2) {
+            var out = [middle, as2[0]]
+            for (var i = 1; i < as2.length; i++) {
+                out.push(middle, as2[i])
+            }
+            return out
+        }
+    }
+    intersperse = function (middle) {
+        return function (as2) {
+            var rest = tail2(as2)
+            return isNonEmpty2(rest) ? pipe(rest, prependAll(middle), prepend(head2(as2))) : as2
+        }
+    }
+    extract = head
+    head2 = extract
+    tail2 = tail
+    last = function (as2) {
+        return as2[as2.length - 1]
+    }
+    concatAll3 = function (S) {
+        return function (as2) {
+            return as2.reduce(S.concat)
+        }
+    }
+    intercalate = function (S) {
+        var concatAllS = concatAll3(S)
+        return function (middle) {
+            return flow(intersperse(middle), concatAllS)
+        }
+    }
+})
+
+// node_modules/fp-ts/es6/NonEmptyArray.js
+function concat(x, y) {
+    return y
+        ? x.concat(y)
+        : function (y2) {
+              return y2.concat(x)
+          }
+}
+function cons(head3, tail3) {
+    return tail3 === undefined ? prepend2(head3) : pipe(tail3, prepend2(head3))
+}
+var __spreadArray4,
+    isNonEmpty3,
+    isOutOfBound2,
+    prependW2,
+    prepend2,
+    appendW,
+    append,
+    unsafeInsertAt,
+    unsafeUpdateAt,
+    uniq,
+    sortBy,
+    union,
+    rotate,
+    fromReadonlyNonEmptyArray2,
+    makeBy,
+    range,
+    sort,
+    copy,
+    of,
+    prependAll2,
+    intersperse2,
+    chop,
+    splitAt,
+    chunksOf,
+    head3,
+    tail3,
+    last2,
+    init,
+    snoc
+var init_NonEmptyArray = __esm(() => {
+    init_function()
+    init_internal()
+    init_Ord()
+    init_ReadonlyNonEmptyArray()
+    __spreadArray4 = function (to, from, pack) {
+        if (pack || arguments.length === 2)
+            for (var i = 0, l = from.length, ar; i < l; i++) {
+                if (ar || !(i in from)) {
+                    if (!ar) ar = Array.prototype.slice.call(from, 0, i)
+                    ar[i] = from[i]
+                }
+            }
+        return to.concat(ar || Array.prototype.slice.call(from))
+    }
+    isNonEmpty3 = function (as2) {
+        return as2.length > 0
+    }
+    isOutOfBound2 = function (i, as2) {
+        return i < 0 || i >= as2.length
+    }
+    prependW2 = function (head3) {
+        return function (tail3) {
+            return __spreadArray4([head3], tail3, true)
+        }
+    }
+    prepend2 = prependW2
+    appendW = function (end) {
+        return function (init) {
+            return __spreadArray4(__spreadArray4([], init, true), [end], false)
+        }
+    }
+    append = appendW
+    unsafeInsertAt = function (i, a, as2) {
+        if (isNonEmpty3(as2)) {
+            var xs = fromReadonlyNonEmptyArray2(as2)
+            xs.splice(i, 0, a)
+            return xs
+        }
+        return [a]
+    }
+    unsafeUpdateAt = function (i, a, as2) {
+        var xs = fromReadonlyNonEmptyArray2(as2)
+        xs[i] = a
+        return xs
+    }
+    uniq = function (E) {
+        return function (as2) {
+            if (as2.length === 1) {
+                return copy(as2)
+            }
+            var out = [head3(as2)]
+            var rest = tail3(as2)
+            var _loop_1 = function (a2) {
+                if (
+                    out.every(function (o) {
+                        return !E.equals(o, a2)
+                    })
+                ) {
+                    out.push(a2)
+                }
+            }
+            for (var _i = 0, rest_1 = rest; _i < rest_1.length; _i++) {
+                var a = rest_1[_i]
+                _loop_1(a)
+            }
+            return out
+        }
+    }
+    sortBy = function (ords) {
+        if (isNonEmpty3(ords)) {
+            var M = getMonoid3()
+            return sort(ords.reduce(M.concat, M.empty))
+        }
+        return copy
+    }
+    union = function (E) {
+        var uniqE = uniq(E)
+        return function (second) {
+            return function (first2) {
+                return uniqE(pipe(first2, concat(second)))
+            }
+        }
+    }
+    rotate = function (n) {
+        return function (as2) {
+            var len = as2.length
+            var m = Math.round(n) % len
+            if (isOutOfBound2(Math.abs(m), as2) || m === 0) {
+                return copy(as2)
+            }
+            if (m < 0) {
+                var _a = splitAt(-m)(as2),
+                    f = _a[0],
+                    s = _a[1]
+                return pipe(s, concat(f))
+            } else {
+                return rotate(m - len)(as2)
+            }
+        }
+    }
+    fromReadonlyNonEmptyArray2 = fromReadonlyNonEmptyArray
+    makeBy = function (f) {
+        return function (n) {
+            var j = Math.max(0, Math.floor(n))
+            var out = [f(0)]
+            for (var i = 1; i < j; i++) {
+                out.push(f(i))
+            }
+            return out
+        }
+    }
+    range = function (start, end) {
+        return start <= end
+            ? makeBy(function (i) {
+                  return start + i
+              })(end - start + 1)
+            : [start]
+    }
+    sort = function (O) {
+        return function (as2) {
+            return as2.slice().sort(O.compare)
+        }
+    }
+    copy = fromReadonlyNonEmptyArray2
+    of = function (a) {
+        return [a]
+    }
+    prependAll2 = function (middle) {
+        return function (as2) {
+            var out = [middle, as2[0]]
+            for (var i = 1; i < as2.length; i++) {
+                out.push(middle, as2[i])
+            }
+            return out
+        }
+    }
+    intersperse2 = function (middle) {
+        return function (as2) {
+            var rest = tail3(as2)
+            return isNonEmpty3(rest) ? pipe(rest, prependAll2(middle), prepend2(head3(as2))) : copy(as2)
+        }
+    }
+    chop = function (f) {
+        return function (as2) {
+            var _a = f(as2),
+                b = _a[0],
+                rest = _a[1]
+            var out = [b]
+            var next = rest
+            while (isNonEmpty3(next)) {
+                var _b = f(next),
+                    b_1 = _b[0],
+                    rest_2 = _b[1]
+                out.push(b_1)
+                next = rest_2
+            }
+            return out
+        }
+    }
+    splitAt = function (n) {
+        return function (as2) {
+            var m = Math.max(1, n)
+            return m >= as2.length ? [copy(as2), []] : [pipe(as2.slice(1, m), prepend2(head3(as2))), as2.slice(m)]
+        }
+    }
+    chunksOf = function (n) {
+        return chop(splitAt(n))
+    }
+    head3 = head2
+    tail3 = function (as2) {
+        return as2.slice(1)
+    }
+    last2 = last
+    init = function (as2) {
+        return as2.slice(0, -1)
+    }
+    snoc = function (init2, end) {
+        return pipe(init2, append(end))
+    }
+})
+
+// node_modules/fp-ts/es6/number.js
+var Eq2, Ord2, Bounded, MagmaSub, SemigroupSum, SemigroupProduct, MonoidSum, MonoidProduct, Field
+var init_number = __esm(() => {
+    Eq2 = {
+        equals: function (first2, second) {
+            return first2 === second
+        },
+    }
+    Ord2 = {
+        equals: Eq2.equals,
+        compare: function (first2, second) {
+            return first2 < second ? -1 : first2 > second ? 1 : 0
+        },
+    }
+    Bounded = {
+        equals: Eq2.equals,
+        compare: Ord2.compare,
+        top: Infinity,
+        bottom: -Infinity,
+    }
+    MagmaSub = {
+        concat: function (first2, second) {
+            return first2 - second
+        },
+    }
+    SemigroupSum = {
+        concat: function (first2, second) {
+            return first2 + second
+        },
+    }
+    SemigroupProduct = {
+        concat: function (first2, second) {
+            return first2 * second
+        },
+    }
+    MonoidSum = {
+        concat: SemigroupSum.concat,
+        empty: 0,
+    }
+    MonoidProduct = {
+        concat: SemigroupProduct.concat,
+        empty: 1,
+    }
+    Field = {
+        add: SemigroupSum.concat,
+        zero: 0,
+        mul: SemigroupProduct.concat,
+        one: 1,
+        sub: MagmaSub.concat,
+        degree: function (_) {
+            return 1
+        },
+        div: function (first2, second) {
+            return first2 / second
+        },
+        mod: function (first2, second) {
+            return first2 % second
+        },
+    }
+})
+
+// node_modules/fp-ts/es6/Separated.js
+var separated
+var init_Separated = __esm(() => {
+    separated = function (left, right) {
+        return { left, right }
+    }
+})
+
+// node_modules/fp-ts/es6/Witherable.js
+function wiltDefault(T, C) {
+    return function (F) {
+        var traverseF = T.traverse(F)
+        return function (wa, f) {
+            return F.map(traverseF(wa, f), C.separate)
+        }
+    }
+}
+function witherDefault(T, C) {
+    return function (F) {
+        var traverseF = T.traverse(F)
+        return function (wa, f) {
+            return F.map(traverseF(wa, f), C.compact)
+        }
+    }
+}
+function filterE(W) {
+    return function (F) {
+        var witherF = W.wither(F)
+        return function (predicate) {
+            return function (ga) {
+                return witherF(ga, function (a) {
+                    return F.map(predicate(a), function (b) {
+                        return b ? some(a) : none
+                    })
+                })
+            }
+        }
+    }
+}
+var init_Witherable = __esm(() => {
+    init_internal()
+})
+
+// node_modules/fp-ts/es6/Zero.js
+function guard(F, P) {
+    return function (b) {
+        return b ? P.of(undefined) : F.zero()
+    }
+}
+var init_Zero = __esm(() => {})
+
+// node_modules/fp-ts/es6/ReadonlyArray.js
+function lookup(i, as2) {
+    return as2 === undefined
+        ? function (as3) {
+              return lookup(i, as3)
+          }
+        : isOutOfBound3(i, as2)
+        ? none
+        : some(as2[i])
+}
+function findFirst(predicate) {
+    return function (as2) {
+        for (var i = 0; i < as2.length; i++) {
+            if (predicate(as2[i])) {
+                return some(as2[i])
+            }
+        }
+        return none
+    }
+}
+function findLast(predicate) {
+    return function (as2) {
+        for (var i = as2.length - 1; i >= 0; i--) {
+            if (predicate(as2[i])) {
+                return some(as2[i])
+            }
+        }
+        return none
+    }
+}
+function elem(E) {
+    return function (a, as2) {
+        if (as2 === undefined) {
+            var elemE_1 = elem(E)
+            return function (as3) {
+                return elemE_1(a, as3)
+            }
+        }
+        var predicate = function (element) {
+            return E.equals(element, a)
+        }
+        var i = 0
+        for (; i < as2.length; i++) {
+            if (predicate(as2[i])) {
+                return true
+            }
+        }
+        return false
+    }
+}
+function every(predicate) {
+    return function (as2) {
+        return as2.every(predicate)
+    }
+}
+var __spreadArray5,
+    isNonEmpty4,
+    matchW,
+    match,
+    isOutOfBound3,
+    head4,
+    last3,
+    findIndex,
+    findFirstMap,
+    findLastMap,
+    findLastIndex,
+    _chainRecDepthFirst,
+    _chainRecBreadthFirst,
+    foldMapWithIndex2,
+    reduce2,
+    foldMap2,
+    reduceWithIndex2,
+    reduceRight2,
+    reduceRightWithIndex2,
+    getShow2,
+    getEq2,
+    getOrd,
+    chainRecDepthFirst,
+    chainRecBreadthFirst,
+    intercalate2
+var init_ReadonlyArray = __esm(() => {
+    init_Eq()
+    init_function()
+    init_internal()
+    init_number()
+    init_Ord()
+    init_ReadonlyNonEmptyArray()
+    __spreadArray5 = function (to, from, pack) {
+        if (pack || arguments.length === 2)
+            for (var i = 0, l = from.length, ar; i < l; i++) {
+                if (ar || !(i in from)) {
+                    if (!ar) ar = Array.prototype.slice.call(from, 0, i)
+                    ar[i] = from[i]
+                }
+            }
+        return to.concat(ar || Array.prototype.slice.call(from))
+    }
+    isNonEmpty4 = isNonEmpty2
+    matchW = function (onEmpty, onNonEmpty) {
+        return function (as2) {
+            return isNonEmpty4(as2) ? onNonEmpty(as2) : onEmpty()
+        }
+    }
+    match = matchW
+    isOutOfBound3 = isOutOfBound
+    head4 = function (as2) {
+        return isNonEmpty4(as2) ? some(head2(as2)) : none
+    }
+    last3 = function (as2) {
+        return isNonEmpty4(as2) ? some(last(as2)) : none
+    }
+    findIndex = function (predicate) {
+        return function (as2) {
+            for (var i = 0; i < as2.length; i++) {
+                if (predicate(as2[i])) {
+                    return some(i)
+                }
+            }
+            return none
+        }
+    }
+    findFirstMap = function (f) {
+        return function (as2) {
+            for (var i = 0; i < as2.length; i++) {
+                var out = f(as2[i])
+                if (isSome(out)) {
+                    return out
+                }
+            }
+            return none
+        }
+    }
+    findLastMap = function (f) {
+        return function (as2) {
+            for (var i = as2.length - 1; i >= 0; i--) {
+                var out = f(as2[i])
+                if (isSome(out)) {
+                    return out
+                }
+            }
+            return none
+        }
+    }
+    findLastIndex = function (predicate) {
+        return function (as2) {
+            for (var i = as2.length - 1; i >= 0; i--) {
+                if (predicate(as2[i])) {
+                    return some(i)
+                }
+            }
+            return none
+        }
+    }
+    _chainRecDepthFirst = function (a, f) {
+        return pipe(a, chainRecDepthFirst(f))
+    }
+    _chainRecBreadthFirst = function (a, f) {
+        return pipe(a, chainRecBreadthFirst(f))
+    }
+    foldMapWithIndex2 = function (M) {
+        return function (f) {
+            return function (fa) {
+                return fa.reduce(function (b, a, i) {
+                    return M.concat(b, f(i, a))
+                }, M.empty)
+            }
+        }
+    }
+    reduce2 = function (b, f) {
+        return reduceWithIndex2(b, function (_, b2, a) {
+            return f(b2, a)
+        })
+    }
+    foldMap2 = function (M) {
+        var foldMapWithIndexM = foldMapWithIndex2(M)
+        return function (f) {
+            return foldMapWithIndexM(function (_, a) {
+                return f(a)
+            })
+        }
+    }
+    reduceWithIndex2 = function (b, f) {
+        return function (fa) {
+            var len = fa.length
+            var out = b
+            for (var i = 0; i < len; i++) {
+                out = f(i, out, fa[i])
+            }
+            return out
+        }
+    }
+    reduceRight2 = function (b, f) {
+        return reduceRightWithIndex2(b, function (_, a, b2) {
+            return f(a, b2)
+        })
+    }
+    reduceRightWithIndex2 = function (b, f) {
+        return function (fa) {
+            return fa.reduceRight(function (b2, a, i) {
+                return f(i, a, b2)
+            }, b)
+        }
+    }
+    getShow2 = function (S) {
+        return {
+            show: function (as2) {
+                return "[".concat(as2.map(S.show).join(", "), "]")
+            },
+        }
+    }
+    getEq2 = function (E) {
+        return fromEquals(function (xs, ys) {
+            return (
+                xs.length === ys.length &&
+                xs.every(function (x, i) {
+                    return E.equals(x, ys[i])
+                })
+            )
+        })
+    }
+    getOrd = function (O) {
+        return fromCompare(function (a, b) {
+            var aLen = a.length
+            var bLen = b.length
+            var len = Math.min(aLen, bLen)
+            for (var i = 0; i < len; i++) {
+                var ordering = O.compare(a[i], b[i])
+                if (ordering !== 0) {
+                    return ordering
+                }
+            }
+            return Ord2.compare(aLen, bLen)
+        })
+    }
+    chainRecDepthFirst = function (f) {
+        return function (a) {
+            var todo = __spreadArray5([], f(a), true)
+            var out = []
+            while (todo.length > 0) {
+                var e = todo.shift()
+                if (isLeft(e)) {
+                    todo.unshift.apply(todo, f(e.left))
+                } else {
+                    out.push(e.right)
+                }
+            }
+            return out
+        }
+    }
+    chainRecBreadthFirst = function (f) {
+        return function (a) {
+            var initial = f(a)
+            var todo = []
+            var out = []
+            function go(e2) {
+                if (isLeft(e2)) {
+                    f(e2.left).forEach(function (v) {
+                        return todo.push(v)
+                    })
+                } else {
+                    out.push(e2.right)
+                }
+            }
+            for (var _i = 0, initial_1 = initial; _i < initial_1.length; _i++) {
+                var e = initial_1[_i]
+                go(e)
+            }
+            while (todo.length > 0) {
+                go(todo.shift())
+            }
+            return out
+        }
+    }
+    intercalate2 = function (M) {
+        var intercalateM = intercalate(M)
+        return function (middle) {
+            return match(function () {
+                return M.empty
+            }, intercalateM(middle))
+        }
+    }
+})
+
+// node_modules/fp-ts/es6/Array.js
+var exports_Array = {}
+__export(exports_Array, {
+    zipWith: () => {
+        {
+            return zipWith
+        }
+    },
+    zip: () => {
+        {
+            return zip
+        }
+    },
+    zero: () => {
+        {
+            return zero
+        }
+    },
+    wither: () => {
+        {
+            return wither
+        }
+    },
+    wilt: () => {
+        {
+            return wilt
+        }
+    },
+    updateAt: () => {
+        {
+            return updateAt
+        }
+    },
+    unzip: () => {
+        {
+            return unzip
+        }
+    },
+    unsafeUpdateAt: () => {
+        {
+            return unsafeUpdateAt3
+        }
+    },
+    unsafeInsertAt: () => {
+        {
+            return unsafeInsertAt3
+        }
+    },
+    unsafeDeleteAt: () => {
+        {
+            return unsafeDeleteAt
+        }
+    },
+    uniq: () => {
+        {
+            return uniq3
+        }
+    },
+    union: () => {
+        {
+            return union3
+        }
+    },
+    unfold: () => {
+        {
+            return unfold
+        }
+    },
+    traverseWithIndex: () => {
+        {
+            return traverseWithIndex
+        }
+    },
+    traverse: () => {
+        {
+            return traverse
+        }
+    },
+    takeRight: () => {
+        {
+            return takeRight
+        }
+    },
+    takeLeftWhile: () => {
+        {
+            return takeLeftWhile
+        }
+    },
+    takeLeft: () => {
+        {
+            return takeLeft
+        }
+    },
+    tail: () => {
+        {
+            return tail4
+        }
+    },
+    splitAt: () => {
+        {
+            return splitAt3
+        }
+    },
+    spanLeft: () => {
+        {
+            return spanLeft
+        }
+    },
+    sortBy: () => {
+        {
+            return sortBy3
+        }
+    },
+    sort: () => {
+        {
+            return sort2
+        }
+    },
+    some: () => {
+        {
+            return some2
+        }
+    },
+    snoc: () => {
+        {
+            return snoc3
+        }
+    },
+    size: () => {
+        {
+            return size
+        }
+    },
+    sequence: () => {
+        {
+            return sequence
+        }
+    },
+    separate: () => {
+        {
+            return separate
+        }
+    },
+    scanRight: () => {
+        {
+            return scanRight
+        }
+    },
+    scanLeft: () => {
+        {
+            return scanLeft
+        }
+    },
+    rotate: () => {
+        {
+            return rotate3
+        }
+    },
+    rights: () => {
+        {
+            return rights
+        }
+    },
+    reverse: () => {
+        {
+            return reverse2
+        }
+    },
+    replicate: () => {
+        {
+            return replicate
+        }
+    },
+    reduceWithIndex: () => {
+        {
+            return reduceWithIndex3
+        }
+    },
+    reduceRightWithIndex: () => {
+        {
+            return reduceRightWithIndex3
+        }
+    },
+    reduceRight: () => {
+        {
+            return reduceRight3
+        }
+    },
+    reduce: () => {
+        {
+            return reduce3
+        }
+    },
+    range: () => {
+        {
+            return range3
+        }
+    },
+    prependW: () => {
+        {
+            return prependW3
+        }
+    },
+    prependToAll: () => {
+        {
+            return prependToAll
+        }
+    },
+    prependAll: () => {
+        {
+            return prependAll3
+        }
+    },
+    prepend: () => {
+        {
+            return prepend3
+        }
+    },
+    partitionWithIndex: () => {
+        {
+            return partitionWithIndex
+        }
+    },
+    partitionMapWithIndex: () => {
+        {
+            return partitionMapWithIndex
+        }
+    },
+    partitionMap: () => {
+        {
+            return partitionMap
+        }
+    },
+    partition: () => {
+        {
+            return partition
+        }
+    },
+    of: () => {
+        {
+            return of3
+        }
+    },
+    modifyAt: () => {
+        {
+            return modifyAt
+        }
+    },
+    matchW: () => {
+        {
+            return matchW2
+        }
+    },
+    matchRightW: () => {
+        {
+            return matchRightW
+        }
+    },
+    matchRight: () => {
+        {
+            return matchRight
+        }
+    },
+    matchLeftW: () => {
+        {
+            return matchLeftW
+        }
+    },
+    matchLeft: () => {
+        {
+            return matchLeft
+        }
+    },
+    match: () => {
+        {
+            return match2
+        }
+    },
+    mapWithIndex: () => {
+        {
+            return mapWithIndex
+        }
+    },
+    map: () => {
+        {
+            return map
+        }
+    },
+    makeBy: () => {
+        {
+            return makeBy3
+        }
+    },
+    lookup: () => {
+        {
+            return lookup2
+        }
+    },
+    let: () => {
+        {
+            return let_2
+        }
+    },
+    lefts: () => {
+        {
+            return lefts
+        }
+    },
+    last: () => {
+        {
+            return last4
+        }
+    },
+    isOutOfBound: () => {
+        {
+            return isOutOfBound4
+        }
+    },
+    isNonEmpty: () => {
+        {
+            return isNonEmpty5
+        }
+    },
+    isEmpty: () => {
+        {
+            return isEmpty
+        }
+    },
+    intersperse: () => {
+        {
+            return intersperse3
+        }
+    },
+    intersection: () => {
+        {
+            return intersection
+        }
+    },
+    intercalate: () => {
+        {
+            return intercalate3
+        }
+    },
+    insertAt: () => {
+        {
+            return insertAt
+        }
+    },
+    init: () => {
+        {
+            return init3
+        }
+    },
+    head: () => {
+        {
+            return head5
+        }
+    },
+    guard: () => {
+        {
+            return guard2
+        }
+    },
+    getUnionSemigroup: () => {
+        {
+            return getUnionSemigroup
+        }
+    },
+    getUnionMonoid: () => {
+        {
+            return getUnionMonoid
+        }
+    },
+    getShow: () => {
+        {
+            return getShow3
+        }
+    },
+    getSemigroup: () => {
+        {
+            return getSemigroup4
+        }
+    },
+    getOrd: () => {
+        {
+            return getOrd2
+        }
+    },
+    getMonoid: () => {
+        {
+            return getMonoid4
+        }
+    },
+    getIntersectionSemigroup: () => {
+        {
+            return getIntersectionSemigroup
+        }
+    },
+    getEq: () => {
+        {
+            return getEq3
+        }
+    },
+    getDifferenceMagma: () => {
+        {
+            return getDifferenceMagma
+        }
+    },
+    fromPredicate: () => {
+        {
+            return fromPredicate
+        }
+    },
+    fromOptionK: () => {
+        {
+            return fromOptionK
+        }
+    },
+    fromOption: () => {
+        {
+            return fromOption
+        }
+    },
+    fromEitherK: () => {
+        {
+            return fromEitherK2
+        }
+    },
+    fromEither: () => {
+        {
+            return fromEither
+        }
+    },
+    foldRight: () => {
+        {
+            return foldRight
+        }
+    },
+    foldMapWithIndex: () => {
+        {
+            return foldMapWithIndex3
+        }
+    },
+    foldMap: () => {
+        {
+            return foldMap3
+        }
+    },
+    foldLeft: () => {
+        {
+            return foldLeft
+        }
+    },
+    flatten: () => {
+        {
+            return flatten
+        }
+    },
+    flatMap: () => {
+        {
+            return flatMap
+        }
+    },
+    flap: () => {
+        {
+            return flap2
+        }
+    },
+    findLastMap: () => {
+        {
+            return findLastMap2
+        }
+    },
+    findLastIndex: () => {
+        {
+            return findLastIndex2
+        }
+    },
+    findLast: () => {
+        {
+            return findLast2
+        }
+    },
+    findIndex: () => {
+        {
+            return findIndex2
+        }
+    },
+    findFirstMap: () => {
+        {
+            return findFirstMap2
+        }
+    },
+    findFirst: () => {
+        {
+            return findFirst2
+        }
+    },
+    filterWithIndex: () => {
+        {
+            return filterWithIndex
+        }
+    },
+    filterMapWithIndex: () => {
+        {
+            return filterMapWithIndex
+        }
+    },
+    filterMap: () => {
+        {
+            return filterMap
+        }
+    },
+    filterE: () => {
+        {
+            return filterE2
+        }
+    },
+    filter: () => {
+        {
+            return filter
+        }
+    },
+    extend: () => {
+        {
+            return extend
+        }
+    },
+    exists: () => {
+        {
+            return exists
+        }
+    },
+    every: () => {
+        {
+            return every2
+        }
+    },
+    empty: () => {
+        {
+            return empty3
+        }
+    },
+    elem: () => {
+        {
+            return elem2
+        }
+    },
+    duplicate: () => {
+        {
+            return duplicate
+        }
+    },
+    dropRight: () => {
+        {
+            return dropRight
+        }
+    },
+    dropLeftWhile: () => {
+        {
+            return dropLeftWhile
+        }
+    },
+    dropLeft: () => {
+        {
+            return dropLeft
+        }
+    },
+    difference: () => {
+        {
+            return difference
+        }
+    },
+    deleteAt: () => {
+        {
+            return deleteAt
+        }
+    },
+    copy: () => {
+        {
+            return copy2
+        }
+    },
+    cons: () => {
+        {
+            return cons3
+        }
+    },
+    concatW: () => {
+        {
+            return concatW
+        }
+    },
+    concat: () => {
+        {
+            return concat2
+        }
+    },
+    comprehension: () => {
+        {
+            return comprehension
+        }
+    },
+    compact: () => {
+        {
+            return compact
+        }
+    },
+    chunksOf: () => {
+        {
+            return chunksOf3
+        }
+    },
+    chop: () => {
+        {
+            return chop3
+        }
+    },
+    chainWithIndex: () => {
+        {
+            return chainWithIndex
+        }
+    },
+    chainRecDepthFirst: () => {
+        {
+            return chainRecDepthFirst2
+        }
+    },
+    chainRecBreadthFirst: () => {
+        {
+            return chainRecBreadthFirst2
+        }
+    },
+    chainFirst: () => {
+        {
+            return chainFirst2
+        }
+    },
+    chain: () => {
+        {
+            return chain
+        }
+    },
+    bindTo: () => {
+        {
+            return bindTo2
+        }
+    },
+    bind: () => {
+        {
+            return bind2
+        }
+    },
+    array: () => {
+        {
+            return array
+        }
+    },
+    appendW: () => {
+        {
+            return appendW3
+        }
+    },
+    append: () => {
+        {
+            return append3
+        }
+    },
+    apSecond: () => {
+        {
+            return apSecond2
+        }
+    },
+    apS: () => {
+        {
+            return apS2
+        }
+    },
+    apFirst: () => {
+        {
+            return apFirst2
+        }
+    },
+    ap: () => {
+        {
+            return ap2
+        }
+    },
+    altW: () => {
+        {
+            return altW
+        }
+    },
+    alt: () => {
+        {
+            return alt
+        }
+    },
+    Zero: () => {
+        {
+            return Zero2
+        }
+    },
+    Witherable: () => {
+        {
+            return Witherable2
+        }
+    },
+    Unfoldable: () => {
+        {
+            return Unfoldable
+        }
+    },
+    URI: () => {
+        {
+            return URI2
+        }
+    },
+    TraversableWithIndex: () => {
+        {
+            return TraversableWithIndex
+        }
+    },
+    Traversable: () => {
+        {
+            return Traversable
+        }
+    },
+    Pointed: () => {
+        {
+            return Pointed
+        }
+    },
+    Monad: () => {
+        {
+            return Monad
+        }
+    },
+    FunctorWithIndex: () => {
+        {
+            return FunctorWithIndex
+        }
+    },
+    Functor: () => {
+        {
+            return Functor2
+        }
+    },
+    FromEither: () => {
+        {
+            return FromEither2
+        }
+    },
+    FoldableWithIndex: () => {
+        {
+            return FoldableWithIndex
+        }
+    },
+    Foldable: () => {
+        {
+            return Foldable
+        }
+    },
+    FilterableWithIndex: () => {
+        {
+            return FilterableWithIndex
+        }
+    },
+    Filterable: () => {
+        {
+            return Filterable
+        }
+    },
+    Extend: () => {
+        {
+            return Extend
+        }
+    },
+    Do: () => {
+        {
+            return Do
+        }
+    },
+    Compactable: () => {
+        {
+            return Compactable
+        }
+    },
+    ChainRecDepthFirst: () => {
+        {
+            return ChainRecDepthFirst
+        }
+    },
+    ChainRecBreadthFirst: () => {
+        {
+            return ChainRecBreadthFirst
+        }
+    },
+    Chain: () => {
+        {
+            return Chain3
+        }
+    },
+    Apply: () => {
+        {
+            return Apply3
+        }
+    },
+    Applicative: () => {
+        {
+            return Applicative
+        }
+    },
+    Alternative: () => {
+        {
+            return Alternative
+        }
+    },
+    Alt: () => {
+        {
+            return Alt
+        }
+    },
+})
+function fromPredicate(predicate) {
+    return function (a) {
+        return predicate(a) ? [a] : []
+    }
+}
+function takeLeftWhile(predicate) {
+    return function (as2) {
+        var out = []
+        for (var _i = 0, as_1 = as2; _i < as_1.length; _i++) {
+            var a = as_1[_i]
+            if (!predicate(a)) {
+                break
+            }
+            out.push(a)
+        }
+        return out
+    }
+}
+function spanLeft(predicate) {
+    return function (as2) {
+        var _a = splitAt3(spanLeftIndex(as2, predicate))(as2),
+            init3 = _a[0],
+            rest = _a[1]
+        return { init: init3, rest }
+    }
+}
+function dropLeftWhile(predicate) {
+    return function (as2) {
+        return as2.slice(spanLeftIndex(as2, predicate))
+    }
+}
+function findFirst2(predicate) {
+    return findFirst(predicate)
+}
+function findLast2(predicate) {
+    return findLast(predicate)
+}
+function zip(as2, bs) {
+    if (bs === undefined) {
+        return function (bs2) {
+            return zip(bs2, as2)
+        }
+    }
+    return zipWith(as2, bs, function (a, b) {
+        return [a, b]
+    })
+}
+function comprehension(input, f, g) {
+    if (g === undefined) {
+        g = function () {
+            return true
+        }
+    }
+    var go = function (scope, input2) {
+        return isNonEmpty5(input2)
+            ? flatMap(head3(input2), function (a) {
+                  return go(pipe(scope, append3(a)), tail3(input2))
+              })
+            : g.apply(undefined, scope)
+            ? [f.apply(undefined, scope)]
+            : []
+    }
+    return go([], input)
+}
+function union3(E) {
+    var unionE = union(E)
+    return function (first2, second) {
+        if (second === undefined) {
+            var unionE_1 = union3(E)
+            return function (second2) {
+                return unionE_1(second2, first2)
+            }
+        }
+        return isNonEmpty5(first2) && isNonEmpty5(second)
+            ? unionE(second)(first2)
+            : isNonEmpty5(first2)
+            ? copy2(first2)
+            : copy2(second)
+    }
+}
+function intersection(E) {
+    var elemE = elem2(E)
+    return function (xs, ys) {
+        if (ys === undefined) {
+            var intersectionE_1 = intersection(E)
+            return function (ys2) {
+                return intersectionE_1(ys2, xs)
+            }
+        }
+        return xs.filter(function (a) {
+            return elemE(a, ys)
+        })
+    }
+}
+function difference(E) {
+    var elemE = elem2(E)
+    return function (xs, ys) {
+        if (ys === undefined) {
+            var differenceE_1 = difference(E)
+            return function (ys2) {
+                return differenceE_1(ys2, xs)
+            }
+        }
+        return xs.filter(function (a) {
+            return !elemE(a, ys)
+        })
+    }
+}
+var isEmpty,
+    isNonEmpty5,
+    prepend3,
+    prependW3,
+    append3,
+    appendW3,
+    makeBy3,
+    replicate,
+    fromOption,
+    fromEither,
+    matchW2,
+    match2,
+    matchLeftW,
+    matchLeft,
+    foldLeft,
+    matchRightW,
+    matchRight,
+    foldRight,
+    chainWithIndex,
+    scanLeft,
+    scanRight,
+    size,
+    isOutOfBound4,
+    lookup2,
+    head5,
+    last4,
+    tail4,
+    init3,
+    takeLeft,
+    takeRight,
+    spanLeftIndex,
+    dropLeft,
+    dropRight,
+    findIndex2,
+    findFirstMap2,
+    findLastMap2,
+    findLastIndex2,
+    copy2,
+    insertAt,
+    updateAt,
+    deleteAt,
+    modifyAt,
+    reverse2,
+    rights,
+    lefts,
+    sort2,
+    zipWith,
+    unzip,
+    prependAll3,
+    intersperse3,
+    rotate3,
+    elem2,
+    uniq3,
+    sortBy3,
+    chop3,
+    splitAt3,
+    chunksOf3,
+    fromOptionK,
+    concatW,
+    concat2,
+    _map,
+    _mapWithIndex,
+    _ap,
+    _filter,
+    _filterMap,
+    _partition,
+    _partitionMap,
+    _partitionWithIndex,
+    _partitionMapWithIndex,
+    _alt,
+    _reduce,
+    _foldMap,
+    _reduceRight,
+    _reduceWithIndex,
+    _foldMapWithIndex,
+    _reduceRightWithIndex,
+    _filterMapWithIndex,
+    _filterWithIndex,
+    _extend,
+    _traverse,
+    _traverseWithIndex,
+    _chainRecDepthFirst2,
+    _chainRecBreadthFirst2,
+    of3,
+    zero,
+    map,
+    ap2,
+    flatMap,
+    flatten,
+    mapWithIndex,
+    filterMapWithIndex,
+    filterMap,
+    compact,
+    separate,
+    filter,
+    partition,
+    partitionWithIndex,
+    partitionMap,
+    partitionMapWithIndex,
+    altW,
+    alt,
+    filterWithIndex,
+    extend,
+    duplicate,
+    foldMap3,
+    foldMapWithIndex3,
+    reduce3,
+    reduceWithIndex3,
+    reduceRight3,
+    reduceRightWithIndex3,
+    traverse,
+    sequence,
+    traverseWithIndex,
+    wither,
+    wilt,
+    unfold,
+    URI2,
+    getShow3,
+    getSemigroup4,
+    getMonoid4,
+    getEq3,
+    getOrd2,
+    getUnionSemigroup,
+    getUnionMonoid,
+    getIntersectionSemigroup,
+    getDifferenceMagma,
+    Functor2,
+    flap2,
+    Pointed,
+    FunctorWithIndex,
+    Apply3,
+    apFirst2,
+    apSecond2,
+    Applicative,
+    Chain3,
+    chainFirst2,
+    Monad,
+    Unfoldable,
+    Alt,
+    Zero2,
+    guard2,
+    Alternative,
+    Extend,
+    Compactable,
+    Filterable,
+    FilterableWithIndex,
+    Foldable,
+    FoldableWithIndex,
+    Traversable,
+    TraversableWithIndex,
+    _wither,
+    _wilt,
+    Witherable2,
+    chainRecDepthFirst2,
+    ChainRecDepthFirst,
+    chainRecBreadthFirst2,
+    ChainRecBreadthFirst,
+    filterE2,
+    FromEither2,
+    fromEitherK2,
+    unsafeInsertAt3,
+    unsafeUpdateAt3,
+    unsafeDeleteAt,
+    every2,
+    some2,
+    exists,
+    intercalate3,
+    Do,
+    bindTo2,
+    let_2,
+    bind2,
+    apS2,
+    chain,
+    range3,
+    empty3,
+    cons3,
+    snoc3,
+    prependToAll,
+    array
+var init_Array = __esm(() => {
+    init_Apply()
+    init_Chain()
+    init_FromEither()
+    init_function()
+    init_Functor()
+    init_internal()
+    init_NonEmptyArray()
+    init_ReadonlyArray()
+    init_Separated()
+    init_Witherable()
+    init_Zero()
+    isEmpty = function (as2) {
+        return as2.length === 0
+    }
+    isNonEmpty5 = isNonEmpty3
+    prepend3 = prepend2
+    prependW3 = prependW2
+    append3 = append
+    appendW3 = appendW
+    makeBy3 = function (n, f) {
+        return n <= 0 ? [] : makeBy(f)(n)
+    }
+    replicate = function (n, a) {
+        return makeBy3(n, function () {
+            return a
+        })
+    }
+    fromOption = function (ma) {
+        return isNone(ma) ? [] : [ma.value]
+    }
+    fromEither = function (e) {
+        return isLeft(e) ? [] : [e.right]
+    }
+    matchW2 = function (onEmpty, onNonEmpty) {
+        return function (as2) {
+            return isNonEmpty5(as2) ? onNonEmpty(as2) : onEmpty()
+        }
+    }
+    match2 = matchW2
+    matchLeftW = function (onEmpty, onNonEmpty) {
+        return function (as2) {
+            return isNonEmpty5(as2) ? onNonEmpty(head3(as2), tail3(as2)) : onEmpty()
+        }
+    }
+    matchLeft = matchLeftW
+    foldLeft = matchLeft
+    matchRightW = function (onEmpty, onNonEmpty) {
+        return function (as2) {
+            return isNonEmpty5(as2) ? onNonEmpty(init(as2), last2(as2)) : onEmpty()
+        }
+    }
+    matchRight = matchRightW
+    foldRight = matchRight
+    chainWithIndex = function (f) {
+        return function (as2) {
+            var out = []
+            for (var i = 0; i < as2.length; i++) {
+                out.push.apply(out, f(i, as2[i]))
+            }
+            return out
+        }
+    }
+    scanLeft = function (b, f) {
+        return function (as2) {
+            var len = as2.length
+            var out = new Array(len + 1)
+            out[0] = b
+            for (var i = 0; i < len; i++) {
+                out[i + 1] = f(out[i], as2[i])
+            }
+            return out
+        }
+    }
+    scanRight = function (b, f) {
+        return function (as2) {
+            var len = as2.length
+            var out = new Array(len + 1)
+            out[len] = b
+            for (var i = len - 1; i >= 0; i--) {
+                out[i] = f(as2[i], out[i + 1])
+            }
+            return out
+        }
+    }
+    size = function (as2) {
+        return as2.length
+    }
+    isOutOfBound4 = isOutOfBound2
+    lookup2 = lookup
+    head5 = head4
+    last4 = last3
+    tail4 = function (as2) {
+        return isNonEmpty5(as2) ? some(tail3(as2)) : none
+    }
+    init3 = function (as2) {
+        return isNonEmpty5(as2) ? some(init(as2)) : none
+    }
+    takeLeft = function (n) {
+        return function (as2) {
+            return isOutOfBound4(n, as2) ? copy2(as2) : as2.slice(0, n)
+        }
+    }
+    takeRight = function (n) {
+        return function (as2) {
+            return isOutOfBound4(n, as2) ? copy2(as2) : n === 0 ? [] : as2.slice(-n)
+        }
+    }
+    spanLeftIndex = function (as2, predicate) {
+        var l = as2.length
+        var i = 0
+        for (; i < l; i++) {
+            if (!predicate(as2[i])) {
+                break
+            }
+        }
+        return i
+    }
+    dropLeft = function (n) {
+        return function (as2) {
+            return n <= 0 || isEmpty(as2) ? copy2(as2) : n >= as2.length ? [] : as2.slice(n, as2.length)
+        }
+    }
+    dropRight = function (n) {
+        return function (as2) {
+            return n <= 0 || isEmpty(as2) ? copy2(as2) : n >= as2.length ? [] : as2.slice(0, as2.length - n)
+        }
+    }
+    findIndex2 = findIndex
+    findFirstMap2 = findFirstMap
+    findLastMap2 = findLastMap
+    findLastIndex2 = findLastIndex
+    copy2 = function (as2) {
+        return as2.slice()
+    }
+    insertAt = function (i, a) {
+        return function (as2) {
+            return i < 0 || i > as2.length ? none : some(unsafeInsertAt3(i, a, as2))
+        }
+    }
+    updateAt = function (i, a) {
+        return modifyAt(i, function () {
+            return a
+        })
+    }
+    deleteAt = function (i) {
+        return function (as2) {
+            return isOutOfBound4(i, as2) ? none : some(unsafeDeleteAt(i, as2))
+        }
+    }
+    modifyAt = function (i, f) {
+        return function (as2) {
+            return isOutOfBound4(i, as2) ? none : some(unsafeUpdateAt3(i, f(as2[i]), as2))
+        }
+    }
+    reverse2 = function (as2) {
+        return isEmpty(as2) ? [] : as2.slice().reverse()
+    }
+    rights = function (as2) {
+        var r = []
+        for (var i = 0; i < as2.length; i++) {
+            var a = as2[i]
+            if (a._tag === "Right") {
+                r.push(a.right)
+            }
+        }
+        return r
+    }
+    lefts = function (as2) {
+        var r = []
+        for (var i = 0; i < as2.length; i++) {
+            var a = as2[i]
+            if (a._tag === "Left") {
+                r.push(a.left)
+            }
+        }
+        return r
+    }
+    sort2 = function (O) {
+        return function (as2) {
+            return as2.length <= 1 ? copy2(as2) : as2.slice().sort(O.compare)
+        }
+    }
+    zipWith = function (fa, fb, f) {
+        var fc = []
+        var len = Math.min(fa.length, fb.length)
+        for (var i = 0; i < len; i++) {
+            fc[i] = f(fa[i], fb[i])
+        }
+        return fc
+    }
+    unzip = function (as2) {
+        var fa = []
+        var fb = []
+        for (var i = 0; i < as2.length; i++) {
+            fa[i] = as2[i][0]
+            fb[i] = as2[i][1]
+        }
+        return [fa, fb]
+    }
+    prependAll3 = function (middle) {
+        var f = prependAll2(middle)
+        return function (as2) {
+            return isNonEmpty5(as2) ? f(as2) : []
+        }
+    }
+    intersperse3 = function (middle) {
+        var f = intersperse2(middle)
+        return function (as2) {
+            return isNonEmpty5(as2) ? f(as2) : copy2(as2)
+        }
+    }
+    rotate3 = function (n) {
+        var f = rotate(n)
+        return function (as2) {
+            return isNonEmpty5(as2) ? f(as2) : copy2(as2)
+        }
+    }
+    elem2 = elem
+    uniq3 = function (E) {
+        var f = uniq(E)
+        return function (as2) {
+            return isNonEmpty5(as2) ? f(as2) : copy2(as2)
+        }
+    }
+    sortBy3 = function (ords) {
+        var f = sortBy(ords)
+        return function (as2) {
+            return isNonEmpty5(as2) ? f(as2) : copy2(as2)
+        }
+    }
+    chop3 = function (f) {
+        var g = chop(f)
+        return function (as2) {
+            return isNonEmpty5(as2) ? g(as2) : []
+        }
+    }
+    splitAt3 = function (n) {
+        return function (as2) {
+            return n >= 1 && isNonEmpty5(as2) ? splitAt(n)(as2) : isEmpty(as2) ? [copy2(as2), []] : [[], copy2(as2)]
+        }
+    }
+    chunksOf3 = function (n) {
+        var f = chunksOf(n)
+        return function (as2) {
+            return isNonEmpty5(as2) ? f(as2) : []
+        }
+    }
+    fromOptionK = function (f) {
+        return function () {
+            var a = []
+            for (var _i = 0; _i < arguments.length; _i++) {
+                a[_i] = arguments[_i]
+            }
+            return fromOption(f.apply(undefined, a))
+        }
+    }
+    concatW = function (second) {
+        return function (first2) {
+            return isEmpty(first2) ? copy2(second) : isEmpty(second) ? copy2(first2) : first2.concat(second)
+        }
+    }
+    concat2 = concatW
+    _map = function (fa, f) {
+        return pipe(fa, map(f))
+    }
+    _mapWithIndex = function (fa, f) {
+        return pipe(fa, mapWithIndex(f))
+    }
+    _ap = function (fab, fa) {
+        return pipe(fab, ap2(fa))
+    }
+    _filter = function (fa, predicate) {
+        return pipe(fa, filter(predicate))
+    }
+    _filterMap = function (fa, f) {
+        return pipe(fa, filterMap(f))
+    }
+    _partition = function (fa, predicate) {
+        return pipe(fa, partition(predicate))
+    }
+    _partitionMap = function (fa, f) {
+        return pipe(fa, partitionMap(f))
+    }
+    _partitionWithIndex = function (fa, predicateWithIndex) {
+        return pipe(fa, partitionWithIndex(predicateWithIndex))
+    }
+    _partitionMapWithIndex = function (fa, f) {
+        return pipe(fa, partitionMapWithIndex(f))
+    }
+    _alt = function (fa, that) {
+        return pipe(fa, alt(that))
+    }
+    _reduce = function (fa, b, f) {
+        return pipe(fa, reduce3(b, f))
+    }
+    _foldMap = function (M) {
+        var foldMapM = foldMap3(M)
+        return function (fa, f) {
+            return pipe(fa, foldMapM(f))
+        }
+    }
+    _reduceRight = function (fa, b, f) {
+        return pipe(fa, reduceRight3(b, f))
+    }
+    _reduceWithIndex = function (fa, b, f) {
+        return pipe(fa, reduceWithIndex3(b, f))
+    }
+    _foldMapWithIndex = function (M) {
+        var foldMapWithIndexM = foldMapWithIndex3(M)
+        return function (fa, f) {
+            return pipe(fa, foldMapWithIndexM(f))
+        }
+    }
+    _reduceRightWithIndex = function (fa, b, f) {
+        return pipe(fa, reduceRightWithIndex3(b, f))
+    }
+    _filterMapWithIndex = function (fa, f) {
+        return pipe(fa, filterMapWithIndex(f))
+    }
+    _filterWithIndex = function (fa, predicateWithIndex) {
+        return pipe(fa, filterWithIndex(predicateWithIndex))
+    }
+    _extend = function (fa, f) {
+        return pipe(fa, extend(f))
+    }
+    _traverse = function (F) {
+        var traverseF = traverse(F)
+        return function (ta, f) {
+            return pipe(ta, traverseF(f))
+        }
+    }
+    _traverseWithIndex = function (F) {
+        var traverseWithIndexF = traverseWithIndex(F)
+        return function (ta, f) {
+            return pipe(ta, traverseWithIndexF(f))
+        }
+    }
+    _chainRecDepthFirst2 = _chainRecDepthFirst
+    _chainRecBreadthFirst2 = _chainRecBreadthFirst
+    of3 = of
+    zero = function () {
+        return []
+    }
+    map = function (f) {
+        return function (fa) {
+            return fa.map(function (a) {
+                return f(a)
+            })
+        }
+    }
+    ap2 = function (fa) {
+        return flatMap(function (f) {
+            return pipe(fa, map(f))
+        })
+    }
+    flatMap = dual(2, function (ma, f) {
+        return pipe(
+            ma,
+            chainWithIndex(function (i, a) {
+                return f(a, i)
+            }),
+        )
+    })
+    flatten = flatMap(identity)
+    mapWithIndex = function (f) {
+        return function (fa) {
+            return fa.map(function (a, i) {
+                return f(i, a)
+            })
+        }
+    }
+    filterMapWithIndex = function (f) {
+        return function (fa) {
+            var out = []
+            for (var i = 0; i < fa.length; i++) {
+                var optionB = f(i, fa[i])
+                if (isSome(optionB)) {
+                    out.push(optionB.value)
+                }
+            }
+            return out
+        }
+    }
+    filterMap = function (f) {
+        return filterMapWithIndex(function (_, a) {
+            return f(a)
+        })
+    }
+    compact = filterMap(identity)
+    separate = function (fa) {
+        var left = []
+        var right = []
+        for (var _i = 0, fa_1 = fa; _i < fa_1.length; _i++) {
+            var e = fa_1[_i]
+            if (e._tag === "Left") {
+                left.push(e.left)
+            } else {
+                right.push(e.right)
+            }
+        }
+        return separated(left, right)
+    }
+    filter = function (predicate) {
+        return function (as2) {
+            return as2.filter(predicate)
+        }
+    }
+    partition = function (predicate) {
+        return partitionWithIndex(function (_, a) {
+            return predicate(a)
+        })
+    }
+    partitionWithIndex = function (predicateWithIndex) {
+        return function (as2) {
+            var left = []
+            var right = []
+            for (var i = 0; i < as2.length; i++) {
+                var b = as2[i]
+                if (predicateWithIndex(i, b)) {
+                    right.push(b)
+                } else {
+                    left.push(b)
+                }
+            }
+            return separated(left, right)
+        }
+    }
+    partitionMap = function (f) {
+        return partitionMapWithIndex(function (_, a) {
+            return f(a)
+        })
+    }
+    partitionMapWithIndex = function (f) {
+        return function (fa) {
+            var left = []
+            var right = []
+            for (var i = 0; i < fa.length; i++) {
+                var e = f(i, fa[i])
+                if (e._tag === "Left") {
+                    left.push(e.left)
+                } else {
+                    right.push(e.right)
+                }
+            }
+            return separated(left, right)
+        }
+    }
+    altW = function (that) {
+        return function (fa) {
+            return fa.concat(that())
+        }
+    }
+    alt = altW
+    filterWithIndex = function (predicateWithIndex) {
+        return function (as2) {
+            return as2.filter(function (b, i) {
+                return predicateWithIndex(i, b)
+            })
+        }
+    }
+    extend = function (f) {
+        return function (wa) {
+            return wa.map(function (_, i) {
+                return f(wa.slice(i))
+            })
+        }
+    }
+    duplicate = extend(identity)
+    foldMap3 = foldMap2
+    foldMapWithIndex3 = foldMapWithIndex2
+    reduce3 = reduce2
+    reduceWithIndex3 = reduceWithIndex2
+    reduceRight3 = reduceRight2
+    reduceRightWithIndex3 = reduceRightWithIndex2
+    traverse = function (F) {
+        var traverseWithIndexF = traverseWithIndex(F)
+        return function (f) {
+            return traverseWithIndexF(function (_, a) {
+                return f(a)
+            })
+        }
+    }
+    sequence = function (F) {
+        return function (ta) {
+            return _reduce(ta, F.of(zero()), function (fas, fa) {
+                return F.ap(
+                    F.map(fas, function (as2) {
+                        return function (a) {
+                            return pipe(as2, append3(a))
+                        }
+                    }),
+                    fa,
+                )
+            })
+        }
+    }
+    traverseWithIndex = function (F) {
+        return function (f) {
+            return reduceWithIndex3(F.of(zero()), function (i, fbs, a) {
+                return F.ap(
+                    F.map(fbs, function (bs) {
+                        return function (b) {
+                            return pipe(bs, append3(b))
+                        }
+                    }),
+                    f(i, a),
+                )
+            })
+        }
+    }
+    wither = function (F) {
+        var _witherF = _wither(F)
+        return function (f) {
+            return function (fa) {
+                return _witherF(fa, f)
+            }
+        }
+    }
+    wilt = function (F) {
+        var _wiltF = _wilt(F)
+        return function (f) {
+            return function (fa) {
+                return _wiltF(fa, f)
+            }
+        }
+    }
+    unfold = function (b, f) {
+        var out = []
+        var bb = b
+        while (true) {
+            var mt = f(bb)
+            if (isSome(mt)) {
+                var _a = mt.value,
+                    a = _a[0],
+                    b_1 = _a[1]
+                out.push(a)
+                bb = b_1
+            } else {
+                break
+            }
+        }
+        return out
+    }
+    URI2 = "Array"
+    getShow3 = getShow2
+    getSemigroup4 = function () {
+        return {
+            concat: function (first2, second) {
+                return first2.concat(second)
+            },
+        }
+    }
+    getMonoid4 = function () {
+        return {
+            concat: getSemigroup4().concat,
+            empty: [],
+        }
+    }
+    getEq3 = getEq2
+    getOrd2 = getOrd
+    getUnionSemigroup = function (E) {
+        var unionE = union3(E)
+        return {
+            concat: function (first2, second) {
+                return unionE(second)(first2)
+            },
+        }
+    }
+    getUnionMonoid = function (E) {
+        return {
+            concat: getUnionSemigroup(E).concat,
+            empty: [],
+        }
+    }
+    getIntersectionSemigroup = function (E) {
+        var intersectionE = intersection(E)
+        return {
+            concat: function (first2, second) {
+                return intersectionE(second)(first2)
+            },
+        }
+    }
+    getDifferenceMagma = function (E) {
+        var differenceE = difference(E)
+        return {
+            concat: function (first2, second) {
+                return differenceE(second)(first2)
+            },
+        }
+    }
+    Functor2 = {
+        URI: URI2,
+        map: _map,
+    }
+    flap2 = flap(Functor2)
+    Pointed = {
+        URI: URI2,
+        of: of3,
+    }
+    FunctorWithIndex = {
+        URI: URI2,
+        map: _map,
+        mapWithIndex: _mapWithIndex,
+    }
+    Apply3 = {
+        URI: URI2,
+        map: _map,
+        ap: _ap,
+    }
+    apFirst2 = apFirst(Apply3)
+    apSecond2 = apSecond(Apply3)
+    Applicative = {
+        URI: URI2,
+        map: _map,
+        ap: _ap,
+        of: of3,
+    }
+    Chain3 = {
+        URI: URI2,
+        map: _map,
+        ap: _ap,
+        chain: flatMap,
+    }
+    chainFirst2 = chainFirst(Chain3)
+    Monad = {
+        URI: URI2,
+        map: _map,
+        ap: _ap,
+        of: of3,
+        chain: flatMap,
+    }
+    Unfoldable = {
+        URI: URI2,
+        unfold,
+    }
+    Alt = {
+        URI: URI2,
+        map: _map,
+        alt: _alt,
+    }
+    Zero2 = {
+        URI: URI2,
+        zero,
+    }
+    guard2 = guard(Zero2, Pointed)
+    Alternative = {
+        URI: URI2,
+        map: _map,
+        ap: _ap,
+        of: of3,
+        alt: _alt,
+        zero,
+    }
+    Extend = {
+        URI: URI2,
+        map: _map,
+        extend: _extend,
+    }
+    Compactable = {
+        URI: URI2,
+        compact,
+        separate,
+    }
+    Filterable = {
+        URI: URI2,
+        map: _map,
+        compact,
+        separate,
+        filter: _filter,
+        filterMap: _filterMap,
+        partition: _partition,
+        partitionMap: _partitionMap,
+    }
+    FilterableWithIndex = {
+        URI: URI2,
+        map: _map,
+        mapWithIndex: _mapWithIndex,
+        compact,
+        separate,
+        filter: _filter,
+        filterMap: _filterMap,
+        partition: _partition,
+        partitionMap: _partitionMap,
+        partitionMapWithIndex: _partitionMapWithIndex,
+        partitionWithIndex: _partitionWithIndex,
+        filterMapWithIndex: _filterMapWithIndex,
+        filterWithIndex: _filterWithIndex,
+    }
+    Foldable = {
+        URI: URI2,
+        reduce: _reduce,
+        foldMap: _foldMap,
+        reduceRight: _reduceRight,
+    }
+    FoldableWithIndex = {
+        URI: URI2,
+        reduce: _reduce,
+        foldMap: _foldMap,
+        reduceRight: _reduceRight,
+        reduceWithIndex: _reduceWithIndex,
+        foldMapWithIndex: _foldMapWithIndex,
+        reduceRightWithIndex: _reduceRightWithIndex,
+    }
+    Traversable = {
+        URI: URI2,
+        map: _map,
+        reduce: _reduce,
+        foldMap: _foldMap,
+        reduceRight: _reduceRight,
+        traverse: _traverse,
+        sequence,
+    }
+    TraversableWithIndex = {
+        URI: URI2,
+        map: _map,
+        mapWithIndex: _mapWithIndex,
+        reduce: _reduce,
+        foldMap: _foldMap,
+        reduceRight: _reduceRight,
+        reduceWithIndex: _reduceWithIndex,
+        foldMapWithIndex: _foldMapWithIndex,
+        reduceRightWithIndex: _reduceRightWithIndex,
+        traverse: _traverse,
+        sequence,
+        traverseWithIndex: _traverseWithIndex,
+    }
+    _wither = witherDefault(Traversable, Compactable)
+    _wilt = wiltDefault(Traversable, Compactable)
+    Witherable2 = {
+        URI: URI2,
+        map: _map,
+        compact,
+        separate,
+        filter: _filter,
+        filterMap: _filterMap,
+        partition: _partition,
+        partitionMap: _partitionMap,
+        reduce: _reduce,
+        foldMap: _foldMap,
+        reduceRight: _reduceRight,
+        traverse: _traverse,
+        sequence,
+        wither: _wither,
+        wilt: _wilt,
+    }
+    chainRecDepthFirst2 = chainRecDepthFirst
+    ChainRecDepthFirst = {
+        URI: URI2,
+        map: _map,
+        ap: _ap,
+        chain: flatMap,
+        chainRec: _chainRecDepthFirst2,
+    }
+    chainRecBreadthFirst2 = chainRecBreadthFirst
+    ChainRecBreadthFirst = {
+        URI: URI2,
+        map: _map,
+        ap: _ap,
+        chain: flatMap,
+        chainRec: _chainRecBreadthFirst2,
+    }
+    filterE2 = filterE(Witherable2)
+    FromEither2 = {
+        URI: URI2,
+        fromEither,
+    }
+    fromEitherK2 = fromEitherK(FromEither2)
+    unsafeInsertAt3 = unsafeInsertAt
+    unsafeUpdateAt3 = function (i, a, as2) {
+        return isNonEmpty5(as2) ? unsafeUpdateAt(i, a, as2) : []
+    }
+    unsafeDeleteAt = function (i, as2) {
+        var xs = as2.slice()
+        xs.splice(i, 1)
+        return xs
+    }
+    every2 = every
+    some2 = function (predicate) {
+        return function (as2) {
+            return as2.some(predicate)
+        }
+    }
+    exists = some2
+    intercalate3 = intercalate2
+    Do = of3(emptyRecord)
+    bindTo2 = bindTo(Functor2)
+    let_2 = let_(Functor2)
+    bind2 = bind(Chain3)
+    apS2 = apS(Apply3)
+    chain = flatMap
+    range3 = range
+    empty3 = []
+    cons3 = cons
+    snoc3 = snoc
+    prependToAll = prependAll3
+    array = {
+        URI: URI2,
+        compact,
+        separate,
+        map: _map,
+        ap: _ap,
+        of: of3,
+        chain: flatMap,
+        filter: _filter,
+        filterMap: _filterMap,
+        partition: _partition,
+        partitionMap: _partitionMap,
+        mapWithIndex: _mapWithIndex,
+        partitionMapWithIndex: _partitionMapWithIndex,
+        partitionWithIndex: _partitionWithIndex,
+        filterMapWithIndex: _filterMapWithIndex,
+        filterWithIndex: _filterWithIndex,
+        alt: _alt,
+        zero,
+        unfold,
+        reduce: _reduce,
+        foldMap: _foldMap,
+        reduceRight: _reduceRight,
+        traverse: _traverse,
+        sequence,
+        reduceWithIndex: _reduceWithIndex,
+        foldMapWithIndex: _foldMapWithIndex,
+        reduceRightWithIndex: _reduceRightWithIndex,
+        traverseWithIndex: _traverseWithIndex,
+        extend: _extend,
+        wither: _wither,
+        wilt: _wilt,
+    }
+})
+
+// node_modules/fp-ts/es6/Predicate.js
+var not
+var init_Predicate = __esm(() => {
+    not = function (predicate) {
+        return function (a) {
+            return !predicate(a)
+        }
+    }
+})
+
+// node_modules/fp-ts/es6/Option.js
+function fromPredicate2(predicate) {
+    return function (a) {
+        return predicate(a) ? some3(a) : none2
+    }
+}
+var none2,
+    some3,
+    getRight,
+    _map2,
+    _ap2,
+    URI3,
+    getMonoid5,
+    map2,
+    Functor4,
+    as2,
+    asUnit2,
+    ap3,
+    flatMap2,
+    Chain4,
+    orElse,
+    fromEither2,
+    FromEither4,
+    isSome2,
+    isNone2,
+    getOrElseW,
+    getOrElse,
+    tap2,
+    tapEither2
+var init_Option = __esm(() => {
+    init_Chain()
+    init_FromEither()
+    init_function()
+    init_Functor()
+    init_internal()
+    none2 = none
+    some3 = some
+    getRight = function (ma) {
+        return ma._tag === "Left" ? none2 : some3(ma.right)
+    }
+    _map2 = function (fa, f) {
+        return pipe(fa, map2(f))
+    }
+    _ap2 = function (fab, fa) {
+        return pipe(fab, ap3(fa))
+    }
+    URI3 = "Option"
+    getMonoid5 = function (S) {
+        return {
+            concat: function (x, y) {
+                return isNone2(x) ? y : isNone2(y) ? x : some3(S.concat(x.value, y.value))
+            },
+            empty: none2,
+        }
+    }
+    map2 = function (f) {
+        return function (fa) {
+            return isNone2(fa) ? none2 : some3(f(fa.value))
+        }
+    }
+    Functor4 = {
+        URI: URI3,
+        map: _map2,
+    }
+    as2 = dual(2, as(Functor4))
+    asUnit2 = asUnit(Functor4)
+    ap3 = function (fa) {
+        return function (fab) {
+            return isNone2(fab) ? none2 : isNone2(fa) ? none2 : some3(fab.value(fa.value))
+        }
+    }
+    flatMap2 = dual(2, function (ma, f) {
+        return isNone2(ma) ? none2 : f(ma.value)
+    })
+    Chain4 = {
+        URI: URI3,
+        map: _map2,
+        ap: _ap2,
+        chain: flatMap2,
+    }
+    orElse = dual(2, function (self, that) {
+        return isNone2(self) ? that() : self
+    })
+    fromEither2 = getRight
+    FromEither4 = {
+        URI: URI3,
+        fromEither: fromEither2,
+    }
+    isSome2 = isSome
+    isNone2 = function (fa) {
+        return fa._tag === "None"
+    }
+    getOrElseW = function (onNone) {
+        return function (ma) {
+            return isNone2(ma) ? onNone() : ma.value
+        }
+    }
+    getOrElse = getOrElseW
+    tap2 = dual(2, tap(Chain4))
+    tapEither2 = dual(2, tapEither(FromEither4, Chain4))
+})
+
+// node_modules/fp-ts/es6/Endomorphism.js
+var getSemigroup5, getMonoid6
+var init_Endomorphism = __esm(() => {
+    init_function()
+    getSemigroup5 = function () {
+        return {
+            concat: function (first2, second) {
+                return flow(first2, second)
+            },
+        }
+    }
+    getMonoid6 = function () {
+        return {
+            concat: getSemigroup5().concat,
+            empty: identity,
+        }
+    }
+})
+
+// node_modules/fp-ts/es6/FromIO.js
+function fromIOK(F) {
+    return function (f) {
+        return flow(f, F.fromIO)
+    }
+}
+function tapIO(F, M) {
+    var chainFirstM = tap(M)
+    return function (self, f) {
+        return chainFirstM(self, flow(f, F.fromIO))
+    }
+}
+var init_FromIO = __esm(() => {
+    init_Chain()
+    init_function()
+})
+
+// node_modules/fp-ts/es6/ReadonlyMap.js
+function lookupWithKey(E) {
+    return function (k, m) {
+        if (m === undefined) {
+            var lookupWithKeyE_1 = lookupWithKey(E)
+            return function (m2) {
+                return lookupWithKeyE_1(k, m2)
+            }
+        }
+        var entries = m.entries()
+        var e
+        while (!(e = entries.next()).done) {
+            var _a = e.value,
+                ka = _a[0],
+                a = _a[1]
+            if (E.equals(ka, k)) {
+                return some([ka, a])
+            }
+        }
+        return none
+    }
+}
+function lookup3(E) {
+    var lookupWithKeyE = lookupWithKey(E)
+    return function (k, m) {
+        if (m === undefined) {
+            var lookupE_1 = lookup3(E)
+            return function (m2) {
+                return lookupE_1(k, m2)
+            }
+        }
+        return pipe(
+            lookupWithKeyE(k, m),
+            map2(function (_a) {
+                var _ = _a[0],
+                    a = _a[1]
+                return a
+            }),
+        )
+    }
+}
+var empty4
+var init_ReadonlyMap = __esm(() => {
+    init_function()
+    init_internal()
+    init_Option()
+    empty4 = new Map()
+})
+
+// node_modules/fp-ts/es6/Map.js
+var lookup4, empty5
+var init_Map = __esm(() => {
+    init_ReadonlyMap()
+    lookup4 = lookup3
+    empty5 = new Map()
+})
+
+// node_modules/fp-ts/es6/Monoid.js
+var concatAll4, monoidVoid, monoidAll, monoidAny, monoidString, monoidSum, monoidProduct
+var init_Monoid = __esm(() => {
+    init_Semigroup()
+    concatAll4 = function (M) {
+        return concatAll2(M)(M.empty)
+    }
+    monoidVoid = {
+        concat: semigroupVoid.concat,
+        empty: undefined,
+    }
+    monoidAll = {
+        concat: semigroupAll.concat,
+        empty: true,
+    }
+    monoidAny = {
+        concat: semigroupAny.concat,
+        empty: false,
+    }
+    monoidString = {
+        concat: semigroupString.concat,
+        empty: "",
+    }
+    monoidSum = {
+        concat: semigroupSum.concat,
+        empty: 0,
+    }
+    monoidProduct = {
+        concat: semigroupProduct.concat,
+        empty: 1,
+    }
+})
+
+// node_modules/fp-ts/es6/Task.js
+var exports_Task = {}
+__export(exports_Task, {
+    traverseSeqArrayWithIndex: () => {
+        {
+            return traverseSeqArrayWithIndex
+        }
+    },
+    traverseSeqArray: () => {
+        {
+            return traverseSeqArray
+        }
+    },
+    traverseReadonlyNonEmptyArrayWithIndexSeq: () => {
+        {
+            return traverseReadonlyNonEmptyArrayWithIndexSeq
+        }
+    },
+    traverseReadonlyNonEmptyArrayWithIndex: () => {
+        {
+            return traverseReadonlyNonEmptyArrayWithIndex
+        }
+    },
+    traverseReadonlyArrayWithIndexSeq: () => {
+        {
+            return traverseReadonlyArrayWithIndexSeq
+        }
+    },
+    traverseReadonlyArrayWithIndex: () => {
+        {
+            return traverseReadonlyArrayWithIndex
+        }
+    },
+    traverseArrayWithIndex: () => {
+        {
+            return traverseArrayWithIndex
+        }
+    },
+    traverseArray: () => {
+        {
+            return traverseArray
+        }
+    },
+    taskSeq: () => {
+        {
+            return taskSeq
+        }
+    },
+    task: () => {
+        {
+            return task
+        }
+    },
+    tapIO: () => {
+        {
+            return tapIO2
+        }
+    },
+    tap: () => {
+        {
+            return tap3
+        }
+    },
+    sequenceSeqArray: () => {
+        {
+            return sequenceSeqArray
+        }
+    },
+    sequenceArray: () => {
+        {
+            return sequenceArray
+        }
+    },
+    of: () => {
+        {
+            return of4
+        }
+    },
+    never: () => {
+        {
+            return never
+        }
+    },
+    map: () => {
+        {
+            return map3
+        }
+    },
+    let: () => {
+        {
+            return let_3
+        }
+    },
+    getSemigroup: () => {
+        {
+            return getSemigroup6
+        }
+    },
+    getRaceMonoid: () => {
+        {
+            return getRaceMonoid
+        }
+    },
+    getMonoid: () => {
+        {
+            return getMonoid7
+        }
+    },
+    fromTask: () => {
+        {
+            return fromTask
+        }
+    },
+    fromIOK: () => {
+        {
+            return fromIOK2
+        }
+    },
+    fromIO: () => {
+        {
+            return fromIO
+        }
+    },
+    flatten: () => {
+        {
+            return flatten2
+        }
+    },
+    flatMapIO: () => {
+        {
+            return flatMapIO2
+        }
+    },
+    flatMap: () => {
+        {
+            return flatMap3
+        }
+    },
+    flap: () => {
+        {
+            return flap3
+        }
+    },
+    delay: () => {
+        {
+            return delay
+        }
+    },
+    chainIOK: () => {
+        {
+            return chainIOK
+        }
+    },
+    chainFirstIOK: () => {
+        {
+            return chainFirstIOK
+        }
+    },
+    chainFirst: () => {
+        {
+            return chainFirst3
+        }
+    },
+    chain: () => {
+        {
+            return chain2
+        }
+    },
+    bindTo: () => {
+        {
+            return bindTo3
+        }
+    },
+    bind: () => {
+        {
+            return bind3
+        }
+    },
+    asUnit: () => {
+        {
+            return asUnit3
+        }
+    },
+    as: () => {
+        {
+            return as3
+        }
+    },
+    apSecond: () => {
+        {
+            return apSecond3
+        }
+    },
+    apS: () => {
+        {
+            return apS3
+        }
+    },
+    apFirst: () => {
+        {
+            return apFirst3
+        }
+    },
+    ap: () => {
+        {
+            return ap4
+        }
+    },
+    URI: () => {
+        {
+            return URI4
+        }
+    },
+    Pointed: () => {
+        {
+            return Pointed2
+        }
+    },
+    MonadTask: () => {
+        {
+            return MonadTask
+        }
+    },
+    MonadIO: () => {
+        {
+            return MonadIO
+        }
+    },
+    Monad: () => {
+        {
+            return Monad2
+        }
+    },
+    Functor: () => {
+        {
+            return Functor6
+        }
+    },
+    FromTask: () => {
+        {
+            return FromTask
+        }
+    },
+    FromIO: () => {
+        {
+            return FromIO2
+        }
+    },
+    Do: () => {
+        {
+            return Do2
+        }
+    },
+    Chain: () => {
+        {
+            return Chain6
+        }
+    },
+    ApplySeq: () => {
+        {
+            return ApplySeq
+        }
+    },
+    ApplyPar: () => {
+        {
+            return ApplyPar
+        }
+    },
+    ApplicativeSeq: () => {
+        {
+            return ApplicativeSeq
+        }
+    },
+    ApplicativePar: () => {
+        {
+            return ApplicativePar
+        }
+    },
+    ApT: () => {
+        {
+            return ApT
+        }
+    },
+})
+function delay(millis) {
+    return function (ma) {
+        return function () {
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    Promise.resolve().then(ma).then(resolve)
+                }, millis)
+            })
+        }
+    }
+}
+function getRaceMonoid() {
+    return {
+        concat: function (x, y) {
+            return function () {
+                return Promise.race([Promise.resolve().then(x), Promise.resolve().then(y)])
+            }
+        },
+        empty: never,
+    }
+}
+var fromIO,
+    _map3,
+    _apPar,
+    _apSeq,
+    map3,
+    ap4,
+    of4,
+    flatMap3,
+    flatten2,
+    URI4,
+    Functor6,
+    as3,
+    asUnit3,
+    flap3,
+    Pointed2,
+    ApplyPar,
+    apFirst3,
+    apSecond3,
+    ApplicativePar,
+    ApplySeq,
+    ApplicativeSeq,
+    Chain6,
+    Monad2,
+    MonadIO,
+    fromTask,
+    MonadTask,
+    FromIO2,
+    _FlatMap,
+    _FromIO,
+    flatMapIO2,
+    tap3,
+    tapIO2,
+    fromIOK2,
+    chainIOK,
+    chainFirstIOK,
+    FromTask,
+    never,
+    Do2,
+    bindTo3,
+    let_3,
+    bind3,
+    apS3,
+    ApT,
+    traverseReadonlyNonEmptyArrayWithIndex,
+    traverseReadonlyArrayWithIndex,
+    traverseReadonlyNonEmptyArrayWithIndexSeq,
+    traverseReadonlyArrayWithIndexSeq,
+    traverseArrayWithIndex,
+    traverseArray,
+    sequenceArray,
+    traverseSeqArrayWithIndex,
+    traverseSeqArray,
+    sequenceSeqArray,
+    chain2,
+    chainFirst3,
+    task,
+    taskSeq,
+    getSemigroup6,
+    getMonoid7
+var init_Task = __esm(() => {
+    init_Applicative()
+    init_Apply()
+    init_Chain()
+    init_FromIO()
+    init_function()
+    init_Functor()
+    init_internal()
+    fromIO = function (ma) {
+        return function () {
+            return Promise.resolve().then(ma)
+        }
+    }
+    _map3 = function (fa, f) {
+        return pipe(fa, map3(f))
+    }
+    _apPar = function (fab, fa) {
+        return pipe(fab, ap4(fa))
+    }
+    _apSeq = function (fab, fa) {
+        return flatMap3(fab, function (f) {
+            return pipe(fa, map3(f))
+        })
+    }
+    map3 = function (f) {
+        return function (fa) {
+            return function () {
+                return Promise.resolve().then(fa).then(f)
+            }
+        }
+    }
+    ap4 = function (fa) {
+        return function (fab) {
+            return function () {
+                return Promise.all([Promise.resolve().then(fab), Promise.resolve().then(fa)]).then(function (_a) {
+                    var f = _a[0],
+                        a = _a[1]
+                    return f(a)
+                })
+            }
+        }
+    }
+    of4 = function (a) {
+        return function () {
+            return Promise.resolve(a)
+        }
+    }
+    flatMap3 = dual(2, function (ma, f) {
+        return function () {
+            return Promise.resolve()
+                .then(ma)
+                .then(function (a) {
+                    return f(a)()
+                })
+        }
+    })
+    flatten2 = flatMap3(identity)
+    URI4 = "Task"
+    Functor6 = {
+        URI: URI4,
+        map: _map3,
+    }
+    as3 = dual(2, as(Functor6))
+    asUnit3 = asUnit(Functor6)
+    flap3 = flap(Functor6)
+    Pointed2 = {
+        URI: URI4,
+        of: of4,
+    }
+    ApplyPar = {
+        URI: URI4,
+        map: _map3,
+        ap: _apPar,
+    }
+    apFirst3 = apFirst(ApplyPar)
+    apSecond3 = apSecond(ApplyPar)
+    ApplicativePar = {
+        URI: URI4,
+        map: _map3,
+        ap: _apPar,
+        of: of4,
+    }
+    ApplySeq = {
+        URI: URI4,
+        map: _map3,
+        ap: _apSeq,
+    }
+    ApplicativeSeq = {
+        URI: URI4,
+        map: _map3,
+        ap: _apSeq,
+        of: of4,
+    }
+    Chain6 = {
+        URI: URI4,
+        map: _map3,
+        ap: _apPar,
+        chain: flatMap3,
+    }
+    Monad2 = {
+        URI: URI4,
+        map: _map3,
+        of: of4,
+        ap: _apPar,
+        chain: flatMap3,
+    }
+    MonadIO = {
+        URI: URI4,
+        map: _map3,
+        of: of4,
+        ap: _apPar,
+        chain: flatMap3,
+        fromIO,
+    }
+    fromTask = identity
+    MonadTask = {
+        URI: URI4,
+        map: _map3,
+        of: of4,
+        ap: _apPar,
+        chain: flatMap3,
+        fromIO,
+        fromTask,
+    }
+    FromIO2 = {
+        URI: URI4,
+        fromIO,
+    }
+    _FlatMap = {
+        flatMap: flatMap3,
+    }
+    _FromIO = {
+        fromIO: FromIO2.fromIO,
+    }
+    flatMapIO2 = flatMapIO(_FromIO, _FlatMap)
+    tap3 = dual(2, tap(Chain6))
+    tapIO2 = dual(2, tapIO(FromIO2, Chain6))
+    fromIOK2 = fromIOK(FromIO2)
+    chainIOK = flatMapIO2
+    chainFirstIOK = tapIO2
+    FromTask = {
+        URI: URI4,
+        fromIO,
+        fromTask,
+    }
+    never = function () {
+        return new Promise(function (_) {
+            return
+        })
+    }
+    Do2 = of4(emptyRecord)
+    bindTo3 = bindTo(Functor6)
+    let_3 = let_(Functor6)
+    bind3 = bind(Chain6)
+    apS3 = apS(ApplyPar)
+    ApT = of4(emptyReadonlyArray)
+    traverseReadonlyNonEmptyArrayWithIndex = function (f) {
+        return function (as4) {
+            return function () {
+                return Promise.all(
+                    as4.map(function (a, i) {
+                        return Promise.resolve().then(function () {
+                            return f(i, a)()
+                        })
+                    }),
+                )
+            }
+        }
+    }
+    traverseReadonlyArrayWithIndex = function (f) {
+        var g = traverseReadonlyNonEmptyArrayWithIndex(f)
+        return function (as4) {
+            return isNonEmpty(as4) ? g(as4) : ApT
+        }
+    }
+    traverseReadonlyNonEmptyArrayWithIndexSeq = function (f) {
+        return function (as4) {
+            return function () {
+                return tail(as4).reduce(
+                    function (acc, a, i) {
+                        return acc.then(function (bs) {
+                            return Promise.resolve()
+                                .then(f(i + 1, a))
+                                .then(function (b) {
+                                    bs.push(b)
+                                    return bs
+                                })
+                        })
+                    },
+                    Promise.resolve()
+                        .then(f(0, head(as4)))
+                        .then(singleton),
+                )
+            }
+        }
+    }
+    traverseReadonlyArrayWithIndexSeq = function (f) {
+        var g = traverseReadonlyNonEmptyArrayWithIndexSeq(f)
+        return function (as4) {
+            return isNonEmpty(as4) ? g(as4) : ApT
+        }
+    }
+    traverseArrayWithIndex = traverseReadonlyArrayWithIndex
+    traverseArray = function (f) {
+        return traverseReadonlyArrayWithIndex(function (_, a) {
+            return f(a)
+        })
+    }
+    sequenceArray = traverseArray(identity)
+    traverseSeqArrayWithIndex = traverseReadonlyArrayWithIndexSeq
+    traverseSeqArray = function (f) {
+        return traverseReadonlyArrayWithIndexSeq(function (_, a) {
+            return f(a)
+        })
+    }
+    sequenceSeqArray = traverseSeqArray(identity)
+    chain2 = flatMap3
+    chainFirst3 = tap3
+    task = {
+        URI: URI4,
+        map: _map3,
+        of: of4,
+        ap: _apPar,
+        chain: flatMap3,
+        fromIO,
+        fromTask,
+    }
+    taskSeq = {
+        URI: URI4,
+        map: _map3,
+        of: of4,
+        ap: _apSeq,
+        chain: flatMap3,
+        fromIO,
+        fromTask,
+    }
+    getSemigroup6 = getApplySemigroup(ApplySeq)
+    getMonoid7 = getApplicativeMonoid(ApplicativeSeq)
+})
+
+// node_modules/fp-ts/es6/string.js
+var exports_string = {}
+__export(exports_string, {
+    trimRight: () => {
+        {
+            return trimRight
+        }
+    },
+    trimLeft: () => {
+        {
+            return trimLeft
+        }
+    },
+    trim: () => {
+        {
+            return trim
+        }
+    },
+    toUpperCase: () => {
+        {
+            return toUpperCase
+        }
+    },
+    toLowerCase: () => {
+        {
+            return toLowerCase
+        }
+    },
+    startsWith: () => {
+        {
+            return startsWith
+        }
+    },
+    split: () => {
+        {
+            return split
+        }
+    },
+    slice: () => {
+        {
+            return slice
+        }
+    },
+    size: () => {
+        {
+            return size3
+        }
+    },
+    replace: () => {
+        {
+            return replace
+        }
+    },
+    isString: () => {
+        {
+            return isString
+        }
+    },
+    isEmpty: () => {
+        {
+            return isEmpty3
+        }
+    },
+    includes: () => {
+        {
+            return includes
+        }
+    },
+    endsWith: () => {
+        {
+            return endsWith
+        }
+    },
+    empty: () => {
+        {
+            return empty6
+        }
+    },
+    Show: () => {
+        {
+            return Show
+        }
+    },
+    Semigroup: () => {
+        {
+            return Semigroup
+        }
+    },
+    Ord: () => {
+        {
+            return Ord4
+        }
+    },
+    Monoid: () => {
+        {
+            return Monoid
+        }
+    },
+    Eq: () => {
+        {
+            return Eq4
+        }
+    },
+})
+var Eq4,
+    Semigroup,
+    empty6,
+    Monoid,
+    Ord4,
+    Show,
+    isString,
+    toUpperCase,
+    toLowerCase,
+    replace,
+    trim,
+    trimLeft,
+    trimRight,
+    slice,
+    isEmpty3,
+    size3,
+    split,
+    includes,
+    startsWith,
+    endsWith
+var init_string = __esm(() => {
+    init_ReadonlyNonEmptyArray()
+    Eq4 = {
+        equals: function (first2, second) {
+            return first2 === second
+        },
+    }
+    Semigroup = {
+        concat: function (first2, second) {
+            return first2 + second
+        },
+    }
+    empty6 = ""
+    Monoid = {
+        concat: Semigroup.concat,
+        empty: empty6,
+    }
+    Ord4 = {
+        equals: Eq4.equals,
+        compare: function (first2, second) {
+            return first2 < second ? -1 : first2 > second ? 1 : 0
+        },
+    }
+    Show = {
+        show: function (s) {
+            return JSON.stringify(s)
+        },
+    }
+    isString = function (u) {
+        return typeof u === "string"
+    }
+    toUpperCase = function (s) {
+        return s.toUpperCase()
+    }
+    toLowerCase = function (s) {
+        return s.toLowerCase()
+    }
+    replace = function (searchValue, replaceValue) {
+        return function (s) {
+            return s.replace(searchValue, replaceValue)
+        }
+    }
+    trim = function (s) {
+        return s.trim()
+    }
+    trimLeft = function (s) {
+        return s.trimLeft()
+    }
+    trimRight = function (s) {
+        return s.trimRight()
+    }
+    slice = function (start, end) {
+        return function (s) {
+            return s.slice(start, end)
+        }
+    }
+    isEmpty3 = function (s) {
+        return s.length === 0
+    }
+    size3 = function (s) {
+        return s.length
+    }
+    split = function (separator) {
+        return function (s) {
+            var out = s.split(separator)
+            return isNonEmpty2(out) ? out : [s]
+        }
+    }
+    includes = function (searchString, position) {
+        return function (s) {
+            return s.includes(searchString, position)
+        }
+    }
+    startsWith = function (searchString, position) {
+        return function (s) {
+            return s.startsWith(searchString, position)
+        }
+    }
+    endsWith = function (searchString, position) {
+        return function (s) {
+            return s.endsWith(searchString, position)
+        }
+    }
+})
+
+// node_modules/fp-ts/es6/Record.js
+function collect(O) {
+    if (typeof O === "function") {
+        return collect(Ord4)(O)
+    }
+    var keysO = keys_(O)
+    return function (f) {
+        return function (r) {
+            var out = []
+            for (var _i = 0, _a = keysO(r); _i < _a.length; _i++) {
+                var key = _a[_i]
+                out.push(f(key, r[key]))
+            }
+            return out
+        }
+    }
+}
+function toUnfoldable(U) {
+    return function (r) {
+        var sas = toArray(r)
+        var len = sas.length
+        return U.unfold(0, function (b) {
+            return b < len ? some([sas[b], b + 1]) : none
+        })
+    }
+}
+var keys_, toArray
+var init_Record = __esm(() => {
+    init_internal()
+    init_string()
+    keys_ = function (O) {
+        return function (r) {
+            return Object.keys(r).sort(O.compare)
+        }
+    }
+    toArray = collect(Ord4)(function (k, a) {
+        return [k, a]
+    })
+})
+
+// node_modules/fp-ts/es6/index.js
+var init_es6 = __esm(() => {
+    init_Array()
+    init_Eq()
+    init_string()
+    init_Task()
+})
+
+// node_modules/fp-ts-std/dist/esm/Function.js
+var URI5,
+    map4,
+    Functor8,
+    of5,
+    ap5,
+    Applicative3,
+    apFirst4,
+    apSecond4,
+    chain3,
+    Monad3,
+    Do3,
+    bindTo4,
+    bind4,
+    apS4,
+    let_4,
+    unary,
+    guard3,
+    unless,
+    when,
+    invoke,
+    invokeNullary,
+    memoize,
+    curry2T,
+    curry2,
+    curry3T,
+    curry3,
+    curry4T,
+    curry4,
+    curry5T,
+    curry5,
+    applyEvery
+var init_Function = __esm(() => {
+    init_Option()
+    init_Map()
+    init_Array()
+    init_function()
+    init_Predicate()
+    init_Endomorphism()
+    init_Monoid()
+    init_Semigroup()
+    init_Functor()
+    init_Apply()
+    init_Chain()
+    URI5 = "Function"
+    map4 = f => g => flow(g, f)
+    Functor8 = {
+        URI: URI5,
+        map: (f, g) => map4(g)(f),
+    }
+    of5 = constant
+    ap5 = f => g => x => g(x)(f(x))
+    Applicative3 = {
+        ...Functor8,
+        of: of5,
+        ap: (f, g) => ap5(g)(f),
+    }
+    apFirst4 = apFirst(Applicative3)
+    apSecond4 = apSecond(Applicative3)
+    chain3 = f => g => x => f(g(x))(x)
+    Monad3 = {
+        ...Applicative3,
+        chain: (f, g) => chain3(g)(f),
+    }
+    Do3 = of5({})
+    bindTo4 = bindTo(Functor8)
+    bind4 = bind(Monad3)
+    apS4 = apS(Applicative3)
+    let_4 = let_(Functor8)
+    unary = tupled
+    guard3 = branches => fallback => input =>
+        pipe(
+            branches,
+            map(([f, g]) => flow(fromPredicate2(f), map2(g))),
+            concatAll4(getMonoid(getMonoid5(first()))()),
+            apply(input),
+            getOrElse(() => fallback(input)),
+        )
+    unless = f => onFalse => x => f(x) ? x : onFalse(x)
+    when = flow(not, unless)
+    invoke = x => ys => z => z[x](...ys)
+    invokeNullary = flip(invoke)([])
+    memoize = eq2 => f => {
+        const cache = new Map()
+        return k => {
+            const cached = lookup4(eq2)(k)(cache)
+            if (isSome2(cached)) return cached.value
+            const val = f(k)
+            cache.set(k, val)
+            return val
+        }
+    }
+    curry2T = f => a => b => f([a, b])
+    curry2 = flow(unary, curry2T)
+    curry3T = f => a => b => c => f([a, b, c])
+    curry3 = flow(unary, curry3T)
+    curry4T = f => a => b => c => d => f([a, b, c, d])
+    curry4 = flow(unary, curry4T)
+    curry5T = f => a => b => c => d => e => f([a, b, c, d, e])
+    curry5 = flow(unary, curry5T)
+    applyEvery = concatAll4(getMonoid6())
+})
+
+// shared/fp.tsx
+var guard22, guard4, pMchain, is, chunckify, memoize2
+var init_fp = __esm(() => {
+    init_es6()
+    init_Function()
+    init_function()
+    guard22 = branches => guard3(branches)
+    guard4 = branches => guard3(branches)
+    pMchain = f => async fa => f(await fa)
+    is = c => a => field => field[c] === a
+    chunckify = n => g =>
+        flow(exports_Array.chunksOf(n), exports_Array.map(g), ps => Promise.all(ps), pMchain(exports_Array.flatten))
+    memoize2 = fn => pipe(fn, tupled, memoize(exports_Eq.contramap(JSON.stringify)(exports_string.Eq)), untupled)
+})
+
+// shared/util.tsx
+var SpotifyLoc, sleep, getReactProps, setLiked
+var init_util = __esm(() => {
+    init_function()
+    ;(function (SpotifyLoc) {
+        let before
+        ;(function (before) {
+            before.start = constant({ before: "start" })
+            before.fromUri = uri => ({
+                before: { uri },
+            })
+            before.fromUid = uid => ({
+                before: { uid },
+            })
+        })((before = SpotifyLoc.before || (SpotifyLoc.before = {})))
+        let after
+        ;(function (after) {
+            after.end = constant({ after: "end" })
+            after.fromUri = uri => ({
+                before: { uri },
+            })
+            after.fromUid = uid => ({
+                before: { uid },
+            })
+        })((after = SpotifyLoc.after || (SpotifyLoc.after = {})))
+    })(SpotifyLoc || (SpotifyLoc = {}))
+    //! Does location actually point to document.body?
+    sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+    getReactProps = element => element[Object.keys(element).find(k => k.startsWith("__reactProps$"))]
+    setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"](...uris)
+})
+
+// shared/api.tsx
+var URI6,
+    fetchWebArtistsSpot,
+    fetchWebPlaylistsSpot,
+    fetchWebAlbumsSpot,
+    fetchWebTracksSpot,
+    fetchPlatPlaylistContents,
+    createPlatFolder,
+    likePlatPlaylist,
+    createSPPlaylistFromTracks,
+    fetchPlatFolder,
+    fetchPlatRootFolder,
+    fetchTrackLFMAPI,
+    fetchTrackLFMAPIMemoized
+var init_api = __esm(() => {
+    init_fp()
+    init_util()
+    ;({ URI: URI6 } = Spicetify)
+    fetchWebArtistsSpot = chunckify(50)(
+        async ids =>
+            (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists,
+    )
+    fetchWebPlaylistsSpot = chunckify(1)(async ([id]) => [
+        await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`),
+    ])
+    fetchWebAlbumsSpot = chunckify(50)(
+        async ids => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums,
+    )
+    fetchWebTracksSpot = chunckify(50)(
+        async ids => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks,
+    )
+    fetchPlatPlaylistContents = async uri => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items
+    createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location)
+    likePlatPlaylist = async uri => await Spicetify.Platform.RootlistAPI.add([uri])
+    createSPPlaylistFromTracks = (name, tracks, folder) =>
+        Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
+            operation: "create",
+            ...(folder ? { after: folder } : {}),
+            name,
+            playlist: true,
+            uris: tracks,
+        })
+    fetchPlatFolder = async folder => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder })
+    fetchPlatRootFolder = () => fetchPlatFolder(undefined)
+    fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+        const url = new URL("https://ws.audioscrobbler.com/2.0/")
+        url.searchParams.append("method", "track.getInfo")
+        url.searchParams.append("api_key", LFMApiKey)
+        url.searchParams.append("artist", artist)
+        url.searchParams.append("track", trackName)
+        url.searchParams.append("format", "json")
+        url.searchParams.append("username", lastFmUsername)
+        return await fetch(url).then(res => res.json())
+    }
+    fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI)
+})
+
+// react
+var require_react = __commonJS((exports, module) => {
+    module.exports = Spicetify.React
+})
+
+// react-dom
+var require_react_dom = __commonJS((exports, module) => {
+    module.exports = Spicetify.ReactDOM
+})
+
+// shared/settings.tsx
+class SettingsSection {
+    name
+    sectionId
+    sectionFields
+    stopHistoryListener
+    setRerender = null
+    constructor(name, sectionId, sectionFields = {}) {
+        this.name = name
+        this.sectionId = sectionId
+        this.sectionFields = sectionFields
+    }
+    static waitForReact = async () => {
+        while (!(Spicetify.React && Spicetify.ReactDOM)) sleep(100)
+        return this
+    }
+    pushSettings = async () => {
+        while (!Spicetify?.Platform?.History?.listen) await sleep(100)
+        if (this.stopHistoryListener) this.stopHistoryListener()
+        this.stopHistoryListener = Spicetify.Platform.History.listen(({ pathname = "" }) => {
+            if (pathname === "/preferences") this.render()
+        })
+        if (Spicetify.Platform.History.location.pathname === "/preferences") await this.render()
+    }
+    toObject = () =>
+        new Proxy(
+            {},
+            {
+                get: (target, prop) => SettingsSection.getFieldValue(this.getId(prop.toString())),
+            },
+        )
+    rerender = () => {
+        if (this.setRerender) this.setRerender(Math.random())
+    }
+    render = async () => {
+        while (!document.getElementById("desktop.settings.selectLanguage")) {
+            if (Spicetify.Platform.History.location.pathname !== "/preferences") return
+            await sleep(100)
+        }
+        const allSettingsContainer = document.querySelector(".x-settings-container")
+        let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.sectionId)
+        if (!pluginSettingsContainer) {
+            pluginSettingsContainer = document.createElement("div")
+            pluginSettingsContainer.id = this.sectionId
+            pluginSettingsContainer.className = "settingsContainer"
+            allSettingsContainer.appendChild(pluginSettingsContainer)
+        }
+        import_react_dom.default.render(
+            import_react.default.createElement(this.FieldsContainer, null),
+            pluginSettingsContainer,
+        )
+    }
+    addButton = (nameId, description, text, onClick = constVoid, events = {}) => {
+        const id = this.getId(nameId)
+        events.onClick = onClick
+        this.sectionFields[nameId] = {
+            id,
+            type: FieldType.BUTTON,
+            description,
+            text,
+            events,
+        }
+        return this
+    }
+    addToggle = (nameId, description, defaultValue = exports_Task.of(true), onChange = constVoid, events = {}) => {
+        const id = this.getId(nameId)
+        SettingsSection.setDefaultFieldValue(id, defaultValue)
+        events.onChange = onChange
+        this.sectionFields[nameId] = {
+            id,
+            type: FieldType.TOGGLE,
+            description,
+            events,
+        }
+        return this
+    }
+    addInput = (nameId, description, defaultValue, onChange = constVoid, inputType = "text", events = {}) => {
+        const id = this.getId(nameId)
+        SettingsSection.setDefaultFieldValue(id, defaultValue)
+        events.onChange = onChange
+        this.sectionFields[nameId] = {
+            id,
+            type: FieldType.INPUT,
+            description,
+            inputType,
+            events,
+        }
+        return this
+    }
+    addDropDown = (
+        nameId,
+        description,
+        options,
+        defaultValue = exports_Task.of(0),
+        onChange = constVoid,
+        events = {},
+    ) => {
+        const id = this.getId(nameId)
+        SettingsSection.setDefaultFieldValue(id, defaultValue)
+        events.onChange = onChange
+        this.sectionFields[nameId] = {
+            id,
+            type: FieldType.DROPDOWN,
+            description,
+            options,
+            events,
+        }
+        return this
+    }
+    addHidden = (nameId, defaultValue) => {
+        const id = this.getId(nameId)
+        SettingsSection.setDefaultFieldValue(id, defaultValue)
+        this.sectionFields[nameId] = {
+            id,
+            type: FieldType.HIDDEN,
+            description: "",
+        }
+        return this
+    }
+    getId = nameId => `extensions:${this.sectionId}:${nameId}`
+    useStateFor = id => {
+        const [value, setValueState] = import_react.useState(SettingsSection.getFieldValue(id))
+        return [
+            value,
+            newValue => {
+                if (newValue !== undefined) {
+                    setValueState(newValue)
+                    SettingsSection.setFieldValue(id, newValue)
+                }
+            },
+        ]
+    }
+    static getFieldValue = id => {
+        return JSON.parse(Spicetify.LocalStorage.get(id) ?? "null")
+    }
+    static setFieldValue = (id, newValue) => {
+        Spicetify.LocalStorage.set(id, JSON.stringify(newValue))
+    }
+    static setDefaultFieldValue = async (id, defaultValue) => {
+        if (SettingsSection.getFieldValue(id) === null) SettingsSection.setFieldValue(id, await defaultValue())
+    }
+    FieldsContainer = () => {
+        const [rerender, setRerender] = import_react.useState(0)
+        this.setRerender = setRerender
+        return import_react.default.createElement(
+            "div",
+            {
+                className: "x-settings-section",
+                key: rerender,
+            },
+            import_react.default.createElement(
+                "h2",
+                {
+                    className: "Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type",
+                },
+                this.name,
+            ),
+            Object.entries(this.sectionFields).map(([nameId, field]) => {
+                return import_react.default.createElement(this.Field, {
+                    field,
+                })
+            }),
+        )
+    }
+    Field = ({ field }) => {
+        const isType = is("type")
+        return import_react.default.createElement(
+            "div",
+            {
+                className: "x-settings-row",
+            },
+            import_react.default.createElement(this.SettingDescription, {
+                id: field.id,
+                description: field.description,
+            }),
+            import_react.default.createElement(
+                "div",
+                {
+                    className: "x-settings-secondColumn",
+                },
+                guard4([
+                    [isType(FieldType.INPUT), this.SettingInputField],
+                    [isType(FieldType.BUTTON), this.SettingButtonField],
+                    [isType(FieldType.TOGGLE), this.SettingToggleField],
+                    [isType(FieldType.DROPDOWN), this.SettingDropdownField],
+                ])(this.SettingHidden)(field),
+            ),
+        )
+    }
+    SettingDescription = ({ id, description }) =>
+        import_react.default.createElement(
+            "div",
+            {
+                className: "x-settings-firstColumn",
+            },
+            import_react.default.createElement(
+                "label",
+                {
+                    className: "Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type",
+                    htmlFor: id,
+                },
+                description,
+            ),
+        )
+    SettingButtonField = field =>
+        import_react.default.createElement(
+            "span",
+            {
+                className: "",
+            },
+            import_react.default.createElement(
+                "button",
+                {
+                    id: field.id,
+                    className:
+                        "Button-sc-y0gtbx-0 Button-sm-buttonSecondary-useBrowserDefaultFocusStyle x-settings-button",
+                    ...field.events,
+                    type: field.type,
+                },
+                field.text,
+            ),
+        )
+    SettingToggleField = field => {
+        const [value, setValue] = this.useStateFor(field.id)
+        return import_react.default.createElement(
+            "label",
+            {
+                className: "x-settings-secondColumn x-toggle-wrapper",
+            },
+            import_react.default.createElement("input", {
+                id: field.id,
+                className: "x-toggle-input",
+                type: "checkbox",
+                checked: SettingsSection.getFieldValue(field.id),
+                ...field.events,
+                onChange: e => {
+                    setValue(e.currentTarget.checked)
+                    field.events.onChange?.(e)
+                },
+            }),
+            import_react.default.createElement(
+                "span",
+                {
+                    className: "x-toggle-indicatorWrapper",
+                },
+                import_react.default.createElement("span", {
+                    className: "x-toggle-indicator",
+                }),
+            ),
+        )
+    }
+    SettingInputField = field => {
+        const [value, setValue] = this.useStateFor(field.id)
+        return import_react.default.createElement("input", {
+            className: "x-settings-input",
+            id: field.id,
+            dir: "ltr",
+            value: SettingsSection.getFieldValue(field.id),
+            type: field.inputType,
+            ...field.events,
+            onChange: e => {
+                setValue(e.currentTarget.value)
+                field.events.onChange?.(e)
+            },
+        })
+    }
+    SettingDropdownField = field => {
+        const [value, setValue] = this.useStateFor(field.id)
+        return import_react.default.createElement(
+            "select",
+            {
+                className: "main-dropDown-dropDown",
+                id: field.id,
+                ...field.events,
+                onChange: e => {
+                    setValue(e.currentTarget.selectedIndex)
+                    field.events.onChange?.(e)
+                },
+            },
+            field.options.map((option, i) =>
+                import_react.default.createElement(
+                    "option",
+                    {
+                        selected: i === SettingsSection.getFieldValue(field.id),
+                        value: i + 1,
+                    },
+                    option,
+                ),
+            ),
+        )
+    }
+    SettingHidden = () => import_react.default.createElement(import_react.default.Fragment, null)
+}
+var import_react, import_react_dom, FieldType
+var init_settings = __esm(() => {
+    init_es6()
+    init_function()
+    import_react = __toESM(require_react(), 1)
+    import_react_dom = __toESM(require_react_dom(), 1)
+    init_fp()
+    init_util()
+    ;(function (FieldType2) {
+        FieldType2["HIDDEN"] = "hidden"
+        FieldType2["INPUT"] = "input"
+        FieldType2["DROPDOWN"] = "dropdown"
+        FieldType2["BUTTON"] = "button"
+        FieldType2["TOGGLE"] = "toggle"
+    })(FieldType || (FieldType = {}))
+})
+
+// extensions/vaultify/settings.tsx
+var exports_settings = {}
+var settings2
+var init_settings2 = __esm(() => {
+    init_settings()
+    init_app()
+    settings2 = new SettingsSection("Vaultify", "vaultify")
+        .addButton("backup", "Backup Library, Extensions and Settings", "Backup to clipboard", backup)
+        .addButton("restoreLibrary", "Restore Library", "Restore from clipboard", restore("library"))
+        .addButton("restoreExtensions", "Restore Extensions", "Restore from clipboard", restore("extensions"))
+        .addButton("restoreSettings", "Restore Settings", "Restore from clipboard", restore("settings"))
+    settings2.pushSettings()
+})
+
+// extensions/vaultify/app.tsx
+var isType,
+    extractLikedPlaylistTreeRecur,
+    isContentOfPersonalPlaylist,
+    restorePlaylistseRecur,
+    allowedExtDataRegex,
+    backup,
+    restore
+var init_app = __esm(() => {
+    init_es6()
+    init_Array()
+    init_Record()
+    init_function()
+    init_api()
+    init_fp()
+    init_util()
+    isType = is("type")
+    extractLikedPlaylistTreeRecur = leaf =>
+        guard22([
+            [
+                isType("playlist"),
+                async playlist => ({
+                    [playlist.name]: playlist.isOwnedBySelf
+                        ? await pipe(playlist.uri, fetchPlatPlaylistContents, pMchain(exports_Array.map(x => x.uri)))
+                        : playlist.uri,
+                }),
+            ],
+            [
+                isType("folder"),
+                async folder => ({
+                    [folder.name]: await pipe(folder.items, map(extractLikedPlaylistTreeRecur), ps => Promise.all(ps)),
+                }),
+            ],
+        ])(exports_Task.of({}))(leaf)
+    isContentOfPersonalPlaylist = subleaf => typeof subleaf[0] === "string" && Spicetify.URI.isTrack(subleaf[0])
+    restorePlaylistseRecur = async leaf => {
+        Object.keys(leaf).forEach(name => {
+            const subleaf = leaf[name]
+            if (!Array.isArray(subleaf)) return void likePlatPlaylist(subleaf)
+            if (subleaf.length === 0) return
+            if (isContentOfPersonalPlaylist(subleaf)) return void createSPPlaylistFromTracks(name, subleaf)
+            createPlatFolder(name)
+            subleaf.forEach(restorePlaylistseRecur)
+        })
+    }
+    allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/
+    backup = async () => {
+        const extractItemsUris = a => a.items.map(item => item.uri)
+        const rawLibraryTracks = await Spicetify.Platform.LibraryAPI.getTracks({
+            limit: -1,
+            sort: { field: "ADDED_AT", order: "ASC" },
+        })
+        const libraryTracks = extractItemsUris(rawLibraryTracks)
+        const rawLibraryAlbums = await Spicetify.Platform.LibraryAPI.getAlbums({
+            limit: 1073741824,
+            sort: { field: "ADDED_AT" },
+        })
+        const libraryAlbums = extractItemsUris(rawLibraryAlbums)
+        const rawLibraryArtists = await Spicetify.Platform.LibraryAPI.getArtists({
+            limit: 1073741824,
+            sort: {
+                field: "ADDED_AT",
+            },
+        })
+        const libraryArtists = extractItemsUris(rawLibraryArtists)
+        const playlists = await pipe(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur)
+        const localStore = pipe(
+            localStorage,
+            toUnfoldable(exports_Array),
+            exports_Array.filter(([key]) => allowedExtDataRegex.test(key)),
+        )
+        const { items, namespace } = Spicetify.Platform.LocalStorageAPI
+        const localStoreAPI = pipe(
+            items,
+            toUnfoldable(exports_Array),
+            exports_Array.filter(([key]) => key.startsWith(namespace)),
+            exports_Array.map(([key, value]) => [key.split(":")[1], value]),
+        )
+        const settings3 = pipe(
+            document.querySelectorAll(`[id^="settings."],[id^="desktop."],[class^="network."]`),
+            Array.from,
+            exports_Array.flatMap(setting => {
+                const id = setting.getAttribute("id")
+                if (setting instanceof HTMLInputElement) {
+                    const type = setting.getAttribute("type")
+                    if (type === "checkbox") return [[id, "checkbox", setting.checked]]
+                    else if (type === "text") return [[id, "text", setting.value]]
+                } else if (setting instanceof HTMLSelectElement) return [[id, "select", setting.value]]
+                return []
+            }),
+        )
+        await Spicetify.Platform.ClipboardAPI.copy(
+            JSON.stringify({
+                libraryTracks,
+                libraryAlbums,
+                libraryArtists,
+                playlists,
+                localStore,
+                localStoreAPI,
+                settings: settings3,
+            }),
+        )
+        Spicetify.showNotification("Backed up Playlists, Extensions and Settings")
+    }
+    restore = mode => async () => {
+        let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste())
+        if (mode === "library") {
+            setLiked(vault.libraryTracks, true)
+            setLiked(vault.libraryAlbums, true)
+            setLiked(vault.libraryArtists, true)
+            await restorePlaylistseRecur(vault.playlists)
+            Spicetify.showNotification("Restored Library")
+        }
+        if (mode === "extensions") {
+            map(tupled(Spicetify.LocalStorage.set))(vault.localStore)
+            map(tupled(Spicetify.Platform.LocalStorageAPI.setItem))(vault.localStoreAPI)
+            Spicetify.showNotification("Restored Extensions")
+        }
+        if (mode === "settings") {
+            vault.settings.map(([id, type, value]) => {
+                const setting = document.querySelector(`[id="${id}"]`)
+                if (!setting) return console.warn(`Setting for ${id} wasn't found`)
+                if (type === "text") setting.value = value
+                else if (type === "checkbox") setting.checked = value
+                else if (type === "select") setting.value = value
+                else return
+                const settingReactProps = getReactProps(setting)
+                settingReactProps.onChange({ target: setting })
+            })
+            Spicetify.showNotification("Restored Settings")
+        }
+    }
+    Promise.resolve().then(() => init_settings2())
+})
+init_app()
+
+export { restore, backup }
+
+//# debugId=5C87D9FCB83A9B6464756e2164756e21
