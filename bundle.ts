@@ -9,26 +9,25 @@ const autoprefixer = require("autoprefixer")
 
 const rawest = (str: string) => "String.raw`" + str.replace(/(\$\{|\`)/gm, "\\$1") + "`"
 
-const runtimeInject = (id: string, tag: string, content: string, props = {}) => {
-    const html = rawest(
-        `<${tag}${Object.entries(props).reduce((acc, [k, v]) => `${acc} ${k}="${v}"`, "")} id="${id}">${content.replace(
-            /"/gm,
-            "\\'",
-        )}</${tag}>`,
-    )
-
-    return `(async () => {
-    if (!document.getElementById("${id}"))
-        document.head.insertAdjacentHTML("beforeend", ${html})
+const runtimeInject = (id: string, tag: string, content: string, props = {}) =>
+    `(async () => {
+    if (!document.getElementById("${id}")) {
+        const el = document.createElement("${tag}")
+        el.id = "${id}"
+        ${Object.entries(props)
+            .map(([k, v]) => `el["${k}"] = "${v}"`)
+            .join(";")}
+        el.textContent = ${rawest(content)}
+        document.head.appendChild(el)
+    }
 })`
-}
 
 const wrapInCssTag = (id: string, css: string) => runtimeInject(id, "style", JSON.stringify(css))
 
 const createPrismContent = (id: string) =>
     runtimeInject(
         id,
-        "style",
+        "script",
         `await fetch(\`https://api.github.com/repos/${USER_REPO}/contents/dist/\${id}.js\`)
     .then(res => res.json())
     .then(data => atob(data.content))`,
@@ -141,7 +140,7 @@ snippets.map(fullname => {
     const name = basename(fullname)
 
     const { css } = compile(fullname)
-    const snippetFile = Bun.file(join(out, name.replace(".scss", ".css")))
+    const snippetFile = Bun.file(join(out, name.replace(/.scss$/, ".css")))
 
     Bun.write(snippetFile, css)
 })
