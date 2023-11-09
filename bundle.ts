@@ -62,14 +62,12 @@ const extensionsData = extensions.map(async fullname => {
     await esbuild.build({
         platform: "browser",
         plugins: [
-            // denoResolverPlugin(),
             postCSSPlugin({
                 plugins: [autoprefixer()],
                 modules: {
                     generateScopedName: `[name]__[local]___[hash:base64:5]_${name}`,
                 },
             }),
-            // denoLoaderPlugin({ nodeModulesDir: true }),
         ],
         entryPoints: [entry],
         outdir: join(OUT, name),
