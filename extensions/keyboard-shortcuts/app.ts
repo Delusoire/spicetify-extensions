@@ -1,4 +1,4 @@
-import { enterSneak, keyList, listenSneakKeys, mousetrapInst, quitSneak } from "./sneak.ts"
+import { KEY_LIST, SneakOverlay, mousetrapInst } from "./sneak.ts"
 import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util.ts"
 import { toggleLiked } from "../../shared/util.ts"
 
@@ -6,8 +6,13 @@ import "./assets/styles.scss"
 
 const { KEYS } = Spicetify.Keyboard
 
+let sneakOverlay: SneakOverlay
+
 const binds = [
-    new Bind("s", enterSneak),
+    new Bind("s", () => {
+        sneakOverlay = document.createElement("sneak-overlay")
+        document.body.append(sneakOverlay)
+    }),
     new Bind("s", async () => {
         // product_state was renamed to product_state_service in Spotify 1.2.21
         const productState =
@@ -32,5 +37,5 @@ const binds = [
 
 binds.map(bind => bind.register())
 
-mousetrapInst.bind(keyList, listenSneakKeys, "keypress")
-mousetrapInst.bind(KEYS.ESCAPE, quitSneak)
+mousetrapInst.bind(KEY_LIST, e => sneakOverlay.update_props(e.key), "keypress")
+mousetrapInst.bind(KEYS.ESCAPE, () => sneakOverlay?.remove())

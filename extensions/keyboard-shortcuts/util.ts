@@ -1,6 +1,7 @@
-import { listeningToSneakBinds } from "./sneak.ts"
+import { function as f, number as n, ord } from "https://esm.sh/fp-ts"
+import { mean } from "https://esm.sh/fp-ts-std/Array"
 import { mod } from "https://esm.sh/fp-ts-std/Number"
-import { function as f } from "https://esm.sh/fp-ts"
+import { listeningToSneakBinds } from "./sneak.ts"
 
 const SCROLL_STEP = 25
 
@@ -51,3 +52,16 @@ export class Bind {
             event => void (!listeningToSneakBinds && this.callback(event)),
         )
 }
+
+export const isElementVisible = (e: HTMLElement) => e.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })
+export const isElementInViewPort = (e: HTMLElement) => {
+    const c = document.body
+    const bound = e.getBoundingClientRect()
+    const within = (m: number, M: number) => (x: number) => x === ord.clamp(n.Ord)(m, M)(x)
+    return (
+        f.pipe(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) &&
+        f.pipe(mean([bound.left, bound.right]), within(0, c.clientWidth))
+    )
+}
+
+export const CLICKABLE_ELMENT_SELECTOR = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`

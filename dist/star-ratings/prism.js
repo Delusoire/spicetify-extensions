@@ -8,4 +8,4 @@
             .then(data => atob(data.content))
         document.head.appendChild(el)
     }
-})
+})()

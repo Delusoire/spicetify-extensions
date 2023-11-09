@@ -29,7 +29,7 @@ const runtimeInject = (id: string, tag: string, content: string, props = {}) =>
         el.textContent = ${content}
         document.head.appendChild(el)
     }
-})`
+})()`
 
 const wrapInCssTag = (id: string, css: string) => runtimeInject(id, "style", JSON.stringify(css))
 

@@ -9,4 +9,4 @@ import{anyPass as bt}from"https://esm.sh/fp-ts-std/Predicate";import{array as L,
         el.textContent = "svg.rating-1{fill:#ed5564!important}svg.rating-2{fill:#ffce54!important}svg.rating-3{fill:#a0d568!important}svg.rating-4{fill:#4fc1e8!important}svg.rating-5{fill:#ac92eb!important}\n/*# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsiLi4vLi4vZXh0ZW5zaW9ucy9zdGFyLXJhdGluZ3MtMi9hc3NldHMvc3R5bGVzLmNzcyJdLAogICJzb3VyY2VzQ29udGVudCI6IFsic3ZnLnJhdGluZy0xe2ZpbGw6I2VkNTU2NCAhaW1wb3J0YW50fXN2Zy5yYXRpbmctMntmaWxsOiNmZmNlNTQgIWltcG9ydGFudH1zdmcucmF0aW5nLTN7ZmlsbDojYTBkNTY4ICFpbXBvcnRhbnR9c3ZnLnJhdGluZy00e2ZpbGw6IzRmYzFlOCAhaW1wb3J0YW50fXN2Zy5yYXRpbmctNXtmaWxsOiNhYzkyZWIgIWltcG9ydGFudH0iXSwKICAibWFwcGluZ3MiOiAiQUFBQSxHQUFHLENBQUMsU0FBUyxLQUFLLGlCQUFrQixDQUFDLEdBQUcsQ0FBQyxTQUFTLEtBQUssaUJBQWtCLENBQUMsR0FBRyxDQUFDLFNBQVMsS0FBSyxpQkFBa0IsQ0FBQyxHQUFHLENBQUMsU0FBUyxLQUFLLGlCQUFrQixDQUFDLEdBQUcsQ0FBQyxTQUFTLEtBQUssaUJBQWtCIiwKICAibmFtZXMiOiBbXQp9Cg== */\n"
         document.head.appendChild(el)
     }
-})
+})()
