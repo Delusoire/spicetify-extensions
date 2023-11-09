@@ -16,7 +16,7 @@ import { sass } from "https://deno.land/x/denosass@1.0.6/src/mod.ts"
 
 const USER_REPO = "Delusoire/spicetify-extensions"
 
-const rawest = (str: string) => "String.raw`" + str.replace(/(\$\{|\`)/gm, "\\$1") + "`"
+// const rawest = (str: string) => "String.raw`" + str.replace(/(\$\{|\`)/gm, "\\$1") + "`"
 
 const runtimeInject = (id: string, tag: string, content: string, props = {}) =>
     `(async () => {
@@ -26,7 +26,7 @@ const runtimeInject = (id: string, tag: string, content: string, props = {}) =>
         ${Object.entries(props)
             .map(([k, v]) => `el["${k}"] = "${v}"`)
             .join(";")}
-        el.textContent = ${rawest(content)}
+        el.textContent = ${content}
         document.head.appendChild(el)
     }
 })`
@@ -38,8 +38,8 @@ const generatePrismContent = (name: string) =>
         name,
         "script",
         `await fetch(\`https://api.github.com/repos/${USER_REPO}/contents/dist/\${id}/app.js\`)
-    .then(res => res.json())
-    .then(data => atob(data.content))`,
+            .then(res => res.json())
+            .then(data => atob(data.content))`,
         { type: "module" },
     )
 
@@ -77,6 +77,7 @@ const extensionsData = extensions.map(async fullname => {
         format: "esm",
         external: ["https://esm.sh/*"],
         minify: true,
+        sourcemap: "inline",
     })
 
     const s = join(OUT, name)

@@ -3,9 +3,9 @@
         const el = document.createElement("script")
         el.id = "star-ratings"
         el["type"] = "module"
-        el.textContent = String.raw`await fetch(\`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/\${id}/app.js\`)
-    .then(res => res.json())
-    .then(data => atob(data.content))`
+        el.textContent = await fetch(`https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/${id}/app.js`)
+            .then(res => res.json())
+            .then(data => atob(data.content))
         document.head.appendChild(el)
     }
 })
