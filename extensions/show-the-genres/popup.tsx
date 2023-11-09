@@ -1,38 +1,37 @@
-import { task } from "fp-ts"
-import React, { useState } from "react"
-import { fetchWebSoundOfSpotifyPlaylist } from "../../shared/api"
-import { titleCase } from "../../shared/util"
-import { lastFmTags, spotifyGenres } from "./app"
+import { task } from "https://esm.sh/fp-ts"
+import { fetchWebSoundOfSpotifyPlaylist } from "../../shared/api.ts"
+import { titleCase } from "../../shared/util.ts"
+import { lastFmTags, spotifyGenres } from "./app.ts"
 
-export const genrePopup = () => {
+const { React } = Spicetify
+
+export const genrePopup = (globalThis.genrePopup = () => {
     Spicetify.PopupModal.display({
         title: `Genres of: ${Spicetify.Player.data.track?.metadata?.title}`,
+        // @ts-expect-error: content's type should allow react elements
         content: (
             <div className="genres-popup">
                 {spotifyGenres.length === 0 ? <></> : <SpotifyGenresContainer />}
                 {lastFmTags.length === 0 ? <></> : <LastFmTagsContainer />}
             </div>
-        ) as any,
+        ),
         isLarge: true,
     })
-}
+})
 
-// @ts-ignore
-globalThis.genrePopup = genrePopup
-
-const ButtonElement = ({ name = "", color = "", onClick = task.of(undefined) as task.Task<any> }) => (
+const ButtonElement = ({ name = "", color = "", onClick = task.of(undefined) as task.Task<void> }) => (
     <button className={`login-button${color}`} onClick={onClick}>
         {name}
     </button>
 )
 
 const SpotifyGenresContainer = () => {
-    let [value, setValue] = useState(spotifyGenres)
+    const [value, setValue] = React.useState(spotifyGenres)
 
     Spicetify.Player.addEventListener("songchange", () => setTimeout(() => setValue(spotifyGenres), 500))
 
     const openSoundOfPlaylistOrSearchResults = (query: string) => async () => {
-        let uri = await fetchWebSoundOfSpotifyPlaylist(query)
+        const uri = await fetchWebSoundOfSpotifyPlaylist(query)
         if (uri === null) Spicetify.Platform.History.push(`/search/${query}/playlists`)
         else Spicetify.Platform.History.push(`/playlist/${uri.split(":")[2]}`)
 
@@ -51,7 +50,7 @@ const SpotifyGenresContainer = () => {
 
 const LastFmTagsContainer = () => {
     if (lastFmTags.length == 0) return <></>
-    let [value, setValue] = useState(lastFmTags)
+    const [value, setValue] = React.useState(lastFmTags)
 
     Spicetify.Player.addEventListener("songchange", () => setTimeout(() => setValue(lastFmTags), 100))
 

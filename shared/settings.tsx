@@ -1,9 +1,9 @@
-import { task } from "fp-ts"
-import { constVoid } from "fp-ts/function"
-import React, { useState } from "react"
-import ReactDOM from "react-dom"
-import { guard4, is } from "./fp"
-import { sleep } from "./util"
+import { task } from "https://esm.sh/fp-ts"
+import { constVoid } from "https://esm.sh/fp-ts/function"
+import { guard4, is } from "./fp.ts"
+import { sleep } from "./util.ts"
+
+const { React, ReactDOM } = Spicetify
 
 export class SettingsSection {
     private stopHistoryListener: any
@@ -169,7 +169,7 @@ export class SettingsSection {
     getId = (nameId: string) => `extensions:${this.sectionId}:${nameId}`
 
     private useStateFor = <A,>(id: string) => {
-        const [value, setValueState] = useState(SettingsSection.getFieldValue<A>(id))
+        const [value, setValueState] = React.useState(SettingsSection.getFieldValue<A>(id))
 
         return [
             value,
@@ -195,7 +195,7 @@ export class SettingsSection {
     }
 
     private FieldsContainer = () => {
-        const [rerender, setRerender] = useState<number>(0)
+        const [rerender, setRerender] = React.useState<number>(0)
         this.setRerender = setRerender
 
         return (

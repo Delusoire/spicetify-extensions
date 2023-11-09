@@ -1,7 +1,8 @@
-import { range } from "fp-ts/lib/ReadonlyNonEmptyArray"
-import React from "react"
-import { SpotifyURI } from "../../shared/util"
-import { toggleRating } from "./ratings"
+import { range } from "https://esm.sh/fp-ts/lib/ReadonlyNonEmptyArray"
+import { SpotifyURI } from "../../shared/util.ts"
+import { toggleRating } from "./ratings.ts"
+
+const { React } = Spicetify
 
 const RatingButton = ({ i, uri }: { i: number; uri: SpotifyURI }) => (
     <button

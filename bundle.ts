@@ -1,155 +1,119 @@
-const user_repo = "Delusoire/spicetify-extensions"
+/// <reference lib="deno.ns" />
 
-import type { BunPlugin } from "bun"
-import { compile } from "sass"
-import postcss from "postcss"
-const autoprefixer = require("autoprefixer")
+import { appendFileSync } from "node:fs"
+import { basename } from "https://deno.land/std@0.201.0/path/basename.ts"
+import { join } from "https://deno.land/std@0.201.0/path/join.ts"
+import * as esbuild from "https://deno.land/x/esbuild@v0.19.4/mod.js"
+// import { denoResolverPlugin, denoLoaderPlugin } from "https://deno.land/x/esbuild_deno_loader@0.8.2/mod.ts"
 
-// Helper functions
+import autoprefixer from "https://deno.land/x/postcss_autoprefixer@0.2.8/mod.js"
+import { postCSSPlugin } from "./esbuild-plugin-postcss.ts"
 
-const wrapInTag = (id: string, tag: string, content: string) =>
+import { extractor } from "./front-matter.ts"
+import { sass } from "https://deno.land/x/denosass@1.0.6/src/mod.ts"
+
+// Utils
+
+const USER_REPO = "Delusoire/spicetify-extensions"
+
+const rawest = (str: string) => "String.raw`" + str.replace(/(\$\{|\`)/gm, "\\$1") + "`"
+
+const runtimeInject = (id: string, tag: string, content: string, props = {}) =>
     `(async () => {
-    const id = ${JSON.stringify(id)}
-    if (!document.getElementById(id)) {
-        const el = document.createElement(${JSON.stringify(tag)})
-        el.id = id
-        el.textContent = ${content}
+    if (!document.getElementById("${id}")) {
+        const el = document.createElement("${tag}")
+        el.id = "${id}"
+        ${Object.entries(props)
+            .map(([k, v]) => `el["${k}"] = "${v}"`)
+            .join(";")}
+        el.textContent = ${rawest(content)}
         document.head.appendChild(el)
     }
-})()`
+})`
 
-const createPrismContent = (pkgname: string) => {
-    const content = `\`(async () => {
-\${
-        (await fetch("https://api.github.com/repos/${user_repo}/contents/dist/${pkgname}.js")
-            .then(res => res.json())
-            .then(data => atob(data.content))
-        ).replace(/^/gm, "  ")
-    }
-})()\``
+const wrapInCssTag = (id: string, css: string) => runtimeInject(id, "style", JSON.stringify(css))
 
-    return wrapInTag(pkgname, "script", content)
-}
+const generatePrismContent = (name: string) =>
+    runtimeInject(
+        name,
+        "script",
+        `await fetch(\`https://api.github.com/repos/${USER_REPO}/contents/dist/\${id}/app.js\`)
+    .then(res => res.json())
+    .then(data => atob(data.content))`,
+        { type: "module" },
+    )
 
-// Build plugins
-
-const externals: Record<string, string> = {
-    react: "Spicetify.React",
-    "react-dom": "Spicetify.ReactDOM",
-}
-
-const externalGlobalPlugin: BunPlugin = {
-    name: "external-global-plugin",
-    setup(build) {
-        const namespace = externalGlobalPlugin.name
-
-        build.onResolve({ filter: new RegExp("^(" + Object.keys(externals).join("|") + ")$") }, args => {
-            return { path: args.path, namespace }
-        })
-
-        build.onLoad({ filter: /.*/, namespace }, args => ({
-            contents: `module.exports = ${externals[args.path]}`,
-        }))
-    },
-}
-
-const stylesPlugin: BunPlugin = {
-    name: "styles-plugin",
-    async setup(build) {
-        const { resolve } = await import("node:path")
-        const { createHash } = await import("node:crypto")
-        const PostCSSProcessor = await postcss([autoprefixer])
-        const namespace = stylesPlugin.name
-
-        build.onResolve({ filter: /.\.(scss)$/ }, args => ({
-            path: resolve(args.importer, "..", args.path),
-            namespace,
-        }))
-
-        build.onLoad({ filter: /.*/, namespace }, args => {
-            const compiledCss = compile(args.path).css
-            const processedCss = PostCSSProcessor.process(compiledCss, { from: args.path }).css
-            const css = String.raw`${processedCss}`.trim()
-            const hash = createHash("sha256").update(css).digest("base64url")
-
-            return {
-                contents: wrapInTag(hash, "style", JSON.stringify(css)),
-            }
-        })
-    },
-}
+const readDirFullPath = (path: string) => Array.from(Deno.readDirSync(path)).map(file => join(path, file.name))
 
 // Build
 
-import { basename } from "node:path"
-import { readdirSync, mkdirSync } from "node:fs"
-import { join } from "node:path"
-import fm from "front-matter"
+const OUT = "dist"
 
-const readdirFullPath = (path: string) => readdirSync(path).map(file => join(path, file))
+const encoder = new TextEncoder()
+const decoder = new TextDecoder()
 
-const extensions = readdirFullPath("extensions")
-const snippets = readdirFullPath("snippets")
-
-const out = "dist"
-
-mkdirSync(out, { recursive: true })
+const extensions = readDirFullPath("extensions")
+const snippets = readDirFullPath("snippets")
 
 const extensionsData = extensions.map(async fullname => {
     const name = basename(fullname)
-    const entry = join(fullname, "app.tsx")
+    const entry = join(fullname, "app.ts")
 
-    const buildOutput = await Bun.build({
-        entrypoints: [entry],
-        plugins: [externalGlobalPlugin, stylesPlugin],
-        outdir: out,
-        naming: `${name}.[ext]`,
-        sourcemap: "external",
+    await esbuild.build({
+        platform: "browser",
+        plugins: [
+            // denoResolverPlugin(),
+            postCSSPlugin({
+                plugins: [autoprefixer()],
+                modules: {
+                    generateScopedName: `[name]__[local]___[hash:base64:5]_${name}`,
+                },
+            }),
+            // denoLoaderPlugin({ nodeModulesDir: true }),
+        ],
+        entryPoints: [entry],
+        outdir: join(OUT, name),
+        bundle: true,
+        format: "esm",
+        external: ["https://esm.sh/*"],
         minify: true,
     })
 
-    if (!buildOutput.success) {
-        console.error(`Build failed for ${name}`)
-        console.log(buildOutput.logs)
-        return
-    }
+    const s = join(OUT, name)
+    const jsPath = join(s, "app.js")
+    const cssPath = join(s, "app.css")
+    const prismPath = join(s, "prism.js")
 
-    const isJsExtension = /[^(prism)].js$/
-    const exportBlock = /^export {[^;]+};$/gm
-    readdirFullPath(out).map(async fullname => {
-        if (!isJsExtension.test(fullname)) return
-        const file = Bun.file(fullname)
-        const content = await file.text()
-        Bun.write(file, content.replace(exportBlock, ""))
-    })
+    try {
+        const cssContent = decoder.decode(await Deno.readFile(cssPath))
+        appendFileSync(jsPath, wrapInCssTag(name + "-css", cssContent))
+    } catch (_) {}
 
-    const prismPath = join(out, `${name}.prism.js`)
-    const prismContent = createPrismContent(name)
-
-    Bun.write(Bun.file(prismPath), prismContent)
+    const prismContent = generatePrismContent(name)
+    Deno.writeFile(prismPath, encoder.encode(prismContent))
 
     const assets = join(fullname, "assets")
     const readme = join(assets, "README.md")
+    const preview = join(assets, "preview.png")
 
-    const readmeContent = await Bun.file(readme).text()
-    const readmeFrontmatter = fm(readmeContent).attributes as {}
+    const readmeContent = decoder.decode(await Deno.readFile(readme))
+    const readmeFrontmatter = extractor(readmeContent).attributes
 
     return Object.assign(readmeFrontmatter, {
         name,
-        preview: join(assets, "preview.png"),
+        preview,
         main: prismPath,
         readme,
     })
 })
 
 snippets.map(fullname => {
-    const name = basename(fullname)
-
-    const { css } = compile(fullname)
-    const snippetFile = Bun.file(join(out, name.replace(".scss", ".css")))
-
-    Bun.write(snippetFile, css)
+    const css = sass(fullname).to_string("compressed").toString()
+    const snippetFile = join(OUT, fullname.replace(/\.scss$/, ".css"))
+    Deno.writeFile(snippetFile, encoder.encode(css))
 })
 
 const manifest = await Promise.all(extensionsData)
-Bun.write(Bun.file("manifest.json"), JSON.stringify(manifest))
+Deno.writeFile("manifest.json", encoder.encode(JSON.stringify(manifest)))
+
+esbuild.stop()

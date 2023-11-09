@@ -1,0 +1,32 @@
+import { task } from "https://esm.sh/fp-ts"
+import { createPlatFolder } from "../../shared/api.ts"
+import { SettingsSection } from "../../shared/settings.tsx"
+import { loadRatings } from "./ratings.ts"
+import { RATINGS_FOLDER_NAME } from "./util.ts"
+import { SpotifyURI } from "../../shared/util.ts"
+
+const settings = new SettingsSection("Star Ratings", "star-ratings")
+    .addToggle("hideHearts", "Hide Hearts")
+    .addToggle("halfStarRatings", "Half star ratings")
+    .addToggle("showInTrackLists", "Show in tracklists")
+    .addToggle("nowPlayingStarsOnRight", "Place the stars for now playing track on the right")
+    .addInput("heartThreshold", "Threshold for liking trakcs", task.of("3.5"))
+    .addInput("skipThreshold", "Threshold for skipping trakcs", task.of("1.5"))
+    .addInput(
+        "ratingsFolderUri",
+        "Ratings folder uri",
+        async () => (await createPlatFolder(RATINGS_FOLDER_NAME)).uri,
+        loadRatings,
+    )
+
+settings.pushSettings()
+
+export const CONFIG = settings.toObject() as {
+    hideHearts: boolean
+    halfStarRatings: string
+    showInTrackLists: boolean
+    nowPlayingStarsOnRight: boolean
+    heartThreshold: string
+    skipThreshold: string
+    ratingsFolderUri: SpotifyURI
+}

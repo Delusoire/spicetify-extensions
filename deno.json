@@ -1,0 +1,13 @@
+{
+    "tasks": {},
+    "compilerOptions": {
+        "lib": [
+            "ESNext",
+            "DOM",
+            "npm:@types/react",
+            "npm:@types/react-dom",
+            "npm:@types/mousetrap",
+            "./globals.d.ts"
+        ]
+    }
+}

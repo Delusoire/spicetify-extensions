@@ -1,11 +1,9 @@
-import { array as a } from "fp-ts"
-import { constVoid, pipe as p } from "fp-ts/function"
-import React from "react"
-import ReactDOM from "react-dom"
-import { fetchGQLAlbum, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents } from "../../shared/api"
-import { SpotifyURI } from "../../shared/util"
-import { Dropdown } from "./dropdown"
-import { tracksRatings } from "./ratings"
+import { array as ar, function as f } from "https://esm.sh/fp-ts"
+
+import { fetchGQLAlbum, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents } from "../../shared/api.ts"
+import { SpotifyURI } from "../../shared/util.ts"
+import { Dropdown } from "./dropdown.tsx"
+import { tracksRatings } from "./ratings.ts"
 import {
     getCollectionPlaylistButton,
     getNowPlayingBar,
@@ -13,9 +11,10 @@ import {
     getTrackListTrackUri,
     getTrackListTracks,
     getTrackLists,
-} from "./util"
+} from "./util.ts"
 
 const { URI } = Spicetify
+const { React, ReactDOM } = Spicetify
 
 const colorByRating = ["unset", "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
 
@@ -27,12 +26,17 @@ const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
     svg.style.fill = colorByRating[rating]
 }
 
+let lastDiv: HTMLDivElement
 const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI, forced = false) => {
     if (pb.hasAttribute("dropdown-enabled")) {
         if (!forced) return
     } else pb.setAttribute("dropdown-enabled", "")
 
     const div = document.createElement("div")
+    if (forced) {
+        lastDiv.outerHTML = ""
+        lastDiv = div
+    }
     pb.appendChild(div)
     ReactDOM.render(<Dropdown uri={uri} />, div)
     Spicetify.Tippy(pb, {
@@ -55,7 +59,7 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
             box.className = "main-contextMenu-tippy"
             box.appendChild(instance.props.content)
 
-            return { popper, onUpdate: constVoid }
+            return { popper, onUpdate: f.constVoid }
         },
         onShow(instance: any) {
             instance.popper.firstChild.classList.add("main-contextMenu-tippyEnter")
@@ -93,9 +97,9 @@ export const updateNowPlayingControls = (newTrack: SpotifyURI, updateDropdown = 
 
 export const updateTrackListControls = (updateDropdown = true) => {
     const trackLists = getTrackLists()
-    p(
+    f.pipe(
         trackLists,
-        a.map(trackList => {
+        ar.map(trackList => {
             const trackListTracks = getTrackListTracks(trackList)
 
             trackListTracks.map(track => {
@@ -117,20 +121,20 @@ export const updateTrackListControls = (updateDropdown = true) => {
 export const updateCollectionControls = async (uri: Spicetify.URI) => {
     let uris
     if (URI.isAlbum(uri))
-        uris = p(
+        uris = f.pipe(
             await fetchGQLAlbum(`${uri}`),
             x => x.tracks.items,
-            a.map(x => x.track.uri),
+            ar.map(x => x.track.uri),
         )
     else if (URI.isArtist(uri))
-        uris = p(
+        uris = f.pipe(
             await fetchPlatArtistLikedTracks(`${uri}`),
-            a.map(x => x.uri),
+            ar.map(x => x.uri),
         )
     else if (URI.isPlaylistV1OrV2(uri))
-        uris = p(
+        uris = f.pipe(
             await fetchPlatPlaylistContents(`${uri}`),
-            a.map(x => x.uri),
+            ar.map(x => x.uri),
         )
     else throw "me out the window"
 
