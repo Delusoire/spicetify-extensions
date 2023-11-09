@@ -23,7 +23,7 @@ class SneakKey extends LitElement {
 
     protected render() {
         const { x, y } = this.target.getBoundingClientRect()
-        const styles = { top: x + "px", left: y + "px" }
+        const styles = { position: "absolute", top: x + "px", left: y + "px" }
         return html`<span style=${styleMap(styles)}>${this.key}</span>`
     }
 }
