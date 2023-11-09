@@ -1,5 +1,3 @@
-debugger
-
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate"
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.tsx"
 import { loadRatings, tracksRatings } from "./ratings.ts"
