@@ -1022,6 +1022,7 @@
     "https://esm.sh/js-yaml": "https://esm.sh/js-yaml@4.1.0",
     "https://esm.sh/lit": "https://esm.sh/lit@3.0.2",
     "https://esm.sh/lit/decorators.js": "https://esm.sh/lit@3.0.2/decorators.js",
+    "https://esm.sh/lit/directives/style-map.js": "https://esm.sh/lit@3.0.2/directives/style-map.js",
     "https://esm.sh/postcss": "https://esm.sh/postcss@8.4.31",
     "https://esm.sh/postcss-modules": "https://esm.sh/postcss-modules@6.0.0",
     "https://esm.sh/v133/@types/js-yaml@^4/index.d.ts": "https://esm.sh/v133/@types/js-yaml@4.0.9/index.d.ts"

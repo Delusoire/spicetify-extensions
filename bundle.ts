@@ -37,7 +37,7 @@ const generatePrismContent = (name: string) =>
     runtimeInject(
         name,
         "script",
-        `await fetch(\`https://api.github.com/repos/${USER_REPO}/contents/dist/\${id}/app.js\`)
+        `await fetch(\`https://api.github.com/repos/${USER_REPO}/contents/dist/${name}/app.js\`)
             .then(res => res.json())
             .then(data => atob(data.content))`,
         { type: "module" },
