@@ -7,8 +7,7 @@ const { React } = Spicetify
 
 export const genrePopup = (globalThis.genrePopup = () => {
     Spicetify.PopupModal.display({
-        title: `Genres of: ${Spicetify.Player.data.track?.metadata?.title}`,
-        // @ts-expect-error: content's type should allow react elements
+        title: `Genres of: ${Spicetify.Player.data.item?.metadata?.title}`,
         content: (
             <div className="genres-popup">
                 {spotifyGenres.length === 0 ? <></> : <SpotifyGenresContainer />}

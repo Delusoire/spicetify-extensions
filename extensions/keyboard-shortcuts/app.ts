@@ -2,8 +2,6 @@ import { KEY_LIST, SneakOverlay, mousetrapInst } from "./sneak.ts"
 import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util.ts"
 import { toggleLiked } from "../../shared/util.ts"
 
-import "./assets/styles.scss"
-
 const { KEYS } = Spicetify.Keyboard
 
 let sneakOverlay: SneakOverlay
@@ -37,5 +35,5 @@ const binds = [
 
 binds.map(bind => bind.register())
 
-mousetrapInst.bind(KEY_LIST, e => sneakOverlay.update_props(e.key), "keypress")
+mousetrapInst.bind(KEY_LIST, e => sneakOverlay.updateProps(e.key), "keypress")
 mousetrapInst.bind(KEYS.ESCAPE, () => sneakOverlay?.remove())

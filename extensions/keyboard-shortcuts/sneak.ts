@@ -81,10 +81,8 @@ export class SneakOverlay extends LitElement {
         listeningToSneakBinds = false
     }
 
-    update_props(key: KeyboardEvent["key"]) {
-        if (!listeningToSneakBinds) {
-            return
-        }
+    updateProps(key: KeyboardEvent["key"]) {
+        if (!listeningToSneakBinds) return
 
         this.props = this.props.filter(prop => {
             const [k1, ...ks] = prop.key.toLowerCase()
