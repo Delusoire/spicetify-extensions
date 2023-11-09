@@ -33,8 +33,8 @@ class SneakKey extends LitElement {
             lineHeight: "normal",
             fontSize: "14px",
             fontWeight: "500",
-            top: x + "px",
-            left: y + "px",
+            top: y + "px",
+            left: x + "px",
         }
         return html`<span style=${styleMap(styles)}>${this.key}</span>`
     }
