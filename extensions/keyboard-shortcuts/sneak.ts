@@ -10,7 +10,6 @@ import { CLICKABLE_ELMENT_SELECTOR, isElementInViewPort, isElementVisible } from
 export const mousetrapInst = Spicetify.Mousetrap()
 export const KEY_LIST = "abcdefghijklmnopqrstuvwxyz".split("")
 
-let shouldListenToSneakBinds = false
 export let listeningToSneakBinds = false
 
 @customElement("sneak-key")
@@ -73,22 +72,17 @@ export class SneakOverlay extends LitElement {
             )
 
             if (k1 + k2 === 0) this.remove()
-            else shouldListenToSneakBinds = true
+            else listeningToSneakBinds = true
         })
     }
 
     disconnectedCallback() {
         super.disconnectedCallback()
         listeningToSneakBinds = false
-        shouldListenToSneakBinds = false
     }
 
     update_props(key: KeyboardEvent["key"]) {
         if (!listeningToSneakBinds) {
-            if (shouldListenToSneakBinds) {
-                shouldListenToSneakBinds = false
-                listeningToSneakBinds = true
-            }
             return
         }
 
