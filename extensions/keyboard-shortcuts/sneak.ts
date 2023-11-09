@@ -1,5 +1,3 @@
-debugger
-
 import { array as a, function as f } from "https://esm.sh/fp-ts"
 
 import { LitElement, html } from "https://esm.sh/lit"

@@ -1,3 +1,5 @@
+debugger
+
 import { KEY_LIST, SneakOverlay, mousetrapInst } from "./sneak.ts"
 import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util.ts"
 import { toggleLiked } from "../../shared/util.ts"
