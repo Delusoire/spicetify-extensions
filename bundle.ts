@@ -78,6 +78,12 @@ const extensionsData = extensions.map(async fullname => {
         external: ["https://esm.sh/*"],
         minify: true,
         sourcemap: "inline",
+        tsconfigRaw: `{
+          "compilerOptions": {
+            "experimentalDecorators": true,
+            "useDefineForClassFields": false,
+          }
+        }`,
     })
 
     const s = join(OUT, name)
