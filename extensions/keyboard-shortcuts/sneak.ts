@@ -1,6 +1,6 @@
 import { array as a, function as f } from "https://esm.sh/fp-ts"
 
-import { LitElement, html } from "https://esm.sh/lit"
+import { LitElement, css, html } from "https://esm.sh/lit"
 import { customElement, property } from "https://esm.sh/lit/decorators.js"
 import { styleMap } from "https://esm.sh/lit/directives/style-map.js"
 import { map } from "https://esm.sh/lit/directives/map.js"
@@ -23,13 +23,34 @@ class SneakKey extends LitElement {
 
     protected render() {
         const { x, y } = this.target.getBoundingClientRect()
-        const styles = { position: "absolute", top: x + "px", left: y + "px" }
+        const styles = {
+            position: "fixed",
+            padding: "3px 6px",
+            backgroundColor: "black",
+            borderRadius: "3px",
+            border: "solid 2px white",
+            color: "white",
+            textTransform: "lowercase",
+            lineHeight: "normal",
+            fontSize: "14px",
+            fontWeight: "500",
+            top: x + "px",
+            left: y + "px",
+        }
         return html`<span style=${styleMap(styles)}>${this.key}</span>`
     }
 }
 
 @customElement("sneak-overlay")
 export class SneakOverlay extends LitElement {
+    static styles = css`:host {
+        z-index: 1e5
+        position: absolute
+        width: 100%
+        height: 100%
+        display: block
+    }`
+
     @property()
     props = [] as Array<{ key: string; target: HTMLElement }>
 
