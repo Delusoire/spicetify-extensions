@@ -195,7 +195,7 @@ var init_settings = __esm({
             SettingToggle,
             {
               id: field.id,
-              checked: _SettingsSection.getFieldValue(field.id),
+              checked: _SettingsSection.getFieldValue(this.getId(field.id)),
               onSelected: (checked) => {
                 setValue(checked);
                 field.onSelected?.(checked);
@@ -212,7 +212,7 @@ var init_settings = __esm({
               className: "x-settings-input",
               id: field.id,
               dir: "ltr",
-              value: _SettingsSection.getFieldValue(field.id),
+              value: _SettingsSection.getFieldValue(this.getId(field.id)),
               type: field.inputType,
               onChange: (e) => {
                 const value2 = e.currentTarget.value;

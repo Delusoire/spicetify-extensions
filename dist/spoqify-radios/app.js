@@ -130,7 +130,7 @@ var SettingsSection = class _SettingsSection {
         SettingToggle,
         {
           id: field.id,
-          checked: _SettingsSection.getFieldValue(field.id),
+          checked: _SettingsSection.getFieldValue(this.getId(field.id)),
           onSelected: (checked) => {
             setValue(checked);
             field.onSelected?.(checked);
@@ -147,7 +147,7 @@ var SettingsSection = class _SettingsSection {
           className: "x-settings-input",
           id: field.id,
           dir: "ltr",
-          value: _SettingsSection.getFieldValue(field.id),
+          value: _SettingsSection.getFieldValue(this.getId(field.id)),
           type: field.inputType,
           onChange: (e) => {
             const value2 = e.currentTarget.value;

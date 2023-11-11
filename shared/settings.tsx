@@ -197,7 +197,7 @@ export class SettingsSection {
             <this.SettingField field={field}>
                 <SettingToggle
                     id={field.id}
-                    checked={SettingsSection.getFieldValue(field.id)}
+                    checked={SettingsSection.getFieldValue(this.getId(field.id))}
                     onSelected={(checked: boolean) => {
                         setValue(checked)
                         field.onSelected?.(checked)
@@ -216,7 +216,7 @@ export class SettingsSection {
                     className="x-settings-input"
                     id={field.id}
                     dir="ltr"
-                    value={SettingsSection.getFieldValue(field.id)}
+                    value={SettingsSection.getFieldValue(this.getId(field.id))}
                     type={field.inputType}
                     onChange={e => {
                         const value = e.currentTarget.value
