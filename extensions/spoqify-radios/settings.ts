@@ -5,8 +5,11 @@ import { SpotifyURI } from "../../shared/util.ts"
 const SORTED_PLAYLISTS_FOLDER_NAME = "Anonymized Radios"
 
 const settings = new SettingsSection("Spoqify-radios", "spoqify-radios").addInput(
-    "anonymizedRadiosFolderUri",
-    "Anonymized Radios folder uri",
+    {
+        id: "anonymizedRadiosFolderUri",
+        desc: "Anonymized Radios folder uri",
+        inputType: "text",
+    },
     async () => (await createPlatFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri,
 )
 

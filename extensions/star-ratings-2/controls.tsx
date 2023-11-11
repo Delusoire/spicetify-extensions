@@ -34,7 +34,7 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
 
     const div = document.createElement("div")
     if (forced) {
-        lastDiv.outerHTML = ""
+        if (lastDiv?.outerHTML) lastDiv.outerHTML = ""
         lastDiv = div
     }
     pb.appendChild(div)

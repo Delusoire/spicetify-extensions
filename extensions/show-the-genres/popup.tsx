@@ -5,6 +5,7 @@ import { lastFmTags, spotifyGenres } from "./app.ts"
 
 const { React } = Spicetify
 
+// @ts-ignore
 export const genrePopup = (globalThis.genrePopup = () => {
     Spicetify.PopupModal.display({
         title: `Genres of: ${Spicetify.Player.data.item?.metadata?.title}`,

@@ -6,17 +6,20 @@ import { RATINGS_FOLDER_NAME } from "./util.ts"
 import { SpotifyURI } from "../../shared/util.ts"
 
 const settings = new SettingsSection("Star Ratings", "star-ratings")
-    .addToggle("hideHearts", "Hide Hearts")
-    .addToggle("halfStarRatings", "Half star ratings")
-    .addToggle("showInTrackLists", "Show in tracklists")
-    .addToggle("nowPlayingStarsOnRight", "Place the stars for now playing track on the right")
-    .addInput("heartThreshold", "Threshold for liking trakcs", task.of("3.5"))
-    .addInput("skipThreshold", "Threshold for skipping trakcs", task.of("1.5"))
+    .addToggle({ id: "hideHearts", desc: "Hide Hearts" })
+    .addToggle({ id: "halfStarRatings", desc: "Half star ratings" })
+    .addToggle({ id: "showInTrackLists", desc: "Show in tracklists" })
+    .addToggle({ id: "nowPlayingStarsOnRight", desc: "Place the stars for now playing track on the right" })
+    .addInput({ id: "heartThreshold", desc: "Threshold for liking trakcs", inputType: "text" }, task.of("3.5"))
+    .addInput({ id: "skipThreshold", desc: "Threshold for skipping trakcs", inputType: "text" }, task.of("1.5"))
     .addInput(
-        "ratingsFolderUri",
-        "Ratings folder uri",
+        {
+            id: "ratingsFolderUri",
+            desc: "Ratings folder uri",
+            inputType: "text",
+            onChange: loadRatings,
+        },
         async () => (await createPlatFolder(RATINGS_FOLDER_NAME)).uri,
-        loadRatings,
     )
 
 settings.pushSettings()

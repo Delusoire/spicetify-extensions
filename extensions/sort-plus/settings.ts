@@ -6,19 +6,25 @@ import { SpotifyURI } from "../../shared/util.ts"
 const SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists"
 
 const settings = new SettingsSection("Sort+", "sort-plus")
-    .addToggle("descending", "Descending", task.of(true))
-    .addToggle("artistAllDiscography", "All of the artist's Discography", task.of(false))
-    .addToggle("artistTopTracks", "Top Tracks")
-    .addToggle("artistPopularReleases", "Popular Releases", task.of(false))
-    .addToggle("artistSingles", "Singles")
-    .addToggle("artistAlbums", "Albums")
-    .addToggle("artistCompilations", "Compilations")
-    .addToggle("artistLikedTracks", "Liked Tracks", task.of(false))
-    .addInput("lastFmUsername", "Last.fm Username", task.of("Delusoire"))
-    .addInput("LFMApiKey", "Last.fm API Key", task.of("44654ea047786d90338c17331a5f5d95"))
+    .addToggle({ id: "descending", desc: "Descending" }, task.of(true))
+    .addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" })
+    .addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task.of(true))
+    .addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task.of(true))
+    .addToggle({ id: "artistSingles", desc: "Singles" })
+    .addToggle({ id: "artistAlbums", desc: "Albums" })
+    .addToggle({ id: "artistCompilations", desc: "Compilations" })
+    .addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task.of(true))
+    .addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task.of("Username"))
     .addInput(
-        "sortedPlaylistsFolderUri",
-        "Sorted Playlists folder uri",
+        { id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" },
+        task.of("********************************"),
+    )
+    .addInput(
+        {
+            id: "sortedPlaylistsFolderUri",
+            desc: "Sorted Playlists folder uri",
+            inputType: "text",
+        },
         async () => (await createPlatFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri,
     )
 

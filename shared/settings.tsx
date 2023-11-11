@@ -1,13 +1,70 @@
 import { task } from "https://esm.sh/fp-ts"
-import { constVoid } from "https://esm.sh/fp-ts/function"
-import { guard4, is } from "./fp.ts"
+import { guard3, is } from "./fp.ts"
 import { sleep } from "./util.ts"
 
 const { React, ReactDOM } = Spicetify
+// @ts-ignore
+const { ButtonSecondary } = Spicetify.ReactComponent
+
+type FieldToProps<A> = Omit<A, "type">
+
+// @ts-ignore
+const require = webpackChunkopen.push([[Symbol()], {}, re => re])
+const cache = Object.keys(require.m).map(id => require(id))
+const modules = cache
+    .filter(module => typeof module === "object")
+    .map(module => {
+        try {
+            return Object.values(module)
+        } catch {}
+    })
+    .flat()
+const functionModules = modules.filter(module => typeof module === "function") as any[]
+
+const SettingColumn = functionModules.find(m => m.toString().includes("setSectionFilterMatchQueryValue"))
+const SettingText = functionModules.find(m => m.toString().includes("textSubdued") && m.toString().includes("viola"))
+
+const SettingToggle = functionModules.find(
+    m => m.toString().includes("condensed") && m.toString().includes("onSelected"),
+)
+
+export const enum FieldType {
+    BUTTON = "button",
+    TOGGLE = "toggle",
+    INPUT = "input",
+    HIDDEN = "hidden",
+}
+
+export interface BaseField {
+    id: string
+    type: FieldType
+    desc: string
+}
+
+export type SettingsField = HiddenField | InputField | ButtonField | ToggleField
+
+export interface ButtonField extends BaseField {
+    type: FieldType.BUTTON
+    text: string
+    onClick?: () => void
+}
+export interface ToggleField extends BaseField {
+    type: FieldType.TOGGLE
+    onSelected?: (checked: boolean) => void
+}
+
+export interface InputField extends BaseField {
+    type: FieldType.INPUT
+    inputType: string
+    onChange?: (value: string) => void
+}
+
+export interface HiddenField extends BaseField {
+    type: FieldType.HIDDEN
+}
 
 export class SettingsSection {
     private stopHistoryListener: any
-    private setRerender: Function | null = null
 
     constructor(
         public name: string,
@@ -15,21 +72,11 @@ export class SettingsSection {
         public sectionFields: { [key: string]: SettingsField } = {},
     ) {}
 
-    static waitForReact = async () => {
-        while (!(Spicetify.React && Spicetify.ReactDOM)) sleep(100)
-        return this
-    }
-
-    pushSettings = async () => {
-        while (!Spicetify?.Platform?.History?.listen) await sleep(100)
-
+    pushSettings = () => {
         if (this.stopHistoryListener) this.stopHistoryListener()
 
-        this.stopHistoryListener = Spicetify.Platform.History.listen(({ pathname = "" }) => {
-            if (pathname === "/preferences") this.render()
-        })
-
-        if (Spicetify.Platform.History.location.pathname === "/preferences") await this.render()
+        this.stopHistoryListener = Spicetify.Platform.History.listen(() => this.render())
+        this.render()
     }
 
     toObject = () =>
@@ -39,10 +86,6 @@ export class SettingsSection {
                 get: (target, prop) => SettingsSection.getFieldValue(this.getId(prop.toString())),
             },
         )
-
-    rerender = () => {
-        if (this.setRerender) this.setRerender(Math.random())
-    }
 
     private render = async () => {
         while (!document.getElementById("desktop.settings.selectLanguage")) {
@@ -64,106 +107,28 @@ export class SettingsSection {
         ReactDOM.render(<this.FieldsContainer />, pluginSettingsContainer)
     }
 
-    addButton = (
-        nameId: string,
-        description: string,
-        text: string,
-        onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void = constVoid,
-        events: ButtonField["events"] = {},
-    ) => {
-        const id = this.getId(nameId)
-
-        events.onClick = onClick
-
-        this.sectionFields[nameId] = {
-            id,
-            type: FieldType.BUTTON,
-            description,
-            text,
-            events,
-        }
+    addButton = (props: FieldToProps<ButtonField>) => {
+        this.addField(FieldType.BUTTON, props)
         return this
     }
 
-    addToggle = (
-        nameId: string,
-        description: string,
-        defaultValue = task.of(true),
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void = constVoid,
-        events: ToggleField["events"] = {},
-    ) => {
-        const id = this.getId(nameId)
-
-        SettingsSection.setDefaultFieldValue(id, defaultValue)
-
-        events.onChange = onChange
-        this.sectionFields[nameId] = {
-            id,
-            type: FieldType.TOGGLE,
-            description,
-            events,
-        }
+    addToggle = (props: FieldToProps<ToggleField>, defaultValue = task.of(false)) => {
+        this.addField(FieldType.TOGGLE, props, defaultValue)
         return this
     }
 
-    addInput = (
-        nameId: string,
-        description: string,
-        defaultValue: task.Task<string>,
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void = constVoid,
-        inputType = "text",
-        events: InputField["events"] = {},
-    ) => {
-        const id = this.getId(nameId)
-
-        SettingsSection.setDefaultFieldValue(id, defaultValue)
-
-        events.onChange = onChange
-        this.sectionFields[nameId] = {
-            id,
-            type: FieldType.INPUT,
-            description,
-            inputType,
-            events,
-        }
-
+    addInput = (props: FieldToProps<InputField>, defaultValue = task.of("")) => {
+        this.addField(FieldType.INPUT, props, defaultValue)
         return this
     }
 
-    addDropDown = (
-        nameId: string,
-        description: string,
-        options: string[],
-        defaultValue = task.of(0),
-        onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void = constVoid,
-        events: DropdownField["events"] = {},
-    ) => {
-        const id = this.getId(nameId)
-
-        SettingsSection.setDefaultFieldValue(id, defaultValue)
-
-        events.onChange = onChange
-        this.sectionFields[nameId] = {
-            id,
-            type: FieldType.DROPDOWN,
-            description,
-            options,
-            events,
+    private addField(type: FieldType, opts: FieldToProps<SettingsField>, defaultValue?: any) {
+        if (defaultValue !== undefined) {
+            const settingId = this.getId(opts.id)
+            SettingsSection.setDefaultFieldValue(settingId, defaultValue)
         }
-        return this
-    }
-
-    addHidden = (nameId: string, defaultValue: any) => {
-        const id = this.getId(nameId)
-
-        SettingsSection.setDefaultFieldValue(id, defaultValue)
-
-        this.sectionFields[nameId] = {
-            id,
-            type: FieldType.HIDDEN,
-            description: "",
-        }
-        return this
+        const field = Object.assign({}, opts, { type }) as SettingsField
+        this.sectionFields[opts.id] = field
     }
 
     getId = (nameId: string) => `extensions:${this.sectionId}:${nameId}`
@@ -182,176 +147,84 @@ export class SettingsSection {
         ] as const
     }
 
-    static getFieldValue = <R,>(id: string): R => {
-        return JSON.parse(Spicetify.LocalStorage.get(id) ?? "null") // "null" is parsed as null, the more you know
-    }
+    static getFieldValue = <R,>(id: string): R => JSON.parse(Spicetify.LocalStorage.get(id) ?? "null")
 
-    static setFieldValue = (id: string, newValue: any) => {
-        Spicetify.LocalStorage.set(id, JSON.stringify(newValue))
-    }
+    static setFieldValue = (id: string, newValue: any) => Spicetify.LocalStorage.set(id, JSON.stringify(newValue))
 
     private static setDefaultFieldValue = async (id: string, defaultValue: task.Task<any>) => {
         if (SettingsSection.getFieldValue(id) === null) SettingsSection.setFieldValue(id, await defaultValue())
     }
 
-    private FieldsContainer = () => {
-        const [rerender, setRerender] = React.useState<number>(0)
-        this.setRerender = setRerender
-
-        return (
-            <div className="x-settings-section" key={rerender}>
-                <h2 className="Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type">{this.name}</h2>
-                {Object.entries(this.sectionFields).map(([nameId, field]) => {
-                    return <this.Field field={field} />
-                })}
-            </div>
-        )
-    }
+    private FieldsContainer = () => (
+        <div className="x-settings-section">
+            <h2 className="Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type">{this.name}</h2>
+            {Object.entries(this.sectionFields).map(([nameId, field]) => {
+                return <this.Field field={field} />
+            })}
+        </div>
+    )
 
     private Field = ({ field }: { field: SettingsField }) => {
         const isType = is<SettingsField>("type")
 
-        return (
-            <div className="x-settings-row">
-                <this.SettingDescription id={field.id} description={field.description} />
-                <div className="x-settings-secondColumn">
-                    {guard4([
-                        [isType<InputField>(FieldType.INPUT), this.SettingInputField],
-                        [isType(FieldType.BUTTON), this.SettingButtonField],
-                        [isType(FieldType.TOGGLE), this.SettingToggleField],
-                        [isType(FieldType.DROPDOWN), this.SettingDropdownField],
-                    ])(this.SettingHidden)(field)}
-                </div>
+        return guard3([
+            [isType<InputField>(FieldType.INPUT), this.InputField],
+            [isType(FieldType.BUTTON), this.ButtonField],
+            [isType(FieldType.TOGGLE), this.ToggleField],
+        ])(() => <></>)(field)
+    }
+
+    SettingField = ({ field, children }: { field: SettingsField; children: any }) => (
+        <SettingColumn filterMatchQuery={field.id}>
+            <div className="x-settings-firstColumn">
+                <SettingText htmlFor={field.id}>{field.desc}</SettingText>
             </div>
+            <div className="x-settings-secondColumn">{children}</div>
+        </SettingColumn>
+    )
+
+    ButtonField = (field: ButtonField) => (
+        <this.SettingField field={field}>
+            <ButtonSecondary id={field.id} buttonSize="sm" onClick={field.onClick} className="x-settings-button">
+                {field.text}
+            </ButtonSecondary>
+        </this.SettingField>
+    )
+
+    ToggleField = (field: ToggleField) => {
+        const [value, setValue] = this.useStateFor<boolean>(field.id)
+        return (
+            <this.SettingField field={field}>
+                <SettingToggle
+                    id={field.id}
+                    checked={SettingsSection.getFieldValue(field.id)}
+                    onSelected={(checked: boolean) => {
+                        setValue(checked)
+                        field.onSelected?.(checked)
+                    }}
+                    className="x-settings-button"
+                />
+            </this.SettingField>
         )
     }
 
-    private SettingDescription = ({ id, description }: { id: string; description: string }) => (
-        <div className="x-settings-firstColumn">
-            <label className="Type__TypeElement-sc-goli3j-0 TypeElement-viola-textSubdued-type" htmlFor={id}>
-                {description}
-            </label>
-        </div>
-    )
-
-    private SettingButtonField = (field: ButtonField) => (
-        <span className="">
-            <button
-                id={field.id}
-                className="Button-sc-y0gtbx-0 Button-small-buttonSecondary-useBrowserDefaultFocusStyle x-settings-button"
-                {...field.events}
-                type={field.type}
-            >
-                {field.text}
-            </button>
-        </span>
-    )
-
-    private SettingToggleField = (field: ToggleField) => {
-        const [value, setValue] = this.useStateFor<boolean>(field.id)
-
+    InputField = (field: InputField) => {
+        const [value, setValue] = this.useStateFor<string>(field.id)
         return (
-            <label className="x-settings-secondColumn x-toggle-wrapper">
+            <this.SettingField field={field}>
                 <input
+                    className="x-settings-input"
                     id={field.id}
-                    className="x-toggle-input"
-                    type="checkbox"
-                    checked={SettingsSection.getFieldValue(field.id)}
-                    {...field.events}
+                    dir="ltr"
+                    value={SettingsSection.getFieldValue(field.id)}
+                    type={field.inputType}
                     onChange={e => {
-                        setValue(e.currentTarget.checked)
-                        field.events.onChange?.(e)
+                        const value = e.currentTarget.value
+                        setValue(value)
+                        field.onChange?.(value)
                     }}
                 />
-                <span className="x-toggle-indicatorWrapper">
-                    <span className="x-toggle-indicator"></span>
-                </span>
-            </label>
+            </this.SettingField>
         )
     }
-
-    private SettingInputField = (field: InputField) => {
-        const [value, setValue] = this.useStateFor<string>(field.id)
-
-        return (
-            <input
-                className="x-settings-input"
-                id={field.id}
-                dir="ltr"
-                value={SettingsSection.getFieldValue(field.id)}
-                type={field.inputType}
-                {...field.events}
-                onChange={e => {
-                    setValue(e.currentTarget.value)
-                    field.events.onChange?.(e)
-                }}
-            />
-        )
-    }
-    private SettingDropdownField = (field: DropdownField) => {
-        const [value, setValue] = this.useStateFor<number>(field.id)
-
-        return (
-            <select
-                className="main-dropDown-dropDown"
-                id={field.id}
-                {...field.events}
-                onChange={e => {
-                    setValue(e.currentTarget.selectedIndex)
-                    field.events.onChange?.(e)
-                }}
-            >
-                {field.options.map((option, i) => (
-                    <option selected={i === SettingsSection.getFieldValue(field.id)} value={i + 1}>
-                        {option}
-                    </option>
-                ))}
-            </select>
-        )
-    }
-
-    private SettingHidden = () => <></>
 }
-
-export const enum FieldType {
-    HIDDEN = "hidden",
-    INPUT = "input",
-    DROPDOWN = "dropdown",
-    BUTTON = "button",
-    TOGGLE = "toggle",
-}
-
-export interface BaseField<A> {
-    id: string
-    type: FieldType
-    description: string
-}
-
-export interface ButtonField extends BaseField<never> {
-    type: FieldType.BUTTON
-    text: string
-    events: Partial<React.ButtonHTMLAttributes<HTMLButtonElement>>
-}
-
-export interface ToggleField extends BaseField<boolean> {
-    type: FieldType.TOGGLE
-    events: Partial<React.InputHTMLAttributes<HTMLInputElement>>
-}
-
-export interface InputField extends BaseField<string> {
-    type: FieldType.INPUT
-    inputType: string
-    events: Partial<React.InputHTMLAttributes<HTMLInputElement>>
-}
-
-export interface DropdownField extends BaseField<number> {
-    type: FieldType.DROPDOWN
-    options: string[]
-    events: Partial<React.SelectHTMLAttributes<HTMLSelectElement>>
-}
-
-export interface HiddenField extends BaseField<any> {
-    type: FieldType.HIDDEN
-}
-
-export type SettingsField = HiddenField | DropdownField | InputField | ButtonField | ToggleField
