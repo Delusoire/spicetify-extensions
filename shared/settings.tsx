@@ -197,7 +197,7 @@ export class SettingsSection {
             <this.SettingField field={field}>
                 <SettingToggle
                     id={field.id}
-                    checked={SettingsSection.getFieldValue(this.getId(field.id))}
+                    value={SettingsSection.getFieldValue(this.getId(field.id))}
                     onSelected={(checked: boolean) => {
                         setValue(checked)
                         field.onSelected?.(checked)
