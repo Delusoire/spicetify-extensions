@@ -1,6 +1,7 @@
 import { task } from "https://esm.sh/fp-ts"
 import { guard3, is } from "./fp.ts"
 import { sleep } from "./util.ts"
+import { string as str } from "https://esm.sh/fp-ts"
 
 const { React, ReactDOM } = Spicetify
 // @ts-ignore
@@ -21,6 +22,8 @@ const modules = cache
     .flat()
 const functionModules = modules.filter(module => typeof module === "function") as any[]
 
+const SectionWrapper = functionModules.find(m => /^function .\(.\)\{return\(0,.\.jsx\)\(/.test(m))
+const SectionTitle = functionModules.find(m => m.toString().includes("textToHighlight"))
 const SettingColumn = functionModules.find(
     m => m.toString().includes("setSectionFilterMatchQueryValue") && m.toString().includes("filterMatchQuery"),
 )
@@ -68,11 +71,7 @@ export interface HiddenField extends BaseField {
 export class SettingsSection {
     private stopHistoryListener: any
 
-    constructor(
-        public name: string,
-        public sectionId: string,
-        public sectionFields: { [key: string]: SettingsField } = {},
-    ) {}
+    constructor(public name: string, public id: string, public sectionFields: { [key: string]: SettingsField } = {}) {}
 
     pushSettings = () => {
         if (this.stopHistoryListener) this.stopHistoryListener()
@@ -97,11 +96,11 @@ export class SettingsSection {
 
         const allSettingsContainer = document.querySelector(".x-settings-container")!
 
-        let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.sectionId)
+        let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.id)
 
         if (!pluginSettingsContainer) {
             pluginSettingsContainer = document.createElement("div")
-            pluginSettingsContainer.id = this.sectionId
+            pluginSettingsContainer.id = this.id
             pluginSettingsContainer.className = "settingsContainer"
             allSettingsContainer.appendChild(pluginSettingsContainer)
         }
@@ -133,7 +132,7 @@ export class SettingsSection {
         this.sectionFields[opts.id] = field
     }
 
-    getId = (nameId: string) => `extensions:${this.sectionId}:${nameId}`
+    getId = (nameId: string) => ["extensions", this.id, nameId].join(":")
 
     private useStateFor = <A,>(id: string) => {
         const [value, setValueState] = React.useState(SettingsSection.getFieldValue<A>(id))
@@ -158,23 +157,19 @@ export class SettingsSection {
     }
 
     private FieldsContainer = () => (
-        <div className="x-settings-section">
-            <h2 className="Type__TypeElement-sc-goli3j-0 TypeElement-cello-textBase-type">{this.name}</h2>
-            {Object.entries(this.sectionFields).map(([nameId, field]) => {
-                return <this.Field field={field} />
+        <SectionWrapper filterMatchQuery={this.name}>
+            <SectionTitle>{this.name}</SectionTitle>
+            {Object.values(this.sectionFields).map(field => {
+                const isType = is<SettingsField>("type")
+
+                return guard3([
+                    [isType<InputField>(FieldType.INPUT), this.InputField],
+                    [isType(FieldType.BUTTON), this.ButtonField],
+                    [isType(FieldType.TOGGLE), this.ToggleField],
+                ])(() => <></>)(field)
             })}
-        </div>
+        </SectionWrapper>
     )
-
-    private Field = ({ field }: { field: SettingsField }) => {
-        const isType = is<SettingsField>("type")
-
-        return guard3([
-            [isType<InputField>(FieldType.INPUT), this.InputField],
-            [isType(FieldType.BUTTON), this.ButtonField],
-            [isType(FieldType.TOGGLE), this.ToggleField],
-        ])(() => <></>)(field)
-    }
 
     SettingField = ({ field, children }: { field: SettingsField; children: any }) => (
         <SettingColumn filterMatchQuery={field.id}>
