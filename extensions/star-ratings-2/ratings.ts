@@ -4,7 +4,7 @@ import {
     createPlatPlaylist,
     fetchPlatFolder,
     fetchPlatPlaylistContents,
-    removeWebPlaylistTracks,
+    removePlatPlaylistTracks,
     setPlatPlaylistVisibility,
 } from "../../shared/api.ts"
 import { pMchain } from "../../shared/fp.ts"
@@ -49,7 +49,7 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
             playlistUris.slice(0, currentRating + 1),
             ar.filter(Boolean),
             ar.map(playlistUri => Spicetify.URI.fromString(playlistUri).id!),
-            ar.map(playlistId => removeWebPlaylistTracks(playlistId, [uri])),
+            ar.map(playlistId => removePlatPlaylistTracks(playlistId, [{ uri, uid: "" } as { uid: string }])),
         )
     }
 
