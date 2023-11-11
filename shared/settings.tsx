@@ -21,7 +21,9 @@ const modules = cache
     .flat()
 const functionModules = modules.filter(module => typeof module === "function") as any[]
 
-const SettingColumn = functionModules.find(m => m.toString().includes("setSectionFilterMatchQueryValue"))
+const SettingColumn = functionModules.find(
+    m => m.toString().includes("setSectionFilterMatchQueryValue") && m.toString().includes("filterMatchQuery"),
+)
 const SettingText = functionModules.find(m => m.toString().includes("textSubdued") && m.toString().includes("viola"))
 
 const SettingToggle = functionModules.find(
