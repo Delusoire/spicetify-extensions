@@ -1,6 +1,7 @@
 {
     "tasks": {
-        "bundle": "deno run --allow-read --allow-net --allow-run --allow-write --allow-env bundle.ts"
+        "bundle": "deno run --allow-read --allow-net --allow-run --allow-write --allow-env tasks/bundle.ts",
+        "vscode-debug": "deno run --allow-run --allow-env tasks/debug.ts"
     },
     "compilerOptions": {
         "lib": [

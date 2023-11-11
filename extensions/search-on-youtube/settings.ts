@@ -7,7 +7,7 @@ const settings = new SettingsSection("Search On YouTube", "search-on-youtube").a
         desc: "YouTube API Key",
         inputType: "text",
     },
-    task.of("000000000000000000000000000000000000000"),
+    task.of("***************************************"),
 )
 
 settings.pushSettings()
