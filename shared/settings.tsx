@@ -238,7 +238,7 @@ export class SettingsSection {
         <span className="">
             <button
                 id={field.id}
-                className="Button-sc-y0gtbx-0 Button-sm-buttonSecondary-useBrowserDefaultFocusStyle x-settings-button"
+                className="Button-sc-y0gtbx-0 Button-small-buttonSecondary-useBrowserDefaultFocusStyle x-settings-button"
                 {...field.events}
                 type={field.type}
             >
