@@ -1,37 +1,12 @@
 import { task } from "https://esm.sh/fp-ts"
 import { guard3, is } from "./fp.ts"
 import { sleep } from "./util.ts"
-import { string as str } from "https://esm.sh/fp-ts"
+import { SectionTitle, SectionWrapper, SettingColumn, SettingText, SettingToggle } from "./modules.ts"
 
 const { React, ReactDOM } = Spicetify
-// @ts-ignore
-const { ButtonSecondary } = Spicetify.ReactComponent
+const { ButtonSecondary } = Spicetify.ReactComponent as any
 
 type FieldToProps<A> = Omit<A, "type">
-
-// @ts-ignore
-const require = webpackChunkopen.push([[Symbol()], {}, re => re])
-const cache = Object.keys(require.m).map(id => require(id))
-const modules = cache
-    .filter(module => typeof module === "object")
-    .map(module => {
-        try {
-            return Object.values(module)
-        } catch {}
-    })
-    .flat()
-const functionModules = modules.filter(module => typeof module === "function") as any[]
-
-const SectionWrapper = functionModules.find(m => /^function .\(.\)\{return\(0,.\.jsx\)\(/.test(m))
-const SectionTitle = functionModules.find(m => m.toString().includes("textToHighlight"))
-const SettingColumn = functionModules.find(
-    m => m.toString().includes("setSectionFilterMatchQueryValue") && m.toString().includes("filterMatchQuery"),
-)
-const SettingText = functionModules.find(m => m.toString().includes("textSubdued") && m.toString().includes("viola"))
-
-const SettingToggle = functionModules.find(
-    m => m.toString().includes("condensed") && m.toString().includes("onSelected"),
-)
 
 export const enum FieldType {
     BUTTON = "button",
