@@ -10,7 +10,7 @@ const { ButtonTertiary } = Spicetify.ReactComponent as any
 const RatingButton = ({ i, uri }: { i: number; uri: SpotifyURI }) => (
     <ButtonTertiary
         size="small"
-        className={curationButtonClass}
+        className={`${curationButtonClass} rating-${i}`}
         aria-checked="true"
         aria-label=""
         condensed="true"
