@@ -12,6 +12,7 @@ import {
     getTrackListTracks,
     getTrackLists,
 } from "./util.ts"
+import { Instance, Props } from "npm:tippy.js"
 
 const { URI } = Spicetify
 const { React, ReactDOM } = Spicetify
@@ -26,20 +27,17 @@ const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
     svg.style.fill = colorByRating[rating]
 }
 
-let lastDiv: HTMLDivElement
+let lastNPTippyInstance: Instance<Props>
 const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI, forced = false) => {
     if (pb.hasAttribute("dropdown-enabled")) {
         if (!forced) return
     } else pb.setAttribute("dropdown-enabled", "")
 
     const div = document.createElement("div")
-    if (forced) {
-        if (lastDiv?.outerHTML) lastDiv.outerHTML = ""
-        lastDiv = div
-    }
+
     pb.appendChild(div)
     ReactDOM.render(<Dropdown uri={uri} />, div)
-    Spicetify.Tippy(pb, {
+    const tippyInstance = Spicetify.Tippy(pb, {
         content: div,
         interactive: true,
         animateFill: false,
@@ -86,6 +84,11 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
             })
         },
     })
+
+    if (forced) {
+        lastNPTippyInstance?.destroy()
+        lastNPTippyInstance = tippyInstance
+    }
 }
 
 export const updateNowPlayingControls = (newTrack: SpotifyURI, updateDropdown = true) => {
