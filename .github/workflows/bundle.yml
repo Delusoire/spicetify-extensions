@@ -24,7 +24,3 @@ jobs:
             - name: Run Deno Task
               run: |
                   /home/runner/.deno/bin/deno task bundle
-
-            - name: Report status
-              run: |
-                  echo "Bundle task completed"
