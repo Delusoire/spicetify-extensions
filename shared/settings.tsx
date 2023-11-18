@@ -164,12 +164,13 @@ export class SettingsSection {
     )
 
     ToggleField = (field: ToggleField) => {
-        const [value, setValue] = this.useStateFor<boolean>(field.id)
+        const id = this.getId(field.id)
+        const [value, setValue] = this.useStateFor<boolean>(id)
         return (
             <this.SettingField field={field}>
                 <SettingToggle
                     id={field.id}
-                    value={SettingsSection.getFieldValue(this.getId(field.id))}
+                    value={SettingsSection.getFieldValue(id)}
                     onSelected={(checked: boolean) => {
                         setValue(checked)
                         field.onSelected?.(checked)
@@ -181,14 +182,15 @@ export class SettingsSection {
     }
 
     InputField = (field: InputField) => {
-        const [value, setValue] = this.useStateFor<string>(field.id)
+        const id = this.getId(field.id)
+        const [value, setValue] = this.useStateFor<string>(id)
         return (
             <this.SettingField field={field}>
                 <input
                     className="x-settings-input"
                     id={field.id}
                     dir="ltr"
-                    value={SettingsSection.getFieldValue(this.getId(field.id))}
+                    value={SettingsSection.getFieldValue(id)}
                     type={field.inputType}
                     onChange={e => {
                         const value = e.currentTarget.value
