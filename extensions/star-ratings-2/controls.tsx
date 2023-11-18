@@ -108,7 +108,6 @@ export const updateTrackListControls = (updateDropdown = true) => {
             trackListTracks.map(track => {
                 const uri = URI.fromString(getTrackListTrackUri(track)).toURI()
 
-                //TODO: Local Tracks support
                 if (!URI.isTrack(uri!)) return
 
                 const r = tracksRatings[uri]

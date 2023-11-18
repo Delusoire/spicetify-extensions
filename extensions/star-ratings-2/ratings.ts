@@ -70,7 +70,7 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
     const npTrack = Spicetify.Player.data.track?.uri
     if (npTrack === uri) updateNowPlayingControls(npTrack, false)
 
-    // TODO: Optimize this, find a way to directly target the pbs for that uri
+    //TODO: Optimize this, find a way to directly target the pbs for that uri
     updateTrackListControls()
     const { pathname } = Spicetify.Platform.History.location
     updateCollectionControls(Spicetify.URI.fromString(pathname))

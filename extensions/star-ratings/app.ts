@@ -81,7 +81,6 @@ const updateTrackListStars = f.flow(
                 const trackUri = getTrackListTrackUri(track)
                 const uri = URI.fromString(trackUri)
 
-                //TODO: Local Tracks support
                 if (!URI.isTrack(uri!)) return
 
                 const [starsContainer, starsConstructs] = createStars(uri!.id!, STAR_SIZE)

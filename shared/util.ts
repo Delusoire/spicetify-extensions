@@ -41,7 +41,6 @@ export const normalizeStr = (str: string) =>
         .toLowerCase()
         .trim()
 
-//! Does location actually point to document.body?
 export const waitForElement = <E extends Element>(
     selector: string,
     timeout = 1000,
