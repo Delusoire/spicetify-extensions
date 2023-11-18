@@ -1,9 +1,9 @@
 import { task } from "https://esm.sh/fp-ts"
 import { createPlatFolder } from "../../shared/api.ts"
 import { SettingsSection } from "../../shared/settings.tsx"
+import { SpotifyURI } from "../../shared/util.ts"
 import { loadRatings } from "./ratings.ts"
 import { RATINGS_FOLDER_NAME } from "./util.ts"
-import { SpotifyURI } from "../../shared/util.ts"
 
 const settings = new SettingsSection("Star Ratings", "star-ratings")
     .addToggle({ id: "hideHearts", desc: "Hide Hearts" })

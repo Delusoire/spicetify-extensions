@@ -1,4 +1,4 @@
-import { array as a, string as str, function as f } from "https://esm.sh/fp-ts"
+import { array as a, function as f, string as str } from "https://esm.sh/fp-ts"
 import { prepend } from "https://esm.sh/fp-ts-std/String"
 import { fetchGQLArtistRelated, fetchWebArtistsSpot, fetchWebSoundOfSpotifyPlaylist } from "../../shared/api.ts"
 import { pMchain } from "../../shared/fp.ts"

@@ -1,4 +1,4 @@
-import { array as ar, readonlyArray, record, function as f, nonEmptyArray as nea } from "https://esm.sh/fp-ts"
+import { array as ar, function as f, nonEmptyArray as nea, readonlyArray, record } from "https://esm.sh/fp-ts"
 import { fetchPlatFolder, fetchPlatPlaylistContents } from "../../shared/api.ts"
 import { pMchain } from "../../shared/fp.ts"
 import { SpotifyURI } from "../../shared/util.ts"

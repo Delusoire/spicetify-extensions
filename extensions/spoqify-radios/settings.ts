@@ -1,5 +1,5 @@
-import { SettingsSection } from "../../shared/settings.tsx"
 import { createPlatFolder } from "../../shared/api.ts"
+import { SettingsSection } from "../../shared/settings.tsx"
 import { SpotifyURI } from "../../shared/util.ts"
 
 const SORTED_PLAYLISTS_FOLDER_NAME = "Anonymized Radios"

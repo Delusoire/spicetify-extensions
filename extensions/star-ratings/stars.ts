@@ -1,4 +1,4 @@
-import { array as ar, nonEmptyArray, function as f } from "https://esm.sh/fp-ts"
+import { array as ar, function as f, nonEmptyArray } from "https://esm.sh/fp-ts"
 import {
     addPlatPlaylistTracks,
     createPlatPlaylist,

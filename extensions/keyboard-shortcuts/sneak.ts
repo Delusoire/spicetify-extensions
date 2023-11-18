@@ -2,8 +2,8 @@ import { array as a, function as f } from "https://esm.sh/fp-ts"
 
 import { LitElement, css, html } from "https://esm.sh/lit"
 import { customElement, property } from "https://esm.sh/lit/decorators.js"
-import { styleMap } from "https://esm.sh/lit/directives/style-map.js"
 import { map } from "https://esm.sh/lit/directives/map.js"
+import { styleMap } from "https://esm.sh/lit/directives/style-map.js"
 
 import { CLICKABLE_ELMENT_SELECTOR, isElementInViewPort, isElementVisible } from "./util.ts"
 

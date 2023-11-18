@@ -1,14 +1,14 @@
 import {
     array as ar,
     eq,
+    function as f,
+    nonEmptyArray as nea,
     number as num,
     option as o,
     ord,
+    record as rec,
     string as str,
     task,
-    nonEmptyArray as nea,
-    function as f,
-    record as rec,
 } from "https://esm.sh/fp-ts"
 import { guard } from "https://esm.sh/fp-ts-std/Function"
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate"

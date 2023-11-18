@@ -1,7 +1,7 @@
+import { anyPass } from "https://esm.sh/fp-ts-std/Predicate"
 import { tupled } from "https://esm.sh/fp-ts/function"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util.ts"
 import { CONFIG } from "./settings.ts"
-import { anyPass } from "https://esm.sh/fp-ts-std/Predicate"
 
 const { URI } = Spicetify
 
