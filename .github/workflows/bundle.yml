@@ -1,0 +1,31 @@
+name: Bundle on Commit
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - "tasks/**"
+            - "shared/**"
+            - "extensions/**"
+            - "snippets/**"
+
+jobs:
+    run-deno:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Install Deno
+              run: |
+                  wget -q https://deno.land/x/install.sh
+                  bash install.sh
+
+            - name: Run Deno Task
+              run: |
+                  deno task bundle
+
+            - name: Report status
+              run: |
+                  echo "Bundle task completed"
