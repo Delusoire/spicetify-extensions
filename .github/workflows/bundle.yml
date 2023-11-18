@@ -23,7 +23,7 @@ jobs:
 
             - name: Run Deno Task
               run: |
-                  deno task bundle
+                  /home/runner/.deno/bin/deno task bundle
 
             - name: Report status
               run: |
