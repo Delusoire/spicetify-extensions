@@ -19,8 +19,7 @@ jobs:
 
             - name: Install Deno
               run: |
-                  wget -q https://deno.land/x/install.sh
-                  bash install.sh
+                  curl -fsSL https://deno.land/x/install/install.sh | sh
 
             - name: Run Deno Task
               run: |
