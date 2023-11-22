@@ -13,7 +13,7 @@ export const getNowPlayingBar = () => document.querySelector<HTMLDivElement>("di
 export const getCollectionActionBarRow = () =>
     document.querySelector<HTMLDivElement>(`div.main-actionBar-ActionBarRow`)!
 
-export const playlistButtonSelector = `button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"]`
+export const playlistButtonSelector = `button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"], button[aria-label="Remove recommendation"]`
 export const getPlaylistButton = (parent: HTMLElement) =>
     parent.querySelector<HTMLButtonElement>(playlistButtonSelector)!
 export const getCollectionPlaylistButton = () => {
