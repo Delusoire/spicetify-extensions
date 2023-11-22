@@ -11,6 +11,7 @@ import { pMchain } from "../../shared/fp.ts"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util.ts"
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.tsx"
 import { CONFIG } from "./settings.ts"
+import { getNowPlayingBar } from "./util.ts"
 
 export const loadRatings = async () => {
     const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri)
@@ -68,7 +69,24 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
     }
 
     const npTrack = Spicetify.Player.data.track?.uri
-    if (npTrack === uri) updateNowPlayingControls(npTrack, false)
+    if (npTrack === uri) {
+        updateNowPlayingControls(npTrack, false)
+
+        {
+            const npTrack = Spicetify.Player.data.track?.uri
+
+            const nowPlaylingControlsObserver = new MutationObserver(() => {
+                if (npTrack === uri) {
+                    nowPlaylingControlsObserver.disconnect()
+                }
+
+                updateNowPlayingControls(npTrack, false)
+            })
+            nowPlaylingControlsObserver.observe(getNowPlayingBar(), {
+                subtree: true,
+            })
+        }
+    }
 
     //TODO: Optimize this, find a way to directly target the pbs for that uri
     updateTrackListControls()

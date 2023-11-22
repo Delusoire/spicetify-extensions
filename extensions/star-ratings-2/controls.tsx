@@ -22,6 +22,7 @@ const colorByRating = ["unset", "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC9
 const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
     if (btn.style.fill === colorByRating[rating]) return
 
+    // Do we need this anymore?
     btn.style.opacity = rating > 0 ? "1" : "unset"
     const svg = btn.querySelector<SVGElement>("svg")!
     svg.style.fill = colorByRating[rating]

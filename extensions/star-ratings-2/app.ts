@@ -39,7 +39,7 @@ new MutationObserver(() => {
     subtree: true,
 })
 
-Spicetify.Platform.History.listen(async ({ pathname }: { pathname: string }) => {
+Spicetify.Platform.History.listen(({ pathname }: { pathname: string }) => {
     const pageHasHeart = anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2])
     if (!pageHasHeart(pathname)) return
 
