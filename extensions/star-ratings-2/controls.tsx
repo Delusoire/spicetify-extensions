@@ -17,13 +17,14 @@ import { Instance, Props } from "npm:tippy.js"
 const { URI } = Spicetify
 const { React, ReactDOM } = Spicetify
 
-const colorByRating = ["unset", "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
+const UNSET_CSS = "invalid"
+const colorByRating = [UNSET_CSS, "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"]
 
 const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
     if (btn.style.fill === colorByRating[rating]) return
 
     // Do we need this anymore?
-    btn.style.opacity = rating > 0 ? "1" : "unset"
+    btn.style.opacity = rating > 0 ? "1" : UNSET_CSS
     const svg = btn.querySelector<SVGElement>("svg")!
     svg.style.fill = colorByRating[rating]
 }
