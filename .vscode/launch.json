@@ -5,10 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "chrome",
+            "name": "Attach to Spotify",
+            "port": 9222,
             "request": "attach",
-            "name": "Attach to Chrome on port 9229",
-            "port": 9229
+            "type": "chrome",
+            "webRoot": "${workspaceFolder}"
         }
     ]
 }
