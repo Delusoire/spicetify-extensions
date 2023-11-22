@@ -67,7 +67,7 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
         addPlatPlaylistTracks(playlistUri, [uri])
     }
 
-    const npTrack = Spicetify.Player.data.track?.uri
+    const npTrack = Spicetify.Player.data.item?.uri
     if (npTrack === uri) updateNowPlayingControls(npTrack, false)
 
     //TODO: Optimize this, find a way to directly target the pbs for that uri

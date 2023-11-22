@@ -30,7 +30,7 @@ const updateGenreContainer = async (genres: string[]) => {
 const updateGenresUI = async (genres: string[]) => {
     const trackInfoContainer = await waitForElement("div.main-trackInfo-container")
 
-    const { uri, metadata } = Spicetify.Player.data.track!
+    const { uri, metadata } = Spicetify.Player.data.item!
 
     if (metadata && Spicetify.URI.isTrack(uri) && genres.length) {
         trackInfoContainer?.appendChild(await updateGenreContainer(genres))

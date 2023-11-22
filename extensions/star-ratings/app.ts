@@ -193,14 +193,14 @@ const createNowPlayingStars = () => {
 
     addRatingsListenersToStars(
         [nowPlayingStarsContainer, nowPlayingStarConstruct],
-        () => Spicetify.Player.data.track?.uri!,
+        () => Spicetify.Player.data.item?.uri!,
     )
 }
 
 createNowPlayingStars()
 
 export const updateNowPlayingStars = () => {
-    const trackUri = Spicetify.Player.data.track?.uri!
+    const trackUri = Spicetify.Player.data.item?.uri!
     const nowPlayingStarsContainer = getStarsContainer("now-playing")
 
     nowPlayingStarsContainer.style.display = Spicetify.URI.isTrack(trackUri) ? "flex" : "none"
