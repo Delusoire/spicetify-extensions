@@ -164,6 +164,7 @@ export class SettingsSection {
     )
 
     ToggleField = (field: ToggleField) => {
+        debugger
         const id = this.getId(field.id)
         return (
             <this.SettingField field={field}>
