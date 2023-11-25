@@ -488,6 +488,7 @@ var updateCollectionControls = async (uri) => {
 };
 
 // extensions/star-ratings-2/app.ts
+debugger;
 var { URI: URI2 } = Spicetify;
 loadRatings();
 Spicetify.Player.addEventListener("songchange", () => {

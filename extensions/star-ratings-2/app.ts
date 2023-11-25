@@ -4,7 +4,7 @@ import { loadRatings, tracksRatings } from "./ratings.ts"
 import { CONFIG } from "./settings.ts"
 
 import "./assets/styles.scss"
-
+debugger
 const { URI } = Spicetify
 
 loadRatings()
