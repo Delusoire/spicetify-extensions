@@ -194,42 +194,17 @@ var SettingsSection = class _SettingsSection {
         [isType("toggle" /* TOGGLE */), this.ToggleField]
       ])(() => /* @__PURE__ */ React.createElement(React.Fragment, null))(field);
     }));
-    this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(SettingColumn, { filterMatchQuery: field.id }, /* @__PURE__ */ React.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ React.createElement(SettingText, { htmlFor: field.id }, field.desc)), /* @__PURE__ */ React.createElement("div", { className: "x-settings-secondColumn" }, children));
-    this.ButtonField = (field) => /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(ButtonSecondary, { id: field.id, buttonSize: "sm", onClick: field.onClick, className: "x-settings-button" }, field.text));
+    this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(React.Fragment, null);
+    this.ButtonField = (field) => /* @__PURE__ */ React.createElement(React.Fragment, null);
     this.ToggleField = (field) => {
       const id = this.getId(field.id);
       const [value, setValue] = this.useStateFor(id);
-      return /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(
-        SettingToggle,
-        {
-          id: field.id,
-          value: _SettingsSection.getFieldValue(id),
-          onSelected: (checked) => {
-            setValue(checked);
-            field.onSelected?.(checked);
-          },
-          className: "x-settings-button"
-        }
-      ));
+      return /* @__PURE__ */ React.createElement(React.Fragment, null);
     };
     this.InputField = (field) => {
       const id = this.getId(field.id);
       const [value, setValue] = this.useStateFor(id);
-      return /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(
-        "input",
-        {
-          className: "x-settings-input",
-          id: field.id,
-          dir: "ltr",
-          value: _SettingsSection.getFieldValue(id),
-          type: field.inputType,
-          onChange: (e) => {
-            const value2 = e.currentTarget.value;
-            setValue(value2);
-            field.onChange?.(value2);
-          }
-        }
-      ));
+      return /* @__PURE__ */ React.createElement(React.Fragment, null);
     };
   }
   addField(type, opts, defaultValue) {
