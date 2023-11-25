@@ -144,7 +144,7 @@ import { task } from "https://esm.sh/fp-ts";
 var { React } = Spicetify;
 var genrePopup = globalThis.genrePopup = () => {
   Spicetify.PopupModal.display({
-    title: `Genres of: ${Spicetify.Player.data.item?.metadata?.title}`,
+    title: `Genres of: ${Spicetify.Player?.data.item?.metadata?.title}`,
     content: /* @__PURE__ */ React.createElement("div", { className: "genres-popup" }, spotifyGenres.length === 0 ? /* @__PURE__ */ React.createElement(React.Fragment, null) : /* @__PURE__ */ React.createElement(SpotifyGenresContainer, null), lastFmTags.length === 0 ? /* @__PURE__ */ React.createElement(React.Fragment, null) : /* @__PURE__ */ React.createElement(LastFmTagsContainer, null)),
     isLarge: true
   });
@@ -370,7 +370,7 @@ var updateGenreContainer = async (genres) => {
 };
 var updateGenresUI = async (genres) => {
   const trackInfoContainer = await waitForElement("div.main-trackInfo-container");
-  const { uri, metadata } = Spicetify.Player.data.track;
+  const { uri, metadata } = Spicetify.Player?.data.track;
   if (metadata && Spicetify.URI.isTrack(uri) && genres.length) {
     trackInfoContainer?.appendChild(await updateGenreContainer(genres));
     lastFmTags = f4.pipe(
@@ -382,7 +382,7 @@ var updateGenresUI = async (genres) => {
     trackInfoContainer?.removeChild(genreContainer);
 };
 var getArtistUrisFromCurrentTrack = () => {
-  const metadata = Spicetify.Player.data?.item.metadata ?? {};
+  const metadata = Spicetify.Player?.data?.item.metadata ?? {};
   return [...Array(10).keys()].map((k) => metadata["artist_uri" + (k ? `:${k}` : "")]).filter(Boolean);
 };
 var updateGenres = async () => {

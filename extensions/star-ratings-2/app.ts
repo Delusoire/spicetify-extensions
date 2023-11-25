@@ -10,7 +10,7 @@ const { URI } = Spicetify
 loadRatings()
 
 Spicetify.Player.addEventListener("songchange", () => {
-    const npTrack = Spicetify.Player.data.track?.uri!
+    const npTrack = Spicetify.Player?.data.track?.uri!
     if (
         Number(CONFIG.skipThreshold) &&
         (tracksRatings[npTrack] || Number.MAX_SAFE_INTEGER) <= Number(CONFIG.skipThreshold)
@@ -19,7 +19,7 @@ Spicetify.Player.addEventListener("songchange", () => {
 
     updateNowPlayingControls(npTrack)
 })
-updateNowPlayingControls(Spicetify.Player.data.track?.uri!)
+updateNowPlayingControls(Spicetify.Player?.data.track?.uri!)
 
 let mainElement: HTMLElement
 const mainElementObserver = new MutationObserver(() => updateTrackListControls())

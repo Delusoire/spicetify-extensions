@@ -8,7 +8,7 @@ const { React } = Spicetify
 // @ts-ignore
 export const genrePopup = (globalThis.genrePopup = () => {
     Spicetify.PopupModal.display({
-        title: `Genres of: ${Spicetify.Player.data.item?.metadata?.title}`,
+        title: `Genres of: ${Spicetify.Player?.data.item?.metadata?.title}`,
         content: (
             <div className="genres-popup">
                 {spotifyGenres.length === 0 ? <></> : <SpotifyGenresContainer />}

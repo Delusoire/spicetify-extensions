@@ -220,7 +220,7 @@ var binds = [
   new Bind("k", () => appScroll(-1)),
   new Bind("g", () => appScrollY(0)),
   new Bind("g", () => appScrollY(Number.MAX_SAFE_INTEGER)).setShift(true),
-  new Bind("m", () => toggleLiked([Spicetify.Player.data.item.uri])),
+  new Bind("m", () => toggleLiked([Spicetify.Player?.data.item.uri])),
   new Bind("/", (e) => {
     e.preventDefault();
     openPage("/search");

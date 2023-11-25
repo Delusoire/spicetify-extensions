@@ -326,11 +326,11 @@ var toggleRating = async (uri, rating) => {
     }
     addPlatPlaylistTracks(playlistUri, [uri]);
   }
-  const npTrack = Spicetify.Player.data.track?.uri;
+  const npTrack = Spicetify.Player?.data.track?.uri;
   if (npTrack === uri) {
     updateNowPlayingControls(npTrack, false);
     {
-      const npTrack2 = Spicetify.Player.data.track?.uri;
+      const npTrack2 = Spicetify.Player?.data.track?.uri;
       const nowPlaylingControlsObserver = new MutationObserver(() => {
         if (npTrack2 === uri) {
           nowPlaylingControlsObserver.disconnect();
@@ -492,12 +492,12 @@ debugger;
 var { URI: URI2 } = Spicetify;
 loadRatings();
 Spicetify.Player.addEventListener("songchange", () => {
-  const npTrack = Spicetify.Player.data.track?.uri;
+  const npTrack = Spicetify.Player?.data.track?.uri;
   if (Number(CONFIG.skipThreshold) && (tracksRatings[npTrack] || Number.MAX_SAFE_INTEGER) <= Number(CONFIG.skipThreshold))
     return void Spicetify.Player.next();
   updateNowPlayingControls(npTrack);
 });
-updateNowPlayingControls(Spicetify.Player.data.track?.uri);
+updateNowPlayingControls(Spicetify.Player?.data.track?.uri);
 var mainElement;
 var mainElementObserver = new MutationObserver(() => updateTrackListControls());
 new MutationObserver(() => {

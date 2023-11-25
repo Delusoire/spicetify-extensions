@@ -68,12 +68,12 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
         addPlatPlaylistTracks(playlistUri, [uri])
     }
 
-    const npTrack = Spicetify.Player.data.track?.uri
+    const npTrack = Spicetify.Player?.data.track?.uri
     if (npTrack === uri) {
         updateNowPlayingControls(npTrack, false)
 
         {
-            const npTrack = Spicetify.Player.data.track?.uri
+            const npTrack = Spicetify.Player?.data.track?.uri
 
             const nowPlaylingControlsObserver = new MutationObserver(() => {
                 if (npTrack === uri) {
