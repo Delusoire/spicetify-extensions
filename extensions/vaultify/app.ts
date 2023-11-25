@@ -1,3 +1,4 @@
+debugger
 import { array as ar, function as f, record as rec, task } from "https://esm.sh/fp-ts"
 import {
     createPlatFolder,
@@ -142,9 +143,13 @@ export const restore = (mode: "library" | "extensions" | "settings") => async ()
 
     if (mode === "library") {
         setLiked(vault.libraryTracks, true)
+        debugger
         setLiked(vault.libraryAlbums, true)
+        debugger
         setLiked(vault.libraryArtists, true)
+        debugger
         await restorePlaylistseRecur(vault.playlists)
+        debugger
         Spicetify.showNotification("Restored Library")
     }
     if (mode === "extensions") {

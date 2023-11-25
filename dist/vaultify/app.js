@@ -306,6 +306,7 @@ var init_app = __esm({
     init_api();
     init_fp();
     init_util();
+    debugger;
     isType = is("type");
     extractLikedPlaylistTreeRecur = (leaf) => guard2([
       [
@@ -401,9 +402,13 @@ var init_app = __esm({
       let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
       if (mode === "library") {
         setLiked(vault.libraryTracks, true);
+        debugger;
         setLiked(vault.libraryAlbums, true);
+        debugger;
         setLiked(vault.libraryArtists, true);
+        debugger;
         await restorePlaylistseRecur(vault.playlists);
+        debugger;
         Spicetify.showNotification("Restored Library");
       }
       if (mode === "extensions") {
