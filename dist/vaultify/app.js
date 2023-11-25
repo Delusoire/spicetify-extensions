@@ -13,10 +13,11 @@ import {
   function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
-var guard2, pMchain, is, chunckify, memoize2;
+var guard2, guard3, pMchain, is, chunckify, memoize2;
 var init_fp = __esm({
   "shared/fp.ts"() {
     guard2 = (branches) => guard(branches);
+    guard3 = (branches) => guard(branches);
     pMchain = (f4) => async (fa) => f4(await fa);
     is = (c) => (a2) => (field) => field[c] === a2;
     chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
@@ -96,7 +97,7 @@ var init_api = __esm({
 
 // shared/modules.ts
 import { allPass } from "https://esm.sh/fp-ts-std@0.18.0/Predicate";
-var require2, cache, modules, functionModules, reactObjects, reactMemoSymbol, reactMemos, findModuleByItsString, CheckedPlaylistButtonIcon, SectionWrapper, SectionTitle, SettingColumn, SettingText, SettingToggle, curationButtonClass;
+var require2, cache, modules, functionModules, reactObjects, reactMemoSymbol, reactMemos, findModuleByStrings, CheckedPlaylistButtonIcon, SettingSection, SectionTitle, SettingColumn, SettingText, SettingToggle, curationButtonClass;
 var init_modules = __esm({
   "shared/modules.ts"() {
     require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
@@ -106,26 +107,25 @@ var init_modules = __esm({
     reactObjects = modules.filter((m) => m?.$$typeof);
     reactMemoSymbol = Spicetify.React.memo().$$typeof;
     reactMemos = reactObjects.filter((m) => m.$$typeof === reactMemoSymbol);
-    findModuleByItsString = (modules2, ...filters) => modules2.find(
+    findModuleByStrings = (modules2, ...filters) => modules2.find(
       (f4) => allPass(
         filters.map(
           (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
         )
       )(f4.toString())
     );
-    CheckedPlaylistButtonIcon = findModuleByItsString(
+    CheckedPlaylistButtonIcon = findModuleByStrings(
       functionModules,
       "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm11.748-1.97a.75.75 0 0 0-1.06-1.06l-4.47 4.47-1.405-1.406a.75.75 0 1 0-1.061 1.06l2.466 2.467 5.53-5.53z"
     );
-    SectionWrapper = findModuleByItsString(functionModules, /^function .\(.\)\{return\(0,.\.jsx\)\(/);
-    SectionTitle = findModuleByItsString(functionModules, "textToHighlight");
-    SettingColumn = findModuleByItsString(
+    SettingSection = findModuleByStrings(
       functionModules,
-      "setSectionFilterMatchQueryValue",
-      "filterMatchQuery"
+      "function m(e){return(0,d.jsx)(r.k,{children:(0,d.jsx)(u,{...e})})}"
     );
-    SettingText = findModuleByItsString(functionModules, "textSubdued", "viola");
-    SettingToggle = findModuleByItsString(functionModules, "condensed", "onSelected");
+    SectionTitle = findModuleByStrings(functionModules, "textToHighlight", "semanticColor");
+    SettingColumn = findModuleByStrings(functionModules, "setSectionFilterMatchQueryValue", "filterMatchQuery");
+    SettingText = findModuleByStrings(functionModules, "textSubdued", "viola");
+    SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelected");
     curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
   }
 });
@@ -135,6 +135,7 @@ import { task } from "https://esm.sh/fp-ts";
 var React, ReactDOM, ButtonSecondary, SettingsSection;
 var init_settings = __esm({
   "shared/settings.tsx"() {
+    init_fp();
     init_util();
     init_modules();
     ({ React, ReactDOM } = Spicetify);
@@ -170,7 +171,7 @@ var init_settings = __esm({
             pluginSettingsContainer.className = "settingsContainer";
             allSettingsContainer.appendChild(pluginSettingsContainer);
           }
-          ReactDOM.render(/* @__PURE__ */ React.createElement(this.FieldsContainer, null), pluginSettingsContainer);
+          ReactDOM.render(/* @__PURE__ */ React.createElement(this.SettingsSection, null), pluginSettingsContainer);
         };
         this.addButton = (props) => {
           this.addField("button" /* BUTTON */, props);
@@ -197,18 +198,48 @@ var init_settings = __esm({
             }
           ];
         };
-        this.FieldsContainer = () => /* @__PURE__ */ React.createElement(SectionWrapper, { filterMatchQuery: this.name });
-        this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(React.Fragment, null);
-        this.ButtonField = (field) => /* @__PURE__ */ React.createElement(React.Fragment, null);
+        this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map((field) => {
+          const isType2 = is("type");
+          return guard3([
+            [isType2("input" /* INPUT */), this.InputField],
+            [isType2("button" /* BUTTON */), this.ButtonField],
+            [isType2("toggle" /* TOGGLE */), this.ToggleField]
+          ])(() => /* @__PURE__ */ React.createElement(React.Fragment, null))(field);
+        }));
+        this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(SettingColumn, { filterMatchQuery: field.id }, /* @__PURE__ */ React.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ React.createElement(SettingText, { htmlFor: field.id }, field.desc)), /* @__PURE__ */ React.createElement("div", { className: "x-settings-secondColumn" }, children));
+        this.ButtonField = (field) => /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(ButtonSecondary, { id: field.id, buttonSize: "sm", onClick: field.onClick, className: "x-settings-button" }, field.text));
         this.ToggleField = (field) => {
           const id = this.getId(field.id);
-          const [value, setValue] = this.useStateFor(id);
-          return /* @__PURE__ */ React.createElement(React.Fragment, null);
+          return /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(
+            SettingToggle,
+            {
+              id: field.id,
+              value: _SettingsSection.getFieldValue(id),
+              onSelected: (checked) => {
+                _SettingsSection.setFieldValue(id, checked);
+                field.onSelected?.(checked);
+              },
+              className: "x-settings-button"
+            }
+          ));
         };
         this.InputField = (field) => {
           const id = this.getId(field.id);
-          const [value, setValue] = this.useStateFor(id);
-          return /* @__PURE__ */ React.createElement(React.Fragment, null);
+          return /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(
+            "input",
+            {
+              className: "x-settings-input",
+              id: field.id,
+              dir: "ltr",
+              value: _SettingsSection.getFieldValue(id),
+              type: field.inputType,
+              onChange: (e) => {
+                const value = e.currentTarget.value;
+                SettingSection.setFieldValue(id, value);
+                field.onChange?.(value);
+              }
+            }
+          ));
         };
       }
       addField(type, opts, defaultValue) {

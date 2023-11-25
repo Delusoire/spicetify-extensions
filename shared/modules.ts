@@ -12,7 +12,7 @@ export const reactObjects = modules.filter(m => m?.$$typeof)
 const reactMemoSymbol = Spicetify.React.memo().$$typeof
 export const reactMemos = reactObjects.filter(m => m.$$typeof === reactMemoSymbol)
 
-const findModuleByItsString = (modules: Array<any>, ...filters: Array<string | RegExp>) =>
+const findModuleByStrings = (modules: Array<any>, ...filters: Array<string | RegExp>) =>
     modules.find(f =>
         allPass(
             filters.map(filter =>
@@ -21,19 +21,18 @@ const findModuleByItsString = (modules: Array<any>, ...filters: Array<string | R
         )(f.toString()),
     ) as any
 
-export const CheckedPlaylistButtonIcon = findModuleByItsString(
+export const CheckedPlaylistButtonIcon = findModuleByStrings(
     functionModules,
     "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm11.748-1.97a.75.75 0 0 0-1.06-1.06l-4.47 4.47-1.405-1.406a.75.75 0 1 0-1.061 1.06l2.466 2.467 5.53-5.53z",
 )
 
-export const SectionWrapper = findModuleByItsString(functionModules, /^function .\(.\)\{return\(0,.\.jsx\)\(/)
-export const SectionTitle = findModuleByItsString(functionModules, "textToHighlight")
-export const SettingColumn = findModuleByItsString(
+export const SettingSection = findModuleByStrings(
     functionModules,
-    "setSectionFilterMatchQueryValue",
-    "filterMatchQuery",
+    "function m(e){return(0,d.jsx)(r.k,{children:(0,d.jsx)(u,{...e})})}",
 )
-export const SettingText = findModuleByItsString(functionModules, "textSubdued", "viola")
-export const SettingToggle = findModuleByItsString(functionModules, "condensed", "onSelected")
+export const SectionTitle = findModuleByStrings(functionModules, "textToHighlight", "semanticColor")
+export const SettingColumn = findModuleByStrings(functionModules, "setSectionFilterMatchQueryValue", "filterMatchQuery")
+export const SettingText = findModuleByStrings(functionModules, "textSubdued", "viola")
+export const SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelected")
 
 export const curationButtonClass = modules.find(m => m?.curationButton)!.curationButton

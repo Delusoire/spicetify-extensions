@@ -12,7 +12,9 @@ import {
   function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
+var guard3 = (branches) => guard(branches);
 var pMchain = (f7) => async (fa) => f7(await fa);
+var is = (c) => (a3) => (field) => field[c] === a3;
 var chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
 var memoize2 = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
@@ -131,26 +133,25 @@ var functionModules = modules.filter((module) => typeof module === "function");
 var reactObjects = modules.filter((m) => m?.$$typeof);
 var reactMemoSymbol = Spicetify.React.memo().$$typeof;
 var reactMemos = reactObjects.filter((m) => m.$$typeof === reactMemoSymbol);
-var findModuleByItsString = (modules2, ...filters) => modules2.find(
+var findModuleByStrings = (modules2, ...filters) => modules2.find(
   (f7) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
   )(f7.toString())
 );
-var CheckedPlaylistButtonIcon = findModuleByItsString(
+var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
   "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm11.748-1.97a.75.75 0 0 0-1.06-1.06l-4.47 4.47-1.405-1.406a.75.75 0 1 0-1.061 1.06l2.466 2.467 5.53-5.53z"
 );
-var SectionWrapper = findModuleByItsString(functionModules, /^function .\(.\)\{return\(0,.\.jsx\)\(/);
-var SectionTitle = findModuleByItsString(functionModules, "textToHighlight");
-var SettingColumn = findModuleByItsString(
+var SettingSection = findModuleByStrings(
   functionModules,
-  "setSectionFilterMatchQueryValue",
-  "filterMatchQuery"
+  "function m(e){return(0,d.jsx)(r.k,{children:(0,d.jsx)(u,{...e})})}"
 );
-var SettingText = findModuleByItsString(functionModules, "textSubdued", "viola");
-var SettingToggle = findModuleByItsString(functionModules, "condensed", "onSelected");
+var SectionTitle = findModuleByStrings(functionModules, "textToHighlight", "semanticColor");
+var SettingColumn = findModuleByStrings(functionModules, "setSectionFilterMatchQueryValue", "filterMatchQuery");
+var SettingText = findModuleByStrings(functionModules, "textSubdued", "viola");
+var SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelected");
 var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 
 // shared/settings.tsx
@@ -187,7 +188,7 @@ var SettingsSection = class _SettingsSection {
         pluginSettingsContainer.className = "settingsContainer";
         allSettingsContainer.appendChild(pluginSettingsContainer);
       }
-      ReactDOM.render(/* @__PURE__ */ React.createElement(this.FieldsContainer, null), pluginSettingsContainer);
+      ReactDOM.render(/* @__PURE__ */ React.createElement(this.SettingsSection, null), pluginSettingsContainer);
     };
     this.addButton = (props) => {
       this.addField("button" /* BUTTON */, props);
@@ -214,18 +215,48 @@ var SettingsSection = class _SettingsSection {
         }
       ];
     };
-    this.FieldsContainer = () => /* @__PURE__ */ React.createElement(SectionWrapper, { filterMatchQuery: this.name });
-    this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(React.Fragment, null);
-    this.ButtonField = (field) => /* @__PURE__ */ React.createElement(React.Fragment, null);
+    this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map((field) => {
+      const isType = is("type");
+      return guard3([
+        [isType("input" /* INPUT */), this.InputField],
+        [isType("button" /* BUTTON */), this.ButtonField],
+        [isType("toggle" /* TOGGLE */), this.ToggleField]
+      ])(() => /* @__PURE__ */ React.createElement(React.Fragment, null))(field);
+    }));
+    this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(SettingColumn, { filterMatchQuery: field.id }, /* @__PURE__ */ React.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ React.createElement(SettingText, { htmlFor: field.id }, field.desc)), /* @__PURE__ */ React.createElement("div", { className: "x-settings-secondColumn" }, children));
+    this.ButtonField = (field) => /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(ButtonSecondary, { id: field.id, buttonSize: "sm", onClick: field.onClick, className: "x-settings-button" }, field.text));
     this.ToggleField = (field) => {
       const id = this.getId(field.id);
-      const [value, setValue] = this.useStateFor(id);
-      return /* @__PURE__ */ React.createElement(React.Fragment, null);
+      return /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(
+        SettingToggle,
+        {
+          id: field.id,
+          value: _SettingsSection.getFieldValue(id),
+          onSelected: (checked) => {
+            _SettingsSection.setFieldValue(id, checked);
+            field.onSelected?.(checked);
+          },
+          className: "x-settings-button"
+        }
+      ));
     };
     this.InputField = (field) => {
       const id = this.getId(field.id);
-      const [value, setValue] = this.useStateFor(id);
-      return /* @__PURE__ */ React.createElement(React.Fragment, null);
+      return /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(
+        "input",
+        {
+          className: "x-settings-input",
+          id: field.id,
+          dir: "ltr",
+          value: _SettingsSection.getFieldValue(id),
+          type: field.inputType,
+          onChange: (e) => {
+            const value = e.currentTarget.value;
+            SettingSection.setFieldValue(id, value);
+            field.onChange?.(value);
+          }
+        }
+      ));
     };
   }
   addField(type, opts, defaultValue) {

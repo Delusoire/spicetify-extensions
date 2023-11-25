@@ -1,7 +1,7 @@
 import { task } from "https://esm.sh/fp-ts"
 import { guard3, is } from "./fp.ts"
 import { sleep } from "./util.ts"
-import { SectionTitle, SectionWrapper, SettingColumn, SettingText, SettingToggle } from "./modules.ts"
+import { SettingSection, SettingColumn, SettingText, SettingToggle, SectionTitle } from "./modules.ts"
 
 const { React, ReactDOM } = Spicetify
 const { ButtonSecondary } = Spicetify.ReactComponent as any
@@ -80,7 +80,7 @@ export class SettingsSection {
             allSettingsContainer.appendChild(pluginSettingsContainer)
         }
 
-        ReactDOM.render(<this.FieldsContainer />, pluginSettingsContainer)
+        ReactDOM.render(<this.SettingsSection />, pluginSettingsContainer)
     }
 
     addButton = (props: FieldToProps<ButtonField>) => {
@@ -131,9 +131,9 @@ export class SettingsSection {
         if (SettingsSection.getFieldValue(id) === null) SettingsSection.setFieldValue(id, await defaultValue())
     }
 
-    private FieldsContainer = () => (
-        <SectionWrapper filterMatchQuery={this.name}>
-            {/* <SectionTitle>{this.name}</SectionTitle>
+    private SettingsSection = () => (
+        <SettingSection filterMatchQuery={this.name}>
+            <SectionTitle>{this.name}</SectionTitle>
             {Object.values(this.sectionFields).map(field => {
                 const isType = is<SettingsField>("type")
 
@@ -142,67 +142,61 @@ export class SettingsSection {
                     [isType(FieldType.BUTTON), this.ButtonField],
                     [isType(FieldType.TOGGLE), this.ToggleField],
                 ])(() => <></>)(field)
-            })} */}
-        </SectionWrapper>
+            })}
+        </SettingSection>
     )
 
-    SettingField = ({ field, children }: { field: SettingsField; children: any }) => (
-        <></>
-        // <SettingColumn filterMatchQuery={field.id}>
-        //     <div className="x-settings-firstColumn">
-        //         <SettingText htmlFor={field.id}>{field.desc}</SettingText>
-        //     </div>
-        //     <div className="x-settings-secondColumn">{children}</div>
-        // </SettingColumn>
+    SettingField = ({ field, children }: { field: SettingsField; children?: any }) => (
+        <SettingColumn filterMatchQuery={field.id}>
+            <div className="x-settings-firstColumn">
+                <SettingText htmlFor={field.id}>{field.desc}</SettingText>
+            </div>
+            <div className="x-settings-secondColumn">{children}</div>
+        </SettingColumn>
     )
 
     ButtonField = (field: ButtonField) => (
-        <></>
-        // <this.SettingField field={field}>
-        //     <ButtonSecondary id={field.id} buttonSize="sm" onClick={field.onClick} className="x-settings-button">
-        //         {field.text}
-        //     </ButtonSecondary>
-        // </this.SettingField>
+        <this.SettingField field={field}>
+            <ButtonSecondary id={field.id} buttonSize="sm" onClick={field.onClick} className="x-settings-button">
+                {field.text}
+            </ButtonSecondary>
+        </this.SettingField>
     )
 
     ToggleField = (field: ToggleField) => {
         const id = this.getId(field.id)
-        const [value, setValue] = this.useStateFor<boolean>(id)
         return (
-            <></>
-            // <this.SettingField field={field}>
-            //     <SettingToggle
-            //         id={field.id}
-            //         value={SettingsSection.getFieldValue(id)}
-            //         onSelected={(checked: boolean) => {
-            //             setValue(checked)
-            //             field.onSelected?.(checked)
-            //         }}
-            //         className="x-settings-button"
-            //     />
-            // </this.SettingField>
+            <this.SettingField field={field}>
+                <SettingToggle
+                    id={field.id}
+                    value={SettingsSection.getFieldValue(id)}
+                    onSelected={(checked: boolean) => {
+                        SettingsSection.setFieldValue(id, checked)
+                        field.onSelected?.(checked)
+                    }}
+                    className="x-settings-button"
+                />
+            </this.SettingField>
         )
     }
 
     InputField = (field: InputField) => {
         const id = this.getId(field.id)
-        const [value, setValue] = this.useStateFor<string>(id)
         return (
-            <></>
-            // <this.SettingField field={field}>
-            //     <input
-            //         className="x-settings-input"
-            //         id={field.id}
-            //         dir="ltr"
-            //         value={SettingsSection.getFieldValue(id)}
-            //         type={field.inputType}
-            //         onChange={e => {
-            //             const value = e.currentTarget.value
-            //             setValue(value)
-            //             field.onChange?.(value)
-            //         }}
-            //     />
-            // </this.SettingField>
+            <this.SettingField field={field}>
+                <input
+                    className="x-settings-input"
+                    id={field.id}
+                    dir="ltr"
+                    value={SettingsSection.getFieldValue(id)}
+                    type={field.inputType}
+                    onChange={e => {
+                        const value = e.currentTarget.value
+                        SettingSection.setFieldValue(id, value)
+                        field.onChange?.(value)
+                    }}
+                />
+            </this.SettingField>
         )
     }
 }
