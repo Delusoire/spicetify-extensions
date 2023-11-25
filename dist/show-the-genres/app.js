@@ -285,13 +285,14 @@ var SettingsSection = class _SettingsSection {
     this.ToggleField = (field) => {
       debugger;
       const id = this.getId(field.id);
+      const [value, setValue] = this.useStateFor(id);
       return /* @__PURE__ */ React2.createElement(this.SettingField, { field }, /* @__PURE__ */ React2.createElement(
         SettingToggle,
         {
           id: field.id,
           value: _SettingsSection.getFieldValue(id),
           onSelected: (checked) => {
-            _SettingsSection.setFieldValue(id, checked);
+            setValue(checked);
             field.onSelected?.(checked);
           },
           className: "x-settings-button"
@@ -300,6 +301,7 @@ var SettingsSection = class _SettingsSection {
     };
     this.InputField = (field) => {
       const id = this.getId(field.id);
+      const [value, setValue] = this.useStateFor(id);
       return /* @__PURE__ */ React2.createElement(this.SettingField, { field }, /* @__PURE__ */ React2.createElement(
         "input",
         {
@@ -309,9 +311,9 @@ var SettingsSection = class _SettingsSection {
           value: _SettingsSection.getFieldValue(id),
           type: field.inputType,
           onChange: (e) => {
-            const value = e.currentTarget.value;
-            _SettingsSection.setFieldValue(id, value);
-            field.onChange?.(value);
+            const value2 = e.currentTarget.value;
+            setValue(value2);
+            field.onChange?.(value2);
           }
         }
       ));
