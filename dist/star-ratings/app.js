@@ -51,7 +51,7 @@ var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) 
 });
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 var isLiked = (uris) => Spicetify.Platform.LibraryAPI.contains(...uris);
-var setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"](...uris);
+var setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
 var toggleLiked = async (uris) => {
   const liked = await isLiked(uris);
   return await f2.pipe(

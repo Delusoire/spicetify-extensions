@@ -100,7 +100,8 @@ export const fetchPlatPlaylistContents = async (uri: SpotifyURI) =>
 export const createPlatFolder = async (name: string, location: SpotifyLocObj = {}) =>
     await Spicetify.Platform.RootlistAPI.createFolder(name, location)
 
-export const likePlatPlaylist = async (uri: SpotifyURI) => await Spicetify.Platform.RootlistAPI.add([uri])
+export const addPlatPlaylist = async (playlist: SpotifyURI, folder?: SpotifyURI, addedAt = new Date()) =>
+    await Spicetify.Platform.RootlistAPI.add([playlist], { after: { type: "folder", addedAt, uri: folder } })
 
 /* Replaced by createSPPlaylistFromTracks */
 export const createPlatPlaylist = async (name: string, location: SpotifyLocObj = {}) =>

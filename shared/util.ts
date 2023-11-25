@@ -93,7 +93,7 @@ export const getReactProps = (element: Element) =>
 export const isLiked = (uris: SpotifyURI[]) => Spicetify.Platform.LibraryAPI.contains(...uris) as Promise<boolean[]>
 
 export const setLiked = (uris: SpotifyURI[], liked: boolean) =>
-    Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"](...uris)
+    Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris })
 
 export const toggleLiked = async (uris: SpotifyURI[]) => {
     const liked = await isLiked(uris)

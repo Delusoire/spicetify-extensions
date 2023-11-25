@@ -44,12 +44,12 @@ var init_util = __esm({
     };
     sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     getReactProps = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactProps$"))];
-    setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"](...uris);
+    setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
   }
 });
 
 // shared/api.ts
-var fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, likePlatPlaylist, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
+var fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, addPlatPlaylist, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
 var init_api = __esm({
   "shared/api.ts"() {
     init_fp();
@@ -71,7 +71,7 @@ var init_api = __esm({
     );
     fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
     createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
-    likePlatPlaylist = async (uri) => await Spicetify.Platform.RootlistAPI.add([uri]);
+    addPlatPlaylist = async (playlist, folder, addedAt = /* @__PURE__ */ new Date()) => await Spicetify.Platform.RootlistAPI.add([playlist], { after: { type: "folder", addedAt, uri: folder } });
     createSPPlaylistFromTracks = (name, tracks, folder) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
       operation: "create",
       ...folder ? { after: folder } : {},
@@ -323,17 +323,19 @@ var init_app = __esm({
       ]
     ])(task2.of({}))(leaf);
     isContentOfPersonalPlaylist = (subleaf) => typeof subleaf[0] === "string" && Spicetify.URI.isTrack(subleaf[0]);
-    restorePlaylistseRecur = async (leaf) => {
+    restorePlaylistseRecur = async (leaf, folder) => {
       Object.keys(leaf).forEach((name) => {
         const subleaf = leaf[name];
         if (!Array.isArray(subleaf))
-          return void likePlatPlaylist(subleaf);
+          return void addPlatPlaylist(subleaf, folder);
         if (subleaf.length === 0)
           return;
         if (isContentOfPersonalPlaylist(subleaf))
-          return void createSPPlaylistFromTracks(name, subleaf);
-        createPlatFolder(name);
-        subleaf.forEach(restorePlaylistseRecur);
+          return void createSPPlaylistFromTracks(name, subleaf, folder);
+        const { success, uri } = createPlatFolder(name, SpotifyLoc.after.fromUri(folder));
+        if (!success)
+          return;
+        subleaf.forEach((leaf2) => restorePlaylistseRecur(leaf2, uri));
       });
     };
     allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/;

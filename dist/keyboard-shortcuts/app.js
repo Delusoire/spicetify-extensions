@@ -25,7 +25,7 @@ var SpotifyLoc = {
   }
 };
 var isLiked = (uris) => Spicetify.Platform.LibraryAPI.contains(...uris);
-var setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"](...uris);
+var setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
 var toggleLiked = async (uris) => {
   const liked = await isLiked(uris);
   return await f.pipe(
