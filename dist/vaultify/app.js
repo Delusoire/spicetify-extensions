@@ -236,7 +236,7 @@ var init_settings = __esm({
               type: field.inputType,
               onChange: (e) => {
                 const value = e.currentTarget.value;
-                SettingSection.setFieldValue(id, value);
+                _SettingsSection.setFieldValue(id, value);
                 field.onChange?.(value);
               }
             }
