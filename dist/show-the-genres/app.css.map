@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../extensions/show-the-genres/assets/styles.css"],
+  "sourcesContent": [".genres-popup::after{content:\"\";display:table;clear:both}.genres-popup .title{color:var(--spice-text)}.genres-popup .spaced-down{margin-bottom:20px}.genres-popup .login-button{background-color:var(--spice-button);border-radius:8px;border-style:none;color:var(--spice-text);cursor:pointer;font-size:14px;height:40px;margin:10px;padding:5px 10px;text-align:center}.genres-popup .login-button:hover{background-color:var(--spice-button-active)}.main-nowPlayingWidget-trackInfo.main-trackInfo-container{grid-template:\"title title\" \"badges subtitle\" \"genres genres\"/auto 1fr auto}"],
+  "mappings": ";AAAA,CAAC,YAAY;AAAQ,WAAQ;AAAG,WAAQ;AAAM,SAAM;AAAI;AAAC,CAAxD,aAAsE,CAAC;AAAM,SAAM,IAAI;AAAa;AAAC,CAArG,aAAmH,CAAC;AAAY,iBAAc;AAAI;AAAC,CAAnJ,aAAiK,CAAC;AAAa,oBAAiB,IAAI;AAAgB,iBAAc;AAAI,gBAAa;AAAK,SAAM,IAAI;AAAc,UAAO;AAAQ,aAAU;AAAK,UAAO;AAAK,UAAO;AAAK,WAAQ,IAAI;AAAK,cAAW;AAAM;AAAC,CAAzW,aAAuX,CAArN,YAAkO;AAAO,oBAAiB,IAAI;AAAsB;AAAC,CAAC,+BAA+B,CAAC;AAAyB,iBAAc,cAAc,kBAAkB,eAAe,CAAC,KAAK,IAAI;AAAI;",
+  "names": []
+}

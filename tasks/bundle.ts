@@ -74,8 +74,8 @@ const extensionsData = extensions.map(async fullname => {
         bundle: true,
         format: "esm",
         external: ["https://esm.sh/*"],
-        minify: true,
-        sourcemap: "inline",
+        // minify: true,
+        sourcemap: "external",
         tsconfigRaw: `{
           "compilerOptions": {
             "experimentalDecorators": true,
