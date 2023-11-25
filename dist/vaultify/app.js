@@ -13,11 +13,10 @@ import {
   function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
-var guard2, guard3, pMchain, is, chunckify, memoize2;
+var guard2, pMchain, is, chunckify, memoize2;
 var init_fp = __esm({
   "shared/fp.ts"() {
     guard2 = (branches) => guard(branches);
-    guard3 = (branches) => guard(branches);
     pMchain = (f4) => async (fa) => f4(await fa);
     is = (c) => (a2) => (field) => field[c] === a2;
     chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
@@ -136,7 +135,6 @@ import { task } from "https://esm.sh/fp-ts";
 var React, ReactDOM, ButtonSecondary, SettingsSection;
 var init_settings = __esm({
   "shared/settings.tsx"() {
-    init_fp();
     init_util();
     init_modules();
     ({ React, ReactDOM } = Spicetify);
@@ -199,14 +197,7 @@ var init_settings = __esm({
             }
           ];
         };
-        this.FieldsContainer = () => /* @__PURE__ */ React.createElement(SectionWrapper, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map((field) => {
-          const isType2 = is("type");
-          return guard3([
-            [isType2("input" /* INPUT */), this.InputField],
-            [isType2("button" /* BUTTON */), this.ButtonField],
-            [isType2("toggle" /* TOGGLE */), this.ToggleField]
-          ])(() => /* @__PURE__ */ React.createElement(React.Fragment, null))(field);
-        }));
+        this.FieldsContainer = () => /* @__PURE__ */ React.createElement(SectionWrapper, { filterMatchQuery: this.name });
         this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(React.Fragment, null);
         this.ButtonField = (field) => /* @__PURE__ */ React.createElement(React.Fragment, null);
         this.ToggleField = (field) => {

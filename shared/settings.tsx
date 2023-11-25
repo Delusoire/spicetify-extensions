@@ -133,7 +133,7 @@ export class SettingsSection {
 
     private FieldsContainer = () => (
         <SectionWrapper filterMatchQuery={this.name}>
-            <SectionTitle>{this.name}</SectionTitle>
+            {/* <SectionTitle>{this.name}</SectionTitle>
             {Object.values(this.sectionFields).map(field => {
                 const isType = is<SettingsField>("type")
 
@@ -142,7 +142,7 @@ export class SettingsSection {
                     [isType(FieldType.BUTTON), this.ButtonField],
                     [isType(FieldType.TOGGLE), this.ToggleField],
                 ])(() => <></>)(field)
-            })}
+            })} */}
         </SectionWrapper>
     )
 

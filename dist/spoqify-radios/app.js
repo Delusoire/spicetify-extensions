@@ -28,9 +28,7 @@ import {
   function as f2
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
-var guard3 = (branches) => guard(branches);
 var pMchain = (f3) => async (fa) => f3(await fa);
-var is = (c) => (a2) => (field) => field[c] === a2;
 var chunckify = (n) => (g) => f2.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
 var memoize2 = (fn) => f2.pipe(fn, f2.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f2.untupled);
 
@@ -158,14 +156,7 @@ var SettingsSection = class _SettingsSection {
         }
       ];
     };
-    this.FieldsContainer = () => /* @__PURE__ */ React.createElement(SectionWrapper, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map((field) => {
-      const isType = is("type");
-      return guard3([
-        [isType("input" /* INPUT */), this.InputField],
-        [isType("button" /* BUTTON */), this.ButtonField],
-        [isType("toggle" /* TOGGLE */), this.ToggleField]
-      ])(() => /* @__PURE__ */ React.createElement(React.Fragment, null))(field);
-    }));
+    this.FieldsContainer = () => /* @__PURE__ */ React.createElement(SectionWrapper, { filterMatchQuery: this.name });
     this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(React.Fragment, null);
     this.ButtonField = (field) => /* @__PURE__ */ React.createElement(React.Fragment, null);
     this.ToggleField = (field) => {
