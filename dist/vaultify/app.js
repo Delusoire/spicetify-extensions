@@ -306,7 +306,6 @@ var init_app = __esm({
     init_api();
     init_fp();
     init_util();
-    debugger;
     isType = is("type");
     extractLikedPlaylistTreeRecur = (leaf) => guard2([
       [
@@ -323,8 +322,8 @@ var init_app = __esm({
       ]
     ])(task2.of({}))(leaf);
     isContentOfPersonalPlaylist = (subleaf) => typeof subleaf[0] === "string" && Spicetify.URI.isTrack(subleaf[0]);
-    restorePlaylistseRecur = async (leaf, folder) => {
-      Object.keys(leaf).forEach((name) => {
+    restorePlaylistseRecur = async (leaf, folder) => await Promise.all(
+      Object.keys(leaf).map(async (name) => {
         const subleaf = leaf[name];
         if (!Array.isArray(subleaf))
           return void addPlatPlaylist(subleaf, folder);
@@ -332,12 +331,12 @@ var init_app = __esm({
           return;
         if (isContentOfPersonalPlaylist(subleaf))
           return void createSPPlaylistFromTracks(name, subleaf, folder);
-        const { success, uri } = createPlatFolder(name, SpotifyLoc.after.fromUri(folder));
+        const { success, uri } = await createPlatFolder(name, SpotifyLoc.after.fromUri(folder));
         if (!success)
           return;
         subleaf.forEach((leaf2) => restorePlaylistseRecur(leaf2, uri));
-      });
-    };
+      })
+    );
     allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/;
     backup = async () => {
       const extractItemsUris = (a2) => a2.items.map((item) => item.uri);
@@ -404,13 +403,9 @@ var init_app = __esm({
       let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
       if (mode === "library") {
         setLiked(vault.libraryTracks, true);
-        debugger;
         setLiked(vault.libraryAlbums, true);
-        debugger;
         setLiked(vault.libraryArtists, true);
-        debugger;
         await restorePlaylistseRecur(vault.playlists);
-        debugger;
         Spicetify.showNotification("Restored Library");
       }
       if (mode === "extensions") {

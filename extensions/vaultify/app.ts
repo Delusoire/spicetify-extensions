@@ -1,4 +1,3 @@
-debugger
 import { array as ar, function as f, record as rec, task } from "https://esm.sh/fp-ts"
 import {
     createPlatFolder,
@@ -43,24 +42,25 @@ const isContentOfPersonalPlaylist = (
     subleaf: PersonalFolder[""] | PersonalPlaylist[""],
 ): subleaf is PersonalPlaylist[""] => typeof subleaf[0] === "string" && Spicetify.URI.isTrack(subleaf[0])
 
-const restorePlaylistseRecur = async (leaf: PersonalFolder | PersonalPlaylist | LikedPlaylist, folder?: SpotifyURI) => {
-    Object.keys(leaf).forEach(name => {
-        const subleaf = leaf[name]
+const restorePlaylistseRecur = async (leaf: PersonalFolder | PersonalPlaylist | LikedPlaylist, folder?: SpotifyURI) =>
+    await Promise.all(
+        Object.keys(leaf).map(async name => {
+            const subleaf = leaf[name]
 
-        // isPlaylist
-        if (!Array.isArray(subleaf)) return void addPlatPlaylist(subleaf, folder)
-        if (subleaf.length === 0) return
+            // isPlaylist
+            if (!Array.isArray(subleaf)) return void addPlatPlaylist(subleaf, folder)
+            if (subleaf.length === 0) return
 
-        //isCollectionOfTracks
-        if (isContentOfPersonalPlaylist(subleaf)) return void createSPPlaylistFromTracks(name, subleaf, folder)
+            //isCollectionOfTracks
+            if (isContentOfPersonalPlaylist(subleaf)) return void createSPPlaylistFromTracks(name, subleaf, folder)
 
-        //isFolder
-        const { success, uri } = createPlatFolder(name, SpotifyLoc.after.fromUri(folder))
-        if (!success) return
+            //isFolder
+            const { success, uri } = await createPlatFolder(name, SpotifyLoc.after.fromUri(folder))
+            if (!success) return
 
-        subleaf.forEach(leaf => restorePlaylistseRecur(leaf, uri))
-    })
-}
+            subleaf.forEach(leaf => restorePlaylistseRecur(leaf, uri))
+        }),
+    )
 
 const allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/
 export const backup = async () => {
@@ -148,13 +148,9 @@ export const restore = (mode: "library" | "extensions" | "settings") => async ()
 
     if (mode === "library") {
         setLiked(vault.libraryTracks, true)
-        debugger
         setLiked(vault.libraryAlbums, true)
-        debugger
         setLiked(vault.libraryArtists, true)
-        debugger
         await restorePlaylistseRecur(vault.playlists)
-        debugger
         Spicetify.showNotification("Restored Library")
     }
     if (mode === "extensions") {
