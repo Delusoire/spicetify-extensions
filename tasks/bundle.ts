@@ -61,6 +61,7 @@ const extensionsData = extensions.map(async fullname => {
 
     await esbuild.build({
         platform: "browser",
+        target: ["esnext"],
         plugins: [
             postCSSPlugin({
                 plugins: [autoprefixer()],
