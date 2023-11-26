@@ -138,7 +138,7 @@ export const onHistoryChanged = (
     const historyChanged = (location: any) => {
         if (matchFn(location.pathname)) {
             if (dropDuplicates && Object.is(lastLocation, location)) {
-            } else callback(Spicetify.URI.fromString(location).toString())
+            } else callback(Spicetify.URI.fromString(location.pathname).toString())
         }
         lastLocation = location
     }

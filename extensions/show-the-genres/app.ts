@@ -22,6 +22,10 @@ const nowPlayingGenreContainerEl = document.createElement("genre-container")
 nowPlayingGenreContainerEl.fetchGenres = fetchLastFMTags
 nowPlayingGenreContainerEl.className += " ellipsis-one-line main-type-finale"
 nowPlayingGenreContainerEl.style.gridArea = "genres"
+;(async () => {
+    const trackInfoContainer = await waitForElement("div.main-trackInfo-container")
+    trackInfoContainer!.appendChild(nowPlayingGenreContainerEl)
+})()
 
 onSongChanged(data => (nowPlayingGenreContainerEl.uri = data?.item.currentTrackUri))
 

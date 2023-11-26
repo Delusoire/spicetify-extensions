@@ -66,7 +66,7 @@ var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
     if (matchFn(location.pathname)) {
       if (dropDuplicates && Object.is(lastLocation, location)) {
       } else
-        callback(Spicetify.URI.fromString(location).toString());
+        callback(Spicetify.URI.fromString(location.pathname).toString());
     }
     lastLocation = location;
   };
@@ -302,6 +302,10 @@ var nowPlayingGenreContainerEl = document.createElement("genre-container");
 nowPlayingGenreContainerEl.fetchGenres = fetchLastFMTags;
 nowPlayingGenreContainerEl.className += " ellipsis-one-line main-type-finale";
 nowPlayingGenreContainerEl.style.gridArea = "genres";
+(async () => {
+  const trackInfoContainer = await waitForElement("div.main-trackInfo-container");
+  trackInfoContainer.appendChild(nowPlayingGenreContainerEl);
+})();
 onSongChanged((data) => nowPlayingGenreContainerEl.uri = data?.item.currentTrackUri);
 var getArtistsGenresOrRelated = async (artistsUris) => {
   const getArtistsGenres = f4.flow(

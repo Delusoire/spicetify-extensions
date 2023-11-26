@@ -33,7 +33,7 @@ var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
     if (matchFn(location.pathname)) {
       if (dropDuplicates && Object.is(lastLocation, location)) {
       } else
-        callback(Spicetify.URI.fromString(location).toString());
+        callback(Spicetify.URI.fromString(location.pathname).toString());
     }
     lastLocation = location;
   };
