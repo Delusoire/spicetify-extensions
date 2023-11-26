@@ -307,12 +307,6 @@ import { customElement, property, state } from "https://esm.sh/lit/decorators.js
 import { join } from "https://esm.sh/lit/directives/join.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 var _GenreLink = class extends LitElement {
-    static styles = css`
-    :host {
-        color: var(--spice-subtext);
-        font-size: 1rem;
-    }
-`;
   constructor() {
     super(...arguments);
     this.genre = "Default";
@@ -321,9 +315,15 @@ var _GenreLink = class extends LitElement {
     Spicetify.Platform.History.push({ pathname: `/search/${this.genre}/playlists` });
   }
   render() {
-    return html`<a href="#" @onClick=${this.openPlaylistsSearch}>${titleCase(this.genre)}</a>`;
+    return html`<a href="#" @click=${this.openPlaylistsSearch}>${titleCase(this.genre)}</a>`;
   }
 };
+_GenreLink.styles = css`
+        :host > a {
+            color: var(--spice-subtext);
+            font-size: 1rem;
+        }
+    `;
 __decorateClass([
   property()
 ], _GenreLink.prototype, "genre", 2);
@@ -368,7 +368,6 @@ _ArtistGenreContainer = __decorateClass([
 ], _ArtistGenreContainer);
 
 // extensions/show-the-genres/app.ts
-debugger;
 var fetchLastFMTags = async (uri) => {
   const uid = Spicetify.URI.fromString(uri).id;
   const res = await fetchWebTracksSpot([uid]);

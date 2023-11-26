@@ -15,7 +15,7 @@ declare global {
 @customElement("genre-link")
 class _GenreLink extends LitElement {
     static styles = css`
-        :host {
+        :host > a {
             color: var(--spice-subtext);
             font-size: 1rem;
         }
@@ -29,7 +29,7 @@ class _GenreLink extends LitElement {
     }
 
     protected render() {
-        return html`<a href="#" @onClick=${this.openPlaylistsSearch}>${titleCase(this.genre)}</a>`
+        return html`<a href="#" @click=${this.openPlaylistsSearch}>${titleCase(this.genre)}</a>`
     }
 }
 
