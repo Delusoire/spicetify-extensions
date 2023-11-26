@@ -6,6 +6,7 @@ import {
     fetchPlatPlaylistContents,
     removePlatPlaylistTracks,
     setPlatPlaylistVisibility,
+    setPlatTrackLiked,
 } from "../../shared/api.ts"
 import { pMchain } from "../../shared/fp.ts"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util.ts"
@@ -66,14 +67,18 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
         }
 
         addPlatPlaylistTracks(playlistUri, [uri])
+
+        if (rating >= Number(CONFIG.heartThreshold)) {
+            setPlatTrackLiked([uri], true)
+        }
     }
 
-    const npTrack = Spicetify.Player?.data.track?.currentTrackUri
+    const npTrack = Spicetify.Player.data?.item.uri
     if (npTrack === uri) {
         updateNowPlayingControls(npTrack, false)
 
         {
-            const npTrack = Spicetify.Player?.data.track?.currentTrackUri
+            const npTrack = Spicetify.Player.data?.item.uri
 
             const nowPlaylingControlsObserver = new MutationObserver(() => {
                 if (npTrack === uri) {

@@ -87,6 +87,7 @@ var fetchWebAlbumsSpot = chunckify(50)(
 var fetchWebTracksSpot = chunckify(50)(
   async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
 );
+var setPlatTrackLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
 var fetchPlatArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items;
 var fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
 var createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
@@ -354,12 +355,15 @@ var toggleRating = async (uri, rating) => {
       playlistUris[rating] = playlistUri;
     }
     addPlatPlaylistTracks(playlistUri, [uri]);
+    if (rating >= Number(CONFIG.heartThreshold)) {
+      setPlatTrackLiked([uri], true);
+    }
   }
-  const npTrack = Spicetify.Player?.data.track?.currentTrackUri;
+  const npTrack = Spicetify.Player.data?.item.uri;
   if (npTrack === uri) {
     updateNowPlayingControls(npTrack, false);
     {
-      const npTrack2 = Spicetify.Player?.data.track?.currentTrackUri;
+      const npTrack2 = Spicetify.Player.data?.item.uri;
       const nowPlaylingControlsObserver = new MutationObserver(() => {
         if (npTrack2 === uri) {
           nowPlaylingControlsObserver.disconnect();
@@ -522,13 +526,13 @@ loadRatings();
 onSongChanged((data) => {
   if (!data)
     return;
-  const { currentTrackUri } = data.item;
+  const { uri } = data.item;
   if (Number(CONFIG.skipThreshold)) {
-    const currentTrackRating = tracksRatings[currentTrackUri] ?? Number.MAX_SAFE_INTEGER;
+    const currentTrackRating = tracksRatings[uri] ?? Number.MAX_SAFE_INTEGER;
     if (currentTrackRating <= Number(CONFIG.skipThreshold))
       return void Spicetify.Player.next();
   }
-  updateNowPlayingControls(currentTrackUri);
+  updateNowPlayingControls(uri);
 });
 var mainElement;
 var mainElementObserver = new MutationObserver(() => updateTrackListControls());

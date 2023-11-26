@@ -209,7 +209,7 @@ declare namespace Spicetify {
     }
     type PlayerTrack = {
         type: string
-        currentTrackUri: string
+        uri: string
         uid: string
         name: string
         mediaType: string

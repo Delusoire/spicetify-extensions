@@ -13,14 +13,14 @@ loadRatings()
 
 onSongChanged(data => {
     if (!data) return
-    const { currentTrackUri } = data.item
+    const { uri } = data.item
 
     if (Number(CONFIG.skipThreshold)) {
-        const currentTrackRating = tracksRatings[currentTrackUri] ?? Number.MAX_SAFE_INTEGER
+        const currentTrackRating = tracksRatings[uri] ?? Number.MAX_SAFE_INTEGER
         if (currentTrackRating <= Number(CONFIG.skipThreshold)) return void Spicetify.Player.next()
     }
 
-    updateNowPlayingControls(currentTrackUri)
+    updateNowPlayingControls(uri)
 })
 
 let mainElement: HTMLElement
