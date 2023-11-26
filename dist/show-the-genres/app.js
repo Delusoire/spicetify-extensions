@@ -307,7 +307,7 @@ import { customElement, property, state } from "https://esm.sh/lit/decorators.js
 import { join } from "https://esm.sh/lit/directives/join.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 var _GenreLink = class extends LitElement {
-    staic styles = css`
+    static styles = css`
     :host {
         color: var(--spice-subtext);
         font-size: 1rem;
