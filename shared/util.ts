@@ -132,15 +132,15 @@ export const onHistoryChanged = (
         }
     }
 
-    let lastLocation = {}
+    let lastPathname = ""
     const matchFn = createMatchFn(toMatchTo)
 
-    const historyChanged = (location: any) => {
-        if (matchFn(location.pathname)) {
-            if (dropDuplicates && Object.is(lastLocation, location)) {
-            } else callback(Spicetify.URI.fromString(location.pathname).toString())
+    const historyChanged = ({ pathname }: any) => {
+        if (matchFn(pathname)) {
+            if (dropDuplicates && lastPathname === pathname) {
+            } else callback(Spicetify.URI.fromString(pathname).toString())
         }
-        lastLocation = location
+        lastPathname = pathname
     }
 
     historyChanged(Spicetify.Platform.History.location ?? {})

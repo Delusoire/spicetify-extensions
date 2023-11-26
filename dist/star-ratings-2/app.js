@@ -27,15 +27,15 @@ var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
         return (input) => toMatchTo2.test(input);
     }
   };
-  let lastLocation = {};
+  let lastPathname = "";
   const matchFn = createMatchFn(toMatchTo);
-  const historyChanged = (location) => {
-    if (matchFn(location.pathname)) {
-      if (dropDuplicates && Object.is(lastLocation, location)) {
+  const historyChanged = ({ pathname }) => {
+    if (matchFn(pathname)) {
+      if (dropDuplicates && lastPathname === pathname) {
       } else
-        callback(Spicetify.URI.fromString(location.pathname).toString());
+        callback(Spicetify.URI.fromString(pathname).toString());
     }
-    lastLocation = location;
+    lastPathname = pathname;
   };
   historyChanged(Spicetify.Platform.History.location ?? {});
   Spicetify.Platform.History.listen(historyChanged);
