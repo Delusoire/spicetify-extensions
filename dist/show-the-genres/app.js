@@ -44,22 +44,28 @@ var SpotifyLoc = {
   }
 };
 var titleCase = (str3) => str3.replace(/\b\w/g, (l) => l.toUpperCase());
-var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) => new Promise((resolve) => {
-  const res = (v) => {
-    observer.disconnect();
-    resolve(v);
-  };
-  const observer = new MutationObserver(() => {
+var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) => new Promise((resolve, reject) => {
+  const onMutation = () => {
     const el = document.querySelector(selector);
-    if (el && (!notEl || el !== notEl))
-      return res(el);
-  });
+    if (el) {
+      if (notEl && el === notEl) {
+      } else {
+        observer.disconnect();
+        return resolve(el);
+      }
+    }
+  };
+  onMutation();
+  const observer = new MutationObserver(onMutation);
   observer.observe(location, {
     childList: true,
     subtree: true
   });
   if (timeout)
-    setTimeout(() => res(null), timeout);
+    setTimeout(() => {
+      observer.disconnect();
+      reject();
+    }, timeout);
 });
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {

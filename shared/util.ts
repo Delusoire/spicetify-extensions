@@ -42,23 +42,31 @@ export const waitForElement = <E extends Element>(
     location = document.body,
     notEl?: E,
 ) =>
-    new Promise((resolve: (value: Element | null) => void) => {
-        const res = (v: any) => {
-            observer.disconnect()
-            resolve(v)
+    new Promise((resolve: (value: Element) => void, reject) => {
+        const onMutation = () => {
+            const el = document.querySelector<E>(selector)
+            if (el) {
+                if (notEl && el === notEl) {
+                } else {
+                    observer.disconnect()
+                    return resolve(el)
+                }
+            }
         }
 
-        const observer = new MutationObserver(() => {
-            const el = document.querySelector<E>(selector)
-            if (el && (!notEl || el !== notEl)) return res(el)
-        })
+        onMutation()
+        const observer = new MutationObserver(onMutation)
 
         observer.observe(location, {
             childList: true,
             subtree: true,
         })
 
-        if (timeout) setTimeout(() => res(null), timeout)
+        if (timeout)
+            setTimeout(() => {
+                observer.disconnect()
+                reject()
+            }, timeout)
     })
 
 export const trapElement = <E extends Element>(
