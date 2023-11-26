@@ -1,3 +1,15 @@
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i = decorators.length - 1, decorator; i >= 0; i--)
+    if (decorator = decorators[i])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result)
+    __defProp(target, key, result);
+  return result;
+};
+
 // extensions/show-the-genres/app.ts
 import { array as a3, function as f4, string as str2 } from "https://esm.sh/fp-ts";
 
@@ -31,6 +43,7 @@ var SpotifyLoc = {
     fromUid: (uid) => ({ after: { uid } })
   }
 };
+var titleCase = (str3) => str3.replace(/\b\w/g, (l) => l.toUpperCase());
 var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) => new Promise((resolve) => {
   const res = (v) => {
     observer.disconnect();
@@ -287,6 +300,70 @@ var settings = new SettingsSection("Show The Genres", "show-the-genres").addInpu
 );
 settings.pushSettings();
 var CONFIG = settings.toObject();
+
+// extensions/show-the-genres/components.ts
+import { LitElement, css, html } from "https://esm.sh/lit";
+import { customElement, property, state } from "https://esm.sh/lit/decorators.js";
+import { join } from "https://esm.sh/lit/directives/join.js";
+import { map } from "https://esm.sh/lit/directives/map.js";
+var _GenreLink = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.genre = "Default";
+  }
+  openPlaylistsSearch() {
+    Spicetify.Platform.History.push({ pathname: `/search/${this.genre}/playlists` });
+  }
+  render() {
+    return html`<a href="#" @onClick=${this.openPlaylistsSearch}>${titleCase(this.genre)}</a>`;
+  }
+};
+_GenreLink.styles = css`:host {
+        color: var(--spice-subtext)
+        font-size: 1rem
+    }`;
+__decorateClass([
+  property()
+], _GenreLink.prototype, "genre", 2);
+_GenreLink = __decorateClass([
+  customElement("genre-link")
+], _GenreLink);
+var _ArtistGenreContainer = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    this.name = void 0;
+    this.uri = void 0;
+    this.genres = [];
+    this.fetchGenres = (uri) => Promise.resolve([]);
+  }
+  willUpdate(changedProperties) {
+    if (changedProperties.has("uri")) {
+      this.uri && this.fetchGenres(this.uri).then((genres) => this.genres = genres);
+    }
+  }
+  render() {
+    const artistGenreLinks = map(this.genres, (genre) => html`<genre-link genre=${genre} />`);
+    const divider = html`<span>, </span>`;
+    return html`<div className="main-entityHeader-detailsText genre-container">
+            ${this.name ? html`<span>${this.name} : </span>` : []} ${join(artistGenreLinks, () => divider)}
+        </div>`;
+  }
+};
+__decorateClass([
+  property()
+], _ArtistGenreContainer.prototype, "name", 2);
+__decorateClass([
+  property()
+], _ArtistGenreContainer.prototype, "uri", 2);
+__decorateClass([
+  state()
+], _ArtistGenreContainer.prototype, "genres", 2);
+__decorateClass([
+  property()
+], _ArtistGenreContainer.prototype, "fetchGenres", 2);
+_ArtistGenreContainer = __decorateClass([
+  customElement("genre-container")
+], _ArtistGenreContainer);
 
 // extensions/show-the-genres/app.ts
 debugger;

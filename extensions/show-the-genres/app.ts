@@ -7,6 +7,7 @@ import { SpotifyURI, onHistoryChanged, onSongChanged, waitForElement } from "../
 
 import { CONFIG } from "./settings.ts"
 
+import "./components.ts"
 import "./assets/styles.scss"
 
 const fetchLastFMTags = async (uri: SpotifyURI) => {
