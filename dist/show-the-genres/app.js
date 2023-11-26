@@ -307,12 +307,6 @@ import { customElement, property, state } from "https://esm.sh/lit/decorators.js
 import { join } from "https://esm.sh/lit/directives/join.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 var _GenreLink = class extends LitElement {
-    static styles = css`
-        :host {
-            color: var(--spice-subtext);
-            font-size: 1rem;
-        }
-    `;
   constructor() {
     super(...arguments);
     this.genre = "Default";
@@ -324,6 +318,12 @@ var _GenreLink = class extends LitElement {
     return html`<a href="#" @onClick=${this.openPlaylistsSearch}>${titleCase(this.genre)}</a>`;
   }
 };
+_GenreLink.styles = css`
+        :host {
+            color: var(--spice-subtext);
+            font-size: 1rem;
+        }
+    `;
 __decorateClass([
   property()
 ], _GenreLink.prototype, "genre", 2);
@@ -385,7 +385,7 @@ nowPlayingGenreContainerEl.style.gridArea = "genres";
   const trackInfoContainer = await waitForElement("div.main-trackInfo-container");
   trackInfoContainer.appendChild(nowPlayingGenreContainerEl);
 })();
-onSongChanged((data) => nowPlayingGenreContainerEl.uri = data?.item.currentTrackUri);
+onSongChanged((data) => nowPlayingGenreContainerEl.uri = data?.item.uri);
 var getArtistsGenresOrRelated = async (artistsUris) => {
   const getArtistsGenres = f4.flow(
     a3.map((uri) => Spicetify.URI.fromString(uri).id),
