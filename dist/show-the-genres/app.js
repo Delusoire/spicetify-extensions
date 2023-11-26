@@ -55,8 +55,8 @@ var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) 
       }
     }
   };
-  onMutation();
   const observer = new MutationObserver(onMutation);
+  onMutation();
   observer.observe(location, {
     childList: true,
     subtree: true

@@ -54,8 +54,8 @@ export const waitForElement = <E extends Element>(
             }
         }
 
-        onMutation()
         const observer = new MutationObserver(onMutation)
+        onMutation()
 
         observer.observe(location, {
             childList: true,
