@@ -27,7 +27,7 @@ nowPlayingGenreContainerEl.style.gridArea = "genres"
     trackInfoContainer!.appendChild(nowPlayingGenreContainerEl)
 })()
 
-onSongChanged(data => (nowPlayingGenreContainerEl.uri = data?.item.uri))
+onSongChanged(state => (nowPlayingGenreContainerEl.uri = state?.item.uri))
 
 const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[]) => {
     const getArtistsGenres: (artistsUris: SpotifyURI[]) => Promise<string[]> = f.flow(

@@ -17,7 +17,7 @@ class _GenreLink extends LitElement {
     static styles = css`
         :host > a {
             color: var(--spice-subtext);
-            font-size: 1rem;
+            font-size: var(--genre-link-size);
         }
     `
 
@@ -36,16 +36,19 @@ class _GenreLink extends LitElement {
 @customElement("genre-container")
 class _ArtistGenreContainer extends LitElement {
     @property()
-    name = undefined as string | undefined
+    name?: string = undefined
 
     @property()
-    uri = undefined as SpotifyURI | undefined
+    uri?: SpotifyURI = undefined
 
     @state()
-    genres = [] as string[]
+    genres: string[] = []
 
     @property()
-    fetchGenres = (uri: SpotifyURI) => Promise.resolve([] as string[])
+    isSmall = true
+
+    @property()
+    fetchGenres = (uri: SpotifyURI) => Promise.resolve([uri])
 
     protected willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("uri")) {
@@ -57,8 +60,13 @@ class _ArtistGenreContainer extends LitElement {
         const artistGenreLinks = map(this.genres, genre => html`<genre-link genre=${genre} />`)
         const divider = html`<span>, </span>`
 
-        return html`<div className="main-entityHeader-detailsText genre-container">
-            ${this.name ? html`<span>${this.name} : </span>` : []} ${join(artistGenreLinks, () => divider)}
-        </div>`
+        return html`<style>
+                a {
+                    --genre-link-size: ${this.isSmall ? "12px" : "1rem"};
+                }
+            </style>
+            <div className="main-entityHeader-detailsText genre-container">
+                ${this.name ? html`<span>${this.name} : </span>` : []} ${join(artistGenreLinks, () => divider)}
+            </div>`
     }
 }

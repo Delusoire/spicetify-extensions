@@ -155,7 +155,7 @@ export const onHistoryChanged = (
     Spicetify.Platform.History.listen(historyChanged)
 }
 
-export const onSongChanged = (callback: (data?: Spicetify.PlayerState) => void) => {
+export const onSongChanged = (callback: (state?: Spicetify.PlayerState) => void) => {
     callback(Spicetify.Player.data)
     Spicetify.Player.addEventListener("songchange", event => callback(event!.data))
 }

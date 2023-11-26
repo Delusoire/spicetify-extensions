@@ -327,7 +327,7 @@ var _GenreLink = class extends LitElement {
 _GenreLink.styles = css`
         :host > a {
             color: var(--spice-subtext);
-            font-size: 1rem;
+            font-size: var(--genre-link-size);
         }
     `;
 __decorateClass([
@@ -342,7 +342,8 @@ var _ArtistGenreContainer = class extends LitElement {
     this.name = void 0;
     this.uri = void 0;
     this.genres = [];
-    this.fetchGenres = (uri) => Promise.resolve([]);
+    this.isSmall = true;
+    this.fetchGenres = (uri) => Promise.resolve([uri]);
   }
   willUpdate(changedProperties) {
     if (changedProperties.has("uri")) {
@@ -352,9 +353,14 @@ var _ArtistGenreContainer = class extends LitElement {
   render() {
     const artistGenreLinks = map(this.genres, (genre) => html`<genre-link genre=${genre} />`);
     const divider = html`<span>, </span>`;
-    return html`<div className="main-entityHeader-detailsText genre-container">
-            ${this.name ? html`<span>${this.name} : </span>` : []} ${join(artistGenreLinks, () => divider)}
-        </div>`;
+    return html`<style>
+                a {
+                    --genre-link-size: ${this.isSmall ? "12px" : "1rem"};
+                }
+            </style>
+            <div className="main-entityHeader-detailsText genre-container">
+                ${this.name ? html`<span>${this.name} : </span>` : []} ${join(artistGenreLinks, () => divider)}
+            </div>`;
   }
 };
 __decorateClass([
@@ -366,6 +372,9 @@ __decorateClass([
 __decorateClass([
   state()
 ], _ArtistGenreContainer.prototype, "genres", 2);
+__decorateClass([
+  property()
+], _ArtistGenreContainer.prototype, "isSmall", 2);
 __decorateClass([
   property()
 ], _ArtistGenreContainer.prototype, "fetchGenres", 2);
@@ -390,7 +399,7 @@ nowPlayingGenreContainerEl.style.gridArea = "genres";
   const trackInfoContainer = await waitForElement("div.main-trackInfo-container");
   trackInfoContainer.appendChild(nowPlayingGenreContainerEl);
 })();
-onSongChanged((data) => nowPlayingGenreContainerEl.uri = data?.item.uri);
+onSongChanged((state2) => nowPlayingGenreContainerEl.uri = state2?.item.uri);
 var getArtistsGenresOrRelated = async (artistsUris) => {
   const getArtistsGenres = f4.flow(
     a3.map((uri) => Spicetify.URI.fromString(uri).id),
