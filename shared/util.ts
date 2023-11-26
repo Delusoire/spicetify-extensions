@@ -1,8 +1,3 @@
-// export interface SpotifyID
-//     extends Newtype<{ readonly SpotifyID: unique symbol }, string> {}
-// export interface SpotifyURI
-//     extends Newtype<{ readonly SpotifyURI: unique symbol }, string> {}
-
 import { array as a, function as f } from "https://esm.sh/fp-ts"
 
 export type SpotifyID = string
@@ -90,29 +85,6 @@ export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, 
 export const getReactProps = (element: Element) =>
     element[Object.keys(element).find(k => k.startsWith("__reactProps$")) as keyof typeof element]
 
-export const isLiked = (uris: SpotifyURI[]) => Spicetify.Platform.LibraryAPI.contains(...uris) as Promise<boolean[]>
-
-export const setLiked = (uris: SpotifyURI[], liked: boolean) =>
-    Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris })
-
-export const toggleLiked = async (uris: SpotifyURI[]) => {
-    const liked = await isLiked(uris)
-
-    return await f.pipe(
-        uris,
-        a.reduceWithIndex(
-            [[] as SpotifyURI[], [] as SpotifyURI[]] as const,
-            (i, acc, uri) => (acc[Number(liked[i])].push(uri), acc),
-        ),
-        ([toAdd, toRem]) => {
-            const ps = []
-            if (toAdd.length) ps.push(setLiked(toAdd, true))
-            if (toRem.length) ps.push(setLiked(toRem, false))
-            return Promise.all(ps)
-        },
-    )
-}
-
 export const createQueueItem = (queued: boolean) => (uri: SpotifyURI) => ({
     contextTrack: {
         uri,
@@ -140,4 +112,42 @@ export const setQueue = async (nextTracks: Array<ReturnType<ReturnType<typeof cr
 export const setPlayingContext = (uri: SpotifyURI) => {
     const { sessionId } = Spicetify.Platform.PlayerAPI.getState()
     return Spicetify.Platform.PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri }) as Promise<undefined>
+}
+
+export const onHistoryChanged = (
+    toMatchTo: string | RegExp | ((location: string) => boolean),
+    callback: (uri: SpotifyURI) => void,
+    dropDuplicates = true,
+) => {
+    const createMatchFn = (toMatchTo: string | RegExp | ((input: string) => boolean)) => {
+        switch (typeof toMatchTo) {
+            case "string":
+                return (input: string) => input?.startsWith(toMatchTo) ?? false
+
+            case "function":
+                return toMatchTo
+
+            default:
+                return (input: string) => toMatchTo.test(input)
+        }
+    }
+
+    let lastLocation = {}
+    const matchFn = createMatchFn(toMatchTo)
+
+    const historyChanged = (location: any) => {
+        if (matchFn(location.pathname)) {
+            if (dropDuplicates && Object.is(lastLocation, location)) {
+            } else callback(Spicetify.URI.fromString(location).toString())
+        }
+        lastLocation = location
+    }
+
+    historyChanged(Spicetify.Platform.History.location ?? {})
+    Spicetify.Platform.History.listen(historyChanged)
+}
+
+export const onSongChanged = (callback: (data?: Spicetify.PlayerState) => void) => {
+    callback(Spicetify.Player.data)
+    Spicetify.Player.addEventListener("songchange", event => callback(event!.data))
 }

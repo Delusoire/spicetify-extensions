@@ -1,5 +1,6 @@
 import { chunckify, memoize2 } from "./fp.ts"
 import { SpotifyID, SpotifyLocObj, SpotifyURI, escapeRegex } from "./util.ts"
+import { array as a, function as f } from "https://esm.sh/fp-ts"
 
 /*                          GraphQL                                           */
 
@@ -84,6 +85,30 @@ export const fetchWebSoundOfSpotifyPlaylist = async (genre: string) => {
 }
 
 /*                          Platform                                          */
+
+export const isPlatTrackLiked = (uris: SpotifyURI[]) =>
+    Spicetify.Platform.LibraryAPI.contains(...uris) as Promise<boolean[]>
+
+export const setPlatTrackLiked = (uris: SpotifyURI[], liked: boolean) =>
+    Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris })
+
+export const togglePlatTrackLiked = async (uris: SpotifyURI[]) => {
+    const liked = await isPlatTrackLiked(uris)
+
+    return await f.pipe(
+        uris,
+        a.reduceWithIndex(
+            [[] as SpotifyURI[], [] as SpotifyURI[]] as const,
+            (i, acc, uri) => (acc[Number(liked[i])].push(uri), acc),
+        ),
+        ([toAdd, toRem]) => {
+            const ps = []
+            if (toAdd.length) ps.push(setPlatTrackLiked(toAdd, true))
+            if (toRem.length) ps.push(setPlatTrackLiked(toRem, false))
+            return Promise.all(ps)
+        },
+    )
+}
 
 export const fetchPlatLikedTracks = async () =>
     (

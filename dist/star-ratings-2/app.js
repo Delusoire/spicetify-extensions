@@ -1,8 +1,52 @@
 // extensions/star-ratings-2/app.ts
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
 
+// shared/util.ts
+import { function as f } from "https://esm.sh/fp-ts";
+var SpotifyLoc = {
+  before: {
+    start: f.constant({ before: "start" }),
+    fromUri: (uri) => ({ before: { uri } }),
+    fromUid: (uid) => ({ before: { uid } })
+  },
+  after: {
+    end: f.constant({ after: "end" }),
+    fromUri: (uri) => ({ after: { uri } }),
+    fromUid: (uid) => ({ after: { uid } })
+  }
+};
+var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
+  const createMatchFn = (toMatchTo2) => {
+    switch (typeof toMatchTo2) {
+      case "string":
+        return (input) => input?.startsWith(toMatchTo2) ?? false;
+      case "function":
+        return toMatchTo2;
+      default:
+        return (input) => toMatchTo2.test(input);
+    }
+  };
+  let lastLocation = {};
+  const matchFn = createMatchFn(toMatchTo);
+  const historyChanged = (location) => {
+    if (matchFn(location.pathname)) {
+      if (dropDuplicates && Object.is(lastLocation, location)) {
+      } else
+        callback(Spicetify.URI.fromString(location).toString());
+    }
+    lastLocation = location;
+  };
+  historyChanged(Spicetify.Platform.History.location ?? {});
+  Spicetify.Platform.History.listen(historyChanged);
+};
+var onSongChanged = (callback) => {
+  callback(Spicetify.Player.data);
+  Spicetify.Player.addEventListener("songchange", (event) => callback(event.data));
+};
+
 // extensions/star-ratings-2/controls.tsx
-import { array as ar3, function as f4 } from "https://esm.sh/fp-ts";
+import { array as ar3, function as f5 } from "https://esm.sh/fp-ts";
 
 // shared/fp.ts
 import {
@@ -11,32 +55,17 @@ import {
   string as str,
   record as rec,
   semigroup as sg,
-  function as f
+  function as f2
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
 var guard3 = (branches) => guard(branches);
-var pMchain = (f5) => async (fa) => f5(await fa);
-var is = (c) => (a2) => (field) => field[c] === a2;
-var chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
-var memoize2 = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
-
-// shared/util.ts
-import { array as a, function as f2 } from "https://esm.sh/fp-ts";
-var SpotifyLoc = {
-  before: {
-    start: f2.constant({ before: "start" }),
-    fromUri: (uri) => ({ before: { uri } }),
-    fromUid: (uid) => ({ before: { uid } })
-  },
-  after: {
-    end: f2.constant({ after: "end" }),
-    fromUri: (uri) => ({ after: { uri } }),
-    fromUid: (uid) => ({ after: { uid } })
-  }
-};
-var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var pMchain = (f6) => async (fa) => f6(await fa);
+var is = (c) => (a3) => (field) => field[c] === a3;
+var chunckify = (n) => (g) => f2.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
+var memoize2 = (fn) => f2.pipe(fn, f2.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f2.untupled);
 
 // shared/api.ts
+import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
 var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.getAlbum, {
   uri,
   locale: Spicetify.Locale.getLocale(),
@@ -82,7 +111,7 @@ var fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
 import { range } from "https://esm.sh/fp-ts/lib/ReadonlyNonEmptyArray";
 
 // extensions/star-ratings-2/ratings.ts
-import { array as ar2, function as f3 } from "https://esm.sh/fp-ts";
+import { array as ar2, function as f4 } from "https://esm.sh/fp-ts";
 
 // extensions/star-ratings-2/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";
@@ -100,11 +129,11 @@ var reactObjects = modules.filter((m) => m?.$$typeof);
 var reactMemoSymbol = Spicetify.React.memo().$$typeof;
 var reactMemos = reactObjects.filter((m) => m.$$typeof === reactMemoSymbol);
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f5) => allPass(
+  (f6) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f5.toString())
+  )(f6.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -281,12 +310,12 @@ var getCollectionPlaylistButton = () => {
 // extensions/star-ratings-2/ratings.ts
 var loadRatings = async () => {
   const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri);
-  playlistUris = f3.pipe(
+  playlistUris = f4.pipe(
     ratingsFolder.items,
     ar2.map((p) => [p.uri, Number(p.name)]),
     ar2.reduce([], (uris, [uri, rating]) => (uris[rating] = uri, uris))
   );
-  globalThis.tracksRatings = tracksRatings = await f3.pipe(
+  globalThis.tracksRatings = tracksRatings = await f4.pipe(
     playlistUris,
     ar2.map(fetchPlatPlaylistContents),
     (ps) => Promise.all(ps),
@@ -309,7 +338,7 @@ var toggleRating = async (uri, rating) => {
   if (currentRating === rating)
     rating = 0;
   if (currentRating) {
-    f3.pipe(
+    f4.pipe(
       playlistUris.slice(0, currentRating + 1),
       ar2.filter(Boolean),
       ar2.map((playlistUri) => Spicetify.URI.fromString(playlistUri).id),
@@ -326,11 +355,11 @@ var toggleRating = async (uri, rating) => {
     }
     addPlatPlaylistTracks(playlistUri, [uri]);
   }
-  const npTrack = Spicetify.Player?.data.track?.uri;
+  const npTrack = Spicetify.Player?.data.track?.currentTrackUri;
   if (npTrack === uri) {
     updateNowPlayingControls(npTrack, false);
     {
-      const npTrack2 = Spicetify.Player?.data.track?.uri;
+      const npTrack2 = Spicetify.Player?.data.track?.currentTrackUri;
       const nowPlaylingControlsObserver = new MutationObserver(() => {
         if (npTrack2 === uri) {
           nowPlaylingControlsObserver.disconnect();
@@ -406,7 +435,7 @@ var wrapDropdownInsidePlaylistButton = (pb, uri, forced = false) => {
       popper.appendChild(box);
       box.className = "main-contextMenu-tippy";
       box.appendChild(instance.props.content);
-      return { popper, onUpdate: f4.constVoid };
+      return { popper, onUpdate: f5.constVoid };
     },
     onShow(instance) {
       instance.popper.firstChild.classList.add("main-contextMenu-tippyEnter");
@@ -444,7 +473,7 @@ var updateNowPlayingControls = (newTrack, updateDropdown = true) => {
 };
 var updateTrackListControls = (updateDropdown = true) => {
   const trackLists = getTrackLists();
-  f4.pipe(
+  f5.pipe(
     trackLists,
     ar3.map((trackList) => {
       const trackListTracks = getTrackListTracks(trackList);
@@ -464,18 +493,18 @@ var updateTrackListControls = (updateDropdown = true) => {
 var updateCollectionControls = async (uri) => {
   let uris;
   if (URI.isAlbum(uri))
-    uris = f4.pipe(
+    uris = f5.pipe(
       await fetchGQLAlbum(`${uri}`),
       (x) => x.tracks.items,
       ar3.map((x) => x.track.uri)
     );
   else if (URI.isArtist(uri))
-    uris = f4.pipe(
+    uris = f5.pipe(
       await fetchPlatArtistLikedTracks(`${uri}`),
       ar3.map((x) => x.uri)
     );
   else if (URI.isPlaylistV1OrV2(uri))
-    uris = f4.pipe(
+    uris = f5.pipe(
       await fetchPlatPlaylistContents(`${uri}`),
       ar3.map((x) => x.uri)
     );
@@ -488,16 +517,19 @@ var updateCollectionControls = async (uri) => {
 };
 
 // extensions/star-ratings-2/app.ts
-debugger;
 var { URI: URI2 } = Spicetify;
 loadRatings();
-Spicetify.Player.addEventListener("songchange", () => {
-  const npTrack = Spicetify.Player?.data.track?.uri;
-  if (Number(CONFIG.skipThreshold) && (tracksRatings[npTrack] || Number.MAX_SAFE_INTEGER) <= Number(CONFIG.skipThreshold))
-    return void Spicetify.Player.next();
-  updateNowPlayingControls(npTrack);
+onSongChanged((data) => {
+  if (!data)
+    return;
+  const { currentTrackUri } = data.item;
+  if (Number(CONFIG.skipThreshold)) {
+    const currentTrackRating = tracksRatings[currentTrackUri] ?? Number.MAX_SAFE_INTEGER;
+    if (currentTrackRating <= Number(CONFIG.skipThreshold))
+      return void Spicetify.Player.next();
+  }
+  updateNowPlayingControls(currentTrackUri);
 });
-updateNowPlayingControls(Spicetify.Player?.data.track?.uri);
 var mainElement;
 var mainElementObserver = new MutationObserver(() => updateTrackListControls());
 new MutationObserver(() => {
@@ -515,12 +547,10 @@ new MutationObserver(() => {
   childList: true,
   subtree: true
 });
-Spicetify.Platform.History.listen(({ pathname }) => {
-  const pageHasHeart = anyPass([URI2.isAlbum, URI2.isArtist, URI2.isPlaylistV1OrV2]);
-  if (!pageHasHeart(pathname))
-    return;
-  updateCollectionControls(URI2.fromString(pathname));
-});
+onHistoryChanged(
+  anyPass([URI2.isAlbum, URI2.isArtist, URI2.isPlaylistV1OrV2]),
+  (uri) => updateCollectionControls(URI2.fromString(uri))
+);
 (async () => {
     if (!document.getElementById("star-ratings-2-css")) {
         const el = document.createElement("style")

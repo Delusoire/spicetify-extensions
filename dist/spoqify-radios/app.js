@@ -3,7 +3,7 @@ import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
 import { tupled } from "https://esm.sh/fp-ts/function";
 
 // shared/util.ts
-import { array as a, function as f } from "https://esm.sh/fp-ts";
+import { function as f } from "https://esm.sh/fp-ts";
 var SpotifyLoc = {
   before: {
     start: f.constant({ before: "start" }),
@@ -29,12 +29,13 @@ import {
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
 var guard3 = (branches) => guard(branches);
-var pMchain = (f3) => async (fa) => f3(await fa);
-var is = (c) => (a2) => (field) => field[c] === a2;
+var pMchain = (f4) => async (fa) => f4(await fa);
+var is = (c) => (a3) => (field) => field[c] === a3;
 var chunckify = (n) => (g) => f2.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
 var memoize2 = (fn) => f2.pipe(fn, f2.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f2.untupled);
 
 // shared/api.ts
+import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
 var fetchWebArtistsSpot = chunckify(50)(
   async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
 );
@@ -76,11 +77,11 @@ var reactObjects = modules.filter((m) => m?.$$typeof);
 var reactMemoSymbol = Spicetify.React.memo().$$typeof;
 var reactMemos = reactObjects.filter((m) => m.$$typeof === reactMemoSymbol);
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f3) => allPass(
+  (f4) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f3.toString())
+  )(f4.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,

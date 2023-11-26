@@ -40,6 +40,7 @@
     "https://deno.land/std/path/mod.ts": "https://deno.land/std@0.207.0/path/mod.ts",
     "https://deno.land/x/denosass/mod.ts": "https://deno.land/x/denosass@1.0.6/mod.ts",
     "https://esm.sh/js-yaml": "https://esm.sh/js-yaml@4.1.0",
+    "https://esm.sh/lit/directives/join.js": "https://esm.sh/lit@3.1.0/directives/join.js",
     "https://esm.sh/postcss": "https://esm.sh/postcss@8.4.31",
     "https://esm.sh/postcss-modules": "https://esm.sh/postcss-modules@6.0.0",
     "https://esm.sh/v134/@types/js-yaml@^4/index.d.ts": "https://esm.sh/v134/@types/js-yaml@4.0.9/index.d.ts"

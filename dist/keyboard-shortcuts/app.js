@@ -10,50 +10,93 @@ var __decorateClass = (decorators, target, key, kind) => {
   return result;
 };
 
+// shared/fp.ts
+import {
+  array as ar,
+  eq,
+  string as str,
+  record as rec,
+  semigroup as sg,
+  function as f
+} from "https://esm.sh/fp-ts";
+import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
+var pMchain = (f6) => async (fa) => f6(await fa);
+var chunckify = (n2) => (g) => f.flow(ar.chunksOf(n2), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
+var memoize2 = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
+
 // shared/util.ts
-import { array as a, function as f } from "https://esm.sh/fp-ts";
+import { function as f2 } from "https://esm.sh/fp-ts";
 var SpotifyLoc = {
   before: {
-    start: f.constant({ before: "start" }),
+    start: f2.constant({ before: "start" }),
     fromUri: (uri) => ({ before: { uri } }),
     fromUid: (uid) => ({ before: { uid } })
   },
   after: {
-    end: f.constant({ after: "end" }),
+    end: f2.constant({ after: "end" }),
     fromUri: (uri) => ({ after: { uri } }),
     fromUid: (uid) => ({ after: { uid } })
   }
 };
-var isLiked = (uris) => Spicetify.Platform.LibraryAPI.contains(...uris);
-var setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
-var toggleLiked = async (uris) => {
-  const liked = await isLiked(uris);
-  return await f.pipe(
+
+// shared/api.ts
+import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
+var fetchWebArtistsSpot = chunckify(50)(
+  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
+);
+var fetchWebPlaylistsSpot = chunckify(1)(
+  // @ts-ignore chunkify will never call with empty array
+  async ([id]) => [
+    await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
+  ]
+);
+var fetchWebAlbumsSpot = chunckify(50)(
+  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums
+);
+var fetchWebTracksSpot = chunckify(50)(
+  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
+);
+var isPlatTrackLiked = (uris) => Spicetify.Platform.LibraryAPI.contains(...uris);
+var setPlatTrackLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
+var togglePlatTrackLiked = async (uris) => {
+  const liked = await isPlatTrackLiked(uris);
+  return await f3.pipe(
     uris,
-    a.reduceWithIndex(
+    a2.reduceWithIndex(
       [[], []],
       (i, acc, uri) => (acc[Number(liked[i])].push(uri), acc)
     ),
     ([toAdd, toRem]) => {
       const ps = [];
       if (toAdd.length)
-        ps.push(setLiked(toAdd, true));
+        ps.push(setPlatTrackLiked(toAdd, true));
       if (toRem.length)
-        ps.push(setLiked(toRem, false));
+        ps.push(setPlatTrackLiked(toRem, false));
       return Promise.all(ps);
     }
   );
 };
+var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+  const url = new URL("https://ws.audioscrobbler.com/2.0/");
+  url.searchParams.append("method", "track.getInfo");
+  url.searchParams.append("api_key", LFMApiKey);
+  url.searchParams.append("artist", artist);
+  url.searchParams.append("track", trackName);
+  url.searchParams.append("format", "json");
+  url.searchParams.append("username", lastFmUsername);
+  return await fetch(url).then((res) => res.json());
+};
+var fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
 
 // extensions/keyboard-shortcuts/sneak.ts
-import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
+import { array as a3, function as f5 } from "https://esm.sh/fp-ts";
 import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { styleMap } from "https://esm.sh/lit/directives/style-map.js";
 
 // extensions/keyboard-shortcuts/util.ts
-import { function as f2, number as n, ord } from "https://esm.sh/fp-ts";
+import { function as f4, number as n, ord } from "https://esm.sh/fp-ts";
 import { mean } from "https://esm.sh/fp-ts-std/Array";
 import { mod } from "https://esm.sh/fp-ts-std/Number";
 var SCROLL_STEP = 25;
@@ -69,7 +112,7 @@ var rotateSidebar = (offset) => {
   const navLinks = Array.from(
     Array.from(document.querySelectorAll(".main-yourLibraryX-navLink")).values()
   );
-  f2.pipe(
+  f4.pipe(
     document.querySelector(".main-yourLibraryX-navLinkActive"),
     (active) => navLinks.findIndex((e) => e === active),
     (curr) => mod(navLinks.length)(curr === -1 && offset <= 0 ? offset : curr + offset),
@@ -97,7 +140,7 @@ var isElementInViewPort = (e) => {
   const c = document.body;
   const bound = e.getBoundingClientRect();
   const within = (m, M) => (x) => x === ord.clamp(n.Ord)(m, M)(x);
-  return f2.pipe(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) && f2.pipe(mean([bound.left, bound.right]), within(0, c.clientWidth));
+  return f4.pipe(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) && f4.pipe(mean([bound.left, bound.right]), within(0, c.clientWidth));
 };
 var CLICKABLE_ELMENT_SELECTOR = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`;
 
@@ -105,7 +148,7 @@ var CLICKABLE_ELMENT_SELECTOR = `.Root__top-container [href]:not(link),.Root__to
 var mousetrapInst = Spicetify.Mousetrap();
 var KEY_LIST = "abcdefghijklmnopqrstuvwxyz".split("");
 var listeningToSneakBinds = false;
-var SneakKey = class extends LitElement {
+var _SneakKey = class extends LitElement {
   constructor() {
     super(...arguments);
     this.key = "None";
@@ -132,24 +175,24 @@ var SneakKey = class extends LitElement {
 };
 __decorateClass([
   property()
-], SneakKey.prototype, "key", 2);
+], _SneakKey.prototype, "key", 2);
 __decorateClass([
   property()
-], SneakKey.prototype, "target", 2);
-SneakKey = __decorateClass([
+], _SneakKey.prototype, "target", 2);
+_SneakKey = __decorateClass([
   customElement("sneak-key")
-], SneakKey);
-var SneakOverlay = class extends LitElement {
+], _SneakKey);
+var _SneakOverlay = class extends LitElement {
   constructor() {
     super();
     this.props = [];
     requestAnimationFrame(() => {
       let k1 = 0, k2 = 0;
-      this.props = f3.pipe(
+      this.props = f5.pipe(
         Array.from(document.querySelectorAll(CLICKABLE_ELMENT_SELECTOR)),
-        a2.filter(isElementVisible),
-        a2.filter(isElementInViewPort),
-        a2.map((target) => {
+        a3.filter(isElementVisible),
+        a3.filter(isElementInViewPort),
+        a3.map((target) => {
           const key = KEY_LIST[k1] + KEY_LIST[k2++];
           if (k2 >= KEY_LIST.length)
             k1++, k2 = 0;
@@ -185,7 +228,7 @@ var SneakOverlay = class extends LitElement {
     return html`${map(this.props, (i) => html`<sneak-key key=${i.key} .target=${i.target} />`)}`;
   }
 };
-SneakOverlay.styles = css`:host {
+_SneakOverlay.styles = css`:host {
         z-index: 1e5
         position: absolute
         width: 100%
@@ -194,10 +237,10 @@ SneakOverlay.styles = css`:host {
     }`;
 __decorateClass([
   property()
-], SneakOverlay.prototype, "props", 2);
-SneakOverlay = __decorateClass([
+], _SneakOverlay.prototype, "props", 2);
+_SneakOverlay = __decorateClass([
   customElement("sneak-overlay")
-], SneakOverlay);
+], _SneakOverlay);
 
 // extensions/keyboard-shortcuts/app.ts
 var { KEYS } = Spicetify.Keyboard;
@@ -220,7 +263,10 @@ var binds = [
   new Bind("k", () => appScroll(-1)),
   new Bind("g", () => appScrollY(0)),
   new Bind("g", () => appScrollY(Number.MAX_SAFE_INTEGER)).setShift(true),
-  new Bind("m", () => toggleLiked([Spicetify.Player?.data.item.uri])),
+  new Bind(
+    "m",
+    () => Spicetify.Player.data?.item.currentTrackUri && togglePlatTrackLiked([Spicetify.Player.data?.item.currentTrackUri])
+  ),
   new Bind("/", (e) => {
     e.preventDefault();
     openPage("/search");

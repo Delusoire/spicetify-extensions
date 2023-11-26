@@ -209,7 +209,7 @@ declare namespace Spicetify {
     }
     type PlayerTrack = {
         type: string
-        uri: string
+        currentTrackUri: string
         uid: string
         name: string
         mediaType: string
@@ -339,7 +339,7 @@ declare namespace Spicetify {
         /**
          * An object contains all information about current track and player.
          */
-        const data: PlayerState
+        const data: PlayerState | undefined
         /**
          * Decrease a small amount of volume.
          */

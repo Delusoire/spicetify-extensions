@@ -12,12 +12,12 @@ import {
   function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
-var pMchain = (f3) => async (fa) => f3(await fa);
+var pMchain = (f4) => async (fa) => f4(await fa);
 var chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
 var memoize2 = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/util.ts
-import { array as a, function as f2 } from "https://esm.sh/fp-ts";
+import { function as f2 } from "https://esm.sh/fp-ts";
 var SpotifyLoc = {
   before: {
     start: f2.constant({ before: "start" }),
@@ -32,6 +32,7 @@ var SpotifyLoc = {
 };
 
 // shared/api.ts
+import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
 var fetchWebArtistsSpot = chunckify(50)(
   async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
 );

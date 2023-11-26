@@ -1,70 +1,63 @@
 import { array as a, function as f, string as str } from "https://esm.sh/fp-ts"
-import { fetchTrackLFMAPI, fetchWebSoundOfSpotifyPlaylist } from "../../shared/api.ts"
+
+import { fetchGQLArtistRelated, fetchTrackLFMAPI, fetchWebArtistsSpot, fetchWebTracksSpot } from "../../shared/api.ts"
 import { pMchain } from "../../shared/fp.ts"
-import { titleCase, waitForElement } from "../../shared/util.ts"
-import { getArtistsGenresOrRelated, updateArtistPage } from "./artistPage.ts"
-import { genrePopup } from "./popup.tsx"
+import { SpotifyURI, onHistoryChanged, onSongChanged, waitForElement } from "../../shared/util.ts"
+
 import { CONFIG } from "./settings.ts"
 
 import "./assets/styles.scss"
 
-const searchPlaylist = (globalThis.searchPlaylist = (query: string) =>
-    Spicetify.Platform.History.push(`/search/${query}/playlists`))
+const fetchLastFMTags = async (uri: SpotifyURI) => {
+    const uid = Spicetify.URI.fromString(uri).id!
+    const res = await fetchWebTracksSpot([uid])
+    const { name, artists } = res[0]
+    const artistNames = artists.map(artist => artist.name)
+    const { track } = await fetchTrackLFMAPI(CONFIG.LFMApiKey, artistNames[0], name)
+    return track.toptags.tag.map(tag => tag.name)
+}
 
-export let spotifyGenres = new Array<string>()
-export let lastFmTags = new Array<string>()
+const nowPlayingGenreContainerEl = document.createElement("genre-container")
+nowPlayingGenreContainerEl.fetchGenres = fetchLastFMTags
+nowPlayingGenreContainerEl.className += " ellipsis-one-line main-type-finale"
+nowPlayingGenreContainerEl.style.gridArea = "genres"
 
-const updateGenreContainer = async (genres: string[]) => {
-    genreContainer.innerHTML = await f.pipe(
-        genres,
-        a.map(async genre => {
-            const uri = (await fetchWebSoundOfSpotifyPlaylist(genre)) ?? "#"
-            return `<a href="${uri}" style="color: var(--spice-subtext); font-size: 12px">${titleCase(genre)}</a>`
-        }),
-        ps => Promise.all(ps),
-        pMchain(a.intercalate(str.Monoid)(`<span>, </span>`)),
+onSongChanged(data => (nowPlayingGenreContainerEl.uri = data?.item.currentTrackUri))
+
+const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[]) => {
+    const getArtistsGenres: (artistsUris: SpotifyURI[]) => Promise<string[]> = f.flow(
+        a.map(uri => Spicetify.URI.fromString(uri)!.id!),
+        fetchWebArtistsSpot,
+        pMchain(a.flatMap(artist => artist.genres)),
+        pMchain(a.uniq(str.Eq)),
     )
-    return genreContainer
+
+    const allGenres = await getArtistsGenres(artistsUris)
+
+    return allGenres.length
+        ? allGenres
+        : await f.pipe(
+              artistsUris[0],
+              fetchGQLArtistRelated,
+              pMchain(a.map(a => a.uri)),
+              pMchain(a.chunksOf(5)),
+              pMchain(
+                  a.reduce(Promise.resolve([] as string[]), async (acc, arr5uris) =>
+                      (await acc).length ? await acc : await getArtistsGenres(arr5uris),
+                  ),
+              ),
+          )
 }
 
-const updateGenresUI = async (genres: string[]) => {
-    const trackInfoContainer = await waitForElement("div.main-trackInfo-container")
+const updateArtistPage = async (uri: SpotifyURI) => {
+    const artistGenreContainerEl = document.createElement("genre-container")
+    artistGenreContainerEl.name = "Artist Genres"
+    artistGenreContainerEl.uri = uri.toString()
+    artistGenreContainerEl.fetchGenres = uri => getArtistsGenresOrRelated([uri])
 
-    const { uri, metadata } = Spicetify.Player?.data.track!
-
-    if (metadata && Spicetify.URI.isTrack(uri) && genres.length) {
-        trackInfoContainer?.appendChild(await updateGenreContainer(genres))
-
-        lastFmTags = f.pipe(
-            await fetchTrackLFMAPI(CONFIG.LFMApiKey, metadata.artist_name!, metadata.title!),
-            ({ track }) => track.toptags.tag,
-            a.map(({ name }) => name),
-        )
-    } else trackInfoContainer?.removeChild(genreContainer)
+    const headerTextEl = await waitForElement("div.main-entityHeader-headerText")
+    const headerTextDetailsEl = await waitForElement("span.main-entityHeader-detailsText")
+    headerTextEl?.insertBefore(artistGenreContainerEl, headerTextDetailsEl)
 }
 
-const getArtistUrisFromCurrentTrack = () => {
-    const metadata = Spicetify.Player?.data?.item.metadata ?? {}
-
-    return [...Array(10).keys()]
-        .map(k => metadata[("artist_uri" + (k ? `:${k}` : "")) as keyof typeof metadata])
-        .filter(Boolean) as string[]
-}
-
-const updateGenres = async () => {
-    const artistUris = getArtistUrisFromCurrentTrack()
-    spotifyGenres = await getArtistsGenresOrRelated(artistUris)
-
-    await updateGenresUI(spotifyGenres.slice(0, 5))
-}
-
-const genreContainer = document.createElement("div")
-genreContainer.className = "main-trackInfo-genres ellipsis-one-line main-type-finale"
-genreContainer.style.gridArea = "genres"
-genreContainer.addEventListener("contextmenu", genrePopup)
-
-Spicetify.Player.addEventListener("songchange", updateGenres)
-updateGenres()
-
-Spicetify.Platform.History.listen(updateArtistPage)
-updateArtistPage(Spicetify.Platform.History.location)
+onHistoryChanged(uri => Spicetify.URI.isArtist(uri), updateArtistPage)

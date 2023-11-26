@@ -1,25 +1,27 @@
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate"
+
+import { onHistoryChanged, onSongChanged } from "../../shared/util.ts"
+
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.tsx"
 import { loadRatings, tracksRatings } from "./ratings.ts"
 import { CONFIG } from "./settings.ts"
 
 import "./assets/styles.scss"
-debugger
 const { URI } = Spicetify
 
 loadRatings()
 
-Spicetify.Player.addEventListener("songchange", () => {
-    const npTrack = Spicetify.Player?.data.track?.uri!
-    if (
-        Number(CONFIG.skipThreshold) &&
-        (tracksRatings[npTrack] || Number.MAX_SAFE_INTEGER) <= Number(CONFIG.skipThreshold)
-    )
-        return void Spicetify.Player.next()
+onSongChanged(data => {
+    if (!data) return
+    const { currentTrackUri } = data.item
 
-    updateNowPlayingControls(npTrack)
+    if (Number(CONFIG.skipThreshold)) {
+        const currentTrackRating = tracksRatings[currentTrackUri] ?? Number.MAX_SAFE_INTEGER
+        if (currentTrackRating <= Number(CONFIG.skipThreshold)) return void Spicetify.Player.next()
+    }
+
+    updateNowPlayingControls(currentTrackUri)
 })
-updateNowPlayingControls(Spicetify.Player?.data.track?.uri!)
 
 let mainElement: HTMLElement
 const mainElementObserver = new MutationObserver(() => updateTrackListControls())
@@ -39,9 +41,6 @@ new MutationObserver(() => {
     subtree: true,
 })
 
-Spicetify.Platform.History.listen(({ pathname }: { pathname: string }) => {
-    const pageHasHeart = anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2])
-    if (!pageHasHeart(pathname)) return
-
-    updateCollectionControls(URI.fromString(pathname))
-})
+onHistoryChanged(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2]), uri =>
+    updateCollectionControls(URI.fromString(uri)),
+)

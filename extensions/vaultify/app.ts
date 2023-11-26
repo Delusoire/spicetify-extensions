@@ -1,13 +1,14 @@
 import { array as ar, function as f, record as rec, task } from "https://esm.sh/fp-ts"
 import {
+    addPlatPlaylist,
     createPlatFolder,
     createSPPlaylistFromTracks,
     fetchPlatPlaylistContents,
     fetchPlatRootFolder,
-    addPlatPlaylist,
+    setPlatTrackLiked,
 } from "../../shared/api.ts"
 import { guard2, is, pMchain } from "../../shared/fp.ts"
-import { SpotifyLoc, SpotifyURI, getReactProps, setLiked } from "../../shared/util.ts"
+import { SpotifyLoc, SpotifyURI, getReactProps } from "../../shared/util.ts"
 import { Folder, Playlist, PoF } from "./util.ts"
 
 const isType = is<PoF>("type")
@@ -147,9 +148,9 @@ export const restore = (mode: "library" | "extensions" | "settings") => async ()
     let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste()) as Vault
 
     if (mode === "library") {
-        setLiked(vault.libraryTracks, true)
-        setLiked(vault.libraryAlbums, true)
-        setLiked(vault.libraryArtists, true)
+        setPlatTrackLiked(vault.libraryTracks, true)
+        setPlatTrackLiked(vault.libraryAlbums, true)
+        setPlatTrackLiked(vault.libraryArtists, true)
         await restorePlaylistseRecur(vault.playlists)
         Spicetify.showNotification("Restored Library")
     }

@@ -18,16 +18,16 @@ var init_fp = __esm({
   "shared/fp.ts"() {
     guard2 = (branches) => guard(branches);
     guard3 = (branches) => guard(branches);
-    pMchain = (f4) => async (fa) => f4(await fa);
-    is = (c) => (a2) => (field) => field[c] === a2;
+    pMchain = (f5) => async (fa) => f5(await fa);
+    is = (c) => (a3) => (field) => field[c] === a3;
     chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
     memoize2 = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
   }
 });
 
 // shared/util.ts
-import { array as a, function as f2 } from "https://esm.sh/fp-ts";
-var SpotifyLoc, sleep, getReactProps, setLiked;
+import { function as f2 } from "https://esm.sh/fp-ts";
+var SpotifyLoc, sleep, getReactProps;
 var init_util = __esm({
   "shared/util.ts"() {
     SpotifyLoc = {
@@ -44,12 +44,12 @@ var init_util = __esm({
     };
     sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     getReactProps = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactProps$"))];
-    setLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
   }
 });
 
 // shared/api.ts
-var fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, fetchPlatPlaylistContents, createPlatFolder, addPlatPlaylist, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
+import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
+var fetchWebArtistsSpot, fetchWebPlaylistsSpot, fetchWebAlbumsSpot, fetchWebTracksSpot, setPlatTrackLiked, fetchPlatPlaylistContents, createPlatFolder, addPlatPlaylist, createSPPlaylistFromTracks, fetchPlatFolder, fetchPlatRootFolder, fetchTrackLFMAPI, fetchTrackLFMAPIMemoized;
 var init_api = __esm({
   "shared/api.ts"() {
     init_fp();
@@ -69,6 +69,7 @@ var init_api = __esm({
     fetchWebTracksSpot = chunckify(50)(
       async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
     );
+    setPlatTrackLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
     fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
     createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
     addPlatPlaylist = async (playlist, folder, addedAt = /* @__PURE__ */ new Date()) => await Spicetify.Platform.RootlistAPI.add([playlist], { after: { type: "folder", addedAt, uri: folder } });
@@ -108,11 +109,11 @@ var init_modules = __esm({
     reactMemoSymbol = Spicetify.React.memo().$$typeof;
     reactMemos = reactObjects.filter((m) => m.$$typeof === reactMemoSymbol);
     findModuleByStrings = (modules2, ...filters) => modules2.find(
-      (f4) => allPass(
+      (f5) => allPass(
         filters.map(
           (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
         )
-      )(f4.toString())
+      )(f5.toString())
     );
     CheckedPlaylistButtonIcon = findModuleByStrings(
       functionModules,
@@ -301,7 +302,7 @@ var init_settings2 = __esm({
 });
 
 // extensions/vaultify/app.ts
-import { array as ar2, function as f3, record as rec2, task as task2 } from "https://esm.sh/fp-ts";
+import { array as ar2, function as f4, record as rec2, task as task2 } from "https://esm.sh/fp-ts";
 var isType, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, allowedExtDataRegex, backup, restore;
 var init_app = __esm({
   "extensions/vaultify/app.ts"() {
@@ -313,13 +314,13 @@ var init_app = __esm({
       [
         isType("playlist"),
         async (playlist) => ({
-          [playlist.name]: playlist.isOwnedBySelf ? await f3.pipe(playlist.uri, fetchPlatPlaylistContents, pMchain(ar2.map((x) => x.uri))) : playlist.uri
+          [playlist.name]: playlist.isOwnedBySelf ? await f4.pipe(playlist.uri, fetchPlatPlaylistContents, pMchain(ar2.map((x) => x.uri))) : playlist.uri
         })
       ],
       [
         isType("folder"),
         async (folder) => ({
-          [folder.name]: await f3.pipe(folder.items, ar2.map(extractLikedPlaylistTreeRecur), (ps) => Promise.all(ps))
+          [folder.name]: await f4.pipe(folder.items, ar2.map(extractLikedPlaylistTreeRecur), (ps) => Promise.all(ps))
         })
       ]
     ])(task2.of({}))(leaf);
@@ -341,7 +342,7 @@ var init_app = __esm({
     );
     allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/;
     backup = async () => {
-      const extractItemsUris = (a2) => a2.items.map((item) => item.uri);
+      const extractItemsUris = (a3) => a3.items.map((item) => item.uri);
       const rawLibraryTracks = await Spicetify.Platform.LibraryAPI.getTracks({
         limit: -1,
         sort: { field: "ADDED_AT", order: "ASC" }
@@ -359,20 +360,20 @@ var init_app = __esm({
         }
       });
       const libraryArtists = extractItemsUris(rawLibraryArtists);
-      const playlists = await f3.pipe(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur);
-      const localStore = f3.pipe(
+      const playlists = await f4.pipe(await fetchPlatRootFolder(), extractLikedPlaylistTreeRecur);
+      const localStore = f4.pipe(
         localStorage,
         rec2.toUnfoldable(ar2),
         ar2.filter(([key]) => allowedExtDataRegex.test(key))
       );
       const { items, namespace } = Spicetify.Platform.LocalStorageAPI;
-      const localStoreAPI = f3.pipe(
+      const localStoreAPI = f4.pipe(
         items,
         rec2.toUnfoldable(ar2),
         ar2.filter(([key]) => key.startsWith(namespace)),
         ar2.map(([key, value]) => [key.split(":")[1], value])
       );
-      const settings2 = f3.pipe(
+      const settings2 = f4.pipe(
         document.querySelectorAll(`[id^="settings."],[id^="desktop."],[class^="network."]`),
         Array.from,
         ar2.flatMap((setting) => {
@@ -404,15 +405,15 @@ var init_app = __esm({
     restore = (mode) => async () => {
       let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
       if (mode === "library") {
-        setLiked(vault.libraryTracks, true);
-        setLiked(vault.libraryAlbums, true);
-        setLiked(vault.libraryArtists, true);
+        setPlatTrackLiked(vault.libraryTracks, true);
+        setPlatTrackLiked(vault.libraryAlbums, true);
+        setPlatTrackLiked(vault.libraryArtists, true);
         await restorePlaylistseRecur(vault.playlists);
         Spicetify.showNotification("Restored Library");
       }
       if (mode === "extensions") {
-        ar2.map(f3.tupled(Spicetify.LocalStorage.set))(vault.localStore);
-        ar2.map(f3.tupled(Spicetify.Platform.LocalStorageAPI.setItem))(vault.localStoreAPI);
+        ar2.map(f4.tupled(Spicetify.LocalStorage.set))(vault.localStore);
+        ar2.map(f4.tupled(Spicetify.Platform.LocalStorageAPI.setItem))(vault.localStoreAPI);
         Spicetify.showNotification("Restored Extensions");
       }
       if (mode === "settings") {

@@ -1,36 +1,3 @@
-.genres-popup {
-    &::after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-
-    .title {
-        color: var(--spice-text);
-    }
-
-    .spaced-down {
-        margin-bottom: 20px;
-    }
-
-    .login-button {
-        background-color: var(--spice-button);
-        border-radius: 8px;
-        border-style: none;
-        color: var(--spice-text);
-        cursor: pointer;
-        font-size: 14px;
-        height: 40px;
-        margin: 10px;
-        padding: 5px 10px;
-        text-align: center;
-
-        &:hover {
-            background-color: var(--spice-button-active);
-        }
-    }
-}
-
 .main-nowPlayingWidget-trackInfo.main-trackInfo-container {
     grid-template:
         "title title"

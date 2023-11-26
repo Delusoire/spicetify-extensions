@@ -15,35 +15,6 @@ export const guard2 = <A, A1 extends A, A2 extends A, R>(branches: [refineBranch
 export const guard3 = <A, A1 extends A, A2 extends A, A3 extends A, R>(
     branches: [refineBranch<A, A1, R>, refineBranch<A, A2, R>, refineBranch<A, A3, R>],
 ) => guard(branches as unknown as [refineBranch<A, A, R>, refineBranch<A, A, R>, refineBranch<A, A, R>])
-export const guard4 = <A, A1 extends A, A2 extends A, A3 extends A, A4 extends A, R>(
-    branches: [refineBranch<A, A1, R>, refineBranch<A, A2, R>, refineBranch<A, A3, R>, refineBranch<A, A4, R>],
-) =>
-    guard(
-        branches as unknown as [
-            refineBranch<A, A, R>,
-            refineBranch<A, A, R>,
-            refineBranch<A, A, R>,
-            refineBranch<A, A, R>,
-        ],
-    )
-export const guard5 = <A, A1 extends A, A2 extends A, A3 extends A, A4 extends A, A5 extends A, R>(
-    branches: [
-        refineBranch<A, A1, R>,
-        refineBranch<A, A2, R>,
-        refineBranch<A, A3, R>,
-        refineBranch<A, A4, R>,
-        refineBranch<A, A5, R>,
-    ],
-) =>
-    guard(
-        branches as unknown as [
-            refineBranch<A, A, R>,
-            refineBranch<A, A, R>,
-            refineBranch<A, A, R>,
-            refineBranch<A, A, R>,
-            refineBranch<A, A, R>,
-        ],
-    )
 
 export const objConcat2 = <A1, A2>() => rec.getUnionSemigroup(sg.first<any>()).concat as (x: A1, y: A2) => A1 & A2
 export const objConcat = <A>() => ar.reduce({} as A, objConcat2<A, A>())

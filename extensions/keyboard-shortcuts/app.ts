@@ -1,10 +1,10 @@
-import { toggleLiked } from "../../shared/util.ts"
-import { KEY_LIST, SneakOverlay, mousetrapInst } from "./sneak.ts"
+import { togglePlatTrackLiked } from "../../shared/api.ts"
+import { KEY_LIST, _SneakOverlay, mousetrapInst } from "./sneak.ts"
 import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util.ts"
 
 const { KEYS } = Spicetify.Keyboard
 
-let sneakOverlay: SneakOverlay
+let sneakOverlay: _SneakOverlay
 
 const binds = [
     new Bind("s", () => {
@@ -26,7 +26,12 @@ const binds = [
     new Bind("k", () => appScroll(-1)),
     new Bind("g", () => appScrollY(0)),
     new Bind("g", () => appScrollY(Number.MAX_SAFE_INTEGER)).setShift(true),
-    new Bind("m", () => toggleLiked([Spicetify.Player?.data.item.uri])),
+    new Bind(
+        "m",
+        () =>
+            Spicetify.Player.data?.item.currentTrackUri &&
+            togglePlatTrackLiked([Spicetify.Player.data?.item.currentTrackUri]),
+    ),
     new Bind("/", e => {
         e.preventDefault()
         openPage("/search")
@@ -35,5 +40,5 @@ const binds = [
 
 binds.map(bind => bind.register())
 
-mousetrapInst.bind(KEY_LIST, e => sneakOverlay.updateProps(e.key), "keypress")
+mousetrapInst.bind(KEY_LIST, (e: KeyboardEvent) => sneakOverlay.updateProps(e.key), "keypress")
 mousetrapInst.bind(KEYS.ESCAPE, () => sneakOverlay?.remove())

@@ -1,5 +1,5 @@
 // extensions/search-on-youtube/app.ts
-import { array as a2 } from "https://esm.sh/fp-ts";
+import { array as a3 } from "https://esm.sh/fp-ts";
 import { flip, pipe as p, tupled } from "https://esm.sh/fp-ts/function";
 import { startsWith } from "https://esm.sh/fp-ts/string";
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
@@ -15,13 +15,13 @@ import {
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
 var guard3 = (branches) => guard(branches);
-var pMchain = (f3) => async (fa) => f3(await fa);
-var is = (c) => (a3) => (field) => field[c] === a3;
+var pMchain = (f4) => async (fa) => f4(await fa);
+var is = (c) => (a4) => (field) => field[c] === a4;
 var chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
 var memoize2 = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/util.ts
-import { array as a, function as f2 } from "https://esm.sh/fp-ts";
+import { function as f2 } from "https://esm.sh/fp-ts";
 var SpotifyLoc = {
   before: {
     start: f2.constant({ before: "start" }),
@@ -38,6 +38,7 @@ var normalizeStr = (str2) => str2.normalize("NFKD").replace(/\(.*\)/g, "").repla
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // shared/api.ts
+import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
 var fetchWebArtistsSpot = chunckify(50)(
   async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
 );
@@ -104,11 +105,11 @@ var reactObjects = modules.filter((m) => m?.$$typeof);
 var reactMemoSymbol = Spicetify.React.memo().$$typeof;
 var reactMemos = reactObjects.filter((m) => m.$$typeof === reactMemoSymbol);
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f3) => allPass(
+  (f4) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f3.toString())
+  )(f4.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,

@@ -4,7 +4,6 @@ import { LitElement, css, html } from "https://esm.sh/lit"
 import { customElement, property } from "https://esm.sh/lit/decorators.js"
 import { map } from "https://esm.sh/lit/directives/map.js"
 import { styleMap } from "https://esm.sh/lit/directives/style-map.js"
-
 import { CLICKABLE_ELMENT_SELECTOR, isElementInViewPort, isElementVisible } from "./util.ts"
 
 export const mousetrapInst = Spicetify.Mousetrap()
@@ -13,7 +12,7 @@ export const KEY_LIST = "abcdefghijklmnopqrstuvwxyz".split("")
 export let listeningToSneakBinds = false
 
 @customElement("sneak-key")
-class SneakKey extends LitElement {
+class _SneakKey extends LitElement {
     @property()
     key = "None"
 
@@ -41,7 +40,7 @@ class SneakKey extends LitElement {
 }
 
 @customElement("sneak-overlay")
-export class SneakOverlay extends LitElement {
+export class _SneakOverlay extends LitElement {
     static styles = css`:host {
         z-index: 1e5
         position: absolute
@@ -101,7 +100,7 @@ export class SneakOverlay extends LitElement {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "sneak-key": SneakKey
-        "sneak-overlay": SneakOverlay
+        "sneak-key": _SneakKey
+        "sneak-overlay": _SneakOverlay
     }
 }
