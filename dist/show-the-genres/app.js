@@ -289,6 +289,7 @@ settings.pushSettings();
 var CONFIG = settings.toObject();
 
 // extensions/show-the-genres/app.ts
+debugger;
 var fetchLastFMTags = async (uri) => {
   const uid = Spicetify.URI.fromString(uri).id;
   const res = await fetchWebTracksSpot([uid]);
