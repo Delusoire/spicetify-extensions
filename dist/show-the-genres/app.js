@@ -417,7 +417,13 @@ var updateArtistPage = async (uri) => {
   artistGenreContainerEl.name = "Artist Genres";
   artistGenreContainerEl.uri = uri.toString();
   artistGenreContainerEl.fetchGenres = (uri2) => getArtistsGenresOrRelated([uri2]);
-  const headerTextEl = await waitForElement("div.main-entityHeader-headerText");
+  const lastHeaderTextEl = document.querySelector("div.main-entityHeader-headerText");
+  const headerTextEl = await waitForElement(
+    "div.main-entityHeader-headerText",
+    void 0,
+    void 0,
+    lastHeaderTextEl
+  );
   const headerTextDetailsEl = await waitForElement("span.main-entityHeader-detailsText");
   headerTextEl?.insertBefore(artistGenreContainerEl, headerTextDetailsEl);
 };

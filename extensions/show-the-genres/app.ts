@@ -60,7 +60,13 @@ const updateArtistPage = async (uri: SpotifyURI) => {
     artistGenreContainerEl.uri = uri.toString()
     artistGenreContainerEl.fetchGenres = uri => getArtistsGenresOrRelated([uri])
 
-    const headerTextEl = await waitForElement("div.main-entityHeader-headerText")
+    const lastHeaderTextEl = document.querySelector("div.main-entityHeader-headerText")
+    const headerTextEl = await waitForElement(
+        "div.main-entityHeader-headerText",
+        undefined,
+        undefined,
+        lastHeaderTextEl,
+    )
     const headerTextDetailsEl = await waitForElement("span.main-entityHeader-detailsText")
     headerTextEl?.insertBefore(artistGenreContainerEl, headerTextDetailsEl)
 }

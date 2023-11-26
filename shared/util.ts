@@ -40,7 +40,7 @@ export const waitForElement = <E extends Element>(
     selector: string,
     timeout = 1000,
     location = document.body,
-    notEl?: E,
+    notEl?: E | null,
 ) =>
     new Promise((resolve: (value: Element) => void, reject) => {
         const onMutation = () => {
