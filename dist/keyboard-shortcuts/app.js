@@ -228,13 +228,15 @@ var _SneakOverlay = class extends LitElement {
     return html`${map(this.props, (i) => html`<sneak-key key=${i.key} .target=${i.target} />`)}`;
   }
 };
-_SneakOverlay.styles = css`:host {
-        z-index: 1e5
-        position: absolute
-        width: 100%
-        height: 100%
-        display: block
-    }`;
+_SneakOverlay.styles = css`
+        :host {
+            z-index: 1e5;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    `;
 __decorateClass([
   property()
 ], _SneakOverlay.prototype, "props", 2);

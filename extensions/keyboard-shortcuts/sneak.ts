@@ -41,13 +41,15 @@ class _SneakKey extends LitElement {
 
 @customElement("sneak-overlay")
 export class _SneakOverlay extends LitElement {
-    static styles = css`:host {
-        z-index: 1e5
-        position: absolute
-        width: 100%
-        height: 100%
-        display: block
-    }`
+    static styles = css`
+        :host {
+            z-index: 1e5;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    `
 
     @property()
     props = [] as Array<{ key: string; target: HTMLElement }>

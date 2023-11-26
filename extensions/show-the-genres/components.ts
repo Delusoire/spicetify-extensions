@@ -14,10 +14,12 @@ declare global {
 
 @customElement("genre-link")
 class _GenreLink extends LitElement {
-    static styles = css`:host {
-        color: var(--spice-subtext)
-        font-size: 1rem
-    }`
+    static styles = css`
+        :host {
+            color: var(--spice-subtext);
+            font-size: 1rem;
+        }
+    `
 
     @property()
     genre = "Default"

@@ -318,10 +318,12 @@ var _GenreLink = class extends LitElement {
     return html`<a href="#" @onClick=${this.openPlaylistsSearch}>${titleCase(this.genre)}</a>`;
   }
 };
-_GenreLink.styles = css`:host {
-        color: var(--spice-subtext)
-        font-size: 1rem
-    }`;
+_GenreLink.styles = css`
+        :host {
+            color: var(--spice-subtext);
+            font-size: 1rem;
+        }
+    `;
 __decorateClass([
   property()
 ], _GenreLink.prototype, "genre", 2);
