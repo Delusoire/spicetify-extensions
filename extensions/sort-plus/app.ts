@@ -253,7 +253,10 @@ const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
 
 let invertOrder = 0
 window.addEventListener("keydown", event => {
-    if (!event.repeat && event.key === "Control") invertOrder = 1
+    if (!event.repeat && event.key === "Control") {
+        debugger
+        invertOrder = 1
+    }
 })
 
 window.addEventListener("keyup", event => {

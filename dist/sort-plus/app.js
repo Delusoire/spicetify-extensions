@@ -584,8 +584,10 @@ var sortByProp = (name) => async (uri) => {
 };
 var invertOrder = 0;
 window.addEventListener("keydown", (event) => {
-  if (!event.repeat && event.key === "Control")
+  if (!event.repeat && event.key === "Control") {
+    debugger;
     invertOrder = 1;
+  }
 });
 window.addEventListener("keyup", (event) => {
   if (!event.repeat && event.key === "Control")
