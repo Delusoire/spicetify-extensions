@@ -271,24 +271,18 @@ var showOnYouTube = async (uri) => {
   if (!YTVidIDCache.get(id)) {
     const track = parseAPITrackFromSpotify((await fetchWebTracksSpot([id]))[0]);
     const searchString = `${track.artistName} - ${track.name} music video`;
-    let videos = [];
-    if (CONFIG.YouTubeApiKey)
-      try {
-        debugger;
-        videos = await searchYoutube(CONFIG.YouTubeApiKey, searchString);
-      } catch (_) {
-      }
-    if (!videos?.length)
-      return void window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(searchString)}`);
-    const normalizedTrackName = normalizeStr(track.name);
-    YTVidIDCache.set(
-      id,
-      videos.find((video) => {
-        normalizeStr(video.snippet.title).includes(normalizedTrackName);
-      })?.id.videoId ?? videos[0].id.videoId
-    );
+    try {
+      const videos = await searchYoutube(CONFIG.YouTubeApiKey, searchString).then((res) => res.items);
+      const normalizedTrackName = normalizeStr(track.name);
+      const video = videos.find((video2) => {
+        normalizeStr(video2.snippet.title).includes(normalizedTrackName);
+      }) ?? videos[0];
+      YTVidIDCache.set(id, video.id.videoId);
+      window.open(`https://www.youtube.com/watch?v=${video.id.videoId}`);
+    } catch (_) {
+      window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(searchString)}`);
+    }
   }
-  window.open(`https://www.youtube.com/watch?v=${YTVidIDCache.get(id)}`);
 };
 new Spicetify.ContextMenu.Item(
   "Search on YouTube",
