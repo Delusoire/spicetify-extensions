@@ -30,7 +30,7 @@ export const SettingSection = findModuleByStrings(
     functionModules,
     "function m(e){return(0,d.jsx)(r.k,{children:(0,d.jsx)(u,{...e})})}",
 )
-export const SectionTitle = findModuleByStrings(functionModules, "textToHighlight", "semanticColor")
+export const SectionTitle = findModuleByStrings(functionModules, "textToHighlight", "textBase")
 export const SettingColumn = findModuleByStrings(functionModules, "setSectionFilterMatchQueryValue", "filterMatchQuery")
 export const SettingText = findModuleByStrings(functionModules, "textSubdued", "viola")
 export const SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelected")

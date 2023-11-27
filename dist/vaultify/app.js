@@ -123,7 +123,7 @@ var init_modules = __esm({
       functionModules,
       "function m(e){return(0,d.jsx)(r.k,{children:(0,d.jsx)(u,{...e})})}"
     );
-    SectionTitle = findModuleByStrings(functionModules, "textToHighlight", "semanticColor");
+    SectionTitle = findModuleByStrings(functionModules, "textToHighlight", "textBase");
     SettingColumn = findModuleByStrings(functionModules, "setSectionFilterMatchQueryValue", "filterMatchQuery");
     SettingText = findModuleByStrings(functionModules, "textSubdued", "viola");
     SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelected");

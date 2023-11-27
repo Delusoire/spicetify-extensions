@@ -119,7 +119,7 @@ var SettingSection = findModuleByStrings(
   functionModules,
   "function m(e){return(0,d.jsx)(r.k,{children:(0,d.jsx)(u,{...e})})}"
 );
-var SectionTitle = findModuleByStrings(functionModules, "textToHighlight", "semanticColor");
+var SectionTitle = findModuleByStrings(functionModules, "textToHighlight", "textBase");
 var SettingColumn = findModuleByStrings(functionModules, "setSectionFilterMatchQueryValue", "filterMatchQuery");
 var SettingText = findModuleByStrings(functionModules, "textSubdued", "viola");
 var SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelected");
