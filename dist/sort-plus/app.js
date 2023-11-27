@@ -536,7 +536,6 @@ var populateTracks = guard2([
   ]
 ])(f4.constant(task3.of([])));
 var lastSortedQueue = [];
-globalThis.lastSortedQueue = lastSortedQueue;
 var _setQueue = (inverted) => async (queue) => {
   if (Spicetify.Platform.PlayerAPI._queue._queue === null)
     return void Spicetify.showNotification("Queue is null!", true);
@@ -545,8 +544,6 @@ var _setQueue = (inverted) => async (queue) => {
     ord.contramap((t) => t.uri)
   );
   lastSortedQueue = f4.pipe(queue, ar2.uniq(uriOrd), inverted ? ar2.reverse : f4.identity);
-  console.log("\u{1F680} ~ file: app.tsx:217 ~ const_setQueue= ~ inverted:", inverted);
-  console.log("\u{1F680} ~ file: app.tsx:217 ~ const_setQueue= ~ lastSortedQueue:", lastSortedQueue);
   globalThis.lastSortedQueue = lastSortedQueue;
   const isQueued = URI.isCollection(lastFetchedUri);
   await f4.pipe(
@@ -565,9 +562,6 @@ var lastActionName;
 var sortByProp = (name) => async (uri) => {
   lastActionName = name;
   const descending = invertOrder ^ Number(CONFIG.descending);
-  console.log("\u{1F680} ~ file: app.tsx:236 ~ sortByProp ~ descending:", descending);
-  console.log("\u{1F680} ~ file: app.tsx:236 ~ sortByProp ~ invertOrder:", invertOrder);
-  console.log("\u{1F680} ~ file: app.tsx:236 ~ sortByProp ~ CONFIG.descending:", CONFIG.descending);
   const propOrd = f4.pipe(
     num.Ord,
     ord.contramap((t) => t[SortProp[name]])
@@ -582,13 +576,12 @@ var sortByProp = (name) => async (uri) => {
     pMchain(o.map(_setQueue(!!descending)))
   );
 };
-debugger;
 var invertOrder = 0;
-window.addEventListener("keydown", (event) => {
+addEventListener("keydown", (event) => {
   if (!event.repeat && event.key === "Control")
     invertOrder = 1;
 });
-window.addEventListener("keyup", (event) => {
+addEventListener("keyup", (event) => {
   if (!event.repeat && event.key === "Control")
     invertOrder = 0;
 });

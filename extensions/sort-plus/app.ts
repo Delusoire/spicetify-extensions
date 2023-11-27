@@ -198,7 +198,6 @@ const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
 ])(f.constant(task.of([])))
 
 let lastSortedQueue: TrackData[] = []
-;(globalThis as any).lastSortedQueue = lastSortedQueue
 const _setQueue = (inverted: boolean) => async (queue: TrackData[]) => {
     if (Spicetify.Platform.PlayerAPI._queue._queue === null)
         return void Spicetify.showNotification("Queue is null!", true)
@@ -209,9 +208,7 @@ const _setQueue = (inverted: boolean) => async (queue: TrackData[]) => {
     )
 
     lastSortedQueue = f.pipe(queue, ar.uniq(uriOrd), inverted ? ar.reverse : f.identity)
-    console.log("🚀 ~ file: app.tsx:217 ~ const_setQueue= ~ inverted:", inverted)
-    console.log("🚀 ~ file: app.tsx:217 ~ const_setQueue= ~ lastSortedQueue:", lastSortedQueue)
-    ;(globalThis as any).lastSortedQueue = lastSortedQueue
+    globalThis.lastSortedQueue = lastSortedQueue
 
     const isQueued = URI.isCollection(lastFetchedUri)
 
@@ -231,9 +228,6 @@ let lastActionName: keyof typeof SortProp | "True Shuffle" | "Stars"
 const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
     lastActionName = name
     const descending = invertOrder ^ Number(CONFIG.descending)
-    console.log("🚀 ~ file: app.tsx:236 ~ sortByProp ~ descending:", descending)
-    console.log("🚀 ~ file: app.tsx:236 ~ sortByProp ~ invertOrder:", invertOrder)
-    console.log("🚀 ~ file: app.tsx:236 ~ sortByProp ~ CONFIG.descending:", CONFIG.descending)
 
     const propOrd = f.pipe(
         num.Ord,
@@ -251,13 +245,12 @@ const sortByProp = (name: keyof typeof SortProp) => async (uri: SpotifyURI) => {
     )
 }
 
-debugger
 let invertOrder = 0
-window.addEventListener("keydown", event => {
+addEventListener("keydown", event => {
     if (!event.repeat && event.key === "Control") invertOrder = 1
 })
 
-window.addEventListener("keyup", event => {
+addEventListener("keyup", event => {
     if (!event.repeat && event.key === "Control") invertOrder = 0
 })
 
