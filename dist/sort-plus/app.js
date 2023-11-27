@@ -582,12 +582,11 @@ var sortByProp = (name) => async (uri) => {
     pMchain(o.map(_setQueue(!!descending)))
   );
 };
+debugger;
 var invertOrder = 0;
 window.addEventListener("keydown", (event) => {
-  if (!event.repeat && event.key === "Control") {
-    debugger;
+  if (!event.repeat && event.key === "Control")
     invertOrder = 1;
-  }
 });
 window.addEventListener("keyup", (event) => {
   if (!event.repeat && event.key === "Control")
