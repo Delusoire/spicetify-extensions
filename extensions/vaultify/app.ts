@@ -155,13 +155,14 @@ export const restore = (mode: "library" | "extensions" | "settings") => async ()
         Spicetify.showNotification("Restored Library")
     }
     if (mode === "extensions") {
-        const tupled =
-            <A, B>(fn: (a: A, b: B) => void) =>
-            ([a, b]: [A, B]) =>
-                fn(a, b)
-
-        ar.map(tupled(Spicetify.LocalStorage.set))(vault.localStore)
-        ar.map(tupled(Spicetify.Platform.LocalStorageAPI.setItem))(vault.localStoreAPI)
+        f.pipe(
+            vault.localStore,
+            ar.map(([a, b]) => Spicetify.LocalStorage.set(a, b)),
+        )
+        f.pipe(
+            vault.localStoreAPI,
+            ar.map(([a, b]) => Spicetify.Platform.LocalStorageAPI.setItem(a, b)),
+        )
         Spicetify.showNotification("Restored Extensions")
     }
     if (mode === "settings") {

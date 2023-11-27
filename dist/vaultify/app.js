@@ -412,9 +412,14 @@ var init_app = __esm({
         Spicetify.showNotification("Restored Library");
       }
       if (mode === "extensions") {
-        const tupled = (fn) => ([a3, b]) => fn(a3, b);
-        ar2.map(tupled(Spicetify.LocalStorage.set))(vault.localStore);
-        ar2.map(tupled(Spicetify.Platform.LocalStorageAPI.setItem))(vault.localStoreAPI);
+        f4.pipe(
+          vault.localStore,
+          ar2.map(([a3, b]) => Spicetify.LocalStorage.set(a3, b))
+        );
+        f4.pipe(
+          vault.localStoreAPI,
+          ar2.map(([a3, b]) => Spicetify.Platform.LocalStorageAPI.setItem(a3, b))
+        );
         Spicetify.showNotification("Restored Extensions");
       }
       if (mode === "settings") {
