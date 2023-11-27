@@ -403,7 +403,7 @@ var init_app = __esm({
       Spicetify.showNotification("Backed up Playlists, Extensions and Settings");
     };
     restore = (mode) => async () => {
-      let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
+      const vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste());
       if (mode === "library") {
         setPlatTrackLiked(vault.libraryTracks, true);
         setPlatTrackLiked(vault.libraryAlbums, true);
@@ -412,8 +412,9 @@ var init_app = __esm({
         Spicetify.showNotification("Restored Library");
       }
       if (mode === "extensions") {
-        ar2.map(f4.tupled(Spicetify.LocalStorage.set))(vault.localStore);
-        ar2.map(f4.tupled(Spicetify.Platform.LocalStorageAPI.setItem))(vault.localStoreAPI);
+        const tupled = (fn) => ([a3, b]) => fn(a3, b);
+        ar2.map(tupled(Spicetify.LocalStorage.set))(vault.localStore);
+        ar2.map(tupled(Spicetify.Platform.LocalStorageAPI.setItem))(vault.localStoreAPI);
         Spicetify.showNotification("Restored Extensions");
       }
       if (mode === "settings") {

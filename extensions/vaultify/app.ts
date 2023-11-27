@@ -145,7 +145,7 @@ type Vault = {
     settings: Array<[string, string, any]>
 }
 export const restore = (mode: "library" | "extensions" | "settings") => async () => {
-    let vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste()) as Vault
+    const vault = JSON.parse(await Spicetify.Platform.ClipboardAPI.paste()) as Vault
 
     if (mode === "library") {
         setPlatTrackLiked(vault.libraryTracks, true)
@@ -155,8 +155,13 @@ export const restore = (mode: "library" | "extensions" | "settings") => async ()
         Spicetify.showNotification("Restored Library")
     }
     if (mode === "extensions") {
-        ar.map(f.tupled(Spicetify.LocalStorage.set))(vault.localStore)
-        ar.map(f.tupled(Spicetify.Platform.LocalStorageAPI.setItem))(vault.localStoreAPI)
+        const tupled =
+            <A, B>(fn: (a: A, b: B) => void) =>
+            ([a, b]: [A, B]) =>
+                fn(a, b)
+
+        ar.map(tupled(Spicetify.LocalStorage.set))(vault.localStore)
+        ar.map(tupled(Spicetify.Platform.LocalStorageAPI.setItem))(vault.localStoreAPI)
         Spicetify.showNotification("Restored Extensions")
     }
     if (mode === "settings") {
