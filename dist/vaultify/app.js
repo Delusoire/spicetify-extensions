@@ -325,7 +325,7 @@ var init_app = __esm({
       ]
     ])(task2.of({}))(leaf);
     isContentOfPersonalPlaylist = (subleaf) => typeof subleaf[0] === "string" && Spicetify.URI.isTrack(subleaf[0]);
-    restorePlaylistseRecur = async (leaf, folder) => await Promise.all(
+    restorePlaylistseRecur = async (leaf, folder = "") => await Promise.all(
       Object.keys(leaf).map(async (name) => {
         const subleaf = leaf[name];
         if (!Array.isArray(subleaf))

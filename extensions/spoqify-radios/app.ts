@@ -1,5 +1,4 @@
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate"
-import { tupled } from "https://esm.sh/fp-ts/function"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util.ts"
 import { CONFIG } from "./settings.ts"
 
@@ -18,7 +17,7 @@ const createAnonRadio = (uri: SpotifyURI) => {
 
 new Spicetify.ContextMenu.Item(
     "Create anonymized radio",
-    tupled(createAnonRadio) as any,
-    tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isTrack])) as any,
+    ([uri]) => createAnonRadio(uri),
+    ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isTrack])(uri),
     "podcasts",
 ).register()

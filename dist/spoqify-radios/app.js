@@ -1,6 +1,5 @@
 // extensions/spoqify-radios/app.ts
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
-import { tupled } from "https://esm.sh/fp-ts/function";
 
 // shared/util.ts
 import { function as f } from "https://esm.sh/fp-ts";
@@ -252,7 +251,7 @@ var createAnonRadio = (uri) => {
 };
 new Spicetify.ContextMenu.Item(
   "Create anonymized radio",
-  tupled(createAnonRadio),
-  tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isTrack])),
+  ([uri]) => createAnonRadio(uri),
+  ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isTrack])(uri),
   "podcasts"
 ).register();

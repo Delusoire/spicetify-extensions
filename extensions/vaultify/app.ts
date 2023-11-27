@@ -13,7 +13,7 @@ import { Folder, Playlist, PoF } from "./util.ts"
 
 const isType = is<PoF>("type")
 const extractLikedPlaylistTreeRecur = (leaf: PoF) =>
-    guard2<PoF, Playlist, Folder, Promise<{}>>([
+    guard2<PoF, Playlist, Folder, Promise<Object>>([
         [
             isType("playlist"),
             async playlist => ({
@@ -43,7 +43,10 @@ const isContentOfPersonalPlaylist = (
     subleaf: PersonalFolder[""] | PersonalPlaylist[""],
 ): subleaf is PersonalPlaylist[""] => typeof subleaf[0] === "string" && Spicetify.URI.isTrack(subleaf[0])
 
-const restorePlaylistseRecur = async (leaf: PersonalFolder | PersonalPlaylist | LikedPlaylist, folder?: SpotifyURI) =>
+const restorePlaylistseRecur = async (
+    leaf: PersonalFolder | PersonalPlaylist | LikedPlaylist,
+    folder: SpotifyURI = "",
+) =>
     await Promise.all(
         Object.keys(leaf).map(async name => {
             const subleaf = leaf[name]
@@ -175,7 +178,7 @@ export const restore = (mode: "library" | "extensions" | "settings") => async ()
             else if (type === "select") setting.value = value
             else return
 
-            const settingReactProps = getReactProps(setting) as any
+            const settingReactProps = getReactProps(setting)
             settingReactProps.onChange({ target: setting })
         })
         Spicetify.showNotification("Restored Settings")
