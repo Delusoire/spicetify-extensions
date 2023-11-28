@@ -256,9 +256,8 @@ addEventListener("keyup", event => {
 
 // Menu
 
-const fetchSortQueue =
-    (name: typeof lastActionName, sortFn: (tracksIn: TrackData[]) => TrackData[]) =>
-    ([uri]: [SpotifyURI]) => {
+const sortTracksWith =
+    (name: typeof lastActionName, sortFn: (tracksIn: TrackData[]) => TrackData[]) => (uri: SpotifyURI) => {
         lastActionName = name
         const descending = invertOrder ^ Number(CONFIG.descending)
         f.pipe(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!!descending)))
@@ -268,7 +267,7 @@ const shuffle = <A>(array: A[], l = array.length): A[] =>
     l == 0 ? [] : [array.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array)]
 const shuffleSubmenu = new Spicetify.ContextMenu.Item(
     "True Shuffle",
-    fetchSortQueue("True Shuffle", shuffle) as any,
+    ([uri]) => sortTracksWith("True Shuffle", shuffle)(uri),
     f.constTrue,
     "shuffle",
     false,
@@ -280,14 +279,14 @@ const starsOrd = f.pipe(
 )
 const starsSubmenu = new Spicetify.ContextMenu.Item(
     "Stars",
-    fetchSortQueue("Stars", ar.sort(starsOrd)) as any,
+    ([uri]) => sortTracksWith("Stars", ar.sort(starsOrd))(uri),
     () => (globalThis as any).tracksRatings !== undefined,
     "heart-active",
     false,
 )
 
 const createSortByPropSubmenu = (name: keyof typeof SortProp, icon: any) =>
-    new Spicetify.ContextMenu.Item(name, f.tupled(sortByProp(name)) as any, f.constTrue, icon, false)
+    new Spicetify.ContextMenu.Item(name, ([uri]) => sortByProp(name)(uri), f.constTrue, icon, false)
 
 new Spicetify.ContextMenu.SubMenu(
     "Sort by",

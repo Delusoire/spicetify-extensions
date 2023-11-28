@@ -46,16 +46,22 @@ export const chunckify =
     <A, R>(g: (a: A[]) => Promise<R[]>) =>
         f.flow(ar.chunksOf(n)<A>, ar.map(g), ps => Promise.all(ps), pMchain(ar.flatten))
 
+type JSFunc = (...a: any) => any
 export const withProgress =
-    <F extends (f: (...a: any) => any) => (fa: any) => any>(map: F) =>
+    <F extends (f: JSFunc) => (fa: any) => any>(map: F) =>
     (f: Parameters<F>[0]) =>
     (fa: Parameters<ReturnType<F>>[0]): ReturnType<ReturnType<F>> => {
         let i = 0
+        let lastSnackbarKey = ""
         return map(async (...a: Parameters<Parameters<F>[0]>) => {
             // @ts-expect-error: Fuck me
             const ret = await f(...a)
             const progress = Math.round((i++ / Object.values(fa).length) * 100)
-            Spicetify.showNotification(`Loading: ${progress}%`, false, 200)
+            Spicetify.Snackbar.closeSnackbar(lastSnackbarKey)
+            lastSnackbarKey = Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+                variant: "default",
+                autoHideDuration: 200,
+            })
             return ret
         })(fa)
     }

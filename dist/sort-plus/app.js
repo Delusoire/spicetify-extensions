@@ -37,10 +37,15 @@ var tapAny = (f5) => (fa) => {
 var chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
 var withProgress = (map) => (f5) => (fa) => {
   let i = 0;
+  let lastSnackbarKey = "";
   return map(async (...a3) => {
     const ret = await f5(...a3);
     const progress = Math.round(i++ / Object.values(fa).length * 100);
-    Spicetify.showNotification(`Loading: ${progress}%`, false, 200);
+    Spicetify.Snackbar.closeSnackbar(lastSnackbarKey);
+    lastSnackbarKey = Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+      variant: "default",
+      autoHideDuration: 200
+    });
     return ret;
   })(fa);
 };
@@ -585,7 +590,7 @@ addEventListener("keyup", (event) => {
   if (!event.repeat && event.key === "Control")
     invertOrder = 0;
 });
-var fetchSortQueue = (name, sortFn) => ([uri]) => {
+var sortTracksWith = (name, sortFn) => (uri) => {
   lastActionName = name;
   const descending = invertOrder ^ Number(CONFIG.descending);
   f4.pipe(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!!descending)));
@@ -593,7 +598,7 @@ var fetchSortQueue = (name, sortFn) => ([uri]) => {
 var shuffle = (array, l = array.length) => l == 0 ? [] : [array.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array)];
 var shuffleSubmenu = new Spicetify.ContextMenu.Item(
   "True Shuffle",
-  fetchSortQueue("True Shuffle", shuffle),
+  ([uri]) => sortTracksWith("True Shuffle", shuffle)(uri),
   f4.constTrue,
   "shuffle",
   false
@@ -604,12 +609,12 @@ var starsOrd = f4.pipe(
 );
 var starsSubmenu = new Spicetify.ContextMenu.Item(
   "Stars",
-  fetchSortQueue("Stars", ar2.sort(starsOrd)),
+  ([uri]) => sortTracksWith("Stars", ar2.sort(starsOrd))(uri),
   () => globalThis.tracksRatings !== void 0,
   "heart-active",
   false
 );
-var createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, f4.tupled(sortByProp(name)), f4.constTrue, icon, false);
+var createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, ([uri]) => sortByProp(name)(uri), f4.constTrue, icon, false);
 new Spicetify.ContextMenu.SubMenu(
   "Sort by",
   ar2.zipWith(
