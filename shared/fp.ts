@@ -52,16 +52,18 @@ export const withProgress =
     (f: Parameters<F>[0]) =>
     (fa: Parameters<ReturnType<F>>[0]): ReturnType<ReturnType<F>> => {
         let i = 0
-        let lastSnackbarKey = ""
         return map(async (...a: Parameters<Parameters<F>[0]>) => {
             // @ts-expect-error: Fuck me
             const ret = await f(...a)
             const progress = Math.round((i++ / Object.values(fa).length) * 100)
-            Spicetify.Snackbar.closeSnackbar(lastSnackbarKey)
             lastSnackbarKey = Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
                 variant: "default",
                 autoHideDuration: 200,
             })
+            Spicetify.Snackbar.updater.enqueueSetState(Spicetify.Snackbar, e => ({
+                snacks: [e.snacks.at(-1)],
+                queue: [],
+            }))
             return ret
         })(fa)
     }

@@ -37,15 +37,17 @@ var tapAny = (f5) => (fa) => {
 var chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
 var withProgress = (map) => (f5) => (fa) => {
   let i = 0;
-  let lastSnackbarKey = "";
   return map(async (...a3) => {
     const ret = await f5(...a3);
     const progress = Math.round(i++ / Object.values(fa).length * 100);
-    Spicetify.Snackbar.closeSnackbar(lastSnackbarKey);
     lastSnackbarKey = Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
       variant: "default",
       autoHideDuration: 200
     });
+    Spicetify.Snackbar.updater.enqueueSetState(Spicetify.Snackbar, (e) => ({
+      snacks: [e.snacks.at(-1)],
+      queue: []
+    }));
     return ret;
   })(fa);
 };
