@@ -380,6 +380,7 @@ _ArtistGenreContainer = __decorateClass([
 ], _ArtistGenreContainer);
 
 // extensions/show-the-genres/app.ts
+debugger;
 var fetchLastFMTags = async (uri) => {
   const uid = Spicetify.URI.fromString(uri).id;
   const res = await fetchWebTracksSpot([uid]);
