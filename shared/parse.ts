@@ -75,8 +75,8 @@ export const parsePlatTrackFromArtistLikedTracks = (track: fetchPlatArtistLikedT
 // })
 
 export const parseAPITrackFromPlaylist = (track: fetchWebPlaylistRes[0]) => ({
-    albumName: track.album.name,
-    albumUri: track.album.uri,
+    albumName: track.album?.name,
+    albumUri: track.album?.uri,
     artistName: track.artists[0].name,
     artistUri: track.artists[0].uri,
     durationMilis: track.duration.milliseconds,

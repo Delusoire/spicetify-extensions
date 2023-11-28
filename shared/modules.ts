@@ -9,6 +9,10 @@ export const modules = cache
 export const functionModules = modules.filter((module): module is Function => typeof module === "function")
 
 export const reactObjects = modules.filter(m => m?.$$typeof)
+
+const reactForwardRefSymbol = Spicetify.React.forwardRef().$$typeof
+export const reactForwardRefs = reactObjects.filter(m => m.$$typeof === reactForwardRefSymbol)
+
 const reactMemoSymbol = Spicetify.React.memo().$$typeof
 export const reactMemos = reactObjects.filter(m => m.$$typeof === reactMemoSymbol)
 

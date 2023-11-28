@@ -37,15 +37,25 @@ var tapAny = (f5) => (fa) => {
 var chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
 var withProgress = (map) => (f5) => (fa) => {
   let i = 0;
+  let lastProgress = 0;
   return map(async (...a3) => {
     const ret = await f5(...a3);
     const progress = Math.round(i++ / Object.values(fa).length * 100);
-    Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
-      variant: "default",
-      autoHideDuration: 200,
-      preventDuplicate: true,
-      key: "sort-progress"
-    });
+    if (progress > lastProgress) {
+      Spicetify.Snackbar.updater.enqueueSetState(Spicetify.Snackbar, () => ({
+        snacks: [],
+        queue: []
+      }));
+      Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}`, {
+        variant: "default",
+        autoHideDuration: 200,
+        transitionDuration: {
+          enter: 0,
+          exit: 0
+        }
+      });
+    }
+    lastProgress = progress;
     return ret;
   })(fa);
 };
@@ -195,8 +205,8 @@ var parsePlatTrackFromArtistLikedTracks = (track) => ({
   uri: track.uri
 });
 var parseAPITrackFromPlaylist = (track) => ({
-  albumName: track.album.name,
-  albumUri: track.album.uri,
+  albumName: track.album?.name,
+  albumUri: track.album?.uri,
   artistName: track.artists[0].name,
   artistUri: track.artists[0].uri,
   durationMilis: track.duration.milliseconds,

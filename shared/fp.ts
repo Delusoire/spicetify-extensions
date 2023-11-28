@@ -52,20 +52,37 @@ export const withProgress =
     (f: Parameters<F>[0]) =>
     (fa: Parameters<ReturnType<F>>[0]): ReturnType<ReturnType<F>> => {
         let i = 0
+        let lastProgress = 0
         return map(async (...a: Parameters<Parameters<F>[0]>) => {
             // @ts-expect-error: Fuck me
             const ret = await f(...a)
             const progress = Math.round((i++ / Object.values(fa).length) * 100)
-            Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
-                variant: "default",
-                autoHideDuration: 200,
-                preventDuplicate: true,
-                key: "sort-progress",
-            })
-            // Spicetify.Snackbar.updater.enqueueSetState(Spicetify.Snackbar, e => ({
-            //     snacks: [e.snacks.at(-1)],
-            //     queue: [],
-            // }))
+            // // This is an older alternative, always updates 5 times a second
+            // Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+            //     variant: "default",
+            //     autoHideDuration: 200,
+            //     transitionDuration: {
+            //         enter: 0,
+            //         exit: 0,
+            //     },
+            //     preventDuplicate: true,
+            //     key: "sort-progress",
+            // })
+            if (progress > lastProgress) {
+                Spicetify.Snackbar.updater.enqueueSetState(Spicetify.Snackbar, () => ({
+                    snacks: [],
+                    queue: [],
+                }))
+                Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}`, {
+                    variant: "default",
+                    autoHideDuration: 200,
+                    transitionDuration: {
+                        enter: 0,
+                        exit: 0,
+                    },
+                })
+            }
+            lastProgress = progress
             return ret
         })(fa)
     }
