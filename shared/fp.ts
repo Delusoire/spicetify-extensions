@@ -73,7 +73,7 @@ export const withProgress =
                     snacks: [],
                     queue: [],
                 }))
-                Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}`, {
+                Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
                     variant: "default",
                     autoHideDuration: 200,
                     transitionDuration: {

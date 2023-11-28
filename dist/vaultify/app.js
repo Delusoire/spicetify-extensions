@@ -98,16 +98,13 @@ var init_api = __esm({
 
 // shared/modules.ts
 import { allPass } from "https://esm.sh/fp-ts-std@0.18.0/Predicate";
-var require2, cache, modules, functionModules, reactObjects, reactMemoSymbol, reactMemos, findModuleByStrings, CheckedPlaylistButtonIcon, SettingSection, SectionTitle, SettingColumn, SettingText, SettingToggle, curationButtonClass;
+var require2, cache, modules, functionModules, findModuleByStrings, CheckedPlaylistButtonIcon, SettingSection, SectionTitle, SettingColumn, SettingText, SettingToggle, curationButtonClass;
 var init_modules = __esm({
   "shared/modules.ts"() {
     require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
     cache = Object.keys(require2.m).map((id) => require2(id));
     modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
     functionModules = modules.filter((module) => typeof module === "function");
-    reactObjects = modules.filter((m) => m?.$$typeof);
-    reactMemoSymbol = Spicetify.React.memo().$$typeof;
-    reactMemos = reactObjects.filter((m) => m.$$typeof === reactMemoSymbol);
     findModuleByStrings = (modules2, ...filters) => modules2.find(
       (f5) => allPass(
         filters.map(

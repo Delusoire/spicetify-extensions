@@ -72,9 +72,6 @@ var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require m
 var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
-var reactObjects = modules.filter((m) => m?.$$typeof);
-var reactMemoSymbol = Spicetify.React.memo().$$typeof;
-var reactMemos = reactObjects.filter((m) => m.$$typeof === reactMemoSymbol);
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
   (f4) => allPass(
     filters.map(
