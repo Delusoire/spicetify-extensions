@@ -56,14 +56,16 @@ export const withProgress =
             // @ts-expect-error: Fuck me
             const ret = await f(...a)
             const progress = Math.round((i++ / Object.values(fa).length) * 100)
-            lastSnackbarKey = Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+            Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
                 variant: "default",
                 autoHideDuration: 200,
+                preventDuplicate: true,
+                key: "sort-progress",
             })
-            Spicetify.Snackbar.updater.enqueueSetState(Spicetify.Snackbar, e => ({
-                snacks: [e.snacks.at(-1)],
-                queue: [],
-            }))
+            // Spicetify.Snackbar.updater.enqueueSetState(Spicetify.Snackbar, e => ({
+            //     snacks: [e.snacks.at(-1)],
+            //     queue: [],
+            // }))
             return ret
         })(fa)
     }

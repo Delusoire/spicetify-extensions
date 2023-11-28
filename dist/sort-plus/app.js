@@ -40,14 +40,12 @@ var withProgress = (map) => (f5) => (fa) => {
   return map(async (...a3) => {
     const ret = await f5(...a3);
     const progress = Math.round(i++ / Object.values(fa).length * 100);
-    lastSnackbarKey = Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+    Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
       variant: "default",
-      autoHideDuration: 200
+      autoHideDuration: 200,
+      preventDuplicate: true,
+      key: "sort-progress"
     });
-    Spicetify.Snackbar.updater.enqueueSetState(Spicetify.Snackbar, (e) => ({
-      snacks: [e.snacks.at(-1)],
-      queue: []
-    }));
     return ret;
   })(fa);
 };
