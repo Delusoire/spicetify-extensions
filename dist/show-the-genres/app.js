@@ -386,7 +386,10 @@ var fetchLastFMTags = async (uri) => {
   const { name, artists } = res[0];
   const artistNames = artists.map((artist) => artist.name);
   const { track } = await fetchTrackLFMAPI(CONFIG.LFMApiKey, artistNames[0], name);
-  return track.toptags.tag.map((tag) => tag.name);
+  const tags = track.toptags.tag.map((tag) => tag.name);
+  const deletedTagRegex = /-\d{13}/;
+  const blacklistedTags = ["MySpotigramBot"];
+  return tags.filter((tag) => !deletedTagRegex.test(tag) && !blacklistedTags.includes(tag));
 };
 var nowPlayingGenreContainerEl = document.createElement("genre-container");
 nowPlayingGenreContainerEl.fetchGenres = fetchLastFMTags;
