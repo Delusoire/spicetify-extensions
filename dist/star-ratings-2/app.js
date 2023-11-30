@@ -300,7 +300,7 @@ var playlistButtonSelector = `button[aria-label="Add to Liked Songs"], button[ar
 var getPlaylistButton = (parent) => parent.querySelector(playlistButtonSelector);
 var getCollectionPlaylistButton = () => {
   const ab = getCollectionActionBarRow();
-  return ab.querySelector(
+  return ab?.querySelector(
     `button[aria-label="Remove from Your Library"], button[aria-label="Save to Your Library"]`
   );
 };
@@ -514,7 +514,7 @@ var updateCollectionControls = async (uri) => {
   const ratings = uris.map((uri2) => tracksRatings[uri2]).filter(Boolean);
   const rating = Math.round(ratings.reduce((psum, r) => psum + r, 0) / ratings.length);
   const pb = getCollectionPlaylistButton();
-  colorizePlaylistButton(pb, rating);
+  pb && colorizePlaylistButton(pb, rating);
 };
 
 // extensions/star-ratings-2/app.ts

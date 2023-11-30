@@ -10,15 +10,14 @@ export const getTrackListTrackUri = (track: HTMLDivElement) => (
 )
 
 export const getNowPlayingBar = () => document.querySelector<HTMLDivElement>("div.main-nowPlayingBar-nowPlayingBar")!
-export const getCollectionActionBarRow = () =>
-    document.querySelector<HTMLDivElement>(`div.main-actionBar-ActionBarRow`)!
+export const getCollectionActionBarRow = () => document.querySelector<HTMLDivElement>(`div.main-actionBar-ActionBarRow`)
 
 export const playlistButtonSelector = `button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"], button[aria-label="Remove recommendation"]`
 export const getPlaylistButton = (parent: HTMLElement) =>
     parent.querySelector<HTMLButtonElement>(playlistButtonSelector)!
 export const getCollectionPlaylistButton = () => {
     const ab = getCollectionActionBarRow()
-    return ab.querySelector<HTMLButtonElement>(
+    return ab?.querySelector<HTMLButtonElement>(
         `button[aria-label="Remove from Your Library"], button[aria-label="Save to Your Library"]`,
-    )!
+    )
 }

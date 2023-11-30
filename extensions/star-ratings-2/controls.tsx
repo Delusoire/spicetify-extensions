@@ -146,5 +146,5 @@ export const updateCollectionControls = async (uri: Spicetify.URI) => {
     const rating = Math.round(ratings.reduce((psum, r) => psum + r, 0) / ratings.length)
 
     const pb = getCollectionPlaylistButton()
-    colorizePlaylistButton(pb, rating)
+    pb && colorizePlaylistButton(pb, rating)
 }
