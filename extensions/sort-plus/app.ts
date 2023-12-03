@@ -43,7 +43,7 @@ import {
     parseTopTrackFromArtist,
     parseTrackFromAlbum,
 } from "../../shared/parse.ts"
-import { SpotifyID, SpotifyLoc, SpotifyURI, createQueueItem, setPlayingContext, setQueue } from "../../shared/util.ts"
+import { SpotifyLoc, SpotifyURI, createQueueItem, setPlayingContext, setQueue } from "../../shared/util.ts"
 import { CONFIG } from "./settings.ts"
 
 const { URI } = Spicetify
@@ -297,7 +297,7 @@ new Spicetify.ContextMenu.SubMenu(
             createSortByPropSubmenu,
         )
         .concat([shuffleSubmenu, starsSubmenu]),
-    ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isCollection])(uri),
+    ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isCollection, URI.isTrack, URI.isPlaylistV1OrV2])(uri),
 ).register()
 
 // Topbar

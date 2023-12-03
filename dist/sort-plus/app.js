@@ -629,7 +629,7 @@ new Spicetify.ContextMenu.SubMenu(
     ["play", "heart", "list-view", "volume", "artist", "subtitles"],
     createSortByPropSubmenu
   ).concat([shuffleSubmenu, starsSubmenu]),
-  ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isCollection])(uri)
+  ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isCollection, URI.isTrack, URI.isPlaylistV1OrV2])(uri)
 ).register();
 var generatePlaylistName = async () => {
   const uri = URI.fromString(lastFetchedUri);
