@@ -421,6 +421,7 @@ settings.pushSettings();
 var CONFIG = settings.toObject();
 
 // extensions/sort-plus/app.ts
+debugger;
 var { URI } = Spicetify;
 var SortBy = /* @__PURE__ */ ((SortBy2) => {
   SortBy2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
