@@ -505,8 +505,7 @@ var fetchAlbumTracksFromTracks = f4.flow(
     const albumTracks = await getAlbumTracks(albumUri);
     return ar2.intersection(uriEq)(albumTracks, tracks);
   }),
-  values,
-  (ps) => Promise.all(ps),
+  (o2) => Promise.all(Object.values(o2)),
   pMchain(ar2.flatten)
 );
 var populateTracksSpot = (propName) => (tracks) => f4.pipe(
@@ -630,22 +629,34 @@ new Spicetify.ContextMenu.SubMenu(
     ["play", "heart", "list-view", "volume", "artist", "subtitles"],
     createSortByPropSubmenu
   ).concat([shuffleSubmenu, starsSubmenu]),
-  f4.tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isCollection]))
+  ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isCollection])(uri)
 ).register();
 var generatePlaylistName = async () => {
-  const uriToId = (uri) => URI.fromString(uri).id;
-  const getName = (fn) => async (id) => (await fn([id]))[0].name;
-  const collectionName = await guard2([
-    [URI.isAlbum, f4.flow(uriToId, getName(fetchWebAlbumsSpot))],
-    [URI.isArtist, f4.flow(uriToId, getName(fetchWebArtistsSpot))],
-    [URI.isPlaylistV1OrV2, f4.flow(uriToId, getName(fetchWebPlaylistsSpot))],
-    [URI.isCollection, task3.of("Liked Tracks")]
-  ])(task3.of("Unresolved"))(lastFetchedUri);
-  return `${collectionName} - ${lastActionName}`;
+  const uri = URI.fromString(lastFetchedUri);
+  const id = uri.id;
+  let res = [];
+  switch (uri.type) {
+    case URI.Type.ALBUM:
+      res = await fetchWebAlbumsSpot([id]);
+      break;
+    case URI.Type.ARTIST:
+      res = await fetchWebArtistsSpot([id]);
+      break;
+    case URI.Type.COLLECTION:
+      res = [{ name: "Liked Tracks" }];
+      break;
+    case URI.Type.PLAYLIST:
+    case URI.Type.PLAYLIST_V2:
+      res = await fetchWebPlaylistsSpot([id]);
+      break;
+  }
+  return `${res[0]?.name ?? "Error"} - ${lastActionName}`;
 };
 new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
-  if (lastSortedQueue.length === 0)
-    return void Spicetify.showNotification("Must sort to queue beforehand");
+  if (lastSortedQueue.length === 0) {
+    Spicetify.showNotification("Must sort to queue beforehand");
+    return;
+  }
   const sortedPlaylistsFolder = await fetchPlatFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchPlatRootFolder);
   const playlistName = await generatePlaylistName();
   const { uri } = await createSPPlaylistFromTracks(
@@ -657,12 +668,16 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
   Spicetify.showNotification(`Playlist ${playlistName} created`);
 });
 new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
-  if (lastSortedQueue.length === 0)
-    return void Spicetify.showNotification("Must sort to queue beforehand");
-  if (!URI.isPlaylistV1OrV2(lastFetchedUri))
-    return void Spicetify.showNotification("Last sorted queue must be a playlist");
+  if (lastSortedQueue.length === 0) {
+    Spicetify.showNotification("Must sort to queue beforehand");
+    return;
+  }
+  if (!URI.isPlaylistV1OrV2(lastFetchedUri)) {
+    Spicetify.showNotification("Last sorted queue must be a playlist");
+    return;
+  }
   f4.pipe(
-    lastSortedQueue,
+    lastSortedQueue.map((t) => ({ uid: t.uid })),
     withProgress(ar2.map)(
       (t) => void movePlatPlaylistTracks(lastFetchedUri, [t], SpotifyLoc.after.end())
     )

@@ -146,8 +146,7 @@ const fetchAlbumTracksFromTracks: TracksPopulater = f.flow(
 
         return ar.intersection(uriEq)(albumTracks, tracks)
     }),
-    values,
-    ps => Promise.all(ps),
+    o => Promise.all(Object.values(o)),
     pMchain(ar.flatten),
 )
 // --------------------------------------------------
@@ -298,26 +297,42 @@ new Spicetify.ContextMenu.SubMenu(
             createSortByPropSubmenu,
         )
         .concat([shuffleSubmenu, starsSubmenu]),
-    f.tupled(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isCollection])) as any,
+    ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isCollection])(uri),
 ).register()
 
 // Topbar
 
 const generatePlaylistName = async () => {
-    const uriToId = (uri: SpotifyURI) => URI.fromString(uri)!.id!
-    const getName = (fn: Function) => async (id: SpotifyID) => (await fn([id]))[0].name
+    const uri = URI.fromString(lastFetchedUri)
+    const id = uri.id!
 
-    const collectionName = await guard([
-        [URI.isAlbum, f.flow(uriToId, getName(fetchWebAlbumsSpot))],
-        [URI.isArtist, f.flow(uriToId, getName(fetchWebArtistsSpot))],
-        [URI.isPlaylistV1OrV2, f.flow(uriToId, getName(fetchWebPlaylistsSpot))],
-        [URI.isCollection, task.of("Liked Tracks")],
-    ])(task.of("Unresolved"))(lastFetchedUri)
+    let res = []
+    switch (uri.type) {
+        case URI.Type.ALBUM:
+            res = await fetchWebAlbumsSpot([id])
+            break
 
-    return `${collectionName} - ${lastActionName}`
+        case URI.Type.ARTIST:
+            res = await fetchWebArtistsSpot([id])
+            break
+
+        case URI.Type.COLLECTION:
+            res = [{ name: "Liked Tracks" }]
+            break
+
+        case URI.Type.PLAYLIST:
+        case URI.Type.PLAYLIST_V2:
+            res = await fetchWebPlaylistsSpot([id])
+            break
+    }
+
+    return `${res[0]?.name ?? "Error"} - ${lastActionName}`
 }
 new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
-    if (lastSortedQueue.length === 0) return void Spicetify.showNotification("Must sort to queue beforehand")
+    if (lastSortedQueue.length === 0) {
+        Spicetify.showNotification("Must sort to queue beforehand")
+        return
+    }
 
     const sortedPlaylistsFolder = await fetchPlatFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchPlatRootFolder)
 
@@ -335,12 +350,18 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
 })
 
 new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
-    if (lastSortedQueue.length === 0) return void Spicetify.showNotification("Must sort to queue beforehand")
-    if (!URI.isPlaylistV1OrV2(lastFetchedUri))
-        return void Spicetify.showNotification("Last sorted queue must be a playlist")
+    if (lastSortedQueue.length === 0) {
+        Spicetify.showNotification("Must sort to queue beforehand")
+        return
+    }
+
+    if (!URI.isPlaylistV1OrV2(lastFetchedUri)) {
+        Spicetify.showNotification("Last sorted queue must be a playlist")
+        return
+    }
 
     f.pipe(
-        lastSortedQueue as unknown as Array<{ uid: string }>,
+        lastSortedQueue.map(t => ({ uid: t.uid as string })),
         withProgress(ar.map<{ uid: string }, void>)(
             t => void movePlatPlaylistTracks(lastFetchedUri, [t], SpotifyLoc.after.end()),
         ),
