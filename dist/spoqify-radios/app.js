@@ -2,17 +2,16 @@
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
 
 // shared/util.ts
-import { function as f } from "https://esm.sh/fp-ts";
 var {} = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
-    start: f.constant({ before: "start" }),
+    start: () => ({ before: "start" }),
     fromUri: (uri) => ({ before: { uri } }),
     fromUid: (uid) => ({ before: { uid } })
   },
   after: {
-    end: f.constant({ after: "end" }),
+    end: () => ({ after: "end" }),
     fromUri: (uri) => ({ after: { uri } }),
     fromUid: (uid) => ({ after: { uid } })
   }
@@ -34,7 +33,7 @@ import {
   string as str,
   record as rec,
   semigroup as sg,
-  function as f2
+  function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
 var guard3 = (branches) => guard(branches);
@@ -47,11 +46,11 @@ var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f3) => allPass(
+  (f2) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f3.toString())
+  )(f2.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,

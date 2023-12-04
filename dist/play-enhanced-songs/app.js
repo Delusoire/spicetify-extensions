@@ -1,19 +1,6 @@
 // shared/util.ts
-import { function as f } from "https://esm.sh/fp-ts";
 var {} = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
-var SpotifyLoc = {
-  before: {
-    start: f.constant({ before: "start" }),
-    fromUri: (uri) => ({ before: { uri } }),
-    fromUid: (uid) => ({ before: { uid } })
-  },
-  after: {
-    end: f.constant({ after: "end" }),
-    fromUri: (uri) => ({ after: { uri } }),
-    fromUid: (uid) => ({ after: { uid } })
-  }
-};
 
 // shared/platformApi.ts
 var {} = Spicetify;

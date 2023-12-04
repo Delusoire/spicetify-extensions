@@ -19,21 +19,8 @@ var is = (c) => (a) => (field) => field[c] === a;
 var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/util.ts
-import { function as f2 } from "https://esm.sh/fp-ts";
 var {} = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
-var SpotifyLoc = {
-  before: {
-    start: f2.constant({ before: "start" }),
-    fromUri: (uri) => ({ before: { uri } }),
-    fromUid: (uid) => ({ before: { uid } })
-  },
-  after: {
-    end: f2.constant({ after: "end" }),
-    fromUri: (uri) => ({ after: { uri } }),
-    fromUid: (uid) => ({ after: { uid } })
-  }
-};
 var normalizeStr = (str2) => str2.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -43,6 +30,11 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   fetch(url, opts) {
     const { method } = opts;
     return Spicetify.CosmosAsync.resolve(method, url);
+  },
+  deserializer: {
+    deserialize(res) {
+      return res.body;
+    }
   }
 });
 var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
@@ -94,11 +86,11 @@ var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f3) => allPass(
+  (f2) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f3.toString())
+  )(f2.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -261,7 +253,6 @@ var YTVidIDCache = /* @__PURE__ */ new Map();
 var showOnYouTube = async (uri) => {
   const id = URI.fromString(uri).id;
   if (!YTVidIDCache.get(id)) {
-    debugger;
     const track = parseAPITrack(await spotifyApi.tracks.get(id));
     const searchString = `${track.artistName} - ${track.name} music video`;
     try {

@@ -11,21 +11,8 @@ var __decorateClass = (decorators, target, key, kind) => {
 };
 
 // shared/util.ts
-import { function as f } from "https://esm.sh/fp-ts";
 var {} = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
-var SpotifyLoc = {
-  before: {
-    start: f.constant({ before: "start" }),
-    fromUri: (uri) => ({ before: { uri } }),
-    fromUid: (uid) => ({ before: { uid } })
-  },
-  after: {
-    end: f.constant({ after: "end" }),
-    fromUri: (uri) => ({ after: { uri } }),
-    fromUid: (uid) => ({ after: { uid } })
-  }
-};
 
 // shared/platformApi.ts
 var {} = Spicetify;
@@ -42,14 +29,14 @@ var toggleTrackLiked = async (uris) => {
 };
 
 // extensions/keyboard-shortcuts/sneak.ts
-import { array as a, function as f3 } from "https://esm.sh/fp-ts";
+import { array as a, function as f2 } from "https://esm.sh/fp-ts";
 import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { styleMap } from "https://esm.sh/lit/directives/style-map.js";
 
 // extensions/keyboard-shortcuts/util.ts
-import { function as f2, number as n, ord } from "https://esm.sh/fp-ts";
+import { function as f, number as n, ord } from "https://esm.sh/fp-ts";
 import { mean } from "https://esm.sh/fp-ts-std/Array";
 import { mod } from "https://esm.sh/fp-ts-std/Number";
 var SCROLL_STEP = 25;
@@ -65,7 +52,7 @@ var rotateSidebar = (offset) => {
   const navLinks = Array.from(
     Array.from(document.querySelectorAll(".main-yourLibraryX-navLink")).values()
   );
-  f2.pipe(
+  f.pipe(
     document.querySelector(".main-yourLibraryX-navLinkActive"),
     (active) => navLinks.findIndex((e) => e === active),
     (curr) => mod(navLinks.length)(curr === -1 && offset <= 0 ? offset : curr + offset),
@@ -92,7 +79,7 @@ var isElementInViewPort = (e) => {
   const c = document.body;
   const bound = e.getBoundingClientRect();
   const within = (m, M) => (x) => x === ord.clamp(n.Ord)(m, M)(x);
-  return f2.pipe(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) && f2.pipe(mean([bound.left, bound.right]), within(0, c.clientWidth));
+  return f.pipe(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) && f.pipe(mean([bound.left, bound.right]), within(0, c.clientWidth));
 };
 var CLICKABLE_ELEMENT_SELECTOR = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`;
 
@@ -140,7 +127,7 @@ var _SneakOverlay = class extends LitElement {
     this.props = [];
     requestAnimationFrame(() => {
       let k1 = 0, k2 = 0;
-      this.props = f3.pipe(
+      this.props = f2.pipe(
         Array.from(document.querySelectorAll(CLICKABLE_ELEMENT_SELECTOR)),
         // a.filter(isElementVisible),
         a.filter(isElementInViewPort),

@@ -4,7 +4,6 @@ var __esm = (fn, res) => function __init() {
 };
 
 // shared/util.ts
-import { function as f } from "https://esm.sh/fp-ts";
 var PlayerAPI, History, SpotifyLoc, sleep, getReactProps;
 var init_util = __esm({
   "shared/util.ts"() {
@@ -12,12 +11,12 @@ var init_util = __esm({
     ({ PlayerAPI, History } = Spicetify.Platform);
     SpotifyLoc = {
       before: {
-        start: f.constant({ before: "start" }),
+        start: () => ({ before: "start" }),
         fromUri: (uri) => ({ before: { uri } }),
         fromUid: (uid) => ({ before: { uid } })
       },
       after: {
-        end: f.constant({ after: "end" }),
+        end: () => ({ after: "end" }),
         fromUri: (uri) => ({ after: { uri } }),
         fromUid: (uid) => ({ after: { uid } })
       }
@@ -57,7 +56,7 @@ import {
   string as str,
   record as rec,
   semigroup as sg,
-  function as f2
+  function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
 var guard3, is;
@@ -78,11 +77,11 @@ var init_modules = __esm({
     modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
     functionModules = modules.filter((module) => typeof module === "function");
     findModuleByStrings = (modules2, ...filters) => modules2.find(
-      (f4) => allPass(
+      (f3) => allPass(
         filters.map(
           (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
         )
-      )(f4.toString())
+      )(f3.toString())
     );
     CheckedPlaylistButtonIcon = findModuleByStrings(
       functionModules,
@@ -271,7 +270,7 @@ var init_settings2 = __esm({
 });
 
 // extensions/vaultify/app.ts
-import { array as ar2, function as f3 } from "https://esm.sh/fp-ts";
+import { array as ar2, function as f2 } from "https://esm.sh/fp-ts";
 var LocalStorage, ClipboardAPI, LibraryAPI, LocalStorageAPI, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, allowedExtDataRegex, backup, restore;
 var init_app = __esm({
   "extensions/vaultify/app.ts"() {
@@ -331,11 +330,11 @@ var init_app = __esm({
         }
       });
       const libraryArtists = extractItemsUris(rawLibraryArtists);
-      const playlists = await f3.pipe(await fetchRootFolder(), extractLikedPlaylistTreeRecur);
+      const playlists = await f2.pipe(await fetchRootFolder(), extractLikedPlaylistTreeRecur);
       const localStore = Object.entries(localStorage).filter(([key]) => allowedExtDataRegex.test(key));
       const { items, namespace } = LocalStorageAPI;
       const localStoreAPI = Object.entries(items).filter(([key]) => key.startsWith(namespace)).map(([key, value]) => [key.split(":")[1], value]);
-      const settings2 = f3.pipe(
+      const settings2 = f2.pipe(
         document.querySelectorAll(`[id^="settings."],[id^="desktop."],[class^="network."]`),
         Array.from,
         ar2.flatMap((setting) => {
@@ -374,11 +373,11 @@ var init_app = __esm({
         Spicetify.showNotification("Restored Library");
       }
       if (mode === "extensions") {
-        f3.pipe(
+        f2.pipe(
           vault.localStore,
           ar2.map(([a, b]) => LocalStorage.set(a, b))
         );
-        f3.pipe(
+        f2.pipe(
           vault.localStoreAPI,
           ar2.map(([a, b]) => LocalStorageAPI.setItem(a, b))
         );

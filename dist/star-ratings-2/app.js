@@ -2,17 +2,16 @@
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
 
 // shared/util.ts
-import { function as f } from "https://esm.sh/fp-ts";
 var {} = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
-    start: f.constant({ before: "start" }),
+    start: () => ({ before: "start" }),
     fromUri: (uri) => ({ before: { uri } }),
     fromUid: (uid) => ({ before: { uid } })
   },
   after: {
-    end: f.constant({ after: "end" }),
+    end: () => ({ after: "end" }),
     fromUri: (uri) => ({ after: { uri } }),
     fromUid: (uid) => ({ after: { uid } })
   }
@@ -48,7 +47,7 @@ var onSongChanged = (callback) => {
 };
 
 // extensions/star-ratings-2/controls.tsx
-import { array as ar3, function as f4 } from "https://esm.sh/fp-ts";
+import { array as ar3, function as f3 } from "https://esm.sh/fp-ts";
 
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
@@ -60,13 +59,13 @@ import {
   string as str,
   record as rec,
   semigroup as sg,
-  function as f2
+  function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
 var guard3 = (branches) => guard(branches);
-var pMchain = (f5) => async (fa) => f5(await fa);
+var pMchain = (f4) => async (fa) => f4(await fa);
 var is = (c) => (a) => (field) => field[c] === a;
-var toMemoized = (fn) => f2.pipe(fn, f2.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f2.untupled);
+var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/api.ts
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
@@ -74,6 +73,11 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   fetch(url, opts) {
     const { method } = opts;
     return Spicetify.CosmosAsync.resolve(method, url);
+  },
+  deserializer: {
+    deserialize(res) {
+      return res.body;
+    }
   }
 });
 var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.getAlbum, {
@@ -117,11 +121,11 @@ var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f5) => allPass(
+  (f4) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f5.toString())
+  )(f4.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -138,7 +142,7 @@ var SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelecte
 var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 
 // extensions/star-ratings-2/ratings.ts
-import { array as ar2, function as f3 } from "https://esm.sh/fp-ts";
+import { array as ar2, function as f2 } from "https://esm.sh/fp-ts";
 
 // extensions/star-ratings-2/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";
@@ -305,12 +309,12 @@ var getCollectionPlaylistButton = () => {
 // extensions/star-ratings-2/ratings.ts
 var loadRatings = async () => {
   const ratingsFolder = await fetchFolder(CONFIG.ratingsFolderUri);
-  playlistUris = f3.pipe(
+  playlistUris = f2.pipe(
     ratingsFolder.items,
     ar2.map((p) => [p.uri, Number(p.name)]),
     ar2.reduce([], (uris, [uri, rating]) => (uris[rating] = uri, uris))
   );
-  globalThis.tracksRatings = tracksRatings = await f3.pipe(
+  globalThis.tracksRatings = tracksRatings = await f2.pipe(
     playlistUris,
     ar2.map(fetchPlaylistContents),
     (ps) => Promise.all(ps),
@@ -333,7 +337,7 @@ var toggleRating = async (uri, rating) => {
   if (currentRating === rating)
     rating = 0;
   if (currentRating) {
-    f3.pipe(
+    f2.pipe(
       playlistUris.slice(0, currentRating + 1),
       ar2.filter(Boolean),
       ar2.map((playlistUri) => Spicetify.URI.fromString(playlistUri).id),
@@ -432,7 +436,7 @@ var wrapDropdownInsidePlaylistButton = (pb, uri, forced = false) => {
       popper.appendChild(box);
       box.className = "main-contextMenu-tippy";
       box.appendChild(instance.props.content);
-      return { popper, onUpdate: f4.constVoid };
+      return { popper, onUpdate: f3.constVoid };
     },
     onShow(instance) {
       instance.popper.firstChild.classList.add("main-contextMenu-tippyEnter");
@@ -470,7 +474,7 @@ var updateNowPlayingControls = (newTrack, updateDropdown = true) => {
 };
 var updateTrackListControls = (updateDropdown = true) => {
   const trackLists = getTrackLists();
-  f4.pipe(
+  f3.pipe(
     trackLists,
     ar3.map((trackList) => {
       const trackListTracks = getTrackListTracks(trackList);
@@ -490,18 +494,18 @@ var updateTrackListControls = (updateDropdown = true) => {
 var updateCollectionControls = async (uri) => {
   let uris;
   if (URI.isAlbum(uri))
-    uris = f4.pipe(
+    uris = f3.pipe(
       await fetchGQLAlbum(`${uri}`),
       (x) => x.tracks.items,
       ar3.map((x) => x.track.uri)
     );
   else if (URI.isArtist(uri))
-    uris = f4.pipe(
+    uris = f3.pipe(
       await fetchArtistLikedTracks(`${uri}`),
       ar3.map((x) => x.uri)
     );
   else if (URI.isPlaylistV1OrV2(uri))
-    uris = f4.pipe(
+    uris = f3.pipe(
       await fetchPlaylistContents(`${uri}`),
       ar3.map((x) => x.uri)
     );

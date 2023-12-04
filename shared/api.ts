@@ -9,6 +9,11 @@ export const spotifyApi = SpotifyApi.withAccessToken("client-id", {} as AccessTo
         // @ts-ignore
         return Spicetify.CosmosAsync.resolve(method, url)
     },
+    deserializer: {
+        deserialize(res) {
+            return (res as unknown as Spicetify.CosmosAsync.Response).body
+        },
+    },
 })
 
 /*                          GraphQL                                           */

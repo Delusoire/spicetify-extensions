@@ -1,5 +1,3 @@
-import { function as f } from "https://esm.sh/fp-ts"
-
 export type SpotifyID = string
 export type SpotifyURI = string
 
@@ -8,12 +6,12 @@ const { PlayerAPI, History } = Spicetify.Platform
 
 export const SpotifyLoc = {
     before: {
-        start: f.constant({ before: "start" }),
+        start: () => ({ before: "start" as const }),
         fromUri: (uri: SpotifyURI) => ({ before: { uri } }),
         fromUid: (uid: string) => ({ before: { uid } }),
     },
     after: {
-        end: f.constant({ after: "end" }),
+        end: () => ({ after: "end" as const }),
         fromUri: (uri: SpotifyURI) => ({ after: { uri } }),
         fromUid: (uid: string) => ({ after: { uid } }),
     },
