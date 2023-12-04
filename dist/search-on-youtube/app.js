@@ -41,9 +41,9 @@ var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
   fetch(url, opts) {
-    const { method, headers, body } = opts;
+    const { method } = opts;
     debugger;
-    return Spicetify.CosmosAsync.resolve(method, url, headers, body);
+    return Spicetify.CosmosAsync.resolve(method, url);
   }
 });
 var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {

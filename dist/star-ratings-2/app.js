@@ -72,9 +72,9 @@ var toMemoized = (fn) => f2.pipe(fn, f2.tupled, memoize(eq.contramap(JSON.string
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
   fetch(url, opts) {
-    const { method, headers, body } = opts;
+    const { method } = opts;
     debugger;
-    return Spicetify.CosmosAsync.resolve(method, url, headers, body);
+    return Spicetify.CosmosAsync.resolve(method, url);
   }
 });
 var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.getAlbum, {

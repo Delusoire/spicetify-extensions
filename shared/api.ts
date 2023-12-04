@@ -1,15 +1,14 @@
 import { AccessToken, SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk"
 import { toMemoized } from "./fp.ts"
 import { SpotifyURI, escapeRegex } from "./util.ts"
-import { number, string } from "../../../AppData/Local/deno/npm/registry.npmjs.org/@types/prop-types/15.7.10/index.d.ts"
 
 export const spotifyApi = SpotifyApi.withAccessToken("client-id", {} as AccessToken, {
     // @ts-ignore
     fetch(url, opts) {
-        const { method, headers, body } = opts!
+        const { method } = opts!
         debugger
         // @ts-ignore
-        return Spicetify.CosmosAsync.resolve(method, url, headers, body)
+        return Spicetify.CosmosAsync.resolve(method, url)
     },
 })
 
