@@ -106,7 +106,6 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
   fetch(url, opts) {
     const { method } = opts;
-    debugger;
     return Spicetify.CosmosAsync.resolve(method, url);
   }
 });
