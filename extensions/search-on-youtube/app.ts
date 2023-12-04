@@ -11,6 +11,7 @@ const YTVidIDCache = new Map<SpotifyID, string>()
 const showOnYouTube = async (uri: SpotifyURI) => {
     const id = URI.fromString(uri)!.id!
     if (!YTVidIDCache.get(id)) {
+        debugger
         const track = parseAPITrack(await spotifyApi.tracks.get(id))
         const searchString = `${track.artistName} - ${track.name} music video`
 

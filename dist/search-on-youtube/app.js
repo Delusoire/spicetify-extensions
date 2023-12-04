@@ -42,6 +42,7 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
   fetch(url, opts) {
     const { method, headers, body } = opts;
+    debugger;
     return Spicetify.CosmosAsync.resolve(method, url, headers, body);
   }
 });
@@ -261,6 +262,7 @@ var YTVidIDCache = /* @__PURE__ */ new Map();
 var showOnYouTube = async (uri) => {
   const id = URI.fromString(uri).id;
   if (!YTVidIDCache.get(id)) {
+    debugger;
     const track = parseAPITrack(await spotifyApi.tracks.get(id));
     const searchString = `${track.artistName} - ${track.name} music video`;
     try {

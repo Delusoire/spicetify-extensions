@@ -7,6 +7,7 @@ export const spotifyApi = SpotifyApi.withAccessToken("client-id", {} as AccessTo
     // @ts-ignore
     fetch(url, opts) {
         const { method, headers, body } = opts!
+        debugger
         // @ts-ignore
         return Spicetify.CosmosAsync.resolve(method, url, headers, body)
     },
