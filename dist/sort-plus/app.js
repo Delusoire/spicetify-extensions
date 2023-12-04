@@ -2,7 +2,7 @@
 import {
   array as ar2,
   eq as eq2,
-  function as f4,
+  function as f3,
   nonEmptyArray as nea,
   number as num,
   option as o,
@@ -14,6 +14,10 @@ import {
 import { guard as guard2 } from "https://esm.sh/fp-ts-std/Function";
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
 import { values } from "https://esm.sh/fp-ts-std/Record";
+import { LastFMTrack } from "https://esm.sh/lastfm-ts-api";
+
+// shared/api.ts
+import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 
 // shared/fp.ts
 import {
@@ -28,18 +32,17 @@ import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
 var guard3 = (branches) => guard(branches);
 var objConcat2 = () => rec.getUnionSemigroup(sg.first()).concat;
 var objConcat = () => ar.reduce({}, objConcat2());
-var pMchain = (f5) => async (fa) => f5(await fa);
-var is = (c) => (a3) => (field) => field[c] === a3;
-var tapAny = (f5) => (fa) => {
-  f5(fa);
+var pMchain = (f4) => async (fa) => f4(await fa);
+var is = (c) => (a) => (field) => field[c] === a;
+var tapAny = (f4) => (fa) => {
+  f4(fa);
   return fa;
 };
-var chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
-var withProgress = (map) => (f5) => (fa) => {
+var withProgress = (map) => (f4) => (fa) => {
   let i = 0;
   let lastProgress = 0;
-  return map(async (...a3) => {
-    const ret = await f5(...a3);
+  return map(async (...a) => {
+    const ret = await f4(...a);
     const progress = Math.round(i++ / Object.values(fa).length * 100);
     if (progress > lastProgress) {
       Spicetify.Snackbar.updater.enqueueSetState(Spicetify.Snackbar, () => ({
@@ -59,10 +62,12 @@ var withProgress = (map) => (f5) => (fa) => {
     return ret;
   })(fa);
 };
-var memoize2 = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
+var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/util.ts
 import { function as f2 } from "https://esm.sh/fp-ts";
+var {} = Spicetify;
+var { PlayerAPI, History } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
     start: f2.constant({ before: "start" }),
@@ -89,7 +94,7 @@ var createQueueItem = (queued) => (uri) => ({
   provider: queued ? "queue" : "context"
 });
 var setQueue = async (nextTracks) => {
-  const { _queue, _client } = Spicetify.Platform.PlayerAPI._queue;
+  const { _queue, _client } = PlayerAPI._queue;
   const { prevTracks, queueRevision } = _queue;
   return _client.setQueue({
     nextTracks,
@@ -98,12 +103,18 @@ var setQueue = async (nextTracks) => {
   });
 };
 var setPlayingContext = (uri) => {
-  const { sessionId } = Spicetify.Platform.PlayerAPI.getState();
-  return Spicetify.Platform.PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri });
+  const { sessionId } = PlayerAPI._state;
+  return PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri });
 };
 
 // shared/api.ts
-import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
+var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
+  // @ts-ignore
+  fetch(url, opts) {
+    const { method, headers, body } = opts;
+    return Spicetify.CosmosAsync.resolve(method, url, headers, body);
+  }
+});
 var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.getAlbum, {
   uri,
   locale: Spicetify.Locale.getLocale(),
@@ -120,39 +131,7 @@ var fetchGQLArtistDiscography = async (uri, offset = 0, limit = 116) => (await S
   offset,
   limit
 })).data.artistUnion.discography.all.items;
-var fetchWebArtistsSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
-);
-var fetchWebPlaylistsSpot = chunckify(1)(
-  // @ts-ignore chunkify will never call with empty array
-  async ([id]) => [
-    await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
-  ]
-);
-var fetchWebAlbumsSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums
-);
-var fetchWebTracksSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
-);
-var fetchPlatLikedTracks = async () => (await Spicetify.Platform.LibraryAPI.getTracks({
-  limit: Number.MAX_SAFE_INTEGER
-})).items;
-var fetchPlatArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items;
-var fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
-var createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
-var createSPPlaylistFromTracks = (name, tracks, folder) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
-  operation: "create",
-  ...folder ? { after: folder } : {},
-  name,
-  playlist: true,
-  uris: tracks
-});
-var setPlatPlaylistVisibility = async (playlist, visibleForAll) => await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
-var fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
-var fetchPlatRootFolder = () => fetchPlatFolder(void 0);
-var movePlatPlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location);
-var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
   const url = new URL("https://ws.audioscrobbler.com/2.0/");
   url.searchParams.append("method", "track.getInfo");
   url.searchParams.append("api_key", LFMApiKey);
@@ -162,7 +141,28 @@ var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "")
   url.searchParams.append("username", lastFmUsername);
   return await fetch(url).then((res) => res.json());
 };
-var fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
+var fetchLastFMTrackMemo = toMemoized(fetchLastFMTrack);
+
+// shared/platformApi.ts
+var {} = Spicetify;
+var {} = Spicetify.Platform;
+var fetchLikedTracks = async () => (await Spicetify.Platform.LibraryAPI.getTracks({
+  limit: Number.MAX_SAFE_INTEGER
+})).items;
+var fetchArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items;
+var fetchPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
+var createFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
+var createPlaylistFromTracks = (name, tracks, folder) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
+  operation: "create",
+  ...folder ? { after: folder } : {},
+  name,
+  playlist: true,
+  uris: tracks
+});
+var setPlaylistVisibility = async (playlist, visibleForAll) => await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
+var fetchFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
+var fetchRootFolder = () => fetchFolder(void 0);
+var movePlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location);
 
 // shared/parse.ts
 var parseTrackFromAlbum = ({ track }) => ({
@@ -204,9 +204,9 @@ var parsePlatTrackFromArtistLikedTracks = (track) => ({
   releaseDate: void 0,
   uri: track.uri
 });
-var parseAPITrackFromPlaylist = (track) => ({
-  albumName: track.album?.name,
-  albumUri: track.album?.uri,
+var parse1 = (track) => ({
+  albumName: track.album.name,
+  albumUri: track.album.uri,
   artistName: track.artists[0].name,
   artistUri: track.artists[0].uri,
   durationMilis: track.duration.milliseconds,
@@ -217,7 +217,7 @@ var parseAPITrackFromPlaylist = (track) => ({
   uid: track.uid,
   uri: track.uri
 });
-var parseAPITrackFromSpotify = (track) => ({
+var parseAPITrack = (track) => ({
   albumName: track.album.name,
   albumUri: track.album.uri,
   artistName: track.artists[0].name,
@@ -227,6 +227,7 @@ var parseAPITrackFromSpotify = (track) => ({
   playcount: void 0,
   popularity: track.popularity,
   releaseDate: new Date(track.album.release_date).getTime(),
+  uid: track.id,
   uri: track.uri
 });
 var parsePlatLikedTracks = (track) => ({
@@ -255,11 +256,11 @@ var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f5) => allPass(
+  (f4) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f5.toString())
+  )(f4.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -415,7 +416,7 @@ var settings = new SettingsSection("Sort+", "sort-plus").addToggle({ id: "descen
     desc: "Sorted Playlists folder uri",
     inputType: "text"
   },
-  async () => (await createPlatFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri
+  async () => (await createFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri
 );
 settings.pushSettings();
 var CONFIG = settings.toObject();
@@ -423,6 +424,7 @@ var CONFIG = settings.toObject();
 // extensions/sort-plus/app.ts
 debugger;
 var { URI } = Spicetify;
+var { PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
 var SortBy = /* @__PURE__ */ ((SortBy2) => {
   SortBy2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
   SortBy2["SPOTIFY_POPULARITY"] = "Spotify - Popularity";
@@ -449,12 +451,12 @@ var getAlbumTracks = async (uri) => {
     albumName: albumRes.name,
     releaseDate
   };
-  return f4.pipe(albumRes.tracks.items, ar2.map(f4.flow(parseTrackFromAlbum, (track) => Object.assign(track, filler))));
+  return f3.pipe(albumRes.tracks.items, ar2.map(f3.flow(parseTrackFromAlbum, (track) => Object.assign(track, filler))));
 };
-var getPlaylistTracks = f4.flow(fetchPlatPlaylistContents, pMchain(ar2.map(parseAPITrackFromPlaylist)));
+var getPlaylistTracks = f3.flow(fetchPlaylistContents, pMchain(ar2.map(parse1)));
 async function getArtistTracks(uri) {
   const extractUriFromReleases = (x) => x.releases.items[0].uri;
-  const getTracksFromAlbums = f4.flow(ar2.map(getAlbumTracks), (ps) => Promise.all(ps), pMchain(ar2.flatten));
+  const getTracksFromAlbums = f3.flow(ar2.map(getAlbumTracks), (ps) => Promise.all(ps), pMchain(ar2.flatten));
   const allTracks = new Array();
   const add = (tracks) => {
     allTracks.push(...tracks);
@@ -467,11 +469,11 @@ async function getArtistTracks(uri) {
   } else {
     const disc = (await fetchGQLArtistOverview(uri)).discography;
     if (CONFIG.artistLikedTracks) {
-      const likedTracks = await fetchPlatArtistLikedTracks(uri);
-      f4.pipe(likedTracks, ar2.map(parsePlatTrackFromArtistLikedTracks), add);
+      const likedTracks = await fetchArtistLikedTracks(uri);
+      f3.pipe(likedTracks, ar2.map(parsePlatTrackFromArtistLikedTracks), add);
     }
     if (CONFIG.artistTopTracks)
-      f4.pipe(
+      f3.pipe(
         disc.topTracks.items,
         ar2.map((i) => i.track),
         ar2.map(parseTopTrackFromArtist),
@@ -487,18 +489,18 @@ async function getArtistTracks(uri) {
       albumsLikeReleases.push(...disc.compilations.items);
   }
   albumsLike.push(...albumsLikeReleases.map(extractUriFromReleases));
-  await f4.pipe(albumsLike, getTracksFromAlbums, pMchain(add));
+  await f3.pipe(albumsLike, getTracksFromAlbums, pMchain(add));
   return await Promise.all(allTracks);
 }
-var fetchAPITracksFromTracks = f4.flow(
-  ar2.map(({ uri }) => URI.fromString(uri).id),
-  fetchWebTracksSpot,
-  pMchain(ar2.map(parseAPITrackFromSpotify))
+var fetchAPITracksFromTracks = f3.flow(
+  ar2.map((track) => URI.fromString(track.uri).id),
+  spotifyApi.tracks.get,
+  pMchain(ar2.map(parseAPITrack))
 );
-var fetchAlbumTracksFromTracks = f4.flow(
+var fetchAlbumTracksFromTracks = f3.flow(
   nea.groupBy((track) => track.albumUri),
   withProgress(rec2.mapWithIndex)(async (albumUri, tracks) => {
-    const uriEq = f4.pipe(
+    const uriEq = f3.pipe(
       str2.Eq,
       eq2.contramap((t) => t.uri)
     );
@@ -508,11 +510,11 @@ var fetchAlbumTracksFromTracks = f4.flow(
   (o2) => Promise.all(Object.values(o2)),
   pMchain(ar2.flatten)
 );
-var populateTracksSpot = (propName) => (tracks) => f4.pipe(
+var populateTracksSpot = (propName) => (tracks) => f3.pipe(
   tracks,
   ar2.filter((x) => x[SortProp[propName]] == null),
-  guard2([[str2.startsWith("Spotify - Play Count" /* SPOTIFY_PLAYCOUNT */), f4.constant(fetchAlbumTracksFromTracks)]])(
-    f4.constant(fetchAPITracksFromTracks)
+  guard2([[str2.startsWith("Spotify - Play Count" /* SPOTIFY_PLAYCOUNT */), f3.constant(fetchAlbumTracksFromTracks)]])(
+    f3.constant(fetchAPITracksFromTracks)
   )(propName),
   pMchain(ar2.concat(tracks)),
   pMchain(nea.groupBy((x) => x.uri)),
@@ -520,45 +522,46 @@ var populateTracksSpot = (propName) => (tracks) => f4.pipe(
   pMchain(ar2.map(objConcat()))
 );
 var populateTrackLastFM = async (track) => {
-  const lastfmTrack = (await fetchTrackLFMAPI(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUsername)).track;
+  LastFMTrack;
+  const lastfmTrack = (await fetchLastFMTrack(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUsername)).track;
   track.lastfmPlaycount = Number(lastfmTrack.listeners);
   track.scrobbles = Number(lastfmTrack.playcount);
   track.personalScrobbles = Number(lastfmTrack.userplaycount);
   return track;
 };
-var fetchTracks = f4.flow(
+var fetchTracks = f3.flow(
   tapAny((uri) => void (lastFetchedUri = uri)),
   guard2([
     [URI.isAlbum, getAlbumTracks],
     [URI.isArtist, getArtistTracks],
     [URI.isPlaylistV1OrV2, getPlaylistTracks],
-    [URI.isCollection, f4.flow(fetchPlatLikedTracks, pMchain(ar2.map(parsePlatLikedTracks)))]
+    [URI.isCollection, f3.flow(fetchLikedTracks, pMchain(ar2.map(parsePlatLikedTracks)))]
   ])(task3.of([]))
 );
 var populateTracks = guard2([
   [str2.startsWith("Spotify"), populateTracksSpot],
   [
     str2.startsWith("LastFM"),
-    f4.constant(
-      f4.flow(
-        f4.pipe(withProgress(ar2.map)(populateTrackLastFM)),
+    f3.constant(
+      f3.flow(
+        f3.pipe(withProgress(ar2.map)(populateTrackLastFM)),
         (ps) => Promise.all(ps)
       )
     )
   ]
-])(f4.constant(task3.of([])));
+])(f3.constant(task3.of([])));
 var lastSortedQueue = [];
 var _setQueue = (inverted) => async (queue) => {
-  if (Spicetify.Platform.PlayerAPI._queue._queue === null)
+  if (PlayerAPI2._queue._queue === null)
     return void Spicetify.showNotification("Queue is null!", true);
-  const uriOrd = f4.pipe(
+  const uriOrd = f3.pipe(
     str2.Ord,
     ord.contramap((t) => t.uri)
   );
-  lastSortedQueue = f4.pipe(queue, ar2.uniq(uriOrd), inverted ? ar2.reverse : f4.identity);
+  lastSortedQueue = f3.pipe(queue, ar2.uniq(uriOrd), inverted ? ar2.reverse : f3.identity);
   globalThis.lastSortedQueue = lastSortedQueue;
   const isQueued = URI.isCollection(lastFetchedUri);
-  await f4.pipe(
+  await f3.pipe(
     lastSortedQueue,
     ar2.map((t) => t.uri),
     ar2.concat(["spotify:separator"]),
@@ -567,18 +570,18 @@ var _setQueue = (inverted) => async (queue) => {
   );
   if (!isQueued)
     await setPlayingContext(lastFetchedUri);
-  await Spicetify.Platform.PlayerAPI.skipToNext();
+  await PlayerAPI2.skipToNext();
 };
 var lastFetchedUri;
 var lastActionName;
 var sortByProp = (name) => async (uri) => {
   lastActionName = name;
   const descending = invertOrder ^ Number(CONFIG.descending);
-  const propOrd = f4.pipe(
+  const propOrd = f3.pipe(
     num.Ord,
     ord.contramap((t) => t[SortProp[name]])
   );
-  f4.pipe(
+  f3.pipe(
     uri,
     fetchTracks,
     pMchain(populateTracks(name)),
@@ -600,17 +603,17 @@ addEventListener("keyup", (event) => {
 var sortTracksWith = (name, sortFn) => (uri) => {
   lastActionName = name;
   const descending = invertOrder ^ Number(CONFIG.descending);
-  f4.pipe(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!!descending)));
+  f3.pipe(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!!descending)));
 };
 var shuffle = (array, l = array.length) => l == 0 ? [] : [array.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array)];
 var shuffleSubmenu = new Spicetify.ContextMenu.Item(
   "True Shuffle",
   ([uri]) => sortTracksWith("True Shuffle", shuffle)(uri),
-  f4.constTrue,
+  f3.constTrue,
   "shuffle",
   false
 );
-var starsOrd = f4.pipe(
+var starsOrd = f3.pipe(
   num.Ord,
   ord.contramap((t) => globalThis.tracksRatings[t.uri] ?? 0)
 );
@@ -621,7 +624,7 @@ var starsSubmenu = new Spicetify.ContextMenu.Item(
   "heart-active",
   false
 );
-var createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, ([uri]) => sortByProp(name)(uri), f4.constTrue, icon, false);
+var createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, ([uri]) => sortByProp(name)(uri), f3.constTrue, icon, false);
 new Spicetify.ContextMenu.SubMenu(
   "Sort by",
   ar2.zipWith(
@@ -631,40 +634,39 @@ new Spicetify.ContextMenu.SubMenu(
   ).concat([shuffleSubmenu, starsSubmenu]),
   ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isCollection, URI.isTrack, URI.isPlaylistV1OrV2])(uri)
 ).register();
-var generatePlaylistName = async () => {
-  const uri = URI.fromString(lastFetchedUri);
-  const id = uri.id;
-  let res = [];
+var getNameFromUri = async (uri) => {
   switch (uri.type) {
-    case URI.Type.ALBUM:
-      res = await fetchWebAlbumsSpot([id]);
-      break;
-    case URI.Type.ARTIST:
-      res = await fetchWebArtistsSpot([id]);
-      break;
+    case URI.Type.ALBUM: {
+      const album = await spotifyApi.albums.get(uri.id);
+      return album.name;
+    }
+    case URI.Type.ARTIST: {
+      const artist = await spotifyApi.artists.get(uri.id);
+      return artist.name;
+    }
     case URI.Type.COLLECTION:
-      res = [{ name: "Liked Tracks" }];
-      break;
+      return "Liked Tracks";
     case URI.Type.PLAYLIST:
-    case URI.Type.PLAYLIST_V2:
-      res = await fetchWebPlaylistsSpot([id]);
-      break;
+    case URI.Type.PLAYLIST_V2: {
+      const playlist = await spotifyApi.playlists.getPlaylist(uri.id);
+      return playlist.name;
+    }
   }
-  return `${res[0]?.name ?? "Error"} - ${lastActionName}`;
 };
 new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
   if (lastSortedQueue.length === 0) {
     Spicetify.showNotification("Must sort to queue beforehand");
     return;
   }
-  const sortedPlaylistsFolder = await fetchPlatFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchPlatRootFolder);
-  const playlistName = await generatePlaylistName();
-  const { uri } = await createSPPlaylistFromTracks(
+  const sortedPlaylistsFolder = await fetchFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchRootFolder);
+  const uri = URI.fromString(lastFetchedUri);
+  const playlistName = `${getNameFromUri(uri) ?? "Error"} - ${lastActionName}`;
+  const { palylistUri } = await createPlaylistFromTracks(
     playlistName,
     lastSortedQueue.map((t) => t.uri),
     sortedPlaylistsFolder.uri
   );
-  setPlatPlaylistVisibility(uri, false);
+  setPlaylistVisibility(palylistUri, false);
   Spicetify.showNotification(`Playlist ${playlistName} created`);
 });
 new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
@@ -676,10 +678,10 @@ new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", 
     Spicetify.showNotification("Last sorted queue must be a playlist");
     return;
   }
-  f4.pipe(
+  f3.pipe(
     lastSortedQueue.map((t) => ({ uid: t.uid })),
     withProgress(ar2.map)(
-      (t) => void movePlatPlaylistTracks(lastFetchedUri, [t], SpotifyLoc.after.end())
+      (t) => void movePlaylistTracks(lastFetchedUri, [t], SpotifyLoc.after.end())
     )
   );
 });

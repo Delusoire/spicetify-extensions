@@ -14,30 +14,31 @@ import {
 import { guard } from "https://esm.sh/fp-ts-std/Function"
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate"
 import { values } from "https://esm.sh/fp-ts-std/Record"
+import { LastFMTrack } from "https://esm.sh/lastfm-ts-api"
+
 import {
-    createSPPlaylistFromTracks,
     fetchGQLAlbum,
     fetchGQLArtistDiscography,
     fetchGQLArtistOverview,
-    fetchPlatArtistLikedTracks,
-    fetchPlatFolder,
-    fetchPlatLikedTracks,
-    fetchPlatPlaylistContents,
-    fetchPlatRootFolder,
-    fetchTrackLFMAPI,
-    fetchWebAlbumsSpot,
-    fetchWebArtistsSpot,
-    fetchWebPlaylistsSpot,
-    fetchWebTracksSpot,
-    movePlatPlaylistTracks,
-    setPlatPlaylistVisibility,
+    fetchLastFMTrack,
+    spotifyApi,
 } from "../../shared/api.ts"
+import {
+    createPlaylistFromTracks,
+    fetchArtistLikedTracks,
+    fetchFolder,
+    fetchLikedTracks,
+    fetchPlaylistContents,
+    fetchRootFolder,
+    movePlaylistTracks,
+    setPlaylistVisibility,
+} from "../../shared/platformApi.ts"
 import { objConcat, pMchain, tapAny, withProgress } from "../../shared/fp.ts"
 import {
     TrackData,
     TracksPopulater,
-    parseAPITrackFromPlaylist,
-    parseAPITrackFromSpotify,
+    parse1,
+    parseAPITrack,
     parsePlatLikedTracks,
     parsePlatTrackFromArtistLikedTracks,
     parseTopTrackFromArtist,
@@ -47,6 +48,7 @@ import { SpotifyLoc, SpotifyURI, createQueueItem, setPlayingContext, setQueue } 
 import { CONFIG } from "./settings.ts"
 
 const { URI } = Spicetify
+const { PlayerAPI } = Spicetify.Platform
 
 enum SortBy {
     SPOTIFY_PLAYCOUNT = "Spotify - Play Count",
@@ -81,7 +83,7 @@ const getAlbumTracks = async (uri: SpotifyURI) => {
     return f.pipe(albumRes.tracks.items, ar.map(f.flow(parseTrackFromAlbum, track => Object.assign(track, filler))))
 }
 
-const getPlaylistTracks = f.flow(fetchPlatPlaylistContents, pMchain(ar.map(parseAPITrackFromPlaylist)))
+const getPlaylistTracks = f.flow(fetchPlaylistContents, pMchain(ar.map(parse1)))
 
 async function getArtistTracks(uri: SpotifyURI) {
     const extractUriFromReleases = (x: { releases: { items: Array<{ uri: SpotifyURI }> } }) => x.releases.items[0].uri
@@ -103,7 +105,7 @@ async function getArtistTracks(uri: SpotifyURI) {
         const disc = (await fetchGQLArtistOverview(uri)).discography
 
         if (CONFIG.artistLikedTracks) {
-            const likedTracks = await fetchPlatArtistLikedTracks(uri)
+            const likedTracks = await fetchArtistLikedTracks(uri)
             f.pipe(likedTracks, ar.map(parsePlatTrackFromArtistLikedTracks), add)
         }
 
@@ -129,9 +131,9 @@ async function getArtistTracks(uri: SpotifyURI) {
 
 // ------------- For populateTracksSpot -------------
 const fetchAPITracksFromTracks: TracksPopulater = f.flow(
-    ar.map(({ uri }) => URI.fromString(uri)!.id!),
-    fetchWebTracksSpot,
-    pMchain(ar.map(parseAPITrackFromSpotify)),
+    ar.map(track => URI.fromString(track.uri)!.id!),
+    spotifyApi.tracks.get,
+    pMchain(ar.map(parseAPITrack)),
 )
 
 const fetchAlbumTracksFromTracks: TracksPopulater = f.flow(
@@ -165,7 +167,9 @@ const populateTracksSpot = (propName: keyof typeof SortProp) => (tracks: TrackDa
     )
 
 const populateTrackLastFM = async (track: TrackData) => {
-    const lastfmTrack = (await fetchTrackLFMAPI(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUsername))
+    LastFMTrack
+
+    const lastfmTrack = (await fetchLastFMTrack(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUsername))
         .track
     track.lastfmPlaycount = Number(lastfmTrack.listeners)
     track.scrobbles = Number(lastfmTrack.playcount)
@@ -181,7 +185,7 @@ const fetchTracks = f.flow(
         [URI.isAlbum, getAlbumTracks],
         [URI.isArtist, getArtistTracks],
         [URI.isPlaylistV1OrV2, getPlaylistTracks],
-        [URI.isCollection, f.flow(fetchPlatLikedTracks, pMchain(ar.map(parsePlatLikedTracks)))],
+        [URI.isCollection, f.flow(fetchLikedTracks, pMchain(ar.map(parsePlatLikedTracks)))],
     ])(task.of([])),
 )
 
@@ -199,8 +203,7 @@ const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
 
 let lastSortedQueue: TrackData[] = []
 const _setQueue = (inverted: boolean) => async (queue: TrackData[]) => {
-    if (Spicetify.Platform.PlayerAPI._queue._queue === null)
-        return void Spicetify.showNotification("Queue is null!", true)
+    if (PlayerAPI._queue._queue === null) return void Spicetify.showNotification("Queue is null!", true)
 
     const uriOrd = f.pipe(
         str.Ord,
@@ -220,7 +223,7 @@ const _setQueue = (inverted: boolean) => async (queue: TrackData[]) => {
         setQueue,
     )
     if (!isQueued) await setPlayingContext(lastFetchedUri)
-    await Spicetify.Platform.PlayerAPI.skipToNext()
+    await PlayerAPI.skipToNext()
 }
 
 let lastFetchedUri: SpotifyURI
@@ -275,12 +278,12 @@ const shuffleSubmenu = new Spicetify.ContextMenu.Item(
 
 const starsOrd = f.pipe(
     num.Ord,
-    ord.contramap((t: { uri: SpotifyURI }) => (globalThis as any).tracksRatings[t.uri] ?? 0),
+    ord.contramap((t: { uri: SpotifyURI }) => globalThis.tracksRatings[t.uri] ?? 0),
 )
 const starsSubmenu = new Spicetify.ContextMenu.Item(
     "Stars",
     ([uri]) => sortTracksWith("Stars", ar.sort(starsOrd))(uri),
-    () => (globalThis as any).tracksRatings !== undefined,
+    () => globalThis.tracksRatings !== undefined,
     "heart-active",
     false,
 )
@@ -302,49 +305,47 @@ new Spicetify.ContextMenu.SubMenu(
 
 // Topbar
 
-const generatePlaylistName = async () => {
-    const uri = URI.fromString(lastFetchedUri)
-    const id = uri.id!
-
-    let res = []
+const getNameFromUri = async (uri: Spicetify.URI) => {
     switch (uri.type) {
-        case URI.Type.ALBUM:
-            res = await fetchWebAlbumsSpot([id])
-            break
+        case URI.Type.ALBUM: {
+            const album = await spotifyApi.albums.get(uri.id!)
+            return album.name
+        }
 
-        case URI.Type.ARTIST:
-            res = await fetchWebArtistsSpot([id])
-            break
+        case URI.Type.ARTIST: {
+            const artist = await spotifyApi.artists.get(uri.id!)
+            return artist.name
+        }
 
         case URI.Type.COLLECTION:
-            res = [{ name: "Liked Tracks" }]
-            break
+            return "Liked Tracks"
 
         case URI.Type.PLAYLIST:
-        case URI.Type.PLAYLIST_V2:
-            res = await fetchWebPlaylistsSpot([id])
-            break
+        case URI.Type.PLAYLIST_V2: {
+            const playlist = await spotifyApi.playlists.getPlaylist(uri.id!)
+            return playlist.name
+        }
     }
-
-    return `${res[0]?.name ?? "Error"} - ${lastActionName}`
 }
+
 new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
     if (lastSortedQueue.length === 0) {
         Spicetify.showNotification("Must sort to queue beforehand")
         return
     }
 
-    const sortedPlaylistsFolder = await fetchPlatFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchPlatRootFolder)
+    const sortedPlaylistsFolder = await fetchFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchRootFolder)
 
-    const playlistName = await generatePlaylistName()
+    const uri = URI.fromString(lastFetchedUri)
+    const playlistName = `${getNameFromUri(uri) ?? "Error"} - ${lastActionName}`
 
-    const { uri } = await createSPPlaylistFromTracks(
+    const { palylistUri } = await createPlaylistFromTracks(
         playlistName,
         lastSortedQueue.map(t => t.uri),
         sortedPlaylistsFolder.uri,
     )
 
-    setPlatPlaylistVisibility(uri, false)
+    setPlaylistVisibility(palylistUri, false)
 
     Spicetify.showNotification(`Playlist ${playlistName} created`)
 })
@@ -363,7 +364,7 @@ new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", 
     f.pipe(
         lastSortedQueue.map(t => ({ uid: t.uid as string })),
         withProgress(ar.map<{ uid: string }, void>)(
-            t => void movePlatPlaylistTracks(lastFetchedUri, [t], SpotifyLoc.after.end()),
+            t => void movePlaylistTracks(lastFetchedUri, [t], SpotifyLoc.after.end()),
         ),
     )
 })

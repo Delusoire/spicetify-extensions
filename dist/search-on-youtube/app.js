@@ -1,6 +1,9 @@
 // extensions/search-on-youtube/app.ts
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
 
+// shared/api.ts
+import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
+
 // shared/fp.ts
 import {
   array as ar,
@@ -12,13 +15,13 @@ import {
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
 var guard3 = (branches) => guard(branches);
-var pMchain = (f4) => async (fa) => f4(await fa);
-var is = (c) => (a3) => (field) => field[c] === a3;
-var chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
-var memoize2 = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
+var is = (c) => (a) => (field) => field[c] === a;
+var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/util.ts
 import { function as f2 } from "https://esm.sh/fp-ts";
+var {} = Spicetify;
+var { PlayerAPI, History } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
     start: f2.constant({ before: "start" }),
@@ -35,23 +38,14 @@ var normalizeStr = (str2) => str2.normalize("NFKD").replace(/\(.*\)/g, "").repla
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // shared/api.ts
-import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
-var fetchWebArtistsSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
-);
-var fetchWebPlaylistsSpot = chunckify(1)(
-  // @ts-ignore chunkify will never call with empty array
-  async ([id]) => [
-    await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
-  ]
-);
-var fetchWebAlbumsSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums
-);
-var fetchWebTracksSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
-);
-var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
+  // @ts-ignore
+  fetch(url, opts) {
+    const { method, headers, body } = opts;
+    return Spicetify.CosmosAsync.resolve(method, url, headers, body);
+  }
+});
+var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
   const url = new URL("https://ws.audioscrobbler.com/2.0/");
   url.searchParams.append("method", "track.getInfo");
   url.searchParams.append("api_key", LFMApiKey);
@@ -61,7 +55,7 @@ var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "")
   url.searchParams.append("username", lastFmUsername);
   return await fetch(url).then((res) => res.json());
 };
-var fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
+var fetchLastFMTrackMemo = toMemoized(fetchLastFMTrack);
 var searchYoutube = async (YouTubeApiKey, searchString) => {
   const url = new URL("https://www.googleapis.com/youtube/v3/search");
   url.searchParams.append("part", "snippet");
@@ -73,7 +67,7 @@ var searchYoutube = async (YouTubeApiKey, searchString) => {
 };
 
 // shared/parse.ts
-var parseAPITrackFromSpotify = (track) => ({
+var parseAPITrack = (track) => ({
   albumName: track.album.name,
   albumUri: track.album.uri,
   artistName: track.artists[0].name,
@@ -83,6 +77,7 @@ var parseAPITrackFromSpotify = (track) => ({
   playcount: void 0,
   popularity: track.popularity,
   releaseDate: new Date(track.album.release_date).getTime(),
+  uid: track.id,
   uri: track.uri
 });
 
@@ -99,11 +94,11 @@ var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f4) => allPass(
+  (f3) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f4.toString())
+  )(f3.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -266,7 +261,7 @@ var YTVidIDCache = /* @__PURE__ */ new Map();
 var showOnYouTube = async (uri) => {
   const id = URI.fromString(uri).id;
   if (!YTVidIDCache.get(id)) {
-    const track = parseAPITrackFromSpotify((await fetchWebTracksSpot([id]))[0]);
+    const track = parseAPITrack(await spotifyApi.tracks.get(id));
     const searchString = `${track.artistName} - ${track.name} music video`;
     try {
       const videos = await searchYoutube(CONFIG.YouTubeApiKey, searchString).then((res) => res.items);

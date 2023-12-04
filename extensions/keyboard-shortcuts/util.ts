@@ -64,4 +64,4 @@ export const isElementInViewPort = (e: HTMLElement) => {
     )
 }
 
-export const CLICKABLE_ELMENT_SELECTOR = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`
+export const CLICKABLE_ELEMENT_SELECTOR = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`

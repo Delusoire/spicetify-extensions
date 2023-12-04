@@ -1,7 +1,9 @@
 import { task } from "https://esm.sh/fp-ts"
-import { createPlatFolder } from "../../shared/api.ts"
+
+import { createFolder } from "../../shared/platformApi.ts"
 import { SettingsSection } from "../../shared/settings.tsx"
 import { SpotifyURI } from "../../shared/util.ts"
+
 import { loadRatings } from "./ratings.ts"
 
 const RATINGS_FOLDER_NAME = "Ratings"
@@ -16,7 +18,7 @@ const settings = new SettingsSection("Star Ratings 2", "star-ratings-2")
             inputType: "text",
             onChange: loadRatings,
         },
-        async () => (await createPlatFolder(RATINGS_FOLDER_NAME)).uri,
+        async () => (await createFolder(RATINGS_FOLDER_NAME)).uri,
     )
 
 settings.pushSettings()

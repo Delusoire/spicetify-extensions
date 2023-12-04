@@ -1,21 +1,19 @@
-import { array as a, function as f } from "https://esm.sh/fp-ts"
+import { function as f } from "https://esm.sh/fp-ts"
 
 export type SpotifyID = string
 export type SpotifyURI = string
 
-export type SpotifyLocObj = {
-    before?: "start" | { uri: SpotifyURI } | { uid: string }
-    after?: "end" | { uri: SpotifyURI } | { uid: string }
-}
+const {} = Spicetify
+const { PlayerAPI, History } = Spicetify.Platform
 
 export const SpotifyLoc = {
     before: {
-        start: f.constant({ before: "start" } as SpotifyLocObj),
+        start: f.constant({ before: "start" }),
         fromUri: (uri: SpotifyURI) => ({ before: { uri } }),
         fromUid: (uid: string) => ({ before: { uid } }),
     },
     after: {
-        end: f.constant({ after: "end" } as SpotifyLocObj),
+        end: f.constant({ after: "end" }),
         fromUri: (uri: SpotifyURI) => ({ after: { uri } }),
         fromUid: (uid: string) => ({ after: { uid } }),
     },
@@ -103,11 +101,11 @@ export const createQueueItem = (queued: boolean) => (uri: SpotifyURI) => ({
     },
     removed: [],
     blocked: [],
-    provider: queued ? "queue" : "context",
+    provider: queued ? ("queue" as const) : ("context" as const),
 })
 
 export const setQueue = async (nextTracks: Array<ReturnType<ReturnType<typeof createQueueItem>>>) => {
-    const { _queue, _client } = Spicetify.Platform.PlayerAPI._queue
+    const { _queue, _client } = PlayerAPI._queue
     const { prevTracks, queueRevision } = _queue
 
     return _client.setQueue({
@@ -118,8 +116,8 @@ export const setQueue = async (nextTracks: Array<ReturnType<ReturnType<typeof cr
 }
 
 export const setPlayingContext = (uri: SpotifyURI) => {
-    const { sessionId } = Spicetify.Platform.PlayerAPI.getState()
-    return Spicetify.Platform.PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri }) as Promise<undefined>
+    const { sessionId } = PlayerAPI._state
+    return PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri })
 }
 
 export const onHistoryChanged = (
@@ -151,8 +149,8 @@ export const onHistoryChanged = (
         lastPathname = pathname
     }
 
-    historyChanged(Spicetify.Platform.History.location ?? {})
-    Spicetify.Platform.History.listen(historyChanged)
+    historyChanged(History.location ?? {})
+    return History.listen(historyChanged)
 }
 
 export const onSongChanged = (callback: (state?: Spicetify.PlayerState) => void) => {

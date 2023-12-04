@@ -2,10 +2,15 @@
   "version": "3",
   "packages": {
     "specifiers": {
+      "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:@types/react": "npm:@types/react@18.2.37",
       "npm:@types/react-dom": "npm:@types/react-dom@18.2.15"
     },
     "npm": {
+      "@types/node@18.16.19": {
+        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
+        "dependencies": {}
+      },
       "@types/prop-types@15.7.10": {
         "integrity": "sha512-mxSnDQxPqsZxmeShFH+uwQ4kO4gcJcGahjjMFeLbKE95IAZiiZyiEepGZjtXJ7hN/yfu0bu9xN2ajcU0JcxX6A==",
         "dependencies": {}
@@ -39,11 +44,14 @@
     "https://deno.land/std/path/join.ts": "https://deno.land/std@0.206.0/path/join.ts",
     "https://deno.land/std/path/mod.ts": "https://deno.land/std@0.207.0/path/mod.ts",
     "https://deno.land/x/denosass/mod.ts": "https://deno.land/x/denosass@1.0.6/mod.ts",
+    "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk": "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk@1.2.1",
     "https://esm.sh/js-yaml": "https://esm.sh/js-yaml@4.1.0",
+    "https://esm.sh/lastfm-ts-api": "https://esm.sh/lastfm-ts-api@2.1.0",
     "https://esm.sh/lit/directives/join.js": "https://esm.sh/lit@3.1.0/directives/join.js",
     "https://esm.sh/postcss": "https://esm.sh/postcss@8.4.31",
     "https://esm.sh/postcss-modules": "https://esm.sh/postcss-modules@6.0.0",
-    "https://esm.sh/v134/@types/js-yaml@^4/index.d.ts": "https://esm.sh/v134/@types/js-yaml@4.0.9/index.d.ts"
+    "https://esm.sh/v134/@types/js-yaml@^4/index.d.ts": "https://esm.sh/v134/@types/js-yaml@4.0.9/index.d.ts",
+    "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk/dist/mjs/types.js": "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk@1.2.1/dist/mjs/types.js"
   },
   "remote": {
     "https://deno.land/std@0.109.0/_util/assert.ts": "2f868145a042a11d5ad0a3c748dcf580add8a0dbc0e876eaa0026303a5488f58",

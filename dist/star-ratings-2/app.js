@@ -3,6 +3,8 @@ import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
 
 // shared/util.ts
 import { function as f } from "https://esm.sh/fp-ts";
+var {} = Spicetify;
+var { PlayerAPI, History } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
     start: f.constant({ before: "start" }),
@@ -37,8 +39,8 @@ var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
     }
     lastPathname = pathname;
   };
-  historyChanged(Spicetify.Platform.History.location ?? {});
-  Spicetify.Platform.History.listen(historyChanged);
+  historyChanged(History.location ?? {});
+  return History.listen(historyChanged);
 };
 var onSongChanged = (callback) => {
   callback(Spicetify.Player.data);
@@ -46,7 +48,10 @@ var onSongChanged = (callback) => {
 };
 
 // extensions/star-ratings-2/controls.tsx
-import { array as ar3, function as f5 } from "https://esm.sh/fp-ts";
+import { array as ar3, function as f4 } from "https://esm.sh/fp-ts";
+
+// shared/api.ts
+import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 
 // shared/fp.ts
 import {
@@ -59,44 +64,25 @@ import {
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
 var guard3 = (branches) => guard(branches);
-var pMchain = (f6) => async (fa) => f6(await fa);
-var is = (c) => (a3) => (field) => field[c] === a3;
-var chunckify = (n) => (g) => f2.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
-var memoize2 = (fn) => f2.pipe(fn, f2.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f2.untupled);
+var pMchain = (f5) => async (fa) => f5(await fa);
+var is = (c) => (a) => (field) => field[c] === a;
+var toMemoized = (fn) => f2.pipe(fn, f2.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f2.untupled);
 
 // shared/api.ts
-import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
+var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
+  // @ts-ignore
+  fetch(url, opts) {
+    const { method, headers, body } = opts;
+    return Spicetify.CosmosAsync.resolve(method, url, headers, body);
+  }
+});
 var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.getAlbum, {
   uri,
   locale: Spicetify.Locale.getLocale(),
   offset,
   limit
 })).data.albumUnion;
-var fetchWebArtistsSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
-);
-var fetchWebPlaylistsSpot = chunckify(1)(
-  // @ts-ignore chunkify will never call with empty array
-  async ([id]) => [
-    await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
-  ]
-);
-var fetchWebAlbumsSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums
-);
-var fetchWebTracksSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
-);
-var setPlatTrackLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
-var fetchPlatArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items;
-var fetchPlatPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
-var createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
-var createPlatPlaylist = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createPlaylist(name, location);
-var setPlatPlaylistVisibility = async (playlist, visibleForAll) => await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
-var fetchPlatFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
-var addPlatPlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location);
-var removePlatPlaylistTracks = async (playlist, tracks) => Spicetify.Platform.PlaylistAPI.remove(playlist, tracks);
-var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
   const url = new URL("https://ws.audioscrobbler.com/2.0/");
   url.searchParams.append("method", "track.getInfo");
   url.searchParams.append("api_key", LFMApiKey);
@@ -106,19 +92,23 @@ var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "")
   url.searchParams.append("username", lastFmUsername);
   return await fetch(url).then((res) => res.json());
 };
-var fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
+var fetchLastFMTrackMemo = toMemoized(fetchLastFMTrack);
+
+// shared/platformApi.ts
+var {} = Spicetify;
+var {} = Spicetify.Platform;
+var setTrackLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
+var fetchArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items;
+var fetchPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
+var createFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
+var createPlaylist = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createPlaylist(name, location);
+var setPlaylistVisibility = async (playlist, visibleForAll) => await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
+var fetchFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
+var addPlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location);
+var removePlaylistTracks = async (playlist, tracks) => Spicetify.Platform.PlaylistAPI.remove(playlist, tracks);
 
 // extensions/star-ratings-2/dropdown.tsx
 import { range } from "https://esm.sh/fp-ts/lib/ReadonlyNonEmptyArray";
-
-// extensions/star-ratings-2/ratings.ts
-import { array as ar2, function as f4 } from "https://esm.sh/fp-ts";
-
-// extensions/star-ratings-2/settings.ts
-import { task as task2 } from "https://esm.sh/fp-ts";
-
-// shared/settings.tsx
-import { task } from "https://esm.sh/fp-ts";
 
 // shared/modules.ts
 import { allPass } from "https://esm.sh/fp-ts-std@0.18.0/Predicate";
@@ -127,11 +117,11 @@ var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f6) => allPass(
+  (f5) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f6.toString())
+  )(f5.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -147,7 +137,14 @@ var SettingText = findModuleByStrings(functionModules, "textSubdued", "viola");
 var SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelected");
 var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 
+// extensions/star-ratings-2/ratings.ts
+import { array as ar2, function as f3 } from "https://esm.sh/fp-ts";
+
+// extensions/star-ratings-2/settings.ts
+import { task as task2 } from "https://esm.sh/fp-ts";
+
 // shared/settings.tsx
+import { task } from "https://esm.sh/fp-ts";
 var { React, ReactDOM } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
 var SettingsSection = class _SettingsSection {
@@ -285,7 +282,7 @@ var settings = new SettingsSection("Star Ratings 2", "star-ratings-2").addInput(
     inputType: "text",
     onChange: loadRatings
   },
-  async () => (await createPlatFolder(RATINGS_FOLDER_NAME)).uri
+  async () => (await createFolder(RATINGS_FOLDER_NAME)).uri
 );
 settings.pushSettings();
 var CONFIG = settings.toObject();
@@ -307,15 +304,15 @@ var getCollectionPlaylistButton = () => {
 
 // extensions/star-ratings-2/ratings.ts
 var loadRatings = async () => {
-  const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri);
-  playlistUris = f4.pipe(
+  const ratingsFolder = await fetchFolder(CONFIG.ratingsFolderUri);
+  playlistUris = f3.pipe(
     ratingsFolder.items,
     ar2.map((p) => [p.uri, Number(p.name)]),
     ar2.reduce([], (uris, [uri, rating]) => (uris[rating] = uri, uris))
   );
-  globalThis.tracksRatings = tracksRatings = await f4.pipe(
+  globalThis.tracksRatings = tracksRatings = await f3.pipe(
     playlistUris,
-    ar2.map(fetchPlatPlaylistContents),
+    ar2.map(fetchPlaylistContents),
     (ps) => Promise.all(ps),
     // Promise.all flips empty to undefined
     pMchain(ar2.map((tracks) => tracks ?? [])),
@@ -336,36 +333,35 @@ var toggleRating = async (uri, rating) => {
   if (currentRating === rating)
     rating = 0;
   if (currentRating) {
-    f4.pipe(
+    f3.pipe(
       playlistUris.slice(0, currentRating + 1),
       ar2.filter(Boolean),
       ar2.map((playlistUri) => Spicetify.URI.fromString(playlistUri).id),
-      ar2.map((playlistId) => removePlatPlaylistTracks(playlistId, [{ uri, uid: "" }]))
+      ar2.map((playlistId) => removePlaylistTracks(playlistId, [{ uri, uid: "" }]))
     );
   }
   tracksRatings[uri] = rating;
   if (rating > 0) {
     let playlistUri = playlistUris[rating];
     if (!playlistUri) {
-      playlistUri = await createPlatPlaylist(rating.toFixed(0), SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri));
-      setPlatPlaylistVisibility(playlistUri, false);
+      playlistUri = await createPlaylist(rating.toFixed(0), SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri));
+      setPlaylistVisibility(playlistUri, false);
       playlistUris[rating] = playlistUri;
     }
-    addPlatPlaylistTracks(playlistUri, [uri]);
+    addPlaylistTracks(playlistUri, [uri]);
     if (rating >= Number(CONFIG.heartThreshold)) {
-      setPlatTrackLiked([uri], true);
+      setTrackLiked([uri], true);
     }
   }
   const npTrack = Spicetify.Player.data?.item.uri;
   if (npTrack === uri) {
     updateNowPlayingControls(npTrack, false);
     {
-      const npTrack2 = Spicetify.Player.data?.item.uri;
       const nowPlaylingControlsObserver = new MutationObserver(() => {
-        if (npTrack2 === uri) {
-          nowPlaylingControlsObserver.disconnect();
-        }
-        updateNowPlayingControls(npTrack2, false);
+        nowPlaylingControlsObserver.disconnect();
+        if (npTrack !== uri)
+          return;
+        updateNowPlayingControls(npTrack, false);
       });
       nowPlaylingControlsObserver.observe(getNowPlayingBar(), {
         subtree: true
@@ -392,7 +388,7 @@ var RatingButton = ({ i, uri }) => /* @__PURE__ */ React2.createElement(
     condensed: "true",
     iconOnly: CheckedPlaylistButtonIcon,
     semanticColor: "textBrightAccent",
-    onClick: (e) => toggleRating(uri, i)
+    onClick: () => toggleRating(uri, i)
   }
 );
 var Dropdown = ({ uri }) => /* @__PURE__ */ React2.createElement("div", { className: "rating-dropdown" }, range(1, 5).map((i) => /* @__PURE__ */ React2.createElement(RatingButton, { i, uri })));
@@ -436,7 +432,7 @@ var wrapDropdownInsidePlaylistButton = (pb, uri, forced = false) => {
       popper.appendChild(box);
       box.className = "main-contextMenu-tippy";
       box.appendChild(instance.props.content);
-      return { popper, onUpdate: f5.constVoid };
+      return { popper, onUpdate: f4.constVoid };
     },
     onShow(instance) {
       instance.popper.firstChild.classList.add("main-contextMenu-tippyEnter");
@@ -474,7 +470,7 @@ var updateNowPlayingControls = (newTrack, updateDropdown = true) => {
 };
 var updateTrackListControls = (updateDropdown = true) => {
   const trackLists = getTrackLists();
-  f5.pipe(
+  f4.pipe(
     trackLists,
     ar3.map((trackList) => {
       const trackListTracks = getTrackListTracks(trackList);
@@ -494,19 +490,19 @@ var updateTrackListControls = (updateDropdown = true) => {
 var updateCollectionControls = async (uri) => {
   let uris;
   if (URI.isAlbum(uri))
-    uris = f5.pipe(
+    uris = f4.pipe(
       await fetchGQLAlbum(`${uri}`),
       (x) => x.tracks.items,
       ar3.map((x) => x.track.uri)
     );
   else if (URI.isArtist(uri))
-    uris = f5.pipe(
-      await fetchPlatArtistLikedTracks(`${uri}`),
+    uris = f4.pipe(
+      await fetchArtistLikedTracks(`${uri}`),
       ar3.map((x) => x.uri)
     );
   else if (URI.isPlaylistV1OrV2(uri))
-    uris = f5.pipe(
-      await fetchPlatPlaylistContents(`${uri}`),
+    uris = f4.pipe(
+      await fetchPlaylistContents(`${uri}`),
       ar3.map((x) => x.uri)
     );
   else

@@ -11,7 +11,10 @@ var __decorateClass = (decorators, target, key, kind) => {
 };
 
 // extensions/show-the-genres/app.ts
-import { array as a3, function as f4, string as str2 } from "https://esm.sh/fp-ts";
+import { array as a, function as f3, string as str2 } from "https://esm.sh/fp-ts";
+
+// shared/api.ts
+import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 
 // shared/fp.ts
 import {
@@ -24,13 +27,14 @@ import {
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
 var guard3 = (branches) => guard(branches);
-var pMchain = (f5) => async (fa) => f5(await fa);
-var is = (c) => (a4) => (field) => field[c] === a4;
-var chunckify = (n) => (g) => f.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
-var memoize2 = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
+var pMchain = (f4) => async (fa) => f4(await fa);
+var is = (c) => (a2) => (field) => field[c] === a2;
+var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/util.ts
 import { function as f2 } from "https://esm.sh/fp-ts";
+var {} = Spicetify;
+var { PlayerAPI, History } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
     start: f2.constant({ before: "start" }),
@@ -89,8 +93,8 @@ var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
     }
     lastPathname = pathname;
   };
-  historyChanged(Spicetify.Platform.History.location ?? {});
-  Spicetify.Platform.History.listen(historyChanged);
+  historyChanged(History.location ?? {});
+  return History.listen(historyChanged);
 };
 var onSongChanged = (callback) => {
   callback(Spicetify.Player.data);
@@ -98,27 +102,18 @@ var onSongChanged = (callback) => {
 };
 
 // shared/api.ts
-import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
+var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
+  // @ts-ignore
+  fetch(url, opts) {
+    const { method, headers, body } = opts;
+    return Spicetify.CosmosAsync.resolve(method, url, headers, body);
+  }
+});
 var fetchGQLArtistRelated = async (uri) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistRelated, {
   uri,
   locale: Spicetify.Locale.getLocale()
 })).data.artistUnion.relatedContent.relatedArtists.items;
-var fetchWebArtistsSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
-);
-var fetchWebPlaylistsSpot = chunckify(1)(
-  // @ts-ignore chunkify will never call with empty array
-  async ([id]) => [
-    await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
-  ]
-);
-var fetchWebAlbumsSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums
-);
-var fetchWebTracksSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
-);
-var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
   const url = new URL("https://ws.audioscrobbler.com/2.0/");
   url.searchParams.append("method", "track.getInfo");
   url.searchParams.append("api_key", LFMApiKey);
@@ -128,7 +123,7 @@ var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "")
   url.searchParams.append("username", lastFmUsername);
   return await fetch(url).then((res) => res.json());
 };
-var fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
+var fetchLastFMTrackMemo = toMemoized(fetchLastFMTrack);
 
 // extensions/show-the-genres/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";
@@ -143,11 +138,11 @@ var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f5) => allPass(
+  (f4) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f5.toString())
+  )(f4.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -382,10 +377,9 @@ _ArtistGenreContainer = __decorateClass([
 // extensions/show-the-genres/app.ts
 var fetchLastFMTags = async (uri) => {
   const uid = Spicetify.URI.fromString(uri).id;
-  const res = await fetchWebTracksSpot([uid]);
-  const { name, artists } = res[0];
+  const { name, artists } = await spotifyApi.tracks.get(uid);
   const artistNames = artists.map((artist) => artist.name);
-  const { track } = await fetchTrackLFMAPI(CONFIG.LFMApiKey, artistNames[0], name);
+  const { track } = await fetchLastFMTrack(CONFIG.LFMApiKey, artistNames[0], name);
   const tags = track.toptags.tag.map((tag) => tag.name);
   const deletedTagRegex = /-\d{13}/;
   const blacklistedTags = ["MySpotigramBot"];
@@ -401,20 +395,20 @@ nowPlayingGenreContainerEl.style.gridArea = "genres";
 })();
 onSongChanged((state2) => nowPlayingGenreContainerEl.uri = state2?.item.uri);
 var getArtistsGenresOrRelated = async (artistsUris) => {
-  const getArtistsGenres = f4.flow(
-    a3.map((uri) => Spicetify.URI.fromString(uri).id),
-    fetchWebArtistsSpot,
-    pMchain(a3.flatMap((artist) => artist.genres)),
-    pMchain(a3.uniq(str2.Eq))
+  const getArtistsGenres = f3.flow(
+    a.map((uri) => Spicetify.URI.fromString(uri).id),
+    spotifyApi.artists.get,
+    pMchain(a.flatMap((artist) => artist.genres)),
+    pMchain(a.uniq(str2.Eq))
   );
   const allGenres = await getArtistsGenres(artistsUris);
-  return allGenres.length ? allGenres : await f4.pipe(
+  return allGenres.length ? allGenres : await f3.pipe(
     artistsUris[0],
     fetchGQLArtistRelated,
-    pMchain(a3.map((a4) => a4.uri)),
-    pMchain(a3.chunksOf(5)),
+    pMchain(a.map((a2) => a2.uri)),
+    pMchain(a.chunksOf(5)),
     pMchain(
-      a3.reduce(
+      a.reduce(
         Promise.resolve([]),
         async (acc, arr5uris) => (await acc).length ? await acc : await getArtistsGenres(arr5uris)
       )

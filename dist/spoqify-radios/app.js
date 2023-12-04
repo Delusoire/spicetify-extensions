@@ -3,6 +3,8 @@ import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
 
 // shared/util.ts
 import { function as f } from "https://esm.sh/fp-ts";
+var {} = Spicetify;
+var { PlayerAPI, History } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
     start: f.constant({ before: "start" }),
@@ -17,6 +19,14 @@ var SpotifyLoc = {
 };
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// shared/platformApi.ts
+var {} = Spicetify;
+var {} = Spicetify.Platform;
+var createFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
+
+// shared/settings.tsx
+import { task } from "https://esm.sh/fp-ts";
+
 // shared/fp.ts
 import {
   array as ar,
@@ -28,43 +38,7 @@ import {
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
 var guard3 = (branches) => guard(branches);
-var pMchain = (f4) => async (fa) => f4(await fa);
-var is = (c) => (a3) => (field) => field[c] === a3;
-var chunckify = (n) => (g) => f2.flow(ar.chunksOf(n), ar.map(g), (ps) => Promise.all(ps), pMchain(ar.flatten));
-var memoize2 = (fn) => f2.pipe(fn, f2.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f2.untupled);
-
-// shared/api.ts
-import { array as a2, function as f3 } from "https://esm.sh/fp-ts";
-var fetchWebArtistsSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`)).artists
-);
-var fetchWebPlaylistsSpot = chunckify(1)(
-  // @ts-ignore chunkify will never call with empty array
-  async ([id]) => [
-    await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)
-  ]
-);
-var fetchWebAlbumsSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`)).albums
-);
-var fetchWebTracksSpot = chunckify(50)(
-  async (ids) => (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`)).tracks
-);
-var createPlatFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
-var fetchTrackLFMAPI = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
-  const url = new URL("https://ws.audioscrobbler.com/2.0/");
-  url.searchParams.append("method", "track.getInfo");
-  url.searchParams.append("api_key", LFMApiKey);
-  url.searchParams.append("artist", artist);
-  url.searchParams.append("track", trackName);
-  url.searchParams.append("format", "json");
-  url.searchParams.append("username", lastFmUsername);
-  return await fetch(url).then((res) => res.json());
-};
-var fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI);
-
-// shared/settings.tsx
-import { task } from "https://esm.sh/fp-ts";
+var is = (c) => (a) => (field) => field[c] === a;
 
 // shared/modules.ts
 import { allPass } from "https://esm.sh/fp-ts-std@0.18.0/Predicate";
@@ -73,11 +47,11 @@ var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f4) => allPass(
+  (f3) => allPass(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f4.toString())
+  )(f3.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -223,14 +197,14 @@ var SettingsSection = class _SettingsSection {
 };
 
 // extensions/spoqify-radios/settings.ts
-var SORTED_PLAYLISTS_FOLDER_NAME = "Anonymized Radios";
+var ANONIMYZED_RADIOS_FOLDER_NAME = "Anonymized Radios";
 var settings = new SettingsSection("Spoqify-radios", "spoqify-radios").addInput(
   {
     id: "anonymizedRadiosFolderUri",
     desc: "Anonymized Radios folder uri",
     inputType: "text"
   },
-  async () => (await createPlatFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri
+  async () => (await createFolder(ANONIMYZED_RADIOS_FOLDER_NAME)).uri
 );
 settings.pushSettings();
 var CONFIG = settings.toObject();

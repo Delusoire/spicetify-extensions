@@ -1,5 +1,5 @@
 import { task } from "https://esm.sh/fp-ts"
-import { createPlatFolder } from "../../shared/api.ts"
+import { createFolder } from "../../shared/platformApi.ts"
 import { SettingsSection } from "../../shared/settings.tsx"
 import { SpotifyURI } from "../../shared/util.ts"
 
@@ -25,7 +25,7 @@ const settings = new SettingsSection("Sort+", "sort-plus")
             desc: "Sorted Playlists folder uri",
             inputType: "text",
         },
-        async () => (await createPlatFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri,
+        async () => (await createFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri,
     )
 
 settings.pushSettings()

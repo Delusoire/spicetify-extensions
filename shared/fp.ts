@@ -87,5 +87,5 @@ export const withProgress =
         })(fa)
     }
 
-export const memoize2 = <A extends any[], R>(fn: (...args: A) => R) =>
+export const toMemoized = <A extends any[], R>(fn: (...args: A) => R) =>
     f.pipe(fn, f.tupled, memoize<A>(eq.contramap(JSON.stringify)(str.Eq)), f.untupled)

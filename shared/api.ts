@@ -1,6 +1,16 @@
-import { chunckify, memoize2 } from "./fp.ts"
-import { SpotifyID, SpotifyLocObj, SpotifyURI, escapeRegex } from "./util.ts"
-import { array as a, function as f } from "https://esm.sh/fp-ts"
+import { AccessToken, SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk"
+import { toMemoized } from "./fp.ts"
+import { SpotifyURI, escapeRegex } from "./util.ts"
+import { number, string } from "../../../AppData/Local/deno/npm/registry.npmjs.org/@types/prop-types/15.7.10/index.d.ts"
+
+export const spotifyApi = SpotifyApi.withAccessToken("client-id", {} as AccessToken, {
+    // @ts-ignore
+    fetch(url, opts) {
+        const { method, headers, body } = opts!
+        // @ts-ignore
+        return Spicetify.CosmosAsync.resolve(method, url, headers, body)
+    },
+})
 
 /*                          GraphQL                                           */
 
@@ -14,7 +24,330 @@ export const fetchGQLAlbum = async (uri: SpotifyURI, offset = 0, limit = 487) =>
         })
     ).data.albumUnion as fetchGQLAlbumRes
 
-type fetchArtistGQLRes = any
+type Date = (
+    | {
+          year: number
+          month?: number
+          day?: number
+          hour?: number
+          mintue?: number
+          second?: number
+          precision: "YEAR"
+      }
+    | {
+          year: number
+          month: number
+          day?: number
+          hour?: number
+          mintue?: number
+          second?: number
+          precision: "MONTH"
+      }
+    | {
+          year: number
+          month: number
+          day: number
+          hour?: number
+          mintue?: number
+          second?: number
+          precision: "DAY"
+      }
+    | {
+          year: number
+          month: number
+          day: number
+          hour: number
+          mintue?: number
+          second?: number
+          precision: "HOUR"
+      }
+    | {
+          year: number
+          month: number
+          day: number
+          hour: number
+          mintue: number
+          second?: number
+          precision: "MINUTE"
+      }
+    | {
+          year: number
+          month: number
+          day: number
+          hour: number
+          mintue: number
+          second: number
+          precision: "SECOND"
+      }
+) & {
+    isoString: string
+}
+
+type Playability = {
+    playable: boolean
+    reason: "PLAYABLE" | string
+}
+
+type Item = {
+    id: string
+    uri: string
+    name: string
+    type: "SINGLE" | "ALBUM" | "COMPILATION" | string
+    copyright: {
+        items: Array<{
+            type: string
+            text: string
+        }>
+    }
+    date: Date
+    coverArt: {
+        sources: Array<Spicetify.Platform.ImageSized>
+    }
+    tracks: {
+        totalCount: number
+    }
+    label: string
+    playability: Playability
+    sharingInfo: {
+        shareId: string
+        shareUrl: string
+    }
+}
+
+type ArtistUnion = {
+    __typename: "Artist"
+    id: string
+    uri: string
+    saved: boolean
+    stats: {
+        followers: number
+        monthlyListeners: number
+        worldRank: number
+        topCities: {
+            items: Array<{
+                numberOfListeners: number
+                city: string
+                country: string
+                region: string
+            }>
+        }
+    }
+    profile: {
+        name: string
+        verified: boolean
+        pinnedItem: {
+            comment: string
+            type: string
+            backgroundImage: {
+                sources: Array<{ url: string }>
+            }
+            itemV2: {}
+            item: {
+                uri: string
+                name: string
+                images: {
+                    items: Array<{
+                        sources: Array<{
+                            url: string
+                            width: null
+                            height: null
+                        }>
+                    }>
+                }
+            }
+        }
+        biography: {
+            type: string
+            text: string
+        }
+        externalLinks: {
+            items: Array<{
+                name: string
+                url: string
+            }>
+        }
+        playlistV2: {
+            totalCount: number
+            items: Array<{
+                data: {
+                    __typename: "Playlist"
+                    uri: string
+                    name: string
+                    description: string
+                    ownerV2: {
+                        data: {
+                            __typename: "User"
+                            name: string
+                        }
+                    }
+                    images: {
+                        items: Array<{
+                            sources: Array<Spicetify.Platform.ImageSized>
+                        }>
+                    }
+                }
+            }>
+        }
+    }
+    visuals: {
+        gallery: {
+            items: Array<{
+                sources: Array<Spicetify.Platform.ImageSized>
+            }>
+        }
+        avatarImage: {
+            sources: Array<Spicetify.Platform.ImageSized>
+            extractedColors: {
+                colorRaw: {
+                    hex: string
+                }
+            }
+        }
+        headerImage: {
+            sources: Array<Spicetify.Platform.ImageSized>
+            extractedColors: {
+                colorRaw: {
+                    hex: string
+                }
+            }
+        }
+    }
+    discography: {
+        latest: Item
+        popularReleasesAlbums: {
+            totalCount: number
+            items: Array<Item>
+        }
+        singles: {
+            totalCount: number
+            items: Array<{
+                releases: {
+                    items: Array<Item>
+                }
+            }>
+        }
+        albums: {
+            totalCount: number
+            items: Array<{
+                releases: {
+                    items: Array<Item>
+                }
+            }>
+        }
+        compilations: {
+            totalCount: number
+            items: Array<{
+                releases: {
+                    items: Array<Item>
+                }
+            }>
+        }
+        topTracks: {
+            items: Array<{
+                uid: string
+                track: {
+                    id: string
+                    uri: string
+                    name: string
+                    playcount: string
+                    discNumber: number
+                    duration: {
+                        totalMilliseconds: number
+                    }
+                    playability: Playability
+                    contentRating: {
+                        label: "NONE" | "EXPLICIT"
+                    }
+                    artists: {
+                        items: Array<{
+                            uri: string
+                            profile: {
+                                name: string
+                            }
+                        }>
+                    }
+                    albumOfTrack: {
+                        uri: string
+                        coverArt: {
+                            sources: Array<{ url: string }>
+                        }
+                    }
+                }
+            }>
+        }
+    }
+    preRelease: any | null
+    relatedContent: {
+        appearsOn: {
+            totalCount: number
+            items: any[]
+        }
+        featuringV2: {
+            totalCount: number
+            items: any[]
+        }
+        discoveredOnV2: {
+            totalCount: number
+            items: any[]
+        }
+        relatedArtists: {
+            totalCount: number
+            items: any[]
+        }
+    }
+    sharingInfo: {
+        shareUrl: string
+        shareId: string
+    }
+    goods: {
+        events: {
+            userLocation: {
+                name: string
+            }
+            concerts: {
+                totalCount: number
+                items: Array<{
+                    uri: string
+                    id: string
+                    title: string
+                    category: "CONCERT"
+                    festival: boolean
+                    nearUser: boolean
+                    venue: {
+                        name: string
+                        location: { name: string }
+                        coordinates: {
+                            latitude: number
+                            longitude: number
+                        }
+                    }
+                    partnerLinks: {
+                        items: Array<{
+                            partnerName: string
+                            url: string
+                        }>
+                    }
+                    date: Date
+                }>
+                pagingInfo: {
+                    limit: number
+                }
+            }
+        }
+        merch: {
+            items: Array<{
+                image: {
+                    sources: Array<{ url: string }>
+                }
+                name: string
+                description: string
+                price: string
+                uri: string
+                url: string
+            }>
+        }
+    }
+}
 export const fetchGQLArtistOverview = async (uri: SpotifyURI) =>
     (
         await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistOverview, {
@@ -22,7 +355,7 @@ export const fetchGQLArtistOverview = async (uri: SpotifyURI) =>
             locale: Spicetify.Locale.getLocale(),
             includePrerelease: true,
         })
-    ).data.artistUnion as fetchArtistGQLRes
+    ).data.artistUnion as ArtistUnion
 
 type fetchGQLArtistDiscographyRes = any
 export const fetchGQLArtistDiscography = async (uri: SpotifyURI, offset = 0, limit = 116) =>
@@ -44,138 +377,52 @@ export const fetchGQLArtistRelated = async (uri: SpotifyURI) =>
 
 /*                          Spotify Web API                                   */
 
-export const removeWebPlaylistTracks = async (playlist: SpotifyID, tracks: SpotifyURI[]) =>
-    Spicetify.CosmosAsync.del(`https://api.spotify.com/v1/playlists/${playlist}/tracks`, {
-        tracks: tracks.map(uri => ({ uri })),
-    })
-
-export const fetchWebArtistsSpot = chunckify(50)(
-    async (ids: SpotifyID[]) =>
-        (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/artists?ids=${ids.join(",")}`))
-            .artists as SpotApiArtist[],
-)
-
-export const fetchWebPlaylistsSpot = chunckify(1)(
-    // @ts-ignore chunkify will never call with empty array
-    async ([id]: [SpotifyID]) => [
-        (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/playlists/${id}`)) as SpotApiPlaylist,
-    ],
-)
-export const fetchWebAlbumsSpot = chunckify(50)(
-    async (ids: SpotifyID[]) =>
-        (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums?ids=${ids.join(",")}`))
-            .albums as SpotApiAlbum[],
-)
-
-export const fetchWebTracksSpot = chunckify(50)(
-    async (ids: SpotifyID[]) =>
-        (await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks?ids=${ids.join(",")}`))
-            .tracks as SpotApiTrack[],
-)
-
-export const searchWebItemSpot = async (q: string, type: string[]) =>
-    Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q=${encodeURIComponent(q)}&type=${type.join(",")}`)
-
 export const fetchWebSoundOfSpotifyPlaylist = async (genre: string) => {
     const name = `The Sound Of ${genre}`
     const re = new RegExp(`^${escapeRegex(name)}$`, "i")
-    const res = await searchWebItemSpot(name, ["playlist"])
-    const item = res.playlists.items[0]
-    return item?.owner.id === "thesoundsofspotify" && re.test(item.name) ? item.uri : null
+    const res = await spotifyApi.search(name, ["playlist"])
+    const item = res.playlists.items.find(item => item?.owner.id === "thesoundsofspotify" && re.test(item.name))
+    return item?.uri
 }
 
-/*                          Platform                                          */
+/*                          Last FM                                       */
 
-export const isPlatTrackLiked = (uris: SpotifyURI[]) =>
-    Spicetify.Platform.LibraryAPI.contains(...uris) as Promise<boolean[]>
-
-export const setPlatTrackLiked = (uris: SpotifyURI[], liked: boolean) =>
-    Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris })
-
-export const togglePlatTrackLiked = async (uris: SpotifyURI[]) => {
-    const liked = await isPlatTrackLiked(uris)
-
-    return await f.pipe(
-        uris,
-        a.reduceWithIndex(
-            [[] as SpotifyURI[], [] as SpotifyURI[]] as const,
-            (i, acc, uri) => (acc[Number(liked[i])].push(uri), acc),
-        ),
-        ([toAdd, toRem]) => {
-            const ps = []
-            if (toAdd.length) ps.push(setPlatTrackLiked(toAdd, true))
-            if (toRem.length) ps.push(setPlatTrackLiked(toRem, false))
-            return Promise.all(ps)
-        },
-    )
+export interface fetchLastFMTrackResMinimal {
+    track: {
+        name: string
+        mbid: string
+        url: string
+        duration: string
+        listeners: string
+        playcount: string
+        artist: {
+            name: string
+            mbid: string
+            url: string
+        }
+        album: {
+            artist: string
+            title: string
+            mbid: string
+            url: string
+        }
+        userplaycount: string
+        userloved: string
+        toptags: {
+            tag: Array<{
+                name: string
+                url: string
+            }>
+        }
+        wiki: {
+            published: string
+            summary: string
+            content: string
+        }
+    }
 }
 
-export const fetchPlatLikedTracks = async () =>
-    (
-        await Spicetify.Platform.LibraryAPI.getTracks({
-            limit: Number.MAX_SAFE_INTEGER,
-        })
-    ).items as fetchPlatArtistLikedTracksRes
-export const fetchPlatArtistLikedTracks = async (uri: SpotifyURI, offset = 0, limit = 100) =>
-    (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items as fetchPlatArtistLikedTracksRes
-
-export const fetchPlatPlaylistContents = async (uri: SpotifyURI) =>
-    (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items as fetchWebPlaylistRes
-
-export const createPlatFolder = async (name: string, location: SpotifyLocObj = {}) =>
-    await Spicetify.Platform.RootlistAPI.createFolder(name, location)
-
-export const addPlatPlaylist = async (playlist: SpotifyURI, folder?: SpotifyURI, addedAt = new Date()) =>
-    await Spicetify.Platform.RootlistAPI.add([playlist], { after: { type: "folder", addedAt, uri: folder } })
-
-/* Replaced by createSPPlaylistFromTracks */
-export const createPlatPlaylist = async (name: string, location: SpotifyLocObj = {}) =>
-    await Spicetify.Platform.RootlistAPI.createPlaylist(name, location)
-
-export const createSPPlaylistFromTracks = (name: string, tracks: SpotifyURI[], folder?: SpotifyURI) =>
-    Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
-        operation: "create",
-        ...(folder ? { after: folder } : {}),
-        name,
-        playlist: true,
-        uris: tracks,
-    })
-
-export const setPlatPlaylistVisibility = async (playlist: SpotifyURI, visibleForAll: boolean) =>
-    await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED")
-export const setPlatPlaylistPublished = async (playlist: SpotifyURI, published: boolean) =>
-    await Spicetify.Platform.RootlistAPI.setPublishedState(playlist, published)
-
-export const fetchPlatFolder = async (folder?: SpotifyURI) =>
-    (await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder })) as fetchPlatFolderRes
-export const fetchPlatRootFolder = () => fetchPlatFolder(undefined)
-
-export const addPlatPlaylistTracks = async (playlist: SpotifyURI, tracks: SpotifyURI[], location: SpotifyLocObj = {}) =>
-    await Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location)
-
-export const movePlatPlaylistTracks = async (
-    playlist: SpotifyURI,
-    tracks: Array<{ uid: string }>,
-    location: SpotifyLocObj = {},
-) => await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location)
-
-export const removePlatPlaylistTracks = async (playlist: SpotifyURI, tracks: Array<{ uid: string }>) =>
-    Spicetify.Platform.PlaylistAPI.remove(playlist, tracks)
-
-export const fetchPlatPlaylistEnhancedSongs300 = async (uri: SpotifyURI, offset = 0, limit = 300) =>
-    (await Spicetify.Platform.EnhanceAPI.getPage(uri, /* iteration */ 0, /* sessionId */ 0, offset, limit)).enhancePage
-        .pageItems as any[]
-export const fetchPlatPlaylistEnhancedSongs = async (uri: SpotifyURI, offset = 0): Promise<any[]> => {
-    const nextPageItems = await fetchPlatPlaylistEnhancedSongs300(uri, offset)
-    if (nextPageItems?.length < 300) return nextPageItems
-    else return nextPageItems.concat(fetchPlatPlaylistEnhancedSongs(uri, offset + 300))
-}
-
-export const fetchLocalTracks = async () => await Spicetify.Platform.LocalFilesAPI.getTracks()
-
-/*                          Non Spotify                                       */
-
-export const fetchTrackLFMAPI = async (LFMApiKey: string, artist: string, trackName: string, lastFmUsername = "") => {
+export const fetchLastFMTrack = async (LFMApiKey: string, artist: string, trackName: string, lastFmUsername = "") => {
     const url = new URL("https://ws.audioscrobbler.com/2.0/")
     url.searchParams.append("method", "track.getInfo")
     url.searchParams.append("api_key", LFMApiKey)
@@ -184,10 +431,28 @@ export const fetchTrackLFMAPI = async (LFMApiKey: string, artist: string, trackN
     url.searchParams.append("format", "json")
     url.searchParams.append("username", lastFmUsername)
 
-    return (await fetch(url).then(res => res.json())) as fetchTrackLFMAPIRes
+    return (await fetch(url).then(res => res.json())) as fetchLastFMTrackResMinimal
 }
 
-export const fetchTrackLFMAPIMemoized = memoize2(fetchTrackLFMAPI)
+export const fetchLastFMTrackMemo = toMemoized(fetchLastFMTrack)
+
+/*                          Youtube                                       */
+
+export interface SearchYoutubeResMinimal {
+    items: Array<{
+        id: {
+            videoId: string
+        }
+        snippet: {
+            publishedAt: string
+            channelId: string
+            title: string
+            description: string
+            channelTitle: string
+            publishTime: string
+        }
+    }>
+}
 
 export const searchYoutube = async (YouTubeApiKey: string, searchString: string) => {
     const url = new URL("https://www.googleapis.com/youtube/v3/search")
@@ -197,50 +462,10 @@ export const searchYoutube = async (YouTubeApiKey: string, searchString: string)
     url.searchParams.append("type", "video")
     url.searchParams.append("key", YouTubeApiKey)
 
-    return (await fetch(url).then(res => res.json())) as SearchYoutubeRes
+    return (await fetch(url).then(res => res.json())) as SearchYoutubeResMinimal
 }
 
 /*                          Types                                             */
-
-// Generated by https://quicktype.io
-
-export interface SearchYoutubeRes {
-    kind: string
-    etag: string
-    nextPageToken: string
-    regionCode: string
-    pageInfo: {
-        totalResults: number
-        resultsPerPage: number
-    }
-    items: Array<{
-        kind: any
-        etag: string
-        id: {
-            kind: any
-            videoId: string
-        }
-        snippet: {
-            publishedAt: string
-            channelId: string
-            title: string
-            description: string
-            thumbnails: {
-                default: Default
-                medium: Default
-                high: Default
-            }
-            channelTitle: string
-            liveBroadcastContent: any
-            publishTime: string
-        }
-    }>
-}
-interface Default {
-    url: string
-    width: number
-    height: number
-}
 
 export interface fetchGQLAlbumRes {
     __typename: "album"
@@ -392,300 +617,8 @@ export type fetchGQLArtistRelatedRes = Array<{
     }
 }>
 
-export type fetchPlatArtistLikedTracksRes = Array<{
-    type: string
-    uri: string
-    name: string
-    duration: SpotApiDuration
-    album: SpotApiAlbumMin
-    artists: SpotApiArtistMin[]
-    discNumber: number
-    trackNumber: number
-    isExplicit: boolean
-    isPlayable: boolean
-    isLocal: boolean
-    is19PlusOnly: boolean
-    addedAt: string
-}>
-
-export type fetchWebPlaylistRes = Array<{
-    uid: string
-    playIndex: null
-    addedAt: string
-    addedBy: {
-        type: string
-        uri: SpotifyURI
-        username: string
-        displayName: string
-        images: SpotApiImage2[]
-    }
-    formatListAttributes: {}
-    type: "track"
-    uri: SpotifyURI
-    name: string
-    album: SpotApiAlbumMin
-    artists: SpotApiArtistMin[]
-    discNumber: number
-    trackNumber: number
-    duration: SpotApiDuration
-    isExplicit: boolean
-    isLocal: boolean
-    isPlayable: boolean
-    is19PlusOnly: boolean
-}>
-
-export interface fetchTrackLFMAPIRes {
-    track: {
-        name: string
-        mbid: string
-        url: string
-        duration: string
-        streamable: {
-            "#text": string
-            fulltrack: string
-        }
-        listeners: string
-        playcount: string
-        artist: {
-            name: string
-            mbid: string
-            url: string
-        }
-        album: {
-            artist: string
-            title: string
-            mbid: string
-            url: string
-            image: Array<{
-                "#text": string
-                size: string
-            }>
-            "@attr": {
-                position: string
-            }
-        }
-        userplaycount: string
-        userloved: string
-        toptags: {
-            tag: Array<{
-                name: string
-                url: string
-            }>
-        }
-        wiki: {
-            published: string
-            summary: string
-            content: string
-        }
-    }
-}
-
-//
-
-export interface SpotApiAlbumMin {
-    type: "album"
-    uri: SpotifyURI
-    name: string
-    artist: SpotApiArtistMin
-    images: SpotApiImage2[]
-}
-
-export interface SpotApiImage2 {
-    url: string
-    label: "small" | "standard" | "large" | "xlarge"
-}
-
-export interface SpotApiTrack {
-    album: SpotApiAlbum
-    artists: SpotApiArtist[]
-    available_markets: string[]
-    disc_number: number
-    duration_ms: number
-    explicit: boolean
-    external_ids: SpotApiEIDs
-    external_urls: SpotApiEUrls
-    href: string
-    id: string
-    is_playable: boolean
-    linked_from: {}
-    restrictions: SpotApiRestrictions
-    name: string
-    popularity: number
-    preview_url: string
-    track_number: number
-    type: string
-    uri: SpotifyURI
-    is_local: boolean
-}
-
-export interface SpotApiArtist {
-    external_urls: SpotApiEUrls
-    followers: SpotApiFollowers
-    genres: string[]
-    href: string
-    id: string
-    images: SpotApiImage[]
-    name: string
-    popularity: number
-    type: string
-    uri: SpotifyURI
-}
-
-export interface SpotApiArtistMin {
-    type: "artist"
-    uri: SpotifyURI
-    name: string
-}
-
-export interface SpotApiAlbum {
-    album_type: string
-    total_tracks: number
-    available_markets: string[]
-    external_urls: SpotApiEUrls
-    href: string
-    id: string
-    images: SpotApiImage[]
-    name: string
-    release_date: string
-    release_date_precision: string
-    restrictions: SpotApiRestrictions
-    type: string
-    uri: SpotifyURI
-    copyrights: Array<{
-        text: string
-        type: string
-    }>
-    external_ids: SpotApiEIDs
-    genres: string[]
-    label: string
-    popularity: number
-    album_group: string
-    artists: Array<{
-        external_urls: SpotApiEUrls
-        href: string
-        id: string
-        name: string
-        type: string
-        uri: SpotifyURI
-    }>
-}
-
-export interface SpotApiEUrls {
-    spotify: string
-}
-
-export interface SpotApiEIDs {
-    isrc: string
-    ean: string
-    upc: string
-}
-
 export interface SpotApiImage {
     url: string
     width: number
     height: number
-}
-
-export interface SpotApiRestrictions {
-    reason: string
-}
-
-export interface SpotApiFollowers {
-    href: string
-    total: number
-}
-export interface SpotApiDuration {
-    milliseconds: number
-}
-export interface SpotApiPlaylist {
-    collaborative: boolean
-    description: string
-    external_urls: SpotApiEUrls
-    followers: {
-        href: string
-        total: number
-    }
-    href: string
-    id: SpotifyID
-    images: SpotApiImage[]
-    name: string
-    owner: SpotApiOwner
-    public: boolean
-    snapshot_id: string
-    tracks: {
-        href: string
-        limit: number
-        next: string
-        offset: number
-        previous: string
-        total: number
-        items: Array<{
-            added_at: string
-            added_by: SpotApiOwner
-            is_local: boolean
-            track: SpotApiTrack
-        }>
-    }
-    type: string
-    uri: SpotifyURI
-}
-
-export interface SpotApiOwner {
-    external_urls: SpotApiEUrls
-    followers?: {
-        href: string
-        total: number
-    }
-    href: string
-    id: SpotifyID
-    type: string
-    uri: SpotifyURI
-    display_name?: string
-    name?: string
-}
-
-//TODO: Better TS interface for recursive fetchPlatFolderRes
-export interface fetchPlatFolderRes {
-    type: "folder" | "placeholder" | "playlist"
-    addedAt: string
-    items?: Array<fetchPlatFolderRes>
-    name?: string
-    uri: string
-    description?: string
-    images?: SpotApiImage2[]
-    madeFor?: null
-    owner?: {
-        type: "user"
-        uri: string
-        username: string
-        displayName: string
-        images: any[]
-    }
-    totalLength?: number
-    unfilteredTotalLength?: number
-    totalLikes?: null
-    duration?: null
-    isCollaborative?: boolean
-    isLoaded?: boolean
-    isOwnedBySelf?: boolean
-    isPublished?: boolean
-    hasEpisodes?: null
-    hasSpotifyTracks?: null
-    hasSpotifyAudiobooks?: null
-    canAdd?: boolean
-    canRemove?: boolean
-    canPlay?: null
-    formatListData?: {
-        type: string
-        attributes: { [key: string]: string }
-    } | null
-    canReportAnnotationAbuse?: boolean
-    hasDateAdded?: boolean
-    permissions?: null
-    collaborators?: {
-        count: number
-        items: any[]
-    }
-    isNotFound?: boolean
-    isForbidden?: boolean
 }

@@ -1,4 +1,6 @@
-import { SpotApiTrack, fetchGQLAlbumRes, fetchPlatArtistLikedTracksRes, fetchWebPlaylistRes } from "./api.ts"
+import { Track } from "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk/dist/mjs/types.js"
+
+import { fetchGQLAlbumRes } from "./api.ts"
 import { SpotifyURI } from "./util.ts"
 
 export type TrackData = {
@@ -47,7 +49,7 @@ export const parseTopTrackFromArtist = (track: UnparsedTrack) => ({
     uri: track.uri as SpotifyURI,
 })
 
-export const parsePlatTrackFromArtistLikedTracks = (track: fetchPlatArtistLikedTracksRes[0]) => ({
+export const parsePlatTrackFromArtistLikedTracks = (track: Spicetify.Platform.Track) => ({
     albumName: track.album.name,
     albumUri: track.album.uri,
     artistName: track.artists[0].name,
@@ -60,23 +62,10 @@ export const parsePlatTrackFromArtistLikedTracks = (track: fetchPlatArtistLikedT
     uri: track.uri,
 })
 
-// NOT USED
-// export const parseTrackFromPlaylistSP = (track: UnparsedTrack) => ({
-//     albumName: track.album.name,
-//     albumUri: track.album.link,
-//     artistName: track.artists[0].name,
-//     artistUri: track.artists[0].link,
-//     durationMilis: track.length * 1000,
-//     name: track.name,
-//     playcount: undefined,
-//     popularity: track.popularity,
-//     releaseDate: undefined,
-//     uri: track.link,
-// })
-
-export const parseAPITrackFromPlaylist = (track: fetchWebPlaylistRes[0]) => ({
-    albumName: track.album?.name,
-    albumUri: track.album?.uri,
+type Track1 = Spicetify.Platform.PlaylistAPI.Track
+export const parse1 = (track: Track1) => ({
+    albumName: track.album.name,
+    albumUri: track.album.uri,
     artistName: track.artists[0].name,
     artistUri: track.artists[0].uri,
     durationMilis: track.duration.milliseconds,
@@ -88,7 +77,7 @@ export const parseAPITrackFromPlaylist = (track: fetchWebPlaylistRes[0]) => ({
     uri: track.uri,
 })
 
-export const parseAPITrackFromSpotify = (track: SpotApiTrack) => ({
+export const parseAPITrack = (track: Track) => ({
     albumName: track.album.name,
     albumUri: track.album.uri,
     artistName: track.artists[0].name,
@@ -98,6 +87,7 @@ export const parseAPITrackFromSpotify = (track: SpotApiTrack) => ({
     playcount: undefined,
     popularity: track.popularity,
     releaseDate: new Date(track.album.release_date).getTime(),
+    uid: track.id,
     uri: track.uri,
 })
 

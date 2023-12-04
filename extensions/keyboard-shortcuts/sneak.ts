@@ -4,7 +4,7 @@ import { LitElement, css, html } from "https://esm.sh/lit"
 import { customElement, property } from "https://esm.sh/lit/decorators.js"
 import { map } from "https://esm.sh/lit/directives/map.js"
 import { styleMap } from "https://esm.sh/lit/directives/style-map.js"
-import { CLICKABLE_ELMENT_SELECTOR, isElementInViewPort, isElementVisible } from "./util.ts"
+import { CLICKABLE_ELEMENT_SELECTOR, isElementInViewPort } from "./util.ts"
 
 export const mousetrapInst = Spicetify.Mousetrap()
 export const KEY_LIST = "abcdefghijklmnopqrstuvwxyz".split("")
@@ -62,8 +62,8 @@ export class _SneakOverlay extends LitElement {
                 k2 = 0
 
             this.props = f.pipe(
-                Array.from(document.querySelectorAll<HTMLElement>(CLICKABLE_ELMENT_SELECTOR)),
-                a.filter(isElementVisible),
+                Array.from(document.querySelectorAll<HTMLElement>(CLICKABLE_ELEMENT_SELECTOR)),
+                // a.filter(isElementVisible),
                 a.filter(isElementInViewPort),
                 a.map(target => {
                     const key = KEY_LIST[k1] + KEY_LIST[k2++]

@@ -1,21 +1,23 @@
 import { array as ar, function as f } from "https://esm.sh/fp-ts"
-import {
-    addPlatPlaylistTracks,
-    createPlatPlaylist,
-    fetchPlatFolder,
-    fetchPlatPlaylistContents,
-    removePlatPlaylistTracks,
-    setPlatPlaylistVisibility,
-    setPlatTrackLiked,
-} from "../../shared/api.ts"
+
 import { pMchain } from "../../shared/fp.ts"
+import {
+    addPlaylistTracks,
+    createPlaylist,
+    fetchFolder,
+    fetchPlaylistContents,
+    removePlaylistTracks,
+    setPlaylistVisibility,
+    setTrackLiked,
+} from "../../shared/platformApi.ts"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util.ts"
+
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.tsx"
 import { CONFIG } from "./settings.ts"
 import { getNowPlayingBar } from "./util.ts"
 
 export const loadRatings = async () => {
-    const ratingsFolder = await fetchPlatFolder(CONFIG.ratingsFolderUri)
+    const ratingsFolder = await fetchFolder(CONFIG.ratingsFolderUri)
 
     playlistUris = f.pipe(
         ratingsFolder!.items!,
@@ -26,7 +28,7 @@ export const loadRatings = async () => {
     // @ts-ignore
     globalThis.tracksRatings = tracksRatings = await f.pipe(
         playlistUris,
-        ar.map(fetchPlatPlaylistContents),
+        ar.map(fetchPlaylistContents),
         ps => Promise.all(ps), // Promise.all flips empty to undefined
         pMchain(ar.map(tracks => tracks ?? [])),
         pMchain(ar.map(ar.map(t => t.uri))),
@@ -51,7 +53,7 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
             playlistUris.slice(0, currentRating + 1),
             ar.filter(Boolean),
             ar.map(playlistUri => Spicetify.URI.fromString(playlistUri).id!),
-            ar.map(playlistId => removePlatPlaylistTracks(playlistId, [{ uri, uid: "" } as { uid: string }])),
+            ar.map(playlistId => removePlaylistTracks(playlistId, [{ uri, uid: "" } as { uid: string }])),
         )
     }
 
@@ -61,15 +63,15 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
         let playlistUri = playlistUris[rating]
 
         if (!playlistUri) {
-            playlistUri = await createPlatPlaylist(rating.toFixed(0), SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri))
-            setPlatPlaylistVisibility(playlistUri, false)
+            playlistUri = await createPlaylist(rating.toFixed(0), SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri))
+            setPlaylistVisibility(playlistUri, false)
             playlistUris[rating] = playlistUri
         }
 
-        addPlatPlaylistTracks(playlistUri, [uri])
+        addPlaylistTracks(playlistUri, [uri])
 
         if (rating >= Number(CONFIG.heartThreshold)) {
-            setPlatTrackLiked([uri], true)
+            setTrackLiked([uri], true)
         }
     }
 
@@ -77,14 +79,11 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
     if (npTrack === uri) {
         updateNowPlayingControls(npTrack, false)
 
+        //TODO: clean this
         {
-            const npTrack = Spicetify.Player.data?.item.uri
-
             const nowPlaylingControlsObserver = new MutationObserver(() => {
-                if (npTrack === uri) {
-                    nowPlaylingControlsObserver.disconnect()
-                }
-
+                nowPlaylingControlsObserver.disconnect()
+                if (npTrack !== uri) return
                 updateNowPlayingControls(npTrack, false)
             })
             nowPlaylingControlsObserver.observe(getNowPlayingBar(), {

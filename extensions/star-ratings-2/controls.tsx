@@ -1,7 +1,11 @@
 import { array as ar, function as f } from "https://esm.sh/fp-ts"
 
-import { fetchGQLAlbum, fetchPlatArtistLikedTracks, fetchPlatPlaylistContents } from "../../shared/api.ts"
+import { Instance, Props } from "npm:tippy.js"
+
+import { fetchGQLAlbum } from "../../shared/api.ts"
+import { fetchArtistLikedTracks, fetchPlaylistContents } from "../../shared/platformApi.ts"
 import { SpotifyURI } from "../../shared/util.ts"
+
 import { Dropdown } from "./dropdown.tsx"
 import { tracksRatings } from "./ratings.ts"
 import {
@@ -12,7 +16,6 @@ import {
     getTrackListTracks,
     getTrackLists,
 } from "./util.ts"
-import { Instance, Props } from "npm:tippy.js"
 
 const { URI } = Spicetify
 const { React, ReactDOM } = Spicetify
@@ -132,12 +135,12 @@ export const updateCollectionControls = async (uri: Spicetify.URI) => {
         )
     else if (URI.isArtist(uri))
         uris = f.pipe(
-            await fetchPlatArtistLikedTracks(`${uri}`),
+            await fetchArtistLikedTracks(`${uri}`),
             ar.map(x => x.uri),
         )
     else if (URI.isPlaylistV1OrV2(uri))
         uris = f.pipe(
-            await fetchPlatPlaylistContents(`${uri}`),
+            await fetchPlaylistContents(`${uri}`),
             ar.map(x => x.uri),
         )
     else throw "me out the window"

@@ -1,6 +1,6 @@
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate"
-import { fetchWebTracksSpot, searchYoutube as searchYouTube } from "../../shared/api.ts"
-import { parseAPITrackFromSpotify } from "../../shared/parse.ts"
+import { searchYoutube, spotifyApi } from "../../shared/api.ts"
+import { parseAPITrack } from "../../shared/parse.ts"
 import { SpotifyID, SpotifyURI, normalizeStr } from "../../shared/util.ts"
 import { CONFIG } from "./settings.ts"
 
@@ -11,11 +11,11 @@ const YTVidIDCache = new Map<SpotifyID, string>()
 const showOnYouTube = async (uri: SpotifyURI) => {
     const id = URI.fromString(uri)!.id!
     if (!YTVidIDCache.get(id)) {
-        const track = parseAPITrackFromSpotify((await fetchWebTracksSpot([id]))[0])
+        const track = parseAPITrack(await spotifyApi.tracks.get(id))
         const searchString = `${track.artistName} - ${track.name} music video`
 
         try {
-            const videos = await searchYouTube(CONFIG.YouTubeApiKey, searchString).then(res => res.items)
+            const videos = await searchYoutube(CONFIG.YouTubeApiKey, searchString).then(res => res.items)
             const normalizedTrackName = normalizeStr(track.name)
 
             const video =

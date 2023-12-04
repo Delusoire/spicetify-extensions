@@ -1,20 +1,19 @@
 import { array as a, function as f, string as str } from "https://esm.sh/fp-ts"
 
-import { fetchGQLArtistRelated, fetchTrackLFMAPI, fetchWebArtistsSpot, fetchWebTracksSpot } from "../../shared/api.ts"
+import { fetchGQLArtistRelated, fetchLastFMTrack, spotifyApi } from "../../shared/api.ts"
 import { pMchain } from "../../shared/fp.ts"
 import { SpotifyURI, onHistoryChanged, onSongChanged, waitForElement } from "../../shared/util.ts"
 
 import { CONFIG } from "./settings.ts"
 
-import "./components.ts"
 import "./assets/styles.scss"
+import "./components.ts"
 
 const fetchLastFMTags = async (uri: SpotifyURI) => {
     const uid = Spicetify.URI.fromString(uri).id!
-    const res = await fetchWebTracksSpot([uid])
-    const { name, artists } = res[0]
+    const { name, artists } = await spotifyApi.tracks.get(uid)
     const artistNames = artists.map(artist => artist.name)
-    const { track } = await fetchTrackLFMAPI(CONFIG.LFMApiKey, artistNames[0], name)
+    const { track } = await fetchLastFMTrack(CONFIG.LFMApiKey, artistNames[0], name)
     const tags = track.toptags.tag.map(tag => tag.name)
 
     const deletedTagRegex = /-\d{13}/
@@ -36,7 +35,7 @@ onSongChanged(state => (nowPlayingGenreContainerEl.uri = state?.item.uri))
 const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[]) => {
     const getArtistsGenres: (artistsUris: SpotifyURI[]) => Promise<string[]> = f.flow(
         a.map(uri => Spicetify.URI.fromString(uri)!.id!),
-        fetchWebArtistsSpot,
+        spotifyApi.artists.get,
         pMchain(a.flatMap(artist => artist.genres)),
         pMchain(a.uniq(str.Eq)),
     )
