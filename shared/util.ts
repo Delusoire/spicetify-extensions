@@ -19,8 +19,6 @@ export const SpotifyLoc = {
 
 export const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`)
 
-export const titleCase = (str: string) => str.replace(/\b\w/g, l => l.toUpperCase())
-
 export const normalizeStr = (str: string) =>
     str
         .normalize("NFKD")

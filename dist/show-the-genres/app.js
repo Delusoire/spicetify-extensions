@@ -16,26 +16,9 @@ import { array as a, function as f2 } from "https://esm.sh/fp-ts";
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 
-// shared/fp.ts
-import {
-  array as ar,
-  eq,
-  string as str,
-  record as rec,
-  semigroup as sg,
-  function as f
-} from "https://esm.sh/fp-ts";
-import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
-var { Snackbar } = Spicetify;
-var guard3 = (branches) => guard(branches);
-var pMchain = (f3) => async (fa) => f3(await fa);
-var is = (c) => (a2) => (field) => field[c] === a2;
-var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
-
 // shared/util.ts
 var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
-var titleCase = (str3) => str3.replace(/\b\w/g, (l) => l.toUpperCase());
 var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) => new Promise((resolve, reject) => {
   const onMutation = () => {
     const el = document.querySelector(selector);
@@ -115,9 +98,14 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
   url.searchParams.append("track", trackName);
   url.searchParams.append("format", "json");
   url.searchParams.append("username", lastFmUsername);
-  return await fetch(url).then((res) => res.json());
+  const res = await fetch(url).then((res2) => res2.json());
+  return res.track;
 };
-var fetchLastFMTrackMemo = toMemoized(fetchLastFMTrack);
+
+// shared/fp.ts
+import { array as ar, function as f, record as rec, semigroup as sg } from "https://esm.sh/fp-ts";
+var { Snackbar } = Spicetify;
+var pMchain = (f3) => async (fa) => f3(await fa);
 
 // extensions/show-the-genres/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";
@@ -125,14 +113,18 @@ import { task as task2 } from "https://esm.sh/fp-ts";
 // shared/settings.tsx
 import { task } from "https://esm.sh/fp-ts";
 
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
+
 // shared/modules.ts
-import { allPass } from "https://esm.sh/fp-ts-std@0.18.0/Predicate";
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
 var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f3) => allPass(
+  (f3) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
@@ -214,14 +206,19 @@ var SettingsSection = class _SettingsSection {
         }
       ];
     };
-    this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map((field) => {
-      const isType = is("type");
-      return guard3([
-        [isType("input" /* INPUT */), this.InputField],
-        [isType("button" /* BUTTON */), this.ButtonField],
-        [isType("toggle" /* TOGGLE */), this.ToggleField]
-      ])(() => /* @__PURE__ */ React.createElement(React.Fragment, null))(field);
-    }));
+    this.toReactComponent = (field) => {
+      switch (field.type) {
+        case "button" /* BUTTON */:
+          return this.ButtonField(field);
+        case "toggle" /* TOGGLE */:
+          return this.ToggleField(field);
+        case "input" /* INPUT */:
+          return this.InputField(field);
+        default:
+          return /* @__PURE__ */ React.createElement(React.Fragment, null);
+      }
+    };
+    this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map(this.toReactComponent));
     this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(SettingColumn, { filterMatchQuery: field.id }, /* @__PURE__ */ React.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ React.createElement(SettingText, { htmlFor: field.id }, field.desc)), /* @__PURE__ */ React.createElement("div", { className: "x-settings-secondColumn" }, children));
     this.ButtonField = (field) => /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(ButtonSecondary, { id: field.id, buttonSize: "sm", onClick: field.onClick, className: "x-settings-button" }, field.text));
     this.ToggleField = (field) => {
@@ -309,7 +306,7 @@ var _GenreLink = class extends LitElement {
     History3.push({ pathname: `/search/${this.genre}/playlists` });
   }
   render() {
-    return html`<a href="#" @click=${this.openPlaylistsSearch}>${titleCase(this.genre)}</a>`;
+    return html`<a href="#" @click=${this.openPlaylistsSearch}>${_.startCase(this.genre)}</a>`;
   }
 };
 _GenreLink.styles = css`
@@ -378,7 +375,7 @@ var fetchLastFMTags = async (uri) => {
   const artistNames = artists.map((artist) => artist.name);
   const { track } = await fetchLastFMTrack(CONFIG.LFMApiKey, artistNames[0], name);
   const tags = track.toptags.tag.map((tag) => tag.name);
-  const deletedTagRegex = /-\d{13}/;
+  const deletedTagRegex = /^-\d{13}$/;
   const blacklistedTags = ["MySpotigramBot"];
   return tags.filter((tag) => !deletedTagRegex.test(tag) && !blacklistedTags.includes(tag));
 };
@@ -398,7 +395,11 @@ var getArtistsGenresOrRelated = async (artistsUris) => {
     const genres = new Set(artists.flatMap((artist) => artist.genres));
     return Array.from(genres);
   };
-  const allGenres = await getArtistsGenres(artistsUris);
+  let allGenres = await getArtistsGenres(artistsUris);
+  if (allGenres.length)
+    return allGenres;
+  const relatedArtists = await fetchGQLArtistRelated(artistsUris[0]);
+  relatedArtists.map((artist) => artist.uri);
   return allGenres.length ? allGenres : await f2.pipe(
     artistsUris[0],
     fetchGQLArtistRelated,

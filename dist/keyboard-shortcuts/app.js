@@ -21,7 +21,7 @@ var isTrackLiked = (uris) => LibraryAPI.contains(...uris);
 var setTrackLiked = (uris, liked) => LibraryAPI[liked ? "add" : "remove"]({ uris });
 var toggleTrackLiked = async (uris) => {
   const liked = await isTrackLiked(uris);
-  const urisByLiked = Object.groupBy(uris, (_, index) => liked[index] ? "liked" : "notLiked");
+  const urisByLiked = Object.groupBy(uris, (_2, index) => liked[index] ? "liked" : "notLiked");
   const ps = [];
   urisByLiked.liked.length && ps.push(setTrackLiked(urisByLiked.liked, false));
   urisByLiked.notLiked.length && ps.push(setTrackLiked(urisByLiked.notLiked, true));
@@ -37,8 +37,13 @@ import { styleMap } from "https://esm.sh/lit/directives/style-map.js";
 
 // extensions/keyboard-shortcuts/util.ts
 import { function as f, number as n, ord } from "https://esm.sh/fp-ts";
-import { mean } from "https://esm.sh/fp-ts-std/Array";
-import { mod } from "https://esm.sh/fp-ts-std/Number";
+
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
+
+// extensions/keyboard-shortcuts/util.ts
 var { Keyboard } = Spicetify;
 var { History: History2 } = Spicetify.Platform;
 var SCROLL_STEP = 25;
@@ -51,13 +56,24 @@ var appScroll = (s) => {
 var appScrollY = (y) => focusOnApp().scroll(0, y);
 var openPage = (page) => History2.push({ pathname: page });
 var rotateSidebar = (offset) => {
+  if (offset === 0)
+    return;
   const navLinks = Array.from(
     Array.from(document.querySelectorAll(".main-yourLibraryX-navLink")).values()
   );
+  if (navLinks.length === 0)
+    return;
   f.pipe(
     document.querySelector(".main-yourLibraryX-navLinkActive"),
     (active) => navLinks.findIndex((e) => e === active),
-    (curr) => mod(navLinks.length)(curr === -1 && offset <= 0 ? offset : curr + offset),
+    (curr) => {
+      if (curr === -1 && offset < 0)
+        curr = navLinks.length;
+      let target = curr + offset % navLinks.length;
+      if (target < 0)
+        target += navLinks.length;
+      return target;
+    },
     (target) => navLinks[target].click()
   );
 };
@@ -81,7 +97,7 @@ var isElementInViewPort = (e) => {
   const c = document.body;
   const bound = e.getBoundingClientRect();
   const within = (m, M) => (x) => x === ord.clamp(n.Ord)(m, M)(x);
-  return f.pipe(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) && f.pipe(mean([bound.left, bound.right]), within(0, c.clientWidth));
+  return f.pipe(_.mean([bound.top, bound.bottom]), within(0, c.clientHeight)) && f.pipe(_.mean([bound.left, bound.right]), within(0, c.clientWidth));
 };
 var CLICKABLE_ELEMENT_SELECTOR = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`;
 

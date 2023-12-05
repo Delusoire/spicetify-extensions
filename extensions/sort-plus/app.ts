@@ -1,28 +1,27 @@
 debugger
-import {
-    array as ar,
-    eq,
-    function as f,
-    nonEmptyArray as nea,
-    number as num,
-    option as o,
-    ord,
-    record as rec,
-    string as str,
-    task,
-} from "https://esm.sh/fp-ts"
-import { guard } from "https://esm.sh/fp-ts-std/Function"
-import { anyPass } from "https://esm.sh/fp-ts-std/Predicate"
-import { values } from "https://esm.sh/fp-ts-std/Record"
-import { LastFMTrack } from "https://esm.sh/lastfm-ts-api"
+import { array as ar, function as f, number as num, option as o, ord, string as str } from "https://esm.sh/fp-ts"
 
 import {
+    ItemBase,
+    ItemsReleases,
+    ItemsWithCount,
     fetchGQLAlbum,
     fetchGQLArtistDiscography,
     fetchGQLArtistOverview,
     fetchLastFMTrack,
     spotifyApi,
 } from "../../shared/api.ts"
+import { _, fp } from "../../shared/deps.ts"
+import { pMchain, progressify, tapAny, withProgress } from "../../shared/fp.ts"
+import {
+    TrackData,
+    parseAlbumTrack,
+    parseArtistLikedTrack,
+    parseLibraryAPILikedTracks,
+    parsePlaylistAPITrack,
+    parseTopTrackFromArtist,
+    parseWebAPITrack,
+} from "../../shared/parse.ts"
 import {
     createPlaylistFromTracks,
     fetchArtistLikedTracks,
@@ -33,18 +32,8 @@ import {
     movePlaylistTracks,
     setPlaylistVisibility,
 } from "../../shared/platformApi.ts"
-import { objConcat, pMchain, tapAny, withProgress } from "../../shared/fp.ts"
-import {
-    TrackData,
-    TracksPopulater,
-    parse1,
-    parseAPITrack,
-    parsePlatLikedTracks,
-    parsePlatTrackFromArtistLikedTracks,
-    parseTopTrackFromArtist,
-    parseTrackFromAlbum,
-} from "../../shared/parse.ts"
 import { SpotifyLoc, SpotifyURI, createQueueItem, setPlayingContext, setQueue } from "../../shared/util.ts"
+
 import { CONFIG } from "./settings.ts"
 
 const { URI, ContextMenu, Topbar } = Spicetify
@@ -68,9 +57,15 @@ enum SortProp {
     "LastFM - Play Count" = "lastfmPlaycount",
 }
 
+const joinByUri = (...trackss: TrackData[][]) => {
+    const tracks = [...trackss].flat()
+    const uriTrackPairs = tracks.map(track => [track.uri, track] as const)
+    return Array.from(new Map(uriTrackPairs).values())
+}
+
 // Fetching Tracks
 
-const getAlbumTracks = async (uri: SpotifyURI) => {
+const getTracksFromAlbum = async (uri: string) => {
     const albumRes = await fetchGQLAlbum(uri)
     const releaseDate = new Date(albumRes.date.isoString).getTime()
 
@@ -80,97 +75,77 @@ const getAlbumTracks = async (uri: SpotifyURI) => {
         releaseDate,
     }
 
-    return f.pipe(albumRes.tracks.items, ar.map(f.flow(parseTrackFromAlbum, track => Object.assign(track, filler))))
+    return Promise.all(
+        albumRes.tracks.items.map(async track => {
+            const parsedTrack = await parseAlbumTrack(track)
+            return Object.assign(parsedTrack, filler) as TrackData
+        }),
+    )
 }
 
-const getPlaylistTracks = f.flow(fetchPlaylistContents, pMchain(ar.map(parse1)))
+const getTracksFromPlaylist = f.flow(fetchPlaylistContents, pMchain(ar.map(parsePlaylistAPITrack)))
 
-async function getArtistTracks(uri: SpotifyURI) {
-    const extractUriFromReleases = (x: { releases: { items: Array<{ uri: SpotifyURI }> } }) => x.releases.items[0].uri
-    const getTracksFromAlbums = f.flow(ar.map(getAlbumTracks), ps => Promise.all(ps), pMchain(ar.flatten))
+async function getTracksFromArtist(uri: SpotifyURI) {
+    const allTracks = new Array<TrackData>()
 
-    const allTracks = new Array<TrackData | Promise<TrackData>>()
-
-    const add = (tracks: TrackData[]) => {
-        allTracks.push(...tracks)
-    }
-
-    const albumsLike = []
-    const albumsLikeReleases = []
+    const itemsWithCountAr = new Array<ItemsWithCount<ItemBase>>()
+    const itemsReleasesAr = new Array<ItemsReleases<ItemBase>>()
 
     if (CONFIG.artistAllDiscography) {
-        const disc = await fetchGQLArtistDiscography(uri)
-        albumsLikeReleases.push(...disc)
+        const { discography } = await fetchGQLArtistDiscography(uri)
+        itemsReleasesAr.push(discography.all)
     } else {
-        const disc = (await fetchGQLArtistOverview(uri)).discography
+        const { discography } = await fetchGQLArtistOverview(uri)
 
-        if (CONFIG.artistLikedTracks) {
-            const likedTracks = await fetchArtistLikedTracks(uri)
-            f.pipe(likedTracks, ar.map(parsePlatTrackFromArtistLikedTracks), add)
-        }
-
-        if (CONFIG.artistTopTracks)
-            f.pipe(
-                disc.topTracks.items,
-                ar.map(i => i.track),
-                ar.map(parseTopTrackFromArtist),
-                add,
-            )
-
-        if (CONFIG.artistPopularReleases) albumsLike.push(...disc.popularReleasesAlbums.items.map(r => r.uri))
-        if (CONFIG.artistSingles) albumsLikeReleases.push(...disc.singles.items)
-        if (CONFIG.artistAlbums) albumsLikeReleases.push(...disc.albums.items)
-        if (CONFIG.artistCompilations) albumsLikeReleases.push(...disc.compilations.items)
+        CONFIG.artistLikedTracks && allTracks.push(...(await fetchArtistLikedTracks(uri)).map(parseArtistLikedTrack))
+        CONFIG.artistTopTracks && allTracks.push(...discography.topTracks.items.map(parseTopTrackFromArtist))
+        CONFIG.artistPopularReleases && itemsWithCountAr.push(discography.popularReleasesAlbums)
+        CONFIG.artistSingles && itemsReleasesAr.push(discography.singles)
+        CONFIG.artistAlbums && itemsReleasesAr.push(discography.albums)
+        CONFIG.artistCompilations && itemsReleasesAr.push(discography.compilations)
     }
 
-    albumsLike.push(...albumsLikeReleases.map(extractUriFromReleases))
-    await f.pipe(albumsLike, getTracksFromAlbums, pMchain(add))
-
+    const items1 = itemsWithCountAr.flatMap(iwc => iwc.items)
+    const items2 = itemsReleasesAr.flatMap(ir => ir.items.flatMap(i => i.releases.items))
+    const albumLikeUris = items1.concat(items2).map(item => item.uri)
+    const albumsTracks = await Promise.all(albumLikeUris.map(getTracksFromAlbum))
+    allTracks.push(...albumsTracks.flat())
     return await Promise.all(allTracks)
 }
 
 // ------------- For populateTracksSpot -------------
-const fetchAPITracksFromTracks: TracksPopulater = f.flow(
-    ar.map(track => URI.fromString(track.uri)!.id!),
-    spotifyApi.tracks.get,
-    pMchain(ar.map(parseAPITrack)),
-)
+const fillTracksFromWebAPI = async (tracks: TrackData[]) => {
+    const ids = tracks.map(track => URI.fromString(track.uri)!.id!)
+    const fetchedTracks = (await spotifyApi.tracks.get(ids)).map(parseWebAPITrack)
+    return joinByUri(tracks, fetchedTracks)
+}
 
-const fetchAlbumTracksFromTracks: TracksPopulater = f.flow(
-    nea.groupBy(track => track.albumUri!),
-    withProgress(rec.mapWithIndex<SpotifyURI, TrackData[], Promise<TrackData[]>>)(async (albumUri, tracks) => {
-        const uriEq = f.pipe(
-            str.Eq,
-            eq.contramap((t: TrackData) => t.uri),
-        )
+const fillTracksFromAlbumTracks = async (tracks: TrackData[]) => {
+    const tracksByAlbumUri = Object.groupBy(tracks, track => track.albumUri)
+    const passes = Object.keys(tracksByAlbumUri).length
+    const fn = progressify(async (tracks: TrackData[], albumUri: string) => {
+        const albumTracks = await getTracksFromAlbum(albumUri)
+        return _.intersectionBy(tracks, albumTracks, track => track.uri)
+    }, passes)
 
-        const albumTracks = await getAlbumTracks(albumUri)
+    const albumsTracks = await Promise.all(Object.values(_.mapValues(tracksByAlbumUri, fn)))
+    return albumsTracks.flat()
+}
 
-        return ar.intersection(uriEq)(albumTracks, tracks)
-    }),
-    o => Promise.all(Object.values(o)),
-    pMchain(ar.flatten),
-)
 // --------------------------------------------------
 
-const populateTracksSpot = (propName: keyof typeof SortProp) => (tracks: TrackData[]) =>
-    f.pipe(
-        tracks,
-        ar.filter(x => x[SortProp[propName]] == null),
-        guard([[str.startsWith(SortBy.SPOTIFY_PLAYCOUNT), f.constant(fetchAlbumTracksFromTracks)]])(
-            f.constant(fetchAPITracksFromTracks),
-        )(propName),
-        pMchain(ar.concat(tracks)),
-        pMchain(nea.groupBy(x => x.uri)),
-        pMchain(values<TrackData[]>),
-        pMchain(ar.map(objConcat<TrackData>())),
-    )
+const fillTracksFromSpotify = (propName: keyof typeof SortProp) => async (tracks: TrackData[]) => {
+    const tracksMissing = tracks.filter(track => track[SortProp[propName]] == null)
+    const tracksPopulater = _.cond([
+        [fp.startsWith(SortBy.SPOTIFY_PLAYCOUNT), () => fillTracksFromAlbumTracks],
+        [_.stubTrue, () => fillTracksFromWebAPI],
+    ])(propName)
+    const filledTracks = await tracksPopulater(tracksMissing)
+    return joinByUri(tracks, filledTracks)
+}
 
-const populateTrackLastFM = async (track: TrackData) => {
-    LastFMTrack
-
-    const lastfmTrack = (await fetchLastFMTrack(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUsername))
-        .track
+const fillTracksFromLastFM = async (track: TrackData) => {
+    const lastfmTrack = await fetchLastFMTrack(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUsername)
     track.lastfmPlaycount = Number(lastfmTrack.listeners)
     track.scrobbles = Number(lastfmTrack.playcount)
     track.personalScrobbles = Number(lastfmTrack.userplaycount)
@@ -180,26 +155,25 @@ const populateTrackLastFM = async (track: TrackData) => {
 // Fetching, Sorting and Playing
 
 const fetchTracks = f.flow(
-    tapAny(uri => void (lastFetchedUri = uri)),
-    guard<SpotifyURI, Promise<TrackData[]>>([
-        [URI.isAlbum, getAlbumTracks],
-        [URI.isArtist, getArtistTracks],
-        [URI.isPlaylistV1OrV2, getPlaylistTracks],
-        [URI.isCollection, f.flow(fetchLikedTracks, pMchain(ar.map(parsePlatLikedTracks)))],
-    ])(task.of([])),
+    tapAny((uri: string) => void (lastFetchedUri = uri)),
+    _.cond([
+        [URI.isAlbum, getTracksFromAlbum],
+        [URI.isArtist, getTracksFromArtist],
+        [URI.isCollection, () => fetchLikedTracks().then(tracks => tracks.map(parseLibraryAPILikedTracks))],
+        [URI.isPlaylistV1OrV2, getTracksFromPlaylist],
+    ]),
 )
 
-const populateTracks = guard<keyof typeof SortProp, TracksPopulater>([
-    [str.startsWith("Spotify"), populateTracksSpot],
-    [
-        str.startsWith("LastFM"),
-        f.constant(
-            f.flow(f.pipe(withProgress(ar.map<TrackData, Promise<TrackData>>)(populateTrackLastFM)), ps =>
-                Promise.all(ps),
-            ),
-        ),
-    ],
-])(f.constant(task.of([])))
+const populateTracksLastFM = (tracks: TrackData[]) => {
+    const fn = progressify(fillTracksFromLastFM, tracks.length)
+    return Promise.all(tracks.map(fn))
+}
+
+type TracksPopulater = (tracks: TrackData[]) => Promise<TrackData[]>
+const populateTracks: (sortProp: keyof typeof SortProp) => TracksPopulater = _.cond([
+    [fp.startsWith("Spotify"), fillTracksFromSpotify],
+    [fp.startsWith("LastFM"), () => populateTracksLastFM],
+])
 
 let lastSortedQueue: TrackData[] = []
 const _setQueue = (inverted: boolean) => async (queue: TrackData[]) => {
@@ -211,7 +185,7 @@ const _setQueue = (inverted: boolean) => async (queue: TrackData[]) => {
     )
 
     lastSortedQueue = f.pipe(queue, ar.uniq(uriOrd), inverted ? ar.reverse : f.identity)
-    globalThis.lastSortedQueue = lastSortedQueue
+    global.lastSortedQueue = lastSortedQueue
 
     const isQueued = URI.isCollection(lastFetchedUri)
 
@@ -278,12 +252,12 @@ const shuffleSubmenu = new ContextMenu.Item(
 
 const starsOrd = f.pipe(
     num.Ord,
-    ord.contramap((t: { uri: SpotifyURI }) => globalThis.tracksRatings[t.uri] ?? 0),
+    ord.contramap((t: { uri: SpotifyURI }) => tracksRatings[t.uri] ?? 0),
 )
 const starsSubmenu = new ContextMenu.Item(
     "Stars",
     ([uri]) => sortTracksWith("Stars", ar.sort(starsOrd))(uri),
-    () => globalThis.tracksRatings !== undefined,
+    () => tracksRatings !== undefined,
     "heart-active",
     false,
 )
@@ -295,12 +269,12 @@ new ContextMenu.SubMenu(
     "Sort by",
     ar
         .zipWith(
-            values(SortBy),
+            Object.values(SortBy),
             ["play", "heart", "list-view", "volume", "artist", "subtitles"],
             createSortByPropSubmenu,
         )
         .concat([shuffleSubmenu, starsSubmenu]),
-    ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isCollection, URI.isTrack, URI.isPlaylistV1OrV2])(uri),
+    ([uri]) => _.overEvery([URI.isAlbum, URI.isArtist, URI.isCollection, URI.isTrack, URI.isPlaylistV1OrV2])(uri),
 ).register()
 
 // Topbar

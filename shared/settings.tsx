@@ -1,10 +1,9 @@
 import { task } from "https://esm.sh/fp-ts"
-import { guard3, is } from "./fp.ts"
+import { SectionTitle, SettingColumn, SettingSection, SettingText, SettingToggle } from "./modules.ts"
 import { sleep } from "./util.ts"
-import { SettingSection, SettingColumn, SettingText, SettingToggle, SectionTitle } from "./modules.ts"
 
 const { React, ReactDOM, LocalStorage } = Spicetify
-const { ButtonSecondary } = Spicetify.ReactComponent as any
+const { ButtonSecondary } = Spicetify.ReactComponent
 const { History } = Spicetify.Platform
 
 type FieldToProps<A> = Omit<A, "type">
@@ -132,18 +131,23 @@ export class SettingsSection {
         if (SettingsSection.getFieldValue(id) === null) SettingsSection.setFieldValue(id, await defaultValue())
     }
 
+    private toReactComponent = (field: SettingsField) => {
+        switch (field.type) {
+            case FieldType.BUTTON:
+                return this.ButtonField(field)
+            case FieldType.TOGGLE:
+                return this.ToggleField(field)
+            case FieldType.INPUT:
+                return this.InputField(field)
+            default:
+                return <></>
+        }
+    }
+
     private SettingsSection = () => (
         <SettingSection filterMatchQuery={this.name}>
             <SectionTitle>{this.name}</SectionTitle>
-            {Object.values(this.sectionFields).map(field => {
-                const isType = is<SettingsField>("type")
-
-                return guard3([
-                    [isType<InputField>(FieldType.INPUT), this.InputField],
-                    [isType(FieldType.BUTTON), this.ButtonField],
-                    [isType(FieldType.TOGGLE), this.ToggleField],
-                ])(() => <></>)(field)
-            })}
+            {Object.values(this.sectionFields).map(this.toReactComponent)}
         </SettingSection>
     )
 

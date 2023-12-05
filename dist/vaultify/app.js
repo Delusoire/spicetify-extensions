@@ -49,40 +49,31 @@ var init_platformApi = __esm({
   }
 });
 
-// shared/fp.ts
-import {
-  array as ar,
-  eq,
-  string as str,
-  record as rec,
-  semigroup as sg,
-  function as f
-} from "https://esm.sh/fp-ts";
-import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
-var Snackbar, guard3, is;
-var init_fp = __esm({
-  "shared/fp.ts"() {
-    ({ Snackbar } = Spicetify);
-    guard3 = (branches) => guard(branches);
-    is = (c) => (a) => (field) => field[c] === a;
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _;
+var init_deps = __esm({
+  "shared/deps.ts"() {
+    _ = ld;
   }
 });
 
 // shared/modules.ts
-import { allPass } from "https://esm.sh/fp-ts-std@0.18.0/Predicate";
 var require2, cache, modules, functionModules, findModuleByStrings, CheckedPlaylistButtonIcon, SettingSection, SectionTitle, SettingColumn, SettingText, SettingToggle, curationButtonClass;
 var init_modules = __esm({
   "shared/modules.ts"() {
+    init_deps();
     require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
     cache = Object.keys(require2.m).map((id) => require2(id));
     modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
     functionModules = modules.filter((module) => typeof module === "function");
     findModuleByStrings = (modules2, ...filters) => modules2.find(
-      (f3) => allPass(
+      (f2) => _.overEvery(
         filters.map(
           (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
         )
-      )(f3.toString())
+      )(f2.toString())
     );
     CheckedPlaylistButtonIcon = findModuleByStrings(
       functionModules,
@@ -105,9 +96,8 @@ import { task } from "https://esm.sh/fp-ts";
 var React, ReactDOM, LocalStorage, ButtonSecondary, History2, SettingsSection;
 var init_settings = __esm({
   "shared/settings.tsx"() {
-    init_fp();
-    init_util();
     init_modules();
+    init_util();
     ({ React, ReactDOM, LocalStorage } = Spicetify);
     ({ ButtonSecondary } = Spicetify.ReactComponent);
     ({ History: History2 } = Spicetify.Platform);
@@ -169,14 +159,19 @@ var init_settings = __esm({
             }
           ];
         };
-        this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map((field) => {
-          const isType = is("type");
-          return guard3([
-            [isType("input" /* INPUT */), this.InputField],
-            [isType("button" /* BUTTON */), this.ButtonField],
-            [isType("toggle" /* TOGGLE */), this.ToggleField]
-          ])(() => /* @__PURE__ */ React.createElement(React.Fragment, null))(field);
-        }));
+        this.toReactComponent = (field) => {
+          switch (field.type) {
+            case "button" /* BUTTON */:
+              return this.ButtonField(field);
+            case "toggle" /* TOGGLE */:
+              return this.ToggleField(field);
+            case "input" /* INPUT */:
+              return this.InputField(field);
+            default:
+              return /* @__PURE__ */ React.createElement(React.Fragment, null);
+          }
+        };
+        this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map(this.toReactComponent));
         this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(SettingColumn, { filterMatchQuery: field.id }, /* @__PURE__ */ React.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ React.createElement(SettingText, { htmlFor: field.id }, field.desc)), /* @__PURE__ */ React.createElement("div", { className: "x-settings-secondColumn" }, children));
         this.ButtonField = (field) => /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(ButtonSecondary, { id: field.id, buttonSize: "sm", onClick: field.onClick, className: "x-settings-button" }, field.text));
         this.ToggleField = (field) => {
@@ -272,7 +267,7 @@ var init_settings2 = __esm({
 });
 
 // extensions/vaultify/app.ts
-import { array as ar2, function as f2 } from "https://esm.sh/fp-ts";
+import { array as ar, function as f } from "https://esm.sh/fp-ts";
 var LocalStorage2, URI2, ClipboardAPI, LibraryAPI2, LocalStorageAPI, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, allowedExtDataRegex, backup, restore;
 var init_app = __esm({
   "extensions/vaultify/app.ts"() {
@@ -332,14 +327,14 @@ var init_app = __esm({
         }
       });
       const libraryArtists = extractItemsUris(rawLibraryArtists);
-      const playlists = await f2.pipe(await fetchRootFolder(), extractLikedPlaylistTreeRecur);
+      const playlists = await f.pipe(await fetchRootFolder(), extractLikedPlaylistTreeRecur);
       const localStore = Object.entries(localStorage).filter(([key]) => allowedExtDataRegex.test(key));
       const { items, namespace } = LocalStorageAPI;
       const localStoreAPI = Object.entries(items).filter(([key]) => key.startsWith(namespace)).map(([key, value]) => [key.split(":")[1], value]);
-      const settings2 = f2.pipe(
+      const settings2 = f.pipe(
         document.querySelectorAll(`[id^="settings."],[id^="desktop."],[class^="network."]`),
         Array.from,
-        ar2.flatMap((setting) => {
+        ar.flatMap((setting) => {
           const id = setting.getAttribute("id");
           if (setting instanceof HTMLInputElement) {
             const type = setting.getAttribute("type");
@@ -375,13 +370,13 @@ var init_app = __esm({
         Spicetify.showNotification("Restored Library");
       }
       if (mode === "extensions") {
-        f2.pipe(
+        f.pipe(
           vault.localStore,
-          ar2.map(([a, b]) => LocalStorage2.set(a, b))
+          ar.map(([a, b]) => LocalStorage2.set(a, b))
         );
-        f2.pipe(
+        f.pipe(
           vault.localStoreAPI,
-          ar2.map(([a, b]) => LocalStorageAPI.setItem(a, b))
+          ar.map(([a, b]) => LocalStorageAPI.setItem(a, b))
         );
         Spicetify.showNotification("Restored Extensions");
       }

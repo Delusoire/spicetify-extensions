@@ -28,8 +28,7 @@ export const loadRatings = async () => {
         ar.reduce([] as SpotifyURI[], (uris, [uri, rating]) => ((uris[rating] = uri), uris)),
     )
 
-    // @ts-ignore
-    globalThis.tracksRatings = tracksRatings = await f.pipe(
+    global.tracksRatings = tracksRatings = await f.pipe(
         playlistUris,
         ar.map(fetchPlaylistContents),
         ps => Promise.all(ps), // Promise.all flips empty to undefined

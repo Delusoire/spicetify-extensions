@@ -1,6 +1,6 @@
 import { function as f, number as n, ord } from "https://esm.sh/fp-ts"
-import { mean } from "https://esm.sh/fp-ts-std/Array"
-import { mod } from "https://esm.sh/fp-ts-std/Number"
+
+import { _ } from "../../shared/deps.ts"
 
 import { listeningToSneakBinds } from "./sneak.ts"
 
@@ -22,14 +22,23 @@ export const appScrollY = (y: number) => focusOnApp().scroll(0, y)
 export const openPage = (page: string) => History.push({ pathname: page })
 
 export const rotateSidebar = (offset: number) => {
+    if (offset === 0) return
+
     const navLinks = Array.from(
         Array.from(document.querySelectorAll<HTMLElement>(".main-yourLibraryX-navLink")).values(),
     )
 
+    if (navLinks.length === 0) return
+
     f.pipe(
         document.querySelector(".main-yourLibraryX-navLinkActive"),
         active => navLinks.findIndex(e => e === active),
-        curr => mod(navLinks.length)(curr === -1 && offset <= 0 ? offset : curr + offset),
+        curr => {
+            if (curr === -1 && offset < 0) curr = navLinks.length
+            let target = curr + (offset % navLinks.length)
+            if (target < 0) target += navLinks.length
+            return target
+        },
         target => navLinks[target].click(),
     )
 }
@@ -63,8 +72,8 @@ export const isElementInViewPort = (e: HTMLElement) => {
     const bound = e.getBoundingClientRect()
     const within = (m: number, M: number) => (x: number) => x === ord.clamp(n.Ord)(m, M)(x)
     return (
-        f.pipe(mean([bound.top, bound.bottom]), within(0, c.clientHeight)) &&
-        f.pipe(mean([bound.left, bound.right]), within(0, c.clientWidth))
+        f.pipe(_.mean([bound.top, bound.bottom]), within(0, c.clientHeight)) &&
+        f.pipe(_.mean([bound.left, bound.right]), within(0, c.clientWidth))
     )
 }
 

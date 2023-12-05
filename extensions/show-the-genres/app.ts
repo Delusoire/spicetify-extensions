@@ -1,4 +1,4 @@
-import { array as a, function as f, string as str } from "https://esm.sh/fp-ts"
+import { array as a, function as f } from "https://esm.sh/fp-ts"
 
 import { fetchGQLArtistRelated, fetchLastFMTrack, spotifyApi } from "../../shared/api.ts"
 import { pMchain } from "../../shared/fp.ts"
@@ -18,7 +18,7 @@ const fetchLastFMTags = async (uri: SpotifyURI) => {
     const { track } = await fetchLastFMTrack(CONFIG.LFMApiKey, artistNames[0], name)
     const tags = track.toptags.tag.map(tag => tag.name)
 
-    const deletedTagRegex = /-\d{13}/
+    const deletedTagRegex = /^-\d{13}$/
     const blacklistedTags = ["MySpotigramBot"]
     return tags.filter(tag => !deletedTagRegex.test(tag) && !blacklistedTags.includes(tag))
 }
@@ -42,7 +42,13 @@ const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[]) => {
         return Array.from(genres)
     }
 
-    const allGenres = await getArtistsGenres(artistsUris)
+    let allGenres = await getArtistsGenres(artistsUris)
+
+    if (allGenres.length) return allGenres
+
+    const relatedArtists = await fetchGQLArtistRelated(artistsUris[0])
+
+    relatedArtists.map(artist => artist.uri)
 
     return allGenres.length
         ? allGenres

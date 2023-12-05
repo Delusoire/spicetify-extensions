@@ -1,5 +1,7 @@
-// extensions/spoqify-radios/app.ts
-import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
 
 // shared/util.ts
 var { Player, URI } = Spicetify;
@@ -26,32 +28,17 @@ var createFolder = async (name, location = {}) => await RootlistAPI.createFolder
 // shared/settings.tsx
 import { task } from "https://esm.sh/fp-ts";
 
-// shared/fp.ts
-import {
-  array as ar,
-  eq,
-  string as str,
-  record as rec,
-  semigroup as sg,
-  function as f
-} from "https://esm.sh/fp-ts";
-import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
-var { Snackbar } = Spicetify;
-var guard3 = (branches) => guard(branches);
-var is = (c) => (a) => (field) => field[c] === a;
-
 // shared/modules.ts
-import { allPass } from "https://esm.sh/fp-ts-std@0.18.0/Predicate";
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
 var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f2) => allPass(
+  (f) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f2.toString())
+  )(f.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -129,14 +116,19 @@ var SettingsSection = class _SettingsSection {
         }
       ];
     };
-    this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map((field) => {
-      const isType = is("type");
-      return guard3([
-        [isType("input" /* INPUT */), this.InputField],
-        [isType("button" /* BUTTON */), this.ButtonField],
-        [isType("toggle" /* TOGGLE */), this.ToggleField]
-      ])(() => /* @__PURE__ */ React.createElement(React.Fragment, null))(field);
-    }));
+    this.toReactComponent = (field) => {
+      switch (field.type) {
+        case "button" /* BUTTON */:
+          return this.ButtonField(field);
+        case "toggle" /* TOGGLE */:
+          return this.ToggleField(field);
+        case "input" /* INPUT */:
+          return this.InputField(field);
+        default:
+          return /* @__PURE__ */ React.createElement(React.Fragment, null);
+      }
+    };
+    this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map(this.toReactComponent));
     this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(SettingColumn, { filterMatchQuery: field.id }, /* @__PURE__ */ React.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ React.createElement(SettingText, { htmlFor: field.id }, field.desc)), /* @__PURE__ */ React.createElement("div", { className: "x-settings-secondColumn" }, children));
     this.ButtonField = (field) => /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(ButtonSecondary, { id: field.id, buttonSize: "sm", onClick: field.onClick, className: "x-settings-button" }, field.text));
     this.ToggleField = (field) => {
@@ -225,6 +217,6 @@ var createAnonRadio = (uri) => {
 new ContextMenu.Item(
   "Create anonymized radio",
   ([uri]) => createAnonRadio(uri),
-  ([uri]) => anyPass([URI2.isAlbum, URI2.isArtist, URI2.isPlaylistV1OrV2, URI2.isTrack])(uri),
+  ([uri]) => _.overEvery([URI2.isAlbum, URI2.isArtist, URI2.isPlaylistV1OrV2, URI2.isTrack])(uri),
   "podcasts"
 ).register();

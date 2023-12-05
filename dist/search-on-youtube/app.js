@@ -1,28 +1,10 @@
-// extensions/search-on-youtube/app.ts
-import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
-
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
-
-// shared/fp.ts
-import {
-  array as ar,
-  eq,
-  string as str,
-  record as rec,
-  semigroup as sg,
-  function as f
-} from "https://esm.sh/fp-ts";
-import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
-var { Snackbar } = Spicetify;
-var guard3 = (branches) => guard(branches);
-var is = (c) => (a) => (field) => field[c] === a;
-var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/util.ts
 var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
-var normalizeStr = (str2) => str2.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
+var normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // shared/api.ts
@@ -39,17 +21,6 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
     }
   }
 });
-var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
-  const url = new URL("https://ws.audioscrobbler.com/2.0/");
-  url.searchParams.append("method", "track.getInfo");
-  url.searchParams.append("api_key", LFMApiKey);
-  url.searchParams.append("artist", artist);
-  url.searchParams.append("track", trackName);
-  url.searchParams.append("format", "json");
-  url.searchParams.append("username", lastFmUsername);
-  return await fetch(url).then((res) => res.json());
-};
-var fetchLastFMTrackMemo = toMemoized(fetchLastFMTrack);
 var searchYoutube = async (YouTubeApiKey, searchString) => {
   const url = new URL("https://www.googleapis.com/youtube/v3/search");
   url.searchParams.append("part", "snippet");
@@ -60,19 +31,24 @@ var searchYoutube = async (YouTubeApiKey, searchString) => {
   return await fetch(url).then((res) => res.json());
 };
 
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
+
 // shared/parse.ts
-var parseAPITrack = (track) => ({
-  albumName: track.album.name,
-  albumUri: track.album.uri,
-  artistName: track.artists[0].name,
-  artistUri: track.artists[0].uri,
-  durationMilis: track.duration_ms,
+var parseWebAPITrack = (track) => ({
+  uri: track.uri,
+  uid: void 0,
   name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration_ms,
   playcount: void 0,
   popularity: track.popularity,
-  releaseDate: new Date(track.album.release_date).getTime(),
-  uid: track.id,
-  uri: track.uri
+  releaseDate: new Date(track.album.release_date).getTime()
 });
 
 // extensions/search-on-youtube/settings.ts
@@ -82,17 +58,16 @@ import { task as task2 } from "https://esm.sh/fp-ts";
 import { task } from "https://esm.sh/fp-ts";
 
 // shared/modules.ts
-import { allPass } from "https://esm.sh/fp-ts-std@0.18.0/Predicate";
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
 var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f2) => allPass(
+  (f) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f2.toString())
+  )(f.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -170,14 +145,19 @@ var SettingsSection = class _SettingsSection {
         }
       ];
     };
-    this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map((field) => {
-      const isType = is("type");
-      return guard3([
-        [isType("input" /* INPUT */), this.InputField],
-        [isType("button" /* BUTTON */), this.ButtonField],
-        [isType("toggle" /* TOGGLE */), this.ToggleField]
-      ])(() => /* @__PURE__ */ React.createElement(React.Fragment, null))(field);
-    }));
+    this.toReactComponent = (field) => {
+      switch (field.type) {
+        case "button" /* BUTTON */:
+          return this.ButtonField(field);
+        case "toggle" /* TOGGLE */:
+          return this.ToggleField(field);
+        case "input" /* INPUT */:
+          return this.InputField(field);
+        default:
+          return /* @__PURE__ */ React.createElement(React.Fragment, null);
+      }
+    };
+    this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map(this.toReactComponent));
     this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(SettingColumn, { filterMatchQuery: field.id }, /* @__PURE__ */ React.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ React.createElement(SettingText, { htmlFor: field.id }, field.desc)), /* @__PURE__ */ React.createElement("div", { className: "x-settings-secondColumn" }, children));
     this.ButtonField = (field) => /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(ButtonSecondary, { id: field.id, buttonSize: "sm", onClick: field.onClick, className: "x-settings-button" }, field.text));
     this.ToggleField = (field) => {
@@ -256,7 +236,7 @@ var YTVidIDCache = /* @__PURE__ */ new Map();
 var showOnYouTube = async (uri) => {
   const id = URI2.fromString(uri).id;
   if (!YTVidIDCache.get(id)) {
-    const track = parseAPITrack(await spotifyApi.tracks.get(id));
+    const track = parseWebAPITrack(await spotifyApi.tracks.get(id));
     const searchString = `${track.artistName} - ${track.name} music video`;
     try {
       const videos = await searchYoutube(CONFIG.YouTubeApiKey, searchString).then((res) => res.items);
@@ -266,7 +246,7 @@ var showOnYouTube = async (uri) => {
       }) ?? videos[0];
       YTVidIDCache.set(id, video.id.videoId);
       window.open(`https://www.youtube.com/watch?v=${video.id.videoId}`);
-    } catch (_) {
+    } catch (_2) {
       window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(searchString)}`);
     }
   }
@@ -274,6 +254,6 @@ var showOnYouTube = async (uri) => {
 new ContextMenu.Item(
   "Search on YouTube",
   ([uri]) => showOnYouTube(uri),
-  ([uri]) => anyPass([URI2.isTrack])(uri),
+  ([uri]) => _.overEvery([URI2.isTrack])(uri),
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="19px" height="19px"><path fill="currentColor" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"/><path fill="var(--spice-main)" d="M20 31L20 17 32 24z"/></svg>`
 ).register();

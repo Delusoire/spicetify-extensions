@@ -3,7 +3,8 @@ import { customElement, property, state } from "https://esm.sh/lit/decorators.js
 import { join } from "https://esm.sh/lit/directives/join.js"
 import { map } from "https://esm.sh/lit/directives/map.js"
 
-import { SpotifyURI, titleCase } from "../../shared/util.ts"
+import { SpotifyURI } from "../../shared/util.ts"
+import { _ } from "../../shared/deps.ts"
 
 const { History } = Spicetify.Platform
 
@@ -31,7 +32,7 @@ class _GenreLink extends LitElement {
     }
 
     protected render() {
-        return html`<a href="#" @click=${this.openPlaylistsSearch}>${titleCase(this.genre)}</a>`
+        return html`<a href="#" @click=${this.openPlaylistsSearch}>${_.startCase(this.genre)}</a>`
     }
 }
 

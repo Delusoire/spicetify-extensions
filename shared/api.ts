@@ -1,5 +1,4 @@
 import { AccessToken, SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk"
-import { toMemoized } from "./fp.ts"
 import { SpotifyURI, escapeRegex } from "./util.ts"
 
 const { Locale, GraphQL, CosmosAsync } = Spicetify
@@ -65,13 +64,11 @@ export type fetchGQLAlbumRes = {
             }
         }>
     }
-    releases: {
-        totalCount: number
-        items: Array<{
-            uri: SpotifyURI
-            name: string
-        }>
-    }
+    releases: ItemsWithCount<{
+        uri: SpotifyURI
+        name: string
+    }>
+
     type: string
     date: {
         isoString: string
@@ -95,66 +92,58 @@ export type fetchGQLAlbumRes = {
         shareUrl: string
         shareId: string
     }
-    tracks: {
-        totalCount: number
-        items: Array<{
-            uid: string
-            track: {
-                saved: boolean
+    tracks: ItemsWithCount<{
+        uid: string
+        track: {
+            saved: boolean
+            uri: SpotifyURI
+            name: string
+            playcount: string
+            discNumber: number
+            trackNumber: number
+            contentRating: {
+                label: string
+            }
+            relinkingInformation: any
+            duration: {
+                totalMilliseconds: number
+            }
+            playability: {
+                playable: boolean
+            }
+            artists: Items<{
+                uri: SpotifyURI
+                profile: {
+                    name: string
+                }
+            }>
+        }
+    }>
+
+    moreAlbumsByArtist: Items<{
+        discography: {
+            popularReleasesAlbums: Items<{
+                id: string
                 uri: SpotifyURI
                 name: string
-                playcount: string
-                discNumber: number
-                trackNumber: number
-                contentRating: {
-                    label: string
+                date: {
+                    year: number
                 }
-                relinkingInformation: any
-                duration: {
-                    totalMilliseconds: number
+                coverArt: {
+                    sources: Array<Spicetify.Platform.ImageSized>
                 }
                 playability: {
                     playable: boolean
+                    reason: string
                 }
-                artists: {
-                    items: Array<{
-                        uri: SpotifyURI
-                        profile: {
-                            name: string
-                        }
-                    }>
+                sharingInfo: {
+                    shareId: string
+                    shareUrl: string
                 }
-            }
-        }>
-    }
-    moreAlbumsByArtist: {
-        items: Array<{
-            discography: {
-                popularReleasesAlbums: {
-                    items: Array<{
-                        id: string
-                        uri: SpotifyURI
-                        name: string
-                        date: {
-                            year: number
-                        }
-                        coverArt: {
-                            sources: Array<Spicetify.Platform.ImageSized>
-                        }
-                        playability: {
-                            playable: boolean
-                            reason: string
-                        }
-                        sharingInfo: {
-                            shareId: string
-                            shareUrl: string
-                        }
-                        type: string
-                    }>
-                }
-            }
-        }>
-    }
+                type: string
+            }>
+        }
+    }>
 }
 export const fetchGQLAlbum = async (uri: SpotifyURI, offset = 0, limit = 487) =>
     (
@@ -166,97 +155,37 @@ export const fetchGQLAlbum = async (uri: SpotifyURI, offset = 0, limit = 487) =>
         })
     ).data.albumUnion as fetchGQLAlbumRes
 
-type Date = (
-    | {
-          year: number
-          month?: number
-          day?: number
-          hour?: number
-          mintue?: number
-          second?: number
-          precision: "YEAR"
-      }
-    | {
-          year: number
-          month: number
-          day?: number
-          hour?: number
-          mintue?: number
-          second?: number
-          precision: "MONTH"
-      }
-    | {
-          year: number
-          month: number
-          day: number
-          hour?: number
-          mintue?: number
-          second?: number
-          precision: "DAY"
-      }
-    | {
-          year: number
-          month: number
-          day: number
-          hour: number
-          mintue?: number
-          second?: number
-          precision: "HOUR"
-      }
-    | {
-          year: number
-          month: number
-          day: number
-          hour: number
-          mintue: number
-          second?: number
-          precision: "MINUTE"
-      }
-    | {
-          year: number
-          month: number
-          day: number
-          hour: number
-          mintue: number
-          second: number
-          precision: "SECOND"
-      }
-) & {
-    isoString: string
-}
-
-type Playability = {
-    playable: boolean
-    reason: "PLAYABLE" | string
-}
-
-type Item = {
-    id: string
-    uri: string
-    name: string
-    type: "SINGLE" | "ALBUM" | "COMPILATION" | string
-    copyright: {
-        items: Array<{
-            type: string
-            text: string
+export type TopTracksItem = {
+    uid: string
+    track: {
+        id: string
+        uri: string
+        name: string
+        playcount: string
+        discNumber: number
+        duration: {
+            totalMilliseconds: number
+        }
+        playability: Playability
+        contentRating: {
+            label: "NONE" | "EXPLICIT"
+        }
+        artists: Items<{
+            uri: string
+            profile: {
+                name: string
+            }
         }>
-    }
-    date: Date
-    coverArt: {
-        sources: Array<Spicetify.Platform.ImageSized>
-    }
-    tracks: {
-        totalCount: number
-    }
-    label: string
-    playability: Playability
-    sharingInfo: {
-        shareId: string
-        shareUrl: string
+        albumOfTrack: {
+            uri: string
+            coverArt: {
+                sources: Array<{ url: string }>
+            }
+        }
     }
 }
 
-type fetchGQLArtistOverviewRes = {
+export type fetchGQLArtistOverviewRes = {
     __typename: "Artist"
     id: string
     uri: string
@@ -355,68 +284,12 @@ type fetchGQLArtistOverviewRes = {
         }
     }
     discography: {
-        latest: Item
-        popularReleasesAlbums: {
-            totalCount: number
-            items: Array<Item>
-        }
-        singles: {
-            totalCount: number
-            items: Array<{
-                releases: {
-                    items: Array<Item>
-                }
-            }>
-        }
-        albums: {
-            totalCount: number
-            items: Array<{
-                releases: {
-                    items: Array<Item>
-                }
-            }>
-        }
-        compilations: {
-            totalCount: number
-            items: Array<{
-                releases: {
-                    items: Array<Item>
-                }
-            }>
-        }
-        topTracks: {
-            items: Array<{
-                uid: string
-                track: {
-                    id: string
-                    uri: string
-                    name: string
-                    playcount: string
-                    discNumber: number
-                    duration: {
-                        totalMilliseconds: number
-                    }
-                    playability: Playability
-                    contentRating: {
-                        label: "NONE" | "EXPLICIT"
-                    }
-                    artists: {
-                        items: Array<{
-                            uri: string
-                            profile: {
-                                name: string
-                            }
-                        }>
-                    }
-                    albumOfTrack: {
-                        uri: string
-                        coverArt: {
-                            sources: Array<{ url: string }>
-                        }
-                    }
-                }
-            }>
-        }
+        latest: Item1
+        popularReleasesAlbums: ItemsWithCount<Item1>
+        singles: ItemsReleases<Item1>
+        albums: ItemsReleases<Item1>
+        compilations: ItemsReleases<Item1>
+        topTracks: Items<TopTracksItem>
     }
     preRelease: any | null
     relatedContent: {
@@ -446,48 +319,43 @@ type fetchGQLArtistOverviewRes = {
             userLocation: {
                 name: string
             }
-            concerts: {
-                totalCount: number
-                items: Array<{
-                    uri: string
-                    id: string
-                    title: string
-                    category: "CONCERT"
-                    festival: boolean
-                    nearUser: boolean
-                    venue: {
-                        name: string
-                        location: { name: string }
-                        coordinates: {
-                            latitude: number
-                            longitude: number
-                        }
+            concerts: ItemsWithCount<{
+                uri: string
+                id: string
+                title: string
+                category: "CONCERT"
+                festival: boolean
+                nearUser: boolean
+                venue: {
+                    name: string
+                    location: { name: string }
+                    coordinates: {
+                        latitude: number
+                        longitude: number
                     }
-                    partnerLinks: {
-                        items: Array<{
-                            partnerName: string
-                            url: string
-                        }>
-                    }
-                    date: Date
+                }
+                partnerLinks: Items<{
+                    partnerName: string
+                    url: string
                 }>
+
+                date: Date
+            }> & {
                 pagingInfo: {
                     limit: number
                 }
             }
         }
-        merch: {
-            items: Array<{
-                image: {
-                    sources: Array<{ url: string }>
-                }
-                name: string
-                description: string
-                price: string
-                uri: string
-                url: string
-            }>
-        }
+        merch: Items<{
+            image: {
+                sources: Array<{ url: string }>
+            }
+            name: string
+            description: string
+            price: string
+            uri: string
+            url: string
+        }>
     }
 }
 export const fetchGQLArtistOverview = async (uri: SpotifyURI) =>
@@ -499,7 +367,12 @@ export const fetchGQLArtistOverview = async (uri: SpotifyURI) =>
         })
     ).data.artistUnion as fetchGQLArtistOverviewRes
 
-type fetchGQLArtistDiscographyRes = any
+export type fetchGQLArtistDiscographyRes = {
+    __typename: "artist"
+    discography: {
+        all: ItemsReleases<Item2>
+    }
+}
 export const fetchGQLArtistDiscography = async (uri: SpotifyURI, offset = 0, limit = 116) =>
     (
         await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
@@ -507,7 +380,7 @@ export const fetchGQLArtistDiscography = async (uri: SpotifyURI, offset = 0, lim
             offset,
             limit,
         })
-    ).data.artistUnion.discography.all.items as fetchGQLArtistDiscographyRes
+    ).data.artistUnion as fetchGQLArtistDiscographyRes
 
 type fetchGQLArtistRelatedRes = Array<{
     id: string
@@ -585,10 +458,10 @@ export const fetchLastFMTrack = async (LFMApiKey: string, artist: string, trackN
     url.searchParams.append("format", "json")
     url.searchParams.append("username", lastFmUsername)
 
-    return (await fetch(url).then(res => res.json())) as fetchLastFMTrackResMinimal
-}
+    const res = (await fetch(url).then(res => res.json())) as fetchLastFMTrackResMinimal
 
-export const fetchLastFMTrackMemo = toMemoized(fetchLastFMTrack)
+    return res.track
+}
 
 /*                          Youtube                                       */
 
@@ -617,4 +490,118 @@ export const searchYoutube = async (YouTubeApiKey: string, searchString: string)
     url.searchParams.append("key", YouTubeApiKey)
 
     return (await fetch(url).then(res => res.json())) as SearchYoutubeResMinimal
+}
+
+//
+
+export type Items<A> = {
+    items: Array<A>
+}
+export type ItemsWithCount<A> = Items<A> & {
+    totalCount: number
+}
+
+export type ItemsReleases<A> = ItemsWithCount<{
+    releases: Items<A>
+}>
+
+type Date = (
+    | {
+          year: number
+          month?: number
+          day?: number
+          hour?: number
+          mintue?: number
+          second?: number
+          precision: "YEAR"
+      }
+    | {
+          year: number
+          month: number
+          day?: number
+          hour?: number
+          mintue?: number
+          second?: number
+          precision: "MONTH"
+      }
+    | {
+          year: number
+          month: number
+          day: number
+          hour?: number
+          mintue?: number
+          second?: number
+          precision: "DAY"
+      }
+    | {
+          year: number
+          month: number
+          day: number
+          hour: number
+          mintue?: number
+          second?: number
+          precision: "HOUR"
+      }
+    | {
+          year: number
+          month: number
+          day: number
+          hour: number
+          mintue: number
+          second?: number
+          precision: "MINUTE"
+      }
+    | {
+          year: number
+          month: number
+          day: number
+          hour: number
+          mintue: number
+          second: number
+          precision: "SECOND"
+      }
+) & {
+    isoString: string
+}
+
+type Playability = {
+    playable: boolean
+    reason: "PLAYABLE" | string
+}
+
+export type ItemBase = {
+    id: string
+    uri: string
+    name: string
+    type: "SINGLE" | "ALBUM" | "COMPILATION" | string
+    coverArt: {
+        sources: Array<Spicetify.Platform.ImageSized>
+    }
+    tracks: {
+        totalCount: number
+    }
+    playability: Playability
+    sharingInfo: {
+        shareId: string
+        shareUrl: string
+    }
+}
+
+type Item1 = ItemBase & {
+    copyright: {
+        items: Array<{
+            type: string
+            text: string
+        }>
+    }
+    date: Date
+
+    label: string
+}
+
+type Item2 = ItemBase & {
+    date: {
+        year: number
+        isoString: string
+    }
 }

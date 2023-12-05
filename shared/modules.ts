@@ -1,4 +1,4 @@
-import { allPass } from "https://esm.sh/fp-ts-std@0.18.0/Predicate"
+import { _ } from "./deps.ts"
 
 // @ts-expect-error webpackChunkOpen is only defined in the browser
 const require = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, re => re])
@@ -18,12 +18,12 @@ export const functionModules = modules.filter((module): module is Function => ty
 
 const findModuleByStrings = (modules: Array<any>, ...filters: Array<string | RegExp>) =>
     modules.find(f =>
-        allPass(
+        _.overEvery(
             filters.map(filter =>
                 typeof filter === "string" ? (s: string) => s.includes(filter) : (s: string) => filter.test(s),
             ),
         )(f.toString()),
-    ) as any
+    )
 
 export const CheckedPlaylistButtonIcon = findModuleByStrings(
     functionModules,

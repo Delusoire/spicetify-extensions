@@ -1,5 +1,6 @@
-import { anyPass } from "https://esm.sh/fp-ts-std/Predicate"
+import { _ } from "../../shared/deps.ts"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util.ts"
+
 import { CONFIG } from "./settings.ts"
 
 const { URI, ContextMenu } = Spicetify
@@ -19,6 +20,6 @@ const createAnonRadio = (uri: SpotifyURI) => {
 new ContextMenu.Item(
     "Create anonymized radio",
     ([uri]) => createAnonRadio(uri),
-    ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isTrack])(uri),
+    ([uri]) => _.overEvery([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isTrack])(uri),
     "podcasts",
 ).register()

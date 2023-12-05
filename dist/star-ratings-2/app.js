@@ -1,6 +1,3 @@
-// extensions/star-ratings-2/app.ts
-import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
-
 // shared/util.ts
 var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
@@ -51,24 +48,6 @@ import { array as ar3, function as f3 } from "https://esm.sh/fp-ts";
 
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
-
-// shared/fp.ts
-import {
-  array as ar,
-  eq,
-  string as str,
-  record as rec,
-  semigroup as sg,
-  function as f
-} from "https://esm.sh/fp-ts";
-import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
-var { Snackbar } = Spicetify;
-var guard3 = (branches) => guard(branches);
-var pMchain = (f4) => async (fa) => f4(await fa);
-var is = (c) => (a) => (field) => field[c] === a;
-var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
-
-// shared/api.ts
 var { Locale, GraphQL, CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
@@ -88,17 +67,6 @@ var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await GraphQL.Reque
   offset,
   limit
 })).data.albumUnion;
-var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
-  const url = new URL("https://ws.audioscrobbler.com/2.0/");
-  url.searchParams.append("method", "track.getInfo");
-  url.searchParams.append("api_key", LFMApiKey);
-  url.searchParams.append("artist", artist);
-  url.searchParams.append("track", trackName);
-  url.searchParams.append("format", "json");
-  url.searchParams.append("username", lastFmUsername);
-  return await fetch(url).then((res) => res.json());
-};
-var fetchLastFMTrackMemo = toMemoized(fetchLastFMTrack);
 
 // shared/platformApi.ts
 var { CosmosAsync: CosmosAsync2 } = Spicetify;
@@ -116,14 +84,18 @@ var removePlaylistTracks = async (playlist, tracks) => PlaylistAPI.remove(playli
 // extensions/star-ratings-2/dropdown.tsx
 import { range } from "https://esm.sh/fp-ts/lib/ReadonlyNonEmptyArray";
 
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
+
 // shared/modules.ts
-import { allPass } from "https://esm.sh/fp-ts-std@0.18.0/Predicate";
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
 var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f4) => allPass(
+  (f4) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
@@ -145,6 +117,11 @@ var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 
 // extensions/star-ratings-2/ratings.ts
 import { array as ar2, function as f2 } from "https://esm.sh/fp-ts";
+
+// shared/fp.ts
+import { array as ar, function as f, record as rec, semigroup as sg } from "https://esm.sh/fp-ts";
+var { Snackbar } = Spicetify;
+var pMchain = (f4) => async (fa) => f4(await fa);
 
 // extensions/star-ratings-2/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";
@@ -212,14 +189,19 @@ var SettingsSection = class _SettingsSection {
         }
       ];
     };
-    this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map((field) => {
-      const isType = is("type");
-      return guard3([
-        [isType("input" /* INPUT */), this.InputField],
-        [isType("button" /* BUTTON */), this.ButtonField],
-        [isType("toggle" /* TOGGLE */), this.ToggleField]
-      ])(() => /* @__PURE__ */ React.createElement(React.Fragment, null))(field);
-    }));
+    this.toReactComponent = (field) => {
+      switch (field.type) {
+        case "button" /* BUTTON */:
+          return this.ButtonField(field);
+        case "toggle" /* TOGGLE */:
+          return this.ToggleField(field);
+        case "input" /* INPUT */:
+          return this.InputField(field);
+        default:
+          return /* @__PURE__ */ React.createElement(React.Fragment, null);
+      }
+    };
+    this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map(this.toReactComponent));
     this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(SettingColumn, { filterMatchQuery: field.id }, /* @__PURE__ */ React.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ React.createElement(SettingText, { htmlFor: field.id }, field.desc)), /* @__PURE__ */ React.createElement("div", { className: "x-settings-secondColumn" }, children));
     this.ButtonField = (field) => /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(ButtonSecondary, { id: field.id, buttonSize: "sm", onClick: field.onClick, className: "x-settings-button" }, field.text));
     this.ToggleField = (field) => {
@@ -319,7 +301,7 @@ var loadRatings = async () => {
     ar2.map((p) => [p.uri, Number(p.name)]),
     ar2.reduce([], (uris, [uri, rating]) => (uris[rating] = uri, uris))
   );
-  globalThis.tracksRatings = tracksRatings = await f2.pipe(
+  global.tracksRatings = tracksRatings = await f2.pipe(
     playlistUris,
     ar2.map(fetchPlaylistContents),
     (ps) => Promise.all(ps),
@@ -557,7 +539,7 @@ new MutationObserver(() => {
   subtree: true
 });
 onHistoryChanged(
-  anyPass([URI4.isAlbum, URI4.isArtist, URI4.isPlaylistV1OrV2]),
+  _.overEvery([URI4.isAlbum, URI4.isArtist, URI4.isPlaylistV1OrV2]),
   (uri) => updateCollectionControls(URI4.fromString(uri))
 );
 (async () => {

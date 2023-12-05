@@ -1,5 +1,3 @@
-import { anyPass } from "https://esm.sh/fp-ts-std/Predicate"
-
 import { onHistoryChanged, onSongChanged } from "../../shared/util.ts"
 
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.tsx"
@@ -7,6 +5,7 @@ import { loadRatings, tracksRatings } from "./ratings.ts"
 import { CONFIG } from "./settings.ts"
 
 import "./assets/styles.scss"
+import { _ } from "../../shared/deps.ts"
 const { URI, Player } = Spicetify
 
 loadRatings()
@@ -41,6 +40,6 @@ new MutationObserver(() => {
     subtree: true,
 })
 
-onHistoryChanged(anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2]), uri =>
+onHistoryChanged(_.overEvery([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2]), uri =>
     updateCollectionControls(URI.fromString(uri)),
 )

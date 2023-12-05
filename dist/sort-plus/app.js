@@ -1,69 +1,8 @@
 // extensions/sort-plus/app.ts
-import {
-  array as ar2,
-  eq as eq2,
-  function as f2,
-  nonEmptyArray as nea,
-  number as num,
-  option as o,
-  ord,
-  record as rec2,
-  string as str2,
-  task as task3
-} from "https://esm.sh/fp-ts";
-import { guard as guard2 } from "https://esm.sh/fp-ts-std/Function";
-import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
-import { values } from "https://esm.sh/fp-ts-std/Record";
-import { LastFMTrack } from "https://esm.sh/lastfm-ts-api";
+import { array as ar2, function as f2, number as num, option as o, ord, string as str } from "https://esm.sh/fp-ts";
 
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
-
-// shared/fp.ts
-import {
-  array as ar,
-  eq,
-  string as str,
-  record as rec,
-  semigroup as sg,
-  function as f
-} from "https://esm.sh/fp-ts";
-import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
-var { Snackbar } = Spicetify;
-var guard3 = (branches) => guard(branches);
-var objConcat2 = () => rec.getUnionSemigroup(sg.first()).concat;
-var objConcat = () => ar.reduce({}, objConcat2());
-var pMchain = (f3) => async (fa) => f3(await fa);
-var is = (c) => (a) => (field) => field[c] === a;
-var tapAny = (f3) => (fa) => {
-  f3(fa);
-  return fa;
-};
-var withProgress = (map) => (f3) => (fa) => {
-  let i = 0;
-  let lastProgress = 0;
-  return map(async (...a) => {
-    const ret = await f3(...a);
-    const progress = Math.round(i++ / Object.values(fa).length * 100);
-    if (progress > lastProgress) {
-      Snackbar.updater.enqueueSetState(Snackbar, () => ({
-        snacks: [],
-        queue: []
-      }));
-      Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
-        variant: "default",
-        autoHideDuration: 200,
-        transitionDuration: {
-          enter: 0,
-          exit: 0
-        }
-      });
-    }
-    lastProgress = progress;
-    return ret;
-  })(fa);
-};
-var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/util.ts
 var { Player, URI } = Spicetify;
@@ -136,7 +75,7 @@ var fetchGQLArtistDiscography = async (uri, offset = 0, limit = 116) => (await G
   uri,
   offset,
   limit
-})).data.artistUnion.discography.all.items;
+})).data.artistUnion;
 var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
   const url = new URL("https://ws.audioscrobbler.com/2.0/");
   url.searchParams.append("method", "track.getInfo");
@@ -145,9 +84,153 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
   url.searchParams.append("track", trackName);
   url.searchParams.append("format", "json");
   url.searchParams.append("username", lastFmUsername);
-  return await fetch(url).then((res) => res.json());
+  const res = await fetch(url).then((res2) => res2.json());
+  return res.track;
 };
-var fetchLastFMTrackMemo = toMemoized(fetchLastFMTrack);
+
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
+var fp = ld_fp;
+
+// shared/fp.ts
+import { array as ar, function as f, record as rec, semigroup as sg } from "https://esm.sh/fp-ts";
+var { Snackbar } = Spicetify;
+var pMchain = (f3) => async (fa) => f3(await fa);
+var tapAny = (f3) => (fa) => {
+  f3(fa);
+  return fa;
+};
+var progressify = (f3, n) => {
+  let i = n, lastProgress = 0;
+  return async function(..._2) {
+    const res = await f3(arguments), progress = Math.round((1 - --i / n) * 100);
+    if (progress > lastProgress) {
+      Snackbar.updater.enqueueSetState(Snackbar, () => ({
+        snacks: [],
+        queue: []
+      }));
+      Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+        variant: "default",
+        autoHideDuration: 200,
+        transitionDuration: {
+          enter: 0,
+          exit: 0
+        }
+      });
+    }
+    lastProgress = progress;
+    return res;
+  };
+};
+var withProgress = (map) => (f3) => (fa) => {
+  let i = 0;
+  let lastProgress = 0;
+  return map(async (...a) => {
+    const ret = await f3(...a);
+    const progress = Math.round(i++ / Object.values(fa).length * 100);
+    if (progress > lastProgress) {
+      Snackbar.updater.enqueueSetState(Snackbar, () => ({
+        snacks: [],
+        queue: []
+      }));
+      Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+        variant: "default",
+        autoHideDuration: 200,
+        transitionDuration: {
+          enter: 0,
+          exit: 0
+        }
+      });
+    }
+    lastProgress = progress;
+    return ret;
+  })(fa);
+};
+
+// shared/parse.ts
+var parseTopTrackFromArtist = ({ track }) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: track.albumOfTrack.uri,
+  albumName: void 0,
+  artistUri: track.artists.items[0].uri,
+  artistName: track.artists.items[0].profile.name,
+  durationMilis: track.duration.totalMilliseconds,
+  playcount: Number(track.playcount),
+  popularity: void 0,
+  releaseDate: void 0
+});
+var parseArtistLikedTrack = (track) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration.milliseconds,
+  playcount: void 0,
+  popularity: void 0,
+  releaseDate: void 0
+});
+var parseAlbumTrack = ({ track }) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: "",
+  // gets filled in later
+  albumName: "",
+  // gets filled in later
+  artistUri: track.artists.items[0].uri,
+  artistName: track.artists.items[0].profile.name,
+  durationMilis: track.duration.totalMilliseconds,
+  playcount: Number(track.playcount),
+  popularity: void 0,
+  releaseDate: -1
+  // gets filled in later
+});
+var parsePlaylistAPITrack = (track) => ({
+  uri: track.uri,
+  uid: track.uid,
+  name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration.milliseconds,
+  playcount: void 0,
+  popularity: void 0,
+  releaseDate: void 0
+});
+var parseWebAPITrack = (track) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration_ms,
+  playcount: void 0,
+  popularity: track.popularity,
+  releaseDate: new Date(track.album.release_date).getTime()
+});
+var parseLibraryAPILikedTracks = (track) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration.milliseconds,
+  playcount: void 0,
+  popularity: void 0,
+  releaseDate: void 0
+});
 
 // shared/platformApi.ts
 var { CosmosAsync: CosmosAsync2 } = Spicetify;
@@ -170,85 +253,6 @@ var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: f
 var fetchRootFolder = () => fetchFolder(void 0);
 var movePlaylistTracks = async (playlist, tracks, location = {}) => await PlaylistAPI.move(playlist, tracks, location);
 
-// shared/parse.ts
-var parseTrackFromAlbum = ({ track }) => ({
-  albumName: "",
-  // gets filled in later
-  albumUri: "",
-  // gets filled in later
-  artistName: track.artists.items[0].profile.name,
-  artistUri: track.artists.items[0].uri,
-  durationMilis: track.duration.totalMilliseconds,
-  name: track.name,
-  playcount: Number(track.playcount),
-  popularity: void 0,
-  releaseDate: -1,
-  // gets filled in later
-  uri: track.uri
-});
-var parseTopTrackFromArtist = (track) => ({
-  albumName: void 0,
-  albumUri: track.albumOfTrack.uri,
-  artistName: track.artists.items[0].profile.name,
-  artistUri: track.artists.items[0].uri,
-  durationMilis: track.duration.totalMilliseconds,
-  name: track.name,
-  playcount: Number(track.playcount),
-  popularity: void 0,
-  releaseDate: void 0,
-  uri: track.uri
-});
-var parsePlatTrackFromArtistLikedTracks = (track) => ({
-  albumName: track.album.name,
-  albumUri: track.album.uri,
-  artistName: track.artists[0].name,
-  artistUri: track.artists[0].uri,
-  durationMilis: track.duration.milliseconds,
-  name: track.name,
-  playcount: void 0,
-  popularity: void 0,
-  releaseDate: void 0,
-  uri: track.uri
-});
-var parse1 = (track) => ({
-  albumName: track.album.name,
-  albumUri: track.album.uri,
-  artistName: track.artists[0].name,
-  artistUri: track.artists[0].uri,
-  durationMilis: track.duration.milliseconds,
-  name: track.name,
-  playcount: void 0,
-  popularity: void 0,
-  releaseDate: void 0,
-  uid: track.uid,
-  uri: track.uri
-});
-var parseAPITrack = (track) => ({
-  albumName: track.album.name,
-  albumUri: track.album.uri,
-  artistName: track.artists[0].name,
-  artistUri: track.artists[0].uri,
-  durationMilis: track.duration_ms,
-  name: track.name,
-  playcount: void 0,
-  popularity: track.popularity,
-  releaseDate: new Date(track.album.release_date).getTime(),
-  uid: track.id,
-  uri: track.uri
-});
-var parsePlatLikedTracks = (track) => ({
-  albumName: track.album.name,
-  albumUri: track.album.uri,
-  artistName: track.artists[0].name,
-  artistUri: track.artists[0].uri,
-  durationMilis: track.duration.milliseconds,
-  name: track.name,
-  playcount: void 0,
-  popularity: void 0,
-  releaseDate: void 0,
-  uri: track.uri
-});
-
 // extensions/sort-plus/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";
 
@@ -256,13 +260,12 @@ import { task as task2 } from "https://esm.sh/fp-ts";
 import { task } from "https://esm.sh/fp-ts";
 
 // shared/modules.ts
-import { allPass } from "https://esm.sh/fp-ts-std@0.18.0/Predicate";
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
 var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f3) => allPass(
+  (f3) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
@@ -344,14 +347,19 @@ var SettingsSection = class _SettingsSection {
         }
       ];
     };
-    this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map((field) => {
-      const isType = is("type");
-      return guard3([
-        [isType("input" /* INPUT */), this.InputField],
-        [isType("button" /* BUTTON */), this.ButtonField],
-        [isType("toggle" /* TOGGLE */), this.ToggleField]
-      ])(() => /* @__PURE__ */ React.createElement(React.Fragment, null))(field);
-    }));
+    this.toReactComponent = (field) => {
+      switch (field.type) {
+        case "button" /* BUTTON */:
+          return this.ButtonField(field);
+        case "toggle" /* TOGGLE */:
+          return this.ToggleField(field);
+        case "input" /* INPUT */:
+          return this.InputField(field);
+        default:
+          return /* @__PURE__ */ React.createElement(React.Fragment, null);
+      }
+    };
+    this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map(this.toReactComponent));
     this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(SettingColumn, { filterMatchQuery: field.id }, /* @__PURE__ */ React.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ React.createElement(SettingText, { htmlFor: field.id }, field.desc)), /* @__PURE__ */ React.createElement("div", { className: "x-settings-secondColumn" }, children));
     this.ButtonField = (field) => /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(ButtonSecondary, { id: field.id, buttonSize: "sm", onClick: field.onClick, className: "x-settings-button" }, field.text));
     this.ToggleField = (field) => {
@@ -450,7 +458,12 @@ var SortProp = /* @__PURE__ */ ((SortProp2) => {
   SortProp2["LastFM - Play Count"] = "lastfmPlaycount";
   return SortProp2;
 })(SortProp || {});
-var getAlbumTracks = async (uri) => {
+var joinByUri = (...trackss) => {
+  const tracks = [...trackss].flat();
+  const uriTrackPairs = tracks.map((track) => [track.uri, track]);
+  return Array.from(new Map(uriTrackPairs).values());
+};
+var getTracksFromAlbum = async (uri) => {
   const albumRes = await fetchGQLAlbum(uri);
   const releaseDate = new Date(albumRes.date.isoString).getTime();
   const filler = {
@@ -458,79 +471,63 @@ var getAlbumTracks = async (uri) => {
     albumName: albumRes.name,
     releaseDate
   };
-  return f2.pipe(albumRes.tracks.items, ar2.map(f2.flow(parseTrackFromAlbum, (track) => Object.assign(track, filler))));
+  return Promise.all(
+    albumRes.tracks.items.map(async (track) => {
+      const parsedTrack = await parseAlbumTrack(track);
+      return Object.assign(parsedTrack, filler);
+    })
+  );
 };
-var getPlaylistTracks = f2.flow(fetchPlaylistContents, pMchain(ar2.map(parse1)));
-async function getArtistTracks(uri) {
-  const extractUriFromReleases = (x) => x.releases.items[0].uri;
-  const getTracksFromAlbums = f2.flow(ar2.map(getAlbumTracks), (ps) => Promise.all(ps), pMchain(ar2.flatten));
+var getTracksFromPlaylist = f2.flow(fetchPlaylistContents, pMchain(ar2.map(parsePlaylistAPITrack)));
+async function getTracksFromArtist(uri) {
   const allTracks = new Array();
-  const add = (tracks) => {
-    allTracks.push(...tracks);
-  };
-  const albumsLike = [];
-  const albumsLikeReleases = [];
+  const itemsWithCountAr = new Array();
+  const itemsReleasesAr = new Array();
   if (CONFIG.artistAllDiscography) {
-    const disc = await fetchGQLArtistDiscography(uri);
-    albumsLikeReleases.push(...disc);
+    const { discography } = await fetchGQLArtistDiscography(uri);
+    itemsReleasesAr.push(discography.all);
   } else {
-    const disc = (await fetchGQLArtistOverview(uri)).discography;
-    if (CONFIG.artistLikedTracks) {
-      const likedTracks = await fetchArtistLikedTracks(uri);
-      f2.pipe(likedTracks, ar2.map(parsePlatTrackFromArtistLikedTracks), add);
-    }
-    if (CONFIG.artistTopTracks)
-      f2.pipe(
-        disc.topTracks.items,
-        ar2.map((i) => i.track),
-        ar2.map(parseTopTrackFromArtist),
-        add
-      );
-    if (CONFIG.artistPopularReleases)
-      albumsLike.push(...disc.popularReleasesAlbums.items.map((r) => r.uri));
-    if (CONFIG.artistSingles)
-      albumsLikeReleases.push(...disc.singles.items);
-    if (CONFIG.artistAlbums)
-      albumsLikeReleases.push(...disc.albums.items);
-    if (CONFIG.artistCompilations)
-      albumsLikeReleases.push(...disc.compilations.items);
+    const { discography } = await fetchGQLArtistOverview(uri);
+    CONFIG.artistLikedTracks && allTracks.push(...(await fetchArtistLikedTracks(uri)).map(parseArtistLikedTrack));
+    CONFIG.artistTopTracks && allTracks.push(...discography.topTracks.items.map(parseTopTrackFromArtist));
+    CONFIG.artistPopularReleases && itemsWithCountAr.push(discography.popularReleasesAlbums);
+    CONFIG.artistSingles && itemsReleasesAr.push(discography.singles);
+    CONFIG.artistAlbums && itemsReleasesAr.push(discography.albums);
+    CONFIG.artistCompilations && itemsReleasesAr.push(discography.compilations);
   }
-  albumsLike.push(...albumsLikeReleases.map(extractUriFromReleases));
-  await f2.pipe(albumsLike, getTracksFromAlbums, pMchain(add));
+  const items1 = itemsWithCountAr.flatMap((iwc) => iwc.items);
+  const items2 = itemsReleasesAr.flatMap((ir) => ir.items.flatMap((i) => i.releases.items));
+  const albumLikeUris = items1.concat(items2).map((item) => item.uri);
+  const albumsTracks = await Promise.all(albumLikeUris.map(getTracksFromAlbum));
+  allTracks.push(...albumsTracks.flat());
   return await Promise.all(allTracks);
 }
-var fetchAPITracksFromTracks = f2.flow(
-  ar2.map((track) => URI2.fromString(track.uri).id),
-  spotifyApi.tracks.get,
-  pMchain(ar2.map(parseAPITrack))
-);
-var fetchAlbumTracksFromTracks = f2.flow(
-  nea.groupBy((track) => track.albumUri),
-  withProgress(rec2.mapWithIndex)(async (albumUri, tracks) => {
-    const uriEq = f2.pipe(
-      str2.Eq,
-      eq2.contramap((t) => t.uri)
-    );
-    const albumTracks = await getAlbumTracks(albumUri);
-    return ar2.intersection(uriEq)(albumTracks, tracks);
-  }),
-  (o2) => Promise.all(Object.values(o2)),
-  pMchain(ar2.flatten)
-);
-var populateTracksSpot = (propName) => (tracks) => f2.pipe(
-  tracks,
-  ar2.filter((x) => x[SortProp[propName]] == null),
-  guard2([[str2.startsWith("Spotify - Play Count" /* SPOTIFY_PLAYCOUNT */), f2.constant(fetchAlbumTracksFromTracks)]])(
-    f2.constant(fetchAPITracksFromTracks)
-  )(propName),
-  pMchain(ar2.concat(tracks)),
-  pMchain(nea.groupBy((x) => x.uri)),
-  pMchain(values),
-  pMchain(ar2.map(objConcat()))
-);
-var populateTrackLastFM = async (track) => {
-  LastFMTrack;
-  const lastfmTrack = (await fetchLastFMTrack(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUsername)).track;
+var fillTracksFromWebAPI = async (tracks) => {
+  const ids = tracks.map((track) => URI2.fromString(track.uri).id);
+  const fetchedTracks = (await spotifyApi.tracks.get(ids)).map(parseWebAPITrack);
+  return joinByUri(tracks, fetchedTracks);
+};
+var fillTracksFromAlbumTracks = async (tracks) => {
+  const tracksByAlbumUri = Object.groupBy(tracks, (track) => track.albumUri);
+  const passes = Object.keys(tracksByAlbumUri).length;
+  const fn = progressify(async (tracks2, albumUri) => {
+    const albumTracks = await getTracksFromAlbum(albumUri);
+    return _.intersectionBy(tracks2, albumTracks, (track) => track.uri);
+  }, passes);
+  const albumsTracks = await Promise.all(Object.values(_.mapValues(tracksByAlbumUri, fn)));
+  return albumsTracks.flat();
+};
+var fillTracksFromSpotify = (propName) => async (tracks) => {
+  const tracksMissing = tracks.filter((track) => track[SortProp[propName]] == null);
+  const tracksPopulater = _.cond([
+    [fp.startsWith("Spotify - Play Count" /* SPOTIFY_PLAYCOUNT */), () => fillTracksFromAlbumTracks],
+    [_.stubTrue, () => fillTracksFromWebAPI]
+  ])(propName);
+  const filledTracks = await tracksPopulater(tracksMissing);
+  return joinByUri(tracks, filledTracks);
+};
+var fillTracksFromLastFM = async (track) => {
+  const lastfmTrack = await fetchLastFMTrack(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUsername);
   track.lastfmPlaycount = Number(lastfmTrack.listeners);
   track.scrobbles = Number(lastfmTrack.playcount);
   track.personalScrobbles = Number(lastfmTrack.userplaycount);
@@ -538,35 +535,31 @@ var populateTrackLastFM = async (track) => {
 };
 var fetchTracks = f2.flow(
   tapAny((uri) => void (lastFetchedUri = uri)),
-  guard2([
-    [URI2.isAlbum, getAlbumTracks],
-    [URI2.isArtist, getArtistTracks],
-    [URI2.isPlaylistV1OrV2, getPlaylistTracks],
-    [URI2.isCollection, f2.flow(fetchLikedTracks, pMchain(ar2.map(parsePlatLikedTracks)))]
-  ])(task3.of([]))
+  _.cond([
+    [URI2.isAlbum, getTracksFromAlbum],
+    [URI2.isArtist, getTracksFromArtist],
+    [URI2.isCollection, () => fetchLikedTracks().then((tracks) => tracks.map(parseLibraryAPILikedTracks))],
+    [URI2.isPlaylistV1OrV2, getTracksFromPlaylist]
+  ])
 );
-var populateTracks = guard2([
-  [str2.startsWith("Spotify"), populateTracksSpot],
-  [
-    str2.startsWith("LastFM"),
-    f2.constant(
-      f2.flow(
-        f2.pipe(withProgress(ar2.map)(populateTrackLastFM)),
-        (ps) => Promise.all(ps)
-      )
-    )
-  ]
-])(f2.constant(task3.of([])));
+var populateTracksLastFM = (tracks) => {
+  const fn = progressify(fillTracksFromLastFM, tracks.length);
+  return Promise.all(tracks.map(fn));
+};
+var populateTracks = _.cond([
+  [fp.startsWith("Spotify"), fillTracksFromSpotify],
+  [fp.startsWith("LastFM"), () => populateTracksLastFM]
+]);
 var lastSortedQueue = [];
 var _setQueue = (inverted) => async (queue) => {
   if (PlayerAPI2._queue._queue === null)
     return void Spicetify.showNotification("Queue is null!", true);
   const uriOrd = f2.pipe(
-    str2.Ord,
+    str.Ord,
     ord.contramap((t) => t.uri)
   );
   lastSortedQueue = f2.pipe(queue, ar2.uniq(uriOrd), inverted ? ar2.reverse : f2.identity);
-  globalThis.lastSortedQueue = lastSortedQueue;
+  global.lastSortedQueue = lastSortedQueue;
   const isQueued = URI2.isCollection(lastFetchedUri);
   await f2.pipe(
     lastSortedQueue,
@@ -622,12 +615,12 @@ var shuffleSubmenu = new ContextMenu.Item(
 );
 var starsOrd = f2.pipe(
   num.Ord,
-  ord.contramap((t) => globalThis.tracksRatings[t.uri] ?? 0)
+  ord.contramap((t) => tracksRatings[t.uri] ?? 0)
 );
 var starsSubmenu = new ContextMenu.Item(
   "Stars",
   ([uri]) => sortTracksWith("Stars", ar2.sort(starsOrd))(uri),
-  () => globalThis.tracksRatings !== void 0,
+  () => tracksRatings !== void 0,
   "heart-active",
   false
 );
@@ -635,11 +628,11 @@ var createSortByPropSubmenu = (name, icon) => new ContextMenu.Item(name, ([uri])
 new ContextMenu.SubMenu(
   "Sort by",
   ar2.zipWith(
-    values(SortBy),
+    Object.values(SortBy),
     ["play", "heart", "list-view", "volume", "artist", "subtitles"],
     createSortByPropSubmenu
   ).concat([shuffleSubmenu, starsSubmenu]),
-  ([uri]) => anyPass([URI2.isAlbum, URI2.isArtist, URI2.isCollection, URI2.isTrack, URI2.isPlaylistV1OrV2])(uri)
+  ([uri]) => _.overEvery([URI2.isAlbum, URI2.isArtist, URI2.isCollection, URI2.isTrack, URI2.isPlaylistV1OrV2])(uri)
 ).register();
 var getNameFromUri = async (uri) => {
   switch (uri.type) {
