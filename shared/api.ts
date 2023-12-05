@@ -2,12 +2,14 @@ import { AccessToken, SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-we
 import { toMemoized } from "./fp.ts"
 import { SpotifyURI, escapeRegex } from "./util.ts"
 
+const { Locale, GraphQL, CosmosAsync } = Spicetify
+
 export const spotifyApi = SpotifyApi.withAccessToken("client-id", {} as AccessToken, {
     // @ts-ignore
     fetch(url, opts) {
         const { method } = opts!
         // @ts-ignore
-        return Spicetify.CosmosAsync.resolve(method, url)
+        return CosmosAsync.resolve(method, url)
     },
     deserializer: {
         deserialize(res) {
@@ -18,11 +20,147 @@ export const spotifyApi = SpotifyApi.withAccessToken("client-id", {} as AccessTo
 
 /*                          GraphQL                                           */
 
+export type fetchGQLAlbumRes = {
+    __typename: "album"
+    uri: SpotifyURI
+    name: string
+    artists: {
+        totalCount: number
+        items: Array<{
+            id: string
+            uri: SpotifyURI
+            profile: {
+                name: string
+            }
+            visuals: {
+                avatarImage: {
+                    sources: Array<Spicetify.Platform.ImageSized>
+                }
+            }
+            sharingInfo: {
+                shareUrl: string
+            }
+        }>
+    }
+    coverArt: {
+        extractedColors: {
+            colorRaw: {
+                hex: string
+            }
+            colorLight: {
+                hex: string
+            }
+            colorDark: {
+                hex: string
+            }
+        }
+        sources: Array<Spicetify.Platform.ImageSized>
+    }
+    discs: {
+        totalCount: number
+        items: Array<{
+            number: number
+            tracks: {
+                totalCount: number
+            }
+        }>
+    }
+    releases: {
+        totalCount: number
+        items: Array<{
+            uri: SpotifyURI
+            name: string
+        }>
+    }
+    type: string
+    date: {
+        isoString: string
+        precision: string
+    }
+    playability: {
+        playable: boolean
+        reason: string
+    }
+    label: string
+    copyright: {
+        totalCount: number
+        items: Array<{
+            type: string
+            text: string
+        }>
+    }
+    courtesyLine: string
+    saved: boolean
+    sharingInfo: {
+        shareUrl: string
+        shareId: string
+    }
+    tracks: {
+        totalCount: number
+        items: Array<{
+            uid: string
+            track: {
+                saved: boolean
+                uri: SpotifyURI
+                name: string
+                playcount: string
+                discNumber: number
+                trackNumber: number
+                contentRating: {
+                    label: string
+                }
+                relinkingInformation: any
+                duration: {
+                    totalMilliseconds: number
+                }
+                playability: {
+                    playable: boolean
+                }
+                artists: {
+                    items: Array<{
+                        uri: SpotifyURI
+                        profile: {
+                            name: string
+                        }
+                    }>
+                }
+            }
+        }>
+    }
+    moreAlbumsByArtist: {
+        items: Array<{
+            discography: {
+                popularReleasesAlbums: {
+                    items: Array<{
+                        id: string
+                        uri: SpotifyURI
+                        name: string
+                        date: {
+                            year: number
+                        }
+                        coverArt: {
+                            sources: Array<Spicetify.Platform.ImageSized>
+                        }
+                        playability: {
+                            playable: boolean
+                            reason: string
+                        }
+                        sharingInfo: {
+                            shareId: string
+                            shareUrl: string
+                        }
+                        type: string
+                    }>
+                }
+            }
+        }>
+    }
+}
 export const fetchGQLAlbum = async (uri: SpotifyURI, offset = 0, limit = 487) =>
     (
-        await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.getAlbum, {
+        await GraphQL.Request(GraphQL.Definitions.getAlbum, {
             uri,
-            locale: Spicetify.Locale.getLocale(),
+            locale: Locale.getLocale(),
             offset,
             limit,
         })
@@ -118,7 +256,7 @@ type Item = {
     }
 }
 
-type ArtistUnion = {
+type fetchGQLArtistOverviewRes = {
     __typename: "Artist"
     id: string
     uri: string
@@ -354,28 +492,40 @@ type ArtistUnion = {
 }
 export const fetchGQLArtistOverview = async (uri: SpotifyURI) =>
     (
-        await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistOverview, {
+        await GraphQL.Request(GraphQL.Definitions.queryArtistOverview, {
             uri,
-            locale: Spicetify.Locale.getLocale(),
+            locale: Locale.getLocale(),
             includePrerelease: true,
         })
-    ).data.artistUnion as ArtistUnion
+    ).data.artistUnion as fetchGQLArtistOverviewRes
 
 type fetchGQLArtistDiscographyRes = any
 export const fetchGQLArtistDiscography = async (uri: SpotifyURI, offset = 0, limit = 116) =>
     (
-        await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistDiscographyAll, {
+        await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
             uri,
             offset,
             limit,
         })
     ).data.artistUnion.discography.all.items as fetchGQLArtistDiscographyRes
 
+type fetchGQLArtistRelatedRes = Array<{
+    id: string
+    uri: SpotifyURI
+    profile: {
+        name: string
+    }
+    visuals: {
+        avatarImage: {
+            sources: Array<Spicetify.Platform.ImageSized>
+        }
+    }
+}>
 export const fetchGQLArtistRelated = async (uri: SpotifyURI) =>
     (
-        await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistRelated, {
+        await GraphQL.Request(GraphQL.Definitions.queryArtistRelated, {
             uri,
-            locale: Spicetify.Locale.getLocale(),
+            locale: Locale.getLocale(),
         })
     ).data.artistUnion.relatedContent.relatedArtists.items as fetchGQLArtistRelatedRes
 
@@ -467,162 +617,4 @@ export const searchYoutube = async (YouTubeApiKey: string, searchString: string)
     url.searchParams.append("key", YouTubeApiKey)
 
     return (await fetch(url).then(res => res.json())) as SearchYoutubeResMinimal
-}
-
-/*                          Types                                             */
-
-export interface fetchGQLAlbumRes {
-    __typename: "album"
-    uri: SpotifyURI
-    name: string
-    artists: {
-        totalCount: number
-        items: Array<{
-            id: string
-            uri: SpotifyURI
-            profile: {
-                name: string
-            }
-            visuals: {
-                avatarImage: {
-                    sources: SpotApiImage[]
-                }
-            }
-            sharingInfo: {
-                shareUrl: string
-            }
-        }>
-    }
-    coverArt: {
-        extractedColors: {
-            colorRaw: {
-                hex: string
-            }
-            colorLight: {
-                hex: string
-            }
-            colorDark: {
-                hex: string
-            }
-        }
-        sources: SpotApiImage[]
-    }
-    discs: {
-        totalCount: number
-        items: Array<{
-            number: number
-            tracks: {
-                totalCount: number
-            }
-        }>
-    }
-    releases: {
-        totalCount: number
-        items: Array<{
-            uri: SpotifyURI
-            name: string
-        }>
-    }
-    type: string
-    date: {
-        isoString: string
-        precision: string
-    }
-    playability: {
-        playable: boolean
-        reason: string
-    }
-    label: string
-    copyright: {
-        totalCount: number
-        items: Array<{
-            type: string
-            text: string
-        }>
-    }
-    courtesyLine: string
-    saved: boolean
-    sharingInfo: {
-        shareUrl: string
-        shareId: string
-    }
-    tracks: {
-        totalCount: number
-        items: Array<{
-            uid: string
-            track: {
-                saved: boolean
-                uri: SpotifyURI
-                name: string
-                playcount: string
-                discNumber: number
-                trackNumber: number
-                contentRating: {
-                    label: string
-                }
-                relinkingInformation: any
-                duration: {
-                    totalMilliseconds: number
-                }
-                playability: {
-                    playable: boolean
-                }
-                artists: {
-                    items: Array<{
-                        uri: SpotifyURI
-                        profile: {
-                            name: string
-                        }
-                    }>
-                }
-            }
-        }>
-    }
-    moreAlbumsByArtist: {
-        items: Array<{
-            discography: {
-                popularReleasesAlbums: {
-                    items: Array<{
-                        id: string
-                        uri: SpotifyURI
-                        name: string
-                        date: {
-                            year: number
-                        }
-                        coverArt: {
-                            sources: SpotApiImage[]
-                        }
-                        playability: {
-                            playable: boolean
-                            reason: string
-                        }
-                        sharingInfo: {
-                            shareId: string
-                            shareUrl: string
-                        }
-                        type: string
-                    }>
-                }
-            }
-        }>
-    }
-}
-
-export type fetchGQLArtistRelatedRes = Array<{
-    id: string
-    uri: SpotifyURI
-    profile: {
-        name: string
-    }
-    visuals: {
-        avatarImage: {
-            sources: SpotApiImage[]
-        }
-    }
-}>
-
-export interface SpotApiImage {
-    url: string
-    width: number
-    height: number
 }

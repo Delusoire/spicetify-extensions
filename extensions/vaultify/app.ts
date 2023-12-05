@@ -10,7 +10,7 @@ import {
 } from "../../shared/platformApi.ts"
 import { SpotifyLoc, SpotifyURI, getReactProps } from "../../shared/util.ts"
 
-const { LocalStorage } = Spicetify
+const { LocalStorage, URI } = Spicetify
 const { ClipboardAPI, LibraryAPI, LocalStorageAPI } = Spicetify.Platform
 
 export type PoF = Playlist | Folder
@@ -60,7 +60,7 @@ type PersonalFolder = namedProp<Array<LikedPlaylist | PersonalPlaylist | Persona
 
 const isContentOfPersonalPlaylist = (
     subleaf: PersonalFolder[""] | PersonalPlaylist[""],
-): subleaf is PersonalPlaylist[""] => typeof subleaf[0] === "string" && Spicetify.URI.isTrack(subleaf[0])
+): subleaf is PersonalPlaylist[""] => typeof subleaf[0] === "string" && URI.isTrack(subleaf[0])
 
 const restorePlaylistseRecur = async (
     leaf: PersonalFolder | PersonalPlaylist | LikedPlaylist,

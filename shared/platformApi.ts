@@ -1,12 +1,11 @@
 import { SpotifyLoc, SpotifyURI } from "./util.ts"
 
-const {} = Spicetify
-const {} = Spicetify.Platform
+const { CosmosAsync } = Spicetify
+const { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform
 
-export const isTrackLiked = (uris: SpotifyURI[]) => Spicetify.Platform.LibraryAPI.contains(...uris)
+export const isTrackLiked = (uris: SpotifyURI[]) => LibraryAPI.contains(...uris)
 
-export const setTrackLiked = (uris: SpotifyURI[], liked: boolean) =>
-    Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris })
+export const setTrackLiked = (uris: SpotifyURI[], liked: boolean) => LibraryAPI[liked ? "add" : "remove"]({ uris })
 
 export const toggleTrackLiked = async (uris: SpotifyURI[]) => {
     const liked = await isTrackLiked(uris)
@@ -22,28 +21,27 @@ export const toggleTrackLiked = async (uris: SpotifyURI[]) => {
 
 export const fetchLikedTracks = async () =>
     (
-        await Spicetify.Platform.LibraryAPI.getTracks({
+        await LibraryAPI.getTracks({
             limit: Number.MAX_SAFE_INTEGER,
         })
     ).items
 export const fetchArtistLikedTracks = async (uri: SpotifyURI, offset = 0, limit = 100) =>
-    (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items
+    (await LibraryAPI.getTracks({ uri, offset, limit })).items
 
-export const fetchPlaylistContents = async (uri: SpotifyURI) =>
-    (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items
+export const fetchPlaylistContents = async (uri: SpotifyURI) => (await PlaylistAPI.getContents(uri)).items
 
 export const createFolder = async (name: string, location: Spicetify.Platform.RootlistAPI.Location = {}) =>
-    await Spicetify.Platform.RootlistAPI.createFolder(name, location)
+    await RootlistAPI.createFolder(name, location)
 
 export const addPlaylist = async (playlist: SpotifyURI, folder?: SpotifyURI) =>
-    await Spicetify.Platform.RootlistAPI.add([playlist], folder ? SpotifyLoc.after.fromUri(folder) : {})
+    await RootlistAPI.add([playlist], folder ? SpotifyLoc.after.fromUri(folder) : {})
 
 /* Replaced by createPlaylistFromTracks */
 export const createPlaylist = async (name: string, location: Spicetify.Platform.RootlistAPI.Location = {}) =>
-    await Spicetify.Platform.RootlistAPI.createPlaylist(name, location)
+    await RootlistAPI.createPlaylist(name, location)
 
 export const createPlaylistFromTracks = (name: string, tracks: SpotifyURI[], folder?: SpotifyURI) =>
-    Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
+    CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
         operation: "create",
         ...(folder ? { after: folder } : {}),
         name,
@@ -52,32 +50,30 @@ export const createPlaylistFromTracks = (name: string, tracks: SpotifyURI[], fol
     })
 
 export const setPlaylistVisibility = async (playlist: SpotifyURI, visibleForAll: boolean) =>
-    await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED")
+    await PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED")
 export const setPlaylistPublished = async (playlist: SpotifyURI, published: boolean) =>
-    await Spicetify.Platform.RootlistAPI.setPublishedState(playlist, published)
+    await RootlistAPI.setPublishedState(playlist, published)
 
-export const fetchFolder = async (folder?: SpotifyURI) =>
-    await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder })
+export const fetchFolder = async (folder?: SpotifyURI) => await RootlistAPI.getContents({ folderUri: folder })
 export const fetchRootFolder = () => fetchFolder(undefined)
 
 export const addPlaylistTracks = async (
     playlist: SpotifyURI,
     tracks: SpotifyURI[],
     location: Spicetify.Platform.RootlistAPI.Location = {},
-) => await Spicetify.Platform.PlaylistAPI.add(playlist, tracks, location)
+) => await PlaylistAPI.add(playlist, tracks, location)
 
 export const movePlaylistTracks = async (
     playlist: SpotifyURI,
     tracks: Array<{ uid: string }>,
     location: Spicetify.Platform.RootlistAPI.Location = {},
-) => await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location)
+) => await PlaylistAPI.move(playlist, tracks, location)
 
 export const removePlaylistTracks = async (playlist: SpotifyURI, tracks: Array<{ uid: string }>) =>
-    Spicetify.Platform.PlaylistAPI.remove(playlist, tracks)
+    PlaylistAPI.remove(playlist, tracks)
 
 export const fetchPlaylistEnhancedSongs300 = async (uri: SpotifyURI, offset = 0, limit = 300) =>
-    (await Spicetify.Platform.EnhanceAPI.getPage(uri, /* iteration */ 0, /* sessionId */ 0, offset, limit)).enhancePage
-        .pageItems
+    (await EnhanceAPI.getPage(uri, /* iteration */ 0, /* sessionId */ 0, offset, limit)).enhancePage.pageItems
 export const fetchPlaylistEnhancedSongs = async (
     uri: SpotifyURI,
     offset = 0,
@@ -87,4 +83,4 @@ export const fetchPlaylistEnhancedSongs = async (
     else return nextPageItems.concat(await fetchPlaylistEnhancedSongs(uri, offset + 300))
 }
 
-export const fetchLocalTracks = async () => await Spicetify.Platform.LocalFilesAPI.getTracks()
+export const fetchLocalTracks = async () => await LocalFilesAPI.getTracks()

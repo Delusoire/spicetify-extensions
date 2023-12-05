@@ -3,8 +3,9 @@ import { guard3, is } from "./fp.ts"
 import { sleep } from "./util.ts"
 import { SettingSection, SettingColumn, SettingText, SettingToggle, SectionTitle } from "./modules.ts"
 
-const { React, ReactDOM } = Spicetify
+const { React, ReactDOM, LocalStorage } = Spicetify
 const { ButtonSecondary } = Spicetify.ReactComponent as any
+const { History } = Spicetify.Platform
 
 type FieldToProps<A> = Omit<A, "type">
 
@@ -51,7 +52,7 @@ export class SettingsSection {
     pushSettings = () => {
         if (this.stopHistoryListener) this.stopHistoryListener()
 
-        this.stopHistoryListener = Spicetify.Platform.History.listen(() => this.render())
+        this.stopHistoryListener = History.listen(() => this.render())
         this.render()
     }
 
@@ -65,7 +66,7 @@ export class SettingsSection {
 
     private render = async () => {
         while (!document.getElementById("desktop.settings.selectLanguage")) {
-            if (Spicetify.Platform.History.location.pathname !== "/preferences") return
+            if (History.location.pathname !== "/preferences") return
             await sleep(100)
         }
 
@@ -123,9 +124,9 @@ export class SettingsSection {
         ] as const
     }
 
-    static getFieldValue = <R,>(id: string): R => JSON.parse(Spicetify.LocalStorage.get(id) ?? "null")
+    static getFieldValue = <R,>(id: string): R => JSON.parse(LocalStorage.get(id) ?? "null")
 
-    static setFieldValue = (id: string, newValue: any) => Spicetify.LocalStorage.set(id, JSON.stringify(newValue))
+    static setFieldValue = (id: string, newValue: any) => LocalStorage.set(id, JSON.stringify(newValue))
 
     private static setDefaultFieldValue = async (id: string, defaultValue: task.Task<any>) => {
         if (SettingsSection.getFieldValue(id) === null) SettingsSection.setFieldValue(id, await defaultValue())

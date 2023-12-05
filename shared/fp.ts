@@ -9,6 +9,8 @@ import {
 } from "https://esm.sh/fp-ts"
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function"
 
+const { Snackbar } = Spicetify
+
 type refineBranch<A, B extends A, R> = [ref.Refinement<A, B>, (x: B) => R]
 export const guard2 = <A, A1 extends A, A2 extends A, R>(branches: [refineBranch<A, A1, R>, refineBranch<A, A2, R>]) =>
     guard(branches as unknown as [refineBranch<A, A, R>, refineBranch<A, A, R>])
@@ -58,7 +60,7 @@ export const withProgress =
             const ret = await f(...a)
             const progress = Math.round((i++ / Object.values(fa).length) * 100)
             // // This is an older alternative, always updates 5 times a second
-            // Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+            // Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
             //     variant: "default",
             //     autoHideDuration: 200,
             //     transitionDuration: {
@@ -69,11 +71,11 @@ export const withProgress =
             //     key: "sort-progress",
             // })
             if (progress > lastProgress) {
-                Spicetify.Snackbar.updater.enqueueSetState(Spicetify.Snackbar, () => ({
+                Snackbar.updater.enqueueSetState(Snackbar, () => ({
                     snacks: [],
                     queue: [],
                 }))
-                Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+                Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
                     variant: "default",
                     autoHideDuration: 200,
                     transitionDuration: {

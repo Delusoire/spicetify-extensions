@@ -17,7 +17,7 @@ import {
     getTrackLists,
 } from "./util.ts"
 
-const { URI } = Spicetify
+const { URI, Tippy } = Spicetify
 const { React, ReactDOM } = Spicetify
 
 const UNSET_CSS = "invalid"
@@ -42,7 +42,7 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
 
     pb.appendChild(div)
     ReactDOM.render(<Dropdown uri={uri} />, div)
-    const tippyInstance = Spicetify.Tippy(pb, {
+    const tippyInstance = Tippy(pb, {
         content: div,
         interactive: true,
         animateFill: false,

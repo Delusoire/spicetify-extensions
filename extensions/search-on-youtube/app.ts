@@ -4,7 +4,7 @@ import { parseAPITrack } from "../../shared/parse.ts"
 import { SpotifyID, SpotifyURI, normalizeStr } from "../../shared/util.ts"
 import { CONFIG } from "./settings.ts"
 
-const { URI } = Spicetify
+const { URI, ContextMenu } = Spicetify
 
 const YTVidIDCache = new Map<SpotifyID, string>()
 
@@ -32,7 +32,7 @@ const showOnYouTube = async (uri: SpotifyURI) => {
     }
 }
 
-new Spicetify.ContextMenu.Item(
+new ContextMenu.Item(
     "Search on YouTube",
     ([uri]) => showOnYouTube(uri),
     ([uri]) => anyPass([URI.isTrack])(uri),

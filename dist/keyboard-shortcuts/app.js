@@ -11,14 +11,14 @@ var __decorateClass = (decorators, target, key, kind) => {
 };
 
 // shared/util.ts
-var {} = Spicetify;
+var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
 
 // shared/platformApi.ts
-var {} = Spicetify;
-var {} = Spicetify.Platform;
-var isTrackLiked = (uris) => Spicetify.Platform.LibraryAPI.contains(...uris);
-var setTrackLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
+var { CosmosAsync } = Spicetify;
+var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
+var isTrackLiked = (uris) => LibraryAPI.contains(...uris);
+var setTrackLiked = (uris, liked) => LibraryAPI[liked ? "add" : "remove"]({ uris });
 var toggleTrackLiked = async (uris) => {
   const liked = await isTrackLiked(uris);
   const urisByLiked = Object.groupBy(uris, (_, index) => liked[index] ? "liked" : "notLiked");
@@ -39,6 +39,8 @@ import { styleMap } from "https://esm.sh/lit/directives/style-map.js";
 import { function as f, number as n, ord } from "https://esm.sh/fp-ts";
 import { mean } from "https://esm.sh/fp-ts-std/Array";
 import { mod } from "https://esm.sh/fp-ts-std/Number";
+var { Keyboard } = Spicetify;
+var { History: History2 } = Spicetify.Platform;
 var SCROLL_STEP = 25;
 var focusOnApp = () => document.querySelector(".Root__main-view .os-viewport");
 var appScroll = (s) => {
@@ -47,7 +49,7 @@ var appScroll = (s) => {
   document.addEventListener("keyup", () => clearInterval(scrollIntervalId));
 };
 var appScrollY = (y) => focusOnApp().scroll(0, y);
-var openPage = (page) => Spicetify.Platform.History.push({ pathname: page });
+var openPage = (page) => History2.push({ pathname: page });
 var rotateSidebar = (offset) => {
   const navLinks = Array.from(
     Array.from(document.querySelectorAll(".main-yourLibraryX-navLink")).values()
@@ -69,7 +71,7 @@ var Bind = class {
     this.setCtrl = (required) => (this.ctrl = required, this);
     this.setShift = (required) => (this.shift = required, this);
     this.setAlt = (required) => (this.alt = required, this);
-    this.register = () => Spicetify.Keyboard.registerShortcut(
+    this.register = () => Keyboard.registerShortcut(
       { key: this.key, ctrl: this.ctrl, shift: this.shift, alt: this.alt },
       (event) => void (!listeningToSneakBinds && this.callback(event))
     );
@@ -184,8 +186,8 @@ _SneakOverlay = __decorateClass([
 ], _SneakOverlay);
 
 // extensions/keyboard-shortcuts/app.ts
-var { Keyboard, Player } = Spicetify;
-var { UserAPI, UpdateAPI, History: History2 } = Spicetify.Platform;
+var { Keyboard: Keyboard2, Player: Player2 } = Spicetify;
+var { UserAPI, UpdateAPI, History: History3 } = Spicetify.Platform;
 var sneakOverlay;
 var binds = [
   new Bind("s", () => {
@@ -198,13 +200,13 @@ var binds = [
   }).setShift(true),
   new Bind("tab", () => rotateSidebar(1)),
   new Bind("tab", () => rotateSidebar(-1)).setShift(true),
-  new Bind("h", History2.goBack).setShift(true),
-  new Bind("l", History2.goForward).setShift(true),
+  new Bind("h", History3.goBack).setShift(true),
+  new Bind("l", History3.goForward).setShift(true),
   new Bind("j", () => appScroll(1)),
   new Bind("k", () => appScroll(-1)),
   new Bind("g", () => appScrollY(0)),
   new Bind("g", () => appScrollY(Number.MAX_SAFE_INTEGER)).setShift(true),
-  new Bind("m", () => Player.data?.item.uri && toggleTrackLiked([Player.data?.item.uri])),
+  new Bind("m", () => Player2.data?.item.uri && toggleTrackLiked([Player2.data?.item.uri])),
   new Bind("/", (e) => {
     e.preventDefault();
     openPage("/search");
@@ -212,7 +214,7 @@ var binds = [
 ];
 binds.map((bind) => bind.register());
 mousetrapInst.bind(KEY_LIST, (e) => sneakOverlay.updateProps(e.key), "keypress");
-mousetrapInst.bind(Keyboard.KEYS.ESCAPE, () => sneakOverlay?.remove());
+mousetrapInst.bind(Keyboard2.KEYS.ESCAPE, () => sneakOverlay?.remove());
 (async () => {
     if (!document.getElementById("keyboard-shortcuts-css")) {
         const el = document.createElement("style")

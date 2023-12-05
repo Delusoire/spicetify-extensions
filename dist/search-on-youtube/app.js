@@ -14,22 +14,24 @@ import {
   function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
+var { Snackbar } = Spicetify;
 var guard3 = (branches) => guard(branches);
 var is = (c) => (a) => (field) => field[c] === a;
 var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/util.ts
-var {} = Spicetify;
+var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
 var normalizeStr = (str2) => str2.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // shared/api.ts
+var { Locale, GraphQL, CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
   fetch(url, opts) {
     const { method } = opts;
-    return Spicetify.CosmosAsync.resolve(method, url);
+    return CosmosAsync.resolve(method, url);
   },
   deserializer: {
     deserialize(res) {
@@ -107,8 +109,9 @@ var SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelecte
 var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 
 // shared/settings.tsx
-var { React, ReactDOM } = Spicetify;
+var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
+var { History: History2 } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
   constructor(name, id, sectionFields = {}) {
     this.name = name;
@@ -117,7 +120,7 @@ var SettingsSection = class _SettingsSection {
     this.pushSettings = () => {
       if (this.stopHistoryListener)
         this.stopHistoryListener();
-      this.stopHistoryListener = Spicetify.Platform.History.listen(() => this.render());
+      this.stopHistoryListener = History2.listen(() => this.render());
       this.render();
     };
     this.toObject = () => new Proxy(
@@ -128,7 +131,7 @@ var SettingsSection = class _SettingsSection {
     );
     this.render = async () => {
       while (!document.getElementById("desktop.settings.selectLanguage")) {
-        if (Spicetify.Platform.History.location.pathname !== "/preferences")
+        if (History2.location.pathname !== "/preferences")
           return;
         await sleep(100);
       }
@@ -222,10 +225,10 @@ var SettingsSection = class _SettingsSection {
     this.sectionFields[opts.id] = field;
   }
   static {
-    this.getFieldValue = (id) => JSON.parse(Spicetify.LocalStorage.get(id) ?? "null");
+    this.getFieldValue = (id) => JSON.parse(LocalStorage.get(id) ?? "null");
   }
   static {
-    this.setFieldValue = (id, newValue) => Spicetify.LocalStorage.set(id, JSON.stringify(newValue));
+    this.setFieldValue = (id, newValue) => LocalStorage.set(id, JSON.stringify(newValue));
   }
   static {
     this.setDefaultFieldValue = async (id, defaultValue) => {
@@ -248,10 +251,10 @@ settings.pushSettings();
 var CONFIG = settings.toObject();
 
 // extensions/search-on-youtube/app.ts
-var { URI } = Spicetify;
+var { URI: URI2, ContextMenu } = Spicetify;
 var YTVidIDCache = /* @__PURE__ */ new Map();
 var showOnYouTube = async (uri) => {
-  const id = URI.fromString(uri).id;
+  const id = URI2.fromString(uri).id;
   if (!YTVidIDCache.get(id)) {
     const track = parseAPITrack(await spotifyApi.tracks.get(id));
     const searchString = `${track.artistName} - ${track.name} music video`;
@@ -268,9 +271,9 @@ var showOnYouTube = async (uri) => {
     }
   }
 };
-new Spicetify.ContextMenu.Item(
+new ContextMenu.Item(
   "Search on YouTube",
   ([uri]) => showOnYouTube(uri),
-  ([uri]) => anyPass([URI.isTrack])(uri),
+  ([uri]) => anyPass([URI2.isTrack])(uri),
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="19px" height="19px"><path fill="currentColor" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"/><path fill="var(--spice-main)" d="M20 31L20 17 32 24z"/></svg>`
 ).register();

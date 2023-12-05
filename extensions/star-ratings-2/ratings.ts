@@ -16,6 +16,9 @@ import { updateCollectionControls, updateNowPlayingControls, updateTrackListCont
 import { CONFIG } from "./settings.ts"
 import { getNowPlayingBar } from "./util.ts"
 
+const { URI, Player } = Spicetify
+const { History } = Spicetify.Platform
+
 export const loadRatings = async () => {
     const ratingsFolder = await fetchFolder(CONFIG.ratingsFolderUri)
 
@@ -52,7 +55,7 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
         f.pipe(
             playlistUris.slice(0, currentRating + 1),
             ar.filter(Boolean),
-            ar.map(playlistUri => Spicetify.URI.fromString(playlistUri).id!),
+            ar.map(playlistUri => URI.fromString(playlistUri).id!),
             ar.map(playlistId => removePlaylistTracks(playlistId, [{ uri, uid: "" } as { uid: string }])),
         )
     }
@@ -60,10 +63,13 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
     tracksRatings[uri] = rating
 
     if (rating > 0) {
-        let playlistUri = playlistUris[rating]
+        let playlistUri = playlistUris[rating] as string | undefined | null
 
         if (!playlistUri) {
-            playlistUri = await createPlaylist(rating.toFixed(0), SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri))
+            playlistUri = (await createPlaylist(
+                rating.toFixed(0),
+                SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri),
+            )) as string
             setPlaylistVisibility(playlistUri, false)
             playlistUris[rating] = playlistUri
         }
@@ -75,7 +81,7 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
         }
     }
 
-    const npTrack = Spicetify.Player.data?.item.uri
+    const npTrack = Player.data?.item.uri
     if (npTrack === uri) {
         updateNowPlayingControls(npTrack, false)
 
@@ -94,8 +100,8 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
 
     //TODO: Optimize this, find a way to directly target the pbs for that uri
     updateTrackListControls()
-    const { pathname } = Spicetify.Platform.History.location
-    updateCollectionControls(Spicetify.URI.fromString(pathname))
+    const { pathname } = History.location
+    updateCollectionControls(URI.fromString(pathname))
 }
 
 export let playlistUris: SpotifyURI[] = []

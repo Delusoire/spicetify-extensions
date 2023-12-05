@@ -9,8 +9,10 @@ import { CONFIG } from "./settings.ts"
 import "./assets/styles.scss"
 import "./components.ts"
 
+const { URI } = Spicetify
+
 const fetchLastFMTags = async (uri: SpotifyURI) => {
-    const uid = Spicetify.URI.fromString(uri).id!
+    const uid = URI.fromString(uri).id!
     const { name, artists } = await spotifyApi.tracks.get(uid)
     const artistNames = artists.map(artist => artist.name)
     const { track } = await fetchLastFMTrack(CONFIG.LFMApiKey, artistNames[0], name)
@@ -33,12 +35,12 @@ nowPlayingGenreContainerEl.style.gridArea = "genres"
 onSongChanged(state => (nowPlayingGenreContainerEl.uri = state?.item.uri))
 
 const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[]) => {
-    const getArtistsGenres: (artistsUris: SpotifyURI[]) => Promise<string[]> = f.flow(
-        a.map(uri => Spicetify.URI.fromString(uri)!.id!),
-        spotifyApi.artists.get,
-        pMchain(a.flatMap(artist => artist.genres)),
-        pMchain(a.uniq(str.Eq)),
-    )
+    const getArtistsGenres = async (artistsUris: SpotifyURI[]) => {
+        const ids = artistsUris.map(uri => URI.fromString(uri)!.id!)
+        const artists = await spotifyApi.artists.get(ids)
+        const genres = new Set(artists.flatMap(artist => artist.genres))
+        return Array.from(genres)
+    }
 
     const allGenres = await getArtistsGenres(artistsUris)
 
@@ -74,4 +76,4 @@ const updateArtistPage = async (uri: SpotifyURI) => {
     headerTextEl?.insertBefore(artistGenreContainerEl, headerTextDetailsEl)
 }
 
-onHistoryChanged(uri => Spicetify.URI.isArtist(uri), updateArtistPage)
+onHistoryChanged(uri => URI.isArtist(uri), updateArtistPage)

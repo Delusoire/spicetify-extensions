@@ -11,7 +11,7 @@ var __decorateClass = (decorators, target, key, kind) => {
 };
 
 // extensions/show-the-genres/app.ts
-import { array as a, function as f2, string as str2 } from "https://esm.sh/fp-ts";
+import { array as a, function as f2 } from "https://esm.sh/fp-ts";
 
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
@@ -26,13 +26,14 @@ import {
   function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
+var { Snackbar } = Spicetify;
 var guard3 = (branches) => guard(branches);
 var pMchain = (f3) => async (fa) => f3(await fa);
 var is = (c) => (a2) => (field) => field[c] === a2;
 var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/util.ts
-var {} = Spicetify;
+var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
 var titleCase = (str3) => str3.replace(/\b\w/g, (l) => l.toUpperCase());
 var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) => new Promise((resolve, reject) => {
@@ -76,7 +77,7 @@ var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
     if (matchFn(pathname)) {
       if (dropDuplicates && lastPathname === pathname) {
       } else
-        callback(Spicetify.URI.fromString(pathname).toString());
+        callback(URI.fromString(pathname).toString());
     }
     lastPathname = pathname;
   };
@@ -84,16 +85,17 @@ var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
   return History.listen(historyChanged);
 };
 var onSongChanged = (callback) => {
-  callback(Spicetify.Player.data);
-  Spicetify.Player.addEventListener("songchange", (event) => callback(event.data));
+  callback(Player.data);
+  Player.addEventListener("songchange", (event) => callback(event.data));
 };
 
 // shared/api.ts
+var { Locale, GraphQL, CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
   fetch(url, opts) {
     const { method } = opts;
-    return Spicetify.CosmosAsync.resolve(method, url);
+    return CosmosAsync.resolve(method, url);
   },
   deserializer: {
     deserialize(res) {
@@ -101,9 +103,9 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
     }
   }
 });
-var fetchGQLArtistRelated = async (uri) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistRelated, {
+var fetchGQLArtistRelated = async (uri) => (await GraphQL.Request(GraphQL.Definitions.queryArtistRelated, {
   uri,
-  locale: Spicetify.Locale.getLocale()
+  locale: Locale.getLocale()
 })).data.artistUnion.relatedContent.relatedArtists.items;
 var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
   const url = new URL("https://ws.audioscrobbler.com/2.0/");
@@ -151,8 +153,9 @@ var SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelecte
 var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 
 // shared/settings.tsx
-var { React, ReactDOM } = Spicetify;
+var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
+var { History: History2 } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
   constructor(name, id, sectionFields = {}) {
     this.name = name;
@@ -161,7 +164,7 @@ var SettingsSection = class _SettingsSection {
     this.pushSettings = () => {
       if (this.stopHistoryListener)
         this.stopHistoryListener();
-      this.stopHistoryListener = Spicetify.Platform.History.listen(() => this.render());
+      this.stopHistoryListener = History2.listen(() => this.render());
       this.render();
     };
     this.toObject = () => new Proxy(
@@ -172,7 +175,7 @@ var SettingsSection = class _SettingsSection {
     );
     this.render = async () => {
       while (!document.getElementById("desktop.settings.selectLanguage")) {
-        if (Spicetify.Platform.History.location.pathname !== "/preferences")
+        if (History2.location.pathname !== "/preferences")
           return;
         await sleep(100);
       }
@@ -266,10 +269,10 @@ var SettingsSection = class _SettingsSection {
     this.sectionFields[opts.id] = field;
   }
   static {
-    this.getFieldValue = (id) => JSON.parse(Spicetify.LocalStorage.get(id) ?? "null");
+    this.getFieldValue = (id) => JSON.parse(LocalStorage.get(id) ?? "null");
   }
   static {
-    this.setFieldValue = (id, newValue) => Spicetify.LocalStorage.set(id, JSON.stringify(newValue));
+    this.setFieldValue = (id, newValue) => LocalStorage.set(id, JSON.stringify(newValue));
   }
   static {
     this.setDefaultFieldValue = async (id, defaultValue) => {
@@ -296,13 +299,14 @@ import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property, state } from "https://esm.sh/lit/decorators.js";
 import { join } from "https://esm.sh/lit/directives/join.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
+var { History: History3 } = Spicetify.Platform;
 var _GenreLink = class extends LitElement {
   constructor() {
     super(...arguments);
     this.genre = "Default";
   }
   openPlaylistsSearch() {
-    Spicetify.Platform.History.push({ pathname: `/search/${this.genre}/playlists` });
+    History3.push({ pathname: `/search/${this.genre}/playlists` });
   }
   render() {
     return html`<a href="#" @click=${this.openPlaylistsSearch}>${titleCase(this.genre)}</a>`;
@@ -367,8 +371,9 @@ _ArtistGenreContainer = __decorateClass([
 ], _ArtistGenreContainer);
 
 // extensions/show-the-genres/app.ts
+var { URI: URI2 } = Spicetify;
 var fetchLastFMTags = async (uri) => {
-  const uid = Spicetify.URI.fromString(uri).id;
+  const uid = URI2.fromString(uri).id;
   const { name, artists } = await spotifyApi.tracks.get(uid);
   const artistNames = artists.map((artist) => artist.name);
   const { track } = await fetchLastFMTrack(CONFIG.LFMApiKey, artistNames[0], name);
@@ -387,12 +392,12 @@ nowPlayingGenreContainerEl.style.gridArea = "genres";
 })();
 onSongChanged((state2) => nowPlayingGenreContainerEl.uri = state2?.item.uri);
 var getArtistsGenresOrRelated = async (artistsUris) => {
-  const getArtistsGenres = f2.flow(
-    a.map((uri) => Spicetify.URI.fromString(uri).id),
-    spotifyApi.artists.get,
-    pMchain(a.flatMap((artist) => artist.genres)),
-    pMchain(a.uniq(str2.Eq))
-  );
+  const getArtistsGenres = async (artistsUris2) => {
+    const ids = artistsUris2.map((uri) => URI2.fromString(uri).id);
+    const artists = await spotifyApi.artists.get(ids);
+    const genres = new Set(artists.flatMap((artist) => artist.genres));
+    return Array.from(genres);
+  };
   const allGenres = await getArtistsGenres(artistsUris);
   return allGenres.length ? allGenres : await f2.pipe(
     artistsUris[0],
@@ -422,7 +427,7 @@ var updateArtistPage = async (uri) => {
   const headerTextDetailsEl = await waitForElement("span.main-entityHeader-detailsText");
   headerTextEl?.insertBefore(artistGenreContainerEl, headerTextDetailsEl);
 };
-onHistoryChanged((uri) => Spicetify.URI.isArtist(uri), updateArtistPage);
+onHistoryChanged((uri) => URI2.isArtist(uri), updateArtistPage);
 (async () => {
     if (!document.getElementById("show-the-genres-css")) {
         const el = document.createElement("style")

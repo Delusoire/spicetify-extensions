@@ -47,7 +47,7 @@ import {
 import { SpotifyLoc, SpotifyURI, createQueueItem, setPlayingContext, setQueue } from "../../shared/util.ts"
 import { CONFIG } from "./settings.ts"
 
-const { URI } = Spicetify
+const { URI, ContextMenu, Topbar } = Spicetify
 const { PlayerAPI } = Spicetify.Platform
 
 enum SortBy {
@@ -268,7 +268,7 @@ const sortTracksWith =
 
 const shuffle = <A>(array: A[], l = array.length): A[] =>
     l == 0 ? [] : [array.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array)]
-const shuffleSubmenu = new Spicetify.ContextMenu.Item(
+const shuffleSubmenu = new ContextMenu.Item(
     "True Shuffle",
     ([uri]) => sortTracksWith("True Shuffle", shuffle)(uri),
     f.constTrue,
@@ -280,7 +280,7 @@ const starsOrd = f.pipe(
     num.Ord,
     ord.contramap((t: { uri: SpotifyURI }) => globalThis.tracksRatings[t.uri] ?? 0),
 )
-const starsSubmenu = new Spicetify.ContextMenu.Item(
+const starsSubmenu = new ContextMenu.Item(
     "Stars",
     ([uri]) => sortTracksWith("Stars", ar.sort(starsOrd))(uri),
     () => globalThis.tracksRatings !== undefined,
@@ -289,9 +289,9 @@ const starsSubmenu = new Spicetify.ContextMenu.Item(
 )
 
 const createSortByPropSubmenu = (name: keyof typeof SortProp, icon: any) =>
-    new Spicetify.ContextMenu.Item(name, ([uri]) => sortByProp(name)(uri), f.constTrue, icon, false)
+    new ContextMenu.Item(name, ([uri]) => sortByProp(name)(uri), f.constTrue, icon, false)
 
-new Spicetify.ContextMenu.SubMenu(
+new ContextMenu.SubMenu(
     "Sort by",
     ar
         .zipWith(
@@ -328,7 +328,7 @@ const getNameFromUri = async (uri: Spicetify.URI) => {
     }
 }
 
-new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
+new Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
     if (lastSortedQueue.length === 0) {
         Spicetify.showNotification("Must sort to queue beforehand")
         return
@@ -350,7 +350,7 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
     Spicetify.showNotification(`Playlist ${playlistName} created`)
 })
 
-new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
+new Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
     if (lastSortedQueue.length === 0) {
         Spicetify.showNotification("Must sort to queue beforehand")
         return

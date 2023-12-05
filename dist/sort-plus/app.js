@@ -29,6 +29,7 @@ import {
   function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
+var { Snackbar } = Spicetify;
 var guard3 = (branches) => guard(branches);
 var objConcat2 = () => rec.getUnionSemigroup(sg.first()).concat;
 var objConcat = () => ar.reduce({}, objConcat2());
@@ -45,11 +46,11 @@ var withProgress = (map) => (f3) => (fa) => {
     const ret = await f3(...a);
     const progress = Math.round(i++ / Object.values(fa).length * 100);
     if (progress > lastProgress) {
-      Spicetify.Snackbar.updater.enqueueSetState(Spicetify.Snackbar, () => ({
+      Snackbar.updater.enqueueSetState(Snackbar, () => ({
         snacks: [],
         queue: []
       }));
-      Spicetify.Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+      Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
         variant: "default",
         autoHideDuration: 200,
         transitionDuration: {
@@ -65,7 +66,7 @@ var withProgress = (map) => (f3) => (fa) => {
 var toMemoized = (fn) => f.pipe(fn, f.tupled, memoize(eq.contramap(JSON.stringify)(str.Eq)), f.untupled);
 
 // shared/util.ts
-var {} = Spicetify;
+var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
@@ -107,11 +108,12 @@ var setPlayingContext = (uri) => {
 };
 
 // shared/api.ts
+var { Locale, GraphQL, CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
   fetch(url, opts) {
     const { method } = opts;
-    return Spicetify.CosmosAsync.resolve(method, url);
+    return CosmosAsync.resolve(method, url);
   },
   deserializer: {
     deserialize(res) {
@@ -119,18 +121,18 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
     }
   }
 });
-var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.getAlbum, {
+var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await GraphQL.Request(GraphQL.Definitions.getAlbum, {
   uri,
-  locale: Spicetify.Locale.getLocale(),
+  locale: Locale.getLocale(),
   offset,
   limit
 })).data.albumUnion;
-var fetchGQLArtistOverview = async (uri) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistOverview, {
+var fetchGQLArtistOverview = async (uri) => (await GraphQL.Request(GraphQL.Definitions.queryArtistOverview, {
   uri,
-  locale: Spicetify.Locale.getLocale(),
+  locale: Locale.getLocale(),
   includePrerelease: true
 })).data.artistUnion;
-var fetchGQLArtistDiscography = async (uri, offset = 0, limit = 116) => (await Spicetify.GraphQL.Request(Spicetify.GraphQL.Definitions.queryArtistDiscographyAll, {
+var fetchGQLArtistDiscography = async (uri, offset = 0, limit = 116) => (await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
   uri,
   offset,
   limit
@@ -148,25 +150,25 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
 var fetchLastFMTrackMemo = toMemoized(fetchLastFMTrack);
 
 // shared/platformApi.ts
-var {} = Spicetify;
-var {} = Spicetify.Platform;
-var fetchLikedTracks = async () => (await Spicetify.Platform.LibraryAPI.getTracks({
+var { CosmosAsync: CosmosAsync2 } = Spicetify;
+var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
+var fetchLikedTracks = async () => (await LibraryAPI.getTracks({
   limit: Number.MAX_SAFE_INTEGER
 })).items;
-var fetchArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await Spicetify.Platform.LibraryAPI.getTracks({ uri, offset, limit })).items;
-var fetchPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
-var createFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
-var createPlaylistFromTracks = (name, tracks, folder) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
+var fetchArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await LibraryAPI.getTracks({ uri, offset, limit })).items;
+var fetchPlaylistContents = async (uri) => (await PlaylistAPI.getContents(uri)).items;
+var createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
+var createPlaylistFromTracks = (name, tracks, folder) => CosmosAsync2.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
   operation: "create",
   ...folder ? { after: folder } : {},
   name,
   playlist: true,
   uris: tracks
 });
-var setPlaylistVisibility = async (playlist, visibleForAll) => await Spicetify.Platform.PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
-var fetchFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
+var setPlaylistVisibility = async (playlist, visibleForAll) => await PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
+var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
 var fetchRootFolder = () => fetchFolder(void 0);
-var movePlaylistTracks = async (playlist, tracks, location = {}) => await Spicetify.Platform.PlaylistAPI.move(playlist, tracks, location);
+var movePlaylistTracks = async (playlist, tracks, location = {}) => await PlaylistAPI.move(playlist, tracks, location);
 
 // shared/parse.ts
 var parseTrackFromAlbum = ({ track }) => ({
@@ -281,8 +283,9 @@ var SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelecte
 var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 
 // shared/settings.tsx
-var { React, ReactDOM } = Spicetify;
+var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
+var { History: History2 } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
   constructor(name, id, sectionFields = {}) {
     this.name = name;
@@ -291,7 +294,7 @@ var SettingsSection = class _SettingsSection {
     this.pushSettings = () => {
       if (this.stopHistoryListener)
         this.stopHistoryListener();
-      this.stopHistoryListener = Spicetify.Platform.History.listen(() => this.render());
+      this.stopHistoryListener = History2.listen(() => this.render());
       this.render();
     };
     this.toObject = () => new Proxy(
@@ -302,7 +305,7 @@ var SettingsSection = class _SettingsSection {
     );
     this.render = async () => {
       while (!document.getElementById("desktop.settings.selectLanguage")) {
-        if (Spicetify.Platform.History.location.pathname !== "/preferences")
+        if (History2.location.pathname !== "/preferences")
           return;
         await sleep(100);
       }
@@ -396,10 +399,10 @@ var SettingsSection = class _SettingsSection {
     this.sectionFields[opts.id] = field;
   }
   static {
-    this.getFieldValue = (id) => JSON.parse(Spicetify.LocalStorage.get(id) ?? "null");
+    this.getFieldValue = (id) => JSON.parse(LocalStorage.get(id) ?? "null");
   }
   static {
-    this.setFieldValue = (id, newValue) => Spicetify.LocalStorage.set(id, JSON.stringify(newValue));
+    this.setFieldValue = (id, newValue) => LocalStorage.set(id, JSON.stringify(newValue));
   }
   static {
     this.setDefaultFieldValue = async (id, defaultValue) => {
@@ -427,7 +430,7 @@ var CONFIG = settings.toObject();
 
 // extensions/sort-plus/app.ts
 debugger;
-var { URI } = Spicetify;
+var { URI: URI2, ContextMenu, Topbar } = Spicetify;
 var { PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
 var SortBy = /* @__PURE__ */ ((SortBy2) => {
   SortBy2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
@@ -497,7 +500,7 @@ async function getArtistTracks(uri) {
   return await Promise.all(allTracks);
 }
 var fetchAPITracksFromTracks = f2.flow(
-  ar2.map((track) => URI.fromString(track.uri).id),
+  ar2.map((track) => URI2.fromString(track.uri).id),
   spotifyApi.tracks.get,
   pMchain(ar2.map(parseAPITrack))
 );
@@ -536,10 +539,10 @@ var populateTrackLastFM = async (track) => {
 var fetchTracks = f2.flow(
   tapAny((uri) => void (lastFetchedUri = uri)),
   guard2([
-    [URI.isAlbum, getAlbumTracks],
-    [URI.isArtist, getArtistTracks],
-    [URI.isPlaylistV1OrV2, getPlaylistTracks],
-    [URI.isCollection, f2.flow(fetchLikedTracks, pMchain(ar2.map(parsePlatLikedTracks)))]
+    [URI2.isAlbum, getAlbumTracks],
+    [URI2.isArtist, getArtistTracks],
+    [URI2.isPlaylistV1OrV2, getPlaylistTracks],
+    [URI2.isCollection, f2.flow(fetchLikedTracks, pMchain(ar2.map(parsePlatLikedTracks)))]
   ])(task3.of([]))
 );
 var populateTracks = guard2([
@@ -564,7 +567,7 @@ var _setQueue = (inverted) => async (queue) => {
   );
   lastSortedQueue = f2.pipe(queue, ar2.uniq(uriOrd), inverted ? ar2.reverse : f2.identity);
   globalThis.lastSortedQueue = lastSortedQueue;
-  const isQueued = URI.isCollection(lastFetchedUri);
+  const isQueued = URI2.isCollection(lastFetchedUri);
   await f2.pipe(
     lastSortedQueue,
     ar2.map((t) => t.uri),
@@ -610,7 +613,7 @@ var sortTracksWith = (name, sortFn) => (uri) => {
   f2.pipe(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!!descending)));
 };
 var shuffle = (array, l = array.length) => l == 0 ? [] : [array.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array)];
-var shuffleSubmenu = new Spicetify.ContextMenu.Item(
+var shuffleSubmenu = new ContextMenu.Item(
   "True Shuffle",
   ([uri]) => sortTracksWith("True Shuffle", shuffle)(uri),
   f2.constTrue,
@@ -621,49 +624,49 @@ var starsOrd = f2.pipe(
   num.Ord,
   ord.contramap((t) => globalThis.tracksRatings[t.uri] ?? 0)
 );
-var starsSubmenu = new Spicetify.ContextMenu.Item(
+var starsSubmenu = new ContextMenu.Item(
   "Stars",
   ([uri]) => sortTracksWith("Stars", ar2.sort(starsOrd))(uri),
   () => globalThis.tracksRatings !== void 0,
   "heart-active",
   false
 );
-var createSortByPropSubmenu = (name, icon) => new Spicetify.ContextMenu.Item(name, ([uri]) => sortByProp(name)(uri), f2.constTrue, icon, false);
-new Spicetify.ContextMenu.SubMenu(
+var createSortByPropSubmenu = (name, icon) => new ContextMenu.Item(name, ([uri]) => sortByProp(name)(uri), f2.constTrue, icon, false);
+new ContextMenu.SubMenu(
   "Sort by",
   ar2.zipWith(
     values(SortBy),
     ["play", "heart", "list-view", "volume", "artist", "subtitles"],
     createSortByPropSubmenu
   ).concat([shuffleSubmenu, starsSubmenu]),
-  ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isCollection, URI.isTrack, URI.isPlaylistV1OrV2])(uri)
+  ([uri]) => anyPass([URI2.isAlbum, URI2.isArtist, URI2.isCollection, URI2.isTrack, URI2.isPlaylistV1OrV2])(uri)
 ).register();
 var getNameFromUri = async (uri) => {
   switch (uri.type) {
-    case URI.Type.ALBUM: {
+    case URI2.Type.ALBUM: {
       const album = await spotifyApi.albums.get(uri.id);
       return album.name;
     }
-    case URI.Type.ARTIST: {
+    case URI2.Type.ARTIST: {
       const artist = await spotifyApi.artists.get(uri.id);
       return artist.name;
     }
-    case URI.Type.COLLECTION:
+    case URI2.Type.COLLECTION:
       return "Liked Tracks";
-    case URI.Type.PLAYLIST:
-    case URI.Type.PLAYLIST_V2: {
+    case URI2.Type.PLAYLIST:
+    case URI2.Type.PLAYLIST_V2: {
       const playlist = await spotifyApi.playlists.getPlaylist(uri.id);
       return playlist.name;
     }
   }
 };
-new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
+new Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
   if (lastSortedQueue.length === 0) {
     Spicetify.showNotification("Must sort to queue beforehand");
     return;
   }
   const sortedPlaylistsFolder = await fetchFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchRootFolder);
-  const uri = URI.fromString(lastFetchedUri);
+  const uri = URI2.fromString(lastFetchedUri);
   const playlistName = `${getNameFromUri(uri) ?? "Error"} - ${lastActionName}`;
   const { palylistUri } = await createPlaylistFromTracks(
     playlistName,
@@ -673,12 +676,12 @@ new Spicetify.Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", a
   setPlaylistVisibility(palylistUri, false);
   Spicetify.showNotification(`Playlist ${playlistName} created`);
 });
-new Spicetify.Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
+new Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
   if (lastSortedQueue.length === 0) {
     Spicetify.showNotification("Must sort to queue beforehand");
     return;
   }
-  if (!URI.isPlaylistV1OrV2(lastFetchedUri)) {
+  if (!URI2.isPlaylistV1OrV2(lastFetchedUri)) {
     Spicetify.showNotification("Last sorted queue must be a playlist");
     return;
   }

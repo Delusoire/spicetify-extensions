@@ -1,11 +1,11 @@
 // shared/util.ts
-var {} = Spicetify;
+var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
 
 // shared/platformApi.ts
-var {} = Spicetify;
-var {} = Spicetify.Platform;
-var fetchPlaylistEnhancedSongs300 = async (uri, offset = 0, limit = 300) => (await Spicetify.Platform.EnhanceAPI.getPage(
+var { CosmosAsync } = Spicetify;
+var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
+var fetchPlaylistEnhancedSongs300 = async (uri, offset = 0, limit = 300) => (await EnhanceAPI.getPage(
   uri,
   /* iteration */
   0,
@@ -23,15 +23,16 @@ var fetchPlaylistEnhancedSongs = async (uri, offset = 0) => {
 };
 
 // extensions/play-enhanced-songs/app.ts
-var { URI } = Spicetify;
+var { URI: URI2, ContextMenu } = Spicetify;
+var { PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
 var playEnhancedSongs = async (uri) => {
   const queue = await fetchPlaylistEnhancedSongs(uri);
-  Spicetify.Platform.PlayerAPI.clearQueue();
-  Spicetify.Platform.PlayerAPI.addToQueue(queue);
+  PlayerAPI2.clearQueue();
+  PlayerAPI2.addToQueue(queue);
 };
-new Spicetify.ContextMenu.Item(
+new ContextMenu.Item(
   "Play enhanced songs",
   ([uri]) => playEnhancedSongs(uri),
-  ([uri]) => URI.isPlaylistV1OrV2(uri),
+  ([uri]) => URI2.isPlaylistV1OrV2(uri),
   "enhance"
 ).register();

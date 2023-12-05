@@ -5,6 +5,8 @@ import { map } from "https://esm.sh/lit/directives/map.js"
 
 import { SpotifyURI, titleCase } from "../../shared/util.ts"
 
+const { History } = Spicetify.Platform
+
 declare global {
     interface HTMLElementTagNameMap {
         "genre-container": _ArtistGenreContainer
@@ -25,7 +27,7 @@ class _GenreLink extends LitElement {
     genre = "Default"
 
     private openPlaylistsSearch() {
-        Spicetify.Platform.History.push({ pathname: `/search/${this.genre}/playlists` })
+        History.push({ pathname: `/search/${this.genre}/playlists` })
     }
 
     protected render() {

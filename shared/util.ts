@@ -1,7 +1,7 @@
 export type SpotifyID = string
 export type SpotifyURI = string
 
-const {} = Spicetify
+const { Player, URI } = Spicetify
 const { PlayerAPI, History } = Spicetify.Platform
 
 export const SpotifyLoc = {
@@ -142,7 +142,7 @@ export const onHistoryChanged = (
     const historyChanged = ({ pathname }: any) => {
         if (matchFn(pathname)) {
             if (dropDuplicates && lastPathname === pathname) {
-            } else callback(Spicetify.URI.fromString(pathname).toString())
+            } else callback(URI.fromString(pathname).toString())
         }
         lastPathname = pathname
     }
@@ -152,6 +152,6 @@ export const onHistoryChanged = (
 }
 
 export const onSongChanged = (callback: (state?: Spicetify.PlayerState) => void) => {
-    callback(Spicetify.Player.data)
-    Spicetify.Player.addEventListener("songchange", event => callback(event!.data))
+    callback(Player.data)
+    Player.addEventListener("songchange", event => callback(event!.data))
 }

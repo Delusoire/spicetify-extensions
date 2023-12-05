@@ -1,7 +1,11 @@
 import { function as f, number as n, ord } from "https://esm.sh/fp-ts"
 import { mean } from "https://esm.sh/fp-ts-std/Array"
 import { mod } from "https://esm.sh/fp-ts-std/Number"
+
 import { listeningToSneakBinds } from "./sneak.ts"
+
+const { Keyboard } = Spicetify
+const { History } = Spicetify.Platform
 
 const SCROLL_STEP = 25
 
@@ -15,7 +19,7 @@ export const appScroll = (s: number) => {
 
 export const appScrollY = (y: number) => focusOnApp().scroll(0, y)
 
-export const openPage = (page: string) => Spicetify.Platform.History.push({ pathname: page })
+export const openPage = (page: string) => History.push({ pathname: page })
 
 export const rotateSidebar = (offset: number) => {
     const navLinks = Array.from(
@@ -47,7 +51,7 @@ export class Bind {
     setAlt = (required: boolean) => ((this.alt = required), this)
 
     register = () =>
-        Spicetify.Keyboard.registerShortcut(
+        Keyboard.registerShortcut(
             { key: this.key, ctrl: this.ctrl, shift: this.shift, alt: this.alt },
             event => void (!listeningToSneakBinds && this.callback(event)),
         )

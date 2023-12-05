@@ -4,10 +4,10 @@ var __esm = (fn, res) => function __init() {
 };
 
 // shared/util.ts
-var PlayerAPI, History, SpotifyLoc, sleep, getReactProps;
+var Player, URI, PlayerAPI, History, SpotifyLoc, sleep, getReactProps;
 var init_util = __esm({
   "shared/util.ts"() {
-    ({} = Spicetify);
+    ({ Player, URI } = Spicetify);
     ({ PlayerAPI, History } = Spicetify.Platform);
     SpotifyLoc = {
       before: {
@@ -27,24 +27,24 @@ var init_util = __esm({
 });
 
 // shared/platformApi.ts
-var setTrackLiked, fetchPlaylistContents, createFolder, addPlaylist, createPlaylistFromTracks, fetchFolder, fetchRootFolder;
+var CosmosAsync, LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI, setTrackLiked, fetchPlaylistContents, createFolder, addPlaylist, createPlaylistFromTracks, fetchFolder, fetchRootFolder;
 var init_platformApi = __esm({
   "shared/platformApi.ts"() {
     init_util();
-    ({} = Spicetify);
-    ({} = Spicetify.Platform);
-    setTrackLiked = (uris, liked) => Spicetify.Platform.LibraryAPI[liked ? "add" : "remove"]({ uris });
-    fetchPlaylistContents = async (uri) => (await Spicetify.Platform.PlaylistAPI.getContents(uri)).items;
-    createFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
-    addPlaylist = async (playlist, folder) => await Spicetify.Platform.RootlistAPI.add([playlist], folder ? SpotifyLoc.after.fromUri(folder) : {});
-    createPlaylistFromTracks = (name, tracks, folder) => Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
+    ({ CosmosAsync } = Spicetify);
+    ({ LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform);
+    setTrackLiked = (uris, liked) => LibraryAPI[liked ? "add" : "remove"]({ uris });
+    fetchPlaylistContents = async (uri) => (await PlaylistAPI.getContents(uri)).items;
+    createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
+    addPlaylist = async (playlist, folder) => await RootlistAPI.add([playlist], folder ? SpotifyLoc.after.fromUri(folder) : {});
+    createPlaylistFromTracks = (name, tracks, folder) => CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
       operation: "create",
       ...folder ? { after: folder } : {},
       name,
       playlist: true,
       uris: tracks
     });
-    fetchFolder = async (folder) => await Spicetify.Platform.RootlistAPI.getContents({ folderUri: folder });
+    fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
     fetchRootFolder = () => fetchFolder(void 0);
   }
 });
@@ -59,9 +59,10 @@ import {
   function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
-var guard3, is;
+var Snackbar, guard3, is;
 var init_fp = __esm({
   "shared/fp.ts"() {
+    ({ Snackbar } = Spicetify);
     guard3 = (branches) => guard(branches);
     is = (c) => (a) => (field) => field[c] === a;
   }
@@ -101,14 +102,15 @@ var init_modules = __esm({
 
 // shared/settings.tsx
 import { task } from "https://esm.sh/fp-ts";
-var React, ReactDOM, ButtonSecondary, SettingsSection;
+var React, ReactDOM, LocalStorage, ButtonSecondary, History2, SettingsSection;
 var init_settings = __esm({
   "shared/settings.tsx"() {
     init_fp();
     init_util();
     init_modules();
-    ({ React, ReactDOM } = Spicetify);
+    ({ React, ReactDOM, LocalStorage } = Spicetify);
     ({ ButtonSecondary } = Spicetify.ReactComponent);
+    ({ History: History2 } = Spicetify.Platform);
     SettingsSection = class _SettingsSection {
       constructor(name, id, sectionFields = {}) {
         this.name = name;
@@ -117,7 +119,7 @@ var init_settings = __esm({
         this.pushSettings = () => {
           if (this.stopHistoryListener)
             this.stopHistoryListener();
-          this.stopHistoryListener = Spicetify.Platform.History.listen(() => this.render());
+          this.stopHistoryListener = History2.listen(() => this.render());
           this.render();
         };
         this.toObject = () => new Proxy(
@@ -128,7 +130,7 @@ var init_settings = __esm({
         );
         this.render = async () => {
           while (!document.getElementById("desktop.settings.selectLanguage")) {
-            if (Spicetify.Platform.History.location.pathname !== "/preferences")
+            if (History2.location.pathname !== "/preferences")
               return;
             await sleep(100);
           }
@@ -222,10 +224,10 @@ var init_settings = __esm({
         this.sectionFields[opts.id] = field;
       }
       static {
-        this.getFieldValue = (id) => JSON.parse(Spicetify.LocalStorage.get(id) ?? "null");
+        this.getFieldValue = (id) => JSON.parse(LocalStorage.get(id) ?? "null");
       }
       static {
-        this.setFieldValue = (id, newValue) => Spicetify.LocalStorage.set(id, JSON.stringify(newValue));
+        this.setFieldValue = (id, newValue) => LocalStorage.set(id, JSON.stringify(newValue));
       }
       static {
         this.setDefaultFieldValue = async (id, defaultValue) => {
@@ -271,13 +273,13 @@ var init_settings2 = __esm({
 
 // extensions/vaultify/app.ts
 import { array as ar2, function as f2 } from "https://esm.sh/fp-ts";
-var LocalStorage, ClipboardAPI, LibraryAPI, LocalStorageAPI, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, allowedExtDataRegex, backup, restore;
+var LocalStorage2, URI2, ClipboardAPI, LibraryAPI2, LocalStorageAPI, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, allowedExtDataRegex, backup, restore;
 var init_app = __esm({
   "extensions/vaultify/app.ts"() {
     init_platformApi();
     init_util();
-    ({ LocalStorage } = Spicetify);
-    ({ ClipboardAPI, LibraryAPI, LocalStorageAPI } = Spicetify.Platform);
+    ({ LocalStorage: LocalStorage2, URI: URI2 } = Spicetify);
+    ({ ClipboardAPI, LibraryAPI: LibraryAPI2, LocalStorageAPI } = Spicetify.Platform);
     extractLikedPlaylistTreeRecur = async (leaf) => {
       switch (leaf.type) {
         case "playlist": {
@@ -294,7 +296,7 @@ var init_app = __esm({
         }
       }
     };
-    isContentOfPersonalPlaylist = (subleaf) => typeof subleaf[0] === "string" && Spicetify.URI.isTrack(subleaf[0]);
+    isContentOfPersonalPlaylist = (subleaf) => typeof subleaf[0] === "string" && URI2.isTrack(subleaf[0]);
     restorePlaylistseRecur = async (leaf, folder = "") => await Promise.all(
       Object.keys(leaf).map(async (name) => {
         const subleaf = leaf[name];
@@ -313,17 +315,17 @@ var init_app = __esm({
     allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/;
     backup = async () => {
       const extractItemsUris = (a) => a.items.map((item) => item.uri);
-      const rawLibraryTracks = await LibraryAPI.getTracks({
+      const rawLibraryTracks = await LibraryAPI2.getTracks({
         limit: -1,
         sort: { field: "ADDED_AT", order: "ASC" }
       });
       const libraryTracks = extractItemsUris(rawLibraryTracks);
-      const rawLibraryAlbums = await LibraryAPI.getAlbums({
+      const rawLibraryAlbums = await LibraryAPI2.getAlbums({
         limit: 2 ** 30,
         sort: { field: "ADDED_AT" }
       });
       const libraryAlbums = extractItemsUris(rawLibraryAlbums);
-      const rawLibraryArtists = await LibraryAPI.getArtists({
+      const rawLibraryArtists = await LibraryAPI2.getArtists({
         limit: 2 ** 30,
         sort: {
           field: "ADDED_AT"
@@ -375,7 +377,7 @@ var init_app = __esm({
       if (mode === "extensions") {
         f2.pipe(
           vault.localStore,
-          ar2.map(([a, b]) => LocalStorage.set(a, b))
+          ar2.map(([a, b]) => LocalStorage2.set(a, b))
         );
         f2.pipe(
           vault.localStoreAPI,

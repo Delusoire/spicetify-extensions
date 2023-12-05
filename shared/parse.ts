@@ -1,7 +1,7 @@
 import { Track } from "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk/dist/mjs/types.js"
 
-import { fetchGQLAlbumRes } from "./api.ts"
 import { SpotifyURI } from "./util.ts"
+import { fetchGQLAlbumRes } from "./api.ts"
 
 export type TrackData = {
     albumName?: string

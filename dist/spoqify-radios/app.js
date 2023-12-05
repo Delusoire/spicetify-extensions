@@ -2,7 +2,7 @@
 import { anyPass } from "https://esm.sh/fp-ts-std/Predicate";
 
 // shared/util.ts
-var {} = Spicetify;
+var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
@@ -19,9 +19,9 @@ var SpotifyLoc = {
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // shared/platformApi.ts
-var {} = Spicetify;
-var {} = Spicetify.Platform;
-var createFolder = async (name, location = {}) => await Spicetify.Platform.RootlistAPI.createFolder(name, location);
+var { CosmosAsync } = Spicetify;
+var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
+var createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
 
 // shared/settings.tsx
 import { task } from "https://esm.sh/fp-ts";
@@ -36,6 +36,7 @@ import {
   function as f
 } from "https://esm.sh/fp-ts";
 import { guard, memoize } from "https://esm.sh/fp-ts-std/Function";
+var { Snackbar } = Spicetify;
 var guard3 = (branches) => guard(branches);
 var is = (c) => (a) => (field) => field[c] === a;
 
@@ -67,8 +68,9 @@ var SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelecte
 var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 
 // shared/settings.tsx
-var { React, ReactDOM } = Spicetify;
+var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
+var { History: History2 } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
   constructor(name, id, sectionFields = {}) {
     this.name = name;
@@ -77,7 +79,7 @@ var SettingsSection = class _SettingsSection {
     this.pushSettings = () => {
       if (this.stopHistoryListener)
         this.stopHistoryListener();
-      this.stopHistoryListener = Spicetify.Platform.History.listen(() => this.render());
+      this.stopHistoryListener = History2.listen(() => this.render());
       this.render();
     };
     this.toObject = () => new Proxy(
@@ -88,7 +90,7 @@ var SettingsSection = class _SettingsSection {
     );
     this.render = async () => {
       while (!document.getElementById("desktop.settings.selectLanguage")) {
-        if (Spicetify.Platform.History.location.pathname !== "/preferences")
+        if (History2.location.pathname !== "/preferences")
           return;
         await sleep(100);
       }
@@ -182,10 +184,10 @@ var SettingsSection = class _SettingsSection {
     this.sectionFields[opts.id] = field;
   }
   static {
-    this.getFieldValue = (id) => JSON.parse(Spicetify.LocalStorage.get(id) ?? "null");
+    this.getFieldValue = (id) => JSON.parse(LocalStorage.get(id) ?? "null");
   }
   static {
-    this.setFieldValue = (id, newValue) => Spicetify.LocalStorage.set(id, JSON.stringify(newValue));
+    this.setFieldValue = (id, newValue) => LocalStorage.set(id, JSON.stringify(newValue));
   }
   static {
     this.setDefaultFieldValue = async (id, defaultValue) => {
@@ -209,19 +211,20 @@ settings.pushSettings();
 var CONFIG = settings.toObject();
 
 // extensions/spoqify-radios/app.ts
-var { URI } = Spicetify;
+var { URI: URI2, ContextMenu } = Spicetify;
+var { History: History3, RootlistAPI: RootlistAPI2 } = Spicetify.Platform;
 var createAnonRadio = (uri) => {
   const sse = new EventSource(`https://open.spoqify.com/anonymize?url=${uri.substring(8)}`);
   sse.addEventListener("done", (e) => {
     sse.close();
-    const anonUri = URI.fromString(e.data);
-    Spicetify.Platform.History.push(anonUri.toURLPath(true));
-    Spicetify.Platform.PlaylistAPI.add(anonUri.toURI(), SpotifyLoc.after.fromUri(CONFIG.anonymizedRadiosFolderUri));
+    const anonUri = URI2.fromString(e.data);
+    History3.push(anonUri.toURLPath(true));
+    RootlistAPI2.add([anonUri.toURI()], SpotifyLoc.after.fromUri(CONFIG.anonymizedRadiosFolderUri));
   });
 };
-new Spicetify.ContextMenu.Item(
+new ContextMenu.Item(
   "Create anonymized radio",
   ([uri]) => createAnonRadio(uri),
-  ([uri]) => anyPass([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isTrack])(uri),
+  ([uri]) => anyPass([URI2.isAlbum, URI2.isArtist, URI2.isPlaylistV1OrV2, URI2.isTrack])(uri),
   "podcasts"
 ).register();

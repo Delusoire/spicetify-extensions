@@ -229,6 +229,9 @@ declare namespace Spicetify.Platform {
             context: any,
             options?: { loggingParams?: { interactionId?: any; pageInstanceId?: any } },
         ): Promise<void>
+
+        function clearQueue(): Promise<void>
+        function addToQueue(queue: Array<{ uri: string }>): Promise<void>
     }
 
     namespace RootlistAPI {
@@ -362,6 +365,7 @@ declare namespace Spicetify.Platform {
         const location: Location
 
         function listen(callback: (location: Location, action: Action) => void): () => void
+        function push(location: Partial<Location>): void
     }
 
     namespace EnhanceAPI {

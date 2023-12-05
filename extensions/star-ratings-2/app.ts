@@ -7,7 +7,7 @@ import { loadRatings, tracksRatings } from "./ratings.ts"
 import { CONFIG } from "./settings.ts"
 
 import "./assets/styles.scss"
-const { URI } = Spicetify
+const { URI, Player } = Spicetify
 
 loadRatings()
 
@@ -17,7 +17,7 @@ onSongChanged(data => {
 
     if (Number(CONFIG.skipThreshold)) {
         const currentTrackRating = tracksRatings[uri] ?? Number.MAX_SAFE_INTEGER
-        if (currentTrackRating <= Number(CONFIG.skipThreshold)) return void Spicetify.Player.next()
+        if (currentTrackRating <= Number(CONFIG.skipThreshold)) return void Player.next()
     }
 
     updateNowPlayingControls(uri)
