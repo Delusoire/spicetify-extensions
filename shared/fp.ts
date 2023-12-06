@@ -20,7 +20,7 @@ export const progressify = <F extends (...args: any) => any>(f: F, n: number) =>
     let i = n,
         lastProgress = 0
     return async function (..._: Parameters<F>): Promise<Awaited<ReturnType<F>>> {
-        const res = (await f(arguments)) as Awaited<ReturnType<F>>,
+        const res = (await f(...arguments)) as Awaited<ReturnType<F>>,
             progress = Math.round((1 - --i / n) * 100)
         if (progress > lastProgress) {
             ;(Snackbar as any).updater.enqueueSetState(Snackbar, () => ({

@@ -106,7 +106,7 @@ var pMchain = (f) => async (fa) => f(await fa);
 var progressify = (f, n) => {
   let i = n, lastProgress = 0;
   return async function(..._2) {
-    const res = await f(arguments), progress = Math.round((1 - --i / n) * 100);
+    const res = await f(...arguments), progress = Math.round((1 - --i / n) * 100);
     if (progress > lastProgress) {
       ;
       Snackbar.updater.enqueueSetState(Snackbar, () => ({
