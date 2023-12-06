@@ -59,8 +59,9 @@ const _setQueue = (reverse: boolean) => async (tracks: TrackData[]) => {
         .map(createQueueItem(isLikedTracks))
         .value()
 
-    setQueue(queue, isLikedTracks ? undefined : lastFetchedUri)
     if (!isLikedTracks) await setPlayingContext(lastFetchedUri)
+    setQueue(queue)
+
     return await PlayerAPI.skipToNext()
 }
 

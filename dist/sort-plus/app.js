@@ -613,9 +613,9 @@ var _setQueue = (reverse) => async (tracks) => {
   global.lastSortedQueue = lastSortedQueue2 = dedupedQueue;
   const isLikedTracks = URI_isLikedTracks(lastFetchedUri);
   const queue = _(lastSortedQueue2).map((track) => track.uri).concat([SEPARATOR_URI]).map(createQueueItem(isLikedTracks)).value();
-  setQueue(queue, isLikedTracks ? void 0 : lastFetchedUri);
   if (!isLikedTracks)
     await setPlayingContext(lastFetchedUri);
+  setQueue(queue);
   return await PlayerAPI2.skipToNext();
 };
 var sortTracksBy = (sortAction, sortFn) => async (uri) => {
