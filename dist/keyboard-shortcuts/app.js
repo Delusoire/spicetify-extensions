@@ -229,7 +229,7 @@ var binds = [
   })
 ];
 binds.map((bind) => bind.register());
-mousetrapInst.bind(KEY_LIST, (e) => sneakOverlay.updateProps(e.key), "keypress");
+mousetrapInst.bind(KEY_LIST, (e) => sneakOverlay?.updateProps(e.key), "keypress");
 mousetrapInst.bind(Keyboard2.KEYS.ESCAPE, () => sneakOverlay?.remove());
 (async () => {
     if (!document.getElementById("keyboard-shortcuts-css")) {

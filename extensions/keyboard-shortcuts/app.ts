@@ -33,5 +33,5 @@ const binds = [
 
 binds.map(bind => bind.register())
 
-mousetrapInst.bind(KEY_LIST, (e: KeyboardEvent) => sneakOverlay.updateProps(e.key), "keypress")
+mousetrapInst.bind(KEY_LIST, (e: KeyboardEvent) => sneakOverlay?.updateProps(e.key), "keypress")
 mousetrapInst.bind(Keyboard.KEYS.ESCAPE, () => sneakOverlay?.remove())
