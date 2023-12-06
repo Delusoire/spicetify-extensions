@@ -61,12 +61,15 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
     }
   }
 });
-var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await GraphQL.Request(GraphQL.Definitions.getAlbum, {
-  uri,
-  locale: Locale.getLocale(),
-  offset,
-  limit
-})).data.albumUnion;
+var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => {
+  const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
+    uri,
+    locale: Locale.getLocale(),
+    offset,
+    limit
+  });
+  return res.data.albumUnion;
+};
 
 // shared/platformApi.ts
 var { CosmosAsync: CosmosAsync2 } = Spicetify;

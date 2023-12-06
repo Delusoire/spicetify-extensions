@@ -63,22 +63,31 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
     }
   }
 });
-var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await GraphQL.Request(GraphQL.Definitions.getAlbum, {
-  uri,
-  locale: Locale.getLocale(),
-  offset,
-  limit
-})).data.albumUnion;
-var fetchGQLArtistOverview = async (uri) => (await GraphQL.Request(GraphQL.Definitions.queryArtistOverview, {
-  uri,
-  locale: Locale.getLocale(),
-  includePrerelease: true
-})).data.artistUnion;
-var fetchGQLArtistDiscography = async (uri, offset = 0, limit = 116) => (await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
-  uri,
-  offset,
-  limit
-})).data.artistUnion;
+var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => {
+  const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
+    uri,
+    locale: Locale.getLocale(),
+    offset,
+    limit
+  });
+  return res.data.albumUnion;
+};
+var fetchGQLArtistOverview = async (uri) => {
+  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistOverview, {
+    uri,
+    locale: Locale.getLocale(),
+    includePrerelease: true
+  });
+  return res.data.artistUnion;
+};
+var fetchGQLArtistDiscography = async (uri, offset = 0, limit = 116) => {
+  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
+    uri,
+    offset,
+    limit
+  });
+  return res.data.artistUnion;
+};
 var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
   const url = new URL("https://ws.audioscrobbler.com/2.0/");
   url.searchParams.append("method", "track.getInfo");

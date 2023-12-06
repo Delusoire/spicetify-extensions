@@ -145,44 +145,15 @@ export type fetchGQLAlbumRes = {
         }
     }>
 }
-export const fetchGQLAlbum = async (uri: SpotifyURI, offset = 0, limit = 487) =>
-    (
-        await GraphQL.Request(GraphQL.Definitions.getAlbum, {
-            uri,
-            locale: Locale.getLocale(),
-            offset,
-            limit,
-        })
-    ).data.albumUnion as fetchGQLAlbumRes
+export const fetchGQLAlbum = async (uri: SpotifyURI, offset = 0, limit = 487) => {
+    const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
+        uri,
+        locale: Locale.getLocale(),
+        offset,
+        limit,
+    })
 
-export type TopTracksItem = {
-    uid: string
-    track: {
-        id: string
-        uri: string
-        name: string
-        playcount: string
-        discNumber: number
-        duration: {
-            totalMilliseconds: number
-        }
-        playability: Playability
-        contentRating: {
-            label: "NONE" | "EXPLICIT"
-        }
-        artists: Items<{
-            uri: string
-            profile: {
-                name: string
-            }
-        }>
-        albumOfTrack: {
-            uri: string
-            coverArt: {
-                sources: Array<{ url: string }>
-            }
-        }
-    }
+    return res.data.albumUnion as fetchGQLAlbumRes
 }
 
 export type fetchGQLArtistOverviewRes = {
@@ -358,14 +329,15 @@ export type fetchGQLArtistOverviewRes = {
         }>
     }
 }
-export const fetchGQLArtistOverview = async (uri: SpotifyURI) =>
-    (
-        await GraphQL.Request(GraphQL.Definitions.queryArtistOverview, {
-            uri,
-            locale: Locale.getLocale(),
-            includePrerelease: true,
-        })
-    ).data.artistUnion as fetchGQLArtistOverviewRes
+export const fetchGQLArtistOverview = async (uri: SpotifyURI) => {
+    const res = await GraphQL.Request(GraphQL.Definitions.queryArtistOverview, {
+        uri,
+        locale: Locale.getLocale(),
+        includePrerelease: true,
+    })
+
+    return res.data.artistUnion as fetchGQLArtistOverviewRes
+}
 
 export type fetchGQLArtistDiscographyRes = {
     __typename: "artist"
@@ -373,15 +345,15 @@ export type fetchGQLArtistDiscographyRes = {
         all: ItemsReleases<Item2>
     }
 }
-export const fetchGQLArtistDiscography = async (uri: SpotifyURI, offset = 0, limit = 116) =>
-    (
-        await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
-            uri,
-            offset,
-            limit,
-        })
-    ).data.artistUnion as fetchGQLArtistDiscographyRes
+export const fetchGQLArtistDiscography = async (uri: SpotifyURI, offset = 0, limit = 116) => {
+    const res = await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
+        uri,
+        offset,
+        limit,
+    })
 
+    return res.data.artistUnion as fetchGQLArtistDiscographyRes
+}
 type fetchGQLArtistRelatedRes = Array<{
     id: string
     uri: SpotifyURI
@@ -394,13 +366,14 @@ type fetchGQLArtistRelatedRes = Array<{
         }
     }
 }>
-export const fetchGQLArtistRelated = async (uri: SpotifyURI) =>
-    (
-        await GraphQL.Request(GraphQL.Definitions.queryArtistRelated, {
-            uri,
-            locale: Locale.getLocale(),
-        })
-    ).data.artistUnion.relatedContent.relatedArtists.items as fetchGQLArtistRelatedRes
+export const fetchGQLArtistRelated = async (uri: SpotifyURI) => {
+    const res = await GraphQL.Request(GraphQL.Definitions.queryArtistRelated, {
+        uri,
+        locale: Locale.getLocale(),
+    })
+
+    return res.data.artistUnion.relatedContent.relatedArtists.items as fetchGQLArtistRelatedRes
+}
 
 /*                          Spotify Web API                                   */
 
@@ -603,5 +576,35 @@ type Item2 = ItemBase & {
     date: {
         year: number
         isoString: string
+    }
+}
+
+export type TopTracksItem = {
+    uid: string
+    track: {
+        id: string
+        uri: string
+        name: string
+        playcount: string
+        discNumber: number
+        duration: {
+            totalMilliseconds: number
+        }
+        playability: Playability
+        contentRating: {
+            label: "NONE" | "EXPLICIT"
+        }
+        artists: Items<{
+            uri: string
+            profile: {
+                name: string
+            }
+        }>
+        albumOfTrack: {
+            uri: string
+            coverArt: {
+                sources: Array<{ url: string }>
+            }
+        }
     }
 }

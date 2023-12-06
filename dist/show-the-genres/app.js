@@ -86,10 +86,13 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
     }
   }
 });
-var fetchGQLArtistRelated = async (uri) => (await GraphQL.Request(GraphQL.Definitions.queryArtistRelated, {
-  uri,
-  locale: Locale.getLocale()
-})).data.artistUnion.relatedContent.relatedArtists.items;
+var fetchGQLArtistRelated = async (uri) => {
+  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistRelated, {
+    uri,
+    locale: Locale.getLocale()
+  });
+  return res.data.artistUnion.relatedContent.relatedArtists.items;
+};
 var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
   const url = new URL("https://ws.audioscrobbler.com/2.0/");
   url.searchParams.append("method", "track.getInfo");
