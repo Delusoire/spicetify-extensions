@@ -365,7 +365,10 @@ declare namespace Spicetify.Platform {
         const location: Location
 
         function listen(callback: (location: Location, action: Action) => void): () => void
-        function push(location: Partial<Location>): void
+        function push(location: Partial<Location> | string): void
+
+        function goBack(): void
+        function goForward(): void
     }
 
     namespace EnhanceAPI {
@@ -445,5 +448,15 @@ declare namespace Spicetify.Platform {
             uri: string,
             permissionLevel: "BLOCKED" | "UNKNOWN" | "VIEWER" | "CONTRIBUTOR",
         ): Promise<void>
+    }
+
+    namespace UserAPI {
+        const _product_state_service: {
+            putValues(pairsObj: { pairs: Record<string, string> }, signalsObj?: { signals: any }): Promise<{}>
+        }
+    }
+
+    namespace UpdateAPI {
+        function applyUpdate(): Promise<never>
     }
 }

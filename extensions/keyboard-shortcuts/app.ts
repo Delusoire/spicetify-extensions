@@ -1,4 +1,5 @@
 import { toggleTracksLiked } from "../../shared/platformApi.ts"
+
 import { KEY_LIST, _SneakOverlay, mousetrapInst } from "./sneak.ts"
 import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util.ts"
 

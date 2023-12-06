@@ -395,7 +395,7 @@ var getArtistsGenresOrRelated = async (artistsUris) => {
     const genres = new Set(artists.flatMap((artist) => artist.genres));
     return Array.from(genres);
   };
-  let allGenres = await getArtistsGenres(artistsUris);
+  const allGenres = await getArtistsGenres(artistsUris);
   if (allGenres.length)
     return allGenres;
   const relatedArtists = await fetchGQLArtistRelated(artistsUris[0]);

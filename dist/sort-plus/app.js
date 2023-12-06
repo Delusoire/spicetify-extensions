@@ -1,6 +1,3 @@
-// extensions/sort-plus/app.ts
-import { function as f2 } from "https://esm.sh/fp-ts";
-
 // shared/deps.ts
 import { default as ld } from "https://esm.sh/lodash";
 import { default as ld_fp } from "https://esm.sh/lodash/fp";
@@ -97,11 +94,11 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
 // shared/fp.ts
 import { array as ar, function as f, record as rec, semigroup as sg } from "https://esm.sh/fp-ts";
 var { Snackbar } = Spicetify;
-var pMchain = (f3) => async (fa) => f3(await fa);
-var progressify = (f3, n) => {
+var pMchain = (f2) => async (fa) => f2(await fa);
+var progressify = (f2, n) => {
   let i = n, lastProgress = 0;
   return async function(..._2) {
-    const res = await f3(arguments), progress = Math.round((1 - --i / n) * 100);
+    const res = await f2(arguments), progress = Math.round((1 - --i / n) * 100);
     if (progress > lastProgress) {
       Snackbar.updater.enqueueSetState(Snackbar, () => ({
         snacks: [],
@@ -241,11 +238,11 @@ var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f3) => _.overEvery(
+  (f2) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f3.toString())
+  )(f2.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -465,6 +462,15 @@ var SortAction = /* @__PURE__ */ ((SortAction2) => {
   SortAction2["LASTFM_PLAYCOUNT"] = "LastFM - Play Count";
   return SortAction2;
 })(SortAction || {});
+var SortActionIcon = /* @__PURE__ */ ((SortActionIcon2) => {
+  SortActionIcon2["Spotify - Play Count"] = "play";
+  SortActionIcon2["Spotify - Popularity"] = "heart";
+  SortActionIcon2["Spotify - Release Date"] = "list-view";
+  SortActionIcon2["LastFM - Scrobbles"] = "volume";
+  SortActionIcon2["LastFM - My Scrobbles"] = "artist";
+  SortActionIcon2["LastFM - Play Count"] = "subtitles";
+  return SortActionIcon2;
+})(SortActionIcon || {});
 var SortActionProp = /* @__PURE__ */ ((SortActionProp2) => {
   SortActionProp2["Spotify - Play Count"] = "playcount";
   SortActionProp2["Spotify - Popularity"] = "popularity";
@@ -624,50 +630,48 @@ var sortTracksBy = (sortAction, sortFn) => async (uri) => {
   const sortedTracks = await sortFn(tracks);
   return await _setQueue(!!descending)(sortedTracks);
 };
-var shuffle = (array, l = array.length) => l == 0 ? [] : [array.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array)];
-var sortTracksByShuffle = sortTracksBy("True Shuffle", shuffle);
-var shuffleSubmenu = new ContextMenu.Item(
-  "True Shuffle",
-  ([uri]) => sortTracksByShuffle(uri),
-  f2.constTrue,
-  "shuffle",
+var createSubMenuForSortProp = (sortAction) => new ContextMenu.Item(
+  sortAction,
+  ([uri]) => {
+    const sortActionProp = SortActionProp[sortAction];
+    const sortFn = async (tracks) => {
+      const filledTracks = await populateTracks(sortAction)(tracks);
+      const filteredTracks = filledTracks.filter((track) => track[sortActionProp] != null);
+      return _.sortBy(filteredTracks, sortActionProp);
+    };
+    sortTracksBy(sortAction, sortFn)(uri);
+  },
+  _.stubTrue,
+  SortActionIcon[sortAction],
   false
 );
+var sortTracksByShuffle = sortTracksBy("True Shuffle", _.shuffle);
 var sortTracksByStars = sortTracksBy(
   "Stars",
   fp.sortBy((track) => tracksRatings[track.uri] ?? 0)
 );
-var starsSubmenu = new ContextMenu.Item(
+var SubMenuItems = Object.values(SortAction).map(createSubMenuForSortProp);
+var SubMenuItemShuffle = new ContextMenu.Item(
+  "True Shuffle",
+  ([uri]) => sortTracksByShuffle(uri),
+  _.stubTrue,
+  "shuffle",
+  false
+);
+var SubMenuItemStars = new ContextMenu.Item(
   "Stars",
   ([uri]) => sortTracksByStars(uri),
   () => tracksRatings !== void 0,
   "heart-active",
   false
 );
-var createSubMenuForSortProp = (name, icon) => new ContextMenu.Item(
-  name,
-  ([uri]) => {
-    const sortActionProp = SortActionProp[name];
-    const sortFn = async (tracks) => {
-      const filledTracks = await populateTracks(name)(tracks);
-      const filteredTracks = filledTracks.filter((track) => track[sortActionProp] != null);
-      return _.sortBy(filteredTracks, sortActionProp);
-    };
-    sortTracksBy(name, sortFn)(uri);
-  },
-  _.stubTrue,
-  icon,
-  false
-);
-new ContextMenu.SubMenu(
+SubMenuItems.push(SubMenuItemShuffle, SubMenuItemStars);
+var SortBySubMenu = new ContextMenu.SubMenu(
   "Sort by",
-  _.zipWith(
-    Object.values(SortAction),
-    ["play", "heart", "list-view", "volume", "artist", "subtitles"],
-    createSubMenuForSortProp
-  ).concat([shuffleSubmenu, starsSubmenu]),
+  SubMenuItems,
   ([uri]) => _.overSome([URI5.isAlbum, URI5.isArtist, URI_isLikedTracks, URI5.isTrack, URI5.isPlaylistV1OrV2])(uri)
-).register();
+);
+SortBySubMenu.register();
 new Topbar.Button("Create a Playlist from Sorted Queue", "plus2px", createPlaylistFromLastSortedQueue);
 new Topbar.Button("Reorder current Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue);
 export {

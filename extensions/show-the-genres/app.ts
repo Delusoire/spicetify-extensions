@@ -42,7 +42,7 @@ const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[]) => {
         return Array.from(genres)
     }
 
-    let allGenres = await getArtistsGenres(artistsUris)
+    const allGenres = await getArtistsGenres(artistsUris)
 
     if (allGenres.length) return allGenres
 

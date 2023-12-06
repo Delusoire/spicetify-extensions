@@ -1,7 +1,5 @@
 debugger
-import { function as f } from "https://esm.sh/fp-ts"
 
-import { spotifyApi } from "../../shared/api.ts"
 import { _, fp } from "../../shared/deps.ts"
 import { TrackData } from "../../shared/parse.ts"
 import { SpotifyURI, createQueueItem, setPlayingContext, setQueue } from "../../shared/util.ts"
@@ -10,7 +8,7 @@ import { getLikedTracks, getTracksFromAlbum, getTracksFromArtist, getTracksFromP
 import { createPlaylistFromLastSortedQueue, reordedPlaylistLikeSortedQueue } from "./playlistsInterop.ts"
 import { fillTracksFromLastFM, fillTracksFromSpotify } from "./populate.ts"
 import { CONFIG } from "./settings.ts"
-import { AsyncTracksOperation, SEPARATOR_URI, SortAction, SortActionProp, URI_isLikedTracks } from "./util.ts"
+import { AsyncTracksOperation, SortAction, SortActionIcon, SortActionProp, URI_isLikedTracks } from "./util.ts"
 
 const { URI, ContextMenu, Topbar } = Spicetify
 const { PlayerAPI } = Spicetify.Platform
@@ -75,58 +73,51 @@ const sortTracksBy = (sortAction: typeof lastSortAction, sortFn: AsyncTracksOper
     return await _setQueue(!!descending)(sortedTracks)
 }
 
-const shuffle = <A>(array: A[], l = array.length): A[] =>
-    l == 0 ? [] : [array.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array)]
-const sortTracksByShuffle = sortTracksBy("True Shuffle", shuffle)
-const shuffleSubmenu = new ContextMenu.Item(
-    "True Shuffle",
-    ([uri]) => sortTracksByShuffle(uri),
-    f.constTrue,
-    "shuffle",
-    false,
-)
-
+const createSubMenuForSortProp = (sortAction: SortAction) =>
+    new ContextMenu.Item(
+        sortAction,
+        ([uri]) => {
+            const sortActionProp = SortActionProp[sortAction]
+            const sortFn = async (tracks: TrackData[]) => {
+                const filledTracks = await populateTracks(sortAction)(tracks)
+                const filteredTracks = filledTracks.filter(track => track[sortActionProp] != null)
+                return _.sortBy(filteredTracks, sortActionProp)
+            }
+            sortTracksBy(sortAction, sortFn)(uri)
+        },
+        _.stubTrue,
+        SortActionIcon[sortAction],
+        false,
+    )
+const sortTracksByShuffle = sortTracksBy("True Shuffle", _.shuffle)
 const sortTracksByStars = sortTracksBy(
     "Stars",
     fp.sortBy((track: TrackData) => tracksRatings[track.uri] ?? 0),
 )
-const starsSubmenu = new ContextMenu.Item(
+
+const SubMenuItems = Object.values(SortAction).map(createSubMenuForSortProp)
+const SubMenuItemShuffle = new ContextMenu.Item(
+    "True Shuffle",
+    ([uri]) => sortTracksByShuffle(uri),
+    _.stubTrue,
+    "shuffle",
+    false,
+)
+const SubMenuItemStars = new ContextMenu.Item(
     "Stars",
     ([uri]) => sortTracksByStars(uri),
     () => tracksRatings !== undefined,
     "heart-active",
     false,
 )
+SubMenuItems.push(SubMenuItemShuffle, SubMenuItemStars)
 
-const createSubMenuForSortProp = (name: SortAction, icon: string) =>
-    new ContextMenu.Item(
-        name,
-        ([uri]) => {
-            const sortActionProp = SortActionProp[name]
-            const sortFn = async (tracks: TrackData[]) => {
-                const filledTracks = await populateTracks(name)(tracks)
-                const filteredTracks = filledTracks.filter(track => track[sortActionProp] != null)
-                return _.sortBy(filteredTracks, sortActionProp)
-            }
-            sortTracksBy(name, sortFn)(uri)
-        },
-        _.stubTrue,
-        icon,
-        false,
-    )
-
-new ContextMenu.SubMenu(
-    "Sort by",
-    _.zipWith(
-        Object.values(SortAction),
-        ["play", "heart", "list-view", "volume", "artist", "subtitles"],
-        createSubMenuForSortProp,
-    ).concat([shuffleSubmenu, starsSubmenu]),
-    ([uri]) => _.overSome([URI.isAlbum, URI.isArtist, URI_isLikedTracks, URI.isTrack, URI.isPlaylistV1OrV2])(uri),
-).register()
+const SortBySubMenu = new ContextMenu.SubMenu("Sort by", SubMenuItems, ([uri]) =>
+    _.overSome([URI.isAlbum, URI.isArtist, URI_isLikedTracks, URI.isTrack, URI.isPlaylistV1OrV2])(uri),
+)
+SortBySubMenu.register()
 
 // Topbar
 
 new Topbar.Button("Create a Playlist from Sorted Queue", "plus2px", createPlaylistFromLastSortedQueue)
-
 new Topbar.Button("Reorder current Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue)

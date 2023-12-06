@@ -21,6 +21,15 @@ export enum SortAction {
     LASTFM_PLAYCOUNT = "LastFM - Play Count",
 }
 
+export enum SortActionIcon {
+    "Spotify - Play Count" = "play",
+    "Spotify - Popularity" = "heart",
+    "Spotify - Release Date" = "list-view",
+    "LastFM - Scrobbles" = "volume",
+    "LastFM - My Scrobbles" = "artist",
+    "LastFM - Play Count" = "subtitles",
+}
+
 export enum SortActionProp {
     "Spotify - Play Count" = "playcount",
     "Spotify - Popularity" = "popularity",
