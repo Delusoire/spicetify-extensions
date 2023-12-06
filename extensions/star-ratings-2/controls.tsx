@@ -16,6 +16,7 @@ import {
     getTrackListTracks,
     getTrackLists,
 } from "./util.ts"
+import { getTracksFromUri } from "../sort-plus/util.ts"
 
 const { URI, Tippy } = Spicetify
 const { React, ReactDOM } = Spicetify
@@ -105,47 +106,27 @@ export const updateNowPlayingControls = (newTrack: SpotifyURI, updateDropdown = 
 
 export const updateTrackListControls = (updateDropdown = true) => {
     const trackLists = getTrackLists()
-    f.pipe(
-        trackLists,
-        ar.map(trackList => {
-            const trackListTracks = getTrackListTracks(trackList)
 
-            trackListTracks.map(track => {
-                const uri = URI.fromString(getTrackListTrackUri(track)).toURI()
+    trackLists.map(trackList => {
+        const trackListTracks = getTrackListTracks(trackList)
 
-                if (!URI.isTrack(uri!)) return
+        trackListTracks.map(track => {
+            const uri = URI.fromString(getTrackListTrackUri(track)).toURI()
 
-                const r = tracksRatings[uri]
-                const pb = getPlaylistButton(track)
+            if (!URI.isTrack(uri!)) return
 
-                colorizePlaylistButton(pb, r)
-                if (updateDropdown) wrapDropdownInsidePlaylistButton(pb, uri)
-            })
-        }),
-    )
+            const r = tracksRatings[uri]
+            const pb = getPlaylistButton(track)
+
+            colorizePlaylistButton(pb, r)
+            if (updateDropdown) wrapDropdownInsidePlaylistButton(pb, uri)
+        })
+    })
 }
 
-export const updateCollectionControls = async (uri: Spicetify.URI) => {
-    let uris
-    if (URI.isAlbum(uri))
-        uris = f.pipe(
-            await fetchGQLAlbum(`${uri}`),
-            x => x.tracks.items,
-            ar.map(x => x.track.uri),
-        )
-    else if (URI.isArtist(uri))
-        uris = f.pipe(
-            await fetchArtistLikedTracks(`${uri}`),
-            ar.map(x => x.uri),
-        )
-    else if (URI.isPlaylistV1OrV2(uri))
-        uris = f.pipe(
-            await fetchPlaylistContents(`${uri}`),
-            ar.map(x => x.uri),
-        )
-    else throw "me out the window"
-
-    const ratings = uris.map(uri => tracksRatings[uri]).filter(Boolean)
+export const updateCollectionControls = async (uri: string) => {
+    const tracks = await getTracksFromUri(uri)
+    const ratings = tracks.map(track => tracksRatings[track.uri]).filter(Boolean)
     const rating = Math.round(ratings.reduce((psum, r) => psum + r, 0) / ratings.length)
 
     const pb = getCollectionPlaylistButton()

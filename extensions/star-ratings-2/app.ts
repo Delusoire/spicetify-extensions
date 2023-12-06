@@ -40,6 +40,4 @@ new MutationObserver(() => {
     subtree: true,
 })
 
-onHistoryChanged(_.overSome([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2]), uri =>
-    updateCollectionControls(URI.fromString(uri)),
-)
+onHistoryChanged(_.overSome([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2]), uri => updateCollectionControls(uri))

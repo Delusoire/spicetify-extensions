@@ -4,11 +4,17 @@ import { _, fp } from "../../shared/deps.ts"
 import { TrackData } from "../../shared/parse.ts"
 import { SpotifyURI, createQueueItem, setPlayingContext, setQueue } from "../../shared/util.ts"
 
-import { getLikedTracks, getTracksFromAlbum, getTracksFromArtist, getTracksFromPlaylist } from "./fetch.ts"
 import { createPlaylistFromLastSortedQueue, reordedPlaylistLikeSortedQueue } from "./playlistsInterop.ts"
 import { fillTracksFromLastFM, fillTracksFromSpotify } from "./populate.ts"
 import { CONFIG } from "./settings.ts"
-import { AsyncTracksOperation, SortAction, SortActionIcon, SortActionProp, URI_isLikedTracks } from "./util.ts"
+import {
+    AsyncTracksOperation,
+    SortAction,
+    SortActionIcon,
+    SortActionProp,
+    URI_isLikedTracks,
+    getTracksFromUri,
+} from "./util.ts"
 
 const { URI, ContextMenu, Topbar } = Spicetify
 const { PlayerAPI } = Spicetify.Platform
@@ -25,16 +31,6 @@ addEventListener("keydown", event => {
 addEventListener("keyup", event => {
     if (!event.repeat && event.key === "Control") invertOrder = 0
 })
-
-const getTracksFromUri = _.flow(
-    fp.tap((uri: string) => (lastFetchedUri = uri)),
-    _.cond([
-        [URI.isAlbum, getTracksFromAlbum],
-        [URI.isArtist, getTracksFromArtist],
-        [URI_isLikedTracks, getLikedTracks],
-        [URI.isPlaylistV1OrV2, getTracksFromPlaylist],
-    ]),
-)
 
 const populateTracks: (sortProp: SortAction) => AsyncTracksOperation = _.cond([
     [fp.startsWith("Spotify"), fillTracksFromSpotify],
@@ -67,7 +63,7 @@ const _setQueue = (reverse: boolean) => async (tracks: TrackData[]) => {
 const sortTracksBy = (sortAction: typeof lastSortAction, sortFn: AsyncTracksOperation) => async (uri: SpotifyURI) => {
     lastSortAction = sortAction
     const descending = invertOrder ^ Number(CONFIG.descending)
-
+    lastFetchedUri = uri
     const tracks = await getTracksFromUri(uri)
     const sortedTracks = await sortFn(tracks)
     return await _setQueue(!!descending)(sortedTracks)

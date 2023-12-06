@@ -60,7 +60,7 @@ var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
     if (matchFn(pathname)) {
       if (dropDuplicates && lastPathname === pathname) {
       } else
-        callback(URI.fromString(pathname).toString());
+        callback(URI.fromString(pathname).toURI());
     }
     lastPathname = pathname;
   };

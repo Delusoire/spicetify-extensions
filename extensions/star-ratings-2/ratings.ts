@@ -100,7 +100,7 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
     //TODO: Optimize this, find a way to directly target the pbs for that uri
     updateTrackListControls()
     const { pathname } = History.location
-    updateCollectionControls(URI.fromString(pathname))
+    updateCollectionControls(URI.fromString(pathname).toString())
 }
 
 export let playlistUris: SpotifyURI[] = []

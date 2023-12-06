@@ -48,170 +48,8 @@ var setPlayingContext = (uri) => {
   return PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri });
 };
 
-// shared/api.ts
-import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
-var { Locale, GraphQL, CosmosAsync } = Spicetify;
-var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
-  // @ts-ignore
-  fetch(url, opts) {
-    const { method } = opts;
-    return CosmosAsync.resolve(method, url);
-  },
-  deserializer: {
-    deserialize(res) {
-      return res.body;
-    }
-  }
-});
-var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => {
-  const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
-    uri,
-    locale: Locale.getLocale(),
-    offset,
-    limit
-  });
-  return res.data.albumUnion;
-};
-var fetchGQLArtistOverview = async (uri) => {
-  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistOverview, {
-    uri,
-    locale: Locale.getLocale(),
-    includePrerelease: true
-  });
-  return res.data.artistUnion;
-};
-var fetchGQLArtistDiscography = async (uri, offset = 0, limit = 116) => {
-  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
-    uri,
-    offset,
-    limit
-  });
-  return res.data.artistUnion;
-};
-var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
-  const url = new URL("https://ws.audioscrobbler.com/2.0/");
-  url.searchParams.append("method", "track.getInfo");
-  url.searchParams.append("api_key", LFMApiKey);
-  url.searchParams.append("artist", artist);
-  url.searchParams.append("track", trackName);
-  url.searchParams.append("format", "json");
-  url.searchParams.append("username", lastFmUsername);
-  const res = await fetch(url).then((res2) => res2.json());
-  return res.track;
-};
-
-// shared/fp.ts
-var { Snackbar } = Spicetify;
-var pMchain = (f) => async (fa) => f(await fa);
-var progressify = (f, n) => {
-  let i = n, lastProgress = 0;
-  return async function(..._2) {
-    const res = await f(...arguments), progress = Math.round((1 - --i / n) * 100);
-    if (progress > lastProgress) {
-      ;
-      Snackbar.updater.enqueueSetState(Snackbar, () => ({
-        snacks: [],
-        queue: []
-      }));
-      Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
-        variant: "default",
-        autoHideDuration: 200,
-        transitionDuration: {
-          enter: 0,
-          exit: 0
-        }
-      });
-    }
-    lastProgress = progress;
-    return res;
-  };
-};
-
-// shared/parse.ts
-var parseTopTrackFromArtist = ({ track }) => ({
-  uri: track.uri,
-  uid: void 0,
-  name: track.name,
-  albumUri: track.albumOfTrack.uri,
-  albumName: void 0,
-  artistUri: track.artists.items[0].uri,
-  artistName: track.artists.items[0].profile.name,
-  durationMilis: track.duration.totalMilliseconds,
-  playcount: Number(track.playcount),
-  popularity: void 0,
-  releaseDate: void 0
-});
-var parseArtistLikedTrack = (track) => ({
-  uri: track.uri,
-  uid: void 0,
-  name: track.name,
-  albumUri: track.album.uri,
-  albumName: track.album.name,
-  artistUri: track.artists[0].uri,
-  artistName: track.artists[0].name,
-  durationMilis: track.duration.milliseconds,
-  playcount: void 0,
-  popularity: void 0,
-  releaseDate: void 0
-});
-var parseAlbumTrack = ({ track }) => ({
-  uri: track.uri,
-  uid: void 0,
-  name: track.name,
-  albumUri: "",
-  // gets filled in later
-  albumName: "",
-  // gets filled in later
-  artistUri: track.artists.items[0].uri,
-  artistName: track.artists.items[0].profile.name,
-  durationMilis: track.duration.totalMilliseconds,
-  playcount: Number(track.playcount),
-  popularity: void 0,
-  releaseDate: -1
-  // gets filled in later
-});
-var parsePlaylistAPITrack = (track) => ({
-  uri: track.uri,
-  uid: track.uid,
-  name: track.name,
-  albumUri: track.album.uri,
-  albumName: track.album.name,
-  artistUri: track.artists[0].uri,
-  artistName: track.artists[0].name,
-  durationMilis: track.duration.milliseconds,
-  playcount: void 0,
-  popularity: void 0,
-  releaseDate: void 0
-});
-var parseWebAPITrack = (track) => ({
-  uri: track.uri,
-  uid: void 0,
-  name: track.name,
-  albumUri: track.album.uri,
-  albumName: track.album.name,
-  artistUri: track.artists[0].uri,
-  artistName: track.artists[0].name,
-  durationMilis: track.duration_ms,
-  playcount: void 0,
-  popularity: track.popularity,
-  releaseDate: new Date(track.album.release_date).getTime()
-});
-var parseLibraryAPILikedTracks = (track) => ({
-  uri: track.uri,
-  uid: void 0,
-  name: track.name,
-  albumUri: track.album.uri,
-  albumName: track.album.name,
-  artistUri: track.artists[0].uri,
-  artistName: track.artists[0].name,
-  durationMilis: track.duration.milliseconds,
-  playcount: void 0,
-  popularity: void 0,
-  releaseDate: void 0
-});
-
 // shared/platformApi.ts
-var { CosmosAsync: CosmosAsync2 } = Spicetify;
+var { CosmosAsync } = Spicetify;
 var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
 var fetchLikedTracks = async () => (await LibraryAPI.getTracks({
   limit: Number.MAX_SAFE_INTEGER
@@ -219,7 +57,7 @@ var fetchLikedTracks = async () => (await LibraryAPI.getTracks({
 var fetchArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await LibraryAPI.getTracks({ uri, offset, limit })).items;
 var fetchPlaylistContents = async (uri) => (await PlaylistAPI.getContents(uri)).items;
 var createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
-var createPlaylistFromTracks = (name, tracks, folder) => CosmosAsync2.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
+var createPlaylistFromTracks = (name, tracks, folder) => CosmosAsync.post("sp://core-playlist/v1/rootlist?responseFormat=protobufJson", {
   operation: "create",
   ...folder ? { after: folder } : {},
   name,
@@ -418,6 +256,172 @@ var settings = new SettingsSection("Sort+", "sort-plus").addToggle({ id: "descen
 settings.pushSettings();
 var CONFIG = settings.toObject();
 
+// shared/api.ts
+import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
+var { Locale, GraphQL, CosmosAsync: CosmosAsync2 } = Spicetify;
+var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
+  // @ts-ignore
+  fetch(url, opts) {
+    const { method } = opts;
+    return CosmosAsync2.resolve(method, url);
+  },
+  deserializer: {
+    deserialize(res) {
+      return res.body;
+    }
+  }
+});
+var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => {
+  const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
+    uri,
+    locale: Locale.getLocale(),
+    offset,
+    limit
+  });
+  return res.data.albumUnion;
+};
+var fetchGQLArtistOverview = async (uri) => {
+  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistOverview, {
+    uri,
+    locale: Locale.getLocale(),
+    includePrerelease: true
+  });
+  return res.data.artistUnion;
+};
+var fetchGQLArtistDiscography = async (uri, offset = 0, limit = 116) => {
+  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
+    uri,
+    offset,
+    limit
+  });
+  return res.data.artistUnion;
+};
+var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
+  const url = new URL("https://ws.audioscrobbler.com/2.0/");
+  url.searchParams.append("method", "track.getInfo");
+  url.searchParams.append("api_key", LFMApiKey);
+  url.searchParams.append("artist", artist);
+  url.searchParams.append("track", trackName);
+  url.searchParams.append("format", "json");
+  url.searchParams.append("username", lastFmUsername);
+  const res = await fetch(url).then((res2) => res2.json());
+  return res.track;
+};
+
+// shared/fp.ts
+var { Snackbar } = Spicetify;
+var pMchain = (f) => async (fa) => f(await fa);
+var chunkify50 = (fn) => async (args) => {
+  const a = await Promise.all(_.chunk(args, 50).map(fn));
+  return a.flat();
+};
+var progressify = (f, n) => {
+  let i = n, lastProgress = 0;
+  return async function(..._2) {
+    const res = await f(...arguments), progress = Math.round((1 - --i / n) * 100);
+    if (progress > lastProgress) {
+      ;
+      Snackbar.updater.enqueueSetState(Snackbar, () => ({
+        snacks: [],
+        queue: []
+      }));
+      Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+        variant: "default",
+        autoHideDuration: 200,
+        transitionDuration: {
+          enter: 0,
+          exit: 0
+        }
+      });
+    }
+    lastProgress = progress;
+    return res;
+  };
+};
+
+// shared/parse.ts
+var parseTopTrackFromArtist = ({ track }) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: track.albumOfTrack.uri,
+  albumName: void 0,
+  artistUri: track.artists.items[0].uri,
+  artistName: track.artists.items[0].profile.name,
+  durationMilis: track.duration.totalMilliseconds,
+  playcount: Number(track.playcount),
+  popularity: void 0,
+  releaseDate: void 0
+});
+var parseArtistLikedTrack = (track) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration.milliseconds,
+  playcount: void 0,
+  popularity: void 0,
+  releaseDate: void 0
+});
+var parseAlbumTrack = ({ track }) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: "",
+  // gets filled in later
+  albumName: "",
+  // gets filled in later
+  artistUri: track.artists.items[0].uri,
+  artistName: track.artists.items[0].profile.name,
+  durationMilis: track.duration.totalMilliseconds,
+  playcount: Number(track.playcount),
+  popularity: void 0,
+  releaseDate: -1
+  // gets filled in later
+});
+var parsePlaylistAPITrack = (track) => ({
+  uri: track.uri,
+  uid: track.uid,
+  name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration.milliseconds,
+  playcount: void 0,
+  popularity: void 0,
+  releaseDate: void 0
+});
+var parseWebAPITrack = (track) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration_ms,
+  playcount: void 0,
+  popularity: track.popularity,
+  releaseDate: new Date(track.album.release_date).getTime()
+});
+var parseLibraryAPILikedTracks = (track) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration.milliseconds,
+  playcount: void 0,
+  popularity: void 0,
+  releaseDate: void 0
+});
+
 // extensions/sort-plus/fetch.ts
 var getTracksFromAlbum = async (uri) => {
   const albumRes = await fetchGQLAlbum(uri);
@@ -520,6 +524,12 @@ var getNameFromUri = async (uri) => {
     }
   }
 };
+var getTracksFromUri = _.cond([
+  [URI2.isAlbum, getTracksFromAlbum],
+  [URI2.isArtist, getTracksFromArtist],
+  [URI_isLikedTracks, getLikedTracks],
+  [URI2.isPlaylistV1OrV2, getTracksFromPlaylist]
+]);
 
 // extensions/sort-plus/playlistsInterop.ts
 var { URI: URI3 } = Spicetify;
@@ -556,9 +566,8 @@ var reordedPlaylistLikeSortedQueue = async () => {
 var { URI: URI4 } = Spicetify;
 var fillTracksFromWebAPI = async (tracks) => {
   const ids = tracks.map((track) => URI4.fromString(track.uri).id);
-  const chunkedTracks = _.chunk(ids, 50).map((ids2) => spotifyApi.tracks.get(ids2));
-  const fetchedTracks = (await Promise.all(chunkedTracks)).flat().map(parseWebAPITrack);
-  return joinByUri(tracks, fetchedTracks);
+  const fetchedTracks = await chunkify50(spotifyApi.tracks.get)(ids);
+  return joinByUri(tracks, fetchedTracks.map(parseWebAPITrack));
 };
 var fillTracksFromAlbumTracks = async (tracks) => {
   const tracksByAlbumUri = Object.groupBy(tracks, (track) => track.albumUri);
@@ -608,15 +617,6 @@ addEventListener("keyup", (event) => {
   if (!event.repeat && event.key === "Control")
     invertOrder = 0;
 });
-var getTracksFromUri = _.flow(
-  fp.tap((uri) => lastFetchedUri = uri),
-  _.cond([
-    [URI5.isAlbum, getTracksFromAlbum],
-    [URI5.isArtist, getTracksFromArtist],
-    [URI_isLikedTracks, getLikedTracks],
-    [URI5.isPlaylistV1OrV2, getTracksFromPlaylist]
-  ])
-);
 var populateTracks = _.cond([
   [fp.startsWith("Spotify"), fillTracksFromSpotify],
   [fp.startsWith("LastFM"), () => fillTracksFromLastFM]
@@ -637,6 +637,7 @@ var _setQueue = (reverse) => async (tracks) => {
 var sortTracksBy = (sortAction, sortFn) => async (uri) => {
   lastSortAction = sortAction;
   const descending = invertOrder ^ Number(CONFIG.descending);
+  lastFetchedUri = uri;
   const tracks = await getTracksFromUri(uri);
   const sortedTracks = await sortFn(tracks);
   return await _setQueue(!!descending)(sortedTracks);

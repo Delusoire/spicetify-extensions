@@ -1,5 +1,8 @@
 import { spotifyApi } from "../../shared/api.ts"
+import { _ } from "../../shared/deps.ts"
 import { TrackData } from "../../shared/parse.ts"
+
+import { getLikedTracks, getTracksFromAlbum, getTracksFromArtist, getTracksFromPlaylist } from "./fetch.ts"
 
 const { URI } = Spicetify
 
@@ -73,3 +76,10 @@ export const getNameFromUri = async (uri: Spicetify.URI) => {
         }
     }
 }
+
+export const getTracksFromUri = _.cond([
+    [URI.isAlbum, getTracksFromAlbum],
+    [URI.isArtist, getTracksFromArtist],
+    [URI_isLikedTracks, getLikedTracks],
+    [URI.isPlaylistV1OrV2, getTracksFromPlaylist],
+])

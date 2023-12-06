@@ -1,6 +1,6 @@
 import { fetchLastFMTrack, spotifyApi } from "../../shared/api.ts"
 import { _, fp } from "../../shared/deps.ts"
-import { progressify } from "../../shared/fp.ts"
+import { chunkify50, progressify } from "../../shared/fp.ts"
 import { TrackData, parseWebAPITrack } from "../../shared/parse.ts"
 
 import { getTracksFromAlbum } from "./fetch.ts"
@@ -11,9 +11,9 @@ const { URI } = Spicetify
 
 const fillTracksFromWebAPI = async (tracks: TrackData[]) => {
     const ids = tracks.map(track => URI.fromString(track.uri)!.id!)
-    const chunkedTracks = _.chunk(ids, 50).map(ids => spotifyApi.tracks.get(ids))
-    const fetchedTracks = (await Promise.all(chunkedTracks)).flat().map(parseWebAPITrack)
-    return joinByUri(tracks, fetchedTracks)
+
+    const fetchedTracks = await chunkify50(spotifyApi.tracks.get)(ids)
+    return joinByUri(tracks, fetchedTracks.map(parseWebAPITrack))
 }
 
 const fillTracksFromAlbumTracks = async (tracks: TrackData[]) => {

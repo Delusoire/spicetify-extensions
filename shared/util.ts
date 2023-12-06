@@ -147,7 +147,7 @@ export const onHistoryChanged = (
     const historyChanged = ({ pathname }: any) => {
         if (matchFn(pathname)) {
             if (dropDuplicates && lastPathname === pathname) {
-            } else callback(URI.fromString(pathname).toString())
+            } else callback(URI.fromString(pathname).toURI())
         }
         lastPathname = pathname
     }
