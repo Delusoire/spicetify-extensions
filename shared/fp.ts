@@ -1,9 +1,6 @@
-import { array as ar, function as f, record as rec, refinement as ref, semigroup as sg } from "https://esm.sh/fp-ts"
+import { _, fp } from "./deps.ts"
 
 const { Snackbar } = Spicetify
-
-export const objConcat2 = <A1, A2>() => rec.getUnionSemigroup(sg.first<any>()).concat as (x: A1, y: A2) => A1 & A2
-export const objConcat = <A>() => ar.reduce({} as A, objConcat2<A, A>())
 
 type async = {
     <A, B>(f: (a: A) => Promise<B>): (fa: Promise<A>) => Promise<B>
@@ -16,8 +13,8 @@ export const pMchain: async =
 
 export const chunckify =
     (n: number) =>
-    <A, R>(g: (a: A[]) => Promise<R[]>) =>
-        f.flow(ar.chunksOf(n)<A>, ar.map(g), ps => Promise.all(ps), pMchain(ar.flatten))
+    <A, R>(fn: (a: A[]) => Promise<R[]>) =>
+        _.flow(fp.chunk(n)<A>, fp.map(fn), ps => Promise.all(ps), pMchain(_.flatten))
 
 export const progressify = <F extends (...args: any) => any>(f: F, n: number) => {
     let i = n,

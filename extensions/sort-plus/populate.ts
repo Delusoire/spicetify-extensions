@@ -19,12 +19,16 @@ const fillTracksFromWebAPI = async (tracks: TrackData[]) => {
 const fillTracksFromAlbumTracks = async (tracks: TrackData[]) => {
     const tracksByAlbumUri = Object.groupBy(tracks, track => track.albumUri)
     const passes = Object.keys(tracksByAlbumUri).length
-    const fn = progressify(async (tracks: TrackData[], albumUri: string) => {
-        const albumTracks = await getTracksFromAlbum(albumUri)
+    const fn = progressify(async (tracks: TrackData[]) => {
+        const albumTracks = await getTracksFromAlbum(tracks[0].albumUri)
         return _.intersectionBy(tracks, albumTracks, track => track.uri)
     }, passes)
 
-    const albumsTracks = await Promise.all(Object.values(_.mapValues(tracksByAlbumUri, fn)))
+    const iterable = (async function* () {
+        for (const sameAlbumTracks of Object.values(tracksByAlbumUri)) yield await fn(sameAlbumTracks)
+    })()
+
+    const albumsTracks = await Array.fromAsync(iterable)
     return albumsTracks.flat()
 }
 

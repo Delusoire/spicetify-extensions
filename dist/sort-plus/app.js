@@ -92,13 +92,12 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
 };
 
 // shared/fp.ts
-import { array as ar, function as f, record as rec, semigroup as sg } from "https://esm.sh/fp-ts";
 var { Snackbar } = Spicetify;
-var pMchain = (f2) => async (fa) => f2(await fa);
-var progressify = (f2, n) => {
+var pMchain = (f) => async (fa) => f(await fa);
+var progressify = (f, n) => {
   let i = n, lastProgress = 0;
   return async function(..._2) {
-    const res = await f2(arguments), progress = Math.round((1 - --i / n) * 100);
+    const res = await f(arguments), progress = Math.round((1 - --i / n) * 100);
     if (progress > lastProgress) {
       ;
       Snackbar.updater.enqueueSetState(Snackbar, () => ({
@@ -239,11 +238,11 @@ var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f2) => _.overEvery(
+  (f) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f2.toString())
+  )(f.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -555,11 +554,15 @@ var fillTracksFromWebAPI = async (tracks) => {
 var fillTracksFromAlbumTracks = async (tracks) => {
   const tracksByAlbumUri = Object.groupBy(tracks, (track) => track.albumUri);
   const passes = Object.keys(tracksByAlbumUri).length;
-  const fn = progressify(async (tracks2, albumUri) => {
-    const albumTracks = await getTracksFromAlbum(albumUri);
+  const fn = progressify(async (tracks2) => {
+    const albumTracks = await getTracksFromAlbum(tracks2[0].albumUri);
     return _.intersectionBy(tracks2, albumTracks, (track) => track.uri);
   }, passes);
-  const albumsTracks = await Promise.all(Object.values(_.mapValues(tracksByAlbumUri, fn)));
+  const iterable = async function* () {
+    for (const sameAlbumTracks of Object.values(tracksByAlbumUri))
+      yield await fn(sameAlbumTracks);
+  }();
+  const albumsTracks = await Array.fromAsync(iterable);
   return albumsTracks.flat();
 };
 var fillTracksFromSpotify = (propName) => async (tracks) => {

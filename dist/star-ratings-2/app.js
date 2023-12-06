@@ -44,7 +44,7 @@ var onSongChanged = (callback) => {
 };
 
 // extensions/star-ratings-2/controls.tsx
-import { array as ar3, function as f3 } from "https://esm.sh/fp-ts";
+import { array as ar2, function as f2 } from "https://esm.sh/fp-ts";
 
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
@@ -95,11 +95,11 @@ var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f4) => _.overEvery(
+  (f3) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f4.toString())
+  )(f3.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -116,12 +116,11 @@ var SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelecte
 var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 
 // extensions/star-ratings-2/ratings.ts
-import { array as ar2, function as f2 } from "https://esm.sh/fp-ts";
+import { array as ar, function as f } from "https://esm.sh/fp-ts";
 
 // shared/fp.ts
-import { array as ar, function as f, record as rec, semigroup as sg } from "https://esm.sh/fp-ts";
 var { Snackbar } = Spicetify;
-var pMchain = (f4) => async (fa) => f4(await fa);
+var pMchain = (f3) => async (fa) => f3(await fa);
 
 // extensions/star-ratings-2/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";
@@ -296,21 +295,21 @@ var { URI: URI2, Player: Player2 } = Spicetify;
 var { History: History3 } = Spicetify.Platform;
 var loadRatings = async () => {
   const ratingsFolder = await fetchFolder(CONFIG.ratingsFolderUri);
-  playlistUris = f2.pipe(
+  playlistUris = f.pipe(
     ratingsFolder.items,
-    ar2.map((p) => [p.uri, Number(p.name)]),
-    ar2.reduce([], (uris, [uri, rating]) => (uris[rating] = uri, uris))
+    ar.map((p) => [p.uri, Number(p.name)]),
+    ar.reduce([], (uris, [uri, rating]) => (uris[rating] = uri, uris))
   );
-  global.tracksRatings = tracksRatings = await f2.pipe(
+  global.tracksRatings = tracksRatings = await f.pipe(
     playlistUris,
-    ar2.map(fetchPlaylistContents),
+    ar.map(fetchPlaylistContents),
     (ps) => Promise.all(ps),
     // Promise.all flips empty to undefined
-    pMchain(ar2.map((tracks) => tracks ?? [])),
-    pMchain(ar2.map(ar2.map((t) => t.uri))),
-    pMchain(ar2.flatMap((trackUris, rating) => trackUris.map((trackUri) => [trackUri, rating]))),
+    pMchain(ar.map((tracks) => tracks ?? [])),
+    pMchain(ar.map(ar.map((t) => t.uri))),
+    pMchain(ar.flatMap((trackUris, rating) => trackUris.map((trackUri) => [trackUri, rating]))),
     pMchain(
-      ar2.reduce(
+      ar.reduce(
         {},
         (acc, [trackUri, rating]) => Object.assign(acc, {
           [trackUri]: Math.max(rating, acc[trackUri] ?? 0)
@@ -324,11 +323,11 @@ var toggleRating = async (uri, rating) => {
   if (currentRating === rating)
     rating = 0;
   if (currentRating) {
-    f2.pipe(
+    f.pipe(
       playlistUris.slice(0, currentRating + 1),
-      ar2.filter(Boolean),
-      ar2.map((playlistUri) => URI2.fromString(playlistUri).id),
-      ar2.map((playlistId) => removePlaylistTracks(playlistId, [{ uri, uid: "" }]))
+      ar.filter(Boolean),
+      ar.map((playlistUri) => URI2.fromString(playlistUri).id),
+      ar.map((playlistId) => removePlaylistTracks(playlistId, [{ uri, uid: "" }]))
     );
   }
   tracksRatings[uri] = rating;
@@ -426,7 +425,7 @@ var wrapDropdownInsidePlaylistButton = (pb, uri, forced = false) => {
       popper.appendChild(box);
       box.className = "main-contextMenu-tippy";
       box.appendChild(instance.props.content);
-      return { popper, onUpdate: f3.constVoid };
+      return { popper, onUpdate: f2.constVoid };
     },
     onShow(instance) {
       instance.popper.firstChild.classList.add("main-contextMenu-tippyEnter");
@@ -464,9 +463,9 @@ var updateNowPlayingControls = (newTrack, updateDropdown = true) => {
 };
 var updateTrackListControls = (updateDropdown = true) => {
   const trackLists = getTrackLists();
-  f3.pipe(
+  f2.pipe(
     trackLists,
-    ar3.map((trackList) => {
+    ar2.map((trackList) => {
       const trackListTracks = getTrackListTracks(trackList);
       trackListTracks.map((track) => {
         const uri = URI3.fromString(getTrackListTrackUri(track)).toURI();
@@ -484,20 +483,20 @@ var updateTrackListControls = (updateDropdown = true) => {
 var updateCollectionControls = async (uri) => {
   let uris;
   if (URI3.isAlbum(uri))
-    uris = f3.pipe(
+    uris = f2.pipe(
       await fetchGQLAlbum(`${uri}`),
       (x) => x.tracks.items,
-      ar3.map((x) => x.track.uri)
+      ar2.map((x) => x.track.uri)
     );
   else if (URI3.isArtist(uri))
-    uris = f3.pipe(
+    uris = f2.pipe(
       await fetchArtistLikedTracks(`${uri}`),
-      ar3.map((x) => x.uri)
+      ar2.map((x) => x.uri)
     );
   else if (URI3.isPlaylistV1OrV2(uri))
-    uris = f3.pipe(
+    uris = f2.pipe(
       await fetchPlaylistContents(`${uri}`),
-      ar3.map((x) => x.uri)
+      ar2.map((x) => x.uri)
     );
   else
     throw "me out the window";

@@ -11,7 +11,7 @@ var __decorateClass = (decorators, target, key, kind) => {
 };
 
 // extensions/show-the-genres/app.ts
-import { array as a, function as f2 } from "https://esm.sh/fp-ts";
+import { array as a, function as f } from "https://esm.sh/fp-ts";
 
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
@@ -102,10 +102,14 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
   return res.track;
 };
 
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
+
 // shared/fp.ts
-import { array as ar, function as f, record as rec, semigroup as sg } from "https://esm.sh/fp-ts";
 var { Snackbar } = Spicetify;
-var pMchain = (f3) => async (fa) => f3(await fa);
+var pMchain = (f2) => async (fa) => f2(await fa);
 
 // extensions/show-the-genres/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";
@@ -113,22 +117,17 @@ import { task as task2 } from "https://esm.sh/fp-ts";
 // shared/settings.tsx
 import { task } from "https://esm.sh/fp-ts";
 
-// shared/deps.ts
-import { default as ld } from "https://esm.sh/lodash";
-import { default as ld_fp } from "https://esm.sh/lodash/fp";
-var _ = ld;
-
 // shared/modules.ts
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
 var cache = Object.keys(require2.m).map((id) => require2(id));
 var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
 var functionModules = modules.filter((module) => typeof module === "function");
 var findModuleByStrings = (modules2, ...filters) => modules2.find(
-  (f3) => _.overEvery(
+  (f2) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f3.toString())
+  )(f2.toString())
 );
 var CheckedPlaylistButtonIcon = findModuleByStrings(
   functionModules,
@@ -400,7 +399,7 @@ var getArtistsGenresOrRelated = async (artistsUris) => {
     return allGenres;
   const relatedArtists = await fetchGQLArtistRelated(artistsUris[0]);
   relatedArtists.map((artist) => artist.uri);
-  return allGenres.length ? allGenres : await f2.pipe(
+  return allGenres.length ? allGenres : await f.pipe(
     artistsUris[0],
     fetchGQLArtistRelated,
     pMchain(a.map((a2) => a2.uri)),
