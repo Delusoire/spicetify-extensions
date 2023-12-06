@@ -23,13 +23,18 @@ const fillTracksFromAlbumTracks = async (tracks: TrackData[]) => {
         const albumTracks = await getTracksFromAlbum(tracks[0].albumUri)
         return _.intersectionBy(tracks, albumTracks, track => track.uri)
     }, passes)
+    const sameAlbumTracksArray = Object.values(tracksByAlbumUri)
 
-    const iterable = (async function* () {
-        for (const sameAlbumTracks of Object.values(tracksByAlbumUri)) yield await fn(sameAlbumTracks)
-    })()
+    // Sequential resolution of async tasks hack
+    const albumTracks = await _.reduce(
+        sameAlbumTracksArray,
+        async (partial: Promise<TrackData[]>, sameAlbumTracks: TrackData[]) => {
+            return (await Promise.all([await partial, await fn(sameAlbumTracks)])).flat()
+        },
+        Promise.resolve([]),
+    )
 
-    const albumsTracks = await Array.fromAsync(iterable)
-    return albumsTracks.flat()
+    return albumTracks
 }
 
 export const fillTracksFromSpotify = (propName: SortAction) => async (tracks: TrackData[]) => {
