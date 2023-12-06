@@ -30,12 +30,16 @@ const getISRCUris = (isrc: string) => {
 
 const setISRCUris = async (isrc: string, uris: string[]) => {
     const getTrackReleaseDate = (a: Track) => new Date(a.album.release_date)
+    const sortHeuristic = (a: Track, b: Track) => {
+        //@ts-expect-error: ts dumb, ts can't substract dates
+        const deltaTime = getTrackReleaseDate(b) - getTrackReleaseDate(a)
+        return deltaTime || b.popularity - a.popularity
+    }
 
     const key = getLSKey(isrc)
     const ids = uris.map(uri => URI.fromString(uri)!.id!)
     const tracks = await spotifyApi.tracks.get(ids)
-    //@ts-expect-error: ts dumb, ts can't substract dates
-    const sortedTracks = tracks.sort((a, b) => getTrackReleaseDate(b) - getTrackReleaseDate(a))
+    const sortedTracks = tracks.sort(sortHeuristic)
     const sortedUris = sortedTracks.map(track => track.uri)
     const value = JSON.stringify(sortedUris)
     localStorage.setItem(key, value)
@@ -45,9 +49,13 @@ const setISRCUris = async (isrc: string, uris: string[]) => {
 export const getUrisFromISRC = async (isrc: string) => {
     const cachedUris = getISRCUris(isrc)
     if (!cachedUris) {
-        const results = await searchGQL(`isrc:${isrc}`)
-        const uris = results.map(i => i.item.data.uri)
-        return await setISRCUris(isrc, uris)
+        try {
+            const results = await searchGQL(`isrc:${isrc}`)
+            const uris = results.map(i => i.item.data.uri)
+            return await setISRCUris(isrc, uris)
+        } catch (_) {
+            return null
+        }
     }
     return cachedUris
 }
@@ -61,7 +69,11 @@ export const getISRCsForUris = async (uris: string[]) => {
     const tracksForCacheMiss = await chunkify50(is => spotifyApi.tracks.get(is))(idsForCacheMiss)
     const isrcsForCacheMiss = tracksForCacheMiss.map(track => track.external_ids.isrc)
 
-    isrcsForCacheMiss.forEach((isrc, i) => (isrcs[indicesForCacheMiss[i]] = isrc))
+    urisForCacheMiss.forEach((uri, i) => {
+        const isrc = isrcsForCacheMiss[i]
+        uriToISRC.set(uri, isrc)
+        isrcs[indicesForCacheMiss[i]] = isrc
+    })
 
     return isrcs as string[]
 }
@@ -69,6 +81,7 @@ export const getISRCsForUris = async (uris: string[]) => {
 export const isUriOutdatedDuplicate = async (uri: string) => {
     const isrc = uriToISRC.get(uri)
     if (!isrc) return null // cache miss, shouldn't happen as we have made a pass to load the cache
-    const [mostRecentUri] = await getUrisFromISRC(isrc)
-    return uri !== mostRecentUri
+    const uris = await getUrisFromISRC(isrc)
+    if (!uris) return null
+    return uri !== uris[0]
 }

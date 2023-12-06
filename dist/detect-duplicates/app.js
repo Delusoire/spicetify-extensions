@@ -70,10 +70,14 @@ var getISRCUris = (isrc) => {
 };
 var setISRCUris = async (isrc, uris) => {
   const getTrackReleaseDate = (a) => new Date(a.album.release_date);
+  const sortHeuristic = (a, b) => {
+    const deltaTime = getTrackReleaseDate(b) - getTrackReleaseDate(a);
+    return deltaTime || b.popularity - a.popularity;
+  };
   const key = getLSKey(isrc);
   const ids = uris.map((uri) => URI2.fromString(uri).id);
   const tracks = await spotifyApi.tracks.get(ids);
-  const sortedTracks = tracks.sort((a, b) => getTrackReleaseDate(b) - getTrackReleaseDate(a));
+  const sortedTracks = tracks.sort(sortHeuristic);
   const sortedUris = sortedTracks.map((track) => track.uri);
   const value = JSON.stringify(sortedUris);
   localStorage.setItem(key, value);
@@ -82,9 +86,13 @@ var setISRCUris = async (isrc, uris) => {
 var getUrisFromISRC = async (isrc) => {
   const cachedUris = getISRCUris(isrc);
   if (!cachedUris) {
-    const results = await searchGQL(`isrc:${isrc}`);
-    const uris = results.map((i) => i.item.data.uri);
-    return await setISRCUris(isrc, uris);
+    try {
+      const results = await searchGQL(`isrc:${isrc}`);
+      const uris = results.map((i) => i.item.data.uri);
+      return await setISRCUris(isrc, uris);
+    } catch (_2) {
+      return null;
+    }
   }
   return cachedUris;
 };
@@ -95,15 +103,21 @@ var getISRCsForUris = async (uris) => {
   const idsForCacheMiss = urisForCacheMiss.map((uri) => URI2.fromString(uri).id);
   const tracksForCacheMiss = await chunkify50((is) => spotifyApi.tracks.get(is))(idsForCacheMiss);
   const isrcsForCacheMiss = tracksForCacheMiss.map((track) => track.external_ids.isrc);
-  isrcsForCacheMiss.forEach((isrc, i) => isrcs[indicesForCacheMiss[i]] = isrc);
+  urisForCacheMiss.forEach((uri, i) => {
+    const isrc = isrcsForCacheMiss[i];
+    uriToISRC.set(uri, isrc);
+    isrcs[indicesForCacheMiss[i]] = isrc;
+  });
   return isrcs;
 };
 var isUriOutdatedDuplicate = async (uri) => {
   const isrc = uriToISRC.get(uri);
   if (!isrc)
     return null;
-  const [mostRecentUri] = await getUrisFromISRC(isrc);
-  return uri !== mostRecentUri;
+  const uris = await getUrisFromISRC(isrc);
+  if (!uris)
+    return null;
+  return uri !== uris[0];
 };
 
 // extensions/detect-duplicates/app.ts
