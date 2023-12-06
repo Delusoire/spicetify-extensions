@@ -23,18 +23,8 @@ const fillTracksFromAlbumTracks = async (tracks: TrackData[]) => {
         const albumTracks = await getTracksFromAlbum(tracks[0].albumUri)
         return _.intersectionBy(albumTracks, tracks, track => track.uri)
     }, passes)
+
     const sameAlbumTracksArray = Object.values(tracksByAlbumUri)
-
-    // Sequential resolution of async tasks hack
-    // const albumTracks = await _.reduce(
-    //     sameAlbumTracksArray,
-    //     async (partial: Promise<TrackData[]>, sameAlbumTracks: TrackData[]) => {
-    //         return (await Promise.all([await partial, await fn(sameAlbumTracks)])).flat()
-    //     },
-    //     Promise.resolve([]),
-    // )
-    // return albumTracks
-
     const albumsTracks = await Promise.all(sameAlbumTracksArray.map(fn))
     return albumsTracks.flat()
 }
