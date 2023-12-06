@@ -785,6 +785,8 @@ declare namespace Spicetify {
      */
     const Mousetrap: import("npm:@types/mousetrap").MousetrapStatic
 
+    const Snackbar: typeof import("npm:notistack")
+
     /**
      * Queue object contains list of queuing tracks,
      * history of played tracks and current track metadata.

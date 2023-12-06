@@ -26,7 +26,7 @@ export const progressify = <F extends (...args: any) => any>(f: F, n: number) =>
         const res = (await f(arguments)) as Awaited<ReturnType<F>>,
             progress = Math.round((1 - --i / n) * 100)
         if (progress > lastProgress) {
-            Snackbar.updater.enqueueSetState(Snackbar, () => ({
+            ;(Snackbar as any).updater.enqueueSetState(Snackbar, () => ({
                 snacks: [],
                 queue: [],
             }))
@@ -43,44 +43,3 @@ export const progressify = <F extends (...args: any) => any>(f: F, n: number) =>
         return res
     }
 }
-
-type JSFunc = (...a: any) => any
-export const withProgress =
-    <F extends (f: JSFunc) => (fa: any) => any>(map: F) =>
-    (f: Parameters<F>[0]) =>
-    (fa: Parameters<ReturnType<F>>[0]): ReturnType<ReturnType<F>> => {
-        let i = 0
-        let lastProgress = 0
-        return map(async (...a: Parameters<Parameters<F>[0]>) => {
-            // @ts-expect-error: Fuck me
-            const ret = await f(...a)
-            const progress = Math.round((i++ / Object.values(fa).length) * 100)
-            // // This is an older alternative, always updates 5 times a second
-            // Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
-            //     variant: "default",
-            //     autoHideDuration: 200,
-            //     transitionDuration: {
-            //         enter: 0,
-            //         exit: 0,
-            //     },
-            //     preventDuplicate: true,
-            //     key: "sort-progress",
-            // })
-            if (progress > lastProgress) {
-                Snackbar.updater.enqueueSetState(Snackbar, () => ({
-                    snacks: [],
-                    queue: [],
-                }))
-                Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
-                    variant: "default",
-                    autoHideDuration: 200,
-                    transitionDuration: {
-                        enter: 0,
-                        exit: 0,
-                    },
-                })
-            }
-            lastProgress = progress
-            return ret
-        })(fa)
-    }

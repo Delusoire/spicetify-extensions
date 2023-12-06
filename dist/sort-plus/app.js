@@ -100,6 +100,7 @@ var progressify = (f2, n) => {
   return async function(..._2) {
     const res = await f2(arguments), progress = Math.round((1 - --i / n) * 100);
     if (progress > lastProgress) {
+      ;
       Snackbar.updater.enqueueSetState(Snackbar, () => ({
         snacks: [],
         queue: []
@@ -547,7 +548,8 @@ var reordedPlaylistLikeSortedQueue = async () => {
 var { URI: URI4 } = Spicetify;
 var fillTracksFromWebAPI = async (tracks) => {
   const ids = tracks.map((track) => URI4.fromString(track.uri).id);
-  const fetchedTracks = (await spotifyApi.tracks.get(ids)).map(parseWebAPITrack);
+  const chunkedTracks = _.chunk(ids, 50).map((ids2) => spotifyApi.tracks.get(ids2));
+  const fetchedTracks = (await Promise.all(chunkedTracks)).flat().map(parseWebAPITrack);
   return joinByUri(tracks, fetchedTracks);
 };
 var fillTracksFromAlbumTracks = async (tracks) => {
