@@ -373,7 +373,7 @@ var fetchLastFMTags = async (uri) => {
   const uid = URI2.fromString(uri).id;
   const { name, artists } = await spotifyApi.tracks.get(uid);
   const artistNames = artists.map((artist) => artist.name);
-  const { track } = await fetchLastFMTrack(CONFIG.LFMApiKey, artistNames[0], name);
+  const track = await fetchLastFMTrack(CONFIG.LFMApiKey, artistNames[0], name);
   const tags = track.toptags.tag.map((tag) => tag.name);
   const deletedTagRegex = /^-\d{13}$/;
   const blacklistedTags = ["MySpotigramBot"];
