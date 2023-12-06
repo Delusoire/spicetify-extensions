@@ -217,6 +217,6 @@ var createAnonRadio = (uri) => {
 new ContextMenu.Item(
   "Create anonymized radio",
   ([uri]) => createAnonRadio(uri),
-  ([uri]) => _.overEvery([URI2.isAlbum, URI2.isArtist, URI2.isPlaylistV1OrV2, URI2.isTrack])(uri),
+  ([uri]) => _.overSome([URI2.isAlbum, URI2.isArtist, URI2.isPlaylistV1OrV2, URI2.isTrack])(uri),
   "podcasts"
 ).register();

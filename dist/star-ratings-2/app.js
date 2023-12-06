@@ -539,7 +539,7 @@ new MutationObserver(() => {
   subtree: true
 });
 onHistoryChanged(
-  _.overEvery([URI4.isAlbum, URI4.isArtist, URI4.isPlaylistV1OrV2]),
+  _.overSome([URI4.isAlbum, URI4.isArtist, URI4.isPlaylistV1OrV2]),
   (uri) => updateCollectionControls(URI4.fromString(uri))
 );
 (async () => {

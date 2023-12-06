@@ -667,7 +667,7 @@ new ContextMenu.SubMenu(
     ["play", "heart", "list-view", "volume", "artist", "subtitles"],
     createSubMenuForSortProp
   ).concat([shuffleSubmenu, starsSubmenu]),
-  ([uri]) => _.overEvery([URI5.isAlbum, URI5.isArtist, URI_isLikedTracks, URI5.isTrack, URI5.isPlaylistV1OrV2])(uri)
+  ([uri]) => _.overSome([URI5.isAlbum, URI5.isArtist, URI_isLikedTracks, URI5.isTrack, URI5.isPlaylistV1OrV2])(uri)
 ).register();
 new Topbar.Button("Create a Playlist from Sorted Queue", "plus2px", createPlaylistFromLastSortedQueue);
 new Topbar.Button("Reorder current Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue);

@@ -122,7 +122,7 @@ new ContextMenu.SubMenu(
         ["play", "heart", "list-view", "volume", "artist", "subtitles"],
         createSubMenuForSortProp,
     ).concat([shuffleSubmenu, starsSubmenu]),
-    ([uri]) => _.overEvery([URI.isAlbum, URI.isArtist, URI_isLikedTracks, URI.isTrack, URI.isPlaylistV1OrV2])(uri),
+    ([uri]) => _.overSome([URI.isAlbum, URI.isArtist, URI_isLikedTracks, URI.isTrack, URI.isPlaylistV1OrV2])(uri),
 ).register()
 
 // Topbar

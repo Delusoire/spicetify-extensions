@@ -20,6 +20,6 @@ const createAnonRadio = (uri: SpotifyURI) => {
 new ContextMenu.Item(
     "Create anonymized radio",
     ([uri]) => createAnonRadio(uri),
-    ([uri]) => _.overEvery([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isTrack])(uri),
+    ([uri]) => _.overSome([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isTrack])(uri),
     "podcasts",
 ).register()
