@@ -312,7 +312,7 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
 var { Snackbar } = Spicetify;
 var pMchain = (f) => async (fa) => f(await fa);
 var chunkify50 = (fn) => async (args) => {
-  const a = await Promise.all(_.chunk(args, 50).map((a2) => fn(a2)));
+  const a = await Promise.all(_.chunk(args, 50).map(fn));
   return a.flat();
 };
 var progressify = (f, n) => {
@@ -566,7 +566,7 @@ var reordedPlaylistLikeSortedQueue = async () => {
 var { URI: URI4 } = Spicetify;
 var fillTracksFromWebAPI = async (tracks) => {
   const ids = tracks.map((track) => URI4.fromString(track.uri).id);
-  const fetchedTracks = await chunkify50(spotifyApi.tracks.get)(ids);
+  const fetchedTracks = await chunkify50((is) => spotifyApi.tracks.get(is))(ids);
   return joinByUri(tracks, fetchedTracks.map(parseWebAPITrack));
 };
 var fillTracksFromAlbumTracks = async (tracks) => {

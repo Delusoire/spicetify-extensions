@@ -1,4 +1,4 @@
-import { _, fp } from "./deps.ts"
+import { _ } from "./deps.ts"
 
 const { Snackbar } = Spicetify
 
@@ -14,7 +14,7 @@ export const pMchain: async =
 export const chunkify50 =
     <A, R>(fn: (a: Array<A>) => R) =>
     async (args: Array<A>) => {
-        const a = await Promise.all(_.chunk(args, 50).map(a => fn(a)))
+        const a = await Promise.all(_.chunk(args, 50).map(fn))
         return a.flat()
     }
 

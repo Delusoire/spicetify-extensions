@@ -12,7 +12,7 @@ const { URI } = Spicetify
 const fillTracksFromWebAPI = async (tracks: TrackData[]) => {
     const ids = tracks.map(track => URI.fromString(track.uri)!.id!)
 
-    const fetchedTracks = await chunkify50(spotifyApi.tracks.get)(ids)
+    const fetchedTracks = await chunkify50(is => spotifyApi.tracks.get(is))(ids)
     return joinByUri(tracks, fetchedTracks.map(parseWebAPITrack))
 }
 

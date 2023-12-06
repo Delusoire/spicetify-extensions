@@ -46,7 +46,7 @@ var _ = ld;
 // shared/fp.ts
 var { Snackbar } = Spicetify;
 var chunkify50 = (fn) => async (args) => {
-  const a = await Promise.all(_.chunk(args, 50).map((a2) => fn(a2)));
+  const a = await Promise.all(_.chunk(args, 50).map(fn));
   return a.flat();
 };
 
@@ -93,7 +93,7 @@ var getISRCsForUris = async (uris) => {
   const isrcs = uris.map((uri, i) => uriToISRC.has(uri) ? uriToISRC.get(uri) : void indicesForCacheMiss.push(i));
   const urisForCacheMiss = indicesForCacheMiss.map((i) => uris[i]);
   const idsForCacheMiss = urisForCacheMiss.map((uri) => URI2.fromString(uri).id);
-  const tracksForCacheMiss = await chunkify50(spotifyApi.tracks.get)(idsForCacheMiss);
+  const tracksForCacheMiss = await chunkify50((is) => spotifyApi.tracks.get(is))(idsForCacheMiss);
   const isrcsForCacheMiss = tracksForCacheMiss.map((track) => track.external_ids.isrc);
   isrcsForCacheMiss.forEach((isrc, i) => isrcs[indicesForCacheMiss[i]] = isrc);
   return isrcs;

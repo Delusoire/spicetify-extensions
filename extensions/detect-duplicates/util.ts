@@ -58,7 +58,7 @@ export const getISRCsForUris = async (uris: string[]) => {
 
     const urisForCacheMiss = indicesForCacheMiss.map(i => uris[i])
     const idsForCacheMiss = urisForCacheMiss.map(uri => URI.fromString(uri)!.id!)
-    const tracksForCacheMiss = await chunkify50(spotifyApi.tracks.get)(idsForCacheMiss)
+    const tracksForCacheMiss = await chunkify50(is => spotifyApi.tracks.get(is))(idsForCacheMiss)
     const isrcsForCacheMiss = tracksForCacheMiss.map(track => track.external_ids.isrc)
 
     isrcsForCacheMiss.forEach((isrc, i) => (isrcs[indicesForCacheMiss[i]] = isrc))
