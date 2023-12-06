@@ -71,7 +71,7 @@ var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => (await GraphQL.Reque
 // shared/platformApi.ts
 var { CosmosAsync: CosmosAsync2 } = Spicetify;
 var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
-var setTrackLiked = (uris, liked) => LibraryAPI[liked ? "add" : "remove"]({ uris });
+var setTracksLiked = (uris, liked) => LibraryAPI[liked ? "add" : "remove"]({ uris });
 var fetchArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await LibraryAPI.getTracks({ uri, offset, limit })).items;
 var fetchPlaylistContents = async (uri) => (await PlaylistAPI.getContents(uri)).items;
 var createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
@@ -344,7 +344,7 @@ var toggleRating = async (uri, rating) => {
     }
     addPlaylistTracks(playlistUri, [uri]);
     if (rating >= Number(CONFIG.heartThreshold)) {
-      setTrackLiked([uri], true);
+      setTracksLiked([uri], true);
     }
   }
   const npTrack = Player2.data?.item.uri;

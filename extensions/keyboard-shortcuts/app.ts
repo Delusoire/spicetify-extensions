@@ -1,4 +1,4 @@
-import { toggleTrackLiked } from "../../shared/platformApi.ts"
+import { toggleTracksLiked } from "../../shared/platformApi.ts"
 import { KEY_LIST, _SneakOverlay, mousetrapInst } from "./sneak.ts"
 import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util.ts"
 
@@ -24,7 +24,7 @@ const binds = [
     new Bind("k", () => appScroll(-1)),
     new Bind("g", () => appScrollY(0)),
     new Bind("g", () => appScrollY(Number.MAX_SAFE_INTEGER)).setShift(true),
-    new Bind("m", () => Player.data?.item.uri && toggleTrackLiked([Player.data?.item.uri])),
+    new Bind("m", () => Player.data?.item.uri && toggleTracksLiked([Player.data?.item.uri])),
     new Bind("/", e => {
         e.preventDefault()
         openPage("/search")

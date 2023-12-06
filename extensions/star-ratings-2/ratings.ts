@@ -8,7 +8,7 @@ import {
     fetchPlaylistContents,
     removePlaylistTracks,
     setPlaylistVisibility,
-    setTrackLiked,
+    setTracksLiked,
 } from "../../shared/platformApi.ts"
 import { SpotifyLoc, SpotifyURI } from "../../shared/util.ts"
 
@@ -76,7 +76,7 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
         addPlaylistTracks(playlistUri, [uri])
 
         if (rating >= Number(CONFIG.heartThreshold)) {
-            setTrackLiked([uri], true)
+            setTracksLiked([uri], true)
         }
     }
 

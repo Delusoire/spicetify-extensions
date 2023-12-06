@@ -27,13 +27,13 @@ var init_util = __esm({
 });
 
 // shared/platformApi.ts
-var CosmosAsync, LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI, setTrackLiked, fetchPlaylistContents, createFolder, addPlaylist, createPlaylistFromTracks, fetchFolder, fetchRootFolder;
+var CosmosAsync, LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI, setTracksLiked, fetchPlaylistContents, createFolder, addPlaylist, createPlaylistFromTracks, fetchFolder, fetchRootFolder;
 var init_platformApi = __esm({
   "shared/platformApi.ts"() {
     init_util();
     ({ CosmosAsync } = Spicetify);
     ({ LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform);
-    setTrackLiked = (uris, liked) => LibraryAPI[liked ? "add" : "remove"]({ uris });
+    setTracksLiked = (uris, liked) => LibraryAPI[liked ? "add" : "remove"]({ uris });
     fetchPlaylistContents = async (uri) => (await PlaylistAPI.getContents(uri)).items;
     createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
     addPlaylist = async (playlist, folder) => await RootlistAPI.add([playlist], folder ? SpotifyLoc.after.fromUri(folder) : {});
@@ -363,9 +363,9 @@ var init_app = __esm({
     restore = (mode) => async () => {
       const vault = JSON.parse(await ClipboardAPI.paste());
       if (mode === "library") {
-        setTrackLiked(vault.libraryTracks, true);
-        setTrackLiked(vault.libraryAlbums, true);
-        setTrackLiked(vault.libraryArtists, true);
+        setTracksLiked(vault.libraryTracks, true);
+        setTracksLiked(vault.libraryAlbums, true);
+        setTracksLiked(vault.libraryArtists, true);
         await restorePlaylistseRecur(vault.playlists);
         Spicetify.showNotification("Restored Library");
       }

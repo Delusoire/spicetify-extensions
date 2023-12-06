@@ -6,7 +6,7 @@ import {
     createPlaylistFromTracks,
     fetchPlaylistContents,
     fetchRootFolder,
-    setTrackLiked,
+    setTracksLiked,
 } from "../../shared/platformApi.ts"
 import { SpotifyLoc, SpotifyURI, getReactProps } from "../../shared/util.ts"
 
@@ -163,9 +163,9 @@ export const restore = (mode: "library" | "extensions" | "settings") => async ()
     const vault = JSON.parse(await ClipboardAPI.paste()) as Vault
 
     if (mode === "library") {
-        setTrackLiked(vault.libraryTracks, true)
-        setTrackLiked(vault.libraryAlbums, true)
-        setTrackLiked(vault.libraryArtists, true)
+        setTracksLiked(vault.libraryTracks, true)
+        setTracksLiked(vault.libraryAlbums, true)
+        setTracksLiked(vault.libraryArtists, true)
         await restorePlaylistseRecur(vault.playlists)
         Spicetify.showNotification("Restored Library")
     }

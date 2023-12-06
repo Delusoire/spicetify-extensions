@@ -3,18 +3,18 @@ import { SpotifyLoc, SpotifyURI } from "./util.ts"
 const { CosmosAsync } = Spicetify
 const { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform
 
-export const isTrackLiked = (uris: SpotifyURI[]) => LibraryAPI.contains(...uris)
+export const areTracksLiked = (uris: SpotifyURI[]) => LibraryAPI.contains(...uris)
 
-export const setTrackLiked = (uris: SpotifyURI[], liked: boolean) => LibraryAPI[liked ? "add" : "remove"]({ uris })
+export const setTracksLiked = (uris: SpotifyURI[], liked: boolean) => LibraryAPI[liked ? "add" : "remove"]({ uris })
 
-export const toggleTrackLiked = async (uris: SpotifyURI[]) => {
-    const liked = await isTrackLiked(uris)
+export const toggleTracksLiked = async (uris: SpotifyURI[]) => {
+    const liked = await areTracksLiked(uris)
 
     const urisByLiked = Object.groupBy(uris, (_, index) => (liked[index] ? "liked" : "notLiked"))
 
     const ps = []
-    urisByLiked.liked.length && ps.push(setTrackLiked(urisByLiked.liked, false))
-    urisByLiked.notLiked.length && ps.push(setTrackLiked(urisByLiked.notLiked, true))
+    urisByLiked.liked?.length && ps.push(setTracksLiked(urisByLiked.liked, false))
+    urisByLiked.notLiked?.length && ps.push(setTracksLiked(urisByLiked.notLiked, true))
 
     return Promise.all(ps)
 }

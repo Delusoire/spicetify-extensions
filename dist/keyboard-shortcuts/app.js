@@ -17,14 +17,14 @@ var { PlayerAPI, History } = Spicetify.Platform;
 // shared/platformApi.ts
 var { CosmosAsync } = Spicetify;
 var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
-var isTrackLiked = (uris) => LibraryAPI.contains(...uris);
-var setTrackLiked = (uris, liked) => LibraryAPI[liked ? "add" : "remove"]({ uris });
-var toggleTrackLiked = async (uris) => {
-  const liked = await isTrackLiked(uris);
+var areTracksLiked = (uris) => LibraryAPI.contains(...uris);
+var setTracksLiked = (uris, liked) => LibraryAPI[liked ? "add" : "remove"]({ uris });
+var toggleTracksLiked = async (uris) => {
+  const liked = await areTracksLiked(uris);
   const urisByLiked = Object.groupBy(uris, (_2, index) => liked[index] ? "liked" : "notLiked");
   const ps = [];
-  urisByLiked.liked.length && ps.push(setTrackLiked(urisByLiked.liked, false));
-  urisByLiked.notLiked.length && ps.push(setTrackLiked(urisByLiked.notLiked, true));
+  urisByLiked.liked?.length && ps.push(setTracksLiked(urisByLiked.liked, false));
+  urisByLiked.notLiked?.length && ps.push(setTracksLiked(urisByLiked.notLiked, true));
   return Promise.all(ps);
 };
 
@@ -222,7 +222,7 @@ var binds = [
   new Bind("k", () => appScroll(-1)),
   new Bind("g", () => appScrollY(0)),
   new Bind("g", () => appScrollY(Number.MAX_SAFE_INTEGER)).setShift(true),
-  new Bind("m", () => Player2.data?.item.uri && toggleTrackLiked([Player2.data?.item.uri])),
+  new Bind("m", () => Player2.data?.item.uri && toggleTracksLiked([Player2.data?.item.uri])),
   new Bind("/", (e) => {
     e.preventDefault();
     openPage("/search");
