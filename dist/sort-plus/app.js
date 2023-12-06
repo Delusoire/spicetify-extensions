@@ -565,7 +565,7 @@ var fillTracksFromAlbumTracks = async (tracks) => {
   const passes = Object.keys(tracksByAlbumUri).length;
   const fn = progressify(async (tracks2) => {
     const albumTracks = await getTracksFromAlbum(tracks2[0].albumUri);
-    return _.intersectionBy(tracks2, albumTracks, (track) => track.uri);
+    return _.intersectionBy(albumTracks, tracks2, (track) => track.uri);
   }, passes);
   const sameAlbumTracksArray = Object.values(tracksByAlbumUri);
   const albumsTracks = await Promise.all(sameAlbumTracksArray.map(fn));
