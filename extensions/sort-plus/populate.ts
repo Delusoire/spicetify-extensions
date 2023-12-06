@@ -26,15 +26,17 @@ const fillTracksFromAlbumTracks = async (tracks: TrackData[]) => {
     const sameAlbumTracksArray = Object.values(tracksByAlbumUri)
 
     // Sequential resolution of async tasks hack
-    const albumTracks = await _.reduce(
-        sameAlbumTracksArray,
-        async (partial: Promise<TrackData[]>, sameAlbumTracks: TrackData[]) => {
-            return (await Promise.all([await partial, await fn(sameAlbumTracks)])).flat()
-        },
-        Promise.resolve([]),
-    )
+    // const albumTracks = await _.reduce(
+    //     sameAlbumTracksArray,
+    //     async (partial: Promise<TrackData[]>, sameAlbumTracks: TrackData[]) => {
+    //         return (await Promise.all([await partial, await fn(sameAlbumTracks)])).flat()
+    //     },
+    //     Promise.resolve([]),
+    // )
+    // return albumTracks
 
-    return albumTracks
+    const albumsTracks = await Promise.all(sameAlbumTracksArray.map(fn))
+    return albumsTracks.flat()
 }
 
 export const fillTracksFromSpotify = (propName: SortAction) => async (tracks: TrackData[]) => {

@@ -564,18 +564,12 @@ var fillTracksFromAlbumTracks = async (tracks) => {
   const tracksByAlbumUri = Object.groupBy(tracks, (track) => track.albumUri);
   const passes = Object.keys(tracksByAlbumUri).length;
   const fn = progressify(async (tracks2) => {
-    const albumTracks2 = await getTracksFromAlbum(tracks2[0].albumUri);
-    return _.intersectionBy(tracks2, albumTracks2, (track) => track.uri);
+    const albumTracks = await getTracksFromAlbum(tracks2[0].albumUri);
+    return _.intersectionBy(tracks2, albumTracks, (track) => track.uri);
   }, passes);
   const sameAlbumTracksArray = Object.values(tracksByAlbumUri);
-  const albumTracks = await _.reduce(
-    sameAlbumTracksArray,
-    async (partial, sameAlbumTracks) => {
-      return (await Promise.all([await partial, await fn(sameAlbumTracks)])).flat();
-    },
-    Promise.resolve([])
-  );
-  return albumTracks;
+  const albumsTracks = await Promise.all(sameAlbumTracksArray.map(fn));
+  return albumsTracks.flat();
 };
 var fillTracksFromSpotify = (propName) => async (tracks) => {
   const tracksMissing = tracks.filter((track) => track[SortActionProp[propName]] == null);
