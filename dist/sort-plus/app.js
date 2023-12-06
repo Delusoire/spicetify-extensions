@@ -1,8 +1,11 @@
 // extensions/sort-plus/app.ts
-import { array as ar2, function as f2, number as num, option as o, ord, string as str } from "https://esm.sh/fp-ts";
+import { function as f2 } from "https://esm.sh/fp-ts";
 
-// shared/api.ts
-import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
+var fp = ld_fp;
 
 // shared/util.ts
 var { Player, URI } = Spicetify;
@@ -32,14 +35,16 @@ var createQueueItem = (queued) => (uri) => ({
   blocked: [],
   provider: queued ? "queue" : "context"
 });
-var setQueue = async (nextTracks) => {
+var setQueue = async (nextTracks, contextUri) => {
   const { _queue, _client } = PlayerAPI._queue;
   const { prevTracks, queueRevision } = _queue;
-  return _client.setQueue({
+  const res = _client.setQueue({
     nextTracks,
     prevTracks,
     queueRevision
   });
+  contextUri && await setPlayingContext(contextUri);
+  return res;
 };
 var setPlayingContext = (uri) => {
   const { sessionId } = PlayerAPI._state;
@@ -47,6 +52,7 @@ var setPlayingContext = (uri) => {
 };
 
 // shared/api.ts
+import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 var { Locale, GraphQL, CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
@@ -88,20 +94,10 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
   return res.track;
 };
 
-// shared/deps.ts
-import { default as ld } from "https://esm.sh/lodash";
-import { default as ld_fp } from "https://esm.sh/lodash/fp";
-var _ = ld;
-var fp = ld_fp;
-
 // shared/fp.ts
 import { array as ar, function as f, record as rec, semigroup as sg } from "https://esm.sh/fp-ts";
 var { Snackbar } = Spicetify;
 var pMchain = (f3) => async (fa) => f3(await fa);
-var tapAny = (f3) => (fa) => {
-  f3(fa);
-  return fa;
-};
 var progressify = (f3, n) => {
   let i = n, lastProgress = 0;
   return async function(..._2) {
@@ -123,30 +119,6 @@ var progressify = (f3, n) => {
     lastProgress = progress;
     return res;
   };
-};
-var withProgress = (map) => (f3) => (fa) => {
-  let i = 0;
-  let lastProgress = 0;
-  return map(async (...a) => {
-    const ret = await f3(...a);
-    const progress = Math.round(i++ / Object.values(fa).length * 100);
-    if (progress > lastProgress) {
-      Snackbar.updater.enqueueSetState(Snackbar, () => ({
-        snacks: [],
-        queue: []
-      }));
-      Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
-        variant: "default",
-        autoHideDuration: 200,
-        transitionDuration: {
-          enter: 0,
-          exit: 0
-        }
-      });
-    }
-    lastProgress = progress;
-    return ret;
-  })(fa);
 };
 
 // shared/parse.ts
@@ -251,7 +223,11 @@ var createPlaylistFromTracks = (name, tracks, folder) => CosmosAsync2.post("sp:/
 var setPlaylistVisibility = async (playlist, visibleForAll) => await PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
 var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
 var fetchRootFolder = () => fetchFolder(void 0);
-var movePlaylistTracks = async (playlist, tracks, location = {}) => await PlaylistAPI.move(playlist, tracks, location);
+var movePlaylistTracks = async (playlist, uids, location = {}) => await PlaylistAPI.move(
+  playlist,
+  uids.map((uid) => ({ uid })),
+  location
+);
 
 // extensions/sort-plus/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";
@@ -436,33 +412,7 @@ var settings = new SettingsSection("Sort+", "sort-plus").addToggle({ id: "descen
 settings.pushSettings();
 var CONFIG = settings.toObject();
 
-// extensions/sort-plus/app.ts
-debugger;
-var { URI: URI2, ContextMenu, Topbar } = Spicetify;
-var { PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
-var SortBy = /* @__PURE__ */ ((SortBy2) => {
-  SortBy2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
-  SortBy2["SPOTIFY_POPULARITY"] = "Spotify - Popularity";
-  SortBy2["SPOTIFY_RELEASEDATE"] = "Spotify - Release Date";
-  SortBy2["LASTFM_SCROBBLES"] = "LastFM - Scrobbles";
-  SortBy2["LASTFM_PERSONALSCROBBLES"] = "LastFM - My Scrobbles";
-  SortBy2["LASTFM_PLAYCOUNT"] = "LastFM - Play Count";
-  return SortBy2;
-})(SortBy || {});
-var SortProp = /* @__PURE__ */ ((SortProp2) => {
-  SortProp2["Spotify - Play Count"] = "playcount";
-  SortProp2["Spotify - Popularity"] = "popularity";
-  SortProp2["Spotify - Release Date"] = "releaseDate";
-  SortProp2["LastFM - Scrobbles"] = "scrobbles";
-  SortProp2["LastFM - My Scrobbles"] = "personalScrobbles";
-  SortProp2["LastFM - Play Count"] = "lastfmPlaycount";
-  return SortProp2;
-})(SortProp || {});
-var joinByUri = (...trackss) => {
-  const tracks = [...trackss].flat();
-  const uriTrackPairs = tracks.map((track) => [track.uri, track]);
-  return Array.from(new Map(uriTrackPairs).values());
-};
+// extensions/sort-plus/fetch.ts
 var getTracksFromAlbum = async (uri) => {
   const albumRes = await fetchGQLAlbum(uri);
   const releaseDate = new Date(albumRes.date.isoString).getTime();
@@ -478,8 +428,9 @@ var getTracksFromAlbum = async (uri) => {
     })
   );
 };
-var getTracksFromPlaylist = f2.flow(fetchPlaylistContents, pMchain(ar2.map(parsePlaylistAPITrack)));
-async function getTracksFromArtist(uri) {
+var getLikedTracks = _.flow(fetchLikedTracks, pMchain(fp.map(parseLibraryAPILikedTracks)));
+var getTracksFromPlaylist = _.flow(fetchPlaylistContents, pMchain(fp.map(parsePlaylistAPITrack)));
+var getTracksFromArtist = async (uri) => {
   const allTracks = new Array();
   const itemsWithCountAr = new Array();
   const itemsReleasesAr = new Array();
@@ -501,9 +452,96 @@ async function getTracksFromArtist(uri) {
   const albumsTracks = await Promise.all(albumLikeUris.map(getTracksFromAlbum));
   allTracks.push(...albumsTracks.flat());
   return await Promise.all(allTracks);
-}
+};
+
+// extensions/sort-plus/util.ts
+var { URI: URI2 } = Spicetify;
+var SEPARATOR_URI = "spotify:separator";
+var SortAction = /* @__PURE__ */ ((SortAction2) => {
+  SortAction2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
+  SortAction2["SPOTIFY_POPULARITY"] = "Spotify - Popularity";
+  SortAction2["SPOTIFY_RELEASEDATE"] = "Spotify - Release Date";
+  SortAction2["LASTFM_SCROBBLES"] = "LastFM - Scrobbles";
+  SortAction2["LASTFM_PERSONALSCROBBLES"] = "LastFM - My Scrobbles";
+  SortAction2["LASTFM_PLAYCOUNT"] = "LastFM - Play Count";
+  return SortAction2;
+})(SortAction || {});
+var SortActionProp = /* @__PURE__ */ ((SortActionProp2) => {
+  SortActionProp2["Spotify - Play Count"] = "playcount";
+  SortActionProp2["Spotify - Popularity"] = "popularity";
+  SortActionProp2["Spotify - Release Date"] = "releaseDate";
+  SortActionProp2["LastFM - Scrobbles"] = "scrobbles";
+  SortActionProp2["LastFM - My Scrobbles"] = "personalScrobbles";
+  SortActionProp2["LastFM - Play Count"] = "lastfmPlaycount";
+  return SortActionProp2;
+})(SortActionProp || {});
+var joinByUri = (...trackss) => {
+  const tracks = [...trackss].flat();
+  const uriTrackPairs = tracks.map((track) => [track.uri, track]);
+  return Array.from(new Map(uriTrackPairs).values());
+};
+var URI_isLikedTracks = (uri) => {
+  const uriObj = URI2.fromString(uri);
+  return uriObj.type === URI2.Type.COLLECTION && uriObj.category === "tracks";
+};
+var getNameFromUri = async (uri) => {
+  switch (uri.type) {
+    case URI2.Type.ALBUM: {
+      const album = await spotifyApi.albums.get(uri.id);
+      return album.name;
+    }
+    case URI2.Type.ARTIST: {
+      const artist = await spotifyApi.artists.get(uri.id);
+      return artist.name;
+    }
+    case URI2.Type.COLLECTION:
+      if (uri.category === "tracks")
+        return "Liked Tracks";
+      else
+        break;
+    case URI2.Type.PLAYLIST:
+    case URI2.Type.PLAYLIST_V2: {
+      const playlist = await spotifyApi.playlists.getPlaylist(uri.id);
+      return playlist.name;
+    }
+  }
+};
+
+// extensions/sort-plus/playlistsInterop.ts
+var { URI: URI3 } = Spicetify;
+var createPlaylistFromLastSortedQueue = async () => {
+  if (lastSortedQueue.length === 0) {
+    Spicetify.showNotification("Must sort to queue beforehand" /* LAST_SORTED_QUEUE_EMPTY */);
+    return;
+  }
+  const sortedPlaylistsFolder = await fetchFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchRootFolder);
+  const uri = URI3.fromString(lastFetchedUri);
+  const playlistName = `${getNameFromUri(uri)} - ${lastSortAction}`;
+  const { palylistUri } = await createPlaylistFromTracks(
+    playlistName,
+    lastSortedQueue.map((t) => t.uri),
+    sortedPlaylistsFolder.uri
+  );
+  setPlaylistVisibility(palylistUri, false);
+  Spicetify.showNotification(`Playlist ${playlistName} created`);
+};
+var reordedPlaylistLikeSortedQueue = async () => {
+  if (lastSortedQueue.length === 0) {
+    Spicetify.showNotification("Must sort to queue beforehand" /* LAST_SORTED_QUEUE_EMPTY */);
+    return;
+  }
+  if (!URI3.isPlaylistV1OrV2(lastFetchedUri)) {
+    Spicetify.showNotification("Last sorted queue must be a playlist" /* LAST_SORTED_QUEUE_NOT_A_PLAYLIST */);
+    return;
+  }
+  const fn = (uid) => movePlaylistTracks(lastFetchedUri, [uid], SpotifyLoc.after.end());
+  await Promise.all(lastSortedQueue.map((track) => track.uid).map(fn));
+};
+
+// extensions/sort-plus/populate.ts
+var { URI: URI4 } = Spicetify;
 var fillTracksFromWebAPI = async (tracks) => {
-  const ids = tracks.map((track) => URI2.fromString(track.uri).id);
+  const ids = tracks.map((track) => URI4.fromString(track.uri).id);
   const fetchedTracks = (await spotifyApi.tracks.get(ids)).map(parseWebAPITrack);
   return joinByUri(tracks, fetchedTracks);
 };
@@ -518,7 +556,7 @@ var fillTracksFromAlbumTracks = async (tracks) => {
   return albumsTracks.flat();
 };
 var fillTracksFromSpotify = (propName) => async (tracks) => {
-  const tracksMissing = tracks.filter((track) => track[SortProp[propName]] == null);
+  const tracksMissing = tracks.filter((track) => track[SortActionProp[propName]] == null);
   const tracksPopulater = _.cond([
     [fp.startsWith("Spotify - Play Count" /* SPOTIFY_PLAYCOUNT */), () => fillTracksFromAlbumTracks],
     [_.stubTrue, () => fillTracksFromWebAPI]
@@ -526,71 +564,25 @@ var fillTracksFromSpotify = (propName) => async (tracks) => {
   const filledTracks = await tracksPopulater(tracksMissing);
   return joinByUri(tracks, filledTracks);
 };
-var fillTracksFromLastFM = async (track) => {
+var fillTrackFromLastFM = async (track) => {
   const lastfmTrack = await fetchLastFMTrack(CONFIG.LFMApiKey, track.artistName, track.name, CONFIG.lastFmUsername);
   track.lastfmPlaycount = Number(lastfmTrack.listeners);
   track.scrobbles = Number(lastfmTrack.playcount);
   track.personalScrobbles = Number(lastfmTrack.userplaycount);
   return track;
 };
-var fetchTracks = f2.flow(
-  tapAny((uri) => void (lastFetchedUri = uri)),
-  _.cond([
-    [URI2.isAlbum, getTracksFromAlbum],
-    [URI2.isArtist, getTracksFromArtist],
-    [URI2.isCollection, () => fetchLikedTracks().then((tracks) => tracks.map(parseLibraryAPILikedTracks))],
-    [URI2.isPlaylistV1OrV2, getTracksFromPlaylist]
-  ])
-);
-var populateTracksLastFM = (tracks) => {
-  const fn = progressify(fillTracksFromLastFM, tracks.length);
+var fillTracksFromLastFM = (tracks) => {
+  const fn = progressify(fillTrackFromLastFM, tracks.length);
   return Promise.all(tracks.map(fn));
 };
-var populateTracks = _.cond([
-  [fp.startsWith("Spotify"), fillTracksFromSpotify],
-  [fp.startsWith("LastFM"), () => populateTracksLastFM]
-]);
-var lastSortedQueue = [];
-var _setQueue = (inverted) => async (queue) => {
-  if (PlayerAPI2._queue._queue === null)
-    return void Spicetify.showNotification("Queue is null!", true);
-  const uriOrd = f2.pipe(
-    str.Ord,
-    ord.contramap((t) => t.uri)
-  );
-  lastSortedQueue = f2.pipe(queue, ar2.uniq(uriOrd), inverted ? ar2.reverse : f2.identity);
-  global.lastSortedQueue = lastSortedQueue;
-  const isQueued = URI2.isCollection(lastFetchedUri);
-  await f2.pipe(
-    lastSortedQueue,
-    ar2.map((t) => t.uri),
-    ar2.concat(["spotify:separator"]),
-    ar2.map(createQueueItem(isQueued)),
-    setQueue
-  );
-  if (!isQueued)
-    await setPlayingContext(lastFetchedUri);
-  await PlayerAPI2.skipToNext();
-};
+
+// extensions/sort-plus/app.ts
+debugger;
+var { URI: URI5, ContextMenu, Topbar } = Spicetify;
+var { PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
 var lastFetchedUri;
-var lastActionName;
-var sortByProp = (name) => async (uri) => {
-  lastActionName = name;
-  const descending = invertOrder ^ Number(CONFIG.descending);
-  const propOrd = f2.pipe(
-    num.Ord,
-    ord.contramap((t) => t[SortProp[name]])
-  );
-  f2.pipe(
-    uri,
-    fetchTracks,
-    pMchain(populateTracks(name)),
-    pMchain(ar2.map((x) => x[SortProp[name]] != null ? o.some(x) : o.none)),
-    pMchain(ar2.sequence(o.Applicative)),
-    pMchain(o.map(ar2.sort(propOrd))),
-    pMchain(o.map(_setQueue(!!descending)))
-  );
-};
+var lastSortAction;
+var lastSortedQueue2 = [];
 var invertOrder = 0;
 addEventListener("keydown", (event) => {
   if (!event.repeat && event.key === "Control")
@@ -600,88 +592,87 @@ addEventListener("keyup", (event) => {
   if (!event.repeat && event.key === "Control")
     invertOrder = 0;
 });
-var sortTracksWith = (name, sortFn) => (uri) => {
-  lastActionName = name;
+var getTracksFromUri = _.flow(
+  fp.tap((uri) => lastFetchedUri = uri),
+  _.cond([
+    [URI5.isAlbum, getTracksFromAlbum],
+    [URI5.isArtist, getTracksFromArtist],
+    [URI_isLikedTracks, getLikedTracks],
+    [URI5.isPlaylistV1OrV2, getTracksFromPlaylist]
+  ])
+);
+var populateTracks = _.cond([
+  [fp.startsWith("Spotify"), fillTracksFromSpotify],
+  [fp.startsWith("LastFM"), () => fillTracksFromLastFM]
+]);
+var _setQueue = (reverse) => async (tracks) => {
+  if (PlayerAPI2?._state?.item?.uid == void 0)
+    return void Spicetify.showNotification("Queue is null!", true);
+  const dedupedQueue = _.uniqBy(tracks, (track) => track.uri);
+  reverse && dedupedQueue.reverse();
+  global.lastSortedQueue = lastSortedQueue2 = dedupedQueue;
+  const isLikedTracks = URI_isLikedTracks(lastFetchedUri);
+  const queue = _(lastSortedQueue2).map((track) => track.uri).concat([SEPARATOR_URI]).map(createQueueItem(isLikedTracks)).value();
+  setQueue(queue, isLikedTracks ? void 0 : lastFetchedUri);
+  if (!isLikedTracks)
+    await setPlayingContext(lastFetchedUri);
+  return await PlayerAPI2.skipToNext();
+};
+var sortTracksBy = (sortAction, sortFn) => async (uri) => {
+  lastSortAction = sortAction;
   const descending = invertOrder ^ Number(CONFIG.descending);
-  f2.pipe(uri, fetchTracks, pMchain(sortFn), pMchain(_setQueue(!!descending)));
+  const tracks = await getTracksFromUri(uri);
+  const sortedTracks = await sortFn(tracks);
+  return await _setQueue(!!descending)(sortedTracks);
 };
 var shuffle = (array, l = array.length) => l == 0 ? [] : [array.splice(Math.floor(Math.random() * l), 1)[0], ...shuffle(array)];
+var sortTracksByShuffle = sortTracksBy("True Shuffle", shuffle);
 var shuffleSubmenu = new ContextMenu.Item(
   "True Shuffle",
-  ([uri]) => sortTracksWith("True Shuffle", shuffle)(uri),
+  ([uri]) => sortTracksByShuffle(uri),
   f2.constTrue,
   "shuffle",
   false
 );
-var starsOrd = f2.pipe(
-  num.Ord,
-  ord.contramap((t) => tracksRatings[t.uri] ?? 0)
+var sortTracksByStars = sortTracksBy(
+  "Stars",
+  fp.sortBy((track) => tracksRatings[track.uri] ?? 0)
 );
 var starsSubmenu = new ContextMenu.Item(
   "Stars",
-  ([uri]) => sortTracksWith("Stars", ar2.sort(starsOrd))(uri),
+  ([uri]) => sortTracksByStars(uri),
   () => tracksRatings !== void 0,
   "heart-active",
   false
 );
-var createSortByPropSubmenu = (name, icon) => new ContextMenu.Item(name, ([uri]) => sortByProp(name)(uri), f2.constTrue, icon, false);
+var createSubMenuForSortProp = (name, icon) => new ContextMenu.Item(
+  name,
+  ([uri]) => {
+    const sortActionProp = SortActionProp[name];
+    const sortFn = async (tracks) => {
+      const filledTracks = await populateTracks(name)(tracks);
+      const filteredTracks = filledTracks.filter((track) => track[sortActionProp] != null);
+      return _.sortBy(filteredTracks, sortActionProp);
+    };
+    sortTracksBy(name, sortFn)(uri);
+  },
+  _.stubTrue,
+  icon,
+  false
+);
 new ContextMenu.SubMenu(
   "Sort by",
-  ar2.zipWith(
-    Object.values(SortBy),
+  _.zipWith(
+    Object.values(SortAction),
     ["play", "heart", "list-view", "volume", "artist", "subtitles"],
-    createSortByPropSubmenu
+    createSubMenuForSortProp
   ).concat([shuffleSubmenu, starsSubmenu]),
-  ([uri]) => _.overEvery([URI2.isAlbum, URI2.isArtist, URI2.isCollection, URI2.isTrack, URI2.isPlaylistV1OrV2])(uri)
+  ([uri]) => _.overEvery([URI5.isAlbum, URI5.isArtist, URI_isLikedTracks, URI5.isTrack, URI5.isPlaylistV1OrV2])(uri)
 ).register();
-var getNameFromUri = async (uri) => {
-  switch (uri.type) {
-    case URI2.Type.ALBUM: {
-      const album = await spotifyApi.albums.get(uri.id);
-      return album.name;
-    }
-    case URI2.Type.ARTIST: {
-      const artist = await spotifyApi.artists.get(uri.id);
-      return artist.name;
-    }
-    case URI2.Type.COLLECTION:
-      return "Liked Tracks";
-    case URI2.Type.PLAYLIST:
-    case URI2.Type.PLAYLIST_V2: {
-      const playlist = await spotifyApi.playlists.getPlaylist(uri.id);
-      return playlist.name;
-    }
-  }
+new Topbar.Button("Create a Playlist from Sorted Queue", "plus2px", createPlaylistFromLastSortedQueue);
+new Topbar.Button("Reorder current Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue);
+export {
+  lastFetchedUri,
+  lastSortAction,
+  lastSortedQueue2 as lastSortedQueue
 };
-new Topbar.Button("Add Sorted Queue to Sorted Playlists", "plus2px", async () => {
-  if (lastSortedQueue.length === 0) {
-    Spicetify.showNotification("Must sort to queue beforehand");
-    return;
-  }
-  const sortedPlaylistsFolder = await fetchFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchRootFolder);
-  const uri = URI2.fromString(lastFetchedUri);
-  const playlistName = `${getNameFromUri(uri) ?? "Error"} - ${lastActionName}`;
-  const { palylistUri } = await createPlaylistFromTracks(
-    playlistName,
-    lastSortedQueue.map((t) => t.uri),
-    sortedPlaylistsFolder.uri
-  );
-  setPlaylistVisibility(palylistUri, false);
-  Spicetify.showNotification(`Playlist ${playlistName} created`);
-});
-new Topbar.Button("Reorder Playlist with Sorted Queue", "chart-down", async () => {
-  if (lastSortedQueue.length === 0) {
-    Spicetify.showNotification("Must sort to queue beforehand");
-    return;
-  }
-  if (!URI2.isPlaylistV1OrV2(lastFetchedUri)) {
-    Spicetify.showNotification("Last sorted queue must be a playlist");
-    return;
-  }
-  f2.pipe(
-    lastSortedQueue.map((t) => ({ uid: t.uid })),
-    withProgress(ar2.map)(
-      (t) => void movePlaylistTracks(lastFetchedUri, [t], SpotifyLoc.after.end())
-    )
-  );
-});

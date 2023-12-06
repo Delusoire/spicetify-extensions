@@ -14,13 +14,6 @@ export const pMchain: async =
     async (fa: A) =>
         f(await fa)
 
-export const tapAny =
-    <A>(f: (a: A) => void) =>
-    (fa: A) => {
-        f(fa)
-        return fa
-    }
-
 export const chunckify =
     (n: number) =>
     <A, R>(g: (a: A[]) => Promise<R[]>) =>

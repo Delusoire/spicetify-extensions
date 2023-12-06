@@ -223,7 +223,7 @@ declare namespace Spicetify.Platform {
         const _queue: Queue
         const _state: PlayerState
 
-        function skipToNext(next?: TrackRef): void
+        function skipToNext(next?: TrackRef): Promise<void>
         function updateContext(
             sessionId: string,
             context: any,

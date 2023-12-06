@@ -100,18 +100,25 @@ export const createQueueItem = (queued: boolean) => (uri: SpotifyURI) => ({
     provider: queued ? ("queue" as const) : ("context" as const),
 })
 
-export const setQueue = async (nextTracks: Array<ReturnType<ReturnType<typeof createQueueItem>>>) => {
+export const setQueue = async (
+    nextTracks: Array<ReturnType<ReturnType<typeof createQueueItem>>>,
+    contextUri?: string,
+) => {
     const { _queue, _client } = PlayerAPI._queue
     const { prevTracks, queueRevision } = _queue
 
-    return _client.setQueue({
+    const res = _client.setQueue({
         nextTracks,
         prevTracks,
         queueRevision,
-    }) as Promise<{ error: number; reasons: string }>
+    })
+
+    contextUri && (await setPlayingContext(contextUri))
+
+    return res
 }
 
-export const setPlayingContext = (uri: SpotifyURI) => {
+export const setPlayingContext = (uri: string) => {
     const { sessionId } = PlayerAPI._state
     return PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri })
 }

@@ -65,9 +65,14 @@ export const addPlaylistTracks = async (
 
 export const movePlaylistTracks = async (
     playlist: SpotifyURI,
-    tracks: Array<{ uid: string }>,
+    uids: string[],
     location: Spicetify.Platform.RootlistAPI.Location = {},
-) => await PlaylistAPI.move(playlist, tracks, location)
+) =>
+    await PlaylistAPI.move(
+        playlist,
+        uids.map(uid => ({ uid })),
+        location,
+    )
 
 export const removePlaylistTracks = async (playlist: SpotifyURI, tracks: Array<{ uid: string }>) =>
     PlaylistAPI.remove(playlist, tracks)
