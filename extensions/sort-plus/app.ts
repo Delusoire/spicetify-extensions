@@ -55,7 +55,6 @@ const _setQueue = (reverse: boolean) => async (tracks: TrackData[]) => {
 
     const queue = _(lastSortedQueue)
         .map(track => track.uri)
-        .concat([SEPARATOR_URI])
         .map(createQueueItem(isLikedTracks))
         .value()
 

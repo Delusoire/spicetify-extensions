@@ -456,7 +456,6 @@ var getTracksFromArtist = async (uri) => {
 
 // extensions/sort-plus/util.ts
 var { URI: URI2 } = Spicetify;
-var SEPARATOR_URI = "spotify:separator";
 var SortAction = /* @__PURE__ */ ((SortAction2) => {
   SortAction2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
   SortAction2["SPOTIFY_POPULARITY"] = "Spotify - Popularity";
@@ -612,7 +611,7 @@ var _setQueue = (reverse) => async (tracks) => {
   reverse && dedupedQueue.reverse();
   global.lastSortedQueue = lastSortedQueue2 = dedupedQueue;
   const isLikedTracks = URI_isLikedTracks(lastFetchedUri);
-  const queue = _(lastSortedQueue2).map((track) => track.uri).concat([SEPARATOR_URI]).map(createQueueItem(isLikedTracks)).value();
+  const queue = _(lastSortedQueue2).map((track) => track.uri).map(createQueueItem(isLikedTracks)).value();
   if (!isLikedTracks)
     await setPlayingContext(lastFetchedUri);
   setQueue(queue);
