@@ -46,7 +46,7 @@ var _ = ld;
 // shared/fp.ts
 var { Snackbar } = Spicetify;
 var chunkify50 = (fn) => async (args) => {
-  const a = await Promise.all(_.chunk(args, 50).map(fn));
+  const a = await Promise.all(_.chunk(args, 50).map((a2) => fn(a2)));
   return a.flat();
 };
 
@@ -108,6 +108,7 @@ var isUriOutdatedDuplicate = async (uri) => {
 
 // extensions/detect-duplicates/app.ts
 var { URI: URI3 } = Spicetify;
+debugger;
 var greyOutTrack = (track) => {
   track.style.backgroundColor = "gray";
   track.style.opacity = "0.3";

@@ -312,7 +312,7 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
 var { Snackbar } = Spicetify;
 var pMchain = (f) => async (fa) => f(await fa);
 var chunkify50 = (fn) => async (args) => {
-  const a = await Promise.all(_.chunk(args, 50).map(fn));
+  const a = await Promise.all(_.chunk(args, 50).map((a2) => fn(a2)));
   return a.flat();
 };
 var progressify = (f, n) => {
