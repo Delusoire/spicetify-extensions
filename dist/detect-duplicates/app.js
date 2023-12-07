@@ -122,7 +122,6 @@ var isUriOutdatedDuplicate = async (uri) => {
 
 // extensions/detect-duplicates/app.ts
 var { URI: URI3 } = Spicetify;
-debugger;
 var greyOutTrack = (track) => {
   track.style.backgroundColor = "gray";
   track.style.opacity = "0.3";

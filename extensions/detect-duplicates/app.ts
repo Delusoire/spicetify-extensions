@@ -3,8 +3,6 @@ import { getISRCsForUris, isUriOutdatedDuplicate } from "./util.ts"
 
 const { URI } = Spicetify
 
-debugger
-
 const greyOutTrack = (track: HTMLDivElement) => {
     track.style.backgroundColor = "gray"
     track.style.opacity = "0.3"
