@@ -80,7 +80,7 @@ export const getISRCsForUris = async (uris: string[]) => {
 
 export const isUriOutdatedDuplicate = async (uri: string) => {
     const isrc = uriToISRC.get(uri)
-    if (!isrc) return null // cache miss, shouldn't happen as we have made a pass to load the cache
+    if (!isrc) return null // cache miss, should never happen as we have made a pass to load the cache
     const uris = await getUrisFromISRC(isrc)
     if (!uris) return null
     return uri !== uris[0]
