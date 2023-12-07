@@ -36,10 +36,10 @@ jobs:
             - name: Rename and Upload App.js files
               run: |
                   cd dist
-                    for extension in */; do
-                      extension=${extension%*/}
+                    for folder in */; do
+                      folder=${folder%*/}
                       if [ "$folder" != "snippets" ]; then
-                        mv "${extension}/app.js" "${extension}/${extension}.app.js"
+                        mv "${folder}/app.js" "${folder}/${folder}.app.js"
                       fi
                     done
 
