@@ -1,8 +1,8 @@
 import { ensureDir } from "https://deno.land/std/fs/ensure_dir.ts"
 import { dirname, join, relative, resolve } from "https://deno.land/std/path/mod.ts"
 import sass from "https://deno.land/x/denosass/mod.ts"
-import postcss, { Message, AcceptedPlugin as PostCSSPlugin } from "https://esm.sh/postcss"
-import postcssModules from "https://esm.sh/postcss-modules"
+import postcss, { Message, AcceptedPlugin as PostCSSPlugin } from "npm:postcss"
+import postcssModules from "npm:postcss-modules"
 
 interface PostCSSPluginOptions {
     plugins: PostCSSPlugin[]

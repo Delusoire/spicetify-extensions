@@ -1,4 +1,4 @@
-import parser from "https://esm.sh/js-yaml"
+import parser from "npm:js-yaml"
 
 const optionalByteOrderMark = "\\ufeff?"
 const pattern =
