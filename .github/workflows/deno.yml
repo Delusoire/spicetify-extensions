@@ -36,10 +36,12 @@ jobs:
             - name: Rename and Upload App.js files
               run: |
                   cd dist
-                  for extension in */; do
-                    extension=${extension%*/}
-                    mv "${extension}/app.js" "${extension}/${extension}.app.js"
-                  done
+                    for extension in */; do
+                      extension=${extension%*/}
+                      if [ "$folder" != "snippets" ]; then
+                        mv "${extension}/app.js" "${extension}/${extension}.app.js"
+                      fi
+                    done
 
             - name: Create Release
               id: create_release
