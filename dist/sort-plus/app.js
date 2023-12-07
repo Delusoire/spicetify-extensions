@@ -321,7 +321,7 @@ var progressify = (f, n) => {
     const res = await f(...arguments), progress = Math.round((1 - --i / n) * 100);
     if (progress > lastProgress) {
       ;
-      Snackbar.SnackbarProvider.updater.enqueueSetState(Snackbar, () => ({
+      Snackbar.updater.enqueueSetState(Snackbar, () => ({
         snacks: [],
         queue: []
       }));
