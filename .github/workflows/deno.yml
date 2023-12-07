@@ -9,31 +9,58 @@
 name: Deno
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
 
 permissions:
-  contents: read
+    contents: read
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Setup repo
-        uses: actions/checkout@v3
+        steps:
+            - name: Setup repo
+              uses: actions/checkout@v3
 
-      - name: Setup Deno
-        # uses: denoland/setup-deno@v1
-        uses: denoland/setup-deno@61fe2df320078202e33d7d5ad347e7dcfa0e8f31  # v1.1.2
-        with:
-          deno-version: v1.x
+            - name: Set up Deno
+              uses: denoland/setup-deno@v1
+              with:
+                  deno-version: v1.x
 
-      # Uncomment this step to verify the use of 'deno fmt' on each commit.
-      # - name: Verify formatting
-      #   run: deno fmt --check
+            - name: Bundle with Deno
+              run: deno task bundle
 
-      - name: Run bundle
-        run: deno task bundle
+            - name: Rename and Upload App.js files
+              run: |
+                  cd dist
+                  for extension in */; do
+                    extension=${extension%*/}
+                    mv "${extension}/app.js" "${extension}/${extension}.app.js"
+                  done
+
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ github.sha }}
+                  release_name: Release ${{ github.sha }}
+                  draft: false
+                  prerelease: false
+
+            - name: Upload Assets
+              id: upload_assets
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: |
+                      dist/**/*.app.js
+                  asset_name: |
+                      ${{ github.event.head_commit.committer.username }}-${{ github.sha }}-${{ github.event.repository.name }}-$1
+                  asset_content_type: application/javascript
