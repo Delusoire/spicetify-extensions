@@ -10,9 +10,8 @@ name: Deno
 
 on:
     push:
-        branches: ["main"]
-    pull_request:
-        branches: ["main"]
+        tags:
+            - v*
 
 permissions:
     contents: write
@@ -44,25 +43,8 @@ jobs:
                   done
 
             - name: Create Release
-              id: create_release
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              uses: softprops/action-gh-release@v1
+              if: startsWith(github.ref, 'refs/tags/')
               with:
-                  tag_name: ${{ github.sha }}
-                  release_name: Release ${{ github.sha }}
-                  draft: false
-                  prerelease: false
-
-            - name: Upload Assets
-              id: upload_assets
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: |
+                  files: |
                       dist/**/*.app.js
-                  asset_name: |
-                      ${{ github.event.head_commit.committer.username }}-${{ github.sha }}-${{ github.event.repository.name }}-$1
-                  asset_content_type: application/javascript
