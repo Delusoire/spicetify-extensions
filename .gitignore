@@ -1,4 +1,1 @@
-extensions/full-screen
-dist/full-screen.js
-dist/full-screen.prism.js
-node_modules
+node_modules/**
