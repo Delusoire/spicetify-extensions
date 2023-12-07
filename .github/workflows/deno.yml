@@ -15,7 +15,7 @@ on:
         branches: ["main"]
 
 permissions:
-    contents: read
+    contents: write
 
 jobs:
     build:
@@ -36,12 +36,12 @@ jobs:
             - name: Rename and Upload App.js files
               run: |
                   cd dist
-                    for folder in */; do
-                      folder=${folder%*/}
-                      if [ "$folder" != "snippets" ]; then
-                        mv "${folder}/app.js" "${folder}/${folder}.app.js"
-                      fi
-                    done
+                  for folder in */; do
+                    folder=${folder%*/}
+                    if [ "$folder" != "snippets" ]; then
+                      mv "${folder}/app.js" "${folder}/${folder}.app.js"
+                    fi
+                  done
 
             - name: Create Release
               id: create_release
