@@ -49,6 +49,143 @@ var init_platformApi = __esm({
   }
 });
 
+// extensions/vaultify/util.ts
+var URI2, extractUrisWrapper, isContentOfPersonalPlaylist;
+var init_util2 = __esm({
+  "extensions/vaultify/util.ts"() {
+    ({ URI: URI2 } = Spicetify);
+    extractUrisWrapper = (fetcher) => () => fetcher().then(({ items }) => items.map((item) => item.uri));
+    isContentOfPersonalPlaylist = (subleaf) => typeof subleaf[0] === "string" && URI2.isTrack(subleaf[0]);
+  }
+});
+
+// extensions/vaultify/backup.ts
+var LibraryAPI2, LocalStorageAPI, getLibraryTracks, getLibraryAlbums, getLibraryArtists, getLibraryTrackUris, getLibraryAlbumUris, getLibraryArtistUris, getSettings, getLocalStorage, getLocalStoreAPI, extractLikedPlaylistTreeRecur;
+var init_backup = __esm({
+  "extensions/vaultify/backup.ts"() {
+    init_platformApi();
+    init_util2();
+    ({ LibraryAPI: LibraryAPI2, LocalStorageAPI } = Spicetify.Platform);
+    getLibraryTracks = () => LibraryAPI2.getTracks({
+      limit: -1,
+      sort: { field: "ADDED_AT", order: "ASC" }
+    });
+    getLibraryAlbums = () => LibraryAPI2.getAlbums({
+      limit: 2 ** 30,
+      sort: { field: "ADDED_AT" }
+    });
+    getLibraryArtists = () => LibraryAPI2.getArtists({
+      limit: 2 ** 30,
+      sort: {
+        field: "ADDED_AT"
+      }
+    });
+    getLibraryTrackUris = extractUrisWrapper(getLibraryTracks);
+    getLibraryAlbumUris = extractUrisWrapper(getLibraryAlbums);
+    getLibraryArtistUris = extractUrisWrapper(getLibraryArtists);
+    getSettings = () => {
+      const SETTINGS_EL_SEL = `[id^="settings."],[id^="desktop."],[class^="network."]`;
+      const settingsEls = Array.from(document.querySelectorAll(SETTINGS_EL_SEL));
+      const settings2 = settingsEls.map((settingEl) => {
+        const id = settingEl.getAttribute("id");
+        if (!id)
+          return null;
+        if (settingEl instanceof HTMLInputElement) {
+          switch (settingEl.getAttribute("type")) {
+            case "checkbox":
+              return [id, "checkbox" /* CHECKBOX */, settingEl.checked];
+            case "text":
+              return [id, "text" /* TEXT */, settingEl.value];
+          }
+        } else if (settingEl instanceof HTMLSelectElement) {
+          return [id, "select" /* SELECT */, settingEl.value];
+        }
+        return null;
+      });
+      return settings2.filter(Boolean);
+    };
+    getLocalStorage = () => {
+      const LS_ALLOW_REGEX = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/;
+      return Object.entries(localStorage).filter(([key]) => LS_ALLOW_REGEX.test(key));
+    };
+    getLocalStoreAPI = () => {
+      return Object.entries(LocalStorageAPI.items).filter(([key]) => key.startsWith(LocalStorageAPI.namespace)).map(([key, value]) => [key.split(":")[1], value]);
+    };
+    extractLikedPlaylistTreeRecur = async (leaf) => {
+      switch (leaf.type) {
+        case "playlist": {
+          const getPlaylistContents = (uri) => fetchPlaylistContents(uri).then((tracks) => tracks.map((track) => track.uri));
+          return {
+            [leaf.name]: leaf.isOwnedBySelf ? await getPlaylistContents(leaf.uri) : leaf.uri
+          };
+        }
+        case "folder": {
+          const a = leaf.items.map(extractLikedPlaylistTreeRecur);
+          return {
+            [leaf.name]: await Promise.all(a)
+          };
+        }
+      }
+    };
+  }
+});
+
+// extensions/vaultify/restore.ts
+var LocalStorageAPI2, restoreLibrary, restoreExtensions, restoreSettings, restorePlaylistseRecur;
+var init_restore = __esm({
+  "extensions/vaultify/restore.ts"() {
+    init_platformApi();
+    init_util();
+    init_util2();
+    ({ LocalStorageAPI: LocalStorageAPI2 } = Spicetify.Platform);
+    restoreLibrary = async (data, silent = true) => {
+      setTracksLiked(data.libraryTracks, true);
+      setTracksLiked(data.libraryAlbums, true);
+      setTracksLiked(data.libraryArtists, true);
+      await restorePlaylistseRecur(data.playlists);
+      !silent && Spicetify.showNotification("Restored Library");
+    };
+    restoreExtensions = (vault, silent = true) => {
+      vault.localStore.forEach(([k, v]) => localStorage.setItem(k, v));
+      vault.localStoreAPI.forEach(([k, v]) => LocalStorageAPI2.setItem(k, v));
+      !silent && Spicetify.showNotification("Restored Extensions");
+    };
+    restoreSettings = (data, silent = true) => {
+      data.settings.map(([id, type, value]) => {
+        const setting = document.querySelector(`[id="${id}"]`);
+        if (!setting)
+          return console.warn(`Setting for ${id} wasn't found`);
+        if (type === "text")
+          setting.value = value;
+        else if (type === "checkbox")
+          setting.checked = value;
+        else if (type === "select")
+          setting.value = value;
+        else
+          return;
+        const settingReactProps = getReactProps(setting);
+        settingReactProps.onChange({ target: setting });
+      });
+      !silent && Spicetify.showNotification("Restored Settings");
+    };
+    restorePlaylistseRecur = async (leaf, folder = "") => await Promise.all(
+      Object.keys(leaf).map(async (name) => {
+        const subleaf = leaf[name];
+        if (!Array.isArray(subleaf))
+          return void addPlaylist(subleaf, folder);
+        if (subleaf.length === 0)
+          return;
+        if (isContentOfPersonalPlaylist(subleaf))
+          return void createPlaylistFromTracks(name, subleaf, folder);
+        const { success, uri } = await createFolder(name, SpotifyLoc.after.fromUri(folder));
+        if (!success)
+          return;
+        subleaf.forEach((leaf2) => restorePlaylistseRecur(leaf2, uri));
+      })
+    );
+  }
+});
+
 // shared/deps.ts
 import { default as ld } from "https://esm.sh/lodash";
 import { default as ld_fp } from "https://esm.sh/lodash/fp";
@@ -69,11 +206,11 @@ var init_modules = __esm({
     modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
     functionModules = modules.filter((module) => typeof module === "function");
     findModuleByStrings = (modules2, ...filters) => modules2.find(
-      (f2) => _.overEvery(
+      (f) => _.overEvery(
         filters.map(
           (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
         )
-      )(f2.toString())
+      )(f.toString())
     );
     CheckedPlaylistButtonIcon = findModuleByStrings(
       functionModules,
@@ -98,13 +235,13 @@ var init_settings = __esm({
   "shared/settings.tsx"() {
     init_modules();
     init_util();
+    init_deps();
     ({ React, ReactDOM, LocalStorage } = Spicetify);
     ({ ButtonSecondary } = Spicetify.ReactComponent);
     ({ History: History2 } = Spicetify.Platform);
     SettingsSection = class _SettingsSection {
-      constructor(name, id, sectionFields = {}) {
+      constructor(name, sectionFields = {}) {
         this.name = name;
-        this.id = id;
         this.sectionFields = sectionFields;
         this.pushSettings = () => {
           if (this.stopHistoryListener)
@@ -209,6 +346,7 @@ var init_settings = __esm({
             }
           ));
         };
+        this.id = _.kebabCase(name);
       }
       addField(type, opts, defaultValue) {
         if (defaultValue !== void 0) {
@@ -241,7 +379,7 @@ var init_settings2 = __esm({
   "extensions/vaultify/settings.ts"() {
     init_settings();
     init_app();
-    settings = new SettingsSection("Vaultify", "vaultify").addButton({
+    settings = new SettingsSection("Vaultify").addButton({
       id: "backup",
       desc: "Backup Library, Extensions and Settings",
       text: "Backup to clipboard",
@@ -250,103 +388,38 @@ var init_settings2 = __esm({
       id: "restoreLibrary",
       desc: "Restore Library",
       text: "Restore from clipboard",
-      onClick: restore("library")
+      onClick: restoreFactory("library" /* LIBRARY */)
     }).addButton({
       id: "restoreExtensions",
       desc: "Restore Extensions",
       text: "Restore from clipboard",
-      onClick: restore("extensions")
+      onClick: restoreFactory("extensions" /* EXTENSIONS */)
     }).addButton({
       id: "restoreSettings",
       desc: "Restore Settings",
       text: "Restore from clipboard",
-      onClick: restore("settings")
+      onClick: restoreFactory("settings" /* SETTINGS */)
     });
     settings.pushSettings();
   }
 });
 
 // extensions/vaultify/app.ts
-import { array as ar, function as f } from "https://esm.sh/fp-ts";
-var LocalStorage2, URI2, ClipboardAPI, LibraryAPI2, LocalStorageAPI, extractLikedPlaylistTreeRecur, isContentOfPersonalPlaylist, restorePlaylistseRecur, allowedExtDataRegex, backup, restore;
+var ClipboardAPI, backup, RestoreScope, restoreFactory;
 var init_app = __esm({
   "extensions/vaultify/app.ts"() {
     init_platformApi();
-    init_util();
-    ({ LocalStorage: LocalStorage2, URI: URI2 } = Spicetify);
-    ({ ClipboardAPI, LibraryAPI: LibraryAPI2, LocalStorageAPI } = Spicetify.Platform);
-    extractLikedPlaylistTreeRecur = async (leaf) => {
-      switch (leaf.type) {
-        case "playlist": {
-          const getPlaylistContents = (uri) => fetchPlaylistContents(uri).then((tracks) => tracks.map((track) => track.uri));
-          return {
-            [leaf.name]: leaf.isOwnedBySelf ? await getPlaylistContents(leaf.uri) : leaf.uri
-          };
-        }
-        case "folder": {
-          const a = leaf.items.map(extractLikedPlaylistTreeRecur);
-          return {
-            [leaf.name]: await Promise.all(a)
-          };
-        }
-      }
-    };
-    isContentOfPersonalPlaylist = (subleaf) => typeof subleaf[0] === "string" && URI2.isTrack(subleaf[0]);
-    restorePlaylistseRecur = async (leaf, folder = "") => await Promise.all(
-      Object.keys(leaf).map(async (name) => {
-        const subleaf = leaf[name];
-        if (!Array.isArray(subleaf))
-          return void addPlaylist(subleaf, folder);
-        if (subleaf.length === 0)
-          return;
-        if (isContentOfPersonalPlaylist(subleaf))
-          return void createPlaylistFromTracks(name, subleaf, folder);
-        const { success, uri } = await createFolder(name, SpotifyLoc.after.fromUri(folder));
-        if (!success)
-          return;
-        subleaf.forEach((leaf2) => restorePlaylistseRecur(leaf2, uri));
-      })
-    );
-    allowedExtDataRegex = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/;
-    backup = async () => {
-      const extractItemsUris = (a) => a.items.map((item) => item.uri);
-      const rawLibraryTracks = await LibraryAPI2.getTracks({
-        limit: -1,
-        sort: { field: "ADDED_AT", order: "ASC" }
-      });
-      const libraryTracks = extractItemsUris(rawLibraryTracks);
-      const rawLibraryAlbums = await LibraryAPI2.getAlbums({
-        limit: 2 ** 30,
-        sort: { field: "ADDED_AT" }
-      });
-      const libraryAlbums = extractItemsUris(rawLibraryAlbums);
-      const rawLibraryArtists = await LibraryAPI2.getArtists({
-        limit: 2 ** 30,
-        sort: {
-          field: "ADDED_AT"
-        }
-      });
-      const libraryArtists = extractItemsUris(rawLibraryArtists);
-      const playlists = await f.pipe(await fetchRootFolder(), extractLikedPlaylistTreeRecur);
-      const localStore = Object.entries(localStorage).filter(([key]) => allowedExtDataRegex.test(key));
-      const { items, namespace } = LocalStorageAPI;
-      const localStoreAPI = Object.entries(items).filter(([key]) => key.startsWith(namespace)).map(([key, value]) => [key.split(":")[1], value]);
-      const settings2 = f.pipe(
-        document.querySelectorAll(`[id^="settings."],[id^="desktop."],[class^="network."]`),
-        Array.from,
-        ar.flatMap((setting) => {
-          const id = setting.getAttribute("id");
-          if (setting instanceof HTMLInputElement) {
-            const type = setting.getAttribute("type");
-            if (type === "checkbox")
-              return [[id, "checkbox", setting.checked]];
-            else if (type === "text")
-              return [[id, "text", setting.value]];
-          } else if (setting instanceof HTMLSelectElement)
-            return [[id, "select", setting.value]];
-          return [];
-        })
-      );
+    init_backup();
+    init_restore();
+    ({ ClipboardAPI } = Spicetify.Platform);
+    backup = async (silent = false) => {
+      const libraryTracks = await getLibraryTrackUris();
+      const libraryAlbums = await getLibraryAlbumUris();
+      const libraryArtists = await getLibraryArtistUris();
+      const playlists = await fetchRootFolder().then(extractLikedPlaylistTreeRecur);
+      const localStore = getLocalStorage();
+      const localStoreAPI = getLocalStoreAPI();
+      const settings2 = getSettings();
       await ClipboardAPI.copy(
         JSON.stringify({
           libraryTracks,
@@ -358,45 +431,23 @@ var init_app = __esm({
           settings: settings2
         })
       );
-      Spicetify.showNotification("Backed up Playlists, Extensions and Settings");
+      !silent && Spicetify.showNotification("Backed up Playlists, Extensions and Settings");
     };
-    restore = (mode) => async () => {
+    RestoreScope = /* @__PURE__ */ ((RestoreScope2) => {
+      RestoreScope2["LIBRARY"] = "library";
+      RestoreScope2["EXTENSIONS"] = "extensions";
+      RestoreScope2["SETTINGS"] = "settings";
+      return RestoreScope2;
+    })(RestoreScope || {});
+    restoreFactory = (mode) => async () => {
       const vault = JSON.parse(await ClipboardAPI.paste());
-      if (mode === "library") {
-        setTracksLiked(vault.libraryTracks, true);
-        setTracksLiked(vault.libraryAlbums, true);
-        setTracksLiked(vault.libraryArtists, true);
-        await restorePlaylistseRecur(vault.playlists);
-        Spicetify.showNotification("Restored Library");
-      }
-      if (mode === "extensions") {
-        f.pipe(
-          vault.localStore,
-          ar.map(([a, b]) => LocalStorage2.set(a, b))
-        );
-        f.pipe(
-          vault.localStoreAPI,
-          ar.map(([a, b]) => LocalStorageAPI.setItem(a, b))
-        );
-        Spicetify.showNotification("Restored Extensions");
-      }
-      if (mode === "settings") {
-        vault.settings.map(([id, type, value]) => {
-          const setting = document.querySelector(`[id="${id}"]`);
-          if (!setting)
-            return console.warn(`Setting for ${id} wasn't found`);
-          if (type === "text")
-            setting.value = value;
-          else if (type === "checkbox")
-            setting.checked = value;
-          else if (type === "select")
-            setting.value = value;
-          else
-            return;
-          const settingReactProps = getReactProps(setting);
-          settingReactProps.onChange({ target: setting });
-        });
-        Spicetify.showNotification("Restored Settings");
+      switch (mode) {
+        case "library" /* LIBRARY */:
+          return restoreLibrary(vault, true);
+        case "extensions" /* EXTENSIONS */:
+          return restoreExtensions(vault, true);
+        case "settings" /* SETTINGS */:
+          return restoreSettings(vault, true);
       }
     };
     Promise.resolve().then(() => init_settings2());
@@ -404,6 +455,7 @@ var init_app = __esm({
 });
 init_app();
 export {
+  RestoreScope,
   backup,
-  restore
+  restoreFactory
 };

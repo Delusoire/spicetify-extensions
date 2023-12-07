@@ -2,7 +2,7 @@ import { task } from "https://esm.sh/fp-ts"
 
 import { SettingsSection } from "../../shared/settings.tsx"
 
-const settings = new SettingsSection("Search On YouTube", "search-on-youtube").addInput(
+const settings = new SettingsSection("Search On YouTube").addInput(
     {
         id: "YouTubeApiKey",
         desc: "YouTube API Key",

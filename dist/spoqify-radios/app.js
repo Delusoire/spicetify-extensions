@@ -59,9 +59,8 @@ var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
 var { History: History2 } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
-  constructor(name, id, sectionFields = {}) {
+  constructor(name, sectionFields = {}) {
     this.name = name;
-    this.id = id;
     this.sectionFields = sectionFields;
     this.pushSettings = () => {
       if (this.stopHistoryListener)
@@ -166,6 +165,7 @@ var SettingsSection = class _SettingsSection {
         }
       ));
     };
+    this.id = _.kebabCase(name);
   }
   addField(type, opts, defaultValue) {
     if (defaultValue !== void 0) {
@@ -191,7 +191,7 @@ var SettingsSection = class _SettingsSection {
 
 // extensions/spoqify-radios/settings.ts
 var ANONIMYZED_RADIOS_FOLDER_NAME = "Anonymized Radios";
-var settings = new SettingsSection("Spoqify-radios", "spoqify-radios").addInput(
+var settings = new SettingsSection("Spoqify Radios").addInput(
   {
     id: "anonymizedRadiosFolderUri",
     desc: "Anonymized Radios folder uri",

@@ -1,11 +1,12 @@
 import { task } from "https://esm.sh/fp-ts"
+
 import { createFolder } from "../../shared/platformApi.ts"
 import { SettingsSection } from "../../shared/settings.tsx"
 import { SpotifyURI } from "../../shared/util.ts"
 
 const SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists"
 
-const settings = new SettingsSection("Sort+", "sort-plus")
+const settings = new SettingsSection("Sort Plus")
     .addToggle({ id: "descending", desc: "Descending" }, task.of(true))
     .addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" })
     .addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task.of(true))

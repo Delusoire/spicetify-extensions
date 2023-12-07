@@ -2,7 +2,7 @@ import { task } from "https://esm.sh/fp-ts"
 
 import { SettingsSection } from "../../shared/settings.tsx"
 
-const settings = new SettingsSection("Show The Genres", "show-the-genres").addInput(
+const settings = new SettingsSection("Show The Genres").addInput(
     {
         id: "LFMApiKey",
         desc: "Last.fm API Key",

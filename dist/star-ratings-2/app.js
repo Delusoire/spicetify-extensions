@@ -113,9 +113,8 @@ var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
 var { History: History2 } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
-  constructor(name, id, sectionFields = {}) {
+  constructor(name, sectionFields = {}) {
     this.name = name;
-    this.id = id;
     this.sectionFields = sectionFields;
     this.pushSettings = () => {
       if (this.stopHistoryListener)
@@ -220,6 +219,7 @@ var SettingsSection = class _SettingsSection {
         }
       ));
     };
+    this.id = _.kebabCase(name);
   }
   addField(type, opts, defaultValue) {
     if (defaultValue !== void 0) {
@@ -245,7 +245,7 @@ var SettingsSection = class _SettingsSection {
 
 // extensions/star-ratings-2/settings.ts
 var RATINGS_FOLDER_NAME = "Ratings";
-var settings = new SettingsSection("Star Ratings 2", "star-ratings-2").addInput({ id: "heartThreshold", desc: "Threshold for liking trakcs", inputType: "number" }, task2.of("3")).addInput({ id: "skipThreshold", desc: "Threshold for skipping trakcs", inputType: "number" }, task2.of("1")).addInput(
+var settings = new SettingsSection("Star Ratings 2").addInput({ id: "heartThreshold", desc: "Threshold for liking trakcs", inputType: "number" }, task2.of("3")).addInput({ id: "skipThreshold", desc: "Threshold for skipping trakcs", inputType: "number" }, task2.of("1")).addInput(
   {
     id: "ratingsFolderUri",
     desc: "Ratings folder uri",
@@ -482,7 +482,7 @@ var parseLibraryAPILikedTracks = (track) => ({
 // extensions/sort-plus/settings.ts
 import { task as task3 } from "https://esm.sh/fp-ts";
 var SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists";
-var settings2 = new SettingsSection("Sort+", "sort-plus").addToggle({ id: "descending", desc: "Descending" }, task3.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task3.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task3.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task3.of(true)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task3.of("Username")).addInput(
+var settings2 = new SettingsSection("Sort Plus").addToggle({ id: "descending", desc: "Descending" }, task3.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task3.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task3.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task3.of(true)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task3.of("Username")).addInput(
   { id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" },
   task3.of("********************************")
 ).addInput(

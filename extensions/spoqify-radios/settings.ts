@@ -4,7 +4,7 @@ import { SpotifyURI } from "../../shared/util.ts"
 
 const ANONIMYZED_RADIOS_FOLDER_NAME = "Anonymized Radios"
 
-const settings = new SettingsSection("Spoqify-radios", "spoqify-radios").addInput(
+const settings = new SettingsSection("Spoqify Radios").addInput(
     {
         id: "anonymizedRadiosFolderUri",
         desc: "Anonymized Radios folder uri",

@@ -110,9 +110,8 @@ var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
 var { History: History2 } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
-  constructor(name, id, sectionFields = {}) {
+  constructor(name, sectionFields = {}) {
     this.name = name;
-    this.id = id;
     this.sectionFields = sectionFields;
     this.pushSettings = () => {
       if (this.stopHistoryListener)
@@ -217,6 +216,7 @@ var SettingsSection = class _SettingsSection {
         }
       ));
     };
+    this.id = _.kebabCase(name);
   }
   addField(type, opts, defaultValue) {
     if (defaultValue !== void 0) {
@@ -242,7 +242,7 @@ var SettingsSection = class _SettingsSection {
 
 // extensions/sort-plus/settings.ts
 var SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists";
-var settings = new SettingsSection("Sort+", "sort-plus").addToggle({ id: "descending", desc: "Descending" }, task2.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task2.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task2.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task2.of(true)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task2.of("Username")).addInput(
+var settings = new SettingsSection("Sort Plus").addToggle({ id: "descending", desc: "Descending" }, task2.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task2.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task2.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task2.of(true)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task2.of("Username")).addInput(
   { id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" },
   task2.of("********************************")
 ).addInput(
@@ -602,7 +602,6 @@ var fillTracksFromLastFM = (tracks) => {
 };
 
 // extensions/sort-plus/app.ts
-debugger;
 var { URI: URI5, ContextMenu, Topbar } = Spicetify;
 var { PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
 var lastFetchedUri;

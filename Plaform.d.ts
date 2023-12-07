@@ -338,9 +338,9 @@ declare namespace Spicetify.Platform {
             unfilteredTotalLength: number
         }
 
-        function getTracks(options: Options): Paged<Track>
-        function getArtists(options: Options): Paged<Artist>
-        function getAlbums(options: Options): Paged<Album>
+        function getTracks(options: Options): Promise<Paged<Track>>
+        function getArtists(options: Options): Promise<Paged<Artist>>
+        function getAlbums(options: Options): Promise<Paged<Album>>
 
         function contains(...uris: string[]): Promise<boolean[]>
         function add(options: { uris: string[]; silent?: boolean }): Promise<void>

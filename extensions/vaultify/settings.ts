@@ -1,7 +1,8 @@
 import { SettingsSection } from "../../shared/settings.tsx"
-import { backup, restore } from "./app.ts"
 
-const settings = new SettingsSection("Vaultify", "vaultify")
+import { RestoreScope, backup, restoreFactory } from "./app.ts"
+
+const settings = new SettingsSection("Vaultify")
     .addButton({
         id: "backup",
         desc: "Backup Library, Extensions and Settings",
@@ -12,19 +13,19 @@ const settings = new SettingsSection("Vaultify", "vaultify")
         id: "restoreLibrary",
         desc: "Restore Library",
         text: "Restore from clipboard",
-        onClick: restore("library"),
+        onClick: restoreFactory(RestoreScope.LIBRARY),
     })
     .addButton({
         id: "restoreExtensions",
         desc: "Restore Extensions",
         text: "Restore from clipboard",
-        onClick: restore("extensions"),
+        onClick: restoreFactory(RestoreScope.EXTENSIONS),
     })
     .addButton({
         id: "restoreSettings",
         desc: "Restore Settings",
         text: "Restore from clipboard",
-        onClick: restore("settings"),
+        onClick: restoreFactory(RestoreScope.SETTINGS),
     })
 
 settings.pushSettings()

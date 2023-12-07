@@ -1,5 +1,3 @@
-debugger
-
 import { _, fp } from "../../shared/deps.ts"
 import { TrackData } from "../../shared/parse.ts"
 import { SpotifyURI, createQueueItem, setPlayingContext, setQueue } from "../../shared/util.ts"

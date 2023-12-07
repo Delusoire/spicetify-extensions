@@ -1,6 +1,7 @@
 import { task } from "https://esm.sh/fp-ts"
 import { SectionTitle, SettingColumn, SettingSection, SettingText, SettingToggle } from "./modules.ts"
 import { sleep } from "./util.ts"
+import { _ } from "./deps.ts"
 
 const { React, ReactDOM, LocalStorage } = Spicetify
 const { ButtonSecondary } = Spicetify.ReactComponent
@@ -45,8 +46,11 @@ export interface HiddenField extends BaseField {
 
 export class SettingsSection {
     private stopHistoryListener: any
+    public id: string
 
-    constructor(public name: string, public id: string, public sectionFields: { [key: string]: SettingsField } = {}) {}
+    constructor(public name: string, public sectionFields: { [key: string]: SettingsField } = {}) {
+        this.id = _.kebabCase(name)
+    }
 
     pushSettings = () => {
         if (this.stopHistoryListener) this.stopHistoryListener()
