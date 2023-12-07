@@ -25,7 +25,7 @@ export const progressify = <F extends (...args: any) => any>(f: F, n: number) =>
         const res = (await f(...arguments)) as Awaited<ReturnType<F>>,
             progress = Math.round((1 - --i / n) * 100)
         if (progress > lastProgress) {
-            ;(Snackbar as any).updater.enqueueSetState(Snackbar, () => ({
+            ;(Snackbar as any).SnackbarProvider.updater.enqueueSetState(Snackbar, () => ({
                 snacks: [],
                 queue: [],
             }))

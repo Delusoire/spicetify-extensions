@@ -1,6 +1,6 @@
 import { _, fp } from "../../shared/deps.ts"
 import { TrackData } from "../../shared/parse.ts"
-import { SpotifyURI, createQueueItem, setPlayingContext, setQueue } from "../../shared/util.ts"
+import { SpotifyURI, createQueueItem, setPlayingContext, setQueue as _setQueue } from "../../shared/util.ts"
 
 import { createPlaylistFromLastSortedQueue, reordedPlaylistLikeSortedQueue } from "./playlistsInterop.ts"
 import { fillTracksFromLastFM, fillTracksFromSpotify } from "./populate.ts"
@@ -35,7 +35,7 @@ const populateTracks: (sortProp: SortAction) => AsyncTracksOperation = _.cond([
     [fp.startsWith("LastFM"), () => fillTracksFromLastFM],
 ])
 
-const _setQueue = (reverse: boolean) => async (tracks: TrackData[]) => {
+const setQueue = (reverse: boolean) => async (tracks: TrackData[]) => {
     if (PlayerAPI?._state?.item?.uid == undefined) return void Spicetify.showNotification("Queue is null!", true)
 
     const dedupedQueue = _.uniqBy(tracks, track => track.uri)
@@ -51,7 +51,7 @@ const _setQueue = (reverse: boolean) => async (tracks: TrackData[]) => {
         .value()
 
     if (!isLikedTracks) await setPlayingContext(lastFetchedUri)
-    setQueue(queue)
+    _setQueue(queue)
 
     return await PlayerAPI.skipToNext()
 }
@@ -64,7 +64,7 @@ const sortTracksBy = (sortAction: typeof lastSortAction, sortFn: AsyncTracksOper
     lastFetchedUri = uri
     const tracks = await getTracksFromUri(uri)
     const sortedTracks = await sortFn(tracks)
-    return await _setQueue(!!descending)(sortedTracks)
+    return await setQueue(!!descending)(sortedTracks)
 }
 
 const createSubMenuForSortProp = (sortAction: SortAction) =>

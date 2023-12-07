@@ -321,7 +321,7 @@ var progressify = (f, n) => {
     const res = await f(...arguments), progress = Math.round((1 - --i / n) * 100);
     if (progress > lastProgress) {
       ;
-      Snackbar.updater.enqueueSetState(Snackbar, () => ({
+      Snackbar.SnackbarProvider.updater.enqueueSetState(Snackbar, () => ({
         snacks: [],
         queue: []
       }));
@@ -620,7 +620,7 @@ var populateTracks = _.cond([
   [fp.startsWith("Spotify"), fillTracksFromSpotify],
   [fp.startsWith("LastFM"), () => fillTracksFromLastFM]
 ]);
-var _setQueue = (reverse) => async (tracks) => {
+var setQueue2 = (reverse) => async (tracks) => {
   if (PlayerAPI2?._state?.item?.uid == void 0)
     return void Spicetify.showNotification("Queue is null!", true);
   const dedupedQueue = _.uniqBy(tracks, (track) => track.uri);
@@ -639,7 +639,7 @@ var sortTracksBy = (sortAction, sortFn) => async (uri) => {
   lastFetchedUri = uri;
   const tracks = await getTracksFromUri(uri);
   const sortedTracks = await sortFn(tracks);
-  return await _setQueue(!!descending)(sortedTracks);
+  return await setQueue2(!!descending)(sortedTracks);
 };
 var createSubMenuForSortProp = (sortAction) => new ContextMenu.Item(
   sortAction,
