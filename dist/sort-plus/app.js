@@ -673,7 +673,7 @@ var SubMenuItemShuffle = new ContextMenu.Item(
 var SubMenuItemStars = new ContextMenu.Item(
   "Stars",
   ([uri]) => sortTracksByStars(uri),
-  () => tracksRatings !== void 0,
+  () => global.tracksRatings !== void 0,
   "heart-active",
   false
 );

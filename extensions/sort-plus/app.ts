@@ -102,7 +102,7 @@ const SubMenuItemShuffle = new ContextMenu.Item(
 const SubMenuItemStars = new ContextMenu.Item(
     "Stars",
     ([uri]) => sortTracksByStars(uri),
-    () => tracksRatings !== undefined,
+    () => global.tracksRatings !== undefined,
     "heart-active",
     false,
 )
