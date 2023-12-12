@@ -25,7 +25,7 @@ class _GenreLink extends LitElement {
     `
 
     @property()
-    genre = "Default"
+    genre = "No Genre"
 
     private openPlaylistsSearch() {
         History.push({ pathname: `/search/${this.genre}/playlists` })
