@@ -48,7 +48,10 @@ const setQueue = (reverse: boolean) => async (tracks: TrackData[]) => {
 
     const queue = lastSortedQueue.concat({ uri: SEPARATOR_URI } as TrackData).map(createQueueItem(isLikedTracks))
 
-    _setQueue(queue, isLikedTracks ? undefined : lastFetchedUri)
+    // _setQueue(queue, isLikedTracks ? undefined : lastFetchedUri)
+
+    !isLikedTracks && setPlayingContext(lastFetchedUri)
+    _setQueue(queue)
 
     return await PlayerAPI.skipToNext()
 }
