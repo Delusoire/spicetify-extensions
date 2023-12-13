@@ -1,6 +1,6 @@
 import { array as a, function as f } from "https://esm.sh/fp-ts"
 
-import { fetchGQLArtistRelated, fetchLastFMTrack, spotifyApi } from "../../shared/api.ts"
+import { fetchLastFMTrack, spotifyApi } from "../../shared/api.ts"
 import { pMchain } from "../../shared/fp.ts"
 import { SpotifyURI, onHistoryChanged, onSongChanged, waitForElement } from "../../shared/util.ts"
 
@@ -8,6 +8,7 @@ import { CONFIG } from "./settings.ts"
 
 import "./assets/styles.scss"
 import "./components.ts"
+import { fetchArtistRelated } from "../../shared/GraphQL/fetchArtistRelated.ts"
 
 const { URI } = Spicetify
 
@@ -46,7 +47,7 @@ const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[]) => {
 
     if (allGenres.length) return allGenres
 
-    const relatedArtists = await fetchGQLArtistRelated(artistsUris[0])
+    const relatedArtists = await fetchArtistRelated(artistsUris[0])
 
     relatedArtists.map(artist => artist.uri)
 
@@ -54,7 +55,7 @@ const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[]) => {
         ? allGenres
         : await f.pipe(
               artistsUris[0],
-              fetchGQLArtistRelated,
+              fetchArtistRelated,
               pMchain(a.map(a => a.uri)),
               pMchain(a.chunksOf(5)),
               pMchain(

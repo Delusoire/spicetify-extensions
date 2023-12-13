@@ -1,11 +1,10 @@
-import { array as ar, function as f } from "https://esm.sh/fp-ts"
+import { function as f } from "https://esm.sh/fp-ts"
 
 import { Instance, Props } from "npm:tippy.js"
 
-import { fetchGQLAlbum } from "../../shared/api.ts"
-import { fetchArtistLikedTracks, fetchPlaylistContents } from "../../shared/platformApi.ts"
 import { SpotifyURI } from "../../shared/util.ts"
 
+import { getTracksFromUri } from "../sort-plus/util.ts"
 import { Dropdown } from "./dropdown.tsx"
 import { tracksRatings } from "./ratings.ts"
 import {
@@ -16,7 +15,6 @@ import {
     getTrackListTracks,
     getTrackLists,
 } from "./util.ts"
-import { getTracksFromUri } from "../sort-plus/util.ts"
 
 const { URI, Tippy } = Spicetify
 const { React, ReactDOM } = Spicetify

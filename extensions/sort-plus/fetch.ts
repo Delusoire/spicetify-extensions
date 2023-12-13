@@ -1,11 +1,7 @@
-import {
-    ItemBase,
-    ItemsReleases,
-    ItemsWithCount,
-    fetchGQLAlbum,
-    fetchGQLArtistDiscography,
-    fetchGQLArtistOverview,
-} from "../../shared/api.ts"
+import { fetchAlbum } from "../../shared/GraphQL/fetchAlbum.ts"
+import { fetchArtistDiscography } from "../../shared/GraphQL/fetchArtistDiscography.ts"
+import { fetchArtistOverview } from "../../shared/GraphQL/fetchArtistOveriew.ts"
+import { ItemMin, ItemsReleases, ItemsWithCount } from "../../shared/GraphQL/sharedTypes.ts"
 import { _, fp } from "../../shared/deps.ts"
 import { pMchain } from "../../shared/fp.ts"
 import {
@@ -22,7 +18,7 @@ import { SpotifyURI } from "../../shared/util.ts"
 import { CONFIG } from "./settings.ts"
 
 export const getTracksFromAlbum = async (uri: string) => {
-    const albumRes = await fetchGQLAlbum(uri)
+    const albumRes = await fetchAlbum(uri)
     const releaseDate = new Date(albumRes.date.isoString).getTime()
 
     const filler = {
@@ -46,14 +42,14 @@ export const getTracksFromPlaylist = _.flow(fetchPlaylistContents, pMchain(fp.ma
 export const getTracksFromArtist = async (uri: SpotifyURI) => {
     const allTracks = new Array<TrackData>()
 
-    const itemsWithCountAr = new Array<ItemsWithCount<ItemBase>>()
-    const itemsReleasesAr = new Array<ItemsReleases<ItemBase>>()
+    const itemsWithCountAr = new Array<ItemsWithCount<ItemMin>>()
+    const itemsReleasesAr = new Array<ItemsReleases<ItemMin>>()
 
     if (CONFIG.artistAllDiscography) {
-        const { discography } = await fetchGQLArtistDiscography(uri)
+        const { discography } = await fetchArtistDiscography(uri)
         itemsReleasesAr.push(discography.all)
     } else {
-        const { discography } = await fetchGQLArtistOverview(uri)
+        const { discography, relatedContent } = await fetchArtistOverview(uri)
 
         CONFIG.artistLikedTracks && allTracks.push(...(await fetchArtistLikedTracks(uri)).map(parseArtistLikedTrack))
         CONFIG.artistTopTracks && allTracks.push(...discography.topTracks.items.map(parseTopTrackFromArtist))
@@ -61,6 +57,7 @@ export const getTracksFromArtist = async (uri: SpotifyURI) => {
         CONFIG.artistSingles && itemsReleasesAr.push(discography.singles)
         CONFIG.artistAlbums && itemsReleasesAr.push(discography.albums)
         CONFIG.artistCompilations && itemsReleasesAr.push(discography.compilations)
+        CONFIG.artistAppearsOn && itemsReleasesAr.push(relatedContent.appearsOn)
     }
 
     const items1 = itemsWithCountAr.flatMap(iwc => iwc.items)

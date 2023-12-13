@@ -242,7 +242,7 @@ var SettingsSection = class _SettingsSection {
 
 // extensions/sort-plus/settings.ts
 var SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists";
-var settings = new SettingsSection("Sort Plus").addToggle({ id: "descending", desc: "Descending" }, task2.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task2.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task2.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task2.of(true)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task2.of("Username")).addInput(
+var settings = new SettingsSection("Sort Plus").addToggle({ id: "descending", desc: "Descending" }, task2.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task2.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task2.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task2.of(true)).addToggle({ id: "artistAppearsOn", desc: "Appears On" }, task2.of(false)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task2.of("Username")).addInput(
   { id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" },
   task2.of("********************************")
 ).addInput(
@@ -258,7 +258,7 @@ var CONFIG = settings.toObject();
 
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
-var { Locale, GraphQL, CosmosAsync: CosmosAsync2 } = Spicetify;
+var { CosmosAsync: CosmosAsync2 } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
   fetch(url, opts) {
@@ -271,31 +271,6 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
     }
   }
 });
-var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => {
-  const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
-    uri,
-    locale: Locale.getLocale(),
-    offset,
-    limit
-  });
-  return res.data.albumUnion;
-};
-var fetchGQLArtistOverview = async (uri) => {
-  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistOverview, {
-    uri,
-    locale: Locale.getLocale(),
-    includePrerelease: true
-  });
-  return res.data.artistUnion;
-};
-var fetchGQLArtistDiscography = async (uri, offset = 0, limit = 116) => {
-  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
-    uri,
-    offset,
-    limit
-  });
-  return res.data.artistUnion;
-};
 var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
   const url = new URL("https://ws.audioscrobbler.com/2.0/");
   url.searchParams.append("method", "track.getInfo");
@@ -306,6 +281,40 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
   url.searchParams.append("username", lastFmUsername);
   const res = await fetch(url).then((res2) => res2.json());
   return res.track;
+};
+
+// shared/GraphQL/fetchAlbum.ts
+var { Locale, GraphQL } = Spicetify;
+var fetchAlbum = async (uri, offset = 0, limit = 487) => {
+  const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
+    uri,
+    locale: Locale.getLocale(),
+    offset,
+    limit
+  });
+  return res.data.albumUnion;
+};
+
+// shared/GraphQL/fetchArtistDiscography.ts
+var { GraphQL: GraphQL2 } = Spicetify;
+var fetchArtistDiscography = async (uri, offset = 0, limit = 116) => {
+  const res = await GraphQL2.Request(GraphQL2.Definitions.queryArtistDiscographyAll, {
+    uri,
+    offset,
+    limit
+  });
+  return res.data.artistUnion;
+};
+
+// shared/GraphQL/fetchArtistOveriew.ts
+var { Locale: Locale2, GraphQL: GraphQL3 } = Spicetify;
+var fetchArtistOverview = async (uri) => {
+  const res = await GraphQL3.Request(GraphQL3.Definitions.queryArtistOverview, {
+    uri,
+    locale: Locale2.getLocale(),
+    includePrerelease: true
+  });
+  return res.data.artistUnion;
 };
 
 // shared/fp.ts
@@ -424,7 +433,7 @@ var parseLibraryAPILikedTracks = (track) => ({
 
 // extensions/sort-plus/fetch.ts
 var getTracksFromAlbum = async (uri) => {
-  const albumRes = await fetchGQLAlbum(uri);
+  const albumRes = await fetchAlbum(uri);
   const releaseDate = new Date(albumRes.date.isoString).getTime();
   const filler = {
     albumUri: albumRes.uri,
@@ -445,16 +454,17 @@ var getTracksFromArtist = async (uri) => {
   const itemsWithCountAr = new Array();
   const itemsReleasesAr = new Array();
   if (CONFIG.artistAllDiscography) {
-    const { discography } = await fetchGQLArtistDiscography(uri);
+    const { discography } = await fetchArtistDiscography(uri);
     itemsReleasesAr.push(discography.all);
   } else {
-    const { discography } = await fetchGQLArtistOverview(uri);
+    const { discography, relatedContent } = await fetchArtistOverview(uri);
     CONFIG.artistLikedTracks && allTracks.push(...(await fetchArtistLikedTracks(uri)).map(parseArtistLikedTrack));
     CONFIG.artistTopTracks && allTracks.push(...discography.topTracks.items.map(parseTopTrackFromArtist));
     CONFIG.artistPopularReleases && itemsWithCountAr.push(discography.popularReleasesAlbums);
     CONFIG.artistSingles && itemsReleasesAr.push(discography.singles);
     CONFIG.artistAlbums && itemsReleasesAr.push(discography.albums);
     CONFIG.artistCompilations && itemsReleasesAr.push(discography.compilations);
+    CONFIG.artistAppearsOn && itemsReleasesAr.push(relatedContent.appearsOn);
   }
   const items1 = itemsWithCountAr.flatMap((iwc) => iwc.items);
   const items2 = itemsReleasesAr.flatMap((ir) => ir.items.flatMap((i) => i.releases.items));

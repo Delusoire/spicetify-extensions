@@ -73,7 +73,7 @@ var onSongChanged = (callback) => {
 };
 
 // shared/api.ts
-var { Locale, GraphQL, CosmosAsync } = Spicetify;
+var { CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
   fetch(url, opts) {
@@ -86,13 +86,6 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
     }
   }
 });
-var fetchGQLArtistRelated = async (uri) => {
-  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistRelated, {
-    uri,
-    locale: Locale.getLocale()
-  });
-  return res.data.artistUnion.relatedContent.relatedArtists.items;
-};
 var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "") => {
   const url = new URL("https://ws.audioscrobbler.com/2.0/");
   url.searchParams.append("method", "track.getInfo");
@@ -302,7 +295,7 @@ var { History: History3 } = Spicetify.Platform;
 var _GenreLink = class extends LitElement {
   constructor() {
     super(...arguments);
-    this.genre = "Default";
+    this.genre = "No Genre";
   }
   openPlaylistsSearch() {
     History3.push({ pathname: `/search/${this.genre}/playlists` });
@@ -346,7 +339,7 @@ var _ArtistGenreContainer = class extends LitElement {
                 }
             </style>
             <div className="main-entityHeader-detailsText genre-container">
-                ${this.name ? html`<span>${this.name} : </span>` : []} ${join(artistGenreLinks, () => divider)}
+                ${this.name && html`<span>${this.name} : </span>`} ${join(artistGenreLinks, () => divider)}
             </div>`;
   }
 };
@@ -368,6 +361,16 @@ __decorateClass([
 _ArtistGenreContainer = __decorateClass([
   customElement("genre-container")
 ], _ArtistGenreContainer);
+
+// shared/GraphQL/fetchArtistRelated.ts
+var { Locale, GraphQL } = Spicetify;
+var fetchArtistRelated = async (uri) => {
+  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistRelated, {
+    uri,
+    locale: Locale.getLocale()
+  });
+  return res.data.artistUnion.relatedContent.relatedArtists.items;
+};
 
 // extensions/show-the-genres/app.ts
 var { URI: URI2 } = Spicetify;
@@ -400,11 +403,11 @@ var getArtistsGenresOrRelated = async (artistsUris) => {
   const allGenres = await getArtistsGenres(artistsUris);
   if (allGenres.length)
     return allGenres;
-  const relatedArtists = await fetchGQLArtistRelated(artistsUris[0]);
+  const relatedArtists = await fetchArtistRelated(artistsUris[0]);
   relatedArtists.map((artist) => artist.uri);
   return allGenres.length ? allGenres : await f.pipe(
     artistsUris[0],
-    fetchGQLArtistRelated,
+    fetchArtistRelated,
     pMchain(a.map((a2) => a2.uri)),
     pMchain(a.chunksOf(5)),
     pMchain(

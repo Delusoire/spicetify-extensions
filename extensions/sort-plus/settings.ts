@@ -15,6 +15,7 @@ const settings = new SettingsSection("Sort Plus")
     .addToggle({ id: "artistAlbums", desc: "Albums" })
     .addToggle({ id: "artistCompilations", desc: "Compilations" })
     .addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task.of(true))
+    .addToggle({ id: "artistAppearsOn", desc: "Appears On" }, task.of(false))
     .addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task.of("Username"))
     .addInput(
         { id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" },
@@ -39,6 +40,7 @@ export const CONFIG = settings.toObject() as {
     artistAlbums: boolean
     artistCompilations: boolean
     artistLikedTracks: boolean
+    artistAppearsOn: boolean
     descending: boolean
     lastFmUsername: string
     LFMApiKey: string

@@ -5,7 +5,7 @@ var getTrackListTrackUri = (track) => (track = Object.values(track)[0].child.chi
 
 // shared/GraphQL/searchModalResults.ts
 var { GraphQL } = Spicetify;
-var searchGQL = async (q, offset = 0, limit = 10, topResultsNum = 20, includeAudiobooks = true) => {
+var searchModalResults = async (q, offset = 0, limit = 10, topResultsNum = 20, includeAudiobooks = true) => {
   const res = await GraphQL.Request(GraphQL.Definitions.searchModalResults, {
     searchTerm: q,
     offset,
@@ -24,7 +24,7 @@ var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
 
 // shared/api.ts
-var { Locale, GraphQL: GraphQL2, CosmosAsync } = Spicetify;
+var { CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
   fetch(url, opts) {
@@ -87,7 +87,7 @@ var getUrisFromISRC = async (isrc) => {
   const cachedUris = getISRCUris(isrc);
   if (!cachedUris) {
     try {
-      const results = await searchGQL(`isrc:${isrc}`);
+      const results = await searchModalResults(`isrc:${isrc}`);
       const uris = results.map((i) => i.item.data.uri);
       return await setISRCUris(isrc, uris);
     } catch (_2) {

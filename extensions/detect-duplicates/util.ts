@@ -1,6 +1,6 @@
 import { Track } from "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk/dist/mjs/types.js"
 
-import { searchGQL } from "../../shared/GraphQL/searchModalResults.ts"
+import { searchModalResults } from "../../shared/GraphQL/searchModalResults.ts"
 import { spotifyApi } from "../../shared/api.ts"
 import { chunkify50 } from "../../shared/fp.ts"
 
@@ -50,7 +50,7 @@ export const getUrisFromISRC = async (isrc: string) => {
     const cachedUris = getISRCUris(isrc)
     if (!cachedUris) {
         try {
-            const results = await searchGQL(`isrc:${isrc}`)
+            const results = await searchModalResults(`isrc:${isrc}`)
             const uris = results.map(i => i.item.data.uri)
             return await setISRCUris(isrc, uris)
         } catch (_) {

@@ -1,6 +1,5 @@
 import { Track } from "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk/dist/mjs/types.js"
-
-import { TopTracksItem, fetchGQLAlbumRes } from "./api.ts"
+import { fetchAlbumRes } from "./GraphQL/fetchAlbum.ts"
 
 export type TrackData = {
     uri: string
@@ -47,7 +46,7 @@ export const parseArtistLikedTrack = (track: Spicetify.Platform.Track) => ({
     releaseDate: undefined,
 })
 
-export const parseAlbumTrack = ({ track }: fetchGQLAlbumRes["tracks"]["items"][0]) => ({
+export const parseAlbumTrack = ({ track }: fetchAlbumRes["tracks"]["items"][0]) => ({
     uri: track.uri,
     uid: undefined,
     name: track.name,

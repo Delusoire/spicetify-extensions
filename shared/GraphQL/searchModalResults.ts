@@ -1,4 +1,4 @@
-import { Items } from "../api.ts"
+import { Items } from "./sharedTypes.ts"
 
 const { GraphQL } = Spicetify
 
@@ -29,11 +29,17 @@ type TrackResponseWrapper = {
     data: Track
 }
 
-type searchGQLRes = Array<{
+type searchModalResultsRes = Array<{
     matchedFields: string[]
     item: TrackResponseWrapper
 }>
-export const searchGQL = async (q: string, offset = 0, limit = 10, topResultsNum = 20, includeAudiobooks = true) => {
+export const searchModalResults = async (
+    q: string,
+    offset = 0,
+    limit = 10,
+    topResultsNum = 20,
+    includeAudiobooks = true,
+) => {
     const res = await GraphQL.Request(GraphQL.Definitions.searchModalResults, {
         searchTerm: q,
         offset,
@@ -42,5 +48,5 @@ export const searchGQL = async (q: string, offset = 0, limit = 10, topResultsNum
         includeAudiobooks,
     })
 
-    return res.data.searchV2.topResults.itemsV2 as searchGQLRes
+    return res.data.searchV2.topResults.itemsV2 as searchModalResultsRes
 }

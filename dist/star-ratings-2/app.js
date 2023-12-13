@@ -46,14 +46,157 @@ var onSongChanged = (callback) => {
 // extensions/star-ratings-2/controls.tsx
 import { function as f2 } from "https://esm.sh/fp-ts";
 
-// extensions/star-ratings-2/dropdown.tsx
-import { range } from "https://esm.sh/fp-ts/lib/ReadonlyNonEmptyArray";
+// shared/api.ts
+import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
+var { CosmosAsync } = Spicetify;
+var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
+  // @ts-ignore
+  fetch(url, opts) {
+    const { method } = opts;
+    return CosmosAsync.resolve(method, url);
+  },
+  deserializer: {
+    deserialize(res) {
+      return res.body;
+    }
+  }
+});
 
 // shared/deps.ts
 import { default as ld } from "https://esm.sh/lodash";
 import { default as ld_fp } from "https://esm.sh/lodash/fp";
 var _ = ld;
 var fp = ld_fp;
+
+// shared/GraphQL/fetchAlbum.ts
+var { Locale, GraphQL } = Spicetify;
+var fetchAlbum = async (uri, offset = 0, limit = 487) => {
+  const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
+    uri,
+    locale: Locale.getLocale(),
+    offset,
+    limit
+  });
+  return res.data.albumUnion;
+};
+
+// shared/GraphQL/fetchArtistDiscography.ts
+var { GraphQL: GraphQL2 } = Spicetify;
+var fetchArtistDiscography = async (uri, offset = 0, limit = 116) => {
+  const res = await GraphQL2.Request(GraphQL2.Definitions.queryArtistDiscographyAll, {
+    uri,
+    offset,
+    limit
+  });
+  return res.data.artistUnion;
+};
+
+// shared/GraphQL/fetchArtistOveriew.ts
+var { Locale: Locale2, GraphQL: GraphQL3 } = Spicetify;
+var fetchArtistOverview = async (uri) => {
+  const res = await GraphQL3.Request(GraphQL3.Definitions.queryArtistOverview, {
+    uri,
+    locale: Locale2.getLocale(),
+    includePrerelease: true
+  });
+  return res.data.artistUnion;
+};
+
+// shared/fp.ts
+var { Snackbar } = Spicetify;
+var pMchain = (f3) => async (fa) => f3(await fa);
+
+// shared/parse.ts
+var parseTopTrackFromArtist = ({ track }) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: track.albumOfTrack.uri,
+  albumName: void 0,
+  artistUri: track.artists.items[0].uri,
+  artistName: track.artists.items[0].profile.name,
+  durationMilis: track.duration.totalMilliseconds,
+  playcount: Number(track.playcount),
+  popularity: void 0,
+  releaseDate: void 0
+});
+var parseArtistLikedTrack = (track) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration.milliseconds,
+  playcount: void 0,
+  popularity: void 0,
+  releaseDate: void 0
+});
+var parseAlbumTrack = ({ track }) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: "",
+  // gets filled in later
+  albumName: "",
+  // gets filled in later
+  artistUri: track.artists.items[0].uri,
+  artistName: track.artists.items[0].profile.name,
+  durationMilis: track.duration.totalMilliseconds,
+  playcount: Number(track.playcount),
+  popularity: void 0,
+  releaseDate: -1
+  // gets filled in later
+});
+var parsePlaylistAPITrack = (track) => ({
+  uri: track.uri,
+  uid: track.uid,
+  name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration.milliseconds,
+  playcount: void 0,
+  popularity: void 0,
+  releaseDate: void 0
+});
+var parseLibraryAPILikedTracks = (track) => ({
+  uri: track.uri,
+  uid: void 0,
+  name: track.name,
+  albumUri: track.album.uri,
+  albumName: track.album.name,
+  artistUri: track.artists[0].uri,
+  artistName: track.artists[0].name,
+  durationMilis: track.duration.milliseconds,
+  playcount: void 0,
+  popularity: void 0,
+  releaseDate: void 0
+});
+
+// shared/platformApi.ts
+var { CosmosAsync: CosmosAsync2 } = Spicetify;
+var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
+var setTracksLiked = (uris, liked) => LibraryAPI[liked ? "add" : "remove"]({ uris });
+var fetchLikedTracks = async () => (await LibraryAPI.getTracks({
+  limit: Number.MAX_SAFE_INTEGER
+})).items;
+var fetchArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await LibraryAPI.getTracks({ uri, offset, limit })).items;
+var fetchPlaylistContents = async (uri) => (await PlaylistAPI.getContents(uri)).items;
+var createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
+var createPlaylist = async (name, location = {}) => await RootlistAPI.createPlaylist(name, location);
+var setPlaylistVisibility = async (playlist, visibleForAll) => await PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
+var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
+var addPlaylistTracks = async (playlist, tracks, location = {}) => await PlaylistAPI.add(playlist, tracks, location);
+var removePlaylistTracks = (playlist, tracks) => PlaylistAPI.remove(playlist, tracks);
+
+// extensions/sort-plus/settings.ts
+import { task as task2 } from "https://esm.sh/fp-ts";
+
+// shared/settings.tsx
+import { task } from "https://esm.sh/fp-ts";
 
 // shared/modules.ts
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
@@ -81,34 +224,7 @@ var SettingText = findModuleByStrings(functionModules, "textSubdued", "viola");
 var SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelected");
 var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 
-// extensions/star-ratings-2/ratings.ts
-import { array as ar, function as f } from "https://esm.sh/fp-ts";
-
-// shared/fp.ts
-var { Snackbar } = Spicetify;
-var pMchain = (f3) => async (fa) => f3(await fa);
-
-// shared/platformApi.ts
-var { CosmosAsync } = Spicetify;
-var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
-var setTracksLiked = (uris, liked) => LibraryAPI[liked ? "add" : "remove"]({ uris });
-var fetchLikedTracks = async () => (await LibraryAPI.getTracks({
-  limit: Number.MAX_SAFE_INTEGER
-})).items;
-var fetchArtistLikedTracks = async (uri, offset = 0, limit = 100) => (await LibraryAPI.getTracks({ uri, offset, limit })).items;
-var fetchPlaylistContents = async (uri) => (await PlaylistAPI.getContents(uri)).items;
-var createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
-var createPlaylist = async (name, location = {}) => await RootlistAPI.createPlaylist(name, location);
-var setPlaylistVisibility = async (playlist, visibleForAll) => await PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
-var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
-var addPlaylistTracks = async (playlist, tracks, location = {}) => await PlaylistAPI.add(playlist, tracks, location);
-var removePlaylistTracks = (playlist, tracks) => PlaylistAPI.remove(playlist, tracks);
-
-// extensions/star-ratings-2/settings.ts
-import { task as task2 } from "https://esm.sh/fp-ts";
-
 // shared/settings.tsx
-import { task } from "https://esm.sh/fp-ts";
 var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
 var { History: History2 } = Spicetify.Platform;
@@ -243,9 +359,88 @@ var SettingsSection = class _SettingsSection {
   }
 };
 
+// extensions/sort-plus/settings.ts
+var SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists";
+var settings = new SettingsSection("Sort Plus").addToggle({ id: "descending", desc: "Descending" }, task2.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task2.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task2.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task2.of(true)).addToggle({ id: "artistAppearsOn", desc: "Appears On" }, task2.of(false)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task2.of("Username")).addInput(
+  { id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" },
+  task2.of("********************************")
+).addInput(
+  {
+    id: "sortedPlaylistsFolderUri",
+    desc: "Sorted Playlists folder uri",
+    inputType: "text"
+  },
+  async () => (await createFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri
+);
+settings.pushSettings();
+var CONFIG = settings.toObject();
+
+// extensions/sort-plus/fetch.ts
+var getTracksFromAlbum = async (uri) => {
+  const albumRes = await fetchAlbum(uri);
+  const releaseDate = new Date(albumRes.date.isoString).getTime();
+  const filler = {
+    albumUri: albumRes.uri,
+    albumName: albumRes.name,
+    releaseDate
+  };
+  return Promise.all(
+    albumRes.tracks.items.map(async (track) => {
+      const parsedTrack = await parseAlbumTrack(track);
+      return Object.assign(parsedTrack, filler);
+    })
+  );
+};
+var getLikedTracks = _.flow(fetchLikedTracks, pMchain(fp.map(parseLibraryAPILikedTracks)));
+var getTracksFromPlaylist = _.flow(fetchPlaylistContents, pMchain(fp.map(parsePlaylistAPITrack)));
+var getTracksFromArtist = async (uri) => {
+  const allTracks = new Array();
+  const itemsWithCountAr = new Array();
+  const itemsReleasesAr = new Array();
+  if (CONFIG.artistAllDiscography) {
+    const { discography } = await fetchArtistDiscography(uri);
+    itemsReleasesAr.push(discography.all);
+  } else {
+    const { discography, relatedContent } = await fetchArtistOverview(uri);
+    CONFIG.artistLikedTracks && allTracks.push(...(await fetchArtistLikedTracks(uri)).map(parseArtistLikedTrack));
+    CONFIG.artistTopTracks && allTracks.push(...discography.topTracks.items.map(parseTopTrackFromArtist));
+    CONFIG.artistPopularReleases && itemsWithCountAr.push(discography.popularReleasesAlbums);
+    CONFIG.artistSingles && itemsReleasesAr.push(discography.singles);
+    CONFIG.artistAlbums && itemsReleasesAr.push(discography.albums);
+    CONFIG.artistCompilations && itemsReleasesAr.push(discography.compilations);
+    CONFIG.artistAppearsOn && itemsReleasesAr.push(relatedContent.appearsOn);
+  }
+  const items1 = itemsWithCountAr.flatMap((iwc) => iwc.items);
+  const items2 = itemsReleasesAr.flatMap((ir) => ir.items.flatMap((i) => i.releases.items));
+  const albumLikeUris = items1.concat(items2).map((item) => item.uri);
+  const albumsTracks = await Promise.all(albumLikeUris.map(getTracksFromAlbum));
+  allTracks.push(...albumsTracks.flat());
+  return await Promise.all(allTracks);
+};
+
+// extensions/sort-plus/util.ts
+var { URI: URI2 } = Spicetify;
+var URI_isLikedTracks = (uri) => {
+  const uriObj = URI2.fromString(uri);
+  return uriObj.type === URI2.Type.COLLECTION && uriObj.category === "tracks";
+};
+var getTracksFromUri = _.cond([
+  [URI2.isAlbum, getTracksFromAlbum],
+  [URI2.isArtist, getTracksFromArtist],
+  [URI_isLikedTracks, getLikedTracks],
+  [URI2.isPlaylistV1OrV2, getTracksFromPlaylist]
+]);
+
+// extensions/star-ratings-2/dropdown.tsx
+import { range } from "https://esm.sh/fp-ts/lib/ReadonlyNonEmptyArray";
+
+// extensions/star-ratings-2/ratings.ts
+import { array as ar, function as f } from "https://esm.sh/fp-ts";
+
 // extensions/star-ratings-2/settings.ts
+import { task as task3 } from "https://esm.sh/fp-ts";
 var RATINGS_FOLDER_NAME = "Ratings";
-var settings = new SettingsSection("Star Ratings 2").addInput({ id: "heartThreshold", desc: "Threshold for liking trakcs", inputType: "number" }, task2.of("3")).addInput({ id: "skipThreshold", desc: "Threshold for skipping trakcs", inputType: "number" }, task2.of("1")).addInput(
+var settings2 = new SettingsSection("Star Ratings 2").addInput({ id: "heartThreshold", desc: "Threshold for liking trakcs", inputType: "number" }, task3.of("3")).addInput({ id: "skipThreshold", desc: "Threshold for skipping trakcs", inputType: "number" }, task3.of("1")).addInput(
   {
     id: "ratingsFolderUri",
     desc: "Ratings folder uri",
@@ -254,8 +449,8 @@ var settings = new SettingsSection("Star Ratings 2").addInput({ id: "heartThresh
   },
   async () => (await createFolder(RATINGS_FOLDER_NAME)).uri
 );
-settings.pushSettings();
-var CONFIG = settings.toObject();
+settings2.pushSettings();
+var CONFIG2 = settings2.toObject();
 
 // extensions/star-ratings-2/util.ts
 var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-indexable"));
@@ -273,10 +468,10 @@ var getCollectionPlaylistButton = () => {
 };
 
 // extensions/star-ratings-2/ratings.ts
-var { URI: URI2, Player: Player2 } = Spicetify;
+var { URI: URI3, Player: Player2 } = Spicetify;
 var { History: History3 } = Spicetify.Platform;
 var loadRatings = async () => {
-  const ratingsFolder = await fetchFolder(CONFIG.ratingsFolderUri);
+  const ratingsFolder = await fetchFolder(CONFIG2.ratingsFolderUri);
   playlistUris = f.pipe(
     ratingsFolder.items,
     ar.map((p) => [p.uri, Number(p.name)]),
@@ -308,7 +503,7 @@ var toggleRating = async (uri, rating) => {
     f.pipe(
       playlistUris.slice(0, currentRating + 1),
       ar.filter(Boolean),
-      ar.map((playlistUri) => URI2.fromString(playlistUri).id),
+      ar.map((playlistUri) => URI3.fromString(playlistUri).id),
       ar.map((playlistId) => removePlaylistTracks(playlistId, [{ uri, uid: "" }]))
     );
   }
@@ -318,13 +513,13 @@ var toggleRating = async (uri, rating) => {
     if (!playlistUri) {
       playlistUri = await createPlaylist(
         rating.toFixed(0),
-        SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri)
+        SpotifyLoc.after.fromUri(CONFIG2.ratingsFolderUri)
       );
       setPlaylistVisibility(playlistUri, false);
       playlistUris[rating] = playlistUri;
     }
     addPlaylistTracks(playlistUri, [uri]);
-    if (rating >= Number(CONFIG.heartThreshold)) {
+    if (rating >= Number(CONFIG2.heartThreshold)) {
       setTracksLiked([uri], true);
     }
   }
@@ -345,7 +540,7 @@ var toggleRating = async (uri, rating) => {
   }
   updateTrackListControls();
   const { pathname } = History3.location;
-  updateCollectionControls(URI2.fromString(pathname).toString());
+  updateCollectionControls(URI3.fromString(pathname).toString());
 };
 var playlistUris = [];
 var tracksRatings = {};
@@ -367,189 +562,6 @@ var RatingButton = ({ i, uri }) => /* @__PURE__ */ React2.createElement(
   }
 );
 var Dropdown = ({ uri }) => /* @__PURE__ */ React2.createElement("div", { className: "rating-dropdown" }, range(1, 5).map((i) => /* @__PURE__ */ React2.createElement(RatingButton, { i, uri })));
-
-// shared/api.ts
-import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
-var { Locale, GraphQL, CosmosAsync: CosmosAsync2 } = Spicetify;
-var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
-  // @ts-ignore
-  fetch(url, opts) {
-    const { method } = opts;
-    return CosmosAsync2.resolve(method, url);
-  },
-  deserializer: {
-    deserialize(res) {
-      return res.body;
-    }
-  }
-});
-var fetchGQLAlbum = async (uri, offset = 0, limit = 487) => {
-  const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
-    uri,
-    locale: Locale.getLocale(),
-    offset,
-    limit
-  });
-  return res.data.albumUnion;
-};
-var fetchGQLArtistOverview = async (uri) => {
-  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistOverview, {
-    uri,
-    locale: Locale.getLocale(),
-    includePrerelease: true
-  });
-  return res.data.artistUnion;
-};
-var fetchGQLArtistDiscography = async (uri, offset = 0, limit = 116) => {
-  const res = await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
-    uri,
-    offset,
-    limit
-  });
-  return res.data.artistUnion;
-};
-
-// shared/parse.ts
-var parseTopTrackFromArtist = ({ track }) => ({
-  uri: track.uri,
-  uid: void 0,
-  name: track.name,
-  albumUri: track.albumOfTrack.uri,
-  albumName: void 0,
-  artistUri: track.artists.items[0].uri,
-  artistName: track.artists.items[0].profile.name,
-  durationMilis: track.duration.totalMilliseconds,
-  playcount: Number(track.playcount),
-  popularity: void 0,
-  releaseDate: void 0
-});
-var parseArtistLikedTrack = (track) => ({
-  uri: track.uri,
-  uid: void 0,
-  name: track.name,
-  albumUri: track.album.uri,
-  albumName: track.album.name,
-  artistUri: track.artists[0].uri,
-  artistName: track.artists[0].name,
-  durationMilis: track.duration.milliseconds,
-  playcount: void 0,
-  popularity: void 0,
-  releaseDate: void 0
-});
-var parseAlbumTrack = ({ track }) => ({
-  uri: track.uri,
-  uid: void 0,
-  name: track.name,
-  albumUri: "",
-  // gets filled in later
-  albumName: "",
-  // gets filled in later
-  artistUri: track.artists.items[0].uri,
-  artistName: track.artists.items[0].profile.name,
-  durationMilis: track.duration.totalMilliseconds,
-  playcount: Number(track.playcount),
-  popularity: void 0,
-  releaseDate: -1
-  // gets filled in later
-});
-var parsePlaylistAPITrack = (track) => ({
-  uri: track.uri,
-  uid: track.uid,
-  name: track.name,
-  albumUri: track.album.uri,
-  albumName: track.album.name,
-  artistUri: track.artists[0].uri,
-  artistName: track.artists[0].name,
-  durationMilis: track.duration.milliseconds,
-  playcount: void 0,
-  popularity: void 0,
-  releaseDate: void 0
-});
-var parseLibraryAPILikedTracks = (track) => ({
-  uri: track.uri,
-  uid: void 0,
-  name: track.name,
-  albumUri: track.album.uri,
-  albumName: track.album.name,
-  artistUri: track.artists[0].uri,
-  artistName: track.artists[0].name,
-  durationMilis: track.duration.milliseconds,
-  playcount: void 0,
-  popularity: void 0,
-  releaseDate: void 0
-});
-
-// extensions/sort-plus/settings.ts
-import { task as task3 } from "https://esm.sh/fp-ts";
-var SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists";
-var settings2 = new SettingsSection("Sort Plus").addToggle({ id: "descending", desc: "Descending" }, task3.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task3.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task3.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task3.of(true)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task3.of("Username")).addInput(
-  { id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" },
-  task3.of("********************************")
-).addInput(
-  {
-    id: "sortedPlaylistsFolderUri",
-    desc: "Sorted Playlists folder uri",
-    inputType: "text"
-  },
-  async () => (await createFolder(SORTED_PLAYLISTS_FOLDER_NAME)).uri
-);
-settings2.pushSettings();
-var CONFIG2 = settings2.toObject();
-
-// extensions/sort-plus/fetch.ts
-var getTracksFromAlbum = async (uri) => {
-  const albumRes = await fetchGQLAlbum(uri);
-  const releaseDate = new Date(albumRes.date.isoString).getTime();
-  const filler = {
-    albumUri: albumRes.uri,
-    albumName: albumRes.name,
-    releaseDate
-  };
-  return Promise.all(
-    albumRes.tracks.items.map(async (track) => {
-      const parsedTrack = await parseAlbumTrack(track);
-      return Object.assign(parsedTrack, filler);
-    })
-  );
-};
-var getLikedTracks = _.flow(fetchLikedTracks, pMchain(fp.map(parseLibraryAPILikedTracks)));
-var getTracksFromPlaylist = _.flow(fetchPlaylistContents, pMchain(fp.map(parsePlaylistAPITrack)));
-var getTracksFromArtist = async (uri) => {
-  const allTracks = new Array();
-  const itemsWithCountAr = new Array();
-  const itemsReleasesAr = new Array();
-  if (CONFIG2.artistAllDiscography) {
-    const { discography } = await fetchGQLArtistDiscography(uri);
-    itemsReleasesAr.push(discography.all);
-  } else {
-    const { discography } = await fetchGQLArtistOverview(uri);
-    CONFIG2.artistLikedTracks && allTracks.push(...(await fetchArtistLikedTracks(uri)).map(parseArtistLikedTrack));
-    CONFIG2.artistTopTracks && allTracks.push(...discography.topTracks.items.map(parseTopTrackFromArtist));
-    CONFIG2.artistPopularReleases && itemsWithCountAr.push(discography.popularReleasesAlbums);
-    CONFIG2.artistSingles && itemsReleasesAr.push(discography.singles);
-    CONFIG2.artistAlbums && itemsReleasesAr.push(discography.albums);
-    CONFIG2.artistCompilations && itemsReleasesAr.push(discography.compilations);
-  }
-  const items1 = itemsWithCountAr.flatMap((iwc) => iwc.items);
-  const items2 = itemsReleasesAr.flatMap((ir) => ir.items.flatMap((i) => i.releases.items));
-  const albumLikeUris = items1.concat(items2).map((item) => item.uri);
-  const albumsTracks = await Promise.all(albumLikeUris.map(getTracksFromAlbum));
-  allTracks.push(...albumsTracks.flat());
-  return await Promise.all(allTracks);
-};
-
-// extensions/sort-plus/util.ts
-var { URI: URI3 } = Spicetify;
-var URI_isLikedTracks = (uri) => {
-  const uriObj = URI3.fromString(uri);
-  return uriObj.type === URI3.Type.COLLECTION && uriObj.category === "tracks";
-};
-var getTracksFromUri = _.cond([
-  [URI3.isAlbum, getTracksFromAlbum],
-  [URI3.isArtist, getTracksFromArtist],
-  [URI_isLikedTracks, getLikedTracks],
-  [URI3.isPlaylistV1OrV2, getTracksFromPlaylist]
-]);
 
 // extensions/star-ratings-2/controls.tsx
 var { URI: URI4, Tippy } = Spicetify;
@@ -657,9 +669,9 @@ onSongChanged((data) => {
   if (!data)
     return;
   const { uri } = data.item;
-  if (Number(CONFIG.skipThreshold)) {
+  if (Number(CONFIG2.skipThreshold)) {
     const currentTrackRating = tracksRatings[uri] ?? Number.MAX_SAFE_INTEGER;
-    if (currentTrackRating <= Number(CONFIG.skipThreshold))
+    if (currentTrackRating <= Number(CONFIG2.skipThreshold))
       return void Player3.next();
   }
   updateNowPlayingControls(uri);

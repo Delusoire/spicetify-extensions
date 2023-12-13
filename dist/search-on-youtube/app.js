@@ -8,7 +8,7 @@ var normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // shared/api.ts
-var { Locale, GraphQL, CosmosAsync } = Spicetify;
+var { CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
   fetch(url, opts) {
