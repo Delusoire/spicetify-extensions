@@ -25,7 +25,7 @@ class _GenreLink extends LitElement {
     `
 
     @property()
-    genre = "Default"
+    genre = "No Genre"
 
     private openPlaylistsSearch() {
         History.push({ pathname: `/search/${this.genre}/playlists` })
@@ -69,7 +69,7 @@ class _ArtistGenreContainer extends LitElement {
                 }
             </style>
             <div className="main-entityHeader-detailsText genre-container">
-                ${this.name ? html`<span>${this.name} : </span>` : []} ${join(artistGenreLinks, () => divider)}
+                ${this.name && html`<span>${this.name} : </span>`} ${join(artistGenreLinks, () => divider)}
             </div>`
     }
 }
