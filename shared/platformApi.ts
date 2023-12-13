@@ -74,7 +74,7 @@ export const movePlaylistTracks = async (
         location,
     )
 
-export const removePlaylistTracks = async (playlist: SpotifyURI, tracks: Array<{ uid: string }>) =>
+export const removePlaylistTracks = (playlist: SpotifyURI, tracks: Array<{ uid: string }>) =>
     PlaylistAPI.remove(playlist, tracks)
 
 export const fetchPlaylistEnhancedSongs300 = async (uri: SpotifyURI, offset = 0, limit = 300) =>

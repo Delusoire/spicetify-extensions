@@ -87,18 +87,20 @@ export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, 
 export const getReactProps = (element: Element) =>
     element[Object.keys(element).find(k => k.startsWith("__reactProps$")) as keyof typeof element] as any
 
-export const createQueueItem = (queued: boolean) => (uri: SpotifyURI) => ({
-    contextTrack: {
-        uri,
-        uid: "",
-        metadata: {
-            is_queued: queued.toString(),
+export const createQueueItem =
+    (queued: boolean) =>
+    ({ uri, uid = "" }: { uri: string; uid?: string }) => ({
+        contextTrack: {
+            uri,
+            uid,
+            metadata: {
+                is_queued: queued.toString(),
+            },
         },
-    },
-    removed: [],
-    blocked: [],
-    provider: queued ? ("queue" as const) : ("context" as const),
-})
+        removed: [],
+        blocked: [],
+        provider: queued ? ("queue" as const) : ("context" as const),
+    })
 
 export const setQueue = async (
     nextTracks: Array<ReturnType<ReturnType<typeof createQueueItem>>>,

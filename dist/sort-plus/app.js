@@ -20,10 +20,10 @@ var SpotifyLoc = {
   }
 };
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var createQueueItem = (queued) => (uri) => ({
+var createQueueItem = (queued) => ({ uri, uid = "" }) => ({
   contextTrack: {
     uri,
-    uid: "",
+    uid,
     metadata: {
       is_queued: queued.toString()
     }
@@ -466,6 +466,7 @@ var getTracksFromArtist = async (uri) => {
 
 // extensions/sort-plus/util.ts
 var { URI: URI2 } = Spicetify;
+var SEPARATOR_URI = "spotify:separator";
 var SortAction = /* @__PURE__ */ ((SortAction2) => {
   SortAction2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
   SortAction2["SPOTIFY_POPULARITY"] = "Spotify - Popularity";
@@ -623,14 +624,12 @@ var populateTracks = _.cond([
 var setQueue2 = (reverse) => async (tracks) => {
   if (PlayerAPI2?._state?.item?.uid == void 0)
     return void Spicetify.showNotification("Queue is null!", true);
-  const dedupedQueue = _.uniqBy(tracks, (track) => track.uri);
+  const dedupedQueue = _.uniqBy(tracks, "uri");
   reverse && dedupedQueue.reverse();
   global.lastSortedQueue = lastSortedQueue2 = dedupedQueue;
   const isLikedTracks = URI_isLikedTracks(lastFetchedUri);
-  const queue = _(lastSortedQueue2).map((track) => track.uri).map(createQueueItem(isLikedTracks)).value();
-  if (!isLikedTracks)
-    await setPlayingContext(lastFetchedUri);
-  setQueue(queue);
+  const queue = lastSortedQueue2.concat({ uri: SEPARATOR_URI }).map(createQueueItem(isLikedTracks));
+  setQueue(queue, isLikedTracks ? void 0 : lastFetchedUri);
   return await PlayerAPI2.skipToNext();
 };
 var sortTracksBy = (sortAction, sortFn) => async (uri) => {

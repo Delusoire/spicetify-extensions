@@ -102,7 +102,7 @@ var createPlaylist = async (name, location = {}) => await RootlistAPI.createPlay
 var setPlaylistVisibility = async (playlist, visibleForAll) => await PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
 var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
 var addPlaylistTracks = async (playlist, tracks, location = {}) => await PlaylistAPI.add(playlist, tracks, location);
-var removePlaylistTracks = async (playlist, tracks) => PlaylistAPI.remove(playlist, tracks);
+var removePlaylistTracks = (playlist, tracks) => PlaylistAPI.remove(playlist, tracks);
 
 // extensions/star-ratings-2/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";

@@ -7,6 +7,7 @@ import { fillTracksFromLastFM, fillTracksFromSpotify } from "./populate.ts"
 import { CONFIG } from "./settings.ts"
 import {
     AsyncTracksOperation,
+    SEPARATOR_URI,
     SortAction,
     SortActionIcon,
     SortActionProp,
@@ -38,20 +39,16 @@ const populateTracks: (sortProp: SortAction) => AsyncTracksOperation = _.cond([
 const setQueue = (reverse: boolean) => async (tracks: TrackData[]) => {
     if (PlayerAPI?._state?.item?.uid == undefined) return void Spicetify.showNotification("Queue is null!", true)
 
-    const dedupedQueue = _.uniqBy(tracks, track => track.uri)
+    const dedupedQueue = _.uniqBy(tracks, "uri")
     reverse && dedupedQueue.reverse()
 
     global.lastSortedQueue = lastSortedQueue = dedupedQueue
 
     const isLikedTracks = URI_isLikedTracks(lastFetchedUri)
 
-    const queue = _(lastSortedQueue)
-        .map(track => track.uri)
-        .map(createQueueItem(isLikedTracks))
-        .value()
+    const queue = lastSortedQueue.concat({ uri: SEPARATOR_URI } as TrackData).map(createQueueItem(isLikedTracks))
 
-    if (!isLikedTracks) await setPlayingContext(lastFetchedUri)
-    _setQueue(queue)
+    _setQueue(queue, isLikedTracks ? undefined : lastFetchedUri)
 
     return await PlayerAPI.skipToNext()
 }
