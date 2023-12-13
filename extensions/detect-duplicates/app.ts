@@ -9,14 +9,20 @@ const greyOutTrack = (track: HTMLDivElement) => {
 }
 
 const onTrackListMutation = async (
-    trackList: HTMLDivElement & { presentation: HTMLDivElement },
+    trackList: HTMLDivElement & { presentation: HTMLDivElement; firstIndex?: number; lastIndex?: number },
     record: MutationRecord[],
     observer: MutationObserver,
 ) => {
     const tracks = getTrackListTracks(trackList.presentation) as Array<HTMLDivElement & { props: Record<string, any> }>
     const reactTracks = getReactFiber(trackList.presentation).pendingProps.children as any[]
-    if (tracks.length !== reactTracks.length) return
     const tracksProps = reactTracks.map((child: any) => child.props as Record<string, any>)
+    const nextFirstIndex = tracksProps[0].index
+    const nextLastIndex = tracksProps.at(-1)!.index
+    if (nextFirstIndex !== trackList.firstIndex || nextLastIndex !== trackList.lastIndex) {
+        trackList.firstIndex = nextFirstIndex
+        trackList.lastIndex = nextLastIndex
+        return
+    }
     tracks.forEach((track, i) => {
         if (track.props && track.props !== tracksProps[i]) {
             debugger
