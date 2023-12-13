@@ -471,7 +471,7 @@ var getTrackListTrackUri = (track) => {
   const reactProps = getReactProps(rowSectionEnd);
   const { props } = (
     // artist & local tracks & albums
-    reactProps.children.at(-1).props.menu || // playlists
+    reactProps.children.at?.(-1).props.menu ?? // playlists
     reactProps.children.props.children.at(-1).props.menu
   );
   return props.uri;
