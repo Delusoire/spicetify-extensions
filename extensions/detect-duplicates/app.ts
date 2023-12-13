@@ -15,11 +15,14 @@ const onTrackListMutation = async (
 ) => {
     const tracks = getTrackListTracks(trackList.presentation) as Array<HTMLDivElement & { props: Record<string, any> }>
     const reactTracks = getReactFiber(trackList.presentation).pendingProps.children as any[]
+    if (tracks.length !== reactTracks.length) return
     const tracksProps = reactTracks.map((child: any) => child.props as Record<string, any>)
-    if (tracks.length !== tracksProps.length) {
-        debugger
-    }
-    tracks.forEach((track, i) => (track.props = tracksProps[i]))
+    tracks.forEach((track, i) => {
+        if (track.props && track.props !== tracksProps[i]) {
+            debugger
+        }
+        track.props = tracksProps[i]
+    })
 
     const trackUris = tracks.map(track => track.props.uri)
     await getISRCsForUris(trackUris)

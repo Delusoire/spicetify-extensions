@@ -146,11 +146,15 @@ var greyOutTrack = (track) => {
 var onTrackListMutation = async (trackList, record, observer) => {
   const tracks = getTrackListTracks(trackList.presentation);
   const reactTracks = getReactFiber(trackList.presentation).pendingProps.children;
+  if (tracks.length !== reactTracks.length)
+    return;
   const tracksProps = reactTracks.map((child) => child.props);
-  if (tracks.length !== tracksProps.length) {
-    debugger;
-  }
-  tracks.forEach((track, i) => track.props = tracksProps[i]);
+  tracks.forEach((track, i) => {
+    if (track.props && track.props !== tracksProps[i]) {
+      debugger;
+    }
+    track.props = tracksProps[i];
+  });
   const trackUris = tracks.map((track) => track.props.uri);
   await getISRCsForUris(trackUris);
   tracks.map(async (track) => {
