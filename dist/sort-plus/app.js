@@ -35,12 +35,18 @@ var createQueueItem = (queued) => ({ uri, uid = "" }) => ({
 var setQueue = async (nextTracks, contextUri) => {
   const { _queue, _client } = PlayerAPI._queue;
   const { prevTracks, queueRevision } = _queue;
-  const res = _client.setQueue({
+  const res = await _client.setQueue({
     nextTracks,
     prevTracks,
     queueRevision
   });
-  contextUri && await setPlayingContext(contextUri);
+  await PlayerAPI.skipToNext();
+  if (contextUri) {
+    await new Promise((resolve) => {
+      PlayerAPI._events.addListener("queue_update", () => resolve(), { once: true });
+    });
+    await setPlayingContext(contextUri);
+  }
   return res;
 };
 var setPlayingContext = (uri) => {
@@ -634,7 +640,7 @@ var populateTracks = _.cond([
   [fp.startsWith("Spotify"), fillTracksFromSpotify],
   [fp.startsWith("LastFM"), () => fillTracksFromLastFM]
 ]);
-var setQueue2 = (reverse) => async (tracks) => {
+var setQueue2 = (reverse) => (tracks) => {
   if (PlayerAPI2?._state?.item?.uid == void 0)
     return void Spicetify.showNotification("Queue is null!", true);
   const dedupedQueue = _.uniqBy(tracks, "uri");
@@ -642,9 +648,7 @@ var setQueue2 = (reverse) => async (tracks) => {
   global.lastSortedQueue = lastSortedQueue2 = dedupedQueue;
   const isLikedTracks = URI_isLikedTracks(lastFetchedUri);
   const queue = lastSortedQueue2.concat({ uri: SEPARATOR_URI }).map(createQueueItem(isLikedTracks));
-  !isLikedTracks && await setPlayingContext(lastFetchedUri);
-  await setQueue(queue);
-  return await PlayerAPI2.skipToNext();
+  return setQueue(queue, isLikedTracks ? void 0 : lastFetchedUri);
 };
 var sortTracksBy = (sortAction, sortFn) => async (uri) => {
   lastSortAction = sortAction;

@@ -109,13 +109,20 @@ export const setQueue = async (
     const { _queue, _client } = PlayerAPI._queue
     const { prevTracks, queueRevision } = _queue
 
-    const res = _client.setQueue({
+    const res = await _client.setQueue({
         nextTracks,
         prevTracks,
         queueRevision,
     })
 
-    contextUri && (await setPlayingContext(contextUri))
+    await PlayerAPI.skipToNext()
+
+    if (contextUri) {
+        await new Promise<void>(resolve => {
+            PlayerAPI._events.addListener("queue_update", () => resolve(), { once: true })
+        })
+        await setPlayingContext(contextUri)
+    }
 
     return res
 }

@@ -36,7 +36,7 @@ const populateTracks: (sortProp: SortAction) => AsyncTracksOperation = _.cond([
     [fp.startsWith("LastFM"), () => fillTracksFromLastFM],
 ])
 
-const setQueue = (reverse: boolean) => async (tracks: TrackData[]) => {
+const setQueue = (reverse: boolean) => (tracks: TrackData[]) => {
     if (PlayerAPI?._state?.item?.uid == undefined) return void Spicetify.showNotification("Queue is null!", true)
 
     const dedupedQueue = _.uniqBy(tracks, "uri")
@@ -48,12 +48,7 @@ const setQueue = (reverse: boolean) => async (tracks: TrackData[]) => {
 
     const queue = lastSortedQueue.concat({ uri: SEPARATOR_URI } as TrackData).map(createQueueItem(isLikedTracks))
 
-    // _setQueue(queue, isLikedTracks ? undefined : lastFetchedUri)
-
-    !isLikedTracks && (await setPlayingContext(lastFetchedUri))
-    await _setQueue(queue)
-
-    return await PlayerAPI.skipToNext()
+    return _setQueue(queue, isLikedTracks ? undefined : lastFetchedUri)
 }
 
 // Menu
