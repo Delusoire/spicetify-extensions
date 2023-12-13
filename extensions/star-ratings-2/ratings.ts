@@ -86,12 +86,11 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
 
         //TODO: clean this
         {
-            const nowPlaylingControlsObserver = new MutationObserver(() => {
-                nowPlaylingControlsObserver.disconnect()
+            new MutationObserver((_, observer) => {
+                observer.disconnect()
                 if (npTrack !== uri) return
                 updateNowPlayingControls(npTrack, false)
-            })
-            nowPlaylingControlsObserver.observe(getNowPlayingBar(), {
+            }).observe(getNowPlayingBar(), {
                 subtree: true,
             })
         }

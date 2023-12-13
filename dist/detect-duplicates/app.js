@@ -1,22 +1,31 @@
 // shared/util.ts
 var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
+var PermanentMutationObserver = class extends MutationObserver {
+  constructor(targetSelector, callback) {
+    super(callback);
+    this.target = null;
+    new MutationObserver(() => {
+      const nextTarget = document.querySelector(targetSelector);
+      if (nextTarget && !nextTarget.isEqualNode(this.target)) {
+        this.target && this.disconnect();
+        this.target = nextTarget;
+        this.observe(this.target, {
+          childList: true,
+          subtree: true
+        });
+      }
+    }).observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+};
 var getReactFiber = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactFiber$"))];
-var getReactProps = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactProps$"))];
 
 // extensions/star-ratings-2/util.ts
 var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-trackList.main-trackList-indexable"));
 var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
-var getTrackListTrackUri = (track) => {
-  const rowSectionEnd = track.querySelector(".main-trackList-rowSectionEnd");
-  const reactProps = getReactProps(rowSectionEnd);
-  const { props } = (
-    // artist & local tracks & albums
-    reactProps.children.at?.(-1).props.menu ?? // playlists
-    reactProps.children.props.children.at(-1).props.menu
-  );
-  return props.uri;
-};
 
 // shared/GraphQL/searchModalResults.ts
 var { GraphQL } = Spicetify;
@@ -130,46 +139,31 @@ var isUriOutdatedDuplicate = async (uri) => {
 };
 
 // extensions/detect-duplicates/app.ts
-var { URI: URI3 } = Spicetify;
 var greyOutTrack = (track) => {
   track.style.backgroundColor = "gray";
   track.style.opacity = "0.3";
 };
-var onMutation = async () => {
-  const trackLists = getTrackLists();
-  const tracksByTrackLists = trackLists.map((trackList) => {
-    const tracks = getTrackListTracks(trackList);
-    if (!trackList.presentation) {
-      trackList.presentation = trackList.lastElementChild.firstElementChild.nextElementSibling;
-    }
-    const tracksProps = getReactFiber(trackList.presentation).pendingProps.children.map((child) => child.props);
-    tracks.forEach((track, i) => track.props = tracksProps[i]);
-    return tracks;
-  });
-  const allUris = tracksByTrackLists.flatMap((tracks) => tracks.map((track) => track.props.uri));
-  await getISRCsForUris(allUris);
-  tracksByTrackLists.map((tracks) => {
-    tracks.map(async (track) => {
-      const uri = URI3.fromString(getTrackListTrackUri(track)).toURI();
-      const isDuplicate = await isUriOutdatedDuplicate(uri);
-      isDuplicate && greyOutTrack(track);
-    });
+var onTrackListMutation = async (trackList, record, observer) => {
+  const tracks = getTrackListTracks(trackList.presentation);
+  const reactTracks = getReactFiber(trackList.presentation).pendingProps.children;
+  const tracksProps = reactTracks.map((child) => child.props);
+  if (tracks.length !== tracksProps.length) {
+    debugger;
+  }
+  tracks.forEach((track, i) => track.props = tracksProps[i]);
+  const trackUris = tracks.map((track) => track.props.uri);
+  await getISRCsForUris(trackUris);
+  tracks.map(async (track) => {
+    const isDuplicate = await isUriOutdatedDuplicate(track.props.uri);
+    isDuplicate && greyOutTrack(track);
   });
 };
-var mainElement;
-var mainElementObserver = new MutationObserver(() => onMutation());
-new MutationObserver(() => {
-  const nextMainElement = document.querySelector("main");
-  if (nextMainElement && !nextMainElement.isEqualNode(mainElement)) {
-    if (mainElement)
-      mainElementObserver.disconnect();
-    mainElement = nextMainElement;
-    mainElementObserver.observe(mainElement, {
-      childList: true,
-      subtree: true
-    });
-  }
-}).observe(document.body, {
-  childList: true,
-  subtree: true
+new PermanentMutationObserver("main", () => {
+  const trackLists = getTrackLists();
+  trackLists.filter((trackList) => !trackList.presentation).forEach((trackList) => {
+    trackList.presentation = trackList.lastElementChild.firstElementChild.nextElementSibling;
+    new MutationObserver(
+      (record, observer) => onTrackListMutation(trackList, record, observer)
+    ).observe(trackList.presentation, { childList: true });
+  });
 });

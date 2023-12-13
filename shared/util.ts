@@ -30,6 +30,28 @@ export const normalizeStr = (str: string) =>
         .toLowerCase()
         .trim()
 
+export class PermanentMutationObserver extends MutationObserver {
+    target: HTMLElement | null = null
+
+    constructor(targetSelector: string, callback: MutationCallback) {
+        super(callback)
+        new MutationObserver(() => {
+            const nextTarget = document.querySelector<HTMLElement>(targetSelector)
+            if (nextTarget && !nextTarget.isEqualNode(this.target)) {
+                this.target && this.disconnect()
+                this.target = nextTarget
+                this.observe(this.target, {
+                    childList: true,
+                    subtree: true,
+                })
+            }
+        }).observe(document.body, {
+            childList: true,
+            subtree: true,
+        })
+    }
+}
+
 export const waitForElement = <E extends Element>(
     selector: string,
     timeout = 1000,
@@ -62,25 +84,6 @@ export const waitForElement = <E extends Element>(
                 reject()
             }, timeout)
     })
-
-export const trapElement = <E extends Element>(
-    selector: string,
-    callback: (el: E | null, lastEl: E | null) => void,
-    location = document.body,
-) => {
-    let lastEl: E | null = null
-
-    const observer = new MutationObserver(() => {
-        const el = document.querySelector<E>(selector)
-        if (el !== lastEl) callback(el, lastEl)
-        lastEl = el
-    })
-
-    observer.observe(location, {
-        childList: true,
-        subtree: true,
-    })
-}
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 

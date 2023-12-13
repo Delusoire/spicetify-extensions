@@ -547,13 +547,12 @@ var toggleRating = async (uri, rating) => {
   if (npTrack === uri) {
     updateNowPlayingControls(npTrack, false);
     {
-      const nowPlaylingControlsObserver = new MutationObserver(() => {
-        nowPlaylingControlsObserver.disconnect();
+      new MutationObserver((_2, observer) => {
+        observer.disconnect();
         if (npTrack !== uri)
           return;
         updateNowPlayingControls(npTrack, false);
-      });
-      nowPlaylingControlsObserver.observe(getNowPlayingBar(), {
+      }).observe(getNowPlayingBar(), {
         subtree: true
       });
     }
