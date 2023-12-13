@@ -291,7 +291,7 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
 
 // shared/GraphQL/fetchAlbum.ts
 var { Locale, GraphQL } = Spicetify;
-var fetchAlbum = async (uri, offset = 0, limit = 487) => {
+var fetchAlbum = async (uri, offset = 0, limit = 450) => {
   const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
     uri,
     locale: Locale.getLocale(),
@@ -303,13 +303,20 @@ var fetchAlbum = async (uri, offset = 0, limit = 487) => {
 
 // shared/GraphQL/fetchArtistDiscography.ts
 var { GraphQL: GraphQL2 } = Spicetify;
-var fetchArtistDiscography = async (uri, offset = 0, limit = 115) => {
-  const res = await GraphQL2.Request(GraphQL2.Definitions.queryArtistDiscographyAll, {
-    uri,
-    offset,
-    limit
-  });
-  return res.data.artistUnion;
+var fetchArtistDiscography = (uri, offset = 0, limit = 100) => {
+  const _fetchArtistDiscography = async (offset2, limit2) => {
+    const res = await GraphQL2.Request(GraphQL2.Definitions.queryArtistDiscographyAll, {
+      uri,
+      offset: offset2,
+      limit: limit2
+    });
+    const { discography } = res.data.artistUnion;
+    const { totalCount, items } = discography.all;
+    if (offset2 + limit2 < totalCount)
+      items.push(...await _fetchArtistDiscography(offset2 + limit2, limit2));
+    return items;
+  };
+  return _fetchArtistDiscography(offset, limit);
 };
 
 // shared/GraphQL/fetchArtistOveriew.ts
@@ -461,8 +468,8 @@ var getTracksFromArtist = async (uri) => {
   const itemsReleasesAr = new Array();
   const appearsOnAr = new Array();
   if (CONFIG.artistAllDiscography) {
-    const { discography } = await fetchArtistDiscography(uri);
-    itemsReleasesAr.push(discography.all);
+    const items = await fetchArtistDiscography(uri);
+    itemsReleasesAr.push({ items, totalCount: Infinity });
   } else {
     const { discography, relatedContent } = await fetchArtistOverview(uri);
     CONFIG.artistLikedTracks && allTracks.push(...(await fetchArtistLikedTracks(uri)).map(parseArtistLikedTrack));

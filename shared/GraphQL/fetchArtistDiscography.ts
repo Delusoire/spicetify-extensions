@@ -8,12 +8,20 @@ export type fetchArtistDiscographyRes = {
         all: ItemsReleases<Item2>
     }
 }
-export const fetchArtistDiscography = async (uri: string, offset = 0, limit = 115) => {
-    const res = await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
-        uri,
-        offset,
-        limit,
-    })
+export const fetchArtistDiscography = (uri: string, offset = 0, limit = 100) => {
+    const _fetchArtistDiscography = async (offset: number, limit: number) => {
+        const res = await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
+            uri,
+            offset,
+            limit,
+        })
+        const { discography } = res.data.artistUnion as fetchArtistDiscographyRes
+        const { totalCount, items } = discography.all
 
-    return res.data.artistUnion as fetchArtistDiscographyRes
+        if (offset + limit < totalCount) items.push(...(await _fetchArtistDiscography(offset + limit, limit)))
+
+        return items
+    }
+
+    return _fetchArtistDiscography(offset, limit)
 }

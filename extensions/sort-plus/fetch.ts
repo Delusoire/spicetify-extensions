@@ -47,8 +47,8 @@ export const getTracksFromArtist = async (uri: SpotifyURI) => {
     const appearsOnAr = new Array<ItemsReleasesWithCount<ItemMin>>()
 
     if (CONFIG.artistAllDiscography) {
-        const { discography } = await fetchArtistDiscography(uri)
-        itemsReleasesAr.push(discography.all)
+        const items = await fetchArtistDiscography(uri)
+        itemsReleasesAr.push({ items, totalCount: Infinity })
     } else {
         const { discography, relatedContent } = await fetchArtistOverview(uri)
 

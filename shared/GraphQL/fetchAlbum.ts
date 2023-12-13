@@ -51,7 +51,6 @@ export type fetchAlbumRes = {
         uri: string
         name: string
     }>
-
     type: string
     date: {
         isoString: string
@@ -102,7 +101,6 @@ export type fetchAlbumRes = {
             }>
         }
     }>
-
     moreAlbumsByArtist: Items<{
         discography: {
             popularReleasesAlbums: Items<{
@@ -128,7 +126,7 @@ export type fetchAlbumRes = {
         }
     }>
 }
-export const fetchAlbum = async (uri: string, offset = 0, limit = 487) => {
+export const fetchAlbum = async (uri: string, offset = 0, limit = 450) => {
     const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
         uri,
         locale: Locale.getLocale(),
