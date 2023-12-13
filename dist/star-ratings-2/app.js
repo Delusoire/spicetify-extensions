@@ -113,7 +113,7 @@ var parseTopTrackFromArtist = ({ track }) => ({
   name: track.name,
   albumUri: track.albumOfTrack.uri,
   albumName: void 0,
-  artistUri: track.artists.items[0].uri,
+  artistUris: track.artists.items.map((artist) => artist.uri),
   artistName: track.artists.items[0].profile.name,
   durationMilis: track.duration.totalMilliseconds,
   playcount: Number(track.playcount),
@@ -126,7 +126,7 @@ var parseArtistLikedTrack = (track) => ({
   name: track.name,
   albumUri: track.album.uri,
   albumName: track.album.name,
-  artistUri: track.artists[0].uri,
+  artistUris: track.artists.map((artist) => artist.uri),
   artistName: track.artists[0].name,
   durationMilis: track.duration.milliseconds,
   playcount: void 0,
@@ -141,7 +141,7 @@ var parseAlbumTrack = ({ track }) => ({
   // gets filled in later
   albumName: "",
   // gets filled in later
-  artistUri: track.artists.items[0].uri,
+  artistUris: track.artists.items.map((artist) => artist.uri),
   artistName: track.artists.items[0].profile.name,
   durationMilis: track.duration.totalMilliseconds,
   playcount: Number(track.playcount),
@@ -155,7 +155,7 @@ var parsePlaylistAPITrack = (track) => ({
   name: track.name,
   albumUri: track.album.uri,
   albumName: track.album.name,
-  artistUri: track.artists[0].uri,
+  artistUris: track.artists.map((artist) => artist.uri),
   artistName: track.artists[0].name,
   durationMilis: track.duration.milliseconds,
   playcount: void 0,
@@ -168,7 +168,7 @@ var parseLibraryAPILikedTracks = (track) => ({
   name: track.name,
   albumUri: track.album.uri,
   albumName: track.album.name,
-  artistUri: track.artists[0].uri,
+  artistUris: track.artists.map((artist) => artist.uri),
   artistName: track.artists[0].name,
   durationMilis: track.duration.milliseconds,
   playcount: void 0,
@@ -397,6 +397,7 @@ var getTracksFromArtist = async (uri) => {
   const allTracks = new Array();
   const itemsWithCountAr = new Array();
   const itemsReleasesAr = new Array();
+  const appearsOnAr = new Array();
   if (CONFIG.artistAllDiscography) {
     const { discography } = await fetchArtistDiscography(uri);
     itemsReleasesAr.push(discography.all);
@@ -408,13 +409,15 @@ var getTracksFromArtist = async (uri) => {
     CONFIG.artistSingles && itemsReleasesAr.push(discography.singles);
     CONFIG.artistAlbums && itemsReleasesAr.push(discography.albums);
     CONFIG.artistCompilations && itemsReleasesAr.push(discography.compilations);
-    CONFIG.artistAppearsOn && itemsReleasesAr.push(relatedContent.appearsOn);
+    CONFIG.artistAppearsOn && appearsOnAr.push(relatedContent.appearsOn);
   }
   const items1 = itemsWithCountAr.flatMap((iwc) => iwc.items);
   const items2 = itemsReleasesAr.flatMap((ir) => ir.items.flatMap((i) => i.releases.items));
   const albumLikeUris = items1.concat(items2).map((item) => item.uri);
   const albumsTracks = await Promise.all(albumLikeUris.map(getTracksFromAlbum));
-  allTracks.push(...albumsTracks.flat());
+  const appearsOnUris = appearsOnAr.flatMap((ir) => ir.items.flatMap((i) => i.releases.items)).map((item) => item.uri);
+  const appearsOnTracks = await Promise.all(appearsOnUris.map(getTracksFromAlbum));
+  allTracks.push(...albumsTracks.flat(), ...appearsOnTracks.flat().filter((track) => track.artistUris.includes(uri)));
   return await Promise.all(allTracks);
 };
 

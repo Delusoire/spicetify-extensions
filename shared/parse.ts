@@ -1,5 +1,6 @@
 import { Track } from "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk/dist/mjs/types.js"
 import { fetchAlbumRes } from "./GraphQL/fetchAlbum.ts"
+import { TopTracksItem } from "./GraphQL/sharedTypes.ts"
 
 export type TrackData = {
     uri: string
@@ -7,7 +8,7 @@ export type TrackData = {
     name: string
     albumUri: string
     albumName?: string
-    artistUri: string
+    artistUris: string[]
     artistName: string
     durationMilis: number
     playcount?: number
@@ -24,7 +25,7 @@ export const parseTopTrackFromArtist = ({ track }: TopTracksItem) => ({
     name: track.name,
     albumUri: track.albumOfTrack.uri,
     albumName: undefined,
-    artistUri: track.artists.items[0].uri,
+    artistUris: track.artists.items.map(artist => artist.uri),
     artistName: track.artists.items[0].profile.name,
     durationMilis: track.duration.totalMilliseconds,
     playcount: Number(track.playcount),
@@ -38,7 +39,7 @@ export const parseArtistLikedTrack = (track: Spicetify.Platform.Track) => ({
     name: track.name,
     albumUri: track.album.uri,
     albumName: track.album.name,
-    artistUri: track.artists[0].uri,
+    artistUris: track.artists.map(artist => artist.uri),
     artistName: track.artists[0].name,
     durationMilis: track.duration.milliseconds,
     playcount: undefined,
@@ -52,7 +53,7 @@ export const parseAlbumTrack = ({ track }: fetchAlbumRes["tracks"]["items"][0]) 
     name: track.name,
     albumUri: "", // gets filled in later
     albumName: "", // gets filled in later
-    artistUri: track.artists.items[0].uri,
+    artistUris: track.artists.items.map(artist => artist.uri),
     artistName: track.artists.items[0].profile.name,
     durationMilis: track.duration.totalMilliseconds,
     playcount: Number(track.playcount),
@@ -66,7 +67,7 @@ export const parsePlaylistAPITrack = (track: Spicetify.Platform.PlaylistAPI.Trac
     name: track.name,
     albumUri: track.album.uri,
     albumName: track.album.name,
-    artistUri: track.artists[0].uri,
+    artistUris: track.artists.map(artist => artist.uri),
     artistName: track.artists[0].name,
     durationMilis: track.duration.milliseconds,
     playcount: undefined,
@@ -80,7 +81,7 @@ export const parseWebAPITrack = (track: Track) => ({
     name: track.name,
     albumUri: track.album.uri,
     albumName: track.album.name,
-    artistUri: track.artists[0].uri,
+    artistUris: track.artists.map(artist => artist.uri),
     artistName: track.artists[0].name,
     durationMilis: track.duration_ms,
     playcount: undefined,
@@ -94,7 +95,7 @@ export const parseLibraryAPILikedTracks = (track: Spicetify.Platform.Track) => (
     name: track.name,
     albumUri: track.album.uri,
     albumName: track.album.name,
-    artistUri: track.artists[0].uri,
+    artistUris: track.artists.map(artist => artist.uri),
     artistName: track.artists[0].name,
     durationMilis: track.duration.milliseconds,
     playcount: undefined,

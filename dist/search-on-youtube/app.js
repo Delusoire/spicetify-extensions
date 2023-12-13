@@ -43,7 +43,7 @@ var parseWebAPITrack = (track) => ({
   name: track.name,
   albumUri: track.album.uri,
   albumName: track.album.name,
-  artistUri: track.artists[0].uri,
+  artistUris: track.artists.map((artist) => artist.uri),
   artistName: track.artists[0].name,
   durationMilis: track.duration_ms,
   playcount: void 0,

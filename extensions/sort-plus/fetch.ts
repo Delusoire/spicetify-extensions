@@ -1,7 +1,7 @@
 import { fetchAlbum } from "../../shared/GraphQL/fetchAlbum.ts"
 import { fetchArtistDiscography } from "../../shared/GraphQL/fetchArtistDiscography.ts"
 import { fetchArtistOverview } from "../../shared/GraphQL/fetchArtistOveriew.ts"
-import { ItemMin, ItemsReleases, ItemsWithCount } from "../../shared/GraphQL/sharedTypes.ts"
+import { ItemMin, ItemsReleases, ItemsReleasesWithCount, ItemsWithCount } from "../../shared/GraphQL/sharedTypes.ts"
 import { _, fp } from "../../shared/deps.ts"
 import { pMchain } from "../../shared/fp.ts"
 import {
@@ -44,6 +44,7 @@ export const getTracksFromArtist = async (uri: SpotifyURI) => {
 
     const itemsWithCountAr = new Array<ItemsWithCount<ItemMin>>()
     const itemsReleasesAr = new Array<ItemsReleases<ItemMin>>()
+    const appearsOnAr = new Array<ItemsReleasesWithCount<ItemMin>>()
 
     if (CONFIG.artistAllDiscography) {
         const { discography } = await fetchArtistDiscography(uri)
@@ -57,13 +58,17 @@ export const getTracksFromArtist = async (uri: SpotifyURI) => {
         CONFIG.artistSingles && itemsReleasesAr.push(discography.singles)
         CONFIG.artistAlbums && itemsReleasesAr.push(discography.albums)
         CONFIG.artistCompilations && itemsReleasesAr.push(discography.compilations)
-        CONFIG.artistAppearsOn && itemsReleasesAr.push(relatedContent.appearsOn)
+        CONFIG.artistAppearsOn && appearsOnAr.push(relatedContent.appearsOn)
     }
 
     const items1 = itemsWithCountAr.flatMap(iwc => iwc.items)
     const items2 = itemsReleasesAr.flatMap(ir => ir.items.flatMap(i => i.releases.items))
     const albumLikeUris = items1.concat(items2).map(item => item.uri)
     const albumsTracks = await Promise.all(albumLikeUris.map(getTracksFromAlbum))
-    allTracks.push(...albumsTracks.flat())
+
+    const appearsOnUris = appearsOnAr.flatMap(ir => ir.items.flatMap(i => i.releases.items)).map(item => item.uri)
+    const appearsOnTracks = await Promise.all(appearsOnUris.map(getTracksFromAlbum))
+
+    allTracks.push(...albumsTracks.flat(), ...appearsOnTracks.flat().filter(track => track.artistUris.includes(uri)))
     return await Promise.all(allTracks)
 }
