@@ -82,7 +82,7 @@ var fetchAlbum = async (uri, offset = 0, limit = 487) => {
 
 // shared/GraphQL/fetchArtistDiscography.ts
 var { GraphQL: GraphQL2 } = Spicetify;
-var fetchArtistDiscography = async (uri, offset = 0, limit = 116) => {
+var fetchArtistDiscography = async (uri, offset = 0, limit = 115) => {
   const res = await GraphQL2.Request(GraphQL2.Definitions.queryArtistDiscographyAll, {
     uri,
     offset,

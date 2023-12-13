@@ -8,7 +8,7 @@ export type fetchArtistDiscographyRes = {
         all: ItemsReleases<Item2>
     }
 }
-export const fetchArtistDiscography = async (uri: string, offset = 0, limit = 116) => {
+export const fetchArtistDiscography = async (uri: string, offset = 0, limit = 115) => {
     const res = await GraphQL.Request(GraphQL.Definitions.queryArtistDiscographyAll, {
         uri,
         offset,
