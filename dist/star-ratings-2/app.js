@@ -13,6 +13,26 @@ var SpotifyLoc = {
     fromUid: (uid) => ({ after: { uid } })
   }
 };
+var PermanentMutationObserver = class extends MutationObserver {
+  constructor(targetSelector, callback) {
+    super(callback);
+    this.target = null;
+    new MutationObserver(() => {
+      const nextTarget = document.querySelector(targetSelector);
+      if (nextTarget && !nextTarget.isEqualNode(this.target)) {
+        this.target && this.disconnect();
+        this.target = nextTarget;
+        this.observe(this.target, {
+          childList: true,
+          subtree: true
+        });
+      }
+    }).observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+};
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 var getReactProps = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactProps$"))];
 var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
@@ -662,7 +682,7 @@ var updateTrackListControls = (updateDropdown = true) => {
   trackLists.map((trackList) => {
     const trackListTracks = getTrackListTracks(trackList);
     trackListTracks.map((track) => {
-      const uri = URI4.fromString(getTrackListTrackUri(track)).toURI();
+      const uri = getTrackListTrackUri(track);
       if (!URI4.isTrack(uri))
         return;
       const r = tracksRatings[uri];
@@ -695,23 +715,7 @@ onSongChanged((data) => {
   }
   updateNowPlayingControls(uri);
 });
-var mainElement;
-var mainElementObserver = new MutationObserver(() => updateTrackListControls());
-new MutationObserver(() => {
-  const nextMainElement = document.querySelector("main");
-  if (nextMainElement && !nextMainElement.isEqualNode(mainElement)) {
-    if (mainElement)
-      mainElementObserver.disconnect();
-    mainElement = nextMainElement;
-    mainElementObserver.observe(mainElement, {
-      childList: true,
-      subtree: true
-    });
-  }
-}).observe(document.body, {
-  childList: true,
-  subtree: true
-});
+new PermanentMutationObserver("main", () => updateTrackListControls());
 onHistoryChanged(_.overSome([URI5.isAlbum, URI5.isArtist, URI5.isPlaylistV1OrV2]), (uri) => updateCollectionControls(uri));
 (async () => {
     if (!document.getElementById("star-ratings-2-css")) {

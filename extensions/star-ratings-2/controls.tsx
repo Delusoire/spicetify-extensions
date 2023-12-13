@@ -109,7 +109,7 @@ export const updateTrackListControls = (updateDropdown = true) => {
         const trackListTracks = getTrackListTracks(trackList)
 
         trackListTracks.map(track => {
-            const uri = URI.fromString(getTrackListTrackUri(track)).toURI()
+            const uri = getTrackListTrackUri(track)
 
             if (!URI.isTrack(uri!)) return
 

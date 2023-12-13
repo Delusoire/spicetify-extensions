@@ -1,4 +1,4 @@
-import { onHistoryChanged, onSongChanged } from "../../shared/util.ts"
+import { PermanentMutationObserver, onHistoryChanged, onSongChanged } from "../../shared/util.ts"
 
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.tsx"
 import { loadRatings, tracksRatings } from "./ratings.ts"
@@ -22,22 +22,6 @@ onSongChanged(data => {
     updateNowPlayingControls(uri)
 })
 
-let mainElement: HTMLElement
-const mainElementObserver = new MutationObserver(() => updateTrackListControls())
-
-new MutationObserver(() => {
-    const nextMainElement = document.querySelector<HTMLElement>("main")
-    if (nextMainElement && !nextMainElement.isEqualNode(mainElement)) {
-        if (mainElement) mainElementObserver.disconnect()
-        mainElement = nextMainElement
-        mainElementObserver.observe(mainElement, {
-            childList: true,
-            subtree: true,
-        })
-    }
-}).observe(document.body, {
-    childList: true,
-    subtree: true,
-})
+new PermanentMutationObserver("main", () => updateTrackListControls())
 
 onHistoryChanged(_.overSome([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2]), uri => updateCollectionControls(uri))
