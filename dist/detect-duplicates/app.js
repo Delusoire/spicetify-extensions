@@ -141,11 +141,9 @@ var onMutation = async () => {
     const tracks = getTrackListTracks(trackList);
     if (!trackList.presentation) {
       trackList.presentation = trackList.lastElementChild.firstElementChild.nextElementSibling;
-      const tracksProps = getReactFiber(trackList.presentation).pendingProps.children.map(
-        (child) => child.props
-      );
-      tracks.forEach((track, i) => track.props = tracksProps[i]);
     }
+    const tracksProps = getReactFiber(trackList.presentation).pendingProps.children.map((child) => child.props);
+    tracks.forEach((track, i) => track.props = tracksProps[i]);
     return tracks;
   });
   const allUris = tracksByTrackLists.flatMap((tracks) => tracks.map((track) => track.props.uri));

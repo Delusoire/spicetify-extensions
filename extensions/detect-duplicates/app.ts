@@ -18,11 +18,9 @@ const onMutation = async () => {
         if (!trackList.presentation) {
             trackList.presentation = trackList.lastElementChild!.firstElementChild!
                 .nextElementSibling! as HTMLDivElement
-            const tracksProps = getReactFiber(trackList.presentation).pendingProps.children.map(
-                (child: any) => child.props,
-            )
-            tracks.forEach((track, i) => (track.props = tracksProps[i]))
         }
+        const tracksProps = getReactFiber(trackList.presentation).pendingProps.children.map((child: any) => child.props)
+        tracks.forEach((track, i) => (track.props = tracksProps[i]))
         return tracks as Array<HTMLDivElement & { props: Record<string, any> }>
     })
 
