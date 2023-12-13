@@ -14,6 +14,7 @@ var SpotifyLoc = {
   }
 };
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var getReactProps = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactProps$"))];
 var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
   const createMatchFn = (toMatchTo2) => {
     switch (typeof toMatchTo2) {
@@ -368,7 +369,7 @@ var SettingsSection = class _SettingsSection {
 
 // extensions/sort-plus/settings.ts
 var SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists";
-var settings = new SettingsSection("Sort Plus").addToggle({ id: "descending", desc: "Descending" }, task2.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task2.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task2.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task2.of(true)).addToggle({ id: "artistAppearsOn", desc: "Appears On" }, task2.of(false)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task2.of("Username")).addInput(
+var settings = new SettingsSection("Sort Plus").addToggle({ id: "preventDuplicates", desc: "Prevent Duplicates" }, task2.of(true)).addToggle({ id: "descending", desc: "Descending" }, task2.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task2.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task2.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task2.of(true)).addToggle({ id: "artistAppearsOn", desc: "Appears On" }, task2.of(false)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task2.of("Username")).addInput(
   { id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" },
   task2.of("********************************")
 ).addInput(
@@ -463,9 +464,18 @@ settings2.pushSettings();
 var CONFIG2 = settings2.toObject();
 
 // extensions/star-ratings-2/util.ts
-var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-indexable"));
-var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll("div.main-trackList-trackListRow"));
-var getTrackListTrackUri = (track) => (track = Object.values(track)[0].child.child.child.child, track.pendingProps.uri ?? track.child.pendingProps.uri);
+var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-trackList.main-trackList-indexable"));
+var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
+var getTrackListTrackUri = (track) => {
+  const rowSectionEnd = track.querySelector(".main-trackList-rowSectionEnd");
+  const reactProps = getReactProps(rowSectionEnd);
+  const { props } = (
+    // artist & local tracks & albums
+    reactProps.children.at(-1).props.menu || // playlists
+    reactProps.children.props.children.at(-1).props.menu
+  );
+  return props.uri;
+};
 var getNowPlayingBar = () => document.querySelector("div.main-nowPlayingBar-nowPlayingBar");
 var getCollectionActionBarRow = () => document.querySelector(`div.main-actionBar-ActionBarRow`);
 var playlistButtonSelector = `button[aria-label="Add to Liked Songs"], button[aria-label="Add to playlist"], button[aria-label="Remove recommendation"]`;

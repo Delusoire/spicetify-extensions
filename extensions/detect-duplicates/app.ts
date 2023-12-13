@@ -1,3 +1,5 @@
+import { _, fp } from "../../shared/deps.ts"
+import { getReactFiber } from "../../shared/util.ts"
 import { getTrackLists, getTrackListTrackUri, getTrackListTracks } from "../star-ratings-2/util.ts"
 import { getISRCsForUris, isUriOutdatedDuplicate } from "./util.ts"
 
@@ -9,22 +11,24 @@ const greyOutTrack = (track: HTMLDivElement) => {
 }
 
 const onMutation = async () => {
-    const trackLists = getTrackLists()
+    const trackLists = getTrackLists() as Array<HTMLDivElement & { presentation?: HTMLDivElement }>
 
-    // First pass to load the cache
-    {
-        const urisByTrackLists = trackLists.map(trackList => {
-            const tracks = getTrackListTracks(trackList)
+    const tracksByTrackLists = trackLists.map(trackList => {
+        const tracks = getTrackListTracks(trackList) as Array<HTMLDivElement & { props?: Record<string, any> }>
+        if (!trackList.presentation) {
+            trackList.presentation = trackList.lastElementChild!.firstElementChild!
+                .nextElementSibling! as HTMLDivElement
+            const tracksProps = getReactFiber(trackList.presentation).pendingProps.children.map(
+                (child: any) => child.props,
+            )
+            tracks.forEach((track, i) => (track.props = tracksProps[i]))
+        }
+        return tracks as Array<HTMLDivElement & { props: Record<string, any> }>
+    })
 
-            return tracks.map(track => URI.fromString(getTrackListTrackUri(track)).toURI())
-        })
-
-        await getISRCsForUris(urisByTrackLists.flat())
-    }
-
-    trackLists.map(trackList => {
-        const tracks = getTrackListTracks(trackList)
-
+    const allUris = tracksByTrackLists.flatMap(tracks => tracks.map(track => track.props.uri))
+    await getISRCsForUris(allUris)
+    tracksByTrackLists.map(tracks => {
         tracks.map(async track => {
             const uri = URI.fromString(getTrackListTrackUri(track)).toURI()
             const isDuplicate = await isUriOutdatedDuplicate(uri)

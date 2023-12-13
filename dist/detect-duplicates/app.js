@@ -1,7 +1,22 @@
+// shared/util.ts
+var { Player, URI } = Spicetify;
+var { PlayerAPI, History } = Spicetify.Platform;
+var getReactFiber = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactFiber$"))];
+var getReactProps = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactProps$"))];
+
 // extensions/star-ratings-2/util.ts
-var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-indexable"));
-var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll("div.main-trackList-trackListRow"));
-var getTrackListTrackUri = (track) => (track = Object.values(track)[0].child.child.child.child, track.pendingProps.uri ?? track.child.pendingProps.uri);
+var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-trackList.main-trackList-indexable"));
+var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
+var getTrackListTrackUri = (track) => {
+  const rowSectionEnd = track.querySelector(".main-trackList-rowSectionEnd");
+  const reactProps = getReactProps(rowSectionEnd);
+  const { props } = (
+    // artist & local tracks & albums
+    reactProps.children.at(-1).props.menu || // playlists
+    reactProps.children.props.children.at(-1).props.menu
+  );
+  return props.uri;
+};
 
 // shared/GraphQL/searchModalResults.ts
 var { GraphQL } = Spicetify;
@@ -18,12 +33,6 @@ var searchModalResults = async (q, offset = 0, limit = 10, topResultsNum = 20, i
 
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
-
-// shared/util.ts
-var { Player, URI } = Spicetify;
-var { PlayerAPI, History } = Spicetify.Platform;
-
-// shared/api.ts
 var { CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
@@ -128,15 +137,20 @@ var greyOutTrack = (track) => {
 };
 var onMutation = async () => {
   const trackLists = getTrackLists();
-  {
-    const urisByTrackLists = trackLists.map((trackList) => {
-      const tracks = getTrackListTracks(trackList);
-      return tracks.map((track) => URI3.fromString(getTrackListTrackUri(track)).toURI());
-    });
-    await getISRCsForUris(urisByTrackLists.flat());
-  }
-  trackLists.map((trackList) => {
+  const tracksByTrackLists = trackLists.map((trackList) => {
     const tracks = getTrackListTracks(trackList);
+    if (!trackList.presentation) {
+      trackList.presentation = trackList.lastElementChild.firstElementChild.nextElementSibling;
+      const tracksProps = getReactFiber(trackList.presentation).pendingProps.children.map(
+        (child) => child.props
+      );
+      tracks.forEach((track, i) => track.props = tracksProps[i]);
+    }
+    return tracks;
+  });
+  const allUris = tracksByTrackLists.flatMap((tracks) => tracks.map((track) => track.props.uri));
+  await getISRCsForUris(allUris);
+  tracksByTrackLists.map((tracks) => {
     tracks.map(async (track) => {
       const uri = URI3.fromString(getTrackListTrackUri(track)).toURI();
       const isDuplicate = await isUriOutdatedDuplicate(uri);

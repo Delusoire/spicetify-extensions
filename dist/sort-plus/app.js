@@ -248,7 +248,7 @@ var SettingsSection = class _SettingsSection {
 
 // extensions/sort-plus/settings.ts
 var SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists";
-var settings = new SettingsSection("Sort Plus").addToggle({ id: "descending", desc: "Descending" }, task2.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task2.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task2.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task2.of(true)).addToggle({ id: "artistAppearsOn", desc: "Appears On" }, task2.of(false)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task2.of("Username")).addInput(
+var settings = new SettingsSection("Sort Plus").addToggle({ id: "preventDuplicates", desc: "Prevent Duplicates" }, task2.of(true)).addToggle({ id: "descending", desc: "Descending" }, task2.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task2.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task2.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task2.of(true)).addToggle({ id: "artistAppearsOn", desc: "Appears On" }, task2.of(false)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task2.of("Username")).addInput(
   { id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" },
   task2.of("********************************")
 ).addInput(
@@ -647,11 +647,10 @@ var populateTracks = _.cond([
   [fp.startsWith("Spotify"), fillTracksFromSpotify],
   [fp.startsWith("LastFM"), () => fillTracksFromLastFM]
 ]);
-var setQueue2 = (reverse) => (tracks) => {
+var setQueue2 = (tracks) => {
   if (PlayerAPI2?._state?.item?.uid == void 0)
     return void Spicetify.showNotification("Queue is null!", true);
   const dedupedQueue = _.uniqBy(tracks, "uri");
-  reverse && dedupedQueue.reverse();
   global.lastSortedQueue = lastSortedQueue2 = dedupedQueue;
   const isLikedTracks = URI_isLikedTracks(lastFetchedUri);
   const queue = lastSortedQueue2.concat({ uri: SEPARATOR_URI }).map(createQueueItem(isLikedTracks));
@@ -662,8 +661,12 @@ var sortTracksBy = (sortAction, sortFn) => async (uri) => {
   const descending = invertOrder ^ Number(CONFIG.descending);
   lastFetchedUri = uri;
   const tracks = await getTracksFromUri(uri);
-  const sortedTracks = await sortFn(tracks);
-  return await setQueue2(!!descending)(sortedTracks);
+  let sortedTracks = await sortFn(tracks);
+  if (CONFIG.preventDuplicates) {
+    sortedTracks = _.uniqBy(sortedTracks, "name");
+  }
+  descending && sortedTracks.reverse();
+  return await setQueue2(sortedTracks);
 };
 var createSubMenuForSortProp = (sortAction) => new ContextMenu.Item(
   sortAction,

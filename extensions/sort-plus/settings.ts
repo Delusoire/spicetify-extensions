@@ -7,6 +7,7 @@ import { SpotifyURI } from "../../shared/util.ts"
 const SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists"
 
 const settings = new SettingsSection("Sort Plus")
+    .addToggle({ id: "preventDuplicates", desc: "Prevent Duplicates" }, task.of(true))
     .addToggle({ id: "descending", desc: "Descending" }, task.of(true))
     .addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" })
     .addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task.of(true))
@@ -33,6 +34,7 @@ const settings = new SettingsSection("Sort Plus")
 settings.pushSettings()
 
 export const CONFIG = settings.toObject() as {
+    preventDuplicates: boolean
     artistAllDiscography: boolean
     artistTopTracks: boolean
     artistPopularReleases: boolean

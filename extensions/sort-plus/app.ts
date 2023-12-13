@@ -36,11 +36,10 @@ const populateTracks: (sortProp: SortAction) => AsyncTracksOperation = _.cond([
     [fp.startsWith("LastFM"), () => fillTracksFromLastFM],
 ])
 
-const setQueue = (reverse: boolean) => (tracks: TrackData[]) => {
+const setQueue = (tracks: TrackData[]) => {
     if (PlayerAPI?._state?.item?.uid == undefined) return void Spicetify.showNotification("Queue is null!", true)
 
     const dedupedQueue = _.uniqBy(tracks, "uri")
-    reverse && dedupedQueue.reverse()
 
     global.lastSortedQueue = lastSortedQueue = dedupedQueue
 
@@ -58,8 +57,12 @@ const sortTracksBy = (sortAction: typeof lastSortAction, sortFn: AsyncTracksOper
     const descending = invertOrder ^ Number(CONFIG.descending)
     lastFetchedUri = uri
     const tracks = await getTracksFromUri(uri)
-    const sortedTracks = await sortFn(tracks)
-    return await setQueue(!!descending)(sortedTracks)
+    let sortedTracks = await sortFn(tracks)
+    if (CONFIG.preventDuplicates) {
+        sortedTracks = _.uniqBy(sortedTracks, "name")
+    }
+    descending && sortedTracks.reverse()
+    return await setQueue(sortedTracks)
 }
 
 const createSubMenuForSortProp = (sortAction: SortAction) =>

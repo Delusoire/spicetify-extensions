@@ -84,6 +84,9 @@ export const trapElement = <E extends Element>(
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
+export const getReactFiber = (element: Element) =>
+    element[Object.keys(element).find(k => k.startsWith("__reactFiber$")) as keyof typeof element] as any
+
 export const getReactProps = (element: Element) =>
     element[Object.keys(element).find(k => k.startsWith("__reactProps$")) as keyof typeof element] as any
 
@@ -169,3 +172,5 @@ export const onSongChanged = (callback: (state?: Spicetify.PlayerState) => void)
     callback(Player.data)
     Player.addEventListener("songchange", event => callback(event!.data))
 }
+
+export const formatUri = (uri: string) => URI.fromString(uri).toURI()
