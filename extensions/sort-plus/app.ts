@@ -50,8 +50,8 @@ const setQueue = (reverse: boolean) => async (tracks: TrackData[]) => {
 
     // _setQueue(queue, isLikedTracks ? undefined : lastFetchedUri)
 
-    !isLikedTracks && setPlayingContext(lastFetchedUri)
-    _setQueue(queue)
+    !isLikedTracks && (await setPlayingContext(lastFetchedUri))
+    await _setQueue(queue)
 
     return await PlayerAPI.skipToNext()
 }
