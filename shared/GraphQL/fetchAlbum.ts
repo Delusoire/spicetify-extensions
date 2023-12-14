@@ -128,17 +128,15 @@ export type fetchAlbumRes = {
     }>
 }
 const queue = new Array<() => void>()
-globalThis.s = new Set<string>()
 export const fetchAlbum = async (uri: string, offset = 0, limit = 450) => {
     let resolveOwn: undefined | (() => void)
-    globalThis.s.add(uri)
     await new Promise<void>(resolve => {
         queue.push((resolveOwn = resolve))
-        if (queue.length < 500) {
+        if (queue.length < 1000) {
             resolve()
         }
     })
-    globalThis.s.delete(uri)
+
     const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
         uri,
         locale: Locale.getLocale(),

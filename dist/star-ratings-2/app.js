@@ -67,17 +67,14 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
 // shared/GraphQL/fetchAlbum.ts
 var { Locale, GraphQL } = Spicetify;
 var queue = new Array();
-globalThis.s = /* @__PURE__ */ new Set();
 var fetchAlbum = async (uri, offset = 0, limit = 450) => {
   let resolveOwn;
-  globalThis.s.add(uri);
   await new Promise((resolve) => {
     queue.push(resolveOwn = resolve);
-    if (queue.length < 500) {
+    if (queue.length < 1e3) {
       resolve();
     }
   });
-  globalThis.s.delete(uri);
   const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
     uri,
     locale: Locale.getLocale(),
