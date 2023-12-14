@@ -20,7 +20,7 @@ const onTrackListMutation = async (
     const tracksProps = reactTracks.map((child: any) => child.props as Record<string, any>)
 
     tracks.forEach((track, i) => {
-        if (track.props && track.props !== tracksProps[i]) {
+        if (track.props && JSON.stringify(track.props) !== JSON.stringify(tracksProps[i])) {
             debugger
         }
         track.props = tracksProps[i]
