@@ -294,8 +294,10 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
 // shared/GraphQL/fetchAlbum.ts
 var { Locale, GraphQL } = Spicetify;
 var queue = new Array();
+globalThis.s = /* @__PURE__ */ new Set();
 var fetchAlbum = async (uri, offset = 0, limit = 450) => {
   let resolveOwn;
+  globalThis.s.add(uri);
   await new Promise((resolve) => {
     queue.push(resolve);
     if (queue.length < 100) {
@@ -303,6 +305,7 @@ var fetchAlbum = async (uri, offset = 0, limit = 450) => {
       resolve();
     }
   });
+  globalThis.s.delete(uri);
   const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
     uri,
     locale: Locale.getLocale(),
