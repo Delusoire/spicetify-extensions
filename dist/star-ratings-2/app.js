@@ -1,6 +1,6 @@
 // shared/util.ts
-var { Player, URI } = Spicetify;
-var { PlayerAPI, History } = Spicetify.Platform;
+var { URI } = Spicetify;
+var { PlayerAPI } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
     start: () => ({ before: "start" }),
@@ -35,41 +35,21 @@ var PermanentMutationObserver = class extends MutationObserver {
 };
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 var mainElement = document.querySelector("main");
-var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
-var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
-  const createMatchFn = (toMatchTo2) => {
-    switch (typeof toMatchTo2) {
-      case "string":
-        return (input) => input?.startsWith(toMatchTo2) ?? false;
-      case "function":
-        return toMatchTo2;
-      default:
-        return (input) => toMatchTo2.test(input);
-    }
-  };
-  let lastPathname = "";
-  const matchFn = createMatchFn(toMatchTo);
-  const historyChanged = ({ pathname }) => {
-    if (matchFn(pathname)) {
-      if (dropDuplicates && lastPathname === pathname) {
-      } else
-        callback(URI.fromString(pathname).toURI());
-    }
-    lastPathname = pathname;
-  };
-  historyChanged(History.location ?? {});
-  return History.listen(historyChanged);
-};
-var onSongChanged = (callback) => {
-  callback(Player.data);
-  Player.addEventListener("songchange", (event) => callback(event.data));
-};
+var [REACT_FIBER2, REACT_PROPS] = Object.keys(mainElement);
 
 // extensions/star-ratings-2/controls.tsx
 import { function as f2 } from "https://esm.sh/fp-ts";
 
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
+
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
+var fp = ld_fp;
+
+// shared/api.ts
 var { CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
@@ -84,22 +64,33 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   }
 });
 
-// shared/deps.ts
-import { default as ld } from "https://esm.sh/lodash";
-import { default as ld_fp } from "https://esm.sh/lodash/fp";
-var _ = ld;
-var fp = ld_fp;
-
 // shared/GraphQL/fetchAlbum.ts
 var { Locale, GraphQL } = Spicetify;
+var queue = new Array();
 var fetchAlbum = async (uri, offset = 0, limit = 450) => {
+  let resolveOwn;
+  await new Promise((resolve) => {
+    queue.push(resolve);
+    if (queue.length < 1e3) {
+      resolveOwn = resolve;
+      resolve();
+    }
+  });
   const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
     uri,
     locale: Locale.getLocale(),
     offset,
     limit
   });
-  return res.data.albumUnion;
+  if (resolveOwn) {
+    queue.splice(
+      queue.findIndex((r) => r === resolveOwn),
+      1
+    );
+  } else {
+    queue.shift()?.();
+  }
+  return await res.data.albumUnion;
 };
 
 // shared/GraphQL/fetchArtistDiscography.ts
@@ -256,7 +247,7 @@ var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 // shared/settings.tsx
 var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
-var { History: History2 } = Spicetify.Platform;
+var { History } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
   constructor(name, sectionFields = {}) {
     this.name = name;
@@ -264,7 +255,7 @@ var SettingsSection = class _SettingsSection {
     this.pushSettings = () => {
       if (this.stopHistoryListener)
         this.stopHistoryListener();
-      this.stopHistoryListener = History2.listen(() => this.render());
+      this.stopHistoryListener = History.listen(() => this.render());
       this.render();
     };
     this.toObject = () => new Proxy(
@@ -275,7 +266,7 @@ var SettingsSection = class _SettingsSection {
     );
     this.render = async () => {
       while (!document.getElementById("desktop.settings.selectLanguage")) {
-        if (History2.location.pathname !== "/preferences")
+        if (History.location.pathname !== "/preferences")
           return;
         await sleep(100);
       }
@@ -405,6 +396,7 @@ settings.pushSettings();
 var CONFIG = settings.toObject();
 
 // extensions/sort-plus/fetch.ts
+var { URI: URI2 } = Spicetify;
 var getTracksFromAlbum = async (uri) => {
   const albumRes = await fetchAlbum(uri);
   const releaseDate = new Date(albumRes.date.isoString).getTime();
@@ -421,7 +413,11 @@ var getTracksFromAlbum = async (uri) => {
   );
 };
 var getLikedTracks = _.flow(fetchLikedTracks, pMchain(fp.map(parseLibraryAPILikedTracks)));
-var getTracksFromPlaylist = _.flow(fetchPlaylistContents, pMchain(fp.map(parsePlaylistAPITrack)));
+var getTracksFromPlaylist = _.flow(
+  fetchPlaylistContents,
+  pMchain(fp.map(parsePlaylistAPITrack)),
+  pMchain(fp.filter((track) => !URI2.isLocalTrack(track.uri)))
+);
 var getTracksFromArtist = async (uri) => {
   const allTracks = new Array();
   const itemsWithCountAr = new Array();
@@ -451,16 +447,16 @@ var getTracksFromArtist = async (uri) => {
 };
 
 // extensions/sort-plus/util.ts
-var { URI: URI2 } = Spicetify;
+var { URI: URI3 } = Spicetify;
 var URI_isLikedTracks = (uri) => {
-  const uriObj = URI2.fromString(uri);
-  return uriObj.type === URI2.Type.COLLECTION && uriObj.category === "tracks";
+  const uriObj = URI3.fromString(uri);
+  return uriObj.type === URI3.Type.COLLECTION && uriObj.category === "tracks";
 };
 var getTracksFromUri = _.cond([
-  [URI2.isAlbum, getTracksFromAlbum],
-  [URI2.isArtist, getTracksFromArtist],
+  [URI3.isAlbum, getTracksFromAlbum],
+  [URI3.isArtist, getTracksFromArtist],
   [URI_isLikedTracks, getLikedTracks],
-  [URI2.isPlaylistV1OrV2, getTracksFromPlaylist]
+  [URI3.isPlaylistV1OrV2, getTracksFromPlaylist]
 ]);
 
 // extensions/star-ratings-2/dropdown.tsx
@@ -509,8 +505,8 @@ var getCollectionPlaylistButton = () => {
 };
 
 // extensions/star-ratings-2/ratings.ts
-var { URI: URI3, Player: Player2 } = Spicetify;
-var { History: History3 } = Spicetify.Platform;
+var { URI: URI4 } = Spicetify;
+var { History: History2, PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
 var loadRatings = async () => {
   const ratingsFolder = await fetchFolder(CONFIG2.ratingsFolderUri);
   playlistUris = f.pipe(
@@ -544,7 +540,7 @@ var toggleRating = async (uri, rating) => {
     f.pipe(
       playlistUris.slice(0, currentRating + 1),
       ar.filter(Boolean),
-      ar.map((playlistUri) => URI3.fromString(playlistUri).id),
+      ar.map((playlistUri) => URI4.fromString(playlistUri).id),
       ar.map((playlistId) => removePlaylistTracks(playlistId, [{ uri, uid: "" }]))
     );
   }
@@ -564,7 +560,7 @@ var toggleRating = async (uri, rating) => {
       setTracksLiked([uri], true);
     }
   }
-  const npTrack = Player2.data?.item.uri;
+  const npTrack = PlayerAPI2._state.item?.uri;
   if (npTrack === uri) {
     updateNowPlayingControls(npTrack, false);
     {
@@ -579,8 +575,8 @@ var toggleRating = async (uri, rating) => {
     }
   }
   updateTrackListControls();
-  const { pathname } = History3.location;
-  updateCollectionControls(URI3.fromString(pathname).toString());
+  const { pathname } = History2.location;
+  updateCollectionControls(URI4.fromString(pathname).toString());
 };
 var playlistUris = [];
 var tracksRatings = {};
@@ -604,7 +600,7 @@ var RatingButton = ({ i, uri }) => /* @__PURE__ */ React2.createElement(
 var Dropdown = ({ uri }) => /* @__PURE__ */ React2.createElement("div", { className: "rating-dropdown" }, range(1, 5).map((i) => /* @__PURE__ */ React2.createElement(RatingButton, { i, uri })));
 
 // extensions/star-ratings-2/controls.tsx
-var { URI: URI4, Tippy } = Spicetify;
+var { URI: URI5, Tippy } = Spicetify;
 var { React: React3, ReactDOM: ReactDOM2 } = Spicetify;
 var UNSET_CSS = "invalid";
 var colorByRating = [UNSET_CSS, "#ED5564", "#FFCE54", "A0D568", "#4FC1E8", "#AC92EB"];
@@ -684,7 +680,7 @@ var updateTrackListControls = (updateDropdown = true) => {
     const trackListTracks = getTrackListTracks(trackList);
     trackListTracks.map((track) => {
       const uri = getTrackListTrackUri(track);
-      if (!URI4.isTrack(uri))
+      if (!URI5.isTrack(uri))
         return;
       const r = tracksRatings[uri];
       const pb = getPlaylistButton(track);
@@ -702,22 +698,74 @@ var updateCollectionControls = async (uri) => {
   pb && colorizePlaylistButton(pb, rating);
 };
 
+// shared/listeners.ts
+var { Player, URI: URI6 } = Spicetify;
+var { PlayerAPI: PlayerAPI3, History: History3 } = Spicetify.Platform;
+var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
+  const createMatchFn = (toMatchTo2) => {
+    switch (typeof toMatchTo2) {
+      case "string":
+        return (input) => input?.startsWith(toMatchTo2) ?? false;
+      case "function":
+        return toMatchTo2;
+      default:
+        return (input) => toMatchTo2.test(input);
+    }
+  };
+  let lastPathname = "";
+  const matchFn = createMatchFn(toMatchTo);
+  const historyChanged = ({ pathname }) => {
+    if (matchFn(pathname)) {
+      if (dropDuplicates && lastPathname === pathname) {
+      } else
+        callback(URI6.fromString(pathname).toURI());
+    }
+    lastPathname = pathname;
+  };
+  historyChanged(History3.location ?? {});
+  return History3.listen(historyChanged);
+};
+var onSongChanged = (callback) => {
+  callback(PlayerAPI3._state);
+  Player.addEventListener("songchange", (event) => callback(event.data));
+};
+var onTrackListMutationListeners = new Array();
+var _onTrackListMutation = (trackList, record, observer) => {
+  const tracks = getTrackListTracks(trackList.presentation);
+  const reactFiber = trackList.presentation[REACT_FIBER].alternate;
+  const reactTracks = reactFiber.pendingProps.children;
+  const tracksProps = reactTracks.map((child) => child.props);
+  tracks.forEach((track, i) => track.props = tracksProps[i]);
+  onTrackListMutationListeners.map((listener) => listener(trackList, tracks));
+};
+new PermanentMutationObserver("main", () => {
+  const trackLists = getTrackLists();
+  trackLists.filter((trackList) => !trackList.presentation).forEach((trackList) => {
+    trackList.presentation = trackList.lastElementChild.firstElementChild.nextElementSibling;
+    new MutationObserver(
+      (record, observer) => _onTrackListMutation(trackList, record, observer)
+    ).observe(trackList.presentation, { childList: true });
+  });
+});
+
 // extensions/star-ratings-2/app.ts
-var { URI: URI5, Player: Player3 } = Spicetify;
+var { URI: URI7, Player: Player2 } = Spicetify;
 loadRatings();
-onSongChanged((data) => {
-  if (!data)
+onSongChanged((state) => {
+  if (!state)
     return;
-  const { uri } = data.item;
+  const { uri } = state.item ?? {};
+  if (!uri)
+    return;
   if (Number(CONFIG2.skipThreshold)) {
     const currentTrackRating = tracksRatings[uri] ?? Number.MAX_SAFE_INTEGER;
     if (currentTrackRating <= Number(CONFIG2.skipThreshold))
-      return void Player3.next();
+      return void Player2.next();
   }
   updateNowPlayingControls(uri);
 });
 new PermanentMutationObserver("main", () => updateTrackListControls());
-onHistoryChanged(_.overSome([URI5.isAlbum, URI5.isArtist, URI5.isPlaylistV1OrV2]), (uri) => updateCollectionControls(uri));
+onHistoryChanged(_.overSome([URI7.isAlbum, URI7.isArtist, URI7.isPlaylistV1OrV2]), (uri) => updateCollectionControls(uri));
 (async () => {
     if (!document.getElementById("star-ratings-2-css")) {
         const el = document.createElement("style")

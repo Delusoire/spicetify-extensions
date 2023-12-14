@@ -1,4 +1,4 @@
-import { onTrackListMutationListeners } from "../../shared/util.ts"
+import { onTrackListMutationListeners } from "../../shared/listeners.ts"
 
 import { getISRCsForUris, isUriOutdatedDuplicate } from "./util.ts"
 

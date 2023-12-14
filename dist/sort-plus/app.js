@@ -736,6 +736,7 @@ var SortBySubMenu = new ContextMenu.SubMenu(
 SortBySubMenu.register();
 new Topbar.Button("Create a Playlist from Sorted Queue", "plus2px", createPlaylistFromLastSortedQueue);
 new Topbar.Button("Reorder current Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue);
+debugger;
 export {
   lastFetchedUri,
   lastSortAction,

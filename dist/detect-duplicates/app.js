@@ -1,6 +1,6 @@
 // shared/util.ts
-var { Player, URI } = Spicetify;
-var { PlayerAPI, History } = Spicetify.Platform;
+var { URI } = Spicetify;
+var { PlayerAPI } = Spicetify.Platform;
 var PermanentMutationObserver = class extends MutationObserver {
   constructor(targetSelector, callback) {
     super(callback);
@@ -22,11 +22,33 @@ var PermanentMutationObserver = class extends MutationObserver {
   }
 };
 var mainElement = document.querySelector("main");
-var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
+var [REACT_FIBER2, REACT_PROPS] = Object.keys(mainElement);
 
 // extensions/star-ratings-2/util.ts
 var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-trackList.main-trackList-indexable"));
 var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
+
+// shared/listeners.ts
+var { Player, URI: URI2 } = Spicetify;
+var { PlayerAPI: PlayerAPI2, History } = Spicetify.Platform;
+var onTrackListMutationListeners = new Array();
+var _onTrackListMutation = (trackList, record, observer) => {
+  const tracks = getTrackListTracks(trackList.presentation);
+  const reactFiber = trackList.presentation[REACT_FIBER].alternate;
+  const reactTracks = reactFiber.pendingProps.children;
+  const tracksProps = reactTracks.map((child) => child.props);
+  tracks.forEach((track, i) => track.props = tracksProps[i]);
+  onTrackListMutationListeners.map((listener) => listener(trackList, tracks));
+};
+new PermanentMutationObserver("main", () => {
+  const trackLists = getTrackLists();
+  trackLists.filter((trackList) => !trackList.presentation).forEach((trackList) => {
+    trackList.presentation = trackList.lastElementChild.firstElementChild.nextElementSibling;
+    new MutationObserver(
+      (record, observer) => _onTrackListMutation(trackList, record, observer)
+    ).observe(trackList.presentation, { childList: true });
+  });
+});
 
 // shared/GraphQL/searchModalResults.ts
 var { GraphQL } = Spicetify;
@@ -43,6 +65,13 @@ var searchModalResults = async (q, offset = 0, limit = 10, topResultsNum = 20, i
 
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
+
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
+
+// shared/api.ts
 var { CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
@@ -57,11 +86,6 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   }
 });
 
-// shared/deps.ts
-import { default as ld } from "https://esm.sh/lodash";
-import { default as ld_fp } from "https://esm.sh/lodash/fp";
-var _ = ld;
-
 // shared/fp.ts
 var { Snackbar } = Spicetify;
 var chunkify50 = (fn) => async (args) => {
@@ -70,7 +94,7 @@ var chunkify50 = (fn) => async (args) => {
 };
 
 // extensions/detect-duplicates/util.ts
-var { URI: URI2 } = Spicetify;
+var { URI: URI3 } = Spicetify;
 var SEP = ":";
 var LS_PREFIX = ["extensions", "detect-duplicates"];
 var LS_KEY_INDEX = LS_PREFIX.join(SEP).length + 1;
@@ -94,7 +118,7 @@ var setISRCUris = async (isrc, uris) => {
     return deltaTime || b.popularity - a.popularity;
   };
   const key = getLSKey(isrc);
-  const ids = uris.map((uri) => URI2.fromString(uri).id);
+  const ids = uris.map((uri) => URI3.fromString(uri).id);
   const tracks = await spotifyApi.tracks.get(ids);
   const sortedTracks = tracks.sort(sortHeuristic);
   const sortedUris = sortedTracks.map((track) => track.uri);
@@ -119,7 +143,7 @@ var getISRCsForUris = async (uris) => {
   const indicesForCacheMiss = new Array();
   const isrcs = uris.map((uri, i) => uriToISRC.has(uri) ? uriToISRC.get(uri) : void indicesForCacheMiss.push(i));
   const urisForCacheMiss = indicesForCacheMiss.map((i) => uris[i]);
-  const idsForCacheMiss = urisForCacheMiss.map((uri) => URI2.fromString(uri).id);
+  const idsForCacheMiss = urisForCacheMiss.map((uri) => URI3.fromString(uri).id);
   const tracksForCacheMiss = await chunkify50((is) => spotifyApi.tracks.get(is))(idsForCacheMiss);
   const isrcsForCacheMiss = tracksForCacheMiss.map((track) => track.external_ids.isrc);
   urisForCacheMiss.forEach((uri, i) => {
@@ -144,25 +168,11 @@ var greyOutTrack = (track) => {
   track.style.backgroundColor = "gray";
   track.style.opacity = "0.3";
 };
-var onTrackListMutation = async (trackList, record, observer) => {
-  const tracks = getTrackListTracks(trackList.presentation);
-  const reactFiber = trackList.presentation[REACT_FIBER].alternate;
-  const reactTracks = reactFiber.pendingProps.children;
-  const tracksProps = reactTracks.map((child) => child.props);
-  tracks.forEach((track, i) => track.props = tracksProps[i]);
+onTrackListMutationListeners.push(async (_2, tracks) => {
   const trackUris = tracks.map((track) => track.props.uri);
   await getISRCsForUris(trackUris);
   tracks.map(async (track) => {
     const isDuplicate = await isUriOutdatedDuplicate(track.props.uri);
     isDuplicate && greyOutTrack(track);
-  });
-};
-new PermanentMutationObserver("main", () => {
-  const trackLists = getTrackLists();
-  trackLists.filter((trackList) => !trackList.presentation).forEach((trackList) => {
-    trackList.presentation = trackList.lastElementChild.firstElementChild.nextElementSibling;
-    new MutationObserver(
-      (record, observer) => onTrackListMutation(trackList, record, observer)
-    ).observe(trackList.presentation, { childList: true });
   });
 });

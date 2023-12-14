@@ -16,63 +16,10 @@ import { array as a, function as f } from "https://esm.sh/fp-ts";
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 
-// shared/util.ts
-var { Player, URI } = Spicetify;
-var { PlayerAPI, History } = Spicetify.Platform;
-var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) => new Promise((resolve, reject) => {
-  const onMutation = () => {
-    const el = document.querySelector(selector);
-    if (el) {
-      if (notEl && el === notEl) {
-      } else {
-        observer.disconnect();
-        return resolve(el);
-      }
-    }
-  };
-  const observer = new MutationObserver(onMutation);
-  onMutation();
-  observer.observe(location, {
-    childList: true,
-    subtree: true
-  });
-  if (timeout)
-    setTimeout(() => {
-      observer.disconnect();
-      reject();
-    }, timeout);
-});
-var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var mainElement = document.querySelector("main");
-var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
-var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
-  const createMatchFn = (toMatchTo2) => {
-    switch (typeof toMatchTo2) {
-      case "string":
-        return (input) => input?.startsWith(toMatchTo2) ?? false;
-      case "function":
-        return toMatchTo2;
-      default:
-        return (input) => toMatchTo2.test(input);
-    }
-  };
-  let lastPathname = "";
-  const matchFn = createMatchFn(toMatchTo);
-  const historyChanged = ({ pathname }) => {
-    if (matchFn(pathname)) {
-      if (dropDuplicates && lastPathname === pathname) {
-      } else
-        callback(URI.fromString(pathname).toURI());
-    }
-    lastPathname = pathname;
-  };
-  historyChanged(History.location ?? {});
-  return History.listen(historyChanged);
-};
-var onSongChanged = (callback) => {
-  callback(Player.data);
-  Player.addEventListener("songchange", (event) => callback(event.data));
-};
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
 
 // shared/api.ts
 var { CosmosAsync } = Spicetify;
@@ -100,14 +47,59 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
   return res.track;
 };
 
-// shared/deps.ts
-import { default as ld } from "https://esm.sh/lodash";
-import { default as ld_fp } from "https://esm.sh/lodash/fp";
-var _ = ld;
-
 // shared/fp.ts
 var { Snackbar } = Spicetify;
 var pMchain = (f2) => async (fa) => f2(await fa);
+
+// shared/util.ts
+var { URI } = Spicetify;
+var { PlayerAPI } = Spicetify.Platform;
+var PermanentMutationObserver = class extends MutationObserver {
+  constructor(targetSelector, callback) {
+    super(callback);
+    this.target = null;
+    new MutationObserver(() => {
+      const nextTarget = document.querySelector(targetSelector);
+      if (nextTarget && !nextTarget.isEqualNode(this.target)) {
+        this.target && this.disconnect();
+        this.target = nextTarget;
+        this.observe(this.target, {
+          childList: true,
+          subtree: true
+        });
+      }
+    }).observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+};
+var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) => new Promise((resolve, reject) => {
+  const onMutation = () => {
+    const el = document.querySelector(selector);
+    if (el) {
+      if (notEl && el === notEl) {
+      } else {
+        observer.disconnect();
+        return resolve(el);
+      }
+    }
+  };
+  const observer = new MutationObserver(onMutation);
+  onMutation();
+  observer.observe(location, {
+    childList: true,
+    subtree: true
+  });
+  if (timeout)
+    setTimeout(() => {
+      observer.disconnect();
+      reject();
+    }, timeout);
+});
+var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var mainElement = document.querySelector("main");
+var [REACT_FIBER2, REACT_PROPS] = Object.keys(mainElement);
 
 // extensions/show-the-genres/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";
@@ -144,7 +136,7 @@ var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 // shared/settings.tsx
 var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
-var { History: History2 } = Spicetify.Platform;
+var { History } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
   constructor(name, sectionFields = {}) {
     this.name = name;
@@ -152,7 +144,7 @@ var SettingsSection = class _SettingsSection {
     this.pushSettings = () => {
       if (this.stopHistoryListener)
         this.stopHistoryListener();
-      this.stopHistoryListener = History2.listen(() => this.render());
+      this.stopHistoryListener = History.listen(() => this.render());
       this.render();
     };
     this.toObject = () => new Proxy(
@@ -163,7 +155,7 @@ var SettingsSection = class _SettingsSection {
     );
     this.render = async () => {
       while (!document.getElementById("desktop.settings.selectLanguage")) {
-        if (History2.location.pathname !== "/preferences")
+        if (History.location.pathname !== "/preferences")
           return;
         await sleep(100);
       }
@@ -293,14 +285,14 @@ import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property, state } from "https://esm.sh/lit/decorators.js";
 import { join } from "https://esm.sh/lit/directives/join.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
-var { History: History3 } = Spicetify.Platform;
+var { History: History2 } = Spicetify.Platform;
 var _GenreLink = class extends LitElement {
   constructor() {
     super(...arguments);
     this.genre = "No Genre";
   }
   openPlaylistsSearch() {
-    History3.push({ pathname: `/search/${this.genre}/playlists` });
+    History2.push({ pathname: `/search/${this.genre}/playlists` });
   }
   render() {
     return html`<a href="#" @click=${this.openPlaylistsSearch}>${_.startCase(this.genre)}</a>`;
@@ -374,10 +366,64 @@ var fetchArtistRelated = async (uri) => {
   return res.data.artistUnion.relatedContent.relatedArtists.items;
 };
 
+// extensions/star-ratings-2/util.ts
+var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-trackList.main-trackList-indexable"));
+var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
+
+// shared/listeners.ts
+var { Player, URI: URI2 } = Spicetify;
+var { PlayerAPI: PlayerAPI2, History: History3 } = Spicetify.Platform;
+var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
+  const createMatchFn = (toMatchTo2) => {
+    switch (typeof toMatchTo2) {
+      case "string":
+        return (input) => input?.startsWith(toMatchTo2) ?? false;
+      case "function":
+        return toMatchTo2;
+      default:
+        return (input) => toMatchTo2.test(input);
+    }
+  };
+  let lastPathname = "";
+  const matchFn = createMatchFn(toMatchTo);
+  const historyChanged = ({ pathname }) => {
+    if (matchFn(pathname)) {
+      if (dropDuplicates && lastPathname === pathname) {
+      } else
+        callback(URI2.fromString(pathname).toURI());
+    }
+    lastPathname = pathname;
+  };
+  historyChanged(History3.location ?? {});
+  return History3.listen(historyChanged);
+};
+var onSongChanged = (callback) => {
+  callback(PlayerAPI2._state);
+  Player.addEventListener("songchange", (event) => callback(event.data));
+};
+var onTrackListMutationListeners = new Array();
+var _onTrackListMutation = (trackList, record, observer) => {
+  const tracks = getTrackListTracks(trackList.presentation);
+  const reactFiber = trackList.presentation[REACT_FIBER].alternate;
+  const reactTracks = reactFiber.pendingProps.children;
+  const tracksProps = reactTracks.map((child) => child.props);
+  tracks.forEach((track, i) => track.props = tracksProps[i]);
+  onTrackListMutationListeners.map((listener) => listener(trackList, tracks));
+};
+new PermanentMutationObserver("main", () => {
+  const trackLists = getTrackLists();
+  trackLists.filter((trackList) => !trackList.presentation).forEach((trackList) => {
+    trackList.presentation = trackList.lastElementChild.firstElementChild.nextElementSibling;
+    new MutationObserver(
+      (record, observer) => _onTrackListMutation(trackList, record, observer)
+    ).observe(trackList.presentation, { childList: true });
+  });
+});
+
 // extensions/show-the-genres/app.ts
-var { URI: URI2 } = Spicetify;
+var { URI: URI3 } = Spicetify;
 var fetchLastFMTags = async (uri) => {
-  const uid = URI2.fromString(uri).id;
+  const uid = URI3.fromString(uri).id;
   const { name, artists } = await spotifyApi.tracks.get(uid);
   const artistNames = artists.map((artist) => artist.name);
   const track = await fetchLastFMTrack(CONFIG.LFMApiKey, artistNames[0], name);
@@ -394,10 +440,10 @@ nowPlayingGenreContainerEl.style.gridArea = "genres";
   const trackInfoContainer = await waitForElement("div.main-trackInfo-container");
   trackInfoContainer.appendChild(nowPlayingGenreContainerEl);
 })();
-onSongChanged((state2) => nowPlayingGenreContainerEl.uri = state2?.item.uri);
+onSongChanged((state2) => nowPlayingGenreContainerEl.uri = state2.item?.uri);
 var getArtistsGenresOrRelated = async (artistsUris) => {
   const getArtistsGenres = async (artistsUris2) => {
-    const ids = artistsUris2.map((uri) => URI2.fromString(uri).id);
+    const ids = artistsUris2.map((uri) => URI3.fromString(uri).id);
     const artists = await spotifyApi.artists.get(ids);
     const genres = new Set(artists.flatMap((artist) => artist.genres));
     return Array.from(genres);
@@ -435,7 +481,7 @@ var updateArtistPage = async (uri) => {
   const headerTextDetailsEl = await waitForElement("span.main-entityHeader-detailsText");
   headerTextEl?.insertBefore(artistGenreContainerEl, headerTextDetailsEl);
 };
-onHistoryChanged((uri) => URI2.isArtist(uri), updateArtistPage);
+onHistoryChanged((uri) => URI3.isArtist(uri), updateArtistPage);
 (async () => {
     if (!document.getElementById("show-the-genres-css")) {
         const el = document.createElement("style")
