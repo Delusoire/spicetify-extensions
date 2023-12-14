@@ -134,7 +134,7 @@ export const fetchAlbum = async (uri: string, offset = 0, limit = 450) => {
     globalThis.s.add(uri)
     await new Promise<void>(resolve => {
         queue.push((resolveOwn = resolve))
-        if (queue.length < 100) {
+        if (queue.length < 500) {
             resolve()
         }
     })

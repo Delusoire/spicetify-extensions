@@ -73,7 +73,7 @@ var fetchAlbum = async (uri, offset = 0, limit = 450) => {
   globalThis.s.add(uri);
   await new Promise((resolve) => {
     queue.push(resolveOwn = resolve);
-    if (queue.length < 100) {
+    if (queue.length < 500) {
       resolve();
     }
   });
