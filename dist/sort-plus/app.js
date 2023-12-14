@@ -298,7 +298,7 @@ var fetchAlbum = async (uri, offset = 0, limit = 450) => {
   let resolveOwn;
   await new Promise((resolve) => {
     queue.push(resolve);
-    if (queue.length < 1e3) {
+    if (queue.length < 100) {
       resolveOwn = resolve;
       resolve();
     }
@@ -316,7 +316,7 @@ var fetchAlbum = async (uri, offset = 0, limit = 450) => {
     );
   }
   queue.shift()?.();
-  return await res.data.albumUnion;
+  return res.data.albumUnion;
 };
 
 // shared/GraphQL/fetchArtistDiscography.ts

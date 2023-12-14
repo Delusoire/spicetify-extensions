@@ -132,7 +132,7 @@ export const fetchAlbum = async (uri: string, offset = 0, limit = 450) => {
     let resolveOwn: undefined | (() => void)
     await new Promise<void>(resolve => {
         queue.push(resolve)
-        if (queue.length < 1000) {
+        if (queue.length < 100) {
             resolveOwn = resolve
             resolve()
         }
@@ -153,5 +153,5 @@ export const fetchAlbum = async (uri: string, offset = 0, limit = 450) => {
     }
     queue.shift()?.()
 
-    return (await res.data.albumUnion) as fetchAlbumRes
+    return res.data.albumUnion as fetchAlbumRes
 }
