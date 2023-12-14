@@ -43,6 +43,8 @@ var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) 
     }, timeout);
 });
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var mainElement = document.querySelector("main");
+var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
   const createMatchFn = (toMatchTo2) => {
     switch (typeof toMatchTo2) {

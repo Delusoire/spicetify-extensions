@@ -87,11 +87,8 @@ export const waitForElement = <E extends Element>(
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-export const getReactFiber = (element: Element) =>
-    element[Object.keys(element).find(k => k.startsWith("__reactFiber$")) as keyof typeof element] as any
-
-export const getReactProps = (element: Element) =>
-    element[Object.keys(element).find(k => k.startsWith("__reactProps$")) as keyof typeof element] as any
+export const mainElement = document.querySelector("main")!
+export const [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement)
 
 export const createQueueItem =
     (queued: boolean) =>

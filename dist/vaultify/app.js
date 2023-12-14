@@ -4,7 +4,7 @@ var __esm = (fn, res) => function __init() {
 };
 
 // shared/util.ts
-var Player, URI, PlayerAPI, History, SpotifyLoc, sleep, getReactProps;
+var Player, URI, PlayerAPI, History, SpotifyLoc, sleep, mainElement, REACT_FIBER, REACT_PROPS;
 var init_util = __esm({
   "shared/util.ts"() {
     ({ Player, URI } = Spicetify);
@@ -22,7 +22,8 @@ var init_util = __esm({
       }
     };
     sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    getReactProps = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactProps$"))];
+    mainElement = document.querySelector("main");
+    [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
   }
 });
 
@@ -163,7 +164,7 @@ var init_restore = __esm({
           setting.value = value;
         else
           return;
-        const settingReactProps = getReactProps(setting);
+        const settingReactProps = setting[REACT_PROPS];
         settingReactProps.onChange({ target: setting });
       });
       !silent && Spicetify.showNotification("Restored Settings");

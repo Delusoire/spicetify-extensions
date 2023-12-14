@@ -19,6 +19,8 @@ var SpotifyLoc = {
   }
 };
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var mainElement = document.querySelector("main");
+var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
 // shared/platformApi.ts
 var { CosmosAsync } = Spicetify;

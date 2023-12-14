@@ -34,7 +34,8 @@ var PermanentMutationObserver = class extends MutationObserver {
   }
 };
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var getReactProps = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactProps$"))];
+var mainElement = document.querySelector("main");
+var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 var onHistoryChanged = (toMatchTo, callback, dropDuplicates = true) => {
   const createMatchFn = (toMatchTo2) => {
     switch (typeof toMatchTo2) {
@@ -488,7 +489,7 @@ var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-
 var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
 var getTrackListTrackUri = (track) => {
   const rowSectionEnd = track.querySelector(".main-trackList-rowSectionEnd");
-  const reactProps = getReactProps(rowSectionEnd);
+  const reactProps = rowSectionEnd[REACT_PROPS];
   const { props } = (
     // artist & local tracks & albums
     reactProps.children.at?.(-1).props.menu ?? // playlists

@@ -1,4 +1,4 @@
-import { PermanentMutationObserver, getReactFiber } from "../../shared/util.ts"
+import { PermanentMutationObserver, REACT_FIBER, getReactFiber } from "../../shared/util.ts"
 import { getTrackListTracks, getTrackLists } from "../star-ratings-2/util.ts"
 
 import { getISRCsForUris, isUriOutdatedDuplicate } from "./util.ts"
@@ -14,15 +14,11 @@ const onTrackListMutation = async (
     observer: MutationObserver,
 ) => {
     const tracks = getTrackListTracks(trackList.presentation) as Array<HTMLDivElement & { props: Record<string, any> }>
-    const reactTracks = getReactFiber(trackList.presentation).pendingProps.children as any[]
+
+    const reactFiber = trackList.presentation[REACT_FIBER].alternate
+    const reactTracks = reactFiber.pendingProps.children as any[]
     const tracksProps = reactTracks.map((child: any) => child.props as Record<string, any>)
-    const nextFirstIndex = tracksProps[0].index
-    const nextLastIndex = tracksProps.at(-1)!.index
-    if (nextFirstIndex !== trackList.firstIndex || nextLastIndex !== trackList.lastIndex) {
-        trackList.firstIndex = nextFirstIndex
-        trackList.lastIndex = nextLastIndex
-        return
-    }
+
     tracks.forEach((track, i) => {
         if (track.props && track.props !== tracksProps[i]) {
             debugger

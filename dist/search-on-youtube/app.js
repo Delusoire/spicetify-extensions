@@ -6,6 +6,8 @@ var { Player, URI } = Spicetify;
 var { PlayerAPI, History } = Spicetify.Platform;
 var normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var mainElement = document.querySelector("main");
+var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
 // shared/api.ts
 var { CosmosAsync } = Spicetify;

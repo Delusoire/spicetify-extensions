@@ -21,7 +21,8 @@ var PermanentMutationObserver = class extends MutationObserver {
     });
   }
 };
-var getReactFiber = (element) => element[Object.keys(element).find((k) => k.startsWith("__reactFiber$"))];
+var mainElement = document.querySelector("main");
+var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
 // extensions/star-ratings-2/util.ts
 var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-trackList.main-trackList-indexable"));
@@ -145,15 +146,9 @@ var greyOutTrack = (track) => {
 };
 var onTrackListMutation = async (trackList, record, observer) => {
   const tracks = getTrackListTracks(trackList.presentation);
-  const reactTracks = getReactFiber(trackList.presentation).pendingProps.children;
+  const reactFiber = trackList.presentation[REACT_FIBER].alternate;
+  const reactTracks = reactFiber.pendingProps.children;
   const tracksProps = reactTracks.map((child) => child.props);
-  const nextFirstIndex = tracksProps[0].index;
-  const nextLastIndex = tracksProps.at(-1).index;
-  if (nextFirstIndex !== trackList.firstIndex || nextLastIndex !== trackList.lastIndex) {
-    trackList.firstIndex = nextFirstIndex;
-    trackList.lastIndex = nextLastIndex;
-    return;
-  }
   tracks.forEach((track, i) => {
     if (track.props && track.props !== tracksProps[i]) {
       debugger;

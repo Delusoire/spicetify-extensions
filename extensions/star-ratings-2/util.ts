@@ -1,4 +1,4 @@
-import { formatUri, getReactProps } from "../../shared/util.ts"
+import { REACT_PROPS } from "../../shared/util.ts"
 
 export const RATINGS_FOLDER_NAME = "Ratings"
 
@@ -9,7 +9,7 @@ export const getTrackListTracks = (trackList: HTMLDivElement) =>
 
 export const getTrackListTrackUri = (track: HTMLDivElement) => {
     const rowSectionEnd = track.querySelector<HTMLDivElement>(".main-trackList-rowSectionEnd")!
-    const reactProps = getReactProps(rowSectionEnd)
+    const reactProps = rowSectionEnd[REACT_PROPS]
     const { props } =
         // artist & local tracks & albums
         reactProps.children.at?.(-1).props.menu ??

@@ -1,5 +1,5 @@
 import { addPlaylist, createFolder, createPlaylistFromTracks, setTracksLiked } from "../../shared/platformApi.ts"
-import { SpotifyLoc, getReactProps } from "../../shared/util.ts"
+import { REACT_PROPS, SpotifyLoc } from "../../shared/util.ts"
 
 import { LibraryBackup, LocalStorageBackup, SettingBackup } from "./backup.ts"
 import { LikedPlaylist, PersonalFolder, PersonalPlaylist, isContentOfPersonalPlaylist } from "./util.ts"
@@ -30,7 +30,7 @@ export const restoreSettings = (data: SettingBackup, silent = true) => {
         else if (type === "select") setting.value = value
         else return
 
-        const settingReactProps = getReactProps(setting)
+        const settingReactProps = setting[REACT_PROPS]
         settingReactProps.onChange({ target: setting })
     })
     !silent && Spicetify.showNotification("Restored Settings")
