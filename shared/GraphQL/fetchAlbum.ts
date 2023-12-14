@@ -150,9 +150,8 @@ export const fetchAlbum = async (uri: string, offset = 0, limit = 450) => {
             queue.findIndex(r => r === resolveOwn),
             1,
         )
-    } else {
-        queue.shift()?.()
     }
+    queue.shift()?.()
 
     return (await res.data.albumUnion) as fetchAlbumRes
 }
