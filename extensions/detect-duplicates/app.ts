@@ -19,12 +19,7 @@ const onTrackListMutation = async (
     const reactTracks = reactFiber.pendingProps.children as any[]
     const tracksProps = reactTracks.map((child: any) => child.props as Record<string, any>)
 
-    tracks.forEach((track, i) => {
-        if (track.props && JSON.stringify(track.props) !== JSON.stringify(tracksProps[i])) {
-            debugger
-        }
-        track.props = tracksProps[i]
-    })
+    tracks.forEach((track, i) => (track.props = tracksProps[i]))
 
     const trackUris = tracks.map(track => track.props.uri)
     await getISRCsForUris(trackUris)
