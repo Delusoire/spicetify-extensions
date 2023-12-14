@@ -22,7 +22,7 @@ var PermanentMutationObserver = class extends MutationObserver {
   }
 };
 var mainElement = document.querySelector("main");
-var [REACT_FIBER2, REACT_PROPS] = Object.keys(mainElement);
+var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
 // extensions/star-ratings-2/util.ts
 var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-trackList.main-trackList-indexable"));

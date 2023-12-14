@@ -1,5 +1,6 @@
 import { getTrackListTracks, getTrackLists } from "../extensions/star-ratings-2/util.ts"
-import { PermanentMutationObserver } from "./util.ts"
+
+import { PermanentMutationObserver, REACT_FIBER } from "./util.ts"
 
 const { Player, URI } = Spicetify
 const { PlayerAPI, History } = Spicetify.Platform

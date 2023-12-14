@@ -99,7 +99,7 @@ var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) 
 });
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 var mainElement = document.querySelector("main");
-var [REACT_FIBER2, REACT_PROPS] = Object.keys(mainElement);
+var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
 // extensions/show-the-genres/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";

@@ -35,7 +35,7 @@ var PermanentMutationObserver = class extends MutationObserver {
 };
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 var mainElement = document.querySelector("main");
-var [REACT_FIBER2, REACT_PROPS] = Object.keys(mainElement);
+var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
 // extensions/star-ratings-2/controls.tsx
 import { function as f2 } from "https://esm.sh/fp-ts";
