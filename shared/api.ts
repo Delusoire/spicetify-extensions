@@ -1,5 +1,6 @@
 import { AccessToken, SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk"
-import { escapeRegex } from "./util.ts"
+
+import { _ } from "./deps.ts"
 
 const { CosmosAsync } = Spicetify
 
@@ -21,7 +22,7 @@ export const spotifyApi = SpotifyApi.withAccessToken("client-id", {} as AccessTo
 
 export const fetchWebSoundOfSpotifyPlaylist = async (genre: string) => {
     const name = `The Sound Of ${genre}`
-    const re = new RegExp(`^${escapeRegex(name)}$`, "i")
+    const re = new RegExp(`^${_.escapeRegExp(name)}$`, "i")
     const res = await spotifyApi.search(name, ["playlist"])
     const item = res.playlists.items.find(item => item?.owner.id === "thesoundsofspotify" && re.test(item.name))
     return item?.uri
