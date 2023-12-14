@@ -1,3 +1,4 @@
+import { _ } from "../deps.ts"
 import { Items, ItemsWithCount } from "./sharedTypes.ts"
 
 const { Locale, GraphQL } = Spicetify
@@ -126,7 +127,17 @@ export type fetchAlbumRes = {
         }
     }>
 }
+const queue = new Array<() => void>()
 export const fetchAlbum = async (uri: string, offset = 0, limit = 450) => {
+    let resolveOwn: undefined | (() => void)
+    await new Promise<void>(resolve => {
+        queue.push(resolve)
+        if (queue.length < 1000) {
+            resolveOwn = resolve
+            resolve()
+        }
+    })
+
     const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
         uri,
         locale: Locale.getLocale(),
@@ -134,5 +145,14 @@ export const fetchAlbum = async (uri: string, offset = 0, limit = 450) => {
         limit,
     })
 
-    return res.data.albumUnion as fetchAlbumRes
+    if (resolveOwn) {
+        queue.splice(
+            queue.findIndex(r => r === resolveOwn),
+            1,
+        )
+    } else {
+        queue.shift()?.()
+    }
+
+    return (await res.data.albumUnion) as fetchAlbumRes
 }

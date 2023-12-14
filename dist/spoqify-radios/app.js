@@ -4,8 +4,8 @@ import { default as ld_fp } from "https://esm.sh/lodash/fp";
 var _ = ld;
 
 // shared/util.ts
-var { Player, URI } = Spicetify;
-var { PlayerAPI, History } = Spicetify.Platform;
+var { URI } = Spicetify;
+var { PlayerAPI } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
     start: () => ({ before: "start" }),
@@ -59,7 +59,7 @@ var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 // shared/settings.tsx
 var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
-var { History: History2 } = Spicetify.Platform;
+var { History } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
   constructor(name, sectionFields = {}) {
     this.name = name;
@@ -67,7 +67,7 @@ var SettingsSection = class _SettingsSection {
     this.pushSettings = () => {
       if (this.stopHistoryListener)
         this.stopHistoryListener();
-      this.stopHistoryListener = History2.listen(() => this.render());
+      this.stopHistoryListener = History.listen(() => this.render());
       this.render();
     };
     this.toObject = () => new Proxy(
@@ -78,7 +78,7 @@ var SettingsSection = class _SettingsSection {
     );
     this.render = async () => {
       while (!document.getElementById("desktop.settings.selectLanguage")) {
-        if (History2.location.pathname !== "/preferences")
+        if (History.location.pathname !== "/preferences")
           return;
         await sleep(100);
       }
@@ -206,13 +206,13 @@ var CONFIG = settings.toObject();
 
 // extensions/spoqify-radios/app.ts
 var { URI: URI2, ContextMenu } = Spicetify;
-var { History: History3, RootlistAPI: RootlistAPI2 } = Spicetify.Platform;
+var { History: History2, RootlistAPI: RootlistAPI2 } = Spicetify.Platform;
 var createAnonRadio = (uri) => {
   const sse = new EventSource(`https://open.spoqify.com/anonymize?url=${uri.substring(8)}`);
   sse.addEventListener("done", (e) => {
     sse.close();
     const anonUri = URI2.fromString(e.data);
-    History3.push(anonUri.toURLPath(true));
+    History2.push(anonUri.toURLPath(true));
     RootlistAPI2.add([anonUri.toURI()], SpotifyLoc.after.fromUri(CONFIG.anonymizedRadiosFolderUri));
   });
 };

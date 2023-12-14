@@ -4,11 +4,11 @@ var __esm = (fn, res) => function __init() {
 };
 
 // shared/util.ts
-var Player, URI, PlayerAPI, History, SpotifyLoc, sleep, mainElement, REACT_FIBER, REACT_PROPS;
+var URI, PlayerAPI, SpotifyLoc, sleep, mainElement, REACT_FIBER, REACT_PROPS;
 var init_util = __esm({
   "shared/util.ts"() {
-    ({ Player, URI } = Spicetify);
-    ({ PlayerAPI, History } = Spicetify.Platform);
+    ({ URI } = Spicetify);
+    ({ PlayerAPI } = Spicetify.Platform);
     SpotifyLoc = {
       before: {
         start: () => ({ before: "start" }),
@@ -231,7 +231,7 @@ var init_modules = __esm({
 
 // shared/settings.tsx
 import { task } from "https://esm.sh/fp-ts";
-var React, ReactDOM, LocalStorage, ButtonSecondary, History2, SettingsSection;
+var React, ReactDOM, LocalStorage, ButtonSecondary, History, SettingsSection;
 var init_settings = __esm({
   "shared/settings.tsx"() {
     init_modules();
@@ -239,7 +239,7 @@ var init_settings = __esm({
     init_deps();
     ({ React, ReactDOM, LocalStorage } = Spicetify);
     ({ ButtonSecondary } = Spicetify.ReactComponent);
-    ({ History: History2 } = Spicetify.Platform);
+    ({ History } = Spicetify.Platform);
     SettingsSection = class _SettingsSection {
       constructor(name, sectionFields = {}) {
         this.name = name;
@@ -247,7 +247,7 @@ var init_settings = __esm({
         this.pushSettings = () => {
           if (this.stopHistoryListener)
             this.stopHistoryListener();
-          this.stopHistoryListener = History2.listen(() => this.render());
+          this.stopHistoryListener = History.listen(() => this.render());
           this.render();
         };
         this.toObject = () => new Proxy(
@@ -258,7 +258,7 @@ var init_settings = __esm({
         );
         this.render = async () => {
           while (!document.getElementById("desktop.settings.selectLanguage")) {
-            if (History2.location.pathname !== "/preferences")
+            if (History.location.pathname !== "/preferences")
               return;
             await sleep(100);
           }

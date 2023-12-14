@@ -11,8 +11,8 @@ var __decorateClass = (decorators, target, key, kind) => {
 };
 
 // shared/util.ts
-var { Player, URI } = Spicetify;
-var { PlayerAPI, History } = Spicetify.Platform;
+var { URI } = Spicetify;
+var { PlayerAPI } = Spicetify.Platform;
 var mainElement = document.querySelector("main");
 var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
@@ -47,7 +47,7 @@ var _ = ld;
 
 // extensions/keyboard-shortcuts/util.ts
 var { Keyboard } = Spicetify;
-var { History: History2 } = Spicetify.Platform;
+var { History } = Spicetify.Platform;
 var SCROLL_STEP = 25;
 var focusOnApp = () => document.querySelector(".Root__main-view .os-viewport");
 var appScroll = (s) => {
@@ -56,7 +56,7 @@ var appScroll = (s) => {
   document.addEventListener("keyup", () => clearInterval(scrollIntervalId));
 };
 var appScrollY = (y) => focusOnApp().scroll(0, y);
-var openPage = (page) => History2.push({ pathname: page });
+var openPage = (page) => History.push({ pathname: page });
 var rotateSidebar = (offset) => {
   if (offset === 0)
     return;
@@ -204,8 +204,8 @@ _SneakOverlay = __decorateClass([
 ], _SneakOverlay);
 
 // extensions/keyboard-shortcuts/app.ts
-var { Keyboard: Keyboard2, Player: Player2 } = Spicetify;
-var { UserAPI, UpdateAPI, History: History3 } = Spicetify.Platform;
+var { Keyboard: Keyboard2 } = Spicetify;
+var { UserAPI, UpdateAPI, History: History2, PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
 var sneakOverlay;
 var binds = [
   new Bind("s", () => {
@@ -218,13 +218,13 @@ var binds = [
   }).setShift(true),
   new Bind("tab", () => rotateSidebar(1)),
   new Bind("tab", () => rotateSidebar(-1)).setShift(true),
-  new Bind("h", History3.goBack).setShift(true),
-  new Bind("l", History3.goForward).setShift(true),
+  new Bind("h", History2.goBack).setShift(true),
+  new Bind("l", History2.goForward).setShift(true),
   new Bind("j", () => appScroll(1)),
   new Bind("k", () => appScroll(-1)),
   new Bind("g", () => appScrollY(0)),
   new Bind("g", () => appScrollY(Number.MAX_SAFE_INTEGER)).setShift(true),
-  new Bind("m", () => Player2.data?.item.uri && toggleTracksLiked([Player2.data?.item.uri])),
+  new Bind("m", () => PlayerAPI2._state.item?.uri && toggleTracksLiked([PlayerAPI2._state.item?.uri])),
   new Bind("/", (e) => {
     e.preventDefault();
     openPage("/search");
@@ -233,12 +233,3 @@ var binds = [
 binds.map((bind) => bind.register());
 mousetrapInst.bind(KEY_LIST, (e) => sneakOverlay?.updateProps(e.key), "keypress");
 mousetrapInst.bind(Keyboard2.KEYS.ESCAPE, () => sneakOverlay?.remove());
-(async () => {
-    if (!document.getElementById("keyboard-shortcuts-css")) {
-        const el = document.createElement("style")
-        el.id = "keyboard-shortcuts-css"
-        
-        el.textContent = "#sneak-overlay{z-index:100000;position:absolute;width:100%;height:100%;display:none}#sneak-overlay>.sneak-key{position:fixed;padding:3px 6px;background-color:#000;border-radius:3px;border:solid 2px white;color:#fff;text-transform:lowercase;line-height:normal;font-size:14px;font-weight:500}\n/*# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsiLi4vLi4vZXh0ZW5zaW9ucy9rZXlib2FyZC1zaG9ydGN1dHMvYXNzZXRzL3N0eWxlcy5jc3MiXSwKICAic291cmNlc0NvbnRlbnQiOiBbIiNzbmVhay1vdmVybGF5e3otaW5kZXg6MTAwMDAwO3Bvc2l0aW9uOmFic29sdXRlO3dpZHRoOjEwMCU7aGVpZ2h0OjEwMCU7ZGlzcGxheTpub25lfSNzbmVhay1vdmVybGF5Pi5zbmVhay1rZXl7cG9zaXRpb246Zml4ZWQ7cGFkZGluZzozcHggNnB4O2JhY2tncm91bmQtY29sb3I6YmxhY2s7Ym9yZGVyLXJhZGl1czozcHg7Ym9yZGVyOnNvbGlkIDJweCB3aGl0ZTtjb2xvcjp3aGl0ZTt0ZXh0LXRyYW5zZm9ybTpsb3dlcmNhc2U7bGluZS1oZWlnaHQ6bm9ybWFsO2ZvbnQtc2l6ZToxNHB4O2ZvbnQtd2VpZ2h0OjUwMH0iXSwKICAibWFwcGluZ3MiOiAiQUFBQSxDQUFDLGNBQWMsUUFBUSxPQUFPLFNBQVMsU0FBUyxNQUFNLEtBQUssT0FBTyxLQUFLLFFBQVEsSUFBSSxDQUFDLENBQW5GLGFBQWlHLENBQUMsQ0FBQyxVQUFVLFNBQVMsTUFBdkgsUUFBcUksSUFBSSxJQUFJLGlCQUFpQixLQUE5SixjQUFrTCxJQUFJLE9BQU8sTUFBTSxJQUFJLE1BQU0sTUFBTSxLQUFNLGVBQWUsVUFBVSxZQUFZLE9BQU8sVUFBVSxLQUFLLFlBQVksR0FBRyIsCiAgIm5hbWVzIjogW10KfQo= */\n"
-        document.head.appendChild(el)
-    }
-})()

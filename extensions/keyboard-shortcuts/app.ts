@@ -3,8 +3,8 @@ import { toggleTracksLiked } from "../../shared/platformApi.ts"
 import { KEY_LIST, _SneakOverlay, mousetrapInst } from "./sneak.ts"
 import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util.ts"
 
-const { Keyboard, Player } = Spicetify
-const { UserAPI, UpdateAPI, History } = Spicetify.Platform
+const { Keyboard } = Spicetify
+const { UserAPI, UpdateAPI, History, PlayerAPI } = Spicetify.Platform
 
 let sneakOverlay: _SneakOverlay
 
@@ -25,7 +25,7 @@ const binds = [
     new Bind("k", () => appScroll(-1)),
     new Bind("g", () => appScrollY(0)),
     new Bind("g", () => appScrollY(Number.MAX_SAFE_INTEGER)).setShift(true),
-    new Bind("m", () => Player.data?.item.uri && toggleTracksLiked([Player.data?.item.uri])),
+    new Bind("m", () => PlayerAPI._state.item?.uri && toggleTracksLiked([PlayerAPI._state.item?.uri])),
     new Bind("/", e => {
         e.preventDefault()
         openPage("/search")

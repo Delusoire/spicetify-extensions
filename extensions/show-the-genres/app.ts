@@ -2,13 +2,14 @@ import { array as a, function as f } from "https://esm.sh/fp-ts"
 
 import { fetchLastFMTrack, spotifyApi } from "../../shared/api.ts"
 import { pMchain } from "../../shared/fp.ts"
-import { SpotifyURI, onHistoryChanged, onSongChanged, waitForElement } from "../../shared/util.ts"
+import { SpotifyURI, waitForElement } from "../../shared/util.ts"
 
 import { CONFIG } from "./settings.ts"
 
 import "./assets/styles.scss"
 import "./components.ts"
 import { fetchArtistRelated } from "../../shared/GraphQL/fetchArtistRelated.ts"
+import { onHistoryChanged, onSongChanged } from "../../shared/listeners.ts"
 
 const { URI } = Spicetify
 
@@ -33,7 +34,7 @@ nowPlayingGenreContainerEl.style.gridArea = "genres"
     trackInfoContainer!.appendChild(nowPlayingGenreContainerEl)
 })()
 
-onSongChanged(state => (nowPlayingGenreContainerEl.uri = state?.item.uri))
+onSongChanged(state => (nowPlayingGenreContainerEl.uri = state.item?.uri))
 
 const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[]) => {
     const getArtistsGenres = async (artistsUris: SpotifyURI[]) => {

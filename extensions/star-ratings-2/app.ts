@@ -1,4 +1,4 @@
-import { PermanentMutationObserver, onHistoryChanged, onSongChanged } from "../../shared/util.ts"
+import { PermanentMutationObserver } from "../../shared/util.ts"
 
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.tsx"
 import { loadRatings, tracksRatings } from "./ratings.ts"
@@ -6,13 +6,15 @@ import { CONFIG } from "./settings.ts"
 
 import "./assets/styles.scss"
 import { _ } from "../../shared/deps.ts"
+import { onHistoryChanged, onSongChanged } from "../../shared/listeners.ts"
 const { URI, Player } = Spicetify
 
 loadRatings()
 
-onSongChanged(data => {
-    if (!data) return
-    const { uri } = data.item
+onSongChanged(state => {
+    if (!state) return
+    const { uri } = state.item ?? {}
+    if (!uri) return
 
     if (Number(CONFIG.skipThreshold)) {
         const currentTrackRating = tracksRatings[uri] ?? Number.MAX_SAFE_INTEGER

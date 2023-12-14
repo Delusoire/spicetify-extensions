@@ -1,13 +1,10 @@
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 
-// shared/util.ts
-var { Player, URI } = Spicetify;
-var { PlayerAPI, History } = Spicetify.Platform;
-var normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
-var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var mainElement = document.querySelector("main");
-var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
 
 // shared/api.ts
 var { CosmosAsync } = Spicetify;
@@ -33,11 +30,6 @@ var searchYoutube = async (YouTubeApiKey, searchString) => {
   return await fetch(url).then((res) => res.json());
 };
 
-// shared/deps.ts
-import { default as ld } from "https://esm.sh/lodash";
-import { default as ld_fp } from "https://esm.sh/lodash/fp";
-var _ = ld;
-
 // shared/parse.ts
 var parseWebAPITrack = (track) => ({
   uri: track.uri,
@@ -52,6 +44,14 @@ var parseWebAPITrack = (track) => ({
   popularity: track.popularity,
   releaseDate: new Date(track.album.release_date).getTime()
 });
+
+// shared/util.ts
+var { URI } = Spicetify;
+var { PlayerAPI } = Spicetify.Platform;
+var normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
+var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var mainElement = document.querySelector("main");
+var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
 // extensions/search-on-youtube/settings.ts
 import { task as task2 } from "https://esm.sh/fp-ts";
@@ -88,7 +88,7 @@ var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 // shared/settings.tsx
 var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
-var { History: History2 } = Spicetify.Platform;
+var { History } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
   constructor(name, sectionFields = {}) {
     this.name = name;
@@ -96,7 +96,7 @@ var SettingsSection = class _SettingsSection {
     this.pushSettings = () => {
       if (this.stopHistoryListener)
         this.stopHistoryListener();
-      this.stopHistoryListener = History2.listen(() => this.render());
+      this.stopHistoryListener = History.listen(() => this.render());
       this.render();
     };
     this.toObject = () => new Proxy(
@@ -107,7 +107,7 @@ var SettingsSection = class _SettingsSection {
     );
     this.render = async () => {
       while (!document.getElementById("desktop.settings.selectLanguage")) {
-        if (History2.location.pathname !== "/preferences")
+        if (History.location.pathname !== "/preferences")
           return;
         await sleep(100);
       }

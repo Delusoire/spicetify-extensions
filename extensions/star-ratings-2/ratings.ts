@@ -16,8 +16,8 @@ import { updateCollectionControls, updateNowPlayingControls, updateTrackListCont
 import { CONFIG } from "./settings.ts"
 import { getNowPlayingBar } from "./util.ts"
 
-const { URI, Player } = Spicetify
-const { History } = Spicetify.Platform
+const { URI } = Spicetify
+const { History, PlayerAPI } = Spicetify.Platform
 
 export const loadRatings = async () => {
     const ratingsFolder = await fetchFolder(CONFIG.ratingsFolderUri)
@@ -80,7 +80,7 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
         }
     }
 
-    const npTrack = Player.data?.item.uri
+    const npTrack = PlayerAPI._state.item?.uri
     if (npTrack === uri) {
         updateNowPlayingControls(npTrack, false)
 

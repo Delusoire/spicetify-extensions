@@ -1,6 +1,6 @@
 // shared/util.ts
-var { Player, URI } = Spicetify;
-var { PlayerAPI, History } = Spicetify.Platform;
+var { URI } = Spicetify;
+var { PlayerAPI } = Spicetify.Platform;
 var mainElement = document.querySelector("main");
 var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 

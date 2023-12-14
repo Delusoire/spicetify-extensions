@@ -5,8 +5,8 @@ var _ = ld;
 var fp = ld_fp;
 
 // shared/util.ts
-var { Player, URI } = Spicetify;
-var { PlayerAPI, History } = Spicetify.Platform;
+var { URI } = Spicetify;
+var { PlayerAPI } = Spicetify.Platform;
 var SpotifyLoc = {
   before: {
     start: () => ({ before: "start" }),
@@ -116,7 +116,7 @@ var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
 // shared/settings.tsx
 var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
-var { History: History2 } = Spicetify.Platform;
+var { History } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
   constructor(name, sectionFields = {}) {
     this.name = name;
@@ -124,7 +124,7 @@ var SettingsSection = class _SettingsSection {
     this.pushSettings = () => {
       if (this.stopHistoryListener)
         this.stopHistoryListener();
-      this.stopHistoryListener = History2.listen(() => this.render());
+      this.stopHistoryListener = History.listen(() => this.render());
       this.render();
     };
     this.toObject = () => new Proxy(
@@ -135,7 +135,7 @@ var SettingsSection = class _SettingsSection {
     );
     this.render = async () => {
       while (!document.getElementById("desktop.settings.selectLanguage")) {
-        if (History2.location.pathname !== "/preferences")
+        if (History.location.pathname !== "/preferences")
           return;
         await sleep(100);
       }
@@ -293,14 +293,31 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
 
 // shared/GraphQL/fetchAlbum.ts
 var { Locale, GraphQL } = Spicetify;
+var queue = new Array();
 var fetchAlbum = async (uri, offset = 0, limit = 450) => {
+  let resolveOwn;
+  await new Promise((resolve) => {
+    queue.push(resolve);
+    if (queue.length < 1e3) {
+      resolveOwn = resolve;
+      resolve();
+    }
+  });
   const res = await GraphQL.Request(GraphQL.Definitions.getAlbum, {
     uri,
     locale: Locale.getLocale(),
     offset,
     limit
   });
-  return res.data.albumUnion;
+  if (resolveOwn) {
+    queue.splice(
+      queue.findIndex((r) => r === resolveOwn),
+      1
+    );
+  } else {
+    queue.shift()?.();
+  }
+  return await res.data.albumUnion;
 };
 
 // shared/GraphQL/fetchArtistDiscography.ts
@@ -447,6 +464,7 @@ var parseLibraryAPILikedTracks = (track) => ({
 });
 
 // extensions/sort-plus/fetch.ts
+var { URI: URI2 } = Spicetify;
 var getTracksFromAlbum = async (uri) => {
   const albumRes = await fetchAlbum(uri);
   const releaseDate = new Date(albumRes.date.isoString).getTime();
@@ -463,7 +481,11 @@ var getTracksFromAlbum = async (uri) => {
   );
 };
 var getLikedTracks = _.flow(fetchLikedTracks, pMchain(fp.map(parseLibraryAPILikedTracks)));
-var getTracksFromPlaylist = _.flow(fetchPlaylistContents, pMchain(fp.map(parsePlaylistAPITrack)));
+var getTracksFromPlaylist = _.flow(
+  fetchPlaylistContents,
+  pMchain(fp.map(parsePlaylistAPITrack)),
+  pMchain(fp.filter((track) => !URI2.isLocalTrack(track.uri)))
+);
 var getTracksFromArtist = async (uri) => {
   const allTracks = new Array();
   const itemsWithCountAr = new Array();
@@ -493,7 +515,7 @@ var getTracksFromArtist = async (uri) => {
 };
 
 // extensions/sort-plus/util.ts
-var { URI: URI2 } = Spicetify;
+var { URI: URI3 } = Spicetify;
 var SEPARATOR_URI = "spotify:separator";
 var SortAction = /* @__PURE__ */ ((SortAction2) => {
   SortAction2["SPOTIFY_PLAYCOUNT"] = "Spotify - Play Count";
@@ -528,47 +550,47 @@ var joinByUri = (...trackss) => {
   return Array.from(new Map(uriTrackPairs).values());
 };
 var URI_isLikedTracks = (uri) => {
-  const uriObj = URI2.fromString(uri);
-  return uriObj.type === URI2.Type.COLLECTION && uriObj.category === "tracks";
+  const uriObj = URI3.fromString(uri);
+  return uriObj.type === URI3.Type.COLLECTION && uriObj.category === "tracks";
 };
 var getNameFromUri = async (uri) => {
   switch (uri.type) {
-    case URI2.Type.ALBUM: {
+    case URI3.Type.ALBUM: {
       const album = await spotifyApi.albums.get(uri.id);
       return album.name;
     }
-    case URI2.Type.ARTIST: {
+    case URI3.Type.ARTIST: {
       const artist = await spotifyApi.artists.get(uri.id);
       return artist.name;
     }
-    case URI2.Type.COLLECTION:
+    case URI3.Type.COLLECTION:
       if (uri.category === "tracks")
         return "Liked Tracks";
       else
         break;
-    case URI2.Type.PLAYLIST:
-    case URI2.Type.PLAYLIST_V2: {
+    case URI3.Type.PLAYLIST:
+    case URI3.Type.PLAYLIST_V2: {
       const playlist = await spotifyApi.playlists.getPlaylist(uri.id);
       return playlist.name;
     }
   }
 };
 var getTracksFromUri = _.cond([
-  [URI2.isAlbum, getTracksFromAlbum],
-  [URI2.isArtist, getTracksFromArtist],
+  [URI3.isAlbum, getTracksFromAlbum],
+  [URI3.isArtist, getTracksFromArtist],
   [URI_isLikedTracks, getLikedTracks],
-  [URI2.isPlaylistV1OrV2, getTracksFromPlaylist]
+  [URI3.isPlaylistV1OrV2, getTracksFromPlaylist]
 ]);
 
 // extensions/sort-plus/playlistsInterop.ts
-var { URI: URI3 } = Spicetify;
+var { URI: URI4 } = Spicetify;
 var createPlaylistFromLastSortedQueue = async () => {
   if (lastSortedQueue.length === 0) {
     Spicetify.showNotification("Must sort to queue beforehand" /* LAST_SORTED_QUEUE_EMPTY */);
     return;
   }
   const sortedPlaylistsFolder = await fetchFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchRootFolder);
-  const uri = URI3.fromString(lastFetchedUri);
+  const uri = URI4.fromString(lastFetchedUri);
   const playlistName = `${getNameFromUri(uri)} - ${lastSortAction}`;
   const { palylistUri } = await createPlaylistFromTracks(
     playlistName,
@@ -583,7 +605,7 @@ var reordedPlaylistLikeSortedQueue = async () => {
     Spicetify.showNotification("Must sort to queue beforehand" /* LAST_SORTED_QUEUE_EMPTY */);
     return;
   }
-  if (!URI3.isPlaylistV1OrV2(lastFetchedUri)) {
+  if (!URI4.isPlaylistV1OrV2(lastFetchedUri)) {
     Spicetify.showNotification("Last sorted queue must be a playlist" /* LAST_SORTED_QUEUE_NOT_A_PLAYLIST */);
     return;
   }
@@ -592,9 +614,9 @@ var reordedPlaylistLikeSortedQueue = async () => {
 };
 
 // extensions/sort-plus/populate.ts
-var { URI: URI4 } = Spicetify;
+var { URI: URI5 } = Spicetify;
 var fillTracksFromWebAPI = async (tracks) => {
-  const ids = tracks.map((track) => URI4.fromString(track.uri).id);
+  const ids = tracks.map((track) => URI5.fromString(track.uri).id);
   const fetchedTracks = await chunkify50((is) => spotifyApi.tracks.get(is))(ids);
   return joinByUri(tracks, fetchedTracks.map(parseWebAPITrack));
 };
@@ -631,7 +653,7 @@ var fillTracksFromLastFM = (tracks) => {
 };
 
 // extensions/sort-plus/app.ts
-var { URI: URI5, ContextMenu, Topbar } = Spicetify;
+var { URI: URI6, ContextMenu, Topbar } = Spicetify;
 var { PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
 var lastFetchedUri;
 var lastSortAction;
@@ -650,13 +672,13 @@ var populateTracks = _.cond([
   [fp.startsWith("LastFM"), () => fillTracksFromLastFM]
 ]);
 var setQueue2 = (tracks) => {
-  if (PlayerAPI2?._state?.item?.uid == void 0)
+  if (PlayerAPI2._state.item?.uid == null)
     return void Spicetify.showNotification("Queue is null!", true);
   const dedupedQueue = _.uniqBy(tracks, "uri");
   global.lastSortedQueue = lastSortedQueue2 = dedupedQueue;
   const isLikedTracks = URI_isLikedTracks(lastFetchedUri);
-  const queue = lastSortedQueue2.concat({ uri: SEPARATOR_URI }).map(createQueueItem(isLikedTracks));
-  return setQueue(queue, isLikedTracks ? void 0 : lastFetchedUri);
+  const queue2 = lastSortedQueue2.concat({ uri: SEPARATOR_URI }).map(createQueueItem(isLikedTracks));
+  return setQueue(queue2, isLikedTracks ? void 0 : lastFetchedUri);
 };
 var sortTracksBy = (sortAction, sortFn) => async (uri) => {
   lastSortAction = sortAction;
@@ -709,7 +731,7 @@ SubMenuItems.push(SubMenuItemShuffle, SubMenuItemStars);
 var SortBySubMenu = new ContextMenu.SubMenu(
   "Sort by",
   SubMenuItems,
-  ([uri]) => _.overSome([URI5.isAlbum, URI5.isArtist, URI_isLikedTracks, URI5.isTrack, URI5.isPlaylistV1OrV2])(uri)
+  ([uri]) => _.overSome([URI6.isAlbum, URI6.isArtist, URI_isLikedTracks, URI6.isTrack, URI6.isPlaylistV1OrV2])(uri)
 );
 SortBySubMenu.register();
 new Topbar.Button("Create a Playlist from Sorted Queue", "plus2px", createPlaylistFromLastSortedQueue);

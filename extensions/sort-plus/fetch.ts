@@ -17,6 +17,8 @@ import { SpotifyURI } from "../../shared/util.ts"
 
 import { CONFIG } from "./settings.ts"
 
+const { URI } = Spicetify
+
 export const getTracksFromAlbum = async (uri: string) => {
     const albumRes = await fetchAlbum(uri)
     const releaseDate = new Date(albumRes.date.isoString).getTime()
@@ -37,7 +39,11 @@ export const getTracksFromAlbum = async (uri: string) => {
 
 export const getLikedTracks = _.flow(fetchLikedTracks, pMchain(fp.map(parseLibraryAPILikedTracks)))
 
-export const getTracksFromPlaylist = _.flow(fetchPlaylistContents, pMchain(fp.map(parsePlaylistAPITrack)))
+export const getTracksFromPlaylist = _.flow(
+    fetchPlaylistContents,
+    pMchain(fp.map(parsePlaylistAPITrack)),
+    pMchain(fp.filter(track => !URI.isLocalTrack(track.uri))),
+)
 
 export const getTracksFromArtist = async (uri: SpotifyURI) => {
     const allTracks = new Array<TrackData>()

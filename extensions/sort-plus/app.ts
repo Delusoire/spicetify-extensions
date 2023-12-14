@@ -37,7 +37,7 @@ const populateTracks: (sortProp: SortAction) => AsyncTracksOperation = _.cond([
 ])
 
 const setQueue = (tracks: TrackData[]) => {
-    if (PlayerAPI?._state?.item?.uid == undefined) return void Spicetify.showNotification("Queue is null!", true)
+    if (PlayerAPI._state.item?.uid == null) return void Spicetify.showNotification("Queue is null!", true)
 
     const dedupedQueue = _.uniqBy(tracks, "uri")
 
