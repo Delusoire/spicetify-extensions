@@ -299,9 +299,8 @@ var fetchAlbum = async (uri, offset = 0, limit = 450) => {
   let resolveOwn;
   globalThis.s.add(uri);
   await new Promise((resolve) => {
-    queue.push(resolve);
+    queue.push(resolveOwn = resolve);
     if (queue.length < 100) {
-      resolveOwn = resolve;
       resolve();
     }
   });
@@ -312,13 +311,11 @@ var fetchAlbum = async (uri, offset = 0, limit = 450) => {
     offset,
     limit
   });
-  if (resolveOwn) {
-    queue.splice(
-      queue.findIndex((r) => r === resolveOwn),
-      1
-    );
+  const index = queue.findIndex((r) => r === resolveOwn);
+  if (index != -1) {
+    queue.splice(index, 1);
   }
-  queue.shift()?.();
+  queue[0]?.();
   return res.data.albumUnion;
 };
 

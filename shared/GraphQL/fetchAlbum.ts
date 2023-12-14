@@ -133,9 +133,8 @@ export const fetchAlbum = async (uri: string, offset = 0, limit = 450) => {
     let resolveOwn: undefined | (() => void)
     globalThis.s.add(uri)
     await new Promise<void>(resolve => {
-        queue.push(resolve)
+        queue.push((resolveOwn = resolve))
         if (queue.length < 100) {
-            resolveOwn = resolve
             resolve()
         }
     })
@@ -147,13 +146,11 @@ export const fetchAlbum = async (uri: string, offset = 0, limit = 450) => {
         limit,
     })
 
-    if (resolveOwn) {
-        queue.splice(
-            queue.findIndex(r => r === resolveOwn),
-            1,
-        )
+    const index = queue.findIndex(r => r === resolveOwn)
+    if (index != -1) {
+        queue.splice(index, 1)
     }
-    queue.shift()?.()
+    queue[0]?.()
 
     return res.data.albumUnion as fetchAlbumRes
 }
