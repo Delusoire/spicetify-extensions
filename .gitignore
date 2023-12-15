@@ -1,3 +1,5 @@
 node_modules/**
-tmp/
+tmp/**
+extensions/redacted/**
+dist/redacted/**
 deno.lock

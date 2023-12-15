@@ -672,12 +672,12 @@ var createNowPlayingStars = () => {
     else nowPlayingElement.prepend(nowPlayingStarsContainer)
     addRatingsListenersToStars(
         [nowPlayingStarsContainer, nowPlayingStarConstruct],
-        () => Spicetify.Player?.data.track?.currentTrackUri,
+        () => Spicetify.Player?.data.item?.currentTrackUri,
     )
 }
 createNowPlayingStars()
 var updateNowPlayingStars = () => {
-    const trackUri = Spicetify.Player?.data.track?.currentTrackUri
+    const trackUri = Spicetify.Player?.data.item?.currentTrackUri
     const nowPlayingStarsContainer = getStarsContainer("now-playing")
     nowPlayingStarsContainer.style.display = Spicetify.URI.isTrack(trackUri) ? "flex" : "none"
     f6.pipe(nowPlayingStarsContainer, setStarsGradientFromContainerByRating(tracksRatings[trackUri] ?? 0))

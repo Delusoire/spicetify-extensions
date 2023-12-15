@@ -1,5 +1,5 @@
 import { spotifyApi } from "../../shared/api.ts"
-import { _ } from "../../shared/deps.ts"
+import { _, fp } from "../../shared/deps.ts"
 import { TrackData } from "../../shared/parse.ts"
 
 import { getLikedTracks, getTracksFromAlbum, getTracksFromArtist, getTracksFromPlaylist } from "./fetch.ts"
@@ -42,11 +42,14 @@ export enum SortActionProp {
     "LastFM - Play Count" = "lastfmPlaycount",
 }
 
-export const joinByUri = (...trackss: TrackData[][]) => {
-    const tracks = [...trackss].flat()
-    const uriTrackPairs = tracks.map(track => [track.uri, track] as const)
-    return Array.from(new Map(uriTrackPairs).values())
-}
+export const joinByUri = (...trackss: TrackData[][]) =>
+    _(trackss)
+        .flatten()
+        .map(fp.omitBy(_.isNil)<TrackData>)
+        .groupBy("uri")
+        .mapValues(sameUriTracks => Object.assign({}, ...sameUriTracks) as TrackData)
+        .values()
+        .value()
 
 export const URI_isLikedTracks = (uri: string) => {
     const uriObj = URI.fromString(uri)

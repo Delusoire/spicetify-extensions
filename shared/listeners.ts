@@ -62,7 +62,9 @@ const _onTrackListMutation = (
 
     tracks.forEach((track, i) => (track.props = tracksProps[i]))
 
-    onTrackListMutationListeners.map(listener => listener(trackList, tracks))
+    const fullyRenderedTracks = tracks.filter(track => track.props.uri)
+
+    onTrackListMutationListeners.map(listener => listener(trackList, fullyRenderedTracks))
 }
 
 new PermanentMutationObserver("main", () => {

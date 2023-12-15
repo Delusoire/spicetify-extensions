@@ -21,7 +21,8 @@ const fillTracksFromAlbumTracks = async (tracks: TrackData[]) => {
     const passes = Object.keys(tracksByAlbumUri).length
     const fn = progressify(async (tracks: TrackData[]) => {
         const albumTracks = await getTracksFromAlbum(tracks[0].albumUri)
-        return _.intersectionBy(albumTracks, tracks, track => track.uri)
+        const newTracks = _.intersectionBy(albumTracks, tracks, track => track.uri)
+        return joinByUri(tracks, newTracks)
     }, passes)
 
     const sameAlbumTracksArray = Object.values(tracksByAlbumUri)

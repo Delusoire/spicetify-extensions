@@ -540,11 +540,7 @@ var SortActionProp = /* @__PURE__ */ ((SortActionProp2) => {
   SortActionProp2["LastFM - Play Count"] = "lastfmPlaycount";
   return SortActionProp2;
 })(SortActionProp || {});
-var joinByUri = (...trackss) => {
-  const tracks = [...trackss].flat();
-  const uriTrackPairs = tracks.map((track) => [track.uri, track]);
-  return Array.from(new Map(uriTrackPairs).values());
-};
+var joinByUri = (...trackss) => _(trackss).flatten().map(fp.omitBy(_.isNil)).groupBy("uri").mapValues((sameUriTracks) => Object.assign({}, ...sameUriTracks)).values().value();
 var URI_isLikedTracks = (uri) => {
   const uriObj = URI3.fromString(uri);
   return uriObj.type === URI3.Type.COLLECTION && uriObj.category === "tracks";
@@ -621,7 +617,8 @@ var fillTracksFromAlbumTracks = async (tracks) => {
   const passes = Object.keys(tracksByAlbumUri).length;
   const fn = progressify(async (tracks2) => {
     const albumTracks = await getTracksFromAlbum(tracks2[0].albumUri);
-    return _.intersectionBy(albumTracks, tracks2, (track) => track.uri);
+    const newTracks = _.intersectionBy(albumTracks, tracks2, (track) => track.uri);
+    return joinByUri(tracks2, newTracks);
   }, passes);
   const sameAlbumTracksArray = Object.values(tracksByAlbumUri);
   const albumsTracks = await Promise.all(sameAlbumTracksArray.map(fn));
@@ -732,7 +729,6 @@ var SortBySubMenu = new ContextMenu.SubMenu(
 SortBySubMenu.register();
 new Topbar.Button("Create a Playlist from Sorted Queue", "plus2px", createPlaylistFromLastSortedQueue);
 new Topbar.Button("Reorder current Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue);
-debugger;
 export {
   lastFetchedUri,
   lastSortAction,
