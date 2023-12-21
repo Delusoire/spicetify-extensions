@@ -412,7 +412,7 @@ var LyricsContainer = class extends LitElement {
         return html`<div class="lyrics_++-container">
                     <animated-text-container
                         relativeScaledProgress=${this.scaledProgress}
-                        text=${wordSynced.part}
+                        .text=${wordSynced.part}
                     ></animated-text-container>
                 </div>`;
       }
@@ -466,7 +466,7 @@ __decorateClass([
   property()
 ], AnimatedTextContainer.prototype, "relativeScaledProgress", 2);
 __decorateClass([
-  state()
+  property()
 ], AnimatedTextContainer.prototype, "text", 2);
 __decorateClass([
   property()
