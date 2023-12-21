@@ -55,7 +55,10 @@ var pMchain = (f2) => async (fa) => f2(await fa);
 var { URI } = Spicetify;
 var { PlayerAPI } = Spicetify.Platform;
 var PermanentMutationObserver = class extends MutationObserver {
-  constructor(targetSelector, callback) {
+  constructor(targetSelector, callback, opts = {
+    childList: true,
+    subtree: true
+  }) {
     super(callback);
     this.target = null;
     new MutationObserver(() => {
@@ -63,10 +66,7 @@ var PermanentMutationObserver = class extends MutationObserver {
       if (nextTarget && !nextTarget.isEqualNode(this.target)) {
         this.target && this.disconnect();
         this.target = nextTarget;
-        this.observe(this.target, {
-          childList: true,
-          subtree: true
-        });
+        this.observe(this.target, opts);
       }
     }).observe(document.body, {
       childList: true,
@@ -333,7 +333,7 @@ var _ArtistGenreContainer = class extends LitElement {
                 }
             </style>
             <div className="main-entityHeader-detailsText genre-container">
-                ${this.name && html`<span>${this.name} : </span>`} ${join(artistGenreLinks, () => divider)}
+                ${this.name && html`<span>${this.name} : </span>`} ${join(artistGenreLinks, divider)}
             </div>`;
   }
 };
@@ -483,12 +483,3 @@ var updateArtistPage = async (uri) => {
   headerTextEl?.insertBefore(artistGenreContainerEl, headerTextDetailsEl);
 };
 onHistoryChanged((uri) => URI3.isArtist(uri), updateArtistPage);
-(async () => {
-    if (!document.getElementById("show-the-genres-css")) {
-        const el = document.createElement("style")
-        el.id = "show-the-genres-css"
-        
-        el.textContent = "/* extensions/show-the-genres/assets/styles.css */\n.main-nowPlayingWidget-trackInfo.main-trackInfo-container {\n  grid-template: \"title title\" \"badges subtitle\" \"genres genres\"/auto 1fr auto;\n}\n"
-        document.head.appendChild(el)
-    }
-})()
