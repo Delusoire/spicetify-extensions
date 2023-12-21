@@ -456,14 +456,14 @@ var AnimatedTextContainer = class extends LitElement {
     });
   }
   render() {
-    return html` ${map(
+    return html`${map(
       this.text,
       (part) => when(
         Array.isArray(part.part),
         () => html`<animated-text-container .text=${part.part} tsr=${part.tsr} ter=${part.ter} />`,
         () => html`<animated-text text=${part.part} tsr=${part.tsr} ter=${part.ter} />`
       )
-    )}`;
+    )}<br />`;
   }
 };
 __decorateClass([
