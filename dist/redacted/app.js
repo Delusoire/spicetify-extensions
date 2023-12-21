@@ -290,7 +290,7 @@ var PlayerW = new class {
 
 // extensions/redacted/components.ts
 import { LitElement, html } from "https://esm.sh/lit";
-import { customElement, property, state } from "https://esm.sh/lit/decorators.js";
+import { customElement, property, queryAll, state } from "https://esm.sh/lit/decorators.js";
 
 // extensions/redacted/Packages/Spring.ts
 var TAU = Math.PI * 2;
@@ -408,25 +408,25 @@ var LyricsContainer = class extends LitElement {
     return this.lyricsTask.render({
       pending: () => {
         this.hasLyrics = false;
-        return html`<div class="better_lyrics-container-fetching">Fetching Lyrics...</div>`;
+        return html`<div class="fetching">Fetching Lyrics...</div>`;
       },
       complete: (lyrics) => {
         const wordSynced = lyrics?.wordSynced;
         if (!wordSynced) {
           this.hasLyrics = false;
-          return html`<div class="better_lyrics-container-no_lyrics">No Lyrics</div>`;
+          return html`<div class="noLyrics">No Lyrics</div>`;
         }
         this.hasLyrics = true;
-        return html`<div class="better_lyrics-container">
+        return html`
                     <animated-text-container
                         relativeScaledProgress=${this.scaledProgress}
                         .text=${wordSynced.part}
                     ></animated-text-container>
-                </div>`;
+                `;
       },
       error: () => {
         this.hasLyrics = false;
-        return html`<div class="better_lyrics-container-error">Error</div>`;
+        return html`<div class="error">Error</div>`;
       }
     });
   }
@@ -450,31 +450,39 @@ var AnimatedTextContainer = class extends LitElement {
     this.text = [];
     this.tsr = 0;
     this.ter = 1;
+    this.childs = [];
+  }
+  shouldUpdate(changedProperties) {
+    if (changedProperties.has("relativeScaledProgress")) {
+      this.childs.map((child) => {
+        child.relativeScaledProgress = this.calculateRSPForPart(child);
+      });
+      changedProperties.delete("relativeScaledProgress");
+    }
+    return Boolean(changedProperties.size);
   }
   calculateRSPForPart(part) {
     return (this.relativeScaledProgress - part.tsr) / (part.ter - part.tsr);
   }
   render() {
-    return html`<div class="animated-text-container">
-            ${map(
+    return html` ${map(
       this.text,
       (part) => when(
         Array.isArray(part.part),
         () => html`<animated-text-container
-                            relativeScaledProgress=${this.calculateRSPForPart(part)}
-                            .text=${part.part}
-                            tsr=${part.tsr}
-                            ter=${part.ter}
-                        />`,
+                        relativeScaledProgress=${this.calculateRSPForPart(part)}
+                        .text=${part.part}
+                        tsr=${part.tsr}
+                        ter=${part.ter}
+                    />`,
         () => html`<animated-text
-                            relativeScaledProgress=${this.calculateRSPForPart(part)}
-                            text=${part.part}
-                            tsr=${part.tsr}
-                            ter=${part.ter}
-                        />`
+                        relativeScaledProgress=${this.calculateRSPForPart(part)}
+                        text=${part.part}
+                        tsr=${part.tsr}
+                        ter=${part.ter}
+                    />`
       )
-    )}
-        </div>`;
+    )}`;
   }
 };
 __decorateClass([
@@ -489,6 +497,9 @@ __decorateClass([
 __decorateClass([
   property({ type: Number })
 ], AnimatedTextContainer.prototype, "ter", 2);
+__decorateClass([
+  queryAll("*")
+], AnimatedTextContainer.prototype, "childs", 2);
 AnimatedTextContainer = __decorateClass([
   customElement("animated-text-container")
 ], AnimatedTextContainer);
@@ -512,7 +523,6 @@ var AnimatedText = class extends LitElement {
       this.yOffsetSprine.updateEquilibrium(relativeTime);
       this.glowSprine.updateEquilibrium(relativeTime);
       this.style.setProperty("--gradient-progress", `${100 * relativeTime}%`);
-      changedProperties.delete("relativeScaledProgress");
       if (!this.scaleSprine.isInEquilibrium()) {
         const scale = this.scaleSprine.current;
         this.style.scale = scale.toString();
@@ -530,13 +540,12 @@ var AnimatedText = class extends LitElement {
         this.style.setProperty("--text-shadow-opacity", `${100 * glow}%`);
         this.style.setProperty("--text-shadow-blur-radius", `${glow}px`);
       }
+      changedProperties.delete("relativeScaledProgress");
     }
     return Boolean(changedProperties.size);
   }
   render() {
-    return html`<span class="animated-text" role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}
-            >${this.text}</span
-        >`;
+    return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}>${this.text}</span>`;
   }
 };
 __decorateClass([
