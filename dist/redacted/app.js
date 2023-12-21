@@ -90,7 +90,7 @@ var findLyrics = async (info) => {
         const part = rsLine.l.map((word, index, words) => {
           const part2 = word.c;
           const tsr2 = word.o / duration;
-          const ter2 = words[index + 1]?.o / 1e3;
+          const ter2 = words[index + 1]?.o / 1e3 || 1;
           return { tsr: tsr2, ter: ter2, part: part2 };
         });
         return { tsr, ter, part };
@@ -103,7 +103,7 @@ var findLyrics = async (info) => {
       "LineSynced",
       subtitle.map((sLine, index, subtitle2) => {
         const tsr = sLine.time.total / track.track_length;
-        const ter = subtitle2[index + 1]?.time.total / track.track_length;
+        const ter = subtitle2[index + 1]?.time.total / track.track_length || 1;
         return { tsr, ter, part: sLine.text };
       })
     );
@@ -461,13 +461,13 @@ var AnimatedTextContainer = class extends LitElement {
       (part) => when(
         Array.isArray(part.part),
         () => html`<animated-text-container
-                            relativeScaledProgress=${this.relativeScaledProgress / (part.ter - part.tsr)}
+                            relativeScaledProgress=${(this.relativeScaledProgress - part.tsr) / (part.ter - part.tsr)}
                             .text=${part.part}
                             tsr=${part.tsr}
                             ter=${part.ter}
                         />`,
         () => html`<animated-text
-                            relativeScaledProgress=${this.relativeScaledProgress / (part.ter - part.tsr)}
+                            relativeScaledProgress=${(this.relativeScaledProgress - part.tsr) / (part.ter - part.tsr)}
                             text=${part.part}
                             tsr=${part.tsr}
                             ter=${part.ter}
