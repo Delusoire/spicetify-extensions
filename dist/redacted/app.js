@@ -52,15 +52,13 @@ var headers = {
 var CONFIG = {
   musixmatchToken: void 0
 };
-if (!CONFIG.musixmatchToken) {
-  const url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/token.get");
-  url.searchParams.append("app_id", "web-desktop-app-v1.0");
-  Spicetify.CosmosAsync.get(url.toString(), void 0, _.omit(headers, "cookie")).then((res) => {
-    if (res.message.header.status_code === 200 && res.message.body.user_token) {
-      CONFIG.musixmatchToken = res.message.body.user_token;
-    }
-  });
-}
+var url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/token.get");
+url.searchParams.append("app_id", "web-desktop-app-v1.0");
+Spicetify.CosmosAsync.get(url.toString(), void 0, _.omit(headers, "cookie")).then((res) => {
+  if (res.message.header.status_code === 200 && res.message.body.user_token) {
+    CONFIG.musixmatchToken = res.message.body.user_token;
+  }
+});
 var findLyrics = async (info) => {
   const { lyrics, subtitles, track } = await fetchMxmMacroSubtitlesGet(
     info.uri,
@@ -114,20 +112,20 @@ var findLyrics = async (info) => {
   return l;
 };
 var fetchMxmMacroSubtitlesGet = async (uri, title, artist, album, durationS) => {
-  const url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/macro.subtitles.get");
-  url.searchParams.append("format", "json");
-  url.searchParams.append("namespace", "lyrics_richsynched");
-  url.searchParams.append("subtitle_format", "mxm");
-  url.searchParams.append("app_id", "web-desktop-app-v1.0");
-  url.searchParams.append("q_album", album);
-  url.searchParams.append("q_artist", artist);
-  url.searchParams.append("q_artists", artist);
-  url.searchParams.append("q_track", title);
-  url.searchParams.append("track_spotify_id", uri);
-  url.searchParams.append("q_duration", encodeURIComponent(durationS));
-  url.searchParams.append("f_subtitle_length", encodeURIComponent(Math.floor(durationS)));
-  url.searchParams.append("usertoken", CONFIG.musixmatchToken);
-  const res = await Spicetify.CosmosAsync.get(url.toString(), void 0, headers);
+  const url2 = new URL("https://apic-desktop.musixmatch.com/ws/1.1/macro.subtitles.get");
+  url2.searchParams.append("format", "json");
+  url2.searchParams.append("namespace", "lyrics_richsynched");
+  url2.searchParams.append("subtitle_format", "mxm");
+  url2.searchParams.append("app_id", "web-desktop-app-v1.0");
+  url2.searchParams.append("q_album", album);
+  url2.searchParams.append("q_artist", artist);
+  url2.searchParams.append("q_artists", artist);
+  url2.searchParams.append("q_track", title);
+  url2.searchParams.append("track_spotify_id", uri);
+  url2.searchParams.append("q_duration", encodeURIComponent(durationS));
+  url2.searchParams.append("f_subtitle_length", encodeURIComponent(Math.floor(durationS)));
+  url2.searchParams.append("usertoken", CONFIG.musixmatchToken);
+  const res = await Spicetify.CosmosAsync.get(url2.toString(), void 0, headers);
   const {
     "track.lyrics.get": trackLyricsGet,
     "track.snippet.get": trackSnippetGet,
@@ -145,15 +143,15 @@ var fetchMxmMacroSubtitlesGet = async (uri, title, artist, album, durationS) => 
   };
 };
 var fetchMxmTrackRichSyncGet = async (commonTrackId, trackLength) => {
-  const url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/track.richsync.get");
-  url.searchParams.append("format", "json");
-  url.searchParams.append("subtitle_format", "mxm");
-  url.searchParams.append("app_id", "web-desktop-app-v1.0");
-  url.searchParams.append("f_subtitle_length", encodeURIComponent(trackLength));
-  url.searchParams.append("q_duration", encodeURIComponent(trackLength));
-  url.searchParams.append("commontrack_id", encodeURIComponent(commonTrackId));
-  url.searchParams.append("usertoken", CONFIG.musixmatchToken);
-  const res = await Spicetify.CosmosAsync.get(url.toString(), void 0, headers);
+  const url2 = new URL("https://apic-desktop.musixmatch.com/ws/1.1/track.richsync.get");
+  url2.searchParams.append("format", "json");
+  url2.searchParams.append("subtitle_format", "mxm");
+  url2.searchParams.append("app_id", "web-desktop-app-v1.0");
+  url2.searchParams.append("f_subtitle_length", encodeURIComponent(trackLength));
+  url2.searchParams.append("q_duration", encodeURIComponent(trackLength));
+  url2.searchParams.append("commontrack_id", encodeURIComponent(commonTrackId));
+  url2.searchParams.append("usertoken", CONFIG.musixmatchToken);
+  const res = await Spicetify.CosmosAsync.get(url2.toString(), void 0, headers);
   return JSON.parse(res.message.body.richsync.richsync_body);
 };
 
@@ -277,6 +275,8 @@ var PlayerW = new class {
     let oldScaledProgress = Spicetify.Player.getProgressPercent();
     animationFrameScheduler.schedule(
       function(self) {
+        if (self.isPaused)
+          return;
         self.scaledProgress = Spicetify.Player.getProgressPercent();
         if (self.scaledProgress !== oldScaledProgress) {
           self.scaledProgressChangedSubject.next(self.scaledProgress);
