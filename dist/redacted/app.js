@@ -453,7 +453,7 @@ var AnimatedTextContainer = class extends LitElement {
   }
   shouldUpdate(changedProperties) {
     if (changedProperties.has("relativeScaledProgress")) {
-      this.childs.map((child) => {
+      Array.from(this.childs ?? 0).map((child) => {
         child.relativeScaledProgress = this.calculateRSPForPart(child);
       });
       changedProperties.delete("relativeScaledProgress");
