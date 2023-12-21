@@ -50,7 +50,7 @@ var headers = {
   cookie: "x-mxm-token-guid="
 };
 var CONFIG = {
-  musixmatchToken: "231221e279efdb0115a0f1f80aac291e5d8cd1246aede96a08ea74"
+  musixmatchToken: void 0
 };
 if (!CONFIG.musixmatchToken) {
   const url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/token.get");
