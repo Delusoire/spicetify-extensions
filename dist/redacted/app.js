@@ -420,7 +420,7 @@ var LyricsContainer = class extends LitElement {
   }
 };
 __decorateClass([
-  property()
+  property({ attribute: false })
 ], LyricsContainer.prototype, "song", 2);
 __decorateClass([
   state()
@@ -447,7 +447,7 @@ var AnimatedTextContainer = class extends LitElement {
         Array.isArray(part.part),
         () => html`<animated-text-container
                             relativeScaledProgress=${this.relativeScaledProgress / (part.ter - part.tsr)}
-                            text=${part.part}
+                            .text=${part.part}
                             tsr=${part.tsr}
                             ter=${part.ter}
                         />`,
@@ -463,16 +463,16 @@ var AnimatedTextContainer = class extends LitElement {
   }
 };
 __decorateClass([
-  property()
+  property({ type: Number })
 ], AnimatedTextContainer.prototype, "relativeScaledProgress", 2);
 __decorateClass([
-  property()
+  property({ type: Array })
 ], AnimatedTextContainer.prototype, "text", 2);
 __decorateClass([
-  property()
+  property({ type: Number })
 ], AnimatedTextContainer.prototype, "tsr", 2);
 __decorateClass([
-  property()
+  property({ type: Number })
 ], AnimatedTextContainer.prototype, "ter", 2);
 AnimatedTextContainer = __decorateClass([
   customElement("animated-text-container")
@@ -543,16 +543,16 @@ __decorateClass([
   state(sprineState)
 ], AnimatedText.prototype, "glowSprine", 2);
 __decorateClass([
-  property()
+  property({ type: Number })
 ], AnimatedText.prototype, "relativeScaledProgress", 2);
 __decorateClass([
   property()
 ], AnimatedText.prototype, "text", 2);
 __decorateClass([
-  property()
+  property({ type: Number })
 ], AnimatedText.prototype, "tsr", 2);
 __decorateClass([
-  property()
+  property({ type: Number })
 ], AnimatedText.prototype, "ter", 2);
 AnimatedText = __decorateClass([
   customElement("animated-text")
