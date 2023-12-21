@@ -553,6 +553,7 @@ AnimatedText = __decorateClass([
 ], AnimatedText);
 
 // extensions/redacted/app.ts
+debugger;
 new PermanentMutationObserver("main", () => {
   const lyricsContainer = document.querySelector(".main-nowPlayingView-lyricsContent");
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))

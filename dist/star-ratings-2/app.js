@@ -14,7 +14,10 @@ var SpotifyLoc = {
   }
 };
 var PermanentMutationObserver = class extends MutationObserver {
-  constructor(targetSelector, callback) {
+  constructor(targetSelector, callback, opts = {
+    childList: true,
+    subtree: true
+  }) {
     super(callback);
     this.target = null;
     new MutationObserver(() => {
@@ -22,10 +25,7 @@ var PermanentMutationObserver = class extends MutationObserver {
       if (nextTarget && !nextTarget.isEqualNode(this.target)) {
         this.target && this.disconnect();
         this.target = nextTarget;
-        this.observe(this.target, {
-          childList: true,
-          subtree: true
-        });
+        this.observe(this.target, opts);
       }
     }).observe(document.body, {
       childList: true,
@@ -455,9 +455,6 @@ var getTracksFromUri = _.cond([
   [URI3.isPlaylistV1OrV2, getTracksFromPlaylist]
 ]);
 
-// extensions/star-ratings-2/dropdown.tsx
-import { range } from "https://esm.sh/fp-ts/lib/ReadonlyNonEmptyArray";
-
 // extensions/star-ratings-2/ratings.ts
 import { array as ar, function as f } from "https://esm.sh/fp-ts";
 
@@ -593,7 +590,7 @@ var RatingButton = ({ i, uri }) => /* @__PURE__ */ React2.createElement(
     onClick: () => toggleRating(uri, i)
   }
 );
-var Dropdown = ({ uri }) => /* @__PURE__ */ React2.createElement("div", { className: "rating-dropdown" }, range(1, 5).map((i) => /* @__PURE__ */ React2.createElement(RatingButton, { i, uri })));
+var Dropdown = ({ uri }) => /* @__PURE__ */ React2.createElement("div", { className: "rating-dropdown" }, _.range(1, 6).map((i) => /* @__PURE__ */ React2.createElement(RatingButton, { i, uri })));
 
 // extensions/star-ratings-2/controls.tsx
 var { URI: URI5, Tippy } = Spicetify;
@@ -763,12 +760,3 @@ onSongChanged((state) => {
 });
 new PermanentMutationObserver("main", () => updateTrackListControls());
 onHistoryChanged(_.overSome([URI7.isAlbum, URI7.isArtist, URI7.isPlaylistV1OrV2]), (uri) => updateCollectionControls(uri));
-(async () => {
-    if (!document.getElementById("star-ratings-2-css")) {
-        const el = document.createElement("style")
-        el.id = "star-ratings-2-css"
-        
-        el.textContent = "/* extensions/star-ratings-2/assets/styles.css */\nbutton.rating-1 svg {\n  fill: #ed5564 !important;\n}\nbutton.rating-2 svg {\n  fill: #ffce54 !important;\n}\nbutton.rating-3 svg {\n  fill: #a0d568 !important;\n}\nbutton.rating-4 svg {\n  fill: #4fc1e8 !important;\n}\nbutton.rating-5 svg {\n  fill: #ac92eb !important;\n}\n"
-        document.head.appendChild(el)
-    }
-})()
