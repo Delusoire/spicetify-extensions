@@ -50,7 +50,7 @@ var CONFIG = {
 {
   const url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/token.get");
   url.searchParams.append("app_id", "web-desktop-app-v1.0");
-  fetch(url, { headers: { ...headers, cookie: "" } }).then((res) => res.json()).then((res) => {
+  Spicetify.CosmosAsync.get(url.toString(), void 0, headers).then((res) => {
     if (res.message.header.status_code === 200 && res.message.body.user_token) {
       CONFIG.musixmatchToken = res.message.body.user_token;
     } else {
@@ -124,7 +124,7 @@ var fetchMxmMacroSubtitlesGet = async (uri, title, artist, album, durationS) => 
   url.searchParams.append("q_duration", encodeURIComponent(durationS));
   url.searchParams.append("f_subtitle_length", encodeURIComponent(Math.floor(durationS)));
   url.searchParams.append("usertoken", CONFIG.musixmatchToken);
-  const res = await fetch(url, { headers }).then((res2) => res2.json());
+  const res = await Spicetify.CosmosAsync.get(url.toString(), void 0, headers);
   const {
     "track.lyrics.get": trackLyricsGet,
     "track.snippet.get": trackSnippetGet,
@@ -150,7 +150,7 @@ var fetchMxmTrackRichSyncGet = async (commonTrackId, trackLength) => {
   url.searchParams.append("q_duration", encodeURIComponent(trackLength));
   url.searchParams.append("commontrack_id", encodeURIComponent(commonTrackId));
   url.searchParams.append("usertoken", CONFIG.musixmatchToken);
-  const res = await fetch(url, { headers }).then((res2) => res2.json());
+  const res = await Spicetify.CosmosAsync.get(url.toString(), void 0, headers);
   return JSON.parse(res.message.body.richsync.richsync_body);
 };
 
