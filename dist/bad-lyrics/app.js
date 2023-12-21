@@ -542,7 +542,7 @@ var AnimatedText = class extends LitElement {
     if (0 <= rsp && rsp <= 1) {
       const container = document.querySelector("div.main-nowPlayingView-lyricsContent.injected");
       if (container) {
-        container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "auto" });
+        container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "smooth" });
       }
     }
   }
