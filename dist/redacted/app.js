@@ -385,7 +385,6 @@ import { Task } from "https://esm.sh/@lit/task";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { when } from "https://esm.sh/lit/directives/when.js";
 import UnitBezier from "https://esm.sh/@mapbox/unitbezier";
-var sprineState = { hasChanged: (s) => !s.isInEquilibrium() };
 var bezierToInterpolator = (p1x, p1y, p2x, p2y) => {
   const bezier = new UnitBezier(p1x, p1y, p2x, p2y);
   return (x) => bezier.solve(x);
@@ -411,16 +410,16 @@ var LyricsContainer = class extends LitElement {
     return this.lyricsTask.render({
       pending: () => {
         this.hasLyrics = false;
-        return html`<div class="lyrics_++-container-fetching">Fetching Lyrics...</div>`;
+        return html`<div class="better_lyrics-container-fetching">Fetching Lyrics...</div>`;
       },
       complete: (lyrics) => {
         const wordSynced = lyrics?.wordSynced;
         if (!wordSynced) {
           this.hasLyrics = false;
-          return html`<div class="lyrics_++-container-no_lyrics">No Lyrics</div>`;
+          return html`<div class="better_lyrics-container-no_lyrics">No Lyrics</div>`;
         }
         this.hasLyrics = true;
-        return html`<div class="lyrics_++-container">
+        return html`<div class="better_lyrics-container">
                     <animated-text-container
                         relativeScaledProgress=${this.scaledProgress}
                         .text=${wordSynced.part}
@@ -429,7 +428,7 @@ var LyricsContainer = class extends LitElement {
       },
       error: () => {
         this.hasLyrics = false;
-        return html`<div class="lyrics_++-container-error">Error</div>`;
+        return html`<div class="better_lyrics-container-error">Error</div>`;
       }
     });
   }
@@ -454,6 +453,9 @@ var AnimatedTextContainer = class extends LitElement {
     this.tsr = 0;
     this.ter = 1;
   }
+  calculateRSPForPart(part) {
+    return (this.relativeScaledProgress - part.tsr) / (part.ter - part.tsr);
+  }
   render() {
     return html`<div class="animated-text-container">
             ${map(
@@ -461,13 +463,13 @@ var AnimatedTextContainer = class extends LitElement {
       (part) => when(
         Array.isArray(part.part),
         () => html`<animated-text-container
-                            relativeScaledProgress=${(this.relativeScaledProgress - part.tsr) / (part.ter - part.tsr)}
+                            relativeScaledProgress=${this.calculateRSPForPart(part)}
                             .text=${part.part}
                             tsr=${part.tsr}
                             ter=${part.ter}
                         />`,
         () => html`<animated-text
-                            relativeScaledProgress=${(this.relativeScaledProgress - part.tsr) / (part.ter - part.tsr)}
+                            relativeScaledProgress=${this.calculateRSPForPart(part)}
                             text=${part.part}
                             tsr=${part.tsr}
                             ter=${part.ter}
@@ -513,27 +515,23 @@ var AnimatedText = class extends LitElement {
       this.glowSprine.updateEquilibrium(relativeTime);
       this.style.setProperty("--gradient-progress", `${100 * relativeTime}%`);
       changedProperties.delete("relativeScaledProgress");
-    }
-    if (changedProperties.has("scaleSprine")) {
-      const scale = this.scaleSprine.current;
-      this.style.scale = scale.toString();
-      changedProperties.delete("scaleSprine");
-    }
-    if (changedProperties.has("opacitySprine")) {
-      const opacity = this.opacitySprine.current;
-      this.style.opacity = opacity.toString();
-      changedProperties.delete("opacitySprine");
-    }
-    if (changedProperties.has("yOffsetSprine")) {
-      const yOffset = this.yOffsetSprine.current;
-      this.style.transform = `translateY(calc(0.25rem *${yOffset}))`;
-      changedProperties.delete("yOffsetSprine");
-    }
-    if (changedProperties.has("glowSprine")) {
-      const glow = this.glowSprine.current;
-      this.style.setProperty("--text-shadow-opacity", `${100 * glow}%`);
-      this.style.setProperty("--text-shadow-blur-radius", `${glow}px`);
-      changedProperties.delete("glowSprine");
+      if (!this.scaleSprine.isInEquilibrium()) {
+        const scale = this.scaleSprine.current;
+        this.style.scale = scale.toString();
+      }
+      if (!this.opacitySprine.isInEquilibrium()) {
+        const opacity = this.opacitySprine.current;
+        this.style.opacity = opacity.toString();
+      }
+      if (!this.yOffsetSprine.isInEquilibrium()) {
+        const yOffset = this.yOffsetSprine.current;
+        this.style.transform = `translateY(calc(0.25rem *${yOffset}))`;
+      }
+      if (!this.glowSprine.isInEquilibrium()) {
+        const glow = this.glowSprine.current;
+        this.style.setProperty("--text-shadow-opacity", `${100 * glow}%`);
+        this.style.setProperty("--text-shadow-blur-radius", `${glow}px`);
+      }
     }
     return Boolean(changedProperties.size);
   }
@@ -543,18 +541,6 @@ var AnimatedText = class extends LitElement {
         >`;
   }
 };
-__decorateClass([
-  state(sprineState)
-], AnimatedText.prototype, "scaleSprine", 2);
-__decorateClass([
-  state(sprineState)
-], AnimatedText.prototype, "opacitySprine", 2);
-__decorateClass([
-  state(sprineState)
-], AnimatedText.prototype, "yOffsetSprine", 2);
-__decorateClass([
-  state(sprineState)
-], AnimatedText.prototype, "glowSprine", 2);
 __decorateClass([
   property({ type: Number })
 ], AnimatedText.prototype, "relativeScaledProgress", 2);
