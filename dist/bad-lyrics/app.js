@@ -10,7 +10,7 @@ var __decorateClass = (decorators, target, key, kind) => {
   return result;
 };
 
-// extensions/redacted/app.ts
+// extensions/bad-lyrics/app.ts
 import { render } from "https://esm.sh/lit";
 
 // shared/util.ts
@@ -44,7 +44,7 @@ import { default as ld } from "https://esm.sh/lodash";
 import { default as ld_fp } from "https://esm.sh/lodash/fp";
 var _ = ld;
 
-// extensions/redacted/Services/LyricsProvider.ts
+// extensions/bad-lyrics/utils/LyricsProvider.ts
 var headers = {
   authority: "apic-desktop.musixmatch.com",
   cookie: "x-mxm-token-guid="
@@ -155,7 +155,7 @@ var fetchMxmTrackRichSyncGet = async (commonTrackId, trackLength) => {
   return JSON.parse(res.message.body.richsync.richsync_body);
 };
 
-// extensions/redacted/Services/Song.ts
+// extensions/bad-lyrics/utils/Song.ts
 var Song = class {
   constructor(opts) {
     this.timestamp = 0;
@@ -209,7 +209,7 @@ new PermanentMutationObserver("main", () => {
   });
 });
 
-// extensions/redacted/Services/PlayerW.ts
+// extensions/bad-lyrics/utils/PlayerW.ts
 import { Subject, animationFrameScheduler, asyncScheduler } from "https://esm.sh/rxjs";
 var { Player: Player2 } = Spicetify;
 var { PlayerAPI: PlayerAPI3 } = Spicetify.Platform;
@@ -291,11 +291,15 @@ var PlayerW = new class {
   }
 }();
 
-// extensions/redacted/components.ts
+// extensions/bad-lyrics/components.ts
+import { Task } from "https://esm.sh/@lit/task";
+import { hermite } from "https://esm.sh/@thi.ng/ramp";
 import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
+import { map } from "https://esm.sh/lit/directives/map.js";
+import { when } from "https://esm.sh/lit/directives/when.js";
 
-// extensions/redacted/Packages/Spring.ts
+// extensions/bad-lyrics/pkgs/spring.ts
 var TAU = Math.PI * 2;
 var SLEEPING_EPSILON = 1e-3;
 var Spring = class {
@@ -362,7 +366,7 @@ var Spring = class {
   }
 };
 
-// extensions/redacted/Packages/Sprine.ts
+// extensions/bad-lyrics/pkgs/sprine.ts
 var Sprine = class extends Spring {
   constructor(position, dampingRatio, frequency, interpolate) {
     super(position, dampingRatio, frequency);
@@ -381,11 +385,7 @@ var Sprine = class extends Spring {
   }
 };
 
-// extensions/redacted/components.ts
-import { Task } from "https://esm.sh/@lit/task";
-import { map } from "https://esm.sh/lit/directives/map.js";
-import { when } from "https://esm.sh/lit/directives/when.js";
-import { hermite } from "https://esm.sh/@thi.ng/ramp";
+// extensions/bad-lyrics/components.ts
 var createInterpolator = (...stops) => {
   const spline = hermite(stops);
   return (t) => spline.at(t);
@@ -572,7 +572,7 @@ AnimatedText = __decorateClass([
   customElement("animated-text")
 ], AnimatedText);
 
-// extensions/redacted/app.ts
+// extensions/bad-lyrics/app.ts
 new PermanentMutationObserver("aside", () => {
   const lyricsContainer = document.querySelector(".main-nowPlayingView-lyricsContent");
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))
