@@ -274,10 +274,14 @@ var PlayerW = new class {
     );
   }
   startTimestepping() {
+    let oldScaledProgress = Spicetify.Player.getProgressPercent();
     animationFrameScheduler.schedule(
       function(self) {
         self.scaledProgress = Spicetify.Player.getProgressPercent();
-        self.scaledProgressChangedSubject.next(self.scaledProgress);
+        if (self.scaledProgress !== oldScaledProgress) {
+          self.scaledProgressChangedSubject.next(self.scaledProgress);
+        }
+        oldScaledProgress = self.scaledProgress;
         this.schedule(self);
       },
       void 0,

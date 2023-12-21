@@ -23,7 +23,6 @@ var PermanentMutationObserver = class extends MutationObserver {
     new MutationObserver(() => {
       const nextTarget = document.querySelector(targetSelector);
       if (nextTarget && !nextTarget.isEqualNode(this.target)) {
-        console.log("nextTarget:", nextTarget);
         this.target && this.disconnect();
         this.target = nextTarget;
         this.observe(this.target, opts);
