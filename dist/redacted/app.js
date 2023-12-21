@@ -541,7 +541,9 @@ var AnimatedText = class extends LitElement {
     }
     if (0 <= rsp && rsp <= 1) {
       this.scrollIntoView({
-        behavior: "smooth"
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest"
       });
     }
   }
