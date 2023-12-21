@@ -572,3 +572,4 @@ new PermanentMutationObserver("main", () => {
   );
   render(ourLyricsContainer, lyricsContainer);
 });
+debugger;
