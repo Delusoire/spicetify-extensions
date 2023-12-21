@@ -90,7 +90,7 @@ var findLyrics = async (info) => {
         const part = rsLine.l.map((word, index, words) => {
           const part2 = word.c;
           const tsr2 = word.o / duration;
-          const ter2 = words[index + 1]?.o / 1e3 || 1;
+          const ter2 = words[index + 1]?.o / duration || 1;
           return { tsr: tsr2, ter: ter2, part: part2 };
         });
         return { tsr, ter, part };
