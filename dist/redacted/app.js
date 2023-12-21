@@ -460,22 +460,36 @@ var AnimatedTextContainer = class extends LitElement {
   constructor() {
     super(...arguments);
     this.text = [];
+    this.tsrAbsolute = 0;
     this.tsr = 0;
     this.ter = 1;
   }
   updateProgress(rsp) {
-    const calculateRSPForChild = (part) => (rsp - part.tsr) / (part.ter - part.tsr);
+    const calculateRSPForChild = (child) => (rsp - child.tsr) / (child.ter - child.tsr);
     this.childs.forEach((child) => {
       child.updateProgress(calculateRSPForChild(child));
     });
+  }
+  calculateTSRAForPart(part) {
+    return this.tsrAbsolute + part.tsr * (this.ter - this.tsr);
   }
   render() {
     return html`${map(
       this.text,
       (part) => when(
         Array.isArray(part.part),
-        () => html`<animated-text-container .text=${part.part} tsr=${part.tsr} ter=${part.ter} />`,
-        () => html`<animated-text text=${part.part} tsr=${part.tsr} ter=${part.ter} />`
+        () => html`<animated-text-container
+                            .text=${part.part}
+                            tsrAbsolute=${this.calculateTSRAForPart(part)}
+                            tsr=${part.tsr}
+                            ter=${part.ter}
+                        />`,
+        () => html`<animated-text
+                            text=${part.part}
+                            tsrAbsolute=${this.calculateTSRAForPart(part)}
+                            tsr=${part.tsr}
+                            ter=${part.ter}
+                        />`
       )
     )}<br />`;
   }
@@ -483,6 +497,9 @@ var AnimatedTextContainer = class extends LitElement {
 __decorateClass([
   property({ type: Array })
 ], AnimatedTextContainer.prototype, "text", 2);
+__decorateClass([
+  property({ type: Number })
+], AnimatedTextContainer.prototype, "tsrAbsolute", 2);
 __decorateClass([
   property({ type: Number })
 ], AnimatedTextContainer.prototype, "tsr", 2);
@@ -500,6 +517,7 @@ var AnimatedText = class extends LitElement {
   constructor(interpolators = DefaultInterpolators) {
     super();
     this.text = "";
+    this.tsrAbsolute = 0;
     this.tsr = 0;
     this.ter = 1;
     this.scaleSprine = new Sprine(0, 0.6, 0.7, interpolators.scale);
@@ -535,12 +553,17 @@ var AnimatedText = class extends LitElement {
     }
   }
   render() {
-    return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}>${this.text}</span>`;
+    return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}
+            >${this.text}</span
+        >`;
   }
 };
 __decorateClass([
   property()
 ], AnimatedText.prototype, "text", 2);
+__decorateClass([
+  property({ type: Number })
+], AnimatedText.prototype, "tsrAbsolute", 2);
 __decorateClass([
   property({ type: Number })
 ], AnimatedText.prototype, "tsr", 2);
