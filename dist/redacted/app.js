@@ -578,6 +578,7 @@ new PermanentMutationObserver("main", () => {
   PlayerW.scaledProgressChangedSubject.subscribe(
     (scaledProgress) => ourLyricsContainer.scaledProgress = scaledProgress
   );
+  lyricsContainer.innerHTML = "";
   render(ourLyricsContainer, lyricsContainer);
 });
 debugger;
