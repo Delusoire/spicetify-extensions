@@ -434,7 +434,9 @@ var LyricsContainer = class extends LitElement {
           return html`<div class="noLyrics">No Lyrics</div>`;
         }
         this.hasLyrics = true;
-        return html` <animated-text-container .text=${wordSynced.part}></animated-text-container> `;
+        return html`
+                    <animated-text-container style="display: unset;" .text=${wordSynced.part}></animated-text-container>
+                `;
       },
       error: () => {
         this.hasLyrics = false;
@@ -443,6 +445,11 @@ var LyricsContainer = class extends LitElement {
     });
   }
 };
+LyricsContainer.styles = css`
+        :host {
+            container-type: size;
+        }
+    `;
 __decorateClass([
   property({ attribute: false })
 ], LyricsContainer.prototype, "song", 2);
@@ -496,7 +503,14 @@ var AnimatedTextContainer = class extends LitElement {
 };
 AnimatedTextContainer.styles = css`
         :host {
+            margin: 0;
+            padding: 0;
+            border: 0;
             display: flex;
+            font-family: BeautifulLyrics;
+            margin-top: 1cqw;
+            margin-bottom: 1cqw;
+            flex-wrap: wrap;
         }
     `;
 __decorateClass([
@@ -560,6 +574,22 @@ var AnimatedText = class extends LitElement {
         >`;
   }
 };
+AnimatedText.styles = css`
+        :host {
+            cursor: pointer;
+            --gradient-angle: 90deg;
+            --gradient-color: 255;
+            --gradient-color-alpha: 0.5;
+            --gradient-color-alpha-active: 0.85;
+            --gradient-offset: 0%;
+            position: relative;
+            margin: -0.5px -0.75px -0.5px -0.75px;
+            text-shadow: 0 0 var(--text-blur, 0)
+                rgba(var(--gradient-color), var(--gradient-color), var(--gradient-color), var(--gradient-color-alpha));
+            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+        }
+    `;
 __decorateClass([
   property()
 ], AnimatedText.prototype, "text", 2);
