@@ -566,6 +566,7 @@ new PermanentMutationObserver("main", () => {
     return;
   lyricsContainer.classList.add("injected");
   const ourLyricsContainer = new LyricsContainer();
+  ourLyricsContainer.song = PlayerW.GetSong() ?? null;
   PlayerW.songChangedSubject.subscribe((song) => ourLyricsContainer.song = song ?? null);
   PlayerW.scaledProgressChangedSubject.subscribe(
     (scaledProgress) => ourLyricsContainer.scaledProgress = scaledProgress
