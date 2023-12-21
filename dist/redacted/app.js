@@ -384,7 +384,14 @@ var Sprine = class extends Spring {
 import { Task } from "https://esm.sh/@lit/task";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { when } from "https://esm.sh/lit/directives/when.js";
+import UnitBezier from "https://esm.sh/@mapbox/unitbezier";
 var sprineState = { hasChanged: (s) => !s.isInEquilibrium() };
+var DefaultInterpolators = {
+  scale: new UnitBezier(0.37, 0, 0.47, 1.4).solve,
+  opacity: new UnitBezier(0.37, 0, 0.47, 1.4).solve,
+  yOffset: new UnitBezier(0.37, 0, 0.47, 1.4).solve,
+  glow: new UnitBezier(0, 1.7, 0.07, 1).solve
+};
 var LyricsContainer = class extends LitElement {
   constructor() {
     super(...arguments);
@@ -478,7 +485,7 @@ AnimatedTextContainer = __decorateClass([
   customElement("animated-text-container")
 ], AnimatedTextContainer);
 var AnimatedText = class extends LitElement {
-  constructor(interpolators) {
+  constructor(interpolators = DefaultInterpolators) {
     super();
     this.relativeScaledProgress = 0;
     this.text = "";
@@ -508,7 +515,7 @@ var AnimatedText = class extends LitElement {
     }
     if (changedProperties.has("yOffsetSprine")) {
       const yOffset = this.yOffsetSprine.current;
-      this.style.transform = `translateY(${yOffset})`;
+      this.style.transform = `translateY(calc(0.25rem *${yOffset}))`;
       changedProperties.delete("yOffsetSprine");
     }
     if (changedProperties.has("glowSprine")) {
