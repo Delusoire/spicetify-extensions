@@ -39,6 +39,11 @@ var PermanentMutationObserver = class extends MutationObserver {
 var mainElement = document.querySelector("main");
 var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
+
 // extensions/redacted/Services/LyricsProvider.ts
 var headers = {
   authority: "apic-desktop.musixmatch.com",
@@ -50,7 +55,7 @@ var CONFIG = {
 {
   const url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/token.get");
   url.searchParams.append("app_id", "web-desktop-app-v1.0");
-  Spicetify.CosmosAsync.get(url.toString(), void 0, headers).then((res) => {
+  Spicetify.CosmosAsync.get(url.toString(), void 0, _.omit(headers, "cookie")).then((res) => {
     if (res.message.header.status_code === 200 && res.message.body.user_token) {
       CONFIG.musixmatchToken = res.message.body.user_token;
     } else {
