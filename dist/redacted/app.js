@@ -426,6 +426,10 @@ var LyricsContainer = class extends LitElement {
                         .text=${wordSynced.part}
                     ></animated-text-container>
                 </div>`;
+      },
+      error: () => {
+        this.hasLyrics = false;
+        return html`<div class="lyrics_++-container-error">Error</div>`;
       }
     });
   }
