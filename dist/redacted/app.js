@@ -385,16 +385,26 @@ var Sprine = class extends Spring {
 import { Task } from "https://esm.sh/@lit/task";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { when } from "https://esm.sh/lit/directives/when.js";
-import UnitBezier from "https://esm.sh/@mapbox/unitbezier";
-var bezierToInterpolator = (p1x, p1y, p2x, p2y) => {
-  const bezier = new UnitBezier(p1x, p1y, p2x, p2y);
-  return (x) => bezier.solve(x);
+import { hermite } from "https://esm.sh/@thi.ng/ramp";
+var createInterpolator = (...stops) => {
+  const spline = hermite(stops);
+  return (t) => spline.at(t);
 };
 var DefaultInterpolators = {
-  scale: bezierToInterpolator(0.37, 0, 0.47, 1.4),
-  opacity: bezierToInterpolator(0.37, 0, 0.47, 1.4),
-  yOffset: bezierToInterpolator(0.37, 0, 0.47, 1.4),
-  glow: bezierToInterpolator(0, 1.7, 0.07, 1)
+  scale: createInterpolator([0, 0.7], [1, 1.3], [1.1, 1]),
+  opacity: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8]),
+  yOffset: createInterpolator(
+    [0, 0],
+    [0.2, 0.03],
+    [0.3, 0.07],
+    [0.4, 0.14],
+    [0.5, 0.2],
+    [0.7, 0.25],
+    [0.8, 0.27],
+    [0.9, 0.13],
+    [1, 0]
+  ),
+  glow: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8])
 };
 var LyricsContainer = class extends LitElement {
   constructor() {
@@ -539,7 +549,7 @@ AnimatedText = __decorateClass([
 ], AnimatedText);
 
 // extensions/redacted/app.ts
-new PermanentMutationObserver("main", () => {
+new PermanentMutationObserver("aside", () => {
   const lyricsContainer = document.querySelector(".main-nowPlayingView-lyricsContent");
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))
     return;
