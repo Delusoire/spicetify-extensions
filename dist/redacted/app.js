@@ -523,7 +523,10 @@ var AnimatedText = class extends LitElement {
     }
     if (!this.yOffsetSprine.isInEquilibrium()) {
       const yOffset = this.yOffsetSprine.current;
-      this.style.transform = `translateY(calc(0.25rem *${yOffset}))`;
+      if (0 <= rsp && rsp <= 1 && Math.abs(yOffset) < 1e-3) {
+        debugger;
+      }
+      this.style.transform = `translateY(${yOffset}rem))`;
     }
     if (!this.glowSprine.isInEquilibrium()) {
       const glow = this.glowSprine.current;
