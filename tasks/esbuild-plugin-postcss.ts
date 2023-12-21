@@ -113,7 +113,7 @@ const getFilesRecursive = (directory: string): string[] =>
         return filepaths.concat(newFiles)
     }, [] as string[])
 
-let idCounter = 0
+// let idCounter = 0
 
 /**
  * Generates an id that is guaranteed to be unique for the Node.JS instance.

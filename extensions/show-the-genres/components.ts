@@ -69,7 +69,7 @@ class _ArtistGenreContainer extends LitElement {
                 }
             </style>
             <div className="main-entityHeader-detailsText genre-container">
-                ${this.name && html`<span>${this.name} : </span>`} ${join(artistGenreLinks, () => divider)}
+                ${this.name && html`<span>${this.name} : </span>`} ${join(artistGenreLinks, divider)}
             </div>`
     }
 }

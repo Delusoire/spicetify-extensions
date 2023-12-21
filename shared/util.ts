@@ -31,17 +31,21 @@ export const normalizeStr = (str: string) =>
 export class PermanentMutationObserver extends MutationObserver {
     target: HTMLElement | null = null
 
-    constructor(targetSelector: string, callback: MutationCallback) {
+    constructor(
+        targetSelector: string,
+        callback: MutationCallback,
+        opts: MutationObserverInit = {
+            childList: true,
+            subtree: true,
+        },
+    ) {
         super(callback)
         new MutationObserver(() => {
             const nextTarget = document.querySelector<HTMLElement>(targetSelector)
             if (nextTarget && !nextTarget.isEqualNode(this.target)) {
                 this.target && this.disconnect()
                 this.target = nextTarget
-                this.observe(this.target, {
-                    childList: true,
-                    subtree: true,
-                })
+                this.observe(this.target, opts)
             }
         }).observe(document.body, {
             childList: true,

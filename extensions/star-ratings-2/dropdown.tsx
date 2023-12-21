@@ -1,9 +1,8 @@
-import { range } from "https://esm.sh/fp-ts/lib/ReadonlyNonEmptyArray"
-
 import { CheckedPlaylistButtonIcon, curationButtonClass } from "../../shared/modules.ts"
 import { SpotifyURI } from "../../shared/util.ts"
 
 import { toggleRating } from "./ratings.ts"
+import { _ } from "../../shared/deps.ts"
 
 const { React } = Spicetify
 
@@ -25,7 +24,7 @@ const RatingButton = ({ i, uri }: { i: number; uri: SpotifyURI }) => (
 
 export const Dropdown = ({ uri }: { uri: SpotifyURI }) => (
     <div className="rating-dropdown">
-        {range(1, 5).map(i => (
+        {_.range(1, 6).map(i => (
             <RatingButton i={i} uri={uri} />
         ))}
     </div>

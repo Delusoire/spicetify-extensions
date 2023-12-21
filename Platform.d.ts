@@ -106,7 +106,59 @@ declare namespace Spicetify.Platform {
             uid?: string
         }
 
-        type TrackMetadata = Record<string, string>
+        //! Not complete
+        type TrackMetadata = {
+            [key: string]: string | undefined
+            album_artist_name: string
+            album_disc_count: string
+            album_disc_number: string
+            album_title: string
+            album_track_count: string
+            album_track_number: string
+            album_uri: string
+
+            artist_name: string
+            artist_uri: string
+
+            "canvas.artist.avatar": string
+            "canvas.artist.name": string
+            "canvas.artist.uri": string
+            "canvas.canvasUri": string
+            "canvas.entityUri": string
+            "canvas.explicit": string
+            "canvas.fileId": string
+            "canvas.id": string
+            "canvas.type": string
+            "canvas.uploadedBy": string
+            "canvas.url": string
+
+            "collection.can_add": string
+            "collection.can_ban": string
+            "collection.in_collection": string
+            "collection.is_banned": string
+
+            is_local?: string
+            local_file_path?: string
+            local_file_size?: string
+
+            context_uri: string
+            duration: string
+            entity_uri: string
+            has_lyrics: string
+
+            image_large_url: string
+            image_small_url: string
+            image_url: string
+            image_xlarge_url: string
+
+            interaction_id: string
+            iteration: string
+            marked_for_download: string
+            page_instance_id: string
+            popularity: string
+            title: string
+            track_player: string
+        }
 
         type InternalQueueTrack = {
             contextTrack: {
@@ -363,9 +415,11 @@ declare namespace Spicetify.Platform {
         }
 
         const location: Location
+        const entries: Array<Location>
 
         function listen(callback: (location: Location, action: Action) => void): () => void
         function push(location: Partial<Location> | string): void
+        function replace(location: Partial<Location> | string): void
 
         function goBack(): void
         function goForward(): void

@@ -2,7 +2,10 @@
 var { URI } = Spicetify;
 var { PlayerAPI } = Spicetify.Platform;
 var PermanentMutationObserver = class extends MutationObserver {
-  constructor(targetSelector, callback) {
+  constructor(targetSelector, callback, opts = {
+    childList: true,
+    subtree: true
+  }) {
     super(callback);
     this.target = null;
     new MutationObserver(() => {
@@ -10,10 +13,7 @@ var PermanentMutationObserver = class extends MutationObserver {
       if (nextTarget && !nextTarget.isEqualNode(this.target)) {
         this.target && this.disconnect();
         this.target = nextTarget;
-        this.observe(this.target, {
-          childList: true,
-          subtree: true
-        });
+        this.observe(this.target, opts);
       }
     }).observe(document.body, {
       childList: true,
