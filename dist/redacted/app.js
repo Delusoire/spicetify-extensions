@@ -447,7 +447,6 @@ var LyricsContainer = class extends LitElement {
 };
 LyricsContainer.styles = css`
         :host {
-            container-type: size;
         }
     `;
 __decorateClass([
@@ -503,14 +502,6 @@ var AnimatedTextContainer = class extends LitElement {
 };
 AnimatedTextContainer.styles = css`
         :host {
-            margin: 0;
-            padding: 0;
-            border: 0;
-            display: flex;
-            font-family: BeautifulLyrics;
-            margin-top: 1cqw;
-            margin-bottom: 1cqw;
-            flex-wrap: wrap;
         }
     `;
 __decorateClass([
@@ -545,27 +536,11 @@ var AnimatedText = class extends LitElement {
     this.glowSprine = new Sprine(0, 0.5, 1, interpolators.glow);
   }
   updateProgress(rsp) {
-    this.scaleSprine.updateEquilibrium(rsp);
-    this.opacitySprine.updateEquilibrium(rsp);
-    this.yOffsetSprine.updateEquilibrium(rsp);
-    this.glowSprine.updateEquilibrium(rsp);
-    this.style.setProperty("--gradient-progress", `${100 * rsp}%`);
-    if (!this.scaleSprine.isInEquilibrium()) {
-      const scale = this.scaleSprine.current;
-      this.style.scale = scale.toString();
+    if (rsp > 1) {
+      this.style.color = "var(--lyrics-color-passed)";
     }
-    if (!this.opacitySprine.isInEquilibrium()) {
-      const opacity = this.opacitySprine.current;
-      this.style.opacity = opacity.toString();
-    }
-    if (!this.yOffsetSprine.isInEquilibrium()) {
-      const yOffset = this.yOffsetSprine.current;
-      this.style.transform = `translateY(${yOffset}rem))`;
-    }
-    if (!this.glowSprine.isInEquilibrium()) {
-      const glow = this.glowSprine.current;
-      this.style.setProperty("--text-shadow-opacity", `${100 * glow}%`);
-      this.style.setProperty("--text-shadow-blur-radius", `${glow}px`);
+    if (rsp < 0) {
+      this.style.color = "var(--lyrics-color-inactive)";
     }
   }
   render() {
@@ -576,18 +551,6 @@ var AnimatedText = class extends LitElement {
 };
 AnimatedText.styles = css`
         :host {
-            cursor: pointer;
-            --gradient-angle: 90deg;
-            --gradient-color: 255;
-            --gradient-color-alpha: 0.5;
-            --gradient-color-alpha-active: 0.85;
-            --gradient-offset: 0%;
-            position: relative;
-            margin: -0.5px -0.75px -0.5px -0.75px;
-            text-shadow: 0 0 var(--text-blur, 0)
-                rgba(var(--gradient-color), var(--gradient-color), var(--gradient-color), var(--gradient-color-alpha));
-            -webkit-text-fill-color: transparent;
-            -webkit-background-clip: text;
         }
     `;
 __decorateClass([
