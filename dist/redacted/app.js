@@ -496,13 +496,16 @@ var AnimatedText = class extends LitElement {
     this.yOffsetSprine = new Sprine(0, 0.4, 1.25, interpolators.yOffset);
     this.glowSprine = new Sprine(0, 0.5, 1, interpolators.glow);
   }
-  updateVisuals(relativeTime) {
-    this.scaleSprine.updateEquilibrium(relativeTime);
-    this.opacitySprine.updateEquilibrium(relativeTime);
-    this.yOffsetSprine.updateEquilibrium(relativeTime);
-    this.glowSprine.updateEquilibrium(relativeTime);
-  }
   shouldUpdate(changedProperties) {
+    if (changedProperties.has("relativeScaledProgress")) {
+      const relativeTime = this.relativeScaledProgress;
+      this.scaleSprine.updateEquilibrium(relativeTime);
+      this.opacitySprine.updateEquilibrium(relativeTime);
+      this.yOffsetSprine.updateEquilibrium(relativeTime);
+      this.glowSprine.updateEquilibrium(relativeTime);
+      this.style.setProperty("--gradient-progress", `${100 * relativeTime}%`);
+      changedProperties.delete("relativeScaledProgress");
+    }
     if (changedProperties.has("scaleSprine")) {
       const scale = this.scaleSprine.current;
       this.style.scale = scale.toString();
@@ -523,11 +526,6 @@ var AnimatedText = class extends LitElement {
       this.style.setProperty("--text-shadow-opacity", `${100 * glow}%`);
       this.style.setProperty("--text-shadow-blur-radius", `${glow}px`);
       changedProperties.delete("glowSprine");
-    }
-    if (changedProperties.has("relativeScaledProgress")) {
-      const relativeTime = this.relativeScaledProgress;
-      this.style.setProperty("--gradient-progress", `${100 * relativeTime}%`);
-      changedProperties.delete("relativeScaledProgress");
     }
     return Boolean(changedProperties.size);
   }
