@@ -503,6 +503,12 @@ var AnimatedText = class extends LitElement {
     this.yOffsetSprine.updateEquilibrium(rsp);
     this.glowSprine.updateEquilibrium(rsp);
     this.style.setProperty("--gradient-progress", `${100 * rsp}%`);
+    if (0 <= rsp && rsp <= 1) {
+      this.style.opacity = "0";
+    } else {
+      this.style.opacity = "1";
+    }
+    return;
     if (!this.scaleSprine.isInEquilibrium()) {
       const scale = this.scaleSprine.current;
       this.style.scale = scale.toString();
