@@ -450,7 +450,6 @@ var AnimatedTextContainer = class extends LitElement {
     this.text = [];
     this.tsr = 0;
     this.ter = 1;
-    this.childs = [];
   }
   shouldUpdate(changedProperties) {
     if (changedProperties.has("relativeScaledProgress")) {
@@ -497,6 +496,7 @@ __decorateClass([
 __decorateClass([
   property({ type: Number })
 ], AnimatedTextContainer.prototype, "ter", 2);
+// @ts-expect-error only has a getter
 __decorateClass([
   queryAll("*")
 ], AnimatedTextContainer.prototype, "childs", 2);
