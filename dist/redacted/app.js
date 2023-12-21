@@ -547,7 +547,7 @@ new PermanentMutationObserver("main", () => {
   const ourLyricsContainer = new LyricsContainer();
   ourLyricsContainer.song = PlayerW.GetSong() ?? null;
   PlayerW.songChangedSubject.subscribe((song) => ourLyricsContainer.song = song ?? null);
-  PlayerW.scaledProgressChangedSubject.subscribe(ourLyricsContainer.updateProgress);
+  PlayerW.scaledProgressChangedSubject.subscribe((progress) => ourLyricsContainer.updateProgress(progress));
   lyricsContainer.innerHTML = "";
   render(ourLyricsContainer, lyricsContainer);
 });
