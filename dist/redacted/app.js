@@ -455,10 +455,7 @@ var AnimatedTextContainer = class extends LitElement {
   }
   updateProgress(rsp) {
     const calculateRSPForChild = (part) => (rsp - part.tsr) / (part.ter - part.tsr);
-    if (Array.from(this.childs).length == 1) {
-      console.log(this.childs);
-    }
-    Array.from(this.childs).map((child) => {
+    this.childs.forEach((child) => {
       child.updateProgress(calculateRSPForChild(child));
     });
   }
