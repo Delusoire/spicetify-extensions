@@ -292,7 +292,7 @@ var PlayerW = new class {
 }();
 
 // extensions/redacted/components.ts
-import { LitElement, html } from "https://esm.sh/lit";
+import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
 
 // extensions/redacted/Packages/Spring.ts
@@ -494,6 +494,11 @@ var AnimatedTextContainer = class extends LitElement {
     )}<br />`;
   }
 };
+AnimatedTextContainer.styles = css`
+        :host {
+            display: flex;
+        }
+    `;
 __decorateClass([
   property({ type: Array })
 ], AnimatedTextContainer.prototype, "text", 2);
