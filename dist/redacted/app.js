@@ -391,20 +391,20 @@ var createInterpolator = (...stops) => {
   return (t) => spline.at(t);
 };
 var DefaultInterpolators = {
-  scale: createInterpolator([0, 0.7], [1, 1.3], [1.1, 1]),
-  opacity: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8]),
-  yOffset: createInterpolator(
-    [0, 0],
-    [0.2, 0.03],
-    [0.3, 0.07],
-    [0.4, 0.14],
-    [0.5, 0.2],
-    [0.7, 0.25],
-    [0.8, 0.27],
-    [0.9, 0.13],
-    [1, 0]
-  ),
-  glow: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8])
+  // scale: createInterpolator([0, 0.7], [1, 1.3], [1.1, 1]),
+  opacity: createInterpolator([0, 0], [0.3, 0.5], [1, 1], [1.2, 0.7])
+  // yOffset: createInterpolator(
+  //     [0, 0],
+  //     [0.2, 0.03],
+  //     [0.3, 0.07],
+  //     [0.4, 0.14],
+  //     [0.5, 0.2],
+  //     [0.7, 0.25],
+  //     [0.8, 0.27],
+  //     [0.9, 0.13],
+  //     [1, 0],
+  // ),
+  // glow: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8]),
 };
 var LyricsContainer = class extends LitElement {
   constructor() {
@@ -530,17 +530,14 @@ var AnimatedText = class extends LitElement {
     this.tsrAbsolute = 0;
     this.tsr = 0;
     this.ter = 1;
-    this.scaleSprine = new Sprine(0, 0.6, 0.7, interpolators.scale);
     this.opacitySprine = new Sprine(0, 0.5, 1, interpolators.opacity);
-    this.yOffsetSprine = new Sprine(0, 0.4, 1.25, interpolators.yOffset);
-    this.glowSprine = new Sprine(0, 0.5, 1, interpolators.glow);
   }
   updateProgress(rsp) {
-    if (rsp > 1) {
-      this.style.color = "var(--lyrics-color-passed)";
-    }
-    if (rsp < 0) {
-      this.style.color = "var(--lyrics-color-inactive)";
+    this.opacitySprine.updateEquilibrium(rsp);
+    if (!this.opacitySprine.isInEquilibrium()) {
+      const opacity = this.opacitySprine.current;
+      const i = 255 * opacity;
+      this.style.color = `rgb(${i}, ${i}, ${i})`;
     }
   }
   render() {
