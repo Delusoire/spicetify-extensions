@@ -456,7 +456,7 @@ var AnimatedTextContainer = class extends LitElement {
   updateProgress(rsp) {
     const calculateRSPForChild = (part) => (rsp - part.tsr) / (part.ter - part.tsr);
     this.childs.forEach((child) => {
-      child.updateProgress(calculateRSPForChild(child));
+      child.updateProgress?.(calculateRSPForChild(child));
     });
   }
   render() {
@@ -481,7 +481,7 @@ __decorateClass([
 ], AnimatedTextContainer.prototype, "ter", 2);
 // @ts-expect-error only has a getter
 __decorateClass([
-  queryAll("*")
+  queryAll("animated-text-container, animated-text")
 ], AnimatedTextContainer.prototype, "childs", 2);
 AnimatedTextContainer = __decorateClass([
   customElement("animated-text-container")

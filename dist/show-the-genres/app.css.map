@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../extensions/show-the-genres/assets/styles.css"],
+  "sourcesContent": [".main-nowPlayingWidget-trackInfo.main-trackInfo-container{grid-template:\"title title\" \"badges subtitle\" \"genres genres\"/auto 1fr auto}"],
+  "mappings": ";AAAA,CAAC,+BAA+B,CAAC;AAAyB,iBAAc,cAAc,kBAAkB,eAAe,CAAC,KAAK,IAAI;AAAI;",
+  "names": []
+}
