@@ -43,7 +43,6 @@ export class PermanentMutationObserver extends MutationObserver {
         new MutationObserver(() => {
             const nextTarget = document.querySelector<HTMLElement>(targetSelector)
             if (nextTarget && !nextTarget.isEqualNode(this.target)) {
-                console.log("nextTarget:", nextTarget)
                 this.target && this.disconnect()
                 this.target = nextTarget
                 this.observe(this.target, opts)

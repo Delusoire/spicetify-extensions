@@ -26,7 +26,6 @@ var PermanentMutationObserver = class extends MutationObserver {
     new MutationObserver(() => {
       const nextTarget = document.querySelector(targetSelector);
       if (nextTarget && !nextTarget.isEqualNode(this.target)) {
-        console.log("nextTarget:", nextTarget);
         this.target && this.disconnect();
         this.target = nextTarget;
         this.observe(this.target, opts);
@@ -290,7 +289,7 @@ var PlayerW = new class {
 
 // extensions/redacted/components.ts
 import { LitElement, html } from "https://esm.sh/lit";
-import { customElement, property, queryAll, state } from "https://esm.sh/lit/decorators.js";
+import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
 
 // extensions/redacted/Packages/Spring.ts
 var TAU = Math.PI * 2;
@@ -401,8 +400,12 @@ var LyricsContainer = class extends LitElement {
       task: ([song]) => song?.lyrics,
       args: () => [this.song]
     });
-    this.scaledProgress = 0;
     this.hasLyrics = false;
+  }
+  updateProgress(progress) {
+    if (!this.hasLyrics)
+      return;
+    this.firstContainer.updateProgress(progress);
   }
   render() {
     return this.lyricsTask.render({
@@ -417,12 +420,7 @@ var LyricsContainer = class extends LitElement {
           return html`<div class="noLyrics">No Lyrics</div>`;
         }
         this.hasLyrics = true;
-        return html`
-                    <animated-text-container
-                        relativeScaledProgress=${this.scaledProgress}
-                        .text=${wordSynced.part}
-                    ></animated-text-container>
-                `;
+        return html` <animated-text-container .text=${wordSynced.part}></animated-text-container> `;
       },
       error: () => {
         this.hasLyrics = false;
@@ -436,57 +434,38 @@ __decorateClass([
 ], LyricsContainer.prototype, "song", 2);
 __decorateClass([
   state()
-], LyricsContainer.prototype, "scaledProgress", 2);
-__decorateClass([
-  state()
 ], LyricsContainer.prototype, "hasLyrics", 2);
+// @ts-expect-error only has a getter
+__decorateClass([
+  query("animated-text-container")
+], LyricsContainer.prototype, "firstContainer", 2);
 LyricsContainer = __decorateClass([
   customElement("lyrics-container")
 ], LyricsContainer);
 var AnimatedTextContainer = class extends LitElement {
   constructor() {
     super(...arguments);
-    this.relativeScaledProgress = 0;
     this.text = [];
     this.tsr = 0;
     this.ter = 1;
   }
-  shouldUpdate(changedProperties) {
-    if (changedProperties.has("relativeScaledProgress")) {
-      Array.from(this.childs ?? 0).map((child) => {
-        child.relativeScaledProgress = this.calculateRSPForPart(child);
-      });
-      changedProperties.delete("relativeScaledProgress");
-    }
-    return Boolean(changedProperties.size);
-  }
-  calculateRSPForPart(part) {
-    return (this.relativeScaledProgress - part.tsr) / (part.ter - part.tsr);
+  updateProgress(rsp) {
+    const calculateRSPForChild = (part) => (rsp - part.tsr) / (part.ter - part.tsr);
+    Array.from(this.childs).map((child) => {
+      child.updateProgress(calculateRSPForChild(child));
+    });
   }
   render() {
     return html` ${map(
       this.text,
       (part) => when(
         Array.isArray(part.part),
-        () => html`<animated-text-container
-                        relativeScaledProgress=${this.calculateRSPForPart(part)}
-                        .text=${part.part}
-                        tsr=${part.tsr}
-                        ter=${part.ter}
-                    />`,
-        () => html`<animated-text
-                        relativeScaledProgress=${this.calculateRSPForPart(part)}
-                        text=${part.part}
-                        tsr=${part.tsr}
-                        ter=${part.ter}
-                    />`
+        () => html`<animated-text-container .text=${part.part} tsr=${part.tsr} ter=${part.ter} />`,
+        () => html`<animated-text text=${part.part} tsr=${part.tsr} ter=${part.ter} />`
       )
     )}`;
   }
 };
-__decorateClass([
-  property({ type: Number })
-], AnimatedTextContainer.prototype, "relativeScaledProgress", 2);
 __decorateClass([
   property({ type: Array })
 ], AnimatedTextContainer.prototype, "text", 2);
@@ -506,7 +485,6 @@ AnimatedTextContainer = __decorateClass([
 var AnimatedText = class extends LitElement {
   constructor(interpolators = DefaultInterpolators) {
     super();
-    this.relativeScaledProgress = 0;
     this.text = "";
     this.tsr = 0;
     this.ter = 1;
@@ -515,42 +493,34 @@ var AnimatedText = class extends LitElement {
     this.yOffsetSprine = new Sprine(0, 0.4, 1.25, interpolators.yOffset);
     this.glowSprine = new Sprine(0, 0.5, 1, interpolators.glow);
   }
-  shouldUpdate(changedProperties) {
-    if (changedProperties.has("relativeScaledProgress")) {
-      const relativeTime = this.relativeScaledProgress;
-      this.scaleSprine.updateEquilibrium(relativeTime);
-      this.opacitySprine.updateEquilibrium(relativeTime);
-      this.yOffsetSprine.updateEquilibrium(relativeTime);
-      this.glowSprine.updateEquilibrium(relativeTime);
-      this.style.setProperty("--gradient-progress", `${100 * relativeTime}%`);
-      if (!this.scaleSprine.isInEquilibrium()) {
-        const scale = this.scaleSprine.current;
-        this.style.scale = scale.toString();
-      }
-      if (!this.opacitySprine.isInEquilibrium()) {
-        const opacity = this.opacitySprine.current;
-        this.style.opacity = opacity.toString();
-      }
-      if (!this.yOffsetSprine.isInEquilibrium()) {
-        const yOffset = this.yOffsetSprine.current;
-        this.style.transform = `translateY(calc(0.25rem *${yOffset}))`;
-      }
-      if (!this.glowSprine.isInEquilibrium()) {
-        const glow = this.glowSprine.current;
-        this.style.setProperty("--text-shadow-opacity", `${100 * glow}%`);
-        this.style.setProperty("--text-shadow-blur-radius", `${glow}px`);
-      }
-      changedProperties.delete("relativeScaledProgress");
+  updateProgress(rsp) {
+    this.scaleSprine.updateEquilibrium(rsp);
+    this.opacitySprine.updateEquilibrium(rsp);
+    this.yOffsetSprine.updateEquilibrium(rsp);
+    this.glowSprine.updateEquilibrium(rsp);
+    this.style.setProperty("--gradient-progress", `${100 * rsp}%`);
+    if (!this.scaleSprine.isInEquilibrium()) {
+      const scale = this.scaleSprine.current;
+      this.style.scale = scale.toString();
     }
-    return Boolean(changedProperties.size);
+    if (!this.opacitySprine.isInEquilibrium()) {
+      const opacity = this.opacitySprine.current;
+      this.style.opacity = opacity.toString();
+    }
+    if (!this.yOffsetSprine.isInEquilibrium()) {
+      const yOffset = this.yOffsetSprine.current;
+      this.style.transform = `translateY(calc(0.25rem *${yOffset}))`;
+    }
+    if (!this.glowSprine.isInEquilibrium()) {
+      const glow = this.glowSprine.current;
+      this.style.setProperty("--text-shadow-opacity", `${100 * glow}%`);
+      this.style.setProperty("--text-shadow-blur-radius", `${glow}px`);
+    }
   }
   render() {
     return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}>${this.text}</span>`;
   }
 };
-__decorateClass([
-  property({ type: Number })
-], AnimatedText.prototype, "relativeScaledProgress", 2);
 __decorateClass([
   property()
 ], AnimatedText.prototype, "text", 2);
@@ -573,9 +543,7 @@ new PermanentMutationObserver("main", () => {
   const ourLyricsContainer = new LyricsContainer();
   ourLyricsContainer.song = PlayerW.GetSong() ?? null;
   PlayerW.songChangedSubject.subscribe((song) => ourLyricsContainer.song = song ?? null);
-  PlayerW.scaledProgressChangedSubject.subscribe(
-    (scaledProgress) => ourLyricsContainer.scaledProgress = scaledProgress
-  );
+  PlayerW.scaledProgressChangedSubject.subscribe(ourLyricsContainer.updateProgress);
   lyricsContainer.innerHTML = "";
   render(ourLyricsContainer, lyricsContainer);
 });
