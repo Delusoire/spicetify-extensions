@@ -530,7 +530,7 @@ var AnimatedText = class extends LitElement {
     this.tsrAbsolute = 0;
     this.tsr = 0;
     this.ter = 1;
-    this.opacitySprine = new Sprine(0, 0.5, 1, interpolators.opacity);
+    this.opacitySprine = new Sprine(1, 0.5, 1, interpolators.opacity);
   }
   updateProgress(rsp) {
     this.opacitySprine.updateEquilibrium(rsp);
@@ -538,6 +538,11 @@ var AnimatedText = class extends LitElement {
       const opacity = this.opacitySprine.current;
       const i = 255 * opacity;
       this.style.color = `rgb(${i}, ${i}, ${i})`;
+    }
+    if (0 <= rsp && rsp <= 1) {
+      this.scrollIntoView({
+        behavior: "smooth"
+      });
     }
   }
   render() {
