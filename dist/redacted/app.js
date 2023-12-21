@@ -540,11 +540,10 @@ var AnimatedText = class extends LitElement {
       this.style.color = `rgb(${i}, ${i}, ${i})`;
     }
     if (0 <= rsp && rsp <= 1) {
-      this.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "nearest"
-      });
+      const container = document.querySelector("div.main-nowPlayingView-lyricsContent.injected");
+      if (container) {
+        container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "auto" });
+      }
     }
   }
   render() {
