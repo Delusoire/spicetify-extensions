@@ -51,16 +51,14 @@ var headers = {
   cookie: "x-mxm-token-guid="
 };
 var CONFIG = {
-  musixmatchToken: ""
+  musixmatchToken: "231221e279efdb0115a0f1f80aac291e5d8cd1246aede96a08ea74"
 };
-{
+if (!CONFIG.musixmatchToken) {
   const url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/token.get");
   url.searchParams.append("app_id", "web-desktop-app-v1.0");
   Spicetify.CosmosAsync.get(url.toString(), void 0, _.omit(headers, "cookie")).then((res) => {
     if (res.message.header.status_code === 200 && res.message.body.user_token) {
       CONFIG.musixmatchToken = res.message.body.user_token;
-    } else {
-      debugger;
     }
   });
 }
@@ -558,7 +556,6 @@ AnimatedText = __decorateClass([
 ], AnimatedText);
 
 // extensions/redacted/app.ts
-debugger;
 new PermanentMutationObserver("main", () => {
   const lyricsContainer = document.querySelector(".main-nowPlayingView-lyricsContent");
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))
