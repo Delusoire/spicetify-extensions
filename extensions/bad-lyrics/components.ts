@@ -20,6 +20,8 @@ declare global {
     }
 }
 
+const SCROLL_TIMEOUT_MS = 3000
+
 const createInterpolator = (...stops: number[][]) => {
     const spline = hermite(stops)
     return (t: number) => spline.at(t)
@@ -43,6 +45,8 @@ const DefaultInterpolators = {
 }
 
 const globalRSPSpringCtx = createContext<Spring>("grsp")
+const scrollTimeoutCtx = createContext<number>("scrollTimeout")
+const spotifyContainerCtx = createContext<HTMLElement | undefined>("spotifyContainer")
 
 @customElement("lyrics-container")
 export class LyricsContainer extends LitElement {
@@ -74,6 +78,13 @@ export class LyricsContainer extends LitElement {
     @provide({ context: globalRSPSpringCtx })
     globalRSPSpring = new Spring(0, 1, 1)
 
+    @provide({ context: scrollTimeoutCtx })
+    scrollTimeout = 0
+
+    @provide({ context: spotifyContainerCtx })
+    spotifyContainer =
+        document.querySelector<HTMLElement>("aside div.main-nowPlayingView-lyricsContent.injected") ?? undefined
+
     render() {
         return this.lyricsTask.render({
             pending: () => {
@@ -89,7 +100,11 @@ export class LyricsContainer extends LitElement {
                 this.hasLyrics = true
 
                 return html`
-                    <animated-text-container style="display: unset;" .text=${wordSynced.part}></animated-text-container>
+                    <animated-text-container
+                        style="display: unset;"
+                        @scroll=${() => (this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS)}
+                        .text=${wordSynced.part}
+                    ></animated-text-container>
                 `
             },
             error: () => {
@@ -182,6 +197,12 @@ export class AnimatedText extends LitElement {
     @consume({ context: globalRSPSpringCtx })
     globalRSPSpring?: Spring
 
+    @consume({ context: scrollTimeoutCtx })
+    scrollTimeout = 0
+
+    @consume({ context: spotifyContainerCtx })
+    spotifyContainer?: HTMLElement
+
     updateProgress(rsp: number, index: number) {
         // update sprines
         // update styles if sprine not in equilibrium
@@ -192,9 +213,11 @@ export class AnimatedText extends LitElement {
         if (0 < rsp && rsp < 1) {
             this.globalRSPSpring.setEquilibrium(index + rsp)
             rsp = this.globalRSPSpring.current - index
-            const container = document.querySelector<HTMLDivElement>("div.main-nowPlayingView-lyricsContent.injected")
-            if (container) {
-                container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "smooth" })
+            if (Date.now() > this.scrollTimeout) {
+                this.spotifyContainer?.scrollTo({
+                    top: this.offsetTop - this.spotifyContainer.offsetTop - 20,
+                    behavior: "smooth",
+                })
             }
         }
 

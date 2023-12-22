@@ -373,6 +373,7 @@ var Spring = class {
 };
 
 // extensions/bad-lyrics/components.ts
+var SCROLL_TIMEOUT_MS = 3e3;
 var createInterpolator = (...stops) => {
   const spline = hermite(stops);
   return (t) => spline.at(t);
@@ -394,6 +395,8 @@ var DefaultInterpolators = {
   glow: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8])
 };
 var globalRSPSpringCtx = createContext("grsp");
+var scrollTimeoutCtx = createContext("scrollTimeout");
+var spotifyContainerCtx = createContext("spotifyContainer");
 var LyricsContainer = class extends LitElement {
   constructor() {
     super(...arguments);
@@ -404,6 +407,8 @@ var LyricsContainer = class extends LitElement {
     });
     this.hasLyrics = false;
     this.globalRSPSpring = new Spring(0, 1, 1);
+    this.scrollTimeout = 0;
+    this.spotifyContainer = document.querySelector("aside div.main-nowPlayingView-lyricsContent.injected") ?? void 0;
   }
   updateProgress(progress) {
     if (!this.hasLyrics)
@@ -424,7 +429,11 @@ var LyricsContainer = class extends LitElement {
         }
         this.hasLyrics = true;
         return html`
-                    <animated-text-container style="display: unset;" .text=${wordSynced.part}></animated-text-container>
+                    <animated-text-container
+                        style="display: unset;"
+                        @scroll=${() => this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS}
+                        .text=${wordSynced.part}
+                    ></animated-text-container>
                 `;
       },
       error: () => {
@@ -451,6 +460,12 @@ __decorateClass([
 __decorateClass([
   provide({ context: globalRSPSpringCtx })
 ], LyricsContainer.prototype, "globalRSPSpring", 2);
+__decorateClass([
+  provide({ context: scrollTimeoutCtx })
+], LyricsContainer.prototype, "scrollTimeout", 2);
+__decorateClass([
+  provide({ context: spotifyContainerCtx })
+], LyricsContainer.prototype, "spotifyContainer", 2);
 LyricsContainer = __decorateClass([
   customElement("lyrics-container")
 ], LyricsContainer);
@@ -525,6 +540,7 @@ var AnimatedText = class extends LitElement {
     this.tsrAbsolute = 0;
     this.tsr = 0;
     this.ter = 1;
+    this.scrollTimeout = 0;
   }
   updateProgress(rsp, index) {
     if (!this.globalRSPSpring)
@@ -533,9 +549,11 @@ var AnimatedText = class extends LitElement {
     if (0 < rsp && rsp < 1) {
       this.globalRSPSpring.setEquilibrium(index + rsp);
       rsp = this.globalRSPSpring.current - index;
-      const container = document.querySelector("div.main-nowPlayingView-lyricsContent.injected");
-      if (container) {
-        container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "smooth" });
+      if (Date.now() > this.scrollTimeout) {
+        this.spotifyContainer?.scrollTo({
+          top: this.offsetTop - this.spotifyContainer.offsetTop - 20,
+          behavior: "smooth"
+        });
       }
     }
     if (rsp <= 0) {
@@ -582,6 +600,12 @@ __decorateClass([
 __decorateClass([
   consume({ context: globalRSPSpringCtx })
 ], AnimatedText.prototype, "globalRSPSpring", 2);
+__decorateClass([
+  consume({ context: scrollTimeoutCtx })
+], AnimatedText.prototype, "scrollTimeout", 2);
+__decorateClass([
+  consume({ context: spotifyContainerCtx })
+], AnimatedText.prototype, "spotifyContainer", 2);
 AnimatedText = __decorateClass([
   customElement("animated-text")
 ], AnimatedText);
