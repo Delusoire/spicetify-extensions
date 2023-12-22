@@ -1,3 +1,4 @@
+import { createContext, provide, consume } from "https://esm.sh/@lit/context"
 import { Task } from "https://esm.sh/@lit/task"
 import { hermite } from "https://esm.sh/@thi.ng/ramp"
 import { LitElement, css, html } from "https://esm.sh/lit"
@@ -5,11 +6,12 @@ import { customElement, property, query, queryAll, state } from "https://esm.sh/
 import { map } from "https://esm.sh/lit/directives/map.js"
 import { when } from "https://esm.sh/lit/directives/when.js"
 
+import { _ } from "../../shared/deps.ts"
 import { Sprine } from "./pkgs/sprine.ts"
+import { Spring } from "./pkgs/spring.ts"
 import { SyncedPart } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
-import { _ } from "../../shared/deps.ts"
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -41,6 +43,8 @@ const DefaultInterpolators = {
     glow: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8]),
 }
 
+const globalRSPSpringCtx = createContext<Spring>("grsp")
+
 @customElement("lyrics-container")
 export class LyricsContainer extends LitElement {
     static styles = css`
@@ -61,12 +65,15 @@ export class LyricsContainer extends LitElement {
 
     public updateProgress(progress: number) {
         if (!this.hasLyrics) return
-        this.firstContainer.updateProgress(progress)
+        this.firstContainer.updateProgress(progress, 0)
     }
 
     @query("animated-text-container")
     // @ts-expect-error only has a getter
     firstContainer: AnimatedTextContainer
+
+    @provide({ context: globalRSPSpringCtx })
+    globalRSPSpring = new Spring(0, 1, 1)
 
     render() {
         return this.lyricsTask.render({
@@ -116,12 +123,15 @@ export class AnimatedTextContainer extends LitElement {
     // @ts-expect-error only has a getter
     childs: NodeListOf<AnimatedText | AnimatedTextContainer>
 
-    updateProgress(rsp: number) {
+    updateProgress(rsp: number, index: number) {
         const calculateRSPForChild = (child: AnimatedText | AnimatedTextContainer) =>
             (rsp - child.tsr) / (child.ter - child.tsr)
+
         this.childs.forEach(child => {
-            child.updateProgress(calculateRSPForChild(child))
+            index = child.updateProgress(calculateRSPForChild(child), index)
         })
+
+        return index
     }
 
     private calculateTSRAForPart(part: SyncedPart) {
@@ -171,17 +181,26 @@ export class AnimatedText extends LitElement {
     @property({ type: Number })
     ter = 1
 
+    @consume({ context: globalRSPSpringCtx })
+    globalRSPSpring?: Spring
+
     constructor(interpolators = DefaultInterpolators) {
         super()
         // set sprines
         this.opacitySprine = new Sprine(1, 0.5, 1, interpolators.opacity)
     }
 
-    updateProgress(rsp: number) {
+    updateProgress(rsp: number, index: number) {
         // update sprines
         // update styles if sprine not in equilibrium
+        if (!this.globalRSPSpring) return index + 1
 
-        const crsp = _.clamp(rsp, 0, 1)
+        rsp = _.clamp(rsp, 0, 1)
+
+        if (0 < rsp && rsp < 1) {
+            this.globalRSPSpring.setEquilibrium(index + rsp)
+            rsp = this.globalRSPSpring.current - index
+        }
 
         if (rsp < 0) {
             this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)"
@@ -191,13 +210,13 @@ export class AnimatedText extends LitElement {
             if (rsp < 1) {
                 this.style.textShadow = "0 0 var(1.25px,0) rgba(255,255,255,0.85)"
             } else {
-                const textShadowBlurRadiusPx = crsp * 5
-                const textShadowOpacityPercent = crsp * 100
+                const textShadowBlurRadiusPx = rsp * 5
+                const textShadowOpacityPercent = rsp * 100
                 this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`
             }
             this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${
-                crsp * 100
-            }%, rgba(255,255,255,0) ${crsp * 100}%)`
+                rsp * 100
+            }%, rgba(255,255,255,0) ${rsp * 100}%)`
         }
 
         if (0 <= rsp && rsp <= 1) {
@@ -206,6 +225,8 @@ export class AnimatedText extends LitElement {
                 container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "smooth" })
             }
         }
+
+        return index + 1
     }
 
     render() {

@@ -292,6 +292,7 @@ var PlayerW = new class {
 }();
 
 // extensions/bad-lyrics/components.ts
+import { createContext, provide, consume } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
 import { hermite } from "https://esm.sh/@thi.ng/ramp";
 import { LitElement, css, html } from "https://esm.sh/lit";
@@ -307,6 +308,7 @@ var Spring = class {
     this.p = p;
     this.dampingRatio = dampingRatio;
     this.sleeping = true;
+    this.updatedTime = Date.now();
     this.isInEquilibrium = () => this.sleeping;
     if (dampingRatio * frequency < 0) {
       throw new Error("Spring does not converge.");
@@ -314,6 +316,12 @@ var Spring = class {
     this.v = 0;
     this.p_e = p;
     this.W0 = frequency * TAU;
+  }
+  get current() {
+    const nextUpdatedTime = Date.now();
+    const current = this.update(nextUpdatedTime - this.updatedTime);
+    this.updatedTime = nextUpdatedTime;
+    return current;
   }
   update(dt) {
     const offset = this.p - this.p_e;
@@ -371,17 +379,10 @@ var Sprine = class extends Spring {
   constructor(position, dampingRatio, frequency, interpolate) {
     super(position, dampingRatio, frequency);
     this.interpolate = interpolate;
-    this.updatedTime = Date.now();
   }
   updateEquilibrium(relativeTime) {
     const interpolatedPosition = this.interpolate(relativeTime);
     this.setEquilibrium(interpolatedPosition);
-  }
-  get current() {
-    const nextUpdatedTime = Date.now();
-    const current = this.update(nextUpdatedTime - this.updatedTime);
-    this.updatedTime = nextUpdatedTime;
-    return current;
   }
 };
 
@@ -406,6 +407,7 @@ var DefaultInterpolators = {
   ),
   glow: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8])
 };
+var globalRSPSpringCtx = createContext("grsp");
 var LyricsContainer = class extends LitElement {
   constructor() {
     super(...arguments);
@@ -415,11 +417,12 @@ var LyricsContainer = class extends LitElement {
       args: () => [this.song]
     });
     this.hasLyrics = false;
+    this.globalRSPSpring = new Spring(0, 1, 1);
   }
   updateProgress(progress) {
     if (!this.hasLyrics)
       return;
-    this.firstContainer.updateProgress(progress);
+    this.firstContainer.updateProgress(progress, 0);
   }
   render() {
     return this.lyricsTask.render({
@@ -459,6 +462,9 @@ __decorateClass([
 __decorateClass([
   query("animated-text-container")
 ], LyricsContainer.prototype, "firstContainer", 2);
+__decorateClass([
+  provide({ context: globalRSPSpringCtx })
+], LyricsContainer.prototype, "globalRSPSpring", 2);
 LyricsContainer = __decorateClass([
   customElement("lyrics-container")
 ], LyricsContainer);
@@ -470,11 +476,12 @@ var AnimatedTextContainer = class extends LitElement {
     this.tsr = 0;
     this.ter = 1;
   }
-  updateProgress(rsp) {
+  updateProgress(rsp, index) {
     const calculateRSPForChild = (child) => (rsp - child.tsr) / (child.ter - child.tsr);
     this.childs.forEach((child) => {
-      child.updateProgress(calculateRSPForChild(child));
+      index = child.updateProgress(calculateRSPForChild(child), index);
     });
+    return index;
   }
   calculateTSRAForPart(part) {
     return this.tsrAbsolute + part.tsr * (this.ter - this.tsr);
@@ -534,8 +541,14 @@ var AnimatedText = class extends LitElement {
     this.ter = 1;
     this.opacitySprine = new Sprine(1, 0.5, 1, interpolators.opacity);
   }
-  updateProgress(rsp) {
-    const crsp = _.clamp(rsp, 0, 1);
+  updateProgress(rsp, index) {
+    if (!this.globalRSPSpring)
+      return index + 1;
+    rsp = _.clamp(rsp, 0, 1);
+    if (0 < rsp && rsp < 1) {
+      this.globalRSPSpring.setEquilibrium(index + rsp);
+      rsp = this.globalRSPSpring.current - index;
+    }
     if (rsp < 0) {
       this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)";
       this.style.backgroundColor = "black";
@@ -544,11 +557,11 @@ var AnimatedText = class extends LitElement {
       if (rsp < 1) {
         this.style.textShadow = "0 0 var(1.25px,0) rgba(255,255,255,0.85)";
       } else {
-        const textShadowBlurRadiusPx = crsp * 5;
-        const textShadowOpacityPercent = crsp * 100;
+        const textShadowBlurRadiusPx = rsp * 5;
+        const textShadowOpacityPercent = rsp * 100;
         this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`;
       }
-      this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${crsp * 100}%, rgba(255,255,255,0) ${crsp * 100}%)`;
+      this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${rsp * 100}%, rgba(255,255,255,0) ${rsp * 100}%)`;
     }
     if (0 <= rsp && rsp <= 1) {
       const container = document.querySelector("div.main-nowPlayingView-lyricsContent.injected");
@@ -556,6 +569,7 @@ var AnimatedText = class extends LitElement {
         container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "smooth" });
       }
     }
+    return index + 1;
   }
   render() {
     return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}
@@ -582,6 +596,9 @@ __decorateClass([
 __decorateClass([
   property({ type: Number })
 ], AnimatedText.prototype, "ter", 2);
+__decorateClass([
+  consume({ context: globalRSPSpringCtx })
+], AnimatedText.prototype, "globalRSPSpring", 2);
 AnimatedText = __decorateClass([
   customElement("animated-text")
 ], AnimatedText);

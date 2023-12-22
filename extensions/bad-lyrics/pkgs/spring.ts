@@ -10,6 +10,15 @@ export class Spring {
 
     private p_e: number
 
+    private updatedTime = Date.now()
+
+    get current() {
+        const nextUpdatedTime = Date.now()
+        const current = this.update(nextUpdatedTime - this.updatedTime)
+        this.updatedTime = nextUpdatedTime
+        return current
+    }
+
     constructor(private p: number, private dampingRatio: number, frequency: number) {
         if (dampingRatio * frequency < 0) {
             throw new Error("Spring does not converge.")
