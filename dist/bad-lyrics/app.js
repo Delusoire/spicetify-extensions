@@ -621,7 +621,9 @@ new PermanentMutationObserver("aside", () => {
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))
     return;
   lyricsContainer.classList.add("injected");
-  lyricsContainer.replaceWith(lyricsContainer.cloneNode(false));
+  lyricsContainer.innerHTML = "";
+  const lyricsContainerClone = lyricsContainer.cloneNode(true);
+  lyricsContainer.replaceWith(lyricsContainerClone);
   const ourLyricsContainer = new LyricsContainer();
   ourLyricsContainer.song = PlayerW.GetSong() ?? null;
   PlayerW.songChangedSubject.subscribe((song) => ourLyricsContainer.song = song ?? null);
