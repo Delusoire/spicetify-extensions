@@ -481,18 +481,11 @@ var AnimatedTextContainer = class extends LitElement {
   updateProgress(rsp, index, depthToActiveAncestor) {
     const calculateRSPForChild = (child) => (rsp - child.tsr) / (child.ter - child.tsr);
     const childs = Array.from(this.childs);
-    const rsps = childs.map(calculateRSPForChild).reverse();
-    const isActive = depthToActiveAncestor === 0;
-    if (isActive) {
-      const activeIndex = _.sortedIndex(rsps, 0);
-      childs.forEach((child, i) => {
-        index = child.updateProgress(rsps[i], index, i === activeIndex ? 0 : 1);
-      });
-    } else {
-      childs.forEach((child, i) => {
-        index = child.updateProgress(rsps[i], index, depthToActiveAncestor + 1);
-      });
-    }
+    const rsps = childs.map(calculateRSPForChild);
+    const activeIndex = rsps.findIndex((rsp2) => Math.floor(rsp2) === 0);
+    childs.forEach((child, i) => {
+      index = child.updateProgress(rsps[i], index, depthToActiveAncestor + (i === activeIndex ? 0 : 1));
+    });
     return index;
   }
   calculateTSRAForPart(part) {

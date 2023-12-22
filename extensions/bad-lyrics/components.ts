@@ -142,21 +142,13 @@ export class AnimatedTextContainer extends LitElement {
             (rsp - child.tsr) / (child.ter - child.tsr)
 
         const childs = Array.from(this.childs)
-        const rsps = childs.map(calculateRSPForChild).reverse()
+        const rsps = childs.map(calculateRSPForChild)
 
-        const isActive = depthToActiveAncestor === 0
+        const activeIndex = rsps.findIndex(rsp => Math.floor(rsp) === 0)
 
-        if (isActive) {
-            const activeIndex = _.sortedIndex(rsps, 0)
-
-            childs.forEach((child, i) => {
-                index = child.updateProgress(rsps[i], index, i === activeIndex ? 0 : 1)
-            })
-        } else {
-            childs.forEach((child, i) => {
-                index = child.updateProgress(rsps[i], index, depthToActiveAncestor + 1)
-            })
-        }
+        childs.forEach((child, i) => {
+            index = child.updateProgress(rsps[i], index, depthToActiveAncestor + (i === activeIndex ? 0 : 1))
+        })
 
         return index
     }
