@@ -98,8 +98,8 @@ export class LyricsContainer extends LitElement {
 export class AnimatedTextContainer extends LitElement {
     static styles = css`
         :host {
-            border: 0;
-            background-color: transparent;
+            /* border: 0;
+            background-color: transparent; */
         }
     `
 
@@ -198,14 +198,14 @@ export class AnimatedText extends LitElement {
         if (rsp < 0) {
             this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)"
             this.style.backgroundImage = "unset"
-        } else if (rsp > 1) {
-            this.style.textShadow = "0 0 var(1.25px,0) rgba(255,255,255,0.85)"
-            this.style.backgroundImage = "unset"
         } else {
-            const textShadowBlurRadiusPx = crsp * 5
-            const textShadowOpacityPercent = crsp * 100
-            this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`
-
+            if (rsp < 1) {
+                this.style.textShadow = "0 0 var(1.25px,0) rgba(255,255,255,0.85)"
+            } else {
+                const textShadowBlurRadiusPx = crsp * 5
+                const textShadowOpacityPercent = crsp * 100
+                this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`
+            }
             this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${
                 crsp * 100
             }%, rgba(255,255,255,0) ${crsp * 100}%)`
