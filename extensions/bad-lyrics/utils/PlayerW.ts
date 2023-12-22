@@ -5,7 +5,6 @@ import { onPlayedPaused, onSongChanged } from "../../../shared/listeners.ts"
 import { Song } from "./Song.ts"
 
 const { PlayerAPI } = Spicetify.Platform
-debugger
 
 export const PlayerW = new (class {
     private Song?: Song
@@ -38,6 +37,7 @@ export const PlayerW = new (class {
             this.songChangedSubject.next(this.Song)
         })
 
+        debugger
         onPlayedPaused(state => {
             const isPausedNext = state.isPaused ?? true
             if (this.isPaused !== isPausedNext) {

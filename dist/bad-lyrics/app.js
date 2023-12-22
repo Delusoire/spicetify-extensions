@@ -218,7 +218,6 @@ var Song = class {
 
 // extensions/bad-lyrics/utils/PlayerW.ts
 var { PlayerAPI: PlayerAPI3 } = Spicetify.Platform;
-debugger;
 var PlayerW = new class {
   constructor() {
     this.isPaused = PlayerAPI3._state.isPaused;
@@ -243,6 +242,7 @@ var PlayerW = new class {
       }
       this.songChangedSubject.next(this.Song);
     });
+    debugger;
     onPlayedPaused((state2) => {
       const isPausedNext = state2.isPaused ?? true;
       if (this.isPaused !== isPausedNext) {
