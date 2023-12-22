@@ -416,6 +416,9 @@ var LyricsContainer = class extends LitElement {
       return;
     this.firstContainer.updateProgress(progress, 0, 0);
   }
+  firstUpdated(changedProperties) {
+    this.spotifyContainer?.addEventListener("scroll", () => this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS);
+  }
   render() {
     return this.lyricsTask.render({
       pending: () => {
@@ -430,11 +433,7 @@ var LyricsContainer = class extends LitElement {
         }
         this.hasLyrics = true;
         return html`
-                    <animated-text-container
-                        style="display: unset;"
-                        @scroll=${() => this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS}
-                        .text=${wordSynced.part}
-                    ></animated-text-container>
+                    <animated-text-container style="display: unset;" .text=${wordSynced.part}></animated-text-container>
                 `;
       },
       error: () => {
@@ -622,10 +621,10 @@ new PermanentMutationObserver("aside", () => {
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))
     return;
   lyricsContainer.classList.add("injected");
+  lyricsContainer.replaceWith(lyricsContainer.cloneNode(false));
   const ourLyricsContainer = new LyricsContainer();
   ourLyricsContainer.song = PlayerW.GetSong() ?? null;
   PlayerW.songChangedSubject.subscribe((song) => ourLyricsContainer.song = song ?? null);
   PlayerW.scaledProgressChangedSubject.subscribe((progress) => ourLyricsContainer.updateProgress(progress));
-  lyricsContainer.innerHTML = "";
   render(ourLyricsContainer, lyricsContainer);
 });

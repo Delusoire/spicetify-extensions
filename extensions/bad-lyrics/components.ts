@@ -11,6 +11,7 @@ import { Spring } from "./pkgs/spring.ts"
 import { SyncedPart } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
+import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -85,6 +86,10 @@ export class LyricsContainer extends LitElement {
     spotifyContainer =
         document.querySelector<HTMLElement>("aside div.main-nowPlayingView-lyricsContent.injected") ?? undefined
 
+    firstUpdated(changedProperties: PropertyValueMap<this>) {
+        this.spotifyContainer?.addEventListener("scroll", () => (this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS))
+    }
+
     render() {
         return this.lyricsTask.render({
             pending: () => {
@@ -100,11 +105,7 @@ export class LyricsContainer extends LitElement {
                 this.hasLyrics = true
 
                 return html`
-                    <animated-text-container
-                        style="display: unset;"
-                        @scroll=${() => (this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS)}
-                        .text=${wordSynced.part}
-                    ></animated-text-container>
+                    <animated-text-container style="display: unset;" .text=${wordSynced.part}></animated-text-container>
                 `
             },
             error: () => {
