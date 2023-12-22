@@ -502,6 +502,8 @@ var AnimatedTextContainer = class extends LitElement {
 };
 AnimatedTextContainer.styles = css`
         :host {
+            border: 0;
+            background-color: transparent;
         }
     `;
 __decorateClass([
@@ -539,6 +541,19 @@ var AnimatedText = class extends LitElement {
       const i = 255 * opacity;
       this.style.color = `rgb(${i}, ${i}, ${i})`;
     }
+    const crsp = _.clamp(rsp, 0, 1);
+    if (rsp < 0) {
+      this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)";
+      this.style.backgroundImage = "unset";
+    } else if (rsp > 1) {
+      this.style.textShadow = "0 0 var(1.25px,0) rgba(255,255,255,0.85)";
+      this.style.backgroundImage = "unset";
+    } else {
+      const textShadowBlurRadiusPx = crsp * 5;
+      const textShadowOpacityPercent = crsp * 100;
+      this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`;
+      this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${crsp * 100}%, rgba(255,255,255,0) ${crsp * 100}%)`;
+    }
     if (0 <= rsp && rsp <= 1) {
       const container = document.querySelector("div.main-nowPlayingView-lyricsContent.injected");
       if (container) {
@@ -554,6 +569,9 @@ var AnimatedText = class extends LitElement {
 };
 AnimatedText.styles = css`
         :host {
+            cursor: pointer;
+            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
         }
     `;
 __decorateClass([

@@ -760,3 +760,12 @@ onSongChanged((state) => {
 });
 new PermanentMutationObserver("main", () => updateTrackListControls());
 onHistoryChanged(_.overSome([URI7.isAlbum, URI7.isArtist, URI7.isPlaylistV1OrV2]), (uri) => updateCollectionControls(uri));
+(async () => {
+    if (!document.getElementById("star-ratings-2-css")) {
+        const el = document.createElement("style")
+        el.id = "star-ratings-2-css"
+        
+        el.textContent = "/* extensions/star-ratings-2/assets/styles.css */\nbutton.rating-1 svg {\n  fill: #ed5564 !important;\n}\nbutton.rating-2 svg {\n  fill: #ffce54 !important;\n}\nbutton.rating-3 svg {\n  fill: #a0d568 !important;\n}\nbutton.rating-4 svg {\n  fill: #4fc1e8 !important;\n}\nbutton.rating-5 svg {\n  fill: #ac92eb !important;\n}\n"
+        document.head.appendChild(el)
+    }
+})()
