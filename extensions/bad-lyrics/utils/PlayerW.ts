@@ -37,7 +37,6 @@ export const PlayerW = new (class {
             this.songChangedSubject.next(this.Song)
         })
 
-        debugger
         onPlayedPaused(state => {
             const isPausedNext = state.isPaused ?? true
             if (this.isPaused !== isPausedNext) {

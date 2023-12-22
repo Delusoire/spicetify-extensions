@@ -142,7 +142,7 @@ export class AnimatedTextContainer extends LitElement {
             (rsp - child.tsr) / (child.ter - child.tsr)
 
         const childs = Array.from(this.childs)
-        const rsps = childs.map(calculateRSPForChild)
+        const rsps = childs.map(calculateRSPForChild).reverse()
 
         const isActive = depthToActiveAncestor === 0
 

@@ -242,7 +242,6 @@ var PlayerW = new class {
       }
       this.songChangedSubject.next(this.Song);
     });
-    debugger;
     onPlayedPaused((state2) => {
       const isPausedNext = state2.isPaused ?? true;
       if (this.isPaused !== isPausedNext) {
@@ -482,7 +481,7 @@ var AnimatedTextContainer = class extends LitElement {
   updateProgress(rsp, index, depthToActiveAncestor) {
     const calculateRSPForChild = (child) => (rsp - child.tsr) / (child.ter - child.tsr);
     const childs = Array.from(this.childs);
-    const rsps = childs.map(calculateRSPForChild);
+    const rsps = childs.map(calculateRSPForChild).reverse();
     const isActive = depthToActiveAncestor === 0;
     if (isActive) {
       const activeIndex = _.sortedIndex(rsps, 0);
