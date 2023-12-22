@@ -88,6 +88,7 @@ export class LyricsContainer extends LitElement {
 
     firstUpdated(changedProperties: PropertyValueMap<this>) {
         this.spotifyContainer?.addEventListener("scroll", e => {
+            //! this doesn't differentiate human scroll and scrollTo
             if (!e.isTrusted) return
             this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS
         })
