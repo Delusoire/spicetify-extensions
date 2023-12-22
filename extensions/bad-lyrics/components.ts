@@ -7,7 +7,6 @@ import { map } from "https://esm.sh/lit/directives/map.js"
 import { when } from "https://esm.sh/lit/directives/when.js"
 
 import { _ } from "../../shared/deps.ts"
-import { Sprine } from "./pkgs/sprine.ts"
 import { Spring } from "./pkgs/spring.ts"
 import { SyncedPart } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
@@ -170,7 +169,6 @@ export class AnimatedText extends LitElement {
             -webkit-background-clip: text;
         }
     `
-    opacitySprine
 
     @property()
     text = ""
@@ -184,12 +182,6 @@ export class AnimatedText extends LitElement {
     @consume({ context: globalRSPSpringCtx })
     globalRSPSpring?: Spring
 
-    constructor(interpolators = DefaultInterpolators) {
-        super()
-        // set sprines
-        this.opacitySprine = new Sprine(1, 0.5, 1, interpolators.opacity)
-    }
-
     updateProgress(rsp: number, index: number) {
         // update sprines
         // update styles if sprine not in equilibrium
@@ -200,6 +192,10 @@ export class AnimatedText extends LitElement {
         if (0 < rsp && rsp < 1) {
             this.globalRSPSpring.setEquilibrium(index + rsp)
             rsp = this.globalRSPSpring.current - index
+            const container = document.querySelector<HTMLDivElement>("div.main-nowPlayingView-lyricsContent.injected")
+            if (container) {
+                container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "smooth" })
+            }
         }
 
         if (rsp <= 0) {
@@ -217,13 +213,6 @@ export class AnimatedText extends LitElement {
             this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${
                 rsp * 100
             }%, rgba(255,255,255,0) ${rsp * 100}%)`
-        }
-
-        if (0 <= rsp && rsp <= 1) {
-            const container = document.querySelector<HTMLDivElement>("div.main-nowPlayingView-lyricsContent.injected")
-            if (container) {
-                container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "smooth" })
-            }
         }
 
         return index + 1

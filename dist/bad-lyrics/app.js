@@ -372,18 +372,6 @@ var Spring = class {
   }
 };
 
-// extensions/bad-lyrics/pkgs/sprine.ts
-var Sprine = class extends Spring {
-  constructor(position, dampingRatio, frequency, interpolate) {
-    super(position, dampingRatio, frequency);
-    this.interpolate = interpolate;
-  }
-  updateEquilibrium(relativeTime) {
-    const interpolatedPosition = this.interpolate(relativeTime);
-    this.setEquilibrium(interpolatedPosition);
-  }
-};
-
 // extensions/bad-lyrics/components.ts
 var createInterpolator = (...stops) => {
   const spline = hermite(stops);
@@ -531,13 +519,12 @@ AnimatedTextContainer = __decorateClass([
   customElement("animated-text-container")
 ], AnimatedTextContainer);
 var AnimatedText = class extends LitElement {
-  constructor(interpolators = DefaultInterpolators) {
-    super();
+  constructor() {
+    super(...arguments);
     this.text = "";
     this.tsrAbsolute = 0;
     this.tsr = 0;
     this.ter = 1;
-    this.opacitySprine = new Sprine(1, 0.5, 1, interpolators.opacity);
   }
   updateProgress(rsp, index) {
     if (!this.globalRSPSpring)
@@ -546,6 +533,10 @@ var AnimatedText = class extends LitElement {
     if (0 < rsp && rsp < 1) {
       this.globalRSPSpring.setEquilibrium(index + rsp);
       rsp = this.globalRSPSpring.current - index;
+      const container = document.querySelector("div.main-nowPlayingView-lyricsContent.injected");
+      if (container) {
+        container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "smooth" });
+      }
     }
     if (rsp <= 0) {
       this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)";
@@ -560,12 +551,6 @@ var AnimatedText = class extends LitElement {
         this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`;
       }
       this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${rsp * 100}%, rgba(255,255,255,0) ${rsp * 100}%)`;
-    }
-    if (0 <= rsp && rsp <= 1) {
-      const container = document.querySelector("div.main-nowPlayingView-lyricsContent.injected");
-      if (container) {
-        container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "smooth" });
-      }
     }
     return index + 1;
   }
