@@ -623,6 +623,7 @@ AnimatedText = __decorateClass([
 ], AnimatedText);
 
 // extensions/bad-lyrics/app.ts
+debugger;
 new PermanentMutationObserver("aside", () => {
   const lyricsContainer = document.querySelector(".main-nowPlayingView-lyricsContent");
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))
