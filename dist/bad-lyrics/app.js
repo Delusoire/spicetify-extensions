@@ -39,6 +39,44 @@ var PermanentMutationObserver = class extends MutationObserver {
 var mainElement = document.querySelector("main");
 var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
+// extensions/bad-lyrics/utils/PlayerW.ts
+import { Subject, animationFrameScheduler, asyncScheduler } from "https://esm.sh/rxjs";
+
+// extensions/star-ratings-2/util.ts
+var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-trackList.main-trackList-indexable"));
+var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
+
+// shared/listeners.ts
+var { Player, URI: URI2 } = Spicetify;
+var { PlayerAPI: PlayerAPI2, History } = Spicetify.Platform;
+var onSongChanged = (callback) => {
+  callback(PlayerAPI2._state);
+  Player.addEventListener("songchange", (event) => callback(event.data));
+};
+var onPlayedPaused = (callback) => {
+  callback(PlayerAPI2._state);
+  Player.addEventListener("onplaypause", (event) => callback(event.data));
+};
+var onTrackListMutationListeners = new Array();
+var _onTrackListMutation = (trackList, record, observer) => {
+  const tracks = getTrackListTracks(trackList.presentation);
+  const reactFiber = trackList.presentation[REACT_FIBER].alternate;
+  const reactTracks = reactFiber.pendingProps.children;
+  const tracksProps = reactTracks.map((child) => child.props);
+  tracks.forEach((track, i) => track.props = tracksProps[i]);
+  const fullyRenderedTracks = tracks.filter((track) => track.props.uri);
+  onTrackListMutationListeners.map((listener) => listener(trackList, fullyRenderedTracks));
+};
+new PermanentMutationObserver("main", () => {
+  const trackLists = getTrackLists();
+  trackLists.filter((trackList) => !trackList.presentation).forEach((trackList) => {
+    trackList.presentation = trackList.lastElementChild.firstElementChild.nextElementSibling;
+    new MutationObserver(
+      (record, observer) => _onTrackListMutation(trackList, record, observer)
+    ).observe(trackList.presentation, { childList: true });
+  });
+});
+
 // shared/deps.ts
 import { default as ld } from "https://esm.sh/lodash";
 import { default as ld_fp } from "https://esm.sh/lodash/fp";
@@ -178,45 +216,9 @@ var Song = class {
   }
 };
 
-// extensions/star-ratings-2/util.ts
-var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-trackList.main-trackList-indexable"));
-var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
-
-// shared/listeners.ts
-var { Player, URI: URI2 } = Spicetify;
-var { PlayerAPI: PlayerAPI2, History } = Spicetify.Platform;
-var onSongChanged = (callback) => {
-  callback(PlayerAPI2._state);
-  Player.addEventListener("songchange", (event) => callback(event.data));
-};
-var onPlayedPaused = (callback) => {
-  callback(PlayerAPI2._state);
-  Player.addEventListener("onplaypause", (event) => callback(event.data));
-};
-var onTrackListMutationListeners = new Array();
-var _onTrackListMutation = (trackList, record, observer) => {
-  const tracks = getTrackListTracks(trackList.presentation);
-  const reactFiber = trackList.presentation[REACT_FIBER].alternate;
-  const reactTracks = reactFiber.pendingProps.children;
-  const tracksProps = reactTracks.map((child) => child.props);
-  tracks.forEach((track, i) => track.props = tracksProps[i]);
-  const fullyRenderedTracks = tracks.filter((track) => track.props.uri);
-  onTrackListMutationListeners.map((listener) => listener(trackList, fullyRenderedTracks));
-};
-new PermanentMutationObserver("main", () => {
-  const trackLists = getTrackLists();
-  trackLists.filter((trackList) => !trackList.presentation).forEach((trackList) => {
-    trackList.presentation = trackList.lastElementChild.firstElementChild.nextElementSibling;
-    new MutationObserver(
-      (record, observer) => _onTrackListMutation(trackList, record, observer)
-    ).observe(trackList.presentation, { childList: true });
-  });
-});
-
 // extensions/bad-lyrics/utils/PlayerW.ts
-import { Subject, animationFrameScheduler, asyncScheduler } from "https://esm.sh/rxjs";
-var { Player: Player2 } = Spicetify;
 var { PlayerAPI: PlayerAPI3 } = Spicetify.Platform;
+debugger;
 var PlayerW = new class {
   constructor() {
     this.isPaused = PlayerAPI3._state.isPaused;
@@ -413,7 +415,7 @@ var LyricsContainer = class extends LitElement {
   updateProgress(progress) {
     if (!this.hasLyrics)
       return;
-    this.firstContainer.updateProgress(progress, 0);
+    this.firstContainer.updateProgress(progress, 0, 0);
   }
   render() {
     return this.lyricsTask.render({
@@ -477,11 +479,21 @@ var AnimatedTextContainer = class extends LitElement {
     this.tsr = 0;
     this.ter = 1;
   }
-  updateProgress(rsp, index) {
+  updateProgress(rsp, index, depthToActiveAncestor) {
     const calculateRSPForChild = (child) => (rsp - child.tsr) / (child.ter - child.tsr);
-    this.childs.forEach((child) => {
-      index = child.updateProgress(calculateRSPForChild(child), index);
-    });
+    const childs = Array.from(this.childs);
+    const rsps = childs.map(calculateRSPForChild);
+    const isActive = depthToActiveAncestor === 0;
+    if (isActive) {
+      const activeIndex = _.sortedIndex(rsps, 0);
+      childs.forEach((child, i) => {
+        index = child.updateProgress(rsps[i], index, i === activeIndex ? 0 : 1);
+      });
+    } else {
+      childs.forEach((child, i) => {
+        index = child.updateProgress(rsps[i], index, depthToActiveAncestor + 1);
+      });
+    }
     return index;
   }
   calculateTSRAForPart(part) {
@@ -542,13 +554,14 @@ var AnimatedText = class extends LitElement {
     this.ter = 1;
     this.scrollTimeout = 0;
   }
-  updateProgress(rsp, index) {
-    if (!this.globalRSPSpring)
-      return index + 1;
+  updateProgress(rsp, index, depthToActiveAncestor) {
     rsp = _.clamp(rsp, 0, 1);
-    if (0 < rsp && rsp < 1) {
-      this.globalRSPSpring.setEquilibrium(index + rsp);
-      rsp = this.globalRSPSpring.current - index;
+    const isActive = depthToActiveAncestor === 0;
+    if (isActive) {
+      if (this.globalRSPSpring) {
+        this.globalRSPSpring.setEquilibrium(index + rsp);
+        rsp = this.globalRSPSpring.current - index;
+      }
       if (Date.now() > this.scrollTimeout) {
         this.spotifyContainer?.scrollTo({
           top: this.offsetTop - this.spotifyContainer.offsetTop - 20,
@@ -623,4 +636,3 @@ new PermanentMutationObserver("aside", () => {
   lyricsContainer.innerHTML = "";
   render(ourLyricsContainer, lyricsContainer);
 });
-debugger;
