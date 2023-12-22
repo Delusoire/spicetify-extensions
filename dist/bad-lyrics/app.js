@@ -417,7 +417,11 @@ var LyricsContainer = class extends LitElement {
     this.firstContainer.updateProgress(progress, 0, 0);
   }
   firstUpdated(changedProperties) {
-    this.spotifyContainer?.addEventListener("scroll", () => this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS);
+    this.spotifyContainer?.addEventListener("scroll", (e) => {
+      if (!e.isTrusted)
+        return;
+      this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS;
+    });
   }
   render() {
     return this.lyricsTask.render({
