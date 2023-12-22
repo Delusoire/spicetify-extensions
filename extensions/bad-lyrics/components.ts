@@ -156,7 +156,6 @@ export class AnimatedText extends LitElement {
     static styles = css`
         :host {
             cursor: pointer;
-            background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
         }
@@ -186,6 +185,7 @@ export class AnimatedText extends LitElement {
 
         if (rsp < 0) {
             this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)"
+            this.style.backgroundColor = "black"
             this.style.backgroundImage = "unset"
         } else {
             if (rsp < 1) {
@@ -195,6 +195,7 @@ export class AnimatedText extends LitElement {
                 const textShadowOpacityPercent = crsp * 100
                 this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`
             }
+            this.style.backgroundColor = "unset"
             this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${
                 crsp * 100
             }%, rgba(255,255,255,0) ${crsp * 100}%)`
