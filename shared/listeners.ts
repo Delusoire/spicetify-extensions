@@ -43,6 +43,11 @@ export const onSongChanged = (callback: (state: Spicetify.Platform.PlayerAPI.Pla
     Player.addEventListener("songchange", event => callback(event!.data))
 }
 
+export const onPlayedPaused = (callback: (state: Spicetify.Platform.PlayerAPI.PlayerState) => void) => {
+    callback(PlayerAPI._state)
+    Player.addEventListener("onplaypause", event => callback(event!.data))
+}
+
 type TrackListElement = HTMLDivElement & { presentation?: HTMLDivElement }
 type TrackElement = HTMLDivElement & { props?: Record<string, any> }
 

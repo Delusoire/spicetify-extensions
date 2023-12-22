@@ -189,6 +189,10 @@ var onSongChanged = (callback) => {
   callback(PlayerAPI2._state);
   Player.addEventListener("songchange", (event) => callback(event.data));
 };
+var onPlayedPaused = (callback) => {
+  callback(PlayerAPI2._state);
+  Player.addEventListener("onplaypause", (event) => callback(event.data));
+};
 var onTrackListMutationListeners = new Array();
 var _onTrackListMutation = (trackList, record, observer) => {
   const tracks = getTrackListTracks(trackList.presentation);
@@ -221,38 +225,32 @@ var PlayerW = new class {
     this.isPausedChangedSubject = new Subject();
     this.scaledProgressChangedSubject = new Subject();
     this.GetSong = () => this.Song;
-    {
-      const callback = (state2) => {
-        const { item } = state2;
-        if (item && item.type === "track") {
-          const uri = item.uri;
-          const name = item.name;
-          const artist = item.metadata.artist_name;
-          const album = item.album.name;
-          const duration = item.duration.milliseconds;
-          const isPaused = state2.isPaused;
-          const metadata = item.metadata;
-          this.Song = new Song({ uri, name, artist, album, duration, isPaused, metadata });
-        } else {
-          this.Song = void 0;
+    onSongChanged((state2) => {
+      const { item } = state2;
+      if (item && item.type === "track") {
+        const uri = item.uri;
+        const name = item.name;
+        const artist = item.metadata.artist_name;
+        const album = item.album.name;
+        const duration = item.duration.milliseconds;
+        const isPaused = state2.isPaused;
+        const metadata = item.metadata;
+        this.Song = new Song({ uri, name, artist, album, duration, isPaused, metadata });
+      } else {
+        this.Song = void 0;
+      }
+      this.songChangedSubject.next(this.Song);
+    });
+    onPlayedPaused((state2) => {
+      const isPausedNext = state2.isPaused ?? true;
+      if (this.isPaused !== isPausedNext) {
+        if (!isPausedNext) {
+          this.startTimestepping();
         }
-        this.songChangedSubject.next(this.Song);
-      };
-      onSongChanged(callback);
-    }
-    {
-      const callback = () => {
-        const isPausedNext = Player2.data?.isPaused ?? true;
-        if (this.isPaused !== isPausedNext) {
-          if (!isPausedNext) {
-            this.startTimestepping();
-          }
-          this.isPaused = !this.isPaused;
-          this.isPausedChangedSubject.next(this.isPaused);
-        }
-      };
-      Player2.addEventListener("onplaypause", callback);
-    }
+        this.isPaused = !this.isPaused;
+        this.isPausedChangedSubject.next(this.isPaused);
+      }
+    });
   }
   triggerTimestampSync() {
     let autoSyncs = 1;
@@ -549,12 +547,12 @@ var AnimatedText = class extends LitElement {
       this.globalRSPSpring.setEquilibrium(index + rsp);
       rsp = this.globalRSPSpring.current - index;
     }
-    if (rsp === 0) {
+    if (rsp <= 0) {
       this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)";
       this.style.backgroundColor = "black";
       this.style.backgroundImage = "unset";
     } else {
-      if (rsp === 1) {
+      if (rsp >= 1) {
         this.style.textShadow = "0 0 var(1.25px,0) rgba(255,255,255,0.85)";
       } else {
         const textShadowBlurRadiusPx = rsp * 5;

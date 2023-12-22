@@ -1,5 +1,5 @@
 import { Song } from "./Song.ts"
-import { onSongChanged } from "../../../shared/listeners.ts"
+import { onPlayedPaused, onSongChanged } from "../../../shared/listeners.ts"
 import { Subject, animationFrameScheduler, asyncScheduler } from "https://esm.sh/rxjs"
 
 const { Player } = Spicetify
@@ -17,41 +17,35 @@ export const PlayerW = new (class {
     GetSong = () => this.Song
 
     constructor() {
-        {
-            const callback = (state: Spicetify.Platform.PlayerAPI.PlayerState) => {
-                const { item } = state
+        onSongChanged(state => {
+            const { item } = state
 
-                if (item && item.type === "track") {
-                    const uri = item.uri
-                    const name = item.name
-                    const artist = item.metadata.artist_name
-                    const album = item.album.name
-                    const duration = item.duration.milliseconds
-                    const isPaused = state.isPaused
-                    const metadata = item.metadata
-                    this.Song = new Song({ uri, name, artist, album, duration, isPaused, metadata })
-                } else {
-                    this.Song = undefined
-                }
-
-                this.songChangedSubject.next(this.Song)
+            if (item && item.type === "track") {
+                const uri = item.uri
+                const name = item.name
+                const artist = item.metadata.artist_name
+                const album = item.album.name
+                const duration = item.duration.milliseconds
+                const isPaused = state.isPaused
+                const metadata = item.metadata
+                this.Song = new Song({ uri, name, artist, album, duration, isPaused, metadata })
+            } else {
+                this.Song = undefined
             }
-            onSongChanged(callback)
-        }
 
-        {
-            const callback = () => {
-                const isPausedNext = Player.data?.isPaused ?? true
-                if (this.isPaused !== isPausedNext) {
-                    if (!isPausedNext) {
-                        this.startTimestepping()
-                    }
-                    this.isPaused = !this.isPaused
-                    this.isPausedChangedSubject.next(this.isPaused)
+            this.songChangedSubject.next(this.Song)
+        })
+
+        onPlayedPaused(state => {
+            const isPausedNext = state.isPaused ?? true
+            if (this.isPaused !== isPausedNext) {
+                if (!isPausedNext) {
+                    this.startTimestepping()
                 }
+                this.isPaused = !this.isPaused
+                this.isPausedChangedSubject.next(this.isPaused)
             }
-            Player.addEventListener("onplaypause", callback)
-        }
+        })
     }
 
     private triggerTimestampSync() {
