@@ -1,9 +1,11 @@
-import { Song } from "./Song.ts"
-import { onPlayedPaused, onSongChanged } from "../../../shared/listeners.ts"
 import { Subject, animationFrameScheduler, asyncScheduler } from "https://esm.sh/rxjs"
 
-const { Player } = Spicetify
+import { onPlayedPaused, onSongChanged } from "../../../shared/listeners.ts"
+
+import { Song } from "./Song.ts"
+
 const { PlayerAPI } = Spicetify.Platform
+debugger
 
 export const PlayerW = new (class {
     private Song?: Song

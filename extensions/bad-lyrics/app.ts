@@ -16,4 +16,3 @@ new PermanentMutationObserver("aside", () => {
     lyricsContainer.innerHTML = ""
     render(ourLyricsContainer, lyricsContainer)
 })
-debugger
