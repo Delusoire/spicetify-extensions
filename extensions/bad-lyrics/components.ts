@@ -25,20 +25,20 @@ const createInterpolator = (...stops: number[][]) => {
 }
 
 const DefaultInterpolators = {
-    // scale: createInterpolator([0, 0.7], [1, 1.3], [1.1, 1]),
+    scale: createInterpolator([0, 0.7], [1, 1.3], [1.1, 1]),
     opacity: createInterpolator([0, 0], [0.3, 0.5], [1, 1], [1.2, 0.7]),
-    // yOffset: createInterpolator(
-    //     [0, 0],
-    //     [0.2, 0.03],
-    //     [0.3, 0.07],
-    //     [0.4, 0.14],
-    //     [0.5, 0.2],
-    //     [0.7, 0.25],
-    //     [0.8, 0.27],
-    //     [0.9, 0.13],
-    //     [1, 0],
-    // ),
-    // glow: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8]),
+    yOffset: createInterpolator(
+        [0, 0],
+        [0.2, 0.03],
+        [0.3, 0.07],
+        [0.4, 0.14],
+        [0.5, 0.2],
+        [0.7, 0.25],
+        [0.8, 0.27],
+        [0.9, 0.13],
+        [1, 0],
+    ),
+    glow: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8]),
 }
 
 @customElement("lyrics-container")
@@ -160,11 +160,7 @@ export class AnimatedText extends LitElement {
             -webkit-background-clip: text;
         }
     `
-
-    // scaleSprine
     opacitySprine
-    // yOffsetSprine
-    // glowSprine
 
     @property()
     text = ""
@@ -177,27 +173,19 @@ export class AnimatedText extends LitElement {
 
     constructor(interpolators = DefaultInterpolators) {
         super()
-        // this.scaleSprine = new Sprine(0, 0.6, 0.7, interpolators.scale)
+        // set sprines
         this.opacitySprine = new Sprine(1, 0.5, 1, interpolators.opacity)
-        // this.yOffsetSprine = new Sprine(0, 0.4, 1.25, interpolators.yOffset)
-        // this.glowSprine = new Sprine(0, 0.5, 1, interpolators.glow)
     }
 
     updateProgress(rsp: number) {
         // update sprines
-        this.opacitySprine.updateEquilibrium(rsp)
-
-        if (!this.opacitySprine.isInEquilibrium()) {
-            const opacity = this.opacitySprine.current
-            const i = 255 * opacity
-            this.style.color = `rgb(${i}, ${i}, ${i})`
-        }
+        // update styles if sprine not in equilibrium
 
         const crsp = _.clamp(rsp, 0, 1)
 
         if (rsp < 0) {
             this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)"
-            this.style.backgroundImage = "unset"
+            this.style.backgroundImage = "black"
         } else {
             if (rsp < 1) {
                 this.style.textShadow = "0 0 var(1.25px,0) rgba(255,255,255,0.85)"
@@ -217,30 +205,6 @@ export class AnimatedText extends LitElement {
                 container.scrollTo({ top: this.offsetTop - container.offsetTop - 20, behavior: "smooth" })
             }
         }
-
-        // this.scaleSprine.updateEquilibrium(rsp)
-        // this.opacitySprine.updateEquilibrium(rsp)
-        // this.yOffsetSprine.updateEquilibrium(rsp)
-        // this.glowSprine.updateEquilibrium(rsp)
-        // this.style.setProperty("--gradient-progress", `${100 * rsp}%`)
-
-        // if (!this.scaleSprine.isInEquilibrium()) {
-        //     const scale = this.scaleSprine.current
-        //     this.style.scale = scale.toString()
-        // }
-        // if (!this.opacitySprine.isInEquilibrium()) {
-        //     const opacity = this.opacitySprine.current
-        //     this.style.opacity = opacity.toString()
-        // }
-        // if (!this.yOffsetSprine.isInEquilibrium()) {
-        //     const yOffset = this.yOffsetSprine.current
-        //     this.style.transform = `translateY(${yOffset}rem))`
-        // }
-        // if (!this.glowSprine.isInEquilibrium()) {
-        //     const glow = this.glowSprine.current
-        //     this.style.setProperty("--text-shadow-opacity", `${100 * glow}%`)
-        //     this.style.setProperty("--text-shadow-blur-radius", `${glow}px`)
-        // }
     }
 
     render() {
