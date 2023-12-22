@@ -548,7 +548,6 @@ var AnimatedText = class extends LitElement {
         const textShadowOpacityPercent = crsp * 100;
         this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`;
       }
-      this.style.backgroundColor = "unset";
       this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${crsp * 100}%, rgba(255,255,255,0) ${crsp * 100}%)`;
     }
     if (0 <= rsp && rsp <= 1) {
