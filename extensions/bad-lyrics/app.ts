@@ -11,13 +11,12 @@ new PermanentMutationObserver("aside", () => {
     const lyricsContainer = document.querySelector<HTMLDivElement>(".main-nowPlayingView-lyricsContent")
     if (!lyricsContainer || lyricsContainer.classList.contains("injected")) return
     lyricsContainer.classList.add("injected")
-    lyricsContainer.innerHTML = ""
-    const lyricsContainerClone = lyricsContainer.cloneNode(true)
+    const lyricsContainerClone = lyricsContainer.cloneNode(false) as typeof lyricsContainer
     lyricsContainer.replaceWith(lyricsContainerClone)
 
     const ourLyricsContainer = new LyricsContainer()
     ourLyricsContainer.song = PlayerW.GetSong() ?? null
     PlayerW.songChangedSubject.subscribe(song => (ourLyricsContainer.song = song ?? null))
     PlayerW.scaledProgressChangedSubject.subscribe(progress => ourLyricsContainer.updateProgress(progress))
-    render(ourLyricsContainer, lyricsContainer)
+    render(ourLyricsContainer, lyricsContainerClone)
 })
