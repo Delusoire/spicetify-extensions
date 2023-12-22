@@ -68,7 +68,7 @@ export class LyricsContainer extends LitElement {
 
     public updateProgress(progress: number) {
         if (!this.hasLyrics) return
-        this.firstContainer.updateProgress(progress, 0)
+        this.firstContainer.updateProgress(progress, 0, 0)
     }
 
     @query("animated-text-container")
@@ -137,13 +137,26 @@ export class AnimatedTextContainer extends LitElement {
     // @ts-expect-error only has a getter
     childs: NodeListOf<AnimatedText | AnimatedTextContainer>
 
-    updateProgress(rsp: number, index: number) {
+    updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
         const calculateRSPForChild = (child: AnimatedText | AnimatedTextContainer) =>
             (rsp - child.tsr) / (child.ter - child.tsr)
 
-        this.childs.forEach(child => {
-            index = child.updateProgress(calculateRSPForChild(child), index)
-        })
+        const childs = Array.from(this.childs)
+        const rsps = childs.map(calculateRSPForChild)
+
+        const isActive = depthToActiveAncestor === 0
+
+        if (isActive) {
+            const activeIndex = _.sortedIndex(rsps, 0)
+
+            childs.forEach((child, i) => {
+                index = child.updateProgress(rsps[i], index, i === activeIndex ? 0 : 1)
+            })
+        } else {
+            childs.forEach((child, i) => {
+                index = child.updateProgress(rsps[i], index, depthToActiveAncestor + 1)
+            })
+        }
 
         return index
     }
@@ -203,16 +216,16 @@ export class AnimatedText extends LitElement {
     @consume({ context: spotifyContainerCtx })
     spotifyContainer?: HTMLElement
 
-    updateProgress(rsp: number, index: number) {
-        // update sprines
-        // update styles if sprine not in equilibrium
-        if (!this.globalRSPSpring) return index + 1
-
+    updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
         rsp = _.clamp(rsp, 0, 1)
+        const isActive = depthToActiveAncestor === 0
 
-        if (0 < rsp && rsp < 1) {
-            this.globalRSPSpring.setEquilibrium(index + rsp)
-            rsp = this.globalRSPSpring.current - index
+        if (isActive) {
+            // active text requires further smoothing for progress
+            if (this.globalRSPSpring) {
+                this.globalRSPSpring.setEquilibrium(index + rsp)
+                rsp = this.globalRSPSpring.current - index
+            }
             if (Date.now() > this.scrollTimeout) {
                 this.spotifyContainer?.scrollTo({
                     top: this.offsetTop - this.spotifyContainer.offsetTop - 20,
