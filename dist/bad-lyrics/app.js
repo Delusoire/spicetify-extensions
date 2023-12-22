@@ -538,7 +538,7 @@ var AnimatedText = class extends LitElement {
     const crsp = _.clamp(rsp, 0, 1);
     if (rsp < 0) {
       this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)";
-      this.style.backgroundImage = "black";
+      this.style.backgroundImage = "unset";
     } else {
       if (rsp < 1) {
         this.style.textShadow = "0 0 var(1.25px,0) rgba(255,255,255,0.85)";
@@ -565,6 +565,7 @@ var AnimatedText = class extends LitElement {
 AnimatedText.styles = css`
         :host {
             cursor: pointer;
+            background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
         }
