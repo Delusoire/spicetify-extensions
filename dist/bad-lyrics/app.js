@@ -558,7 +558,7 @@ var AnimatedText = class extends LitElement {
         const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight;
         const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight;
         if (1 <= verticalLinesToActive && verticalLinesToActive <= 4) {
-          console.log("scrolling");
+          console.log("scrolling", Math.abs(scrollTop - this.spotifyContainer.scrollTop));
           this.spotifyContainer.scrollTo({
             top: scrollTop,
             behavior: "smooth"
