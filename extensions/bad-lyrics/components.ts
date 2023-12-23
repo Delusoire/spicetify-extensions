@@ -8,7 +8,7 @@ import { when } from "https://esm.sh/lit/directives/when.js"
 
 import { _ } from "../../shared/deps.ts"
 import { Spring } from "./pkgs/spring.ts"
-import { SyncedPart } from "./utils/LyricsProvider.ts"
+import { LyricsType, SyncedPart } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
@@ -45,14 +45,16 @@ const DefaultInterpolators = {
     glow: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8]),
 }
 
-const globalRSPSpringCtx = createContext<Spring>("grsp")
+const globalRSPSpringCtx = createContext<Spring>("globalRSPSpring")
 const scrollTimeoutCtx = createContext<number>("scrollTimeout")
 const spotifyContainerCtx = createContext<HTMLElement | undefined>("spotifyContainer")
+const loadedLyricsTypeCtx = createContext<LyricsType>("loadedLyricsType")
 
 @customElement("lyrics-container")
 export class LyricsContainer extends LitElement {
     static styles = css`
-        :host {
+        :host > animated-text-container {
+            display: unset;
         }
     `
 
@@ -64,11 +66,12 @@ export class LyricsContainer extends LitElement {
         args: () => [this.song],
     })
 
+    @provide({ context: loadedLyricsTypeCtx })
     @state()
-    hasLyrics = false
+    loadedLyricsType = LyricsType.NONE
 
     public updateProgress(progress: number) {
-        if (!this.hasLyrics) return
+        if (!this.loadedLyricsType) return
         this.firstContainer.updateProgress(progress, 0, 0)
     }
 
@@ -93,28 +96,35 @@ export class LyricsContainer extends LitElement {
     }
 
     render() {
-        return this.lyricsTask.render({
-            pending: () => {
-                this.hasLyrics = false
-                return html`<div class="fetching">Fetching Lyrics...</div>`
-            },
-            complete: lyrics => {
-                const wordSynced = lyrics?.wordSynced
-                if (!wordSynced) {
-                    this.hasLyrics = false
-                    return html`<div class="noLyrics">No Lyrics</div>`
-                }
-                this.hasLyrics = true
+        return this.song
+            ? this.lyricsTask.render({
+                  pending: () => {
+                      this.loadedLyricsType = LyricsType.NONE
+                      return html`<div class="fetching">Fetching Lyrics...</div>`
+                  },
+                  complete: availableLyrics => {
+                      const lyrics = Object.values(availableLyrics!)[0]
+                      if (!lyrics) {
+                          this.loadedLyricsType = LyricsType.NONE
+                          return html`<div class="noLyrics">No Lyrics Found</div>`
+                      }
+                      this.loadedLyricsType = lyrics.__type
 
-                return html`
-                    <animated-text-container style="display: unset;" .text=${wordSynced.part}></animated-text-container>
-                `
-            },
-            error: () => {
-                this.hasLyrics = false
-                return html`<div class="error">Error</div>`
-            },
-        })
+                      const style = `--gradient-angle: ${
+                          this.loadedLyricsType === LyricsType.WORD_SYNCED ? 90 : 180
+                      }deg;`
+
+                      return html`
+                          <animated-text-container style=${style} .text=${lyrics.part}></animated-text-container>
+                      `
+                  },
+                  error: e => {
+                      this.loadedLyricsType = LyricsType.NONE
+                      console.error(e)
+                      return html`<div class="error">Error</div>`
+                  },
+              })
+            : html`<div class="error">No Song Loaded</div>`
     }
 }
 
@@ -194,7 +204,7 @@ export class AnimatedText extends LitElement {
         }
     `
 
-    gradientAlphaSpring = new Spring(0, 1, 10)
+    gradientAlphaSpring = new Spring(0, 5, 10)
 
     @property()
     text = ""
@@ -207,14 +217,18 @@ export class AnimatedText extends LitElement {
 
     @consume({ context: globalRSPSpringCtx })
     globalRSPSpring?: Spring
-
     @consume({ context: scrollTimeoutCtx, subscribe: true })
     scrollTimeout = 0
-
     @consume({ context: spotifyContainerCtx })
     spotifyContainer?: HTMLElement
+    @consume({ context: loadedLyricsTypeCtx })
+    loadedLyricsType = LyricsType.NONE
 
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
+        if (this.loadedLyricsType === LyricsType.NOT_SYNCED) {
+            this.style.backgroundColor = "white"
+            return
+        }
         const crsp = _.clamp(rsp, 0, 1) // clamped rsp
         const isActive = depthToActiveAncestor === 0
 
@@ -225,7 +239,8 @@ export class AnimatedText extends LitElement {
                 const lineHeight = this.offsetHeight
                 const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight * 2
                 const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight
-                if (1 <= verticalLinesToActive && verticalLinesToActive <= 4) {
+
+                if (_.inRange(verticalLinesToActive, 0.5, 4)) {
                     this.spotifyContainer.scrollTo({
                         top: scrollTop,
                         behavior: "smooth",
@@ -242,7 +257,7 @@ export class AnimatedText extends LitElement {
             this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2))
         }
 
-        this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,var(--gradient-alpha)) ${
+        this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${
             srsp * 90
         }%, rgba(255,255,255,0) ${srsp * 110}%)`
 

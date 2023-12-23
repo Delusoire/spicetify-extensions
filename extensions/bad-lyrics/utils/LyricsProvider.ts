@@ -20,9 +20,9 @@ Spicetify.CosmosAsync.get(url.toString(), undefined, _.omit(headers, "cookie")).
 // }
 
 export type Lyrics = {
-    wordSynced?: WordSynced
+    notSynced?: NotSynced
     lineSynced?: LineSynced
-    nonSynced?: NonSynced
+    wordSynced?: WordSynced
 }
 
 export type SyncedPart = {
@@ -37,9 +37,16 @@ export type Synced<A> = {
     part: A
 }
 
-export type NonSynced = Synced<Array<{ part: string }>> & { __type: "NonSynced" }
-export type LineSynced = Synced<Array<Synced<string>>> & { __type: "LineSynced" }
-export type WordSynced = Synced<Array<Synced<Array<Synced<string>>>>> & { __type: "WordSynced" }
+export enum LyricsType {
+    NONE,
+    NOT_SYNCED,
+    LINE_SYNCED,
+    WORD_SYNCED,
+}
+
+export type NotSynced = Synced<Array<{ part: string }>> & { __type: LyricsType.NOT_SYNCED }
+export type LineSynced = Synced<Array<Synced<string>>> & { __type: LyricsType.LINE_SYNCED }
+export type WordSynced = Synced<Array<Synced<Array<Synced<string>>>>> & { __type: LyricsType.WORD_SYNCED }
 
 export const findLyrics = async (info: {
     uri: string
@@ -58,7 +65,7 @@ export const findLyrics = async (info: {
 
     const l: Lyrics = {}
 
-    const w = <T extends string, P>(s: T, a: P) => ({
+    const wrapInContainerSyncedType = <T extends LyricsType, P>(s: T, a: P) => ({
         __type: s,
         tsr: 0,
         ter: 1,
@@ -67,8 +74,8 @@ export const findLyrics = async (info: {
 
     if (track.has_richsync) {
         const richSync = await fetchMxmTrackRichSyncGet(track.commontrack_id, track.track_length)
-        l.wordSynced = w(
-            "WordSynced",
+        l.wordSynced = wrapInContainerSyncedType(
+            LyricsType.WORD_SYNCED,
             richSync.map(rsLine => {
                 const tsr = rsLine.ts / track.track_length
                 const ter = rsLine.te / track.track_length
@@ -92,8 +99,8 @@ export const findLyrics = async (info: {
             text: string
             time: { total: number; minutes: number; seconds: number; hundredths: number }
         }>
-        l.lineSynced = w(
-            "LineSynced",
+        l.lineSynced = wrapInContainerSyncedType(
+            LyricsType.LINE_SYNCED,
             subtitle.map((sLine, index, subtitle) => {
                 const tsr = sLine.time.total / track.track_length
                 const ter = subtitle[index + 1]?.time.total / track.track_length || 1
@@ -103,8 +110,8 @@ export const findLyrics = async (info: {
     }
 
     if (track.has_lyrics || track.has_lyrics_crowd) {
-        l.nonSynced = w(
-            "NonSynced",
+        l.notSynced = wrapInContainerSyncedType(
+            LyricsType.NOT_SYNCED,
             lyrics.lyrics_body.split("\n").map(lLine => ({ part: lLine })),
         )
     }

@@ -106,7 +106,7 @@ var findLyrics = async (info) => {
     info.durationS
   );
   const l = {};
-  const w = (s, a) => ({
+  const wrapInContainerSyncedType = (s, a) => ({
     __type: s,
     tsr: 0,
     ter: 1,
@@ -114,8 +114,8 @@ var findLyrics = async (info) => {
   });
   if (track.has_richsync) {
     const richSync = await fetchMxmTrackRichSyncGet(track.commontrack_id, track.track_length);
-    l.wordSynced = w(
-      "WordSynced",
+    l.wordSynced = wrapInContainerSyncedType(
+      3 /* WORD_SYNCED */,
       richSync.map((rsLine) => {
         const tsr = rsLine.ts / track.track_length;
         const ter = rsLine.te / track.track_length;
@@ -132,8 +132,8 @@ var findLyrics = async (info) => {
   }
   if (track.has_subtitles) {
     const subtitle = JSON.parse(subtitles[0].subtitle_body);
-    l.lineSynced = w(
-      "LineSynced",
+    l.lineSynced = wrapInContainerSyncedType(
+      2 /* LINE_SYNCED */,
       subtitle.map((sLine, index, subtitle2) => {
         const tsr = sLine.time.total / track.track_length;
         const ter = subtitle2[index + 1]?.time.total / track.track_length || 1;
@@ -142,8 +142,8 @@ var findLyrics = async (info) => {
     );
   }
   if (track.has_lyrics || track.has_lyrics_crowd) {
-    l.nonSynced = w(
-      "NonSynced",
+    l.notSynced = wrapInContainerSyncedType(
+      1 /* NOT_SYNCED */,
       lyrics.lyrics_body.split("\n").map((lLine) => ({ part: lLine }))
     );
   }
@@ -395,9 +395,10 @@ var DefaultInterpolators = {
   ),
   glow: createInterpolator([0, 0.7], [1, 1.3], [1.2, 0.8])
 };
-var globalRSPSpringCtx = createContext("grsp");
+var globalRSPSpringCtx = createContext("globalRSPSpring");
 var scrollTimeoutCtx = createContext("scrollTimeout");
 var spotifyContainerCtx = createContext("spotifyContainer");
+var loadedLyricsTypeCtx = createContext("loadedLyricsType");
 var LyricsContainer = class extends LitElement {
   constructor() {
     super(...arguments);
@@ -406,13 +407,13 @@ var LyricsContainer = class extends LitElement {
       task: ([song]) => song?.lyrics,
       args: () => [this.song]
     });
-    this.hasLyrics = false;
+    this.loadedLyricsType = 0 /* NONE */;
     this.globalRSPSpring = new Spring(0, 1, 1);
     this.scrollTimeout = 0;
     this.spotifyContainer = document.querySelector("aside div.main-nowPlayingView-lyricsContent.injected") ?? void 0;
   }
   updateProgress(progress) {
-    if (!this.hasLyrics)
+    if (!this.loadedLyricsType)
       return;
     this.firstContainer.updateProgress(progress, 0, 0);
   }
@@ -422,39 +423,43 @@ var LyricsContainer = class extends LitElement {
     });
   }
   render() {
-    return this.lyricsTask.render({
+    return this.song ? this.lyricsTask.render({
       pending: () => {
-        this.hasLyrics = false;
+        this.loadedLyricsType = 0 /* NONE */;
         return html`<div class="fetching">Fetching Lyrics...</div>`;
       },
-      complete: (lyrics) => {
-        const wordSynced = lyrics?.wordSynced;
-        if (!wordSynced) {
-          this.hasLyrics = false;
-          return html`<div class="noLyrics">No Lyrics</div>`;
+      complete: (availableLyrics) => {
+        const lyrics = Object.values(availableLyrics)[0];
+        if (!lyrics) {
+          this.loadedLyricsType = 0 /* NONE */;
+          return html`<div class="noLyrics">No Lyrics Found</div>`;
         }
-        this.hasLyrics = true;
+        this.loadedLyricsType = lyrics.__type;
+        const style = `--gradient-angle: ${this.loadedLyricsType === 3 /* WORD_SYNCED */ ? 90 : 180}deg;`;
         return html`
-                    <animated-text-container style="display: unset;" .text=${wordSynced.part}></animated-text-container>
-                `;
+                          <animated-text-container style=${style} .text=${lyrics.part}></animated-text-container>
+                      `;
       },
-      error: () => {
-        this.hasLyrics = false;
+      error: (e) => {
+        this.loadedLyricsType = 0 /* NONE */;
+        console.error(e);
         return html`<div class="error">Error</div>`;
       }
-    });
+    }) : html`<div class="error">No Song Loaded</div>`;
   }
 };
 LyricsContainer.styles = css`
-        :host {
+        :host > animated-text-container {
+            display: unset;
         }
     `;
 __decorateClass([
   property({ attribute: false })
 ], LyricsContainer.prototype, "song", 2);
 __decorateClass([
+  provide({ context: loadedLyricsTypeCtx }),
   state()
-], LyricsContainer.prototype, "hasLyrics", 2);
+], LyricsContainer.prototype, "loadedLyricsType", 2);
 // @ts-expect-error only has a getter
 __decorateClass([
   query("animated-text-container")
@@ -541,14 +546,19 @@ AnimatedTextContainer = __decorateClass([
 var AnimatedText = class extends LitElement {
   constructor() {
     super(...arguments);
-    this.gradientAlphaSpring = new Spring(0, 1, 10);
+    this.gradientAlphaSpring = new Spring(0, 5, 10);
     this.text = "";
     this.tsrAbsolute = 0;
     this.tsr = 0;
     this.ter = 1;
     this.scrollTimeout = 0;
+    this.loadedLyricsType = 0 /* NONE */;
   }
   updateProgress(rsp, index, depthToActiveAncestor) {
+    if (this.loadedLyricsType === 1 /* NOT_SYNCED */) {
+      this.style.backgroundColor = "white";
+      return;
+    }
     const crsp = _.clamp(rsp, 0, 1);
     const isActive = depthToActiveAncestor === 0;
     if (isActive) {
@@ -557,7 +567,7 @@ var AnimatedText = class extends LitElement {
         const lineHeight = this.offsetHeight;
         const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight * 2;
         const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight;
-        if (1 <= verticalLinesToActive && verticalLinesToActive <= 4) {
+        if (_.inRange(verticalLinesToActive, 0.5, 4)) {
           this.spotifyContainer.scrollTo({
             top: scrollTop,
             behavior: "smooth"
@@ -571,7 +581,7 @@ var AnimatedText = class extends LitElement {
       const gradientAlpha = this.gradientAlphaSpring.current;
       this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2));
     }
-    this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,var(--gradient-alpha)) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`;
+    this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`;
     return index + 1;
   }
   render() {
@@ -609,6 +619,9 @@ __decorateClass([
 __decorateClass([
   consume({ context: spotifyContainerCtx })
 ], AnimatedText.prototype, "spotifyContainer", 2);
+__decorateClass([
+  consume({ context: loadedLyricsTypeCtx })
+], AnimatedText.prototype, "loadedLyricsType", 2);
 AnimatedText = __decorateClass([
   customElement("animated-text")
 ], AnimatedText);
