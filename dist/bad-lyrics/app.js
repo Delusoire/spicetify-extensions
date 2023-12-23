@@ -362,6 +362,9 @@ var Spring = class {
     this.v = nextV;
     this.inEquilibrium = Math.abs(this.v) <= SLEEPING_EPSILON;
     this.p = this.inEquilibrium ? this.p_e : nextP;
+    if (Number.isNaN(this.p)) {
+      debugger;
+    }
     return nextP;
   }
   setEquilibrium(position) {
@@ -556,7 +559,7 @@ AnimatedTextContainer = __decorateClass([
 var AnimatedText = class extends LitElement {
   constructor() {
     super(...arguments);
-    this.gradientAlphaSpring = new Spring(0, 25, 1);
+    this.gradientAlphaSpring = new Spring(0, 25, 1, 0);
     this.text = "";
     this.tsrAbsolute = 0;
     this.tsr = 0;
@@ -636,7 +639,6 @@ AnimatedText = __decorateClass([
 ], AnimatedText);
 
 // extensions/bad-lyrics/app.ts
-debugger;
 new PermanentMutationObserver("aside", () => {
   const lyricsContainer = document.querySelector(".main-nowPlayingView-lyricsContent");
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))

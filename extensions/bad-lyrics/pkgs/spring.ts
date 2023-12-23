@@ -80,6 +80,10 @@ export class Spring {
 
         this.p = this.inEquilibrium ? this.p_e : nextP
 
+        if (Number.isNaN(this.p)) {
+            debugger
+        }
+
         return nextP
     }
 
