@@ -128,7 +128,7 @@ export abstract class SyncedScrolledContent extends LitElement {
             this.globalRSPSpring!.setEquilibrium(index + crsp)
 
             if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
-                const lineHeightHeuristic = this.offsetHeight
+                const lineHeightHeuristic = 24
                 const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic * 2
                 const verticalLinesToActive =
                     Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeightHeuristic
