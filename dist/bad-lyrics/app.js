@@ -421,7 +421,7 @@ var AnimatedContentContainer = class extends LitElement {
     return html`${map(this.content, (part) => {
       const tsrAbsolute = this.tsrAbsolute + part.tsr * (this.ter - this.tsr);
       if (Array.isArray(part.content)) {
-        return html`<animated-text-container
+        return html`<animated-content-container
                     .content=${part.content}
                     tsrAbsolute=${tsrAbsolute}
                     tsr=${part.tsr}
@@ -438,7 +438,7 @@ var AnimatedContentContainer = class extends LitElement {
                     duration=${filler.duration}
                 />`;
       }
-      return html` <animated-text
+      return html` <animated-content
                 content=${part.content}
                 tsrAbsolute=${tsrAbsolute}
                 tsr=${part.tsr}
@@ -659,7 +659,10 @@ var LyricsContainer = class extends LitElement {
           [""]
         ].map((a) => a.join(": ")).join("; ");
         return html`
-                          <animated-text-container style=${style} .content=${lyrics.content}></animated-text-container>
+                          <animated-content-container
+                              style=${style}
+                              .content=${lyrics.content}
+                          ></animated-content-container>
                       `;
       },
       error: (e) => {
@@ -670,11 +673,11 @@ var LyricsContainer = class extends LitElement {
     }) : html`<div class="error">No Song Loaded</div>`;
   }
 };
+LyricsContainer.NAME = "lyrics-container";
 LyricsContainer.MINIMUM_FILL_DURATION_MS = 300;
 LyricsContainer.SCROLL_TIMEOUT_MS = 500;
-LyricsContainer.NAME = "lyrics-container";
 LyricsContainer.styles = css`
-        :host > animated-text-container {
+        :host > animated-content-container {
             display: unset;
         }
     `;

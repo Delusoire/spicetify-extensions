@@ -74,7 +74,7 @@ export class AnimatedContentContainer extends LitElement {
             const tsrAbsolute = this.tsrAbsolute + part.tsr * (this.ter - this.tsr)
 
             if (Array.isArray(part.content)) {
-                return html`<animated-text-container
+                return html`<animated-content-container
                     .content=${part.content}
                     tsrAbsolute=${tsrAbsolute}
                     tsr=${part.tsr}
@@ -93,7 +93,7 @@ export class AnimatedContentContainer extends LitElement {
                 />`
             }
 
-            return html` <animated-text
+            return html` <animated-content
                 content=${part.content}
                 tsrAbsolute=${tsrAbsolute}
                 tsr=${part.tsr}
@@ -255,13 +255,13 @@ export class AnimatedContent extends SyncedScrolledContent {
 
 @customElement(LyricsContainer.NAME)
 export class LyricsContainer extends LitElement {
+    static readonly NAME = "lyrics-container" as const
+
     static readonly MINIMUM_FILL_DURATION_MS = 300
     static readonly SCROLL_TIMEOUT_MS = 500
 
-    static readonly NAME = "lyrics-container" as const
-
     static styles = css`
-        :host > animated-text-container {
+        :host > animated-content-container {
             display: unset;
         }
     `
@@ -328,7 +328,10 @@ export class LyricsContainer extends LitElement {
                           .join("; ")
 
                       return html`
-                          <animated-text-container style=${style} .content=${lyrics.content}></animated-text-container>
+                          <animated-content-container
+                              style=${style}
+                              .content=${lyrics.content}
+                          ></animated-content-container>
                       `
                   },
                   error: e => {
