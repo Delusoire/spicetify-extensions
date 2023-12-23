@@ -106,6 +106,8 @@ var findLyrics = async (info) => {
     info.durationS
   );
   const l = {};
+  if (!lyrics)
+    return l;
   const wrapInContainerSyncedType = (s, a) => ({
     __type: s,
     tsr: 0,
@@ -149,7 +151,7 @@ var findLyrics = async (info) => {
   }
   return l;
 };
-var fetchMxmMacroSubtitlesGet = async (uri, title, artist, album, durationS) => {
+var fetchMxmMacroSubtitlesGet = async (uri, title, artist, album, durationS, renewsLeft = 1) => {
   const url2 = new URL("https://apic-desktop.musixmatch.com/ws/1.1/macro.subtitles.get");
   url2.searchParams.append("format", "json");
   url2.searchParams.append("namespace", "lyrics_richsynched");
@@ -164,6 +166,9 @@ var fetchMxmMacroSubtitlesGet = async (uri, title, artist, album, durationS) => 
   url2.searchParams.append("f_subtitle_length", encodeURIComponent(Math.floor(durationS)));
   url2.searchParams.append("usertoken", CONFIG.musixmatchToken);
   const res = await Spicetify.CosmosAsync.get(url2.toString(), void 0, headers);
+  if (res.message.header.hint === "renew") {
+    return renewsLeft > 0 ? fetchMxmMacroSubtitlesGet(uri, title, artist, album, durationS, 0) : Promise.resolve({});
+  }
   const {
     "track.lyrics.get": trackLyricsGet,
     "track.snippet.get": trackSnippetGet,
@@ -171,6 +176,7 @@ var fetchMxmMacroSubtitlesGet = async (uri, title, artist, album, durationS) => 
     "userblob.get": userblobGet,
     "matcher.track.get": matcherTrackGet
   } = res.message.body.macro_calls;
+  debugger;
   return {
     lyrics: trackLyricsGet.message.body.lyrics,
     snippet: trackSnippetGet.message.body.snippet,
@@ -628,7 +634,6 @@ AnimatedText = __decorateClass([
 ], AnimatedText);
 
 // extensions/bad-lyrics/app.ts
-debugger;
 new PermanentMutationObserver("aside", () => {
   const lyricsContainer = document.querySelector(".main-nowPlayingView-lyricsContent");
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))
