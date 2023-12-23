@@ -97,6 +97,7 @@ Spicetify.CosmosAsync.get(url.toString(), void 0, _.omit(headers, "cookie")).the
     CONFIG.musixmatchToken = res.message.body.user_token;
   }
 });
+var Filler = "\u266A";
 var findLyrics = async (info) => {
   const { lyrics, subtitles, track } = await fetchMxmMacroSubtitlesGet(
     info.uri,
@@ -116,21 +117,29 @@ var findLyrics = async (info) => {
   });
   if (track.has_richsync) {
     const richSync = await fetchMxmTrackRichSyncGet(track.commontrack_id, track.track_length);
-    l.wordSynced = wrapInContainerSyncedType(
-      3 /* WORD_SYNCED */,
-      richSync.map((rsLine) => {
-        const tsr = rsLine.ts / track.track_length;
-        const ter = rsLine.te / track.track_length;
-        const duration = rsLine.te - rsLine.ts;
-        const part = rsLine.l.map((word, index, words) => {
-          const part2 = word.c;
-          const tsr2 = word.o / duration;
-          const ter2 = words[index + 1]?.o / duration || 1;
-          return { tsr: tsr2, ter: ter2, part: part2 };
-        });
-        return { tsr, ter, part };
-      })
+    const wordSynced = richSync.map((rsLine) => {
+      const tsr = rsLine.ts / track.track_length;
+      const ter = rsLine.te / track.track_length;
+      const duration = rsLine.te - rsLine.ts;
+      const part = rsLine.l.map((word, index, words) => {
+        const part2 = word.c;
+        const tsr2 = word.o / duration;
+        const ter2 = words[index + 1]?.o / duration || 1;
+        return { tsr: tsr2, ter: ter2, part: part2 };
+      });
+      return { tsr, ter, part };
+    });
+    const wordSyncedFilled = wordSynced.flatMap(
+      (rsLine, i, wordSynced2) => wordSynced2[i + 1].tsr > rsLine.ter ? [
+        rsLine,
+        {
+          tsr: rsLine.ter,
+          ter: wordSynced2[i + 1].tsr,
+          part: Filler
+        }
+      ] : rsLine
     );
+    l.wordSynced = wrapInContainerSyncedType(3 /* WORD_SYNCED */, wordSyncedFilled);
   }
   if (track.has_subtitles) {
     const subtitle = JSON.parse(subtitles[0].subtitle_body);
@@ -356,9 +365,6 @@ var Spring = class {
       const e_2 = c_2 * Math.exp(r_2 * dt);
       nextP = this.p_e + e_1 + e_2;
       nextV = r_1 * e_1 + r_2 * e_2;
-      if (!Number.isFinite(nextP) || !Number.isFinite(nextV)) {
-        debugger;
-      }
     } else {
       throw "Solar flare detected.";
     }
@@ -419,7 +425,7 @@ var LyricsContainer = class extends LitElement {
       args: () => [this.song]
     });
     this.loadedLyricsType = 0 /* NONE */;
-    this.globalRSPSpring = new Spring(0, 1, 1);
+    this.globalRSPSpring = new Spring(0, 5, 1);
     this.scrollTimeout = 0;
     this.spotifyContainer = document.querySelector("aside div.main-nowPlayingView-lyricsContent.injected") ?? void 0;
   }

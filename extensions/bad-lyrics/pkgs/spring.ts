@@ -70,10 +70,6 @@ export class Spring {
 
             nextP = this.p_e + e_1 + e_2
             nextV = r_1 * e_1 + r_2 * e_2
-
-            if (!Number.isFinite(nextP) || !Number.isFinite(nextV)) {
-                debugger
-            }
         } else {
             throw "Solar flare detected."
         }

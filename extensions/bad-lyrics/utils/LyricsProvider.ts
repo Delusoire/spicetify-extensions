@@ -44,9 +44,13 @@ export enum LyricsType {
     WORD_SYNCED,
 }
 
+export const Filler = "♪"
+
 export type NotSynced = Synced<Array<{ part: string }>> & { __type: LyricsType.NOT_SYNCED }
 export type LineSynced = Synced<Array<Synced<string>>> & { __type: LyricsType.LINE_SYNCED }
-export type WordSynced = Synced<Array<Synced<Array<Synced<string>>>>> & { __type: LyricsType.WORD_SYNCED }
+export type WordSynced = Synced<Array<Synced<Array<Synced<string>> | Synced<typeof Filler>>>> & {
+    __type: LyricsType.WORD_SYNCED
+}
 
 export const findLyrics = async (info: {
     uri: string
@@ -75,24 +79,36 @@ export const findLyrics = async (info: {
 
     if (track.has_richsync) {
         const richSync = await fetchMxmTrackRichSyncGet(track.commontrack_id, track.track_length)
-        l.wordSynced = wrapInContainerSyncedType(
-            LyricsType.WORD_SYNCED,
-            richSync.map(rsLine => {
-                const tsr = rsLine.ts / track.track_length
-                const ter = rsLine.te / track.track_length
-                const duration = rsLine.te - rsLine.ts
+        const wordSynced = richSync.map(rsLine => {
+            const tsr = rsLine.ts / track.track_length
+            const ter = rsLine.te / track.track_length
+            const duration = rsLine.te - rsLine.ts
 
-                const part = rsLine.l.map((word, index, words) => {
-                    const part = word.c
-                    const tsr = word.o / duration
-                    const ter = words[index + 1]?.o / duration || 1
-
-                    return { tsr, ter, part }
-                })
+            const part = rsLine.l.map((word, index, words) => {
+                const part = word.c
+                const tsr = word.o / duration
+                const ter = words[index + 1]?.o / duration || 1
 
                 return { tsr, ter, part }
-            }),
+            })
+
+            return { tsr, ter, part }
+        })
+
+        const wordSyncedFilled = wordSynced.flatMap((rsLine, i, wordSynced) =>
+            wordSynced[i + 1].tsr > rsLine.ter
+                ? [
+                      rsLine,
+                      {
+                          tsr: rsLine.ter,
+                          ter: wordSynced[i + 1].tsr,
+                          part: Filler,
+                      },
+                  ]
+                : rsLine,
         )
+
+        l.wordSynced = wrapInContainerSyncedType(LyricsType.WORD_SYNCED, wordSyncedFilled)
     }
 
     if (track.has_subtitles) {

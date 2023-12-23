@@ -80,7 +80,7 @@ export class LyricsContainer extends LitElement {
     firstContainer: AnimatedTextContainer
 
     @provide({ context: globalRSPSpringCtx })
-    globalRSPSpring = new Spring(0, 1, 1)
+    globalRSPSpring = new Spring(0, 5, 1)
 
     @provide({ context: scrollTimeoutCtx })
     scrollTimeout = 0
