@@ -555,7 +555,7 @@ var AnimatedText = class extends LitElement {
       this.globalRSPSpring.setEquilibrium(index + crsp);
       if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
         const lineHeight = this.offsetHeight;
-        const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight;
+        const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight * 2;
         const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight;
         if (1 <= verticalLinesToActive && verticalLinesToActive <= 4) {
           this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS;
