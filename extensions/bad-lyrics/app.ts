@@ -5,6 +5,8 @@ import { PermanentMutationObserver } from "../../shared/util.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { LyricsContainer } from "./components.ts"
 
+debugger
+
 new PermanentMutationObserver("aside", () => {
     const lyricsContainer = document.querySelector<HTMLDivElement>(".main-nowPlayingView-lyricsContent")
     if (!lyricsContainer || lyricsContainer.classList.contains("injected")) return

@@ -487,7 +487,6 @@ onHistoryChanged((uri) => URI3.isArtist(uri), updateArtistPage);
     if (!document.getElementById("show-the-genres-css")) {
         const el = document.createElement("style")
         el.id = "show-the-genres-css"
-        
         el.textContent = "/* extensions/show-the-genres/assets/styles.css */\n.main-nowPlayingWidget-trackInfo.main-trackInfo-container {\n  grid-template: \"title title\" \"badges subtitle\" \"genres genres\"/auto 1fr auto;\n}\n"
         document.head.appendChild(el)
     }

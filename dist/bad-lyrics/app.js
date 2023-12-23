@@ -297,7 +297,7 @@ var PlayerW = new class {
 }();
 
 // extensions/bad-lyrics/components.ts
-import { createContext, provide, consume } from "https://esm.sh/@lit/context";
+import { consume, createContext, provide } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
 import { hermite } from "https://esm.sh/@thi.ng/ramp";
 import { LitElement, css, html } from "https://esm.sh/lit";
@@ -640,6 +640,7 @@ AnimatedText = __decorateClass([
 ], AnimatedText);
 
 // extensions/bad-lyrics/app.ts
+debugger;
 new PermanentMutationObserver("aside", () => {
   const lyricsContainer = document.querySelector(".main-nowPlayingView-lyricsContent");
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))

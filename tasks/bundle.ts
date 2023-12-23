@@ -12,36 +12,25 @@ import { postCSSPlugin } from "./esbuild-plugin-postcss.ts"
 import { extractor } from "./front-matter.ts"
 import { sass } from "https://deno.land/x/denosass@1.0.6/src/mod.ts"
 
-// Utils
-
 const USER_REPO = "Delusoire/spicetify-extensions"
 
-// const rawest = (str: string) => "String.raw`" + str.replace(/(\$\{|\`)/gm, "\\$1") + "`"
-
-const runtimeInject = (id: string, tag: string, content: string, props = {}) =>
-    `(async () => {
+const wrapInCssTag = (id: string, css: string) => `(async () => {
     if (!document.getElementById("${id}")) {
-        const el = document.createElement("${tag}")
+        const el = document.createElement("style")
         el.id = "${id}"
-        ${Object.entries(props)
-            .map(([k, v]) => `el["${k}"] = "${v}"`)
-            .join(";")}
-        el.textContent = ${content}
+        el.textContent = ${JSON.stringify(css)}
         document.head.appendChild(el)
     }
 })()`
 
-const wrapInCssTag = (id: string, css: string) => runtimeInject(id, "style", JSON.stringify(css))
-
-const generatePrismContent = (name: string) =>
-    runtimeInject(
-        name,
-        "script",
-        `await fetch(\`https://api.github.com/repos/${USER_REPO}/contents/dist/${name}/app.js\`)
-            .then(res => res.json())
-            .then(data => atob(data.content))`,
-        { type: "module" },
-    )
+const generatePrismContent = (
+    name: string,
+) => `fetch("https://api.github.com/repos/${USER_REPO}/contents/dist/${name}/app.js")
+    .then(res => res.json())
+    .then(json => atob(json.content))
+    .then(content => new Blob([content], { type: "application/javascript" }))
+    .then(URL.createObjectURL)
+    .then(url => import(url))`
 
 const readDirFullPath = (path: string) => Array.from(Deno.readDirSync(path)).map(file => join(path, file.name))
 
@@ -88,7 +77,7 @@ const extensionsData = extensions.map(async fullname => {
     const s = join(OUT, name)
     const jsPath = join(s, "app.js")
     const cssPath = join(s, "app.css")
-    const prismPath = join(s, "prism.js")
+    const prismPath = join(s, "prism.mjs")
 
     try {
         const cssContent = decoder.decode(await Deno.readFile(cssPath))
