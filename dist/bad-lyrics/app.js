@@ -575,7 +575,7 @@ var AnimatedText = class extends LitElement {
       if (srsp >= 1) {
       } else {
       }
-      this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`;
+      this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,${0.9 * Math.SQRT1_2 ** depthToActiveAncestor}) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`;
     }
     return index + 1;
   }
