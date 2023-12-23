@@ -88,6 +88,7 @@ export class LyricsContainer extends LitElement {
 
     firstUpdated(changedProperties: PropertyValueMap<this>) {
         this.spotifyContainer?.addEventListener("scroll", e => {
+            console.log("detected scroll", this.scrollTimeout)
             this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS
         })
     }
@@ -224,6 +225,7 @@ export class AnimatedText extends LitElement {
                 const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight
                 if (1 <= verticalLinesToActive && verticalLinesToActive <= 4) {
                     this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS
+                    console.log("scrolling", this.scrollTimeout)
                     this.spotifyContainer.scrollTo({
                         top: scrollTop,
                         behavior: "smooth",
