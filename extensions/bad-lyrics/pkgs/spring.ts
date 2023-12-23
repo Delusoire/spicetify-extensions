@@ -80,7 +80,7 @@ export class Spring {
 
         this.p = this.inEquilibrium ? this.p_e : nextP
 
-        if (Number.isNaN(this.p)) {
+        if (Number.isNaN(this.p) || Number.isNaN(this.v)) {
             debugger
         }
 

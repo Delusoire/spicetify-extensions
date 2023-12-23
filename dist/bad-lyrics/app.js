@@ -362,7 +362,7 @@ var Spring = class {
     this.v = nextV;
     this.inEquilibrium = Math.abs(this.v) <= SLEEPING_EPSILON;
     this.p = this.inEquilibrium ? this.p_e : nextP;
-    if (Number.isNaN(this.p)) {
+    if (Number.isNaN(this.p) || Number.isNaN(this.v)) {
       debugger;
     }
     return nextP;
