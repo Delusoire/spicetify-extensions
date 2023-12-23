@@ -25,16 +25,20 @@ export type Lyrics = {
     wordSynced?: WordSynced
 }
 
-export type SyncedPart = {
+export type SyncedContent = {
     tsr: number
     ter: number
-    part: Array<SyncedPart> | string
+    content: Array<SyncedContent> | string
 }
 
 export type Synced<A> = {
     tsr: number
     ter: number
-    part: A
+    content: A
+}
+
+export type SyncedFiller = Synced<typeof Filler> & {
+    duration: number
 }
 
 export enum LyricsType {
@@ -46,9 +50,9 @@ export enum LyricsType {
 
 export const Filler = "♪"
 
-export type NotSynced = Synced<Array<{ part: string }>> & { __type: LyricsType.NOT_SYNCED }
+export type NotSynced = Synced<string> & { __type: LyricsType.NOT_SYNCED }
 export type LineSynced = Synced<Array<Synced<string>>> & { __type: LyricsType.LINE_SYNCED }
-export type WordSynced = Synced<Array<Synced<Array<Synced<string>>> | Synced<typeof Filler>>> & {
+export type WordSynced = Synced<Array<Synced<Array<Synced<string>>> | SyncedFiller>> & {
     __type: LyricsType.WORD_SYNCED
 }
 
@@ -70,11 +74,11 @@ export const findLyrics = async (info: {
     const l: Lyrics = {}
     if (!lyrics) return l
 
-    const wrapInContainerSyncedType = <T extends LyricsType, P>(s: T, a: P) => ({
-        __type: s,
+    const wrapInContainerSyncedType = <T extends LyricsType, P>(__type: T, content: P) => ({
+        __type,
         tsr: 0,
         ter: 1,
-        part: a,
+        content,
     })
 
     if (track.has_richsync) {
@@ -84,29 +88,34 @@ export const findLyrics = async (info: {
             const ter = rsLine.te / track.track_length
             const duration = rsLine.te - rsLine.ts
 
-            const part = rsLine.l.map((word, index, words) => {
-                const part = word.c
+            const content = rsLine.l.map((word, index, words) => {
+                const content = word.c
                 const tsr = word.o / duration
                 const ter = words[index + 1]?.o / duration || 1
 
-                return { tsr, ter, part }
+                return { tsr, ter, content }
             })
 
-            return { tsr, ter, part }
+            return { tsr, ter, content }
         })
 
-        const wordSyncedFilled = wordSynced.flatMap((rsLine, i, wordSynced) =>
-            wordSynced[i + 1]?.tsr > rsLine.ter
-                ? [
-                      rsLine,
-                      {
-                          tsr: rsLine.ter,
-                          ter: wordSynced[i + 1].tsr,
-                          part: Filler,
-                      } as Synced<typeof Filler>,
-                  ]
-                : rsLine,
-        )
+        const wordSyncedFilled = wordSynced.flatMap((rsLine, i, wordSynced) => {
+            const nextRsLine = wordSynced[i + 1]
+            const tsr = rsLine.ter
+            const ter = nextRsLine?.tsr
+            const dr = ter - tsr
+            if (!dr) return rsLine
+
+            return [
+                rsLine,
+                {
+                    tsr,
+                    ter,
+                    duration: dr * track.track_length * 1000,
+                    content: Filler,
+                } as SyncedFiller,
+            ]
+        })
 
         l.wordSynced = wrapInContainerSyncedType(LyricsType.WORD_SYNCED, wordSyncedFilled)
     }
@@ -121,16 +130,13 @@ export const findLyrics = async (info: {
             subtitle.map((sLine, index, subtitle) => {
                 const tsr = sLine.time.total / track.track_length
                 const ter = subtitle[index + 1]?.time.total / track.track_length || 1
-                return { tsr, ter, part: sLine.text }
+                return { tsr, ter, content: sLine.text }
             }),
         )
     }
 
     if (track.has_lyrics || track.has_lyrics_crowd) {
-        l.notSynced = wrapInContainerSyncedType(
-            LyricsType.NOT_SYNCED,
-            lyrics.lyrics_body.split("\n").map(lLine => ({ part: lLine })),
-        )
+        l.notSynced = wrapInContainerSyncedType(LyricsType.NOT_SYNCED, lyrics.lyrics_body)
     }
 
     return l
