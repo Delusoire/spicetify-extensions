@@ -206,7 +206,7 @@ export class AnimatedText extends LitElement {
     @consume({ context: globalRSPSpringCtx })
     globalRSPSpring?: Spring
 
-    @consume({ context: scrollTimeoutCtx })
+    @consume({ context: scrollTimeoutCtx, subscribe: true })
     scrollTimeout = 0
 
     @consume({ context: spotifyContainerCtx })
@@ -249,7 +249,7 @@ export class AnimatedText extends LitElement {
                 // this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`
             }
             this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,${
-                0.9 * Math.SQRT1_2 ** depthToActiveAncestor
+                0.9 ** (1 + depthToActiveAncestor)
             }) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`
         }
 
