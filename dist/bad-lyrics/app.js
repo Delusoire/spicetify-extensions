@@ -417,11 +417,7 @@ var LyricsContainer = class extends LitElement {
     this.firstContainer.updateProgress(progress, 0, 0);
   }
   firstUpdated(changedProperties) {
-    this.spotifyContainer?.addEventListener("scroll", (e) => {
-      if (!e.isTrusted)
-        return;
-      this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS;
-    });
+    this.spotifyContainer?.addEventListener("scroll", (e) => this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS);
   }
   render() {
     return this.lyricsTask.render({
@@ -637,4 +633,3 @@ new PermanentMutationObserver("aside", () => {
   PlayerW.scaledProgressChangedSubject.subscribe((progress) => ourLyricsContainer.updateProgress(progress));
   render(ourLyricsContainer, lyricsContainerClone);
 });
-//! this doesn't differentiate human scroll and scrollTo

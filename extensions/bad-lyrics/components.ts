@@ -87,11 +87,7 @@ export class LyricsContainer extends LitElement {
         document.querySelector<HTMLElement>("aside div.main-nowPlayingView-lyricsContent.injected") ?? undefined
 
     firstUpdated(changedProperties: PropertyValueMap<this>) {
-        this.spotifyContainer?.addEventListener("scroll", e => {
-            //! this doesn't differentiate human scroll and scrollTo
-            if (!e.isTrusted) return
-            this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS
-        })
+        this.spotifyContainer?.addEventListener("scroll", e => (this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS))
     }
 
     render() {
