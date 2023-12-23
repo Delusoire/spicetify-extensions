@@ -525,19 +525,21 @@ var AnimatedTextContainer = class extends LitElement {
       (part) => when(
         Array.isArray(part.part),
         () => html`<animated-text-container
-                            .text=${part.part}
-                            tsrAbsolute=${this.calculateTSRAForPart(part)}
-                            tsr=${part.tsr}
-                            ter=${part.ter}
-                        />`,
-        () => html`<animated-text
+                        .text=${part.part}
+                        tsrAbsolute=${this.calculateTSRAForPart(part)}
+                        tsr=${part.tsr}
+                        ter=${part.ter}
+                    ></animated-text-container>`,
+        () => html` ${when(part.part === Filler, () => html`<br />`)}
+                        <animated-text
                             text=${part.part}
                             tsrAbsolute=${this.calculateTSRAForPart(part)}
                             tsr=${part.tsr}
                             ter=${part.ter}
-                        />`
+                        ></animated-text
+                        >${when(part.part === Filler, () => html`<br />`)}`
       )
-    )}<br />`;
+    )}`;
   }
 };
 AnimatedTextContainer.styles = css`
@@ -612,9 +614,11 @@ var AnimatedText = class extends LitElement {
     this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${srsp * 100}%, rgba(255,255,255,0) ${srsp * 110}%)`;
   }
   render() {
-    return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}
-            >${this.text}</span
-        >`;
+    if (this.ter > this.tsr) {
+      return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}
+                >${this.text}</span
+            >`;
+    }
   }
 };
 AnimatedText.styles = css`

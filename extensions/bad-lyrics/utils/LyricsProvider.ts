@@ -48,7 +48,7 @@ export const Filler = "♪"
 
 export type NotSynced = Synced<Array<{ part: string }>> & { __type: LyricsType.NOT_SYNCED }
 export type LineSynced = Synced<Array<Synced<string>>> & { __type: LyricsType.LINE_SYNCED }
-export type WordSynced = Synced<Array<Synced<Array<Synced<string>> | Synced<typeof Filler>>>> & {
+export type WordSynced = Synced<Array<Synced<Array<Synced<string>>> | Synced<typeof Filler>>> & {
     __type: LyricsType.WORD_SYNCED
 }
 
@@ -103,7 +103,7 @@ export const findLyrics = async (info: {
                           tsr: rsLine.ter,
                           ter: wordSynced[i + 1].tsr,
                           part: Filler,
-                      },
+                      } as Synced<typeof Filler>,
                   ]
                 : rsLine,
         )

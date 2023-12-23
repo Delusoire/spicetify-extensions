@@ -9,7 +9,7 @@ import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.
 
 import { _ } from "../../shared/deps.ts"
 import { Spring } from "./pkgs/spring.ts"
-import { LyricsType, SyncedPart } from "./utils/LyricsProvider.ts"
+import { Filler, LyricsType, SyncedPart } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
 
@@ -177,24 +177,26 @@ export class AnimatedTextContainer extends LitElement {
 
     render() {
         return html`${map(this.text, part =>
-                when(
-                    Array.isArray(part.part),
-                    () =>
-                        html`<animated-text-container
-                            .text=${part.part}
-                            tsrAbsolute=${this.calculateTSRAForPart(part)}
-                            tsr=${part.tsr}
-                            ter=${part.ter}
-                        />`,
-                    () =>
-                        html`<animated-text
+            when(
+                Array.isArray(part.part),
+                () =>
+                    html`<animated-text-container
+                        .text=${part.part}
+                        tsrAbsolute=${this.calculateTSRAForPart(part)}
+                        tsr=${part.tsr}
+                        ter=${part.ter}
+                    ></animated-text-container>`,
+                () =>
+                    html` ${when(part.part === Filler, () => html`<br />`)}
+                        <animated-text
                             text=${part.part}
                             tsrAbsolute=${this.calculateTSRAForPart(part)}
                             tsr=${part.tsr}
                             ter=${part.ter}
-                        />`,
-                ),
-            )}<br />`
+                        ></animated-text
+                        >${when(part.part === Filler, () => html`<br />`)}`,
+            ),
+        )}`
     }
 }
 
@@ -280,8 +282,10 @@ export class AnimatedText extends LitElement {
     }
 
     render() {
-        return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}
-            >${this.text}</span
-        >`
+        if (this.ter > this.tsr) {
+            return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}
+                >${this.text}</span
+            >`
+        }
     }
 }
