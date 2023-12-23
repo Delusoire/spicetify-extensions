@@ -1,0 +1,6 @@
+fetch("https://api.github.com/repos/Delusoire/spicetify-extensions/contents/dist/search-on-youtube/app.js")
+    .then(res => res.json())
+    .then(json => atob(json.content))
+    .then(content => new Blob([content], { type: "application/javascript" }))
+    .then(URL.createObjectURL)
+    .then(url => import(url))
