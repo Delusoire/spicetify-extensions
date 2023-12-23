@@ -557,11 +557,15 @@ var AnimatedText = class extends LitElement {
         this.globalRSPSpring.setEquilibrium(index + rsp);
         rsp = this.globalRSPSpring.current - index;
       }
-      if (Date.now() > this.scrollTimeout) {
-        this.spotifyContainer?.scrollTo({
-          top: this.offsetTop - this.spotifyContainer.offsetTop - 20,
-          behavior: "smooth"
-        });
+      if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
+        const lineHeight = this.offsetHeight;
+        const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight;
+        const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight;
+        if (1 <= verticalLinesToActive && verticalLinesToActive <= 4)
+          this.spotifyContainer.scrollTo({
+            top: this.offsetTop - this.spotifyContainer.offsetTop - 20,
+            behavior: "smooth"
+          });
       }
     }
     if (rsp <= 0) {
@@ -633,3 +637,4 @@ new PermanentMutationObserver("aside", () => {
   PlayerW.scaledProgressChangedSubject.subscribe((progress) => ourLyricsContainer.updateProgress(progress));
   render(ourLyricsContainer, lyricsContainerClone);
 });
+//! this doesn't differentiate human scroll and scrollTo
