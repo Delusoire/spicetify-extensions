@@ -419,7 +419,6 @@ var LyricsContainer = class extends LitElement {
   firstUpdated(changedProperties) {
     this.spotifyContainer?.addEventListener("scroll", (e) => {
       this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS;
-      console.log("detected scroll", this.scrollTimeout);
     });
   }
   render() {
@@ -542,6 +541,7 @@ AnimatedTextContainer = __decorateClass([
 var AnimatedText = class extends LitElement {
   constructor() {
     super(...arguments);
+    this.gradientAlphaSpring = new Spring(0, 1, 1);
     this.text = "";
     this.tsrAbsolute = 0;
     this.tsr = 0;
@@ -558,7 +558,6 @@ var AnimatedText = class extends LitElement {
         const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight;
         const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight;
         if (1 <= verticalLinesToActive && verticalLinesToActive <= 4) {
-          console.log("scrolling", this.scrollTimeout);
           this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS;
           this.spotifyContainer.scrollTo({
             top: scrollTop,
@@ -568,14 +567,12 @@ var AnimatedText = class extends LitElement {
       }
     }
     const srsp = this.globalRSPSpring.current - index;
-    if (srsp <= 0) {
-      this.style.backgroundColor = "black";
-      this.style.backgroundImage = "unset";
-    } else {
-      if (srsp >= 1) {
-      } else {
+    if (srsp > 0) {
+      this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor));
+      if (!this.gradientAlphaSpring.isInEquilibrium()) {
+        const gradientAlpha = this.gradientAlphaSpring.current;
+        this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,${gradientAlpha}) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`;
       }
-      this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,${0.9 ** (1 + depthToActiveAncestor)}) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`;
     }
     return index + 1;
   }
@@ -588,6 +585,7 @@ var AnimatedText = class extends LitElement {
 AnimatedText.styles = css`
         :host {
             cursor: pointer;
+            background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
         }

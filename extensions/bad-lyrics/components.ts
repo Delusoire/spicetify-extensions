@@ -89,7 +89,6 @@ export class LyricsContainer extends LitElement {
     firstUpdated(changedProperties: PropertyValueMap<this>) {
         this.spotifyContainer?.addEventListener("scroll", e => {
             this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS
-            console.log("detected scroll", this.scrollTimeout)
         })
     }
 
@@ -189,10 +188,13 @@ export class AnimatedText extends LitElement {
     static styles = css`
         :host {
             cursor: pointer;
+            background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
         }
     `
+
+    gradientAlphaSpring = new Spring(0, 1, 1)
 
     @property()
     text = ""
@@ -224,7 +226,6 @@ export class AnimatedText extends LitElement {
                 const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight
                 const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight
                 if (1 <= verticalLinesToActive && verticalLinesToActive <= 4) {
-                    console.log("scrolling", this.scrollTimeout)
                     this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS
                     this.spotifyContainer.scrollTo({
                         top: scrollTop,
@@ -234,23 +235,16 @@ export class AnimatedText extends LitElement {
             }
         }
 
-        const srsp = this.globalRSPSpring!.current - index
+        const srsp = this.globalRSPSpring!.current - index // smoothed rsp (not clamped)
 
-        if (srsp <= 0) {
-            // this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)"
-            this.style.backgroundColor = "black"
-            this.style.backgroundImage = "unset"
-        } else {
-            if (srsp >= 1) {
-                // this.style.textShadow = `0 0 var(1.25px,0) rgba(255,255,255,0.85)`
-            } else {
-                // const textShadowBlurRadiusPx = rsp * 5
-                // const textShadowOpacityPercent = rsp * 100
-                // this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`
+        if (srsp > 0) {
+            this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
+            if (!this.gradientAlphaSpring.isInEquilibrium()) {
+                const gradientAlpha = this.gradientAlphaSpring.current
+                this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,${gradientAlpha}) ${
+                    srsp * 90
+                }%, rgba(255,255,255,0) ${srsp * 110}%)`
             }
-            this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,${
-                0.9 ** (1 + depthToActiveAncestor)
-            }) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`
         }
 
         return index + 1
