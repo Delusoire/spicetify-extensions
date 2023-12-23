@@ -409,9 +409,8 @@ var AnimatedContentContainer = class extends LitElement {
     this.ter = 1;
   }
   updateProgress(rsp, index, depthToActiveAncestor) {
-    const calculateRSPForChild = (child) => (rsp - child.tsr) / (child.ter - child.tsr);
     const childs = Array.from(this.childs);
-    const rsps = childs.map(calculateRSPForChild);
+    const rsps = childs.map((child) => (rsp - child.tsr) / (child.ter - child.tsr));
     const activeIndex = rsps.findIndex((rsp2) => Math.floor(rsp2) === 0);
     childs.forEach((child, i) => {
       index = child.updateProgress(rsps[i], index, depthToActiveAncestor + (i === activeIndex ? 0 : 1));

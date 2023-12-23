@@ -54,14 +54,11 @@ export class AnimatedContentContainer extends LitElement {
 
     @queryAll("*")
     // @ts-expect-error only has a getter
-    childs: NodeListOf<AnimatedContent | AnimatedContentContainer>
+    childs: NodeListOf<AnimatedContentContainer | AnimatedContent | AnimatedFiller>
 
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
-        const calculateRSPForChild = (child: AnimatedContent | AnimatedContentContainer) =>
-            (rsp - child.tsr) / (child.ter - child.tsr)
-
         const childs = Array.from(this.childs)
-        const rsps = childs.map(calculateRSPForChild)
+        const rsps = childs.map(child => (rsp - child.tsr) / (child.ter - child.tsr))
 
         const activeIndex = rsps.findIndex(rsp => Math.floor(rsp) === 0)
 
