@@ -262,7 +262,7 @@ export class AnimatedText extends LitElement {
 
     private tryInitializeSprings(srsp: number) {
         if (this.springsInitialized) return
-        this.gradientAlphaSpring = new Spring(0, 20, 1, srsp)
+        this.gradientAlphaSpring = new Spring(0, 1, 1, srsp)
         this.springsInitialized = true
     }
 

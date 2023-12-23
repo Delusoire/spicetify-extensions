@@ -362,9 +362,12 @@ var Spring = class {
     } else {
       throw "Solar flare detected.";
     }
-    this.v = nextV;
-    this.inEquilibrium = Math.abs(this.v) <= SLEEPING_EPSILON;
-    this.p = this.inEquilibrium ? this.p_e : nextP;
+    if (Math.abs(nextV) > SLEEPING_EPSILON) {
+      this.p = nextP;
+      this.v = nextV;
+    } else {
+      this.reset(this.p_e);
+    }
     return nextP;
   }
   setEquilibrium(position) {
@@ -590,7 +593,7 @@ var AnimatedText = class extends LitElement {
   tryInitializeSprings(srsp) {
     if (this.springsInitialized)
       return;
-    this.gradientAlphaSpring = new Spring(0, 20, 1, srsp);
+    this.gradientAlphaSpring = new Spring(0, 1, 1, srsp);
     this.springsInitialized = true;
   }
   animateText(srsp, depthToActiveAncestor) {
