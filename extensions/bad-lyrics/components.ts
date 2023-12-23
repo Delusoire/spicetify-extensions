@@ -194,7 +194,7 @@ export class AnimatedText extends LitElement {
         }
     `
 
-    gradientAlphaSpring = new Spring(0, 2, 10)
+    gradientAlphaSpring = new Spring(0, 1, 10)
 
     @property()
     text = ""
@@ -242,11 +242,9 @@ export class AnimatedText extends LitElement {
             this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2))
         }
 
-        if (srsp > 0) {
-            this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,var(--gradient-alpha)) ${
-                srsp * 90
-            }%, rgba(255,255,255,0) ${srsp * 110}%)`
-        }
+        this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,var(--gradient-alpha)) ${
+            srsp * 90
+        }%, rgba(255,255,255,0) ${srsp * 110}%)`
 
         return index + 1
     }

@@ -541,7 +541,7 @@ AnimatedTextContainer = __decorateClass([
 var AnimatedText = class extends LitElement {
   constructor() {
     super(...arguments);
-    this.gradientAlphaSpring = new Spring(0, 2, 10);
+    this.gradientAlphaSpring = new Spring(0, 1, 10);
     this.text = "";
     this.tsrAbsolute = 0;
     this.tsr = 0;
@@ -571,9 +571,7 @@ var AnimatedText = class extends LitElement {
       const gradientAlpha = this.gradientAlphaSpring.current;
       this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2));
     }
-    if (srsp > 0) {
-      this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,var(--gradient-alpha)) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`;
-    }
+    this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,var(--gradient-alpha)) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`;
     return index + 1;
   }
   render() {
