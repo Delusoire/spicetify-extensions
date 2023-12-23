@@ -565,6 +565,7 @@ var AnimatedText = class extends LitElement {
     this.ter = 1;
     this.scrollTimeout = 0;
     this.loadedLyricsType = 0 /* NONE */;
+    this.springsInitialized = false;
   }
   updateProgress(rsp, index, depthToActiveAncestor) {
     const crsp = _.clamp(rsp, 0, 1);
@@ -583,14 +584,18 @@ var AnimatedText = class extends LitElement {
         }
       }
     }
-    const srsp = this.globalRSPSpring.compute() - index;
-    this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor));
-    this.animateText(srsp);
+    this.animateText(this.globalRSPSpring.compute() - index, depthToActiveAncestor);
     return index + 1;
   }
-  animateText(srsp) {
-    if (!this.gradientAlphaSpring)
-      this.gradientAlphaSpring = new Spring(0, 20, 1, srsp);
+  tryInitializeSprings(srsp) {
+    if (this.springsInitialized)
+      return;
+    this.gradientAlphaSpring = new Spring(0, 20, 1, srsp);
+    this.springsInitialized = true;
+  }
+  animateText(srsp, depthToActiveAncestor) {
+    this.tryInitializeSprings(srsp);
+    this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor));
     const gradientAlpha = this.gradientAlphaSpring.compute(srsp);
     if (!this.gradientAlphaSpring.isInEquilibrium()) {
       this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2));

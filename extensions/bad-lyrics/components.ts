@@ -252,17 +252,23 @@ export class AnimatedText extends LitElement {
             }
         }
 
-        const srsp = this.globalRSPSpring!.compute() - index // smoothed rsp (not clamped)
-
-        this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
-
-        this.animateText(srsp)
+        // smoothed rsp (not clamped)
+        this.animateText(this.globalRSPSpring!.compute() - index, depthToActiveAncestor)
 
         return index + 1
     }
 
-    private animateText(srsp: number) {
-        if (!this.gradientAlphaSpring) this.gradientAlphaSpring = new Spring(0, 20, 1, srsp)
+    private springsInitialized = false
+
+    private tryInitializeSprings(srsp: number) {
+        if (this.springsInitialized) return
+        this.gradientAlphaSpring = new Spring(0, 20, 1, srsp)
+        this.springsInitialized = true
+    }
+
+    private animateText(srsp: number, depthToActiveAncestor: number) {
+        this.tryInitializeSprings(srsp)
+        this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
         const gradientAlpha = this.gradientAlphaSpring.compute(srsp)
         if (!this.gradientAlphaSpring.isInEquilibrium()) {
             this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2))
