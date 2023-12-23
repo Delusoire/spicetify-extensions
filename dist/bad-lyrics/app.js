@@ -558,10 +558,11 @@ var AnimatedText = class extends LitElement {
         const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight;
         const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight;
         if (1 <= verticalLinesToActive && verticalLinesToActive <= 4)
-          this.spotifyContainer.scrollTo({
-            top: this.offsetTop - this.spotifyContainer.offsetTop - 20,
-            behavior: "smooth"
-          });
+          console.log("scrolling");
+        this.spotifyContainer.scrollTo({
+          top: scrollTop,
+          behavior: "smooth"
+        });
       }
     }
     if (rsp <= 0) {
@@ -576,7 +577,7 @@ var AnimatedText = class extends LitElement {
         const textShadowOpacityPercent = rsp * 100;
         this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`;
       }
-      this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${rsp * 100}%, rgba(255,255,255,0) ${rsp * 100}%)`;
+      this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${rsp * 90 / Math.SQRT2 ** depthToActiveAncestor}%, rgba(255,255,255,0) ${rsp * 110 / Math.SQRT2 ** depthToActiveAncestor}%)`;
     }
     return index + 1;
   }

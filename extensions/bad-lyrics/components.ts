@@ -223,11 +223,11 @@ export class AnimatedText extends LitElement {
                 const lineHeight = this.offsetHeight
                 const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight
                 const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight
-                if (1 <= verticalLinesToActive && verticalLinesToActive <= 4)
-                    this.spotifyContainer.scrollTo({
-                        top: this.offsetTop - this.spotifyContainer.offsetTop - 20,
-                        behavior: "smooth",
-                    })
+                if (1 <= verticalLinesToActive && verticalLinesToActive <= 4) console.log("scrolling")
+                this.spotifyContainer.scrollTo({
+                    top: scrollTop,
+                    behavior: "smooth",
+                })
             }
         }
 
@@ -244,8 +244,8 @@ export class AnimatedText extends LitElement {
                 this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`
             }
             this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${
-                rsp * 100
-            }%, rgba(255,255,255,0) ${rsp * 100}%)`
+                (rsp * 90) / Math.SQRT2 ** depthToActiveAncestor
+            }%, rgba(255,255,255,0) ${(rsp * 110) / Math.SQRT2 ** depthToActiveAncestor}%)`
         }
 
         return index + 1
