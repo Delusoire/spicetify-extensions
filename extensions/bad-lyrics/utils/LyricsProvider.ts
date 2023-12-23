@@ -96,7 +96,7 @@ export const findLyrics = async (info: {
         })
 
         const wordSyncedFilled = wordSynced.flatMap((rsLine, i, wordSynced) =>
-            wordSynced[i + 1].tsr > rsLine.ter
+            wordSynced[i + 1]?.tsr > rsLine.ter
                 ? [
                       rsLine,
                       {

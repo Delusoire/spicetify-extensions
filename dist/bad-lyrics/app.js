@@ -130,7 +130,7 @@ var findLyrics = async (info) => {
       return { tsr, ter, part };
     });
     const wordSyncedFilled = wordSynced.flatMap(
-      (rsLine, i, wordSynced2) => wordSynced2[i + 1].tsr > rsLine.ter ? [
+      (rsLine, i, wordSynced2) => wordSynced2[i + 1]?.tsr > rsLine.ter ? [
         rsLine,
         {
           tsr: rsLine.ter,
