@@ -413,7 +413,7 @@ var LyricsContainer = class extends LitElement {
     this.spotifyContainer = document.querySelector("aside div.main-nowPlayingView-lyricsContent.injected") ?? void 0;
   }
   updateProgress(progress) {
-    if (!this.loadedLyricsType)
+    if (this.loadedLyricsType === 0 /* NONE */ || this.loadedLyricsType === 1 /* NOT_SYNCED */)
       return;
     this.firstContainer.updateProgress(progress, 0, 0);
   }
@@ -435,7 +435,12 @@ var LyricsContainer = class extends LitElement {
           return html`<div class="noLyrics">No Lyrics Found</div>`;
         }
         this.loadedLyricsType = lyrics.__type;
-        const style = `--gradient-angle: ${this.loadedLyricsType === 3 /* WORD_SYNCED */ ? 90 : 180}deg;`;
+        const isSynced = this.loadedLyricsType === 3 /* WORD_SYNCED */;
+        const style = [
+          ["--gradient-angle", `${isSynced ? 90 : 180}deg`],
+          ["--animated-text-bg-color", isSynced ? "black" : "white"],
+          [""]
+        ].map((a) => a.join(": ")).join("; ");
         return html`
                           <animated-text-container style=${style} .text=${lyrics.part}></animated-text-container>
                       `;
@@ -555,10 +560,6 @@ var AnimatedText = class extends LitElement {
     this.loadedLyricsType = 0 /* NONE */;
   }
   updateProgress(rsp, index, depthToActiveAncestor) {
-    if (this.loadedLyricsType === 1 /* NOT_SYNCED */) {
-      this.style.backgroundColor = "white";
-      return index + 1;
-    }
     const crsp = _.clamp(rsp, 0, 1);
     const isActive = depthToActiveAncestor === 0;
     if (isActive) {

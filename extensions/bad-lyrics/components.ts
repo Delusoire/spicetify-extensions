@@ -71,7 +71,7 @@ export class LyricsContainer extends LitElement {
     loadedLyricsType = LyricsType.NONE
 
     public updateProgress(progress: number) {
-        if (!this.loadedLyricsType) return
+        if (this.loadedLyricsType === LyricsType.NONE || this.loadedLyricsType === LyricsType.NOT_SYNCED) return
         this.firstContainer.updateProgress(progress, 0, 0)
     }
 
@@ -109,10 +109,15 @@ export class LyricsContainer extends LitElement {
                           return html`<div class="noLyrics">No Lyrics Found</div>`
                       }
                       this.loadedLyricsType = lyrics.__type
+                      const isSynced = this.loadedLyricsType === LyricsType.WORD_SYNCED
 
-                      const style = `--gradient-angle: ${
-                          this.loadedLyricsType === LyricsType.WORD_SYNCED ? 90 : 180
-                      }deg;`
+                      const style = [
+                          ["--gradient-angle", `${isSynced ? 90 : 180}deg`],
+                          ["--animated-text-bg-color", isSynced ? "black" : "white"],
+                          [""],
+                      ]
+                          .map(a => a.join(": "))
+                          .join("; ")
 
                       return html`
                           <animated-text-container style=${style} .text=${lyrics.part}></animated-text-container>
@@ -225,10 +230,6 @@ export class AnimatedText extends LitElement {
     loadedLyricsType = LyricsType.NONE
 
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
-        if (this.loadedLyricsType === LyricsType.NOT_SYNCED) {
-            this.style.backgroundColor = "white"
-            return index + 1
-        }
         const crsp = _.clamp(rsp, 0, 1) // clamped rsp
         const isActive = depthToActiveAncestor === 0
 
