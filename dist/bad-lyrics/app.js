@@ -417,7 +417,10 @@ var LyricsContainer = class extends LitElement {
     this.firstContainer.updateProgress(progress, 0, 0);
   }
   firstUpdated(changedProperties) {
-    this.spotifyContainer?.addEventListener("scroll", (e) => this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS);
+    this.spotifyContainer?.addEventListener("scroll", (e) => {
+      this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS;
+      console.log("detected scroll");
+    });
   }
   render() {
     return this.lyricsTask.render({
@@ -546,38 +549,32 @@ var AnimatedText = class extends LitElement {
     this.scrollTimeout = 0;
   }
   updateProgress(rsp, index, depthToActiveAncestor) {
-    rsp = _.clamp(rsp, 0, 1);
+    const crsp = _.clamp(rsp, 0, 1);
     const isActive = depthToActiveAncestor === 0;
     if (isActive) {
-      if (this.globalRSPSpring) {
-        this.globalRSPSpring.setEquilibrium(index + rsp);
-        rsp = this.globalRSPSpring.current - index;
-      }
+      this.globalRSPSpring.setEquilibrium(index + crsp);
       if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
         const lineHeight = this.offsetHeight;
         const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight;
         const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight;
-        if (1 <= verticalLinesToActive && verticalLinesToActive <= 4)
+        if (1 <= verticalLinesToActive && verticalLinesToActive <= 4) {
           console.log("scrolling");
-        this.spotifyContainer.scrollTo({
-          top: scrollTop,
-          behavior: "smooth"
-        });
+          this.spotifyContainer.scrollTo({
+            top: scrollTop,
+            behavior: "smooth"
+          });
+        }
       }
     }
-    if (rsp <= 0) {
-      this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)";
+    const srsp = this.globalRSPSpring.current - index;
+    if (srsp <= 0) {
       this.style.backgroundColor = "black";
       this.style.backgroundImage = "unset";
     } else {
-      if (rsp >= 1) {
-        this.style.textShadow = "0 0 var(1.25px,0) rgba(255,255,255,0.85)";
+      if (srsp >= 1) {
       } else {
-        const textShadowBlurRadiusPx = rsp * 5;
-        const textShadowOpacityPercent = rsp * 100;
-        this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`;
       }
-      this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${rsp * 90 / Math.SQRT2 ** depthToActiveAncestor}%, rgba(255,255,255,0) ${rsp * 110 / Math.SQRT2 ** depthToActiveAncestor}%)`;
+      this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`;
     }
     return index + 1;
   }

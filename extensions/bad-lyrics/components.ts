@@ -87,7 +87,10 @@ export class LyricsContainer extends LitElement {
         document.querySelector<HTMLElement>("aside div.main-nowPlayingView-lyricsContent.injected") ?? undefined
 
     firstUpdated(changedProperties: PropertyValueMap<this>) {
-        this.spotifyContainer?.addEventListener("scroll", e => (this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS))
+        this.spotifyContainer?.addEventListener("scroll", e => {
+            this.scrollTimeout = Date.now() + SCROLL_TIMEOUT_MS
+            console.log("detected scroll")
+        })
     }
 
     render() {
@@ -210,42 +213,44 @@ export class AnimatedText extends LitElement {
     spotifyContainer?: HTMLElement
 
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
-        rsp = _.clamp(rsp, 0, 1)
+        const crsp = _.clamp(rsp, 0, 1) // clamped rsp
         const isActive = depthToActiveAncestor === 0
 
         if (isActive) {
-            // active text requires further smoothing for progress
-            if (this.globalRSPSpring) {
-                this.globalRSPSpring.setEquilibrium(index + rsp)
-                rsp = this.globalRSPSpring.current - index
-            }
+            this.globalRSPSpring!.setEquilibrium(index + crsp)
+
             if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
                 const lineHeight = this.offsetHeight
                 const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight
                 const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight
-                if (1 <= verticalLinesToActive && verticalLinesToActive <= 4) console.log("scrolling")
-                this.spotifyContainer.scrollTo({
-                    top: scrollTop,
-                    behavior: "smooth",
-                })
+                if (1 <= verticalLinesToActive && verticalLinesToActive <= 4) {
+                    console.log("scrolling")
+                    // this.scrollTimeout
+                    this.spotifyContainer.scrollTo({
+                        top: scrollTop,
+                        behavior: "smooth",
+                    })
+                }
             }
         }
 
-        if (rsp <= 0) {
-            this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)"
+        const srsp = this.globalRSPSpring!.current - index
+
+        if (srsp <= 0) {
+            // this.style.textShadow = "0 0 var(3.75px,0) rgba(255,255,255,0.5)"
             this.style.backgroundColor = "black"
             this.style.backgroundImage = "unset"
         } else {
-            if (rsp >= 1) {
-                this.style.textShadow = "0 0 var(1.25px,0) rgba(255,255,255,0.85)"
+            if (srsp >= 1) {
+                // this.style.textShadow = `0 0 var(1.25px,0) rgba(255,255,255,0.85)`
             } else {
-                const textShadowBlurRadiusPx = rsp * 5
-                const textShadowOpacityPercent = rsp * 100
-                this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`
+                // const textShadowBlurRadiusPx = rsp * 5
+                // const textShadowOpacityPercent = rsp * 100
+                // this.style.textShadow = `0 0 ${textShadowBlurRadiusPx}px ${textShadowOpacityPercent}%}`
             }
             this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,0.85) ${
-                (rsp * 90) / Math.SQRT2 ** depthToActiveAncestor
-            }%, rgba(255,255,255,0) ${(rsp * 110) / Math.SQRT2 ** depthToActiveAncestor}%)`
+                srsp * 90
+            }%, rgba(255,255,255,0) ${srsp * 110}%)`
         }
 
         return index + 1
