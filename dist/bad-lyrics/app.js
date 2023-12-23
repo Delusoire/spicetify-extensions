@@ -274,7 +274,8 @@ var PlayerW = new class {
     });
   }
   triggerTimestampSync() {
-    let autoSyncs = 1;
+    let autoSyncs = 0;
+    const timeoutFn = () => 1e3 * autoSyncs++;
     asyncScheduler.schedule(
       function(self) {
         if (self.isPaused)
@@ -282,11 +283,9 @@ var PlayerW = new class {
         if (!PlayerAPI3._events.emitResumeSync()) {
           PlayerAPI3._contextPlayer.resume({});
         }
-        autoSyncs++;
-        const timeout = Math.expm1(Math.LN2 / 2 * autoSyncs);
-        this.schedule(self, timeout);
+        this.schedule(self, timeoutFn());
       },
-      Math.SQRT2 - 1,
+      timeoutFn(),
       this
     );
   }

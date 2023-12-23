@@ -50,7 +50,10 @@ export const PlayerW = new (class {
     }
 
     private triggerTimestampSync() {
-        let autoSyncs = 1
+        let autoSyncs = 0
+
+        const timeoutFn = () => 1000 * autoSyncs++
+
         asyncScheduler.schedule(
             function (self) {
                 if (self!.isPaused) return
@@ -59,13 +62,9 @@ export const PlayerW = new (class {
                     PlayerAPI._contextPlayer.resume({})
                 }
 
-                autoSyncs++
-
-                const timeout = Math.expm1((Math.LN2 / 2) * autoSyncs)
-
-                this.schedule(self, timeout)
+                this.schedule(self, timeoutFn())
             },
-            Math.SQRT2 - 1,
+            timeoutFn(),
             this,
         )
     }
