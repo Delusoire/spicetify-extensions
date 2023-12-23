@@ -237,14 +237,16 @@ export class AnimatedText extends LitElement {
 
         const srsp = this.globalRSPSpring!.current - index // smoothed rsp (not clamped)
 
+        this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
+        if (!this.gradientAlphaSpring.isInEquilibrium()) {
+            const gradientAlpha = this.gradientAlphaSpring.current
+            this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2))
+        }
+
         if (srsp > 0) {
-            this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
-            if (!this.gradientAlphaSpring.isInEquilibrium()) {
-                const gradientAlpha = this.gradientAlphaSpring.current
-                this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,${gradientAlpha}) ${
-                    srsp * 90
-                }%, rgba(255,255,255,0) ${srsp * 110}%)`
-            }
+            this.style.backgroundImage = `linear-gradient(90deg, rgba(255,255,255,var(--gradient-alpha)) ${
+                srsp * 90
+            }%, rgba(255,255,255,0) ${srsp * 110}%)`
         }
 
         return index + 1
