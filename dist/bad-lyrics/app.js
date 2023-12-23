@@ -546,7 +546,7 @@ AnimatedTextContainer = __decorateClass([
 var AnimatedText = class extends LitElement {
   constructor() {
     super(...arguments);
-    this.gradientAlphaSpring = new Spring(0, 5, 10);
+    this.gradientAlphaSpring = new Spring(0, 50, 1);
     this.text = "";
     this.tsrAbsolute = 0;
     this.tsr = 0;
@@ -557,17 +557,17 @@ var AnimatedText = class extends LitElement {
   updateProgress(rsp, index, depthToActiveAncestor) {
     if (this.loadedLyricsType === 1 /* NOT_SYNCED */) {
       this.style.backgroundColor = "white";
-      return;
+      return index + 1;
     }
     const crsp = _.clamp(rsp, 0, 1);
     const isActive = depthToActiveAncestor === 0;
     if (isActive) {
       this.globalRSPSpring.setEquilibrium(index + crsp);
       if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
-        const lineHeight = this.offsetHeight;
-        const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight * 2;
-        const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight;
-        if (_.inRange(verticalLinesToActive, 0.5, 4)) {
+        const lineHeightHeuristic = this.offsetHeight;
+        const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic * 2;
+        const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeightHeuristic;
+        if (_.inRange(verticalLinesToActive, 1.5, 3.5)) {
           this.spotifyContainer.scrollTo({
             top: scrollTop,
             behavior: "smooth"

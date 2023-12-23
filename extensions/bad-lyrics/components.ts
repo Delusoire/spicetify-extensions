@@ -204,7 +204,7 @@ export class AnimatedText extends LitElement {
         }
     `
 
-    gradientAlphaSpring = new Spring(0, 5, 10)
+    gradientAlphaSpring = new Spring(0, 50, 1)
 
     @property()
     text = ""
@@ -227,7 +227,7 @@ export class AnimatedText extends LitElement {
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
         if (this.loadedLyricsType === LyricsType.NOT_SYNCED) {
             this.style.backgroundColor = "white"
-            return
+            return index + 1
         }
         const crsp = _.clamp(rsp, 0, 1) // clamped rsp
         const isActive = depthToActiveAncestor === 0
@@ -236,11 +236,12 @@ export class AnimatedText extends LitElement {
             this.globalRSPSpring!.setEquilibrium(index + crsp)
 
             if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
-                const lineHeight = this.offsetHeight
-                const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight * 2
-                const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeight
+                const lineHeightHeuristic = this.offsetHeight
+                const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic * 2
+                const verticalLinesToActive =
+                    Math.abs(scrollTop - this.spotifyContainer.scrollTop) / lineHeightHeuristic
 
-                if (_.inRange(verticalLinesToActive, 0.5, 4)) {
+                if (_.inRange(verticalLinesToActive, 1.5, 3.5)) {
                     this.spotifyContainer.scrollTo({
                         top: scrollTop,
                         behavior: "smooth",
