@@ -532,7 +532,7 @@ var toggleRating = async (uri, rating) => {
   if (currentRating) {
     f.pipe(
       playlistUris.slice(0, currentRating + 1),
-      ar.filter(Boolean),
+      fp.compact,
       ar.map((playlistUri) => URI4.fromString(playlistUri).id),
       ar.map((playlistId) => removePlaylistTracks(playlistId, [{ uri, uid: "" }]))
     );
@@ -685,7 +685,7 @@ var updateTrackListControls = (updateDropdown = true) => {
 };
 var updateCollectionControls = async (uri) => {
   const tracks = await getTracksFromUri(uri);
-  const ratings = tracks.map((track) => tracksRatings[track.uri]).filter(Boolean);
+  const ratings = _.compact(tracks.map((track) => tracksRatings[track.uri]));
   const rating = Math.round(ratings.reduce((psum, r) => psum + r, 0) / ratings.length);
   const pb = getCollectionPlaylistButton();
   pb && colorizePlaylistButton(pb, rating);

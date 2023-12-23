@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+import { _ } from "./deps.ts"
+
 // Prefix for all lscache keys
 const CACHE_PREFIX = "lscache-"
 
@@ -65,9 +67,7 @@ function eachKey(fn: (key: string) => void) {
         `^${CACHE_PREFIX}${escapeRegExpSpecialCharacters(cacheBucket)}(.*)(?<!${CACHE_SUFFIX})$`,
     )
 
-    const keys = Object.keys(localStorage)
-        .map(key => key.match(prefixRegExp)?.[1])
-        .filter(Boolean) as Array<string>
+    const keys = _.compact(Object.keys(localStorage).map(key => key.match(prefixRegExp)?.[1])) as Array<string>
     keys.forEach(fn)
 }
 

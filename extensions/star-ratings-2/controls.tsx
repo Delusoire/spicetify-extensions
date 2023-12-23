@@ -15,6 +15,7 @@ import {
     getTrackListTracks,
     getTrackLists,
 } from "./util.ts"
+import { _ } from "../../shared/deps.ts"
 
 const { URI, Tippy } = Spicetify
 const { React, ReactDOM } = Spicetify
@@ -124,7 +125,7 @@ export const updateTrackListControls = (updateDropdown = true) => {
 
 export const updateCollectionControls = async (uri: string) => {
     const tracks = await getTracksFromUri(uri)
-    const ratings = tracks.map(track => tracksRatings[track.uri]).filter(Boolean)
+    const ratings = _.compact(tracks.map(track => tracksRatings[track.uri]))
     const rating = Math.round(ratings.reduce((psum, r) => psum + r, 0) / ratings.length)
 
     const pb = getCollectionPlaylistButton()

@@ -50,6 +50,16 @@ var init_platformApi = __esm({
   }
 });
 
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _;
+var init_deps = __esm({
+  "shared/deps.ts"() {
+    _ = ld;
+  }
+});
+
 // extensions/vaultify/util.ts
 var URI2, extractUrisWrapper, isContentOfPersonalPlaylist;
 var init_util2 = __esm({
@@ -64,6 +74,7 @@ var init_util2 = __esm({
 var LibraryAPI2, LocalStorageAPI, getLibraryTracks, getLibraryAlbums, getLibraryArtists, getLibraryTrackUris, getLibraryAlbumUris, getLibraryArtistUris, getSettings, getLocalStorage, getLocalStoreAPI, extractLikedPlaylistTreeRecur;
 var init_backup = __esm({
   "extensions/vaultify/backup.ts"() {
+    init_deps();
     init_platformApi();
     init_util2();
     ({ LibraryAPI: LibraryAPI2, LocalStorageAPI } = Spicetify.Platform);
@@ -103,7 +114,7 @@ var init_backup = __esm({
         }
         return null;
       });
-      return settings2.filter(Boolean);
+      return _.compact(settings2);
     };
     getLocalStorage = () => {
       const LS_ALLOW_REGEX = /^(?:marketplace:)|(?:extensions:)|(?:spicetify)/;
@@ -184,16 +195,6 @@ var init_restore = __esm({
         subleaf.forEach((leaf2) => restorePlaylistseRecur(leaf2, uri));
       })
     );
-  }
-});
-
-// shared/deps.ts
-import { default as ld } from "https://esm.sh/lodash";
-import { default as ld_fp } from "https://esm.sh/lodash/fp";
-var _;
-var init_deps = __esm({
-  "shared/deps.ts"() {
-    _ = ld;
   }
 });
 

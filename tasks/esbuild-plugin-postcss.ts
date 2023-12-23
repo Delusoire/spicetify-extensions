@@ -3,6 +3,7 @@ import { dirname, join, relative, resolve } from "https://deno.land/std/path/mod
 import sass from "https://deno.land/x/denosass/mod.ts"
 import postcss, { Message, AcceptedPlugin as PostCSSPlugin } from "npm:postcss"
 import postcssModules from "npm:postcss-modules"
+import { _ } from "../shared/deps.ts"
 
 interface PostCSSPluginOptions {
     plugins: PostCSSPlugin[]
@@ -52,13 +53,11 @@ export const postCSSPlugin = (opts?: Partial<PostCSSPluginOptions>) => ({
 
             return {
                 resolveDir,
-                contents: [
+                contents: _.compact([
                     writeToFile ? `import ${JSON.stringify(args.path)};` : null,
                     `export default ${JSON.stringify(modmap)};`,
                     writeToFile ? null : `export const stylesheet=${JSON.stringify(css)};`,
-                ]
-                    .filter(Boolean)
-                    .join("\n"),
+                ]).join("\n"),
             }
         })
 

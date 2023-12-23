@@ -1,3 +1,4 @@
+import { _ } from "../../shared/deps.ts"
 import { fetchPlaylistContents } from "../../shared/platformApi.ts"
 
 import { LikedPlaylist, PersonalFolder, PersonalPlaylist, PoF, extractUrisWrapper } from "./util.ts"
@@ -73,7 +74,7 @@ export const getSettings = () => {
         }
         return null
     })
-    return settings.filter(Boolean) as Setting[]
+    return _.compact(settings) as Setting[]
 }
 
 export const getLocalStorage = () => {

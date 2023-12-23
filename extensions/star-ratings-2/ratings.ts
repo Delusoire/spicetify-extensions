@@ -15,6 +15,7 @@ import { SpotifyLoc, SpotifyURI } from "../../shared/util.ts"
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.tsx"
 import { CONFIG } from "./settings.ts"
 import { getNowPlayingBar } from "./util.ts"
+import { fp } from "../../shared/deps.ts"
 
 const { URI } = Spicetify
 const { History, PlayerAPI } = Spicetify.Platform
@@ -53,7 +54,7 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
     if (currentRating) {
         f.pipe(
             playlistUris.slice(0, currentRating + 1),
-            ar.filter(Boolean),
+            fp.compact,
             ar.map(playlistUri => URI.fromString(playlistUri).id!),
             ar.map(playlistId => removePlaylistTracks(playlistId, [{ uri, uid: "" } as { uid: string }])),
         )

@@ -51,7 +51,7 @@ export enum LyricsType {
 export const Filler = "♪"
 
 export type NotSynced = Synced<string> & { __type: LyricsType.NOT_SYNCED }
-export type LineSynced = Synced<Array<Synced<string>>> & { __type: LyricsType.LINE_SYNCED }
+export type LineSynced = Synced<Array<Synced<string> | SyncedFiller>> & { __type: LyricsType.LINE_SYNCED }
 export type WordSynced = Synced<Array<Synced<Array<Synced<string>>> | SyncedFiller>> & {
     __type: LyricsType.WORD_SYNCED
 }
@@ -125,14 +125,16 @@ export const findLyrics = async (info: {
             text: string
             time: { total: number; minutes: number; seconds: number; hundredths: number }
         }>
-        l.lineSynced = wrapInContainerSyncedType(
-            LyricsType.LINE_SYNCED,
-            subtitle.map((sLine, index, subtitle) => {
-                const tsr = sLine.time.total / track.track_length
-                const ter = subtitle[index + 1]?.time.total / track.track_length || 1
-                return { tsr, ter, content: sLine.text }
-            }),
-        )
+        const lineSynced = subtitle.map((sLine, i, subtitle) => {
+            const tsr = sLine.time.total / track.track_length
+            const ter = subtitle[i + 1]?.time.total / track.track_length || 1
+            return { tsr, ter, content: sLine.text }
+        })
+        const intercalatedLineSynced = lineSynced.flatMap(sLine => [
+            sLine,
+            { tsr: sLine.ter, ter: sLine.ter, duration: 0, content: Filler } as SyncedFiller,
+        ])
+        l.lineSynced = wrapInContainerSyncedType(LyricsType.LINE_SYNCED, intercalatedLineSynced)
     }
 
     if (track.has_lyrics || track.has_lyrics_crowd) {

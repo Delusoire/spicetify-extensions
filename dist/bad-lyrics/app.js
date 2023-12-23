@@ -150,14 +150,16 @@ var findLyrics = async (info) => {
   }
   if (track.has_subtitles) {
     const subtitle = JSON.parse(subtitles[0].subtitle_body);
-    l.lineSynced = wrapInContainerSyncedType(
-      2 /* LINE_SYNCED */,
-      subtitle.map((sLine, index, subtitle2) => {
-        const tsr = sLine.time.total / track.track_length;
-        const ter = subtitle2[index + 1]?.time.total / track.track_length || 1;
-        return { tsr, ter, content: sLine.text };
-      })
-    );
+    const lineSynced = subtitle.map((sLine, i, subtitle2) => {
+      const tsr = sLine.time.total / track.track_length;
+      const ter = subtitle2[i + 1]?.time.total / track.track_length || 1;
+      return { tsr, ter, content: sLine.text };
+    });
+    const intercalatedLineSynced = lineSynced.flatMap((sLine) => [
+      sLine,
+      { tsr: sLine.ter, ter: sLine.ter, duration: 0, content: Filler }
+    ]);
+    l.lineSynced = wrapInContainerSyncedType(2 /* LINE_SYNCED */, intercalatedLineSynced);
   }
   if (track.has_lyrics || track.has_lyrics_crowd) {
     l.notSynced = wrapInContainerSyncedType(1 /* NOT_SYNCED */, lyrics.lyrics_body);
