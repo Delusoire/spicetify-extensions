@@ -176,7 +176,6 @@ var fetchMxmMacroSubtitlesGet = async (uri, title, artist, album, durationS, ren
     "userblob.get": userblobGet,
     "matcher.track.get": matcherTrackGet
   } = res.message.body.macro_calls;
-  debugger;
   return {
     lyrics: trackLyricsGet.message.body.lyrics,
     snippet: trackSnippetGet.message.body.snippet,
@@ -324,10 +323,7 @@ var Spring = class {
   }
   // We allow consumers to specify their own timescales
   compute(time = Date.now()) {
-    if (this.inEquilibrium)
-      return this.p;
-    const dt = time - this.lastUpdateTime;
-    const current = this.solve(dt);
+    const current = this.inEquilibrium ? this.p : this.solve(time - this.lastUpdateTime);
     this.lastUpdateTime = time;
     return current;
   }
@@ -363,9 +359,9 @@ var Spring = class {
     } else {
       throw "Solar flare detected.";
     }
-    this.p = nextP;
     this.v = nextV;
     this.inEquilibrium = Math.abs(this.v) <= SLEEPING_EPSILON;
+    this.p = this.inEquilibrium ? this.p_e : nextP;
     return nextP;
   }
   setEquilibrium(position) {
@@ -591,11 +587,11 @@ var AnimatedText = class extends LitElement {
     return index + 1;
   }
   animateText(srsp) {
+    const gradientAlpha = this.gradientAlphaSpring.compute(srsp);
     if (!this.gradientAlphaSpring.isInEquilibrium()) {
-      const gradientAlpha = this.gradientAlphaSpring.compute();
       this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2));
     }
-    this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`;
+    this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${srsp * 100}%, rgba(255,255,255,0) ${srsp * 110}%)`;
   }
   render() {
     return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}

@@ -277,7 +277,6 @@ const fetchMxmMacroSubtitlesGet = async (
         "userblob.get": userblobGet,
         "matcher.track.get": matcherTrackGet,
     } = res.message.body.macro_calls
-    debugger
     return {
         lyrics: trackLyricsGet.message.body.lyrics as MxMLyrics,
         snippet: trackSnippetGet.message.body.snippet as MxMSnippet,
