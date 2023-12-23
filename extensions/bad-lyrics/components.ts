@@ -209,7 +209,8 @@ export class AnimatedText extends LitElement {
         }
     `
 
-    gradientAlphaSpring = new Spring(0, 25, 1, 0)
+    // @ts-expect-error gets initialized in firstUpdated
+    gradientAlphaSpring: Spring
 
     @property()
     text = ""
@@ -261,6 +262,7 @@ export class AnimatedText extends LitElement {
     }
 
     private animateText(srsp: number) {
+        if (!this.gradientAlphaSpring) this.gradientAlphaSpring = new Spring(0, 20, 1, srsp)
         const gradientAlpha = this.gradientAlphaSpring.compute(srsp)
         if (!this.gradientAlphaSpring.isInEquilibrium()) {
             this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2))

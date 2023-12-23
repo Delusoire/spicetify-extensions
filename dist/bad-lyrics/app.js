@@ -559,7 +559,6 @@ AnimatedTextContainer = __decorateClass([
 var AnimatedText = class extends LitElement {
   constructor() {
     super(...arguments);
-    this.gradientAlphaSpring = new Spring(0, 25, 1, 0);
     this.text = "";
     this.tsrAbsolute = 0;
     this.tsr = 0;
@@ -590,6 +589,8 @@ var AnimatedText = class extends LitElement {
     return index + 1;
   }
   animateText(srsp) {
+    if (!this.gradientAlphaSpring)
+      this.gradientAlphaSpring = new Spring(0, 20, 1, srsp);
     const gradientAlpha = this.gradientAlphaSpring.compute(srsp);
     if (!this.gradientAlphaSpring.isInEquilibrium()) {
       this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2));
