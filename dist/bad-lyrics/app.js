@@ -488,9 +488,9 @@ var SyncedScrolledContent = class extends LitElement {
       this.globalRSPSpring.setEquilibrium(index + crsp);
       if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
         const lineHeightHeuristic = this.offsetHeight;
-        const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic * 1.5;
+        const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic;
         const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight;
-        if (_.inRange(verticalLinesToActive, 0.2, 0.7)) {
+        if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
           this.spotifyContainer.scrollTo({
             top: scrollTop,
             behavior: "smooth"
