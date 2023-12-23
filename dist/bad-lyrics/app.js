@@ -301,7 +301,7 @@ import { when } from "https://esm.sh/lit/directives/when.js";
 
 // extensions/bad-lyrics/pkgs/spring.ts
 var TAU = Math.PI * 2;
-var SLEEPING_EPSILON = 1e-3;
+var SLEEPING_EPSILON = 1e-7;
 var Spring = class {
   constructor(p, dampingRatio, frequency) {
     this.p = p;

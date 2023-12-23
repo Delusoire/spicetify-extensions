@@ -1,6 +1,6 @@
 const TAU = Math.PI * 2
 
-const SLEEPING_EPSILON = 1e-3
+const SLEEPING_EPSILON = 1e-7
 
 export class Spring {
     private W0: number
