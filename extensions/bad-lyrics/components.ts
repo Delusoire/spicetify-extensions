@@ -21,7 +21,7 @@ declare global {
     }
 }
 
-const SCROLL_TIMEOUT_MS = 3000
+const SCROLL_TIMEOUT_MS = 500
 
 const createInterpolator = (...stops: number[][]) => {
     const spline = hermite(stops)
@@ -209,7 +209,7 @@ export class AnimatedText extends LitElement {
         }
     `
 
-    gradientAlphaSpring = new Spring(0, 50, 1)
+    gradientAlphaSpring = new Spring(0, 25, 1)
 
     @property()
     text = ""
@@ -251,19 +251,24 @@ export class AnimatedText extends LitElement {
             }
         }
 
-        const srsp = this.globalRSPSpring!.current - index // smoothed rsp (not clamped)
+        const srsp = this.globalRSPSpring!.compute() - index // smoothed rsp (not clamped)
 
         this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
+
+        this.animateText(srsp)
+
+        return index + 1
+    }
+
+    private animateText(srsp: number) {
         if (!this.gradientAlphaSpring.isInEquilibrium()) {
-            const gradientAlpha = this.gradientAlphaSpring.current
+            const gradientAlpha = this.gradientAlphaSpring.compute()
             this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2))
         }
 
         this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${
             srsp * 90
         }%, rgba(255,255,255,0) ${srsp * 110}%)`
-
-        return index + 1
     }
 
     render() {

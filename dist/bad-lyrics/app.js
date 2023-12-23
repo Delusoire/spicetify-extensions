@@ -309,12 +309,12 @@ import { when } from "https://esm.sh/lit/directives/when.js";
 var TAU = Math.PI * 2;
 var SLEEPING_EPSILON = 1e-7;
 var Spring = class {
-  constructor(p, dampingRatio, frequency) {
+  constructor(p, dampingRatio, frequency, lastUpdateTime = Date.now()) {
     this.p = p;
     this.dampingRatio = dampingRatio;
-    this.sleeping = true;
-    this.updatedTime = Date.now();
-    this.isInEquilibrium = () => this.sleeping;
+    this.lastUpdateTime = lastUpdateTime;
+    this.inEquilibrium = true;
+    this.isInEquilibrium = () => this.inEquilibrium;
     if (dampingRatio * frequency < 0) {
       throw new Error("Spring does not converge.");
     }
@@ -322,29 +322,32 @@ var Spring = class {
     this.p_e = p;
     this.W0 = frequency * TAU;
   }
-  get current() {
-    const nextUpdatedTime = Date.now();
-    const current = this.update(nextUpdatedTime - this.updatedTime);
-    this.updatedTime = nextUpdatedTime;
+  // We allow consumers to specify their own timescales
+  compute(time = Date.now()) {
+    if (this.inEquilibrium)
+      return this.p;
+    const dt = time - this.lastUpdateTime;
+    const current = this.solve(dt);
+    this.lastUpdateTime = time;
     return current;
   }
-  update(dt) {
+  solve(dt) {
     const offset = this.p - this.p_e;
     const dp = this.v * dt;
     const A = this.dampingRatio * this.W0;
     const Adt = A * dt;
     const decay = Math.exp(-Adt);
-    let newPosition, newVelocity;
+    let nextP, nextV;
     if (this.dampingRatio == 1) {
-      newPosition = this.p_e + (offset * (1 + Adt) + dp) * decay;
-      newVelocity = (this.v * (1 - Adt) - offset * (A * Adt)) * decay;
+      nextP = this.p_e + (offset * (1 + Adt) + dp) * decay;
+      nextV = (this.v * (1 - Adt) - offset * (A * Adt)) * decay;
     } else if (this.dampingRatio < 1) {
       const W_W0 = Math.sqrt(1 - this.dampingRatio * this.dampingRatio);
       const W = this.W0 * W_W0;
       const i = Math.cos(W * dt);
       const j = Math.sin(W * dt);
-      newPosition = this.p_e + (offset * i + (dp + Adt * offset) * (j / (W * dt))) * decay;
-      newVelocity = (this.v * (i - A / W * j) - offset * j * (this.W0 / W_W0)) * decay;
+      nextP = this.p_e + (offset * i + (dp + Adt * offset) * (j / (W * dt))) * decay;
+      nextV = (this.v * (i - A / W * j) - offset * j * (this.W0 / W_W0)) * decay;
     } else if (this.dampingRatio > 1) {
       const W_W0 = Math.sqrt(this.dampingRatio ** 2 - 1);
       const W = this.W0 * W_W0;
@@ -355,32 +358,32 @@ var Spring = class {
       const c_1 = offset - c_2;
       const e_1 = c_1 * Math.exp(r_1 * dt);
       const e_2 = c_2 * Math.exp(r_2 * dt);
-      newPosition = this.p_e + e_1 + e_2;
-      newVelocity = r_1 * e_1 + r_2 * e_2;
+      nextP = this.p_e + e_1 + e_2;
+      nextV = r_1 * e_1 + r_2 * e_2;
     } else {
       throw "Solar flare detected.";
     }
-    this.p = newPosition;
-    this.v = newVelocity;
-    this.sleeping = Math.abs(this.v) <= SLEEPING_EPSILON;
-    return newPosition;
+    this.p = nextP;
+    this.v = nextV;
+    this.inEquilibrium = Math.abs(this.v) <= SLEEPING_EPSILON;
+    return nextP;
   }
   setEquilibrium(position) {
     if (this.p_e != position) {
       this.p_e = position;
-      this.sleeping = false;
+      this.inEquilibrium = false;
     }
     return this.p_e;
   }
   reset(position) {
     this.v = 0;
     this.p = this.p_e = position;
-    this.sleeping = true;
+    this.inEquilibrium = true;
   }
 };
 
 // extensions/bad-lyrics/components.ts
-var SCROLL_TIMEOUT_MS = 3e3;
+var SCROLL_TIMEOUT_MS = 500;
 var createInterpolator = (...stops) => {
   const spline = hermite(stops);
   return (t) => spline.at(t);
@@ -557,7 +560,7 @@ AnimatedTextContainer = __decorateClass([
 var AnimatedText = class extends LitElement {
   constructor() {
     super(...arguments);
-    this.gradientAlphaSpring = new Spring(0, 50, 1);
+    this.gradientAlphaSpring = new Spring(0, 25, 1);
     this.text = "";
     this.tsrAbsolute = 0;
     this.tsr = 0;
@@ -582,14 +585,17 @@ var AnimatedText = class extends LitElement {
         }
       }
     }
-    const srsp = this.globalRSPSpring.current - index;
+    const srsp = this.globalRSPSpring.compute() - index;
     this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor));
+    this.animateText(srsp);
+    return index + 1;
+  }
+  animateText(srsp) {
     if (!this.gradientAlphaSpring.isInEquilibrium()) {
-      const gradientAlpha = this.gradientAlphaSpring.current;
+      const gradientAlpha = this.gradientAlphaSpring.compute();
       this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2));
     }
     this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${srsp * 90}%, rgba(255,255,255,0) ${srsp * 110}%)`;
-    return index + 1;
   }
   render() {
     return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}

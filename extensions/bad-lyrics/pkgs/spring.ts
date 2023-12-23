@@ -6,20 +6,25 @@ export class Spring {
     private W0: number
     private v: number
 
-    private sleeping = true
+    private inEquilibrium = true
 
     private p_e: number
 
-    private updatedTime = Date.now()
-
-    get current() {
-        const nextUpdatedTime = Date.now()
-        const current = this.update(nextUpdatedTime - this.updatedTime)
-        this.updatedTime = nextUpdatedTime
+    // We allow consumers to specify their own timescales
+    compute(time = Date.now()) {
+        if (this.inEquilibrium) return this.p
+        const dt = time - this.lastUpdateTime
+        const current = this.solve(dt)
+        this.lastUpdateTime = time
         return current
     }
 
-    constructor(private p: number, private dampingRatio: number, frequency: number) {
+    constructor(
+        private p: number,
+        private dampingRatio: number,
+        frequency: number,
+        private lastUpdateTime = Date.now(),
+    ) {
         if (dampingRatio * frequency < 0) {
             throw new Error("Spring does not converge.")
         }
@@ -29,18 +34,18 @@ export class Spring {
         this.W0 = frequency * TAU
     }
 
-    update(dt: number): number {
+    private solve(dt: number): number {
         const offset = this.p - this.p_e
         const dp = this.v * dt
         const A = this.dampingRatio * this.W0
         const Adt = A * dt
         const decay = Math.exp(-Adt)
 
-        let newPosition, newVelocity
+        let nextP, nextV
 
         if (this.dampingRatio == 1) {
-            newPosition = this.p_e + (offset * (1 + Adt) + dp) * decay
-            newVelocity = (this.v * (1 - Adt) - offset * (A * Adt)) * decay
+            nextP = this.p_e + (offset * (1 + Adt) + dp) * decay
+            nextV = (this.v * (1 - Adt) - offset * (A * Adt)) * decay
         } else if (this.dampingRatio < 1) {
             const W_W0 = Math.sqrt(1 - this.dampingRatio * this.dampingRatio)
             const W = this.W0 * W_W0
@@ -48,8 +53,8 @@ export class Spring {
             const i = Math.cos(W * dt)
             const j = Math.sin(W * dt)
 
-            newPosition = this.p_e + (offset * i + (dp + Adt * offset) * (j / (W * dt))) * decay
-            newVelocity = (this.v * (i - (A / W) * j) - offset * j * (this.W0 / W_W0)) * decay
+            nextP = this.p_e + (offset * i + (dp + Adt * offset) * (j / (W * dt))) * decay
+            nextV = (this.v * (i - (A / W) * j) - offset * j * (this.W0 / W_W0)) * decay
         } else if (this.dampingRatio > 1) {
             const W_W0 = Math.sqrt(this.dampingRatio ** 2 - 1)
             const W = this.W0 * W_W0
@@ -65,24 +70,24 @@ export class Spring {
             const e_1 = c_1 * Math.exp(r_1 * dt)
             const e_2 = c_2 * Math.exp(r_2 * dt)
 
-            newPosition = this.p_e + e_1 + e_2
-            newVelocity = r_1 * e_1 + r_2 * e_2
+            nextP = this.p_e + e_1 + e_2
+            nextV = r_1 * e_1 + r_2 * e_2
         } else {
             throw "Solar flare detected."
         }
 
-        this.p = newPosition
-        this.v = newVelocity
+        this.p = nextP
+        this.v = nextV
 
-        this.sleeping = Math.abs(this.v) <= SLEEPING_EPSILON
+        this.inEquilibrium = Math.abs(this.v) <= SLEEPING_EPSILON
 
-        return newPosition
+        return nextP
     }
 
     setEquilibrium(position: number) {
         if (this.p_e != position) {
             this.p_e = position
-            this.sleeping = false
+            this.inEquilibrium = false
         }
         return this.p_e
     }
@@ -90,8 +95,8 @@ export class Spring {
     reset(position: number) {
         this.v = 0
         this.p = this.p_e = position
-        this.sleeping = true
+        this.inEquilibrium = true
     }
 
-    isInEquilibrium = () => this.sleeping
+    isInEquilibrium = () => this.inEquilibrium
 }
