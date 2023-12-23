@@ -541,7 +541,7 @@ AnimatedTextContainer = __decorateClass([
 var AnimatedText = class extends LitElement {
   constructor() {
     super(...arguments);
-    this.gradientAlphaSpring = new Spring(0, 1, 1);
+    this.gradientAlphaSpring = new Spring(0, 2, 10);
     this.text = "";
     this.tsrAbsolute = 0;
     this.tsr = 0;

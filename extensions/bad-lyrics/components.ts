@@ -194,7 +194,7 @@ export class AnimatedText extends LitElement {
         }
     `
 
-    gradientAlphaSpring = new Spring(0, 1, 1)
+    gradientAlphaSpring = new Spring(0, 2, 10)
 
     @property()
     text = ""
