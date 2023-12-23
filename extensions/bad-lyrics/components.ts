@@ -261,13 +261,13 @@ export class AnimatedText extends LitElement {
     }
 
     private animateText(srsp: number) {
+        const gradientAlpha = this.gradientAlphaSpring.compute(srsp)
         if (!this.gradientAlphaSpring.isInEquilibrium()) {
-            const gradientAlpha = this.gradientAlphaSpring.compute()
             this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2))
         }
 
         this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${
-            srsp * 90
+            srsp * 100
         }%, rgba(255,255,255,0) ${srsp * 110}%)`
     }
 

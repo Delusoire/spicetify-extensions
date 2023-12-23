@@ -12,9 +12,7 @@ export class Spring {
 
     // We allow consumers to specify their own timescales
     compute(time = Date.now()) {
-        if (this.inEquilibrium) return this.p
-        const dt = time - this.lastUpdateTime
-        const current = this.solve(dt)
+        const current = this.inEquilibrium ? this.p : this.solve(time - this.lastUpdateTime)
         this.lastUpdateTime = time
         return current
     }
@@ -76,10 +74,11 @@ export class Spring {
             throw "Solar flare detected."
         }
 
-        this.p = nextP
         this.v = nextV
 
         this.inEquilibrium = Math.abs(this.v) <= SLEEPING_EPSILON
+
+        this.p = this.inEquilibrium ? this.p_e : nextP
 
         return nextP
     }
