@@ -52,7 +52,7 @@ export class AnimatedContentContainer extends LitElement {
     @property({ type: Number })
     ter = 1
 
-    @queryAll("*")
+    @queryAll("*:not(br)")
     // @ts-expect-error only has a getter
     childs: NodeListOf<AnimatedContentContainer | AnimatedContent | AnimatedFiller>
 
@@ -71,35 +71,35 @@ export class AnimatedContentContainer extends LitElement {
 
     render() {
         return html`${map(this.content, part => {
-            const tsrAbsolute = this.tsrAbsolute + part.tsr * (this.ter - this.tsr)
+                const tsrAbsolute = this.tsrAbsolute + part.tsr * (this.ter - this.tsr)
 
-            if (Array.isArray(part.content)) {
-                return html`<animated-content-container
-                    .content=${part.content}
+                if (Array.isArray(part.content)) {
+                    return html`<animated-content-container
+                        .content=${part.content}
+                        tsrAbsolute=${tsrAbsolute}
+                        tsr=${part.tsr}
+                        ter=${part.ter}
+                    />`
+                }
+
+                if (part.content === Filler) {
+                    const filler = part as SyncedFiller
+                    return html`<animated-filler
+                        content=${filler.content}
+                        tsrAbsolute=${tsrAbsolute}
+                        tsr=${filler.tsr}
+                        ter=${filler.ter}
+                        duration=${filler.duration}
+                    />`
+                }
+
+                return html` <animated-content
+                    content=${part.content}
                     tsrAbsolute=${tsrAbsolute}
                     tsr=${part.tsr}
                     ter=${part.ter}
                 />`
-            }
-
-            if (part.content === Filler) {
-                const filler = part as SyncedFiller
-                return html`<animated-filler
-                    content=${filler.content}
-                    tsrAbsolute=${tsrAbsolute}
-                    tsr=${filler.tsr}
-                    ter=${filler.ter}
-                    duration=${filler.duration}
-                />`
-            }
-
-            return html` <animated-content
-                content=${part.content}
-                tsrAbsolute=${tsrAbsolute}
-                tsr=${part.tsr}
-                ter=${part.ter}
-            />`
-        })}`
+            })}<br />`
     }
 }
 
@@ -192,17 +192,11 @@ export class AnimatedFiller extends SyncedScrolledContent {
     }
 
     render() {
-        return [
-            html`<br />`,
-            when(
-                this.duration > LyricsContainer.MINIMUM_FILL_DURATION_MS,
-                () => html`
-                    <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}
-                        >${this.content}</span
-                    ><br />
-                `,
-            ),
-        ]
+        if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS) return
+        return html`
+            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}>${this.content}</span
+            ><br />
+        `
     }
 }
 

@@ -315,7 +315,6 @@ import { Task } from "https://esm.sh/@lit/task";
 import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
-import { when } from "https://esm.sh/lit/directives/when.js";
 
 // extensions/bad-lyrics/pkgs/spring.ts
 var TAU = Math.PI * 2;
@@ -421,29 +420,29 @@ var AnimatedContentContainer = class extends LitElement {
       const tsrAbsolute = this.tsrAbsolute + part.tsr * (this.ter - this.tsr);
       if (Array.isArray(part.content)) {
         return html`<animated-content-container
-                    .content=${part.content}
-                    tsrAbsolute=${tsrAbsolute}
-                    tsr=${part.tsr}
-                    ter=${part.ter}
-                />`;
+                        .content=${part.content}
+                        tsrAbsolute=${tsrAbsolute}
+                        tsr=${part.tsr}
+                        ter=${part.ter}
+                    />`;
       }
       if (part.content === Filler) {
         const filler = part;
         return html`<animated-filler
-                    content=${filler.content}
-                    tsrAbsolute=${tsrAbsolute}
-                    tsr=${filler.tsr}
-                    ter=${filler.ter}
-                    duration=${filler.duration}
-                />`;
+                        content=${filler.content}
+                        tsrAbsolute=${tsrAbsolute}
+                        tsr=${filler.tsr}
+                        ter=${filler.ter}
+                        duration=${filler.duration}
+                    />`;
       }
       return html` <animated-content
-                content=${part.content}
-                tsrAbsolute=${tsrAbsolute}
-                tsr=${part.tsr}
-                ter=${part.ter}
-            />`;
-    })}`;
+                    content=${part.content}
+                    tsrAbsolute=${tsrAbsolute}
+                    tsr=${part.tsr}
+                    ter=${part.ter}
+                />`;
+    })}<br />`;
   }
 };
 AnimatedContentContainer.NAME = "animated-content-container";
@@ -467,7 +466,7 @@ __decorateClass([
 ], AnimatedContentContainer.prototype, "ter", 2);
 // @ts-expect-error only has a getter
 __decorateClass([
-  queryAll("*")
+  queryAll("*:not(br)")
 ], AnimatedContentContainer.prototype, "childs", 2);
 AnimatedContentContainer = __decorateClass([
   customElement(AnimatedContentContainer.NAME)
@@ -545,17 +544,12 @@ var AnimatedFiller = class extends SyncedScrolledContent {
     this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${srsp * 100}%, rgba(255,255,255,0) ${srsp * 110}%)`;
   }
   render() {
-    return [
-      html`<br />`,
-      when(
-        this.duration > LyricsContainer.MINIMUM_FILL_DURATION_MS,
-        () => html`
-                    <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}
-                        >${this.content}</span
-                    ><br />
-                `
-      )
-    ];
+    if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS)
+      return;
+    return html`
+            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}>${this.content}</span
+            ><br />
+        `;
   }
 };
 AnimatedFiller.NAME = "animated-filler";
