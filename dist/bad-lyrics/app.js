@@ -155,11 +155,7 @@ var findLyrics = async (info) => {
       const ter = subtitle2[i + 1]?.time.total / track.track_length || 1;
       return { tsr, ter, content: sLine.text };
     });
-    const intercalatedLineSynced = lineSynced.flatMap((sLine) => [
-      sLine,
-      { tsr: sLine.ter, ter: sLine.ter, duration: 0, content: Filler }
-    ]);
-    l.lineSynced = wrapInContainerSyncedType(2 /* LINE_SYNCED */, intercalatedLineSynced);
+    l.lineSynced = wrapInContainerSyncedType(2 /* LINE_SYNCED */, lineSynced);
   }
   if (track.has_lyrics || track.has_lyrics_crowd) {
     l.notSynced = wrapInContainerSyncedType(1 /* NOT_SYNCED */, lyrics.lyrics_body);
