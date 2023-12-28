@@ -130,7 +130,11 @@ export const findLyrics = async (info: {
             const ter = subtitle[i + 1]?.time.total / track.track_length || 1
             return { tsr, ter, content: sLine.text }
         })
-        l.lineSynced = wrapInContainerSyncedType(LyricsType.LINE_SYNCED, lineSynced)
+        const intercalatedLineSynced = lineSynced.flatMap(sLine => [
+            sLine,
+            { tsr: sLine.ter, ter: sLine.ter, duration: 1e-12, content: Filler } as SyncedFiller,
+        ])
+        l.lineSynced = wrapInContainerSyncedType(LyricsType.LINE_SYNCED, intercalatedLineSynced)
     }
 
     if (track.has_lyrics || track.has_lyrics_crowd) {
