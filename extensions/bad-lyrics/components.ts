@@ -4,7 +4,6 @@ import { Task } from "https://esm.sh/@lit/task"
 import { LitElement, css, html } from "https://esm.sh/lit"
 import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js"
 import { map } from "https://esm.sh/lit/directives/map.js"
-import { when } from "https://esm.sh/lit/directives/when.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
 
 import { _ } from "../../shared/deps.ts"
