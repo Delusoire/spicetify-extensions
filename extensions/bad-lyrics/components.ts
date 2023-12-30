@@ -45,8 +45,6 @@ export class AnimatedContentContainer extends LitElement {
     @property({ type: Array })
     content = [] as Array<SyncedContent>
     @property({ type: Number })
-    tsrAbsolute = 0
-    @property({ type: Number })
     tsr = 0
     @property({ type: Number })
     ter = 1
@@ -70,34 +68,21 @@ export class AnimatedContentContainer extends LitElement {
 
     render() {
         return html`${map(this.content, part => {
-                const tsrAbsolute = this.tsrAbsolute + part.tsr * (this.ter - this.tsr)
-
                 if (Array.isArray(part.content)) {
-                    return html`<animated-content-container
-                        .content=${part.content}
-                        tsrAbsolute=${tsrAbsolute}
-                        tsr=${part.tsr}
-                        ter=${part.ter}
-                    />`
+                    return html`<animated-content-container .content=${part.content} tsr=${part.tsr} ter=${part.ter} />`
                 }
 
                 if (part.content === Filler) {
                     const filler = part as SyncedFiller
                     return html`<animated-filler
                         content=${filler.content}
-                        tsrAbsolute=${tsrAbsolute}
                         tsr=${filler.tsr}
                         ter=${filler.ter}
                         duration=${filler.duration}
                     />`
                 }
 
-                return html` <animated-content
-                    content=${part.content}
-                    tsrAbsolute=${tsrAbsolute}
-                    tsr=${part.tsr}
-                    ter=${part.ter}
-                />`
+                return html` <animated-content content=${part.content} tsr=${part.tsr} ter=${part.ter} />`
             })}<br />`
     }
 }
@@ -105,8 +90,6 @@ export class AnimatedContentContainer extends LitElement {
 export abstract class SyncedScrolledContent extends LitElement {
     @property()
     content = ""
-    @property({ type: Number })
-    tsrAbsolute = 0
     @property({ type: Number })
     tsr = 0
     @property({ type: Number })
@@ -187,8 +170,7 @@ export class AnimatedFiller extends SyncedScrolledContent {
     render() {
         if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS) return
         return html`
-            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}>${this.content}</span
-            ><br />
+            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}>${this.content}</span><br />
         `
     }
 }
@@ -234,7 +216,7 @@ export class AnimatedContent extends SyncedScrolledContent {
     }
 
     render() {
-        return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}
+        return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}
             >${this.content}</span
         >`
     }
@@ -259,6 +241,15 @@ export class LyricsContainer extends LitElement {
     @state()
     globalRSPSpline: CatmullRollSpline | null = null
 
+    @provide({ context: loadedLyricsTypeCtx })
+    @state()
+    loadedLyricsType = LyricsType.NONE
+
+    private updateSong = (song: Song | null) => {
+        this.song = song
+        this.loadedLyricsType = LyricsType.NONE
+    }
+
     private lyricsTask = new Task(this, {
         task: async ([song]) => {
             const availableLyrics = await song?.lyrics
@@ -276,10 +267,6 @@ export class LyricsContainer extends LitElement {
         },
         args: () => [this.song],
     })
-
-    @provide({ context: loadedLyricsTypeCtx })
-    @state()
-    loadedLyricsType = LyricsType.NONE
 
     public updateProgress(progress: number) {
         if (this.loadedLyricsType === LyricsType.NONE || this.loadedLyricsType === LyricsType.NOT_SYNCED) return
@@ -307,18 +294,17 @@ export class LyricsContainer extends LitElement {
         return this.song
             ? this.lyricsTask.render({
                   pending: () => {
-                      this.loadedLyricsType = LyricsType.NONE
                       return html`<div class="fetching">Fetching Lyrics...</div>`
                   },
                   complete: lyrics => {
                       if (!lyrics) {
                           return html`<div class="noLyrics">No Lyrics Found</div>`
                       }
-                      const isSynced = this.loadedLyricsType === LyricsType.WORD_SYNCED
+                      const isWordSynced = this.loadedLyricsType === LyricsType.WORD_SYNCED
 
                       const style = [
-                          ["--gradient-angle", `${isSynced ? 90 : 180}deg`],
-                          ["--animated-text-bg-color", isSynced ? "black" : "white"],
+                          ["--gradient-angle", `${isWordSynced ? 90 : 180}deg`],
+                          ["--animated-text-bg-color", isWordSynced ? "black" : "white"],
                           [""],
                       ]
                           .map(a => a.join(": "))
@@ -332,7 +318,6 @@ export class LyricsContainer extends LitElement {
                       `
                   },
                   error: e => {
-                      this.loadedLyricsType = LyricsType.NONE
                       console.error(e)
                       return html`<div class="error">Error</div>`
                   },

@@ -440,7 +440,6 @@ var AnimatedContentContainer = class extends LitElement {
   constructor() {
     super(...arguments);
     this.content = [];
-    this.tsrAbsolute = 0;
     this.tsr = 0;
     this.ter = 1;
   }
@@ -455,31 +454,19 @@ var AnimatedContentContainer = class extends LitElement {
   }
   render() {
     return html`${map(this.content, (part) => {
-      const tsrAbsolute = this.tsrAbsolute + part.tsr * (this.ter - this.tsr);
       if (Array.isArray(part.content)) {
-        return html`<animated-content-container
-                        .content=${part.content}
-                        tsrAbsolute=${tsrAbsolute}
-                        tsr=${part.tsr}
-                        ter=${part.ter}
-                    />`;
+        return html`<animated-content-container .content=${part.content} tsr=${part.tsr} ter=${part.ter} />`;
       }
       if (part.content === Filler) {
         const filler = part;
         return html`<animated-filler
                         content=${filler.content}
-                        tsrAbsolute=${tsrAbsolute}
                         tsr=${filler.tsr}
                         ter=${filler.ter}
                         duration=${filler.duration}
                     />`;
       }
-      return html` <animated-content
-                    content=${part.content}
-                    tsrAbsolute=${tsrAbsolute}
-                    tsr=${part.tsr}
-                    ter=${part.ter}
-                />`;
+      return html` <animated-content content=${part.content} tsr=${part.tsr} ter=${part.ter} />`;
     })}<br />`;
   }
 };
@@ -493,9 +480,6 @@ AnimatedContentContainer.styles = css`
 __decorateClass([
   property({ type: Array })
 ], AnimatedContentContainer.prototype, "content", 2);
-__decorateClass([
-  property({ type: Number })
-], AnimatedContentContainer.prototype, "tsrAbsolute", 2);
 __decorateClass([
   property({ type: Number })
 ], AnimatedContentContainer.prototype, "tsr", 2);
@@ -513,7 +497,6 @@ var SyncedScrolledContent = class extends LitElement {
   constructor() {
     super(...arguments);
     this.content = "";
-    this.tsrAbsolute = 0;
     this.tsr = 0;
     this.ter = 1;
     this.scrollTimeout = 0;
@@ -540,9 +523,6 @@ var SyncedScrolledContent = class extends LitElement {
 __decorateClass([
   property()
 ], SyncedScrolledContent.prototype, "content", 2);
-__decorateClass([
-  property({ type: Number })
-], SyncedScrolledContent.prototype, "tsrAbsolute", 2);
 __decorateClass([
   property({ type: Number })
 ], SyncedScrolledContent.prototype, "tsr", 2);
@@ -580,8 +560,7 @@ var AnimatedFiller = class extends SyncedScrolledContent {
     if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS)
       return;
     return html`
-            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}>${this.content}</span
-            ><br />
+            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}>${this.content}</span><br />
         `;
   }
 };
@@ -622,7 +601,7 @@ var AnimatedContent = class extends SyncedScrolledContent {
     this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${srsp * 100}%, rgba(255,255,255,0) ${srsp * 110}%)`;
   }
   render() {
-    return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsrAbsolute)}
+    return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}
             >${this.content}</span
         >`;
   }
@@ -647,6 +626,11 @@ var LyricsContainer = class extends LitElement {
     super(...arguments);
     this.song = null;
     this.globalRSPSpline = null;
+    this.loadedLyricsType = 0 /* NONE */;
+    this.updateSong = (song) => {
+      this.song = song;
+      this.loadedLyricsType = 0 /* NONE */;
+    };
     this.lyricsTask = new Task(this, {
       task: async ([song]) => {
         const availableLyrics = await song?.lyrics;
@@ -663,7 +647,6 @@ var LyricsContainer = class extends LitElement {
       },
       args: () => [this.song]
     });
-    this.loadedLyricsType = 0 /* NONE */;
     this.scrollTimeout = 0;
     this.spotifyContainer = document.querySelector("aside div.main-nowPlayingView-lyricsContent.injected") ?? void 0;
   }
@@ -680,17 +663,16 @@ var LyricsContainer = class extends LitElement {
   render() {
     return this.song ? this.lyricsTask.render({
       pending: () => {
-        this.loadedLyricsType = 0 /* NONE */;
         return html`<div class="fetching">Fetching Lyrics...</div>`;
       },
       complete: (lyrics) => {
         if (!lyrics) {
           return html`<div class="noLyrics">No Lyrics Found</div>`;
         }
-        const isSynced = this.loadedLyricsType === 3 /* WORD_SYNCED */;
+        const isWordSynced = this.loadedLyricsType === 3 /* WORD_SYNCED */;
         const style = [
-          ["--gradient-angle", `${isSynced ? 90 : 180}deg`],
-          ["--animated-text-bg-color", isSynced ? "black" : "white"],
+          ["--gradient-angle", `${isWordSynced ? 90 : 180}deg`],
+          ["--animated-text-bg-color", isWordSynced ? "black" : "white"],
           [""]
         ].map((a) => a.join(": ")).join("; ");
         return html`
@@ -701,7 +683,6 @@ var LyricsContainer = class extends LitElement {
                       `;
       },
       error: (e) => {
-        this.loadedLyricsType = 0 /* NONE */;
         console.error(e);
         return html`<div class="error">Error</div>`;
       }
