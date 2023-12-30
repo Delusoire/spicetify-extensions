@@ -528,7 +528,8 @@ var SyncedScrolledContent = class extends LitElement {
         }
       }
     }
-    this.animateContent(remapScalar(this.tsr, this.ter, rsp), depthToActiveAncestor);
+    const crsp = _.clamp(remapScalar(this.tsr, this.ter, rsp), -0.5, 1.5);
+    this.animateContent(crsp, depthToActiveAncestor);
     return index + 1;
   }
 };
