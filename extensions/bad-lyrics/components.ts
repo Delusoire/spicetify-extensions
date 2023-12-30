@@ -7,8 +7,9 @@ import { map } from "https://esm.sh/lit/directives/map.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
 
 import { _ } from "../../shared/deps.ts"
+import { CatmullRollSpline, remapScalar, vectorWithTime } from "./pkgs/catmullRomSpline.ts"
 import { Spring } from "./pkgs/spring.ts"
-import { Filler, LyricsType, SyncedContent, SyncedFiller } from "./utils/LyricsProvider.ts"
+import { Filler, LyricsType, SyncedContent, SyncedFiller, flattenLyrics } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
 
@@ -26,7 +27,6 @@ declare global {
 //     return (t: number) => spline.at(t)
 // }
 
-const globalRSPSpringCtx = createContext<Spring>("globalRSPSpring")
 const scrollTimeoutCtx = createContext<number>("scrollTimeout")
 const spotifyContainerCtx = createContext<HTMLElement | undefined>("spotifyContainer")
 const loadedLyricsTypeCtx = createContext<LyricsType>("loadedLyricsType")
@@ -112,20 +112,15 @@ export abstract class SyncedScrolledContent extends LitElement {
     @property({ type: Number })
     ter = 1
 
-    @consume({ context: globalRSPSpringCtx })
-    globalRSPSpring?: Spring
     @consume({ context: scrollTimeoutCtx, subscribe: true })
     scrollTimeout = 0
     @consume({ context: spotifyContainerCtx })
     spotifyContainer?: HTMLElement
 
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
-        const crsp = _.clamp(rsp, 0, 1) // clamped rsp
         const isActive = depthToActiveAncestor === 0
 
         if (isActive) {
-            this.globalRSPSpring!.setEquilibrium(index + crsp)
-
             if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
                 const lineHeightHeuristic = this.offsetHeight
                 const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic
@@ -141,8 +136,7 @@ export abstract class SyncedScrolledContent extends LitElement {
             }
         }
 
-        // smoothed rsp (not clamped)
-        this.animateContent(this.globalRSPSpring!.compute() - index, depthToActiveAncestor)
+        this.animateContent(remapScalar(this.tsr, this.ter, rsp), depthToActiveAncestor)
 
         return index + 1
     }
@@ -166,7 +160,7 @@ export class AnimatedFiller extends SyncedScrolledContent {
     // @ts-expect-error gets initialized in firstUpdated
     gradientAlphaSpring: Spring
 
-    @property()
+    @property({ type: Number })
     duration = 0
 
     private springsInitialized = false
@@ -262,8 +256,24 @@ export class LyricsContainer extends LitElement {
     @property({ attribute: false })
     song: Song | null = null
 
+    @state()
+    globalRSPSpline: CatmullRollSpline | null = null
+
     private lyricsTask = new Task(this, {
-        task: ([song]) => song?.lyrics,
+        task: async ([song]) => {
+            const availableLyrics = await song?.lyrics
+            const lyrics = Object.values(availableLyrics!)[0]
+            this.loadedLyricsType = lyrics ? lyrics.__type : LyricsType.NONE
+
+            if (this.loadedLyricsType === LyricsType.LINE_SYNCED || this.loadedLyricsType === LyricsType.WORD_SYNCED) {
+                this.globalRSPSpline = CatmullRollSpline.fromPointsClamped(
+                    flattenLyrics(lyrics as SyncedContent).map(l => [l.tsr, [l.tsr]] as vectorWithTime),
+                )
+            } else {
+                this.globalRSPSpline = null
+            }
+            return lyrics
+        },
         args: () => [this.song],
     })
 
@@ -273,15 +283,12 @@ export class LyricsContainer extends LitElement {
 
     public updateProgress(progress: number) {
         if (this.loadedLyricsType === LyricsType.NONE || this.loadedLyricsType === LyricsType.NOT_SYNCED) return
-        this.firstContainer.updateProgress(progress, 0, 0)
+        this.firstContainer.updateProgress(this.globalRSPSpline?.at(progress)[0] ?? 0, 0, 0)
     }
 
     @query(AnimatedContentContainer.NAME)
     // @ts-expect-error only has a getter
     firstContainer: AnimatedContentContainer
-
-    @provide({ context: globalRSPSpringCtx })
-    globalRSPSpring = new Spring(0, 5, 1)
 
     @provide({ context: scrollTimeoutCtx })
     scrollTimeout = 0
@@ -303,13 +310,10 @@ export class LyricsContainer extends LitElement {
                       this.loadedLyricsType = LyricsType.NONE
                       return html`<div class="fetching">Fetching Lyrics...</div>`
                   },
-                  complete: availableLyrics => {
-                      const lyrics = Object.values(availableLyrics!)[0]
+                  complete: lyrics => {
                       if (!lyrics) {
-                          this.loadedLyricsType = LyricsType.NONE
                           return html`<div class="noLyrics">No Lyrics Found</div>`
                       }
-                      this.loadedLyricsType = lyrics.__type
                       const isSynced = this.loadedLyricsType === LyricsType.WORD_SYNCED
 
                       const style = [

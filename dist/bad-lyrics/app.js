@@ -98,6 +98,7 @@ Spicetify.CosmosAsync.get(url.toString(), void 0, _.omit(headers, "cookie")).the
   }
 });
 var Filler = "\u266A";
+var flattenLyrics = (lyrics) => Array.isArray(lyrics.content) ? lyrics.content.flatMap(flattenLyrics) : [lyrics];
 var findLyrics = async (info) => {
   const { lyrics, subtitles, track } = await fetchMxmMacroSubtitlesGet(
     info.uri,
@@ -120,12 +121,8 @@ var findLyrics = async (info) => {
     const wordSynced = richSync.map((rsLine) => {
       const tsr = rsLine.ts / track.track_length;
       const ter = rsLine.te / track.track_length;
-      const duration = rsLine.te - rsLine.ts;
       const content = rsLine.l.map((word, index, words) => {
-        const content2 = word.c;
-        const tsr2 = word.o / duration;
-        const ter2 = words[index + 1]?.o / duration || 1;
-        return { tsr: tsr2, ter: ter2, content: content2 };
+        return { tsr: tsr + word.o * 1e3, ter: tsr + words[index + 1]?.o * 1e3 || ter, content: word.c };
       });
       return { tsr, ter, content };
     });
@@ -153,13 +150,9 @@ var findLyrics = async (info) => {
     const lineSynced = subtitle.map((sLine, i, subtitle2) => {
       const tsr = sLine.time.total / track.track_length;
       const ter = subtitle2[i + 1]?.time.total / track.track_length || 1;
-      return { tsr, ter, content: sLine.text };
+      return { tsr, ter, content: [{ tsr, ter, content: sLine.text }] };
     });
-    const intercalatedLineSynced = lineSynced.flatMap((sLine) => [
-      sLine,
-      { tsr: sLine.ter, ter: sLine.ter, duration: 1e-12, content: Filler }
-    ]);
-    l.lineSynced = wrapInContainerSyncedType(2 /* LINE_SYNCED */, intercalatedLineSynced);
+    l.lineSynced = wrapInContainerSyncedType(2 /* LINE_SYNCED */, lineSynced);
   }
   if (track.has_lyrics || track.has_lyrics_crowd) {
     l.notSynced = wrapInContainerSyncedType(1 /* NOT_SYNCED */, lyrics.lyrics_body);
@@ -316,6 +309,52 @@ import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 
+// extensions/bad-lyrics/pkgs/catmullRomSpline.ts
+var scalarLerp = (s, e, t) => s + (e - s) * t;
+var vectorLerp = (u, v, t) => _.zip(u, v).map(([xiu, xiv]) => scalarLerp(xiu, xiv, t));
+var remapScalar = (s, e, x) => (x - s) / (e - s);
+var slidingWindow = (array, slidingWindowSize) => _.range(slidingWindowSize, array.length + 1).map((i) => array.slice(i - slidingWindowSize, i));
+var CatmullRomCurve = class {
+  constructor(points) {
+    ;
+    [this.T, this.P] = _.unzip(points);
+  }
+  at(t) {
+    t = _.clamp(t, this.T[1], this.T[2]);
+    const X = (A2, j) => (i) => vectorLerp(A2[i], A2[i + 1], remapScalar(this.T[i], this.T[i + j], t));
+    const A = _.range(3).map(X(this.P, 1));
+    const B = _.range(2).map(X(A, 2));
+    return X(B, 1)(1);
+  }
+};
+var CatmullRollSpline = class _CatmullRollSpline {
+  constructor(points) {
+    this.points = _.sortBy(points, (p) => p[0]);
+    this.catnumRollCurves = slidingWindow(this.points, 4).map(
+      (P) => new CatmullRomCurve(P)
+    );
+  }
+  at(t) {
+    const point = [t, []];
+    const i = _.clamp(_.sortedLastIndexBy(this.points, point, (p) => p[0]) - 1, 0, this.catnumRollCurves.length - 1);
+    return this.catnumRollCurves[i].at(t);
+  }
+  static fromPoints(points) {
+    if (points.length < 4)
+      return null;
+    return new _CatmullRollSpline(points);
+  }
+  static fromPointsClamped(points) {
+    if (points.length < 2)
+      return null;
+    const [P1, P2] = _.take(points, 2);
+    const [P3, P4] = _.takeRight(points, 2);
+    const P0 = [scalarLerp(P1[0], P2[0], -1), vectorLerp(P1[1], P2[1], -1)];
+    const P5 = [scalarLerp(P3[0], P4[0], 2), vectorLerp(P3[1], P4[1], 2)];
+    return this.fromPoints([P0, ...points, P5]);
+  }
+};
+
 // extensions/bad-lyrics/pkgs/spring.ts
 var TAU = Math.PI * 2;
 var SLEEPING_EPSILON = 1e-7;
@@ -394,7 +433,6 @@ var Spring = class {
 };
 
 // extensions/bad-lyrics/components.ts
-var globalRSPSpringCtx = createContext("globalRSPSpring");
 var scrollTimeoutCtx = createContext("scrollTimeout");
 var spotifyContainerCtx = createContext("spotifyContainer");
 var loadedLyricsTypeCtx = createContext("loadedLyricsType");
@@ -481,10 +519,8 @@ var SyncedScrolledContent = class extends LitElement {
     this.scrollTimeout = 0;
   }
   updateProgress(rsp, index, depthToActiveAncestor) {
-    const crsp = _.clamp(rsp, 0, 1);
     const isActive = depthToActiveAncestor === 0;
     if (isActive) {
-      this.globalRSPSpring.setEquilibrium(index + crsp);
       if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
         const lineHeightHeuristic = this.offsetHeight;
         const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic;
@@ -497,7 +533,7 @@ var SyncedScrolledContent = class extends LitElement {
         }
       }
     }
-    this.animateContent(this.globalRSPSpring.compute() - index, depthToActiveAncestor);
+    this.animateContent(remapScalar(this.tsr, this.ter, rsp), depthToActiveAncestor);
     return index + 1;
   }
 };
@@ -513,9 +549,6 @@ __decorateClass([
 __decorateClass([
   property({ type: Number })
 ], SyncedScrolledContent.prototype, "ter", 2);
-__decorateClass([
-  consume({ context: globalRSPSpringCtx })
-], SyncedScrolledContent.prototype, "globalRSPSpring", 2);
 __decorateClass([
   consume({ context: scrollTimeoutCtx, subscribe: true })
 ], SyncedScrolledContent.prototype, "scrollTimeout", 2);
@@ -562,7 +595,7 @@ AnimatedFiller.styles = css`
         }
     `;
 __decorateClass([
-  property()
+  property({ type: Number })
 ], AnimatedFiller.prototype, "duration", 2);
 AnimatedFiller = __decorateClass([
   customElement(AnimatedFiller.NAME)
@@ -613,19 +646,31 @@ var LyricsContainer = class extends LitElement {
   constructor() {
     super(...arguments);
     this.song = null;
+    this.globalRSPSpline = null;
     this.lyricsTask = new Task(this, {
-      task: ([song]) => song?.lyrics,
+      task: async ([song]) => {
+        const availableLyrics = await song?.lyrics;
+        const lyrics = Object.values(availableLyrics)[0];
+        this.loadedLyricsType = lyrics ? lyrics.__type : 0 /* NONE */;
+        if (this.loadedLyricsType === 2 /* LINE_SYNCED */ || this.loadedLyricsType === 3 /* WORD_SYNCED */) {
+          this.globalRSPSpline = CatmullRollSpline.fromPointsClamped(
+            flattenLyrics(lyrics).map((l) => [l.tsr, [l.tsr]])
+          );
+        } else {
+          this.globalRSPSpline = null;
+        }
+        return lyrics;
+      },
       args: () => [this.song]
     });
     this.loadedLyricsType = 0 /* NONE */;
-    this.globalRSPSpring = new Spring(0, 5, 1);
     this.scrollTimeout = 0;
     this.spotifyContainer = document.querySelector("aside div.main-nowPlayingView-lyricsContent.injected") ?? void 0;
   }
   updateProgress(progress) {
     if (this.loadedLyricsType === 0 /* NONE */ || this.loadedLyricsType === 1 /* NOT_SYNCED */)
       return;
-    this.firstContainer.updateProgress(progress, 0, 0);
+    this.firstContainer.updateProgress(this.globalRSPSpline?.at(progress)[0] ?? 0, 0, 0);
   }
   firstUpdated(changedProperties) {
     this.spotifyContainer?.addEventListener("scroll", (e) => {
@@ -638,13 +683,10 @@ var LyricsContainer = class extends LitElement {
         this.loadedLyricsType = 0 /* NONE */;
         return html`<div class="fetching">Fetching Lyrics...</div>`;
       },
-      complete: (availableLyrics) => {
-        const lyrics = Object.values(availableLyrics)[0];
+      complete: (lyrics) => {
         if (!lyrics) {
-          this.loadedLyricsType = 0 /* NONE */;
           return html`<div class="noLyrics">No Lyrics Found</div>`;
         }
-        this.loadedLyricsType = lyrics.__type;
         const isSynced = this.loadedLyricsType === 3 /* WORD_SYNCED */;
         const style = [
           ["--gradient-angle", `${isSynced ? 90 : 180}deg`],
@@ -678,6 +720,9 @@ __decorateClass([
   property({ attribute: false })
 ], LyricsContainer.prototype, "song", 2);
 __decorateClass([
+  state()
+], LyricsContainer.prototype, "globalRSPSpline", 2);
+__decorateClass([
   provide({ context: loadedLyricsTypeCtx }),
   state()
 ], LyricsContainer.prototype, "loadedLyricsType", 2);
@@ -685,9 +730,6 @@ __decorateClass([
 __decorateClass([
   query(AnimatedContentContainer.NAME)
 ], LyricsContainer.prototype, "firstContainer", 2);
-__decorateClass([
-  provide({ context: globalRSPSpringCtx })
-], LyricsContainer.prototype, "globalRSPSpring", 2);
 __decorateClass([
   provide({ context: scrollTimeoutCtx })
 ], LyricsContainer.prototype, "scrollTimeout", 2);

@@ -51,10 +51,13 @@ export enum LyricsType {
 export const Filler = "♪"
 
 export type NotSynced = Synced<string> & { __type: LyricsType.NOT_SYNCED }
-export type LineSynced = Synced<Array<Synced<string> | SyncedFiller>> & { __type: LyricsType.LINE_SYNCED }
+export type LineSynced = Synced<Array<Synced<readonly [Synced<string>]>>> & { __type: LyricsType.LINE_SYNCED }
 export type WordSynced = Synced<Array<Synced<Array<Synced<string>>> | SyncedFiller>> & {
     __type: LyricsType.WORD_SYNCED
 }
+
+export const flattenLyrics = (lyrics: SyncedContent): Array<Synced<string> | SyncedFiller> =>
+    Array.isArray(lyrics.content) ? lyrics.content.flatMap(flattenLyrics) : [lyrics as Synced<string> | SyncedFiller]
 
 export const findLyrics = async (info: {
     uri: string
@@ -86,14 +89,9 @@ export const findLyrics = async (info: {
         const wordSynced = richSync.map(rsLine => {
             const tsr = rsLine.ts / track.track_length
             const ter = rsLine.te / track.track_length
-            const duration = rsLine.te - rsLine.ts
 
             const content = rsLine.l.map((word, index, words) => {
-                const content = word.c
-                const tsr = word.o / duration
-                const ter = words[index + 1]?.o / duration || 1
-
-                return { tsr, ter, content }
+                return { tsr: tsr + word.o * 1000, ter: tsr + words[index + 1]?.o * 1000 || ter, content: word.c }
             })
 
             return { tsr, ter, content }
@@ -128,13 +126,9 @@ export const findLyrics = async (info: {
         const lineSynced = subtitle.map((sLine, i, subtitle) => {
             const tsr = sLine.time.total / track.track_length
             const ter = subtitle[i + 1]?.time.total / track.track_length || 1
-            return { tsr, ter, content: sLine.text }
+            return { tsr, ter, content: [{ tsr, ter, content: sLine.text }] as const }
         })
-        const intercalatedLineSynced = lineSynced.flatMap(sLine => [
-            sLine,
-            { tsr: sLine.ter, ter: sLine.ter, duration: 1e-12, content: Filler } as SyncedFiller,
-        ])
-        l.lineSynced = wrapInContainerSyncedType(LyricsType.LINE_SYNCED, intercalatedLineSynced)
+        l.lineSynced = wrapInContainerSyncedType(LyricsType.LINE_SYNCED, lineSynced)
     }
 
     if (track.has_lyrics || track.has_lyrics_crowd) {
