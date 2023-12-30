@@ -57,7 +57,7 @@ export class AnimatedContentContainer extends LitElement {
         const childs = Array.from(this.childs)
         const tsrs = childs.map(child => child.tsr)
 
-        const activeIndex = _.sortedIndexOf(tsrs, rsp) - 1
+        const activeIndex = _.sortedIndex(tsrs, rsp) - 1
 
         childs.forEach((child, i) => {
             index = child.updateProgress(rsp, index, depthToActiveAncestor + (i === activeIndex ? 0 : 1))
