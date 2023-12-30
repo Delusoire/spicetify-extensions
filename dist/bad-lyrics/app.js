@@ -122,7 +122,11 @@ var findLyrics = async (info) => {
       const tsr = rsLine.ts / track.track_length;
       const ter = rsLine.te / track.track_length;
       const content = rsLine.l.map((word, index, words) => {
-        return { tsr: tsr + word.o * 1e3, ter: tsr + words[index + 1]?.o * 1e3 || ter, content: word.c };
+        return {
+          tsr: tsr + word.o / track.track_length,
+          ter: tsr + words[index + 1]?.o / track.track_length || ter,
+          content: word.c
+        };
       });
       return { tsr, ter, content };
     });
