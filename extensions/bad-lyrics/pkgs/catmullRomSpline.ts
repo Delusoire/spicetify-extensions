@@ -24,11 +24,21 @@ class CatmullRomCurve {
 
     at(t: number) {
         t = _.clamp(t, this.T[1], this.T[2])
+        const vectorLerpWithRemapedScalar = (u: vector, v: vector, s: number, e: number, x: number) =>
+            vectorLerp(u, v, remapScalar(s, e, x))
         const X = (A: readonly vector[], j: number) => (i: number) =>
-            vectorLerp(A[i], A[i + 1], remapScalar(this.T[i], this.T[i + j], t))
-        const A = _.range(3).map(X(this.P, 1))
-        const B = _.range(2).map(X(A, 2))
-        return X(B, 1)(1)
+            vectorLerpWithRemapedScalar(A[i], A[i + 1], this.T[i], this.T[i + j], t)
+
+        const A = [
+            vectorLerpWithRemapedScalar(this.P[0], this.P[1], this.T[0], this.T[1], t),
+            vectorLerpWithRemapedScalar(this.P[1], this.P[2], this.T[1], this.T[2], t),
+            vectorLerpWithRemapedScalar(this.P[2], this.P[3], this.T[2], this.T[3], t),
+        ]
+        const B = [
+            vectorLerpWithRemapedScalar(A[0], A[1], this.T[0], this.T[2], t),
+            vectorLerpWithRemapedScalar(A[1], A[2], this.T[1], this.T[3], t),
+        ]
+        return vectorLerpWithRemapedScalar(B[0], B[1], this.T[1], this.T[2], t)
     }
 }
 
@@ -45,7 +55,7 @@ export class CatmullRollSpline {
 
     at(t: number) {
         const point = [t, []] as vectorWithTime
-        const i = _.clamp(_.sortedLastIndexBy(this.points, point, p => p[0]) - 1, 0, this.catnumRollCurves.length - 1)
+        const i = _.clamp(_.sortedLastIndexBy(this.points, point, p => p[0]) - 2, 0, this.catnumRollCurves.length - 1)
         return this.catnumRollCurves[i].at(t)
     }
 
