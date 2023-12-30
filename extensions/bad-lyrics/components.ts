@@ -8,7 +8,6 @@ import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.
 
 import { _ } from "../../shared/deps.ts"
 import { CatmullRollSpline, remapScalar, vectorWithTime } from "./pkgs/catmullRomSpline.ts"
-import { Spring } from "./pkgs/spring.ts"
 import { Filler, LyricsType, SyncedContent, SyncedFiller, flattenLyrics } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
@@ -149,9 +148,9 @@ export class AnimatedFiller extends SyncedScrolledContent {
 
     private springsInitialized = false
 
-    private tryInitializeSprings(srsp: number) {
+    private tryInitializeSprings(scaledProgress: number) {
         if (this.springsInitialized) return
-        // this.gradientAlphaSpring = new Spring(0, 1, 1, srsp)
+        // this.gradientAlphaSpring = new Spring(0, 1, 1, scaledProgress)
         this.springsInitialized = true
     }
 
@@ -197,9 +196,9 @@ export class AnimatedContent extends SyncedScrolledContent {
 
     private springsInitialized = false
 
-    private tryInitializeSprings(srsp: number) {
+    private tryInitializeSprings(scaledProgress: number) {
         if (this.springsInitialized) return
-        // this.gradientAlphaSpring = new Spring(0, 1, 1, srsp)
+        // this.gradientAlphaSpring = new Spring(0, 1, 1, scaledProgress)
         this.springsInitialized = true
     }
 

@@ -314,6 +314,7 @@ import { customElement, property, query, queryAll, state } from "https://esm.sh/
 import { map } from "https://esm.sh/lit/directives/map.js";
 
 // extensions/bad-lyrics/pkgs/catmullRomSpline.ts
+import { mixCubicHermite, tangentCardinal } from "https://esm.sh/@thi.ng/math";
 var scalarLerp = (s, e, t) => s + (e - s) * t;
 var vectorLerp = (u, v, t) => _.zip(u, v).map(([xiu, xiv]) => scalarLerp(xiu, xiv, t));
 var remapScalar = (s, e, x) => (x - s) / (e - s);
@@ -324,19 +325,17 @@ var CatmullRomCurve = class {
     [this.T, this.P] = _.unzip(points);
   }
   at(t) {
-    t = _.clamp(t, this.T[1], this.T[2]);
-    const vectorLerpWithRemapedScalar = (u, v, s, e, x) => vectorLerp(u, v, remapScalar(s, e, x));
-    const X = (A2, j) => (i) => vectorLerpWithRemapedScalar(A2[i], A2[i + 1], this.T[i], this.T[i + j], t);
-    const A = [
-      vectorLerpWithRemapedScalar(this.P[0], this.P[1], this.T[0], this.T[1], t),
-      vectorLerpWithRemapedScalar(this.P[1], this.P[2], this.T[1], this.T[2], t),
-      vectorLerpWithRemapedScalar(this.P[2], this.P[3], this.T[2], this.T[3], t)
+    const X = (t2) => t2 / (this.T[2] - this.T[1]);
+    t = _.clamp(X(t), 0, 1);
+    return [
+      mixCubicHermite(
+        this.P[1][0],
+        tangentCardinal(this.P[0][0], this.P[2][0], 1, X(this.T[0]), X(this.T[2])),
+        this.P[2][0],
+        tangentCardinal(this.P[1][0], this.P[3][0], 1, X(this.T[1]), X(this.T[3])),
+        t
+      )
     ];
-    const B = [
-      vectorLerpWithRemapedScalar(A[0], A[1], this.T[0], this.T[2], t),
-      vectorLerpWithRemapedScalar(A[1], A[2], this.T[1], this.T[3], t)
-    ];
-    return vectorLerpWithRemapedScalar(B[0], B[1], this.T[1], this.T[2], t);
   }
 };
 var CatmullRollSpline = class _CatmullRollSpline {
@@ -477,7 +476,7 @@ var AnimatedFiller = class extends SyncedScrolledContent {
     this.duration = 0;
     this.springsInitialized = false;
   }
-  tryInitializeSprings(srsp) {
+  tryInitializeSprings(scaledProgress) {
     if (this.springsInitialized)
       return;
     this.springsInitialized = true;
@@ -516,7 +515,7 @@ var AnimatedContent = class extends SyncedScrolledContent {
     this.loadedLyricsType = 0 /* NONE */;
     this.springsInitialized = false;
   }
-  tryInitializeSprings(srsp) {
+  tryInitializeSprings(scaledProgress) {
     if (this.springsInitialized)
       return;
     this.springsInitialized = true;
