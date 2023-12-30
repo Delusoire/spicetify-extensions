@@ -453,10 +453,10 @@ var AnimatedContentContainer = class extends LitElement {
   }
   updateProgress(rsp, index, depthToActiveAncestor) {
     const childs = Array.from(this.childs);
-    const rsps = childs.map((child) => (rsp - child.tsr) / (child.ter - child.tsr));
-    const activeIndex = rsps.findIndex((rsp2) => Math.floor(rsp2) === 0);
+    const tsrs = childs.map((child) => child.tsr);
+    const activeIndex = _.sortedIndexOf(tsrs, rsp) - 1;
     childs.forEach((child, i) => {
-      index = child.updateProgress(rsps[i], index, depthToActiveAncestor + (i === activeIndex ? 0 : 1));
+      index = child.updateProgress(rsp, index, depthToActiveAncestor + (i === activeIndex ? 0 : 1));
     });
     return index;
   }

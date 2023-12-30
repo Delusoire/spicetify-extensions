@@ -55,12 +55,12 @@ export class AnimatedContentContainer extends LitElement {
 
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
         const childs = Array.from(this.childs)
-        const rsps = childs.map(child => (rsp - child.tsr) / (child.ter - child.tsr))
+        const tsrs = childs.map(child => child.tsr)
 
-        const activeIndex = rsps.findIndex(rsp => Math.floor(rsp) === 0)
+        const activeIndex = _.sortedIndexOf(tsrs, rsp) - 1
 
         childs.forEach((child, i) => {
-            index = child.updateProgress(rsps[i], index, depthToActiveAncestor + (i === activeIndex ? 0 : 1))
+            index = child.updateProgress(rsp, index, depthToActiveAncestor + (i === activeIndex ? 0 : 1))
         })
 
         return index
