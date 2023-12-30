@@ -141,8 +141,8 @@ export class AnimatedFiller extends SyncedScrolledContent {
         }
     `
 
-    // @ts-expect-error gets initialized in firstUpdated
-    gradientAlphaSpring: Spring
+    // // @ts-expect-error gets initialized in firstUpdated
+    // gradientAlphaSpring: Spring
 
     @property({ type: Number })
     duration = 0
@@ -151,21 +151,21 @@ export class AnimatedFiller extends SyncedScrolledContent {
 
     private tryInitializeSprings(srsp: number) {
         if (this.springsInitialized) return
-        this.gradientAlphaSpring = new Spring(0, 1, 1, srsp)
+        // this.gradientAlphaSpring = new Spring(0, 1, 1, srsp)
         this.springsInitialized = true
     }
 
     animateContent(srsp: number, depthToActiveAncestor: number) {
-        this.tryInitializeSprings(srsp)
-        this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
-        const gradientAlpha = this.gradientAlphaSpring.compute(srsp)
-        if (!this.gradientAlphaSpring.isInEquilibrium()) {
-            this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2))
-        }
+        this.tryInitializeSprings(scaledProgress)
+        // this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
+        // const gradientAlpha = this.gradientAlphaSpring.compute(scaledProgress)
+        // if (!this.gradientAlphaSpring.isInEquilibrium()) {
+        this.style.setProperty("--gradient-alpha", scaledProgress.toFixed(2))
+        // }
 
         this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${
-            srsp * 100
-        }%, rgba(255,255,255,0) ${srsp * 110}%)`
+            scaledProgress * 100
+        }%, rgba(255,255,255,0) ${scaledProgress * 110}%)`
     }
 
     render() {
@@ -189,8 +189,8 @@ export class AnimatedContent extends SyncedScrolledContent {
         }
     `
 
-    // @ts-expect-error gets initialized in firstUpdated
-    gradientAlphaSpring: Spring
+    // // @ts-expect-error gets initialized in firstUpdated
+    // gradientAlphaSpring: Spring
 
     @consume({ context: loadedLyricsTypeCtx })
     loadedLyricsType = LyricsType.NONE
@@ -199,21 +199,21 @@ export class AnimatedContent extends SyncedScrolledContent {
 
     private tryInitializeSprings(srsp: number) {
         if (this.springsInitialized) return
-        this.gradientAlphaSpring = new Spring(0, 1, 1, srsp)
+        // this.gradientAlphaSpring = new Spring(0, 1, 1, srsp)
         this.springsInitialized = true
     }
 
-    animateContent(srsp: number, depthToActiveAncestor: number) {
-        this.tryInitializeSprings(srsp)
-        this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
-        const gradientAlpha = this.gradientAlphaSpring.compute(srsp)
-        if (!this.gradientAlphaSpring.isInEquilibrium()) {
-            this.style.setProperty("--gradient-alpha", gradientAlpha.toFixed(2))
-        }
+    animateContent(scaledProgress: number, depthToActiveAncestor: number) {
+        this.tryInitializeSprings(scaledProgress)
+        // this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
+        // const gradientAlpha = this.gradientAlphaSpring.compute(scaledProgress)
+        // if (!this.gradientAlphaSpring.isInEquilibrium()) {
+        this.style.setProperty("--gradient-alpha", scaledProgress.toFixed(2))
+        // }
 
         this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${
-            srsp * 100
-        }%, rgba(255,255,255,0) ${srsp * 110}%)`
+            scaledProgress * 100
+        }%, rgba(255,255,255,0) ${scaledProgress * 110}%)`
     }
 
     render() {
