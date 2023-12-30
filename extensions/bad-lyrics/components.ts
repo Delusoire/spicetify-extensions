@@ -155,7 +155,7 @@ export class AnimatedFiller extends SyncedScrolledContent {
         this.springsInitialized = true
     }
 
-    animateContent(srsp: number, depthToActiveAncestor: number) {
+    animateContent(scaledProgress: number, depthToActiveAncestor: number) {
         this.tryInitializeSprings(scaledProgress)
         // this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
         // const gradientAlpha = this.gradientAlphaSpring.compute(scaledProgress)

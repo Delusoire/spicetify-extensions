@@ -482,7 +482,7 @@ var AnimatedFiller = class extends SyncedScrolledContent {
       return;
     this.springsInitialized = true;
   }
-  animateContent(srsp, depthToActiveAncestor) {
+  animateContent(scaledProgress, depthToActiveAncestor) {
     this.tryInitializeSprings(scaledProgress);
     this.style.setProperty("--gradient-alpha", scaledProgress.toFixed(2));
     this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${scaledProgress * 100}%, rgba(255,255,255,0) ${scaledProgress * 110}%)`;
@@ -521,10 +521,10 @@ var AnimatedContent = class extends SyncedScrolledContent {
       return;
     this.springsInitialized = true;
   }
-  animateContent(scaledProgress2, depthToActiveAncestor) {
-    this.tryInitializeSprings(scaledProgress2);
-    this.style.setProperty("--gradient-alpha", scaledProgress2.toFixed(2));
-    this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${scaledProgress2 * 100}%, rgba(255,255,255,0) ${scaledProgress2 * 110}%)`;
+  animateContent(scaledProgress, depthToActiveAncestor) {
+    this.tryInitializeSprings(scaledProgress);
+    this.style.setProperty("--gradient-alpha", scaledProgress.toFixed(2));
+    this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${scaledProgress * 100}%, rgba(255,255,255,0) ${scaledProgress * 110}%)`;
   }
   render() {
     return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}
