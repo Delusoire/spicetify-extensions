@@ -11,6 +11,7 @@ import { CatmullRollSpline, remapScalar, vectorWithTime } from "./pkgs/catmullRo
 import { Filler, LyricsType, SyncedContent, SyncedFiller } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
+import { Spline } from "https://esm.sh/cubic-spline"
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -29,6 +30,10 @@ declare global {
 const scrollTimeoutCtx = createContext<number>("scrollTimeout")
 const spotifyContainerCtx = createContext<HTMLElement | undefined>("spotifyContainer")
 const loadedLyricsTypeCtx = createContext<LyricsType>("loadedLyricsType")
+
+interface Interpolator<A> {
+    at(t: number): A
+}
 
 @customElement(AnimatedContentContainer.NAME)
 export class AnimatedContentContainer extends LitElement {
@@ -52,31 +57,41 @@ export class AnimatedContentContainer extends LitElement {
     // @ts-expect-error only has a getter
     childs: NodeListOf<AnimatedContentContainer | AnimatedContent | AnimatedFiller>
 
+    relativePartialWidths: number[] | undefined
+    sharedRelativePartialWidthSpline: Interpolator<number> | undefined
+
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
         const childs = Array.from(this.childs)
         if (childs.length === 0) return index
 
-        const partialWidths = childs.reduce(
-            (partialWidths, child) => [...partialWidths, partialWidths.at(-1)! + child.offsetWidth || 4], // 4 is the width for " "
-            [0],
-        )
-        const totalWidth = partialWidths.at(-1)!
-        const relativePartialWidths = partialWidths.map(pw => pw / totalWidth)
-        const points = childs
-            .map((child, i) => [child.tss, [relativePartialWidths[i]]] as vectorWithTime)
-            .concat([[childs.at(-1)!.tes, [relativePartialWidths.at(-1)!]]])
-        const sharedRelativePartialWidthSpline = CatmullRollSpline.fromPointsClamped(points)!
+        if (!this.relativePartialWidths || !this.sharedRelativePartialWidthSpline) {
+            const partialWidths = childs.reduce(
+                (partialWidths, child) => [...partialWidths, partialWidths.at(-1)! + child.offsetWidth || 4], // 4 is the width for " "
+                [0],
+            )
+            const totalWidth = partialWidths.at(-1)!
+            this.relativePartialWidths = partialWidths.map(pw => pw / totalWidth)
+            // const points = childs
+            //     .map((child, i) => [child.tss, [this.relativePartialWidths![i]]] as vectorWithTime)
+            //     .concat([[childs.at(-1)!.tes, [this.relativePartialWidths!.at(-1)!]]])
+            // this.sharedRelativePartialWidthSpline = CatmullRollSpline.fromPointsClamped(points)!
+            const points = childs
+                .map((child, i) => [child.tss, this.relativePartialWidths![i]] as const)
+                .concat([[childs.at(-1)!.tes, this.relativePartialWidths!.at(-1)!] as const])
+            this.sharedRelativePartialWidthSpline = new Spline(..._.unzip(points))
+        }
+
         childs.forEach((child, i) => {
             const progress =
                 child instanceof AnimatedContentContainer
                     ? rsp
                     : remapScalar(
-                          relativePartialWidths[i],
-                          relativePartialWidths[i + 1],
+                          this.relativePartialWidths![i],
+                          this.relativePartialWidths![i + 1],
                           _.clamp(
-                              sharedRelativePartialWidthSpline.at(rsp)[0],
-                              relativePartialWidths[i],
-                              relativePartialWidths[i + 1],
+                              this.sharedRelativePartialWidthSpline!.at(rsp),
+                              this.relativePartialWidths![i],
+                              this.relativePartialWidths![i + 1],
                           ),
                       )
             index = child.updateProgress(
