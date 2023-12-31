@@ -401,7 +401,7 @@ var AnimatedContentContainer = class extends LitElement {
       [0]
     );
     const totalWidth = partialWidths.at(-1);
-    const points = childs.map((child, i) => [child.tss, [partialWidths[i] / totalWidth]]).concat([childs.at(-1).tes, [1]]);
+    const points = childs.map((child, i) => [child.tss, [partialWidths[i] / totalWidth]]).concat([[childs.at(-1).tes, [1]]]);
     this.sharedProgressSpline = CatmullRollSpline.fromPointsClamped(points);
   }
   render() {

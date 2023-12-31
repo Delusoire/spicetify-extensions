@@ -88,7 +88,7 @@ export class AnimatedContentContainer extends LitElement {
         const totalWidth = partialWidths.at(-1)!
         const points = childs
             .map((child, i) => [child.tss, [partialWidths[i] / totalWidth]] as vectorWithTime)
-            .concat([childs.at(-1)!.tes, [1]])
+            .concat([[childs.at(-1)!.tes, [1]]])
         this.sharedProgressSpline = CatmullRollSpline.fromPointsClamped(points)!
     }
 
