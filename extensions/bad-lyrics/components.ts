@@ -78,7 +78,10 @@ export class AnimatedContentContainer extends LitElement {
             const points = childs
                 .map((child, i) => [child.tss, this.relativePartialWidths![i]] as const)
                 .concat([[childs.at(-1)!.tes, this.relativePartialWidths!.at(-1)!] as const])
-            this.sharedRelativePartialWidthSpline = new Spline(..._.unzip(points))
+            const s = new Spline(..._.unzip(points))
+            this.sharedRelativePartialWidthSpline = {
+                at: (t: number) => s.at(_.clamp(t, points[0][0], points.at(-1)![0])),
+            }
         }
 
         childs.forEach((child, i) => {

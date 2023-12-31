@@ -346,7 +346,10 @@ var AnimatedContentContainer = class extends LitElement {
       const totalWidth = partialWidths.at(-1);
       this.relativePartialWidths = partialWidths.map((pw) => pw / totalWidth);
       const points = childs.map((child, i) => [child.tss, this.relativePartialWidths[i]]).concat([[childs.at(-1).tes, this.relativePartialWidths.at(-1)]]);
-      this.sharedRelativePartialWidthSpline = new Spline(..._.unzip(points));
+      const s = new Spline(..._.unzip(points));
+      this.sharedRelativePartialWidthSpline = {
+        at: (t) => s.at(_.clamp(t, points[0][0], points.at(-1)[0]))
+      };
     }
     childs.forEach((child, i) => {
       const progress = child instanceof AnimatedContentContainer ? rsp : remapScalar(
