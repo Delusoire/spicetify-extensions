@@ -322,7 +322,7 @@ import { map } from "https://esm.sh/lit/directives/map.js";
 var remapScalar = (s, e, x) => (x - s) / (e - s);
 
 // extensions/bad-lyrics/components.ts
-import { Spline } from "https://esm.sh/cubic-spline";
+import Spline from "https://esm.sh/cubic-spline";
 var scrollTimeoutCtx = createContext("scrollTimeout");
 var spotifyContainerCtx = createContext("spotifyContainer");
 var loadedLyricsTypeCtx = createContext("loadedLyricsType");

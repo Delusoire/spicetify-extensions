@@ -11,7 +11,7 @@ import { CatmullRollSpline, remapScalar, vectorWithTime } from "./pkgs/catmullRo
 import { Filler, LyricsType, SyncedContent, SyncedFiller } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
-import { Spline } from "https://esm.sh/cubic-spline"
+import Spline from "https://esm.sh/cubic-spline"
 
 declare global {
     interface HTMLElementTagNameMap {
