@@ -381,7 +381,8 @@ var AnimatedContentContainer = class extends LitElement {
     if (childs.length === 0)
       return index;
     const partialWidths = childs.reduce(
-      (partialWidths2, child) => [...partialWidths2, partialWidths2.at(-1) + child.offsetWidth],
+      (partialWidths2, child) => [...partialWidths2, partialWidths2.at(-1) + child.offsetWidth || 4],
+      // 4 is the width for " "
       [0]
     );
     const totalWidth = partialWidths.at(-1);
