@@ -8,7 +8,7 @@ import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.
 
 import { _ } from "../../shared/deps.ts"
 import { CatmullRollSpline, remapScalar, vectorWithTime } from "./pkgs/catmullRomSpline.ts"
-import { Filler, LyricsType, SyncedContent, SyncedFiller, flattenLyrics } from "./utils/LyricsProvider.ts"
+import { Filler, LyricsType, SyncedContent, SyncedFiller } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
 
@@ -29,7 +29,6 @@ declare global {
 const scrollTimeoutCtx = createContext<number>("scrollTimeout")
 const spotifyContainerCtx = createContext<HTMLElement | undefined>("spotifyContainer")
 const loadedLyricsTypeCtx = createContext<LyricsType>("loadedLyricsType")
-const sharedProgressSplineCtx = createContext<CatmullRollSpline>("sharedProgressSpline")
 
 @customElement(AnimatedContentContainer.NAME)
 export class AnimatedContentContainer extends LitElement {
@@ -49,10 +48,6 @@ export class AnimatedContentContainer extends LitElement {
     @property({ type: Number })
     tes = 1
 
-    @provide({ context: sharedProgressSplineCtx })
-    // @ts-expect-error fuck you
-    sharedProgressSpline: CatmullRollSpline
-
     @queryAll("*:not(br)")
     // @ts-expect-error only has a getter
     childs: NodeListOf<AnimatedContentContainer | AnimatedContent | AnimatedFiller>
@@ -64,11 +59,15 @@ export class AnimatedContentContainer extends LitElement {
             [0],
         )
         const totalWidth = partialWidths.at(-1)!
+        const points = childs
+            .map((child, i) => [child.tss, [partialWidths[i] / totalWidth]] as vectorWithTime)
+            .concat([[childs.at(-1)!.tes, [1]]])
+        const sharedProgressSpline = CatmullRollSpline.fromPointsClamped(points)!
         childs.forEach((child, i) => {
             let progress =
                 child instanceof AnimatedContentContainer
                     ? rsp
-                    : remapScalar(partialWidths[i], partialWidths[i + 1], this.sharedProgressSpline.at(rsp)[0])
+                    : remapScalar(partialWidths[i], partialWidths[i + 1], sharedProgressSpline.at(rsp)[0])
             index = child.updateProgress(
                 progress,
                 index,
@@ -77,19 +76,6 @@ export class AnimatedContentContainer extends LitElement {
         })
 
         return index
-    }
-
-    firstUpdated(changedProperties: PropertyValueMap<this>) {
-        const childs = Array.from(this.childs)
-        const partialWidths = childs.reduce(
-            (partialWidths, child) => [...partialWidths, partialWidths.at(-1)! + child.offsetWidth],
-            [0],
-        )
-        const totalWidth = partialWidths.at(-1)!
-        const points = childs
-            .map((child, i) => [child.tss, [partialWidths[i] / totalWidth]] as vectorWithTime)
-            .concat([[childs.at(-1)!.tes, [1]]])
-        this.sharedProgressSpline = CatmullRollSpline.fromPointsClamped(points)!
     }
 
     render() {
@@ -125,9 +111,6 @@ export abstract class SyncedScrolledContent extends LitElement {
     scrollTimeout = 0
     @consume({ context: spotifyContainerCtx })
     spotifyContainer?: HTMLElement
-    @consume({ context: sharedProgressSplineCtx })
-    // @ts-expect-error fuck you
-    sharedProgressSpline: CatmullRollSpline
 
     updateProgress(scaledProgress: number, index: number, depthToActiveAncestor: number) {
         const isActive = depthToActiveAncestor === 0

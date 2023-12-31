@@ -369,7 +369,6 @@ var CatmullRollSpline = class _CatmullRollSpline {
 var scrollTimeoutCtx = createContext("scrollTimeout");
 var spotifyContainerCtx = createContext("spotifyContainer");
 var loadedLyricsTypeCtx = createContext("loadedLyricsType");
-var sharedProgressSplineCtx = createContext("sharedProgressSpline");
 var AnimatedContentContainer = class extends LitElement {
   constructor() {
     super(...arguments);
@@ -384,8 +383,10 @@ var AnimatedContentContainer = class extends LitElement {
       [0]
     );
     const totalWidth = partialWidths.at(-1);
+    const points = childs.map((child, i) => [child.tss, [partialWidths[i] / totalWidth]]).concat([[childs.at(-1).tes, [1]]]);
+    const sharedProgressSpline = CatmullRollSpline.fromPointsClamped(points);
     childs.forEach((child, i) => {
-      let progress = child instanceof AnimatedContentContainer ? rsp : remapScalar(partialWidths[i], partialWidths[i + 1], this.sharedProgressSpline.at(rsp)[0]);
+      let progress = child instanceof AnimatedContentContainer ? rsp : remapScalar(partialWidths[i], partialWidths[i + 1], sharedProgressSpline.at(rsp)[0]);
       index = child.updateProgress(
         progress,
         index,
@@ -393,16 +394,6 @@ var AnimatedContentContainer = class extends LitElement {
       );
     });
     return index;
-  }
-  firstUpdated(changedProperties) {
-    const childs = Array.from(this.childs);
-    const partialWidths = childs.reduce(
-      (partialWidths2, child) => [...partialWidths2, partialWidths2.at(-1) + child.offsetWidth],
-      [0]
-    );
-    const totalWidth = partialWidths.at(-1);
-    const points = childs.map((child, i) => [child.tss, [partialWidths[i] / totalWidth]]).concat([[childs.at(-1).tes, [1]]]);
-    this.sharedProgressSpline = CatmullRollSpline.fromPointsClamped(points);
   }
   render() {
     return html`${map(this.content, (part) => {
@@ -438,10 +429,6 @@ __decorateClass([
 __decorateClass([
   property({ type: Number })
 ], AnimatedContentContainer.prototype, "tes", 2);
-// @ts-expect-error fuck you
-__decorateClass([
-  provide({ context: sharedProgressSplineCtx })
-], AnimatedContentContainer.prototype, "sharedProgressSpline", 2);
 // @ts-expect-error only has a getter
 __decorateClass([
   queryAll("*:not(br)")
@@ -492,10 +479,6 @@ __decorateClass([
 __decorateClass([
   consume({ context: spotifyContainerCtx })
 ], SyncedScrolledContent.prototype, "spotifyContainer", 2);
-// @ts-expect-error fuck you
-__decorateClass([
-  consume({ context: sharedProgressSplineCtx })
-], SyncedScrolledContent.prototype, "sharedProgressSpline", 2);
 var AnimatedFiller = class extends SyncedScrolledContent {
   constructor() {
     super(...arguments);
