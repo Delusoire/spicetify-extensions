@@ -113,9 +113,15 @@ export const findLyrics = async (info: {
                 {
                     tss,
                     tes,
-                    duration: dr * track.track_length * 1000,
-                    content: Filler,
-                } as SyncedFiller,
+                    content: [
+                        {
+                            tss,
+                            tes,
+                            duration: dr * track.track_length * 1000,
+                            content: Filler,
+                        } as SyncedFiller,
+                    ],
+                },
             ]
         })
 

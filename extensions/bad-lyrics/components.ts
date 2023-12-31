@@ -7,7 +7,7 @@ import { map } from "https://esm.sh/lit/directives/map.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
 
 import { _ } from "../../shared/deps.ts"
-import { CatmullRollSpline, remapScalar, scalarLerp, vectorWithTime } from "./pkgs/catmullRomSpline.ts"
+import { CatmullRollSpline, remapScalar, vectorWithTime } from "./pkgs/catmullRomSpline.ts"
 import { Filler, LyricsType, SyncedContent, SyncedFiller } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
@@ -194,7 +194,7 @@ export class AnimatedFiller extends SyncedScrolledContent {
     render() {
         if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS) return
         return html`
-            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}>${this.content}</span><br />
+            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}>${this.content}</span>
         `
     }
 }

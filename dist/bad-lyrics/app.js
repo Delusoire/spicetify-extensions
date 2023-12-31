@@ -141,8 +141,14 @@ var findLyrics = async (info) => {
         {
           tss,
           tes,
-          duration: dr * track.track_length * 1e3,
-          content: Filler
+          content: [
+            {
+              tss,
+              tes,
+              duration: dr * track.track_length * 1e3,
+              content: Filler
+            }
+          ]
         }
       ];
     });
@@ -511,7 +517,7 @@ var AnimatedFiller = class extends SyncedScrolledContent {
     if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS)
       return;
     return html`
-            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}>${this.content}</span><br />
+            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}>${this.content}</span>
         `;
   }
 };
