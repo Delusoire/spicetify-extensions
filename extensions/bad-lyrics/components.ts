@@ -54,6 +54,8 @@ export class AnimatedContentContainer extends LitElement {
 
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
         const childs = Array.from(this.childs)
+        if (childs.length === 0) return index
+
         const partialWidths = childs.reduce(
             (partialWidths, child) => [...partialWidths, partialWidths.at(-1)! + child.offsetWidth],
             [0],
