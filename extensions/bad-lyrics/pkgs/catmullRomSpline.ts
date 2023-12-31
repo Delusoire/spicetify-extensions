@@ -1,5 +1,4 @@
 import { _ } from "../../../shared/deps.ts"
-import { mixCubicHermite, tangentCardinal } from "https://esm.sh/@thi.ng/math"
 
 // https://en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline
 
@@ -26,31 +25,20 @@ class CatmullRomCurve {
     }
 
     at(t: number) {
-        // t = _.clamp(t, this.T[1], this.T[2])
-        // const vectorLerpWithRemapedScalar = (s: vectorWithTime, e: vectorWithTime, x: number) =>
-        //     vectorLerp(s[1], e[1], remapScalar(s[0], e[0], x))
+        t = _.clamp(t, this.T[1], this.T[2])
+        const vectorLerpWithRemapedScalar = (s: vectorWithTime, e: vectorWithTime, x: number) =>
+            vectorLerp(s[1], e[1], remapScalar(s[0], e[0], x))
 
-        // const A = [
-        //     vectorLerpWithRemapedScalar([this.T[0], this.P[0]], [this.T[1], this.P[1]], t),
-        //     vectorLerpWithRemapedScalar([this.T[1], this.P[1]], [this.T[2], this.P[2]], t),
-        //     vectorLerpWithRemapedScalar([this.T[2], this.P[2]], [this.T[3], this.P[3]], t),
-        // ]
-        // const B = [
-        //     vectorLerpWithRemapedScalar([this.T[0], A[0]], [this.T[2], A[1]], t),
-        //     vectorLerpWithRemapedScalar([this.T[1], A[1]], [this.T[3], A[2]], t),
-        // ]
-        // return vectorLerpWithRemapedScalar([this.T[1], B[0]], [this.T[2], B[1]], t)
-        const X = (t: number) => t / (this.T[2] - this.T[1])
-        t = _.clamp(X(t), 0, 1)
-        return [
-            mixCubicHermite(
-                this.P[1][0],
-                tangentCardinal(this.P[0][0], this.P[2][0], 1, X(this.T[0]), X(this.T[2])),
-                this.P[2][0],
-                tangentCardinal(this.P[1][0], this.P[3][0], 1, X(this.T[1]), X(this.T[3])),
-                t,
-            ),
+        const A = [
+            vectorLerpWithRemapedScalar([this.T[0], this.P[0]], [this.T[1], this.P[1]], t),
+            vectorLerpWithRemapedScalar([this.T[1], this.P[1]], [this.T[2], this.P[2]], t),
+            vectorLerpWithRemapedScalar([this.T[2], this.P[2]], [this.T[3], this.P[3]], t),
         ]
+        const B = [
+            vectorLerpWithRemapedScalar([this.T[0], A[0]], [this.T[2], A[1]], t),
+            vectorLerpWithRemapedScalar([this.T[1], A[1]], [this.T[3], A[2]], t),
+        ]
+        return vectorLerpWithRemapedScalar([this.T[1], B[0]], [this.T[2], B[1]], t)
     }
 }
 

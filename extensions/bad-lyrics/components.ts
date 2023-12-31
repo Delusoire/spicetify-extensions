@@ -29,6 +29,7 @@ declare global {
 const scrollTimeoutCtx = createContext<number>("scrollTimeout")
 const spotifyContainerCtx = createContext<HTMLElement | undefined>("spotifyContainer")
 const loadedLyricsTypeCtx = createContext<LyricsType>("loadedLyricsType")
+const sharedProgressSplineCtx = createContext<CatmullRollSpline>("sharedProgressSpline")
 
 @customElement(AnimatedContentContainer.NAME)
 export class AnimatedContentContainer extends LitElement {
@@ -42,11 +43,15 @@ export class AnimatedContentContainer extends LitElement {
     `
 
     @property({ type: Array })
-    content = [] as Array<SyncedContent>
+    content = new Array<SyncedContent>()
     @property({ type: Number })
-    tsr = 0
+    tss = 0
     @property({ type: Number })
-    ter = 1
+    tes = 1
+
+    @provide({ context: sharedProgressSplineCtx })
+    // @ts-expect-error fuck you
+    sharedProgressSpline: CatmullRollSpline
 
     @queryAll("*:not(br)")
     // @ts-expect-error only has a getter
@@ -54,34 +59,56 @@ export class AnimatedContentContainer extends LitElement {
 
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
         const childs = Array.from(this.childs)
-        const tsrs = childs.map(child => child.tsr)
-
-        const activeIndex = _.sortedIndex(tsrs, rsp) - 1
-
+        const partialWidths = childs.reduce(
+            (partialWidths, child) => [...partialWidths, partialWidths.at(-1)! + child.offsetWidth],
+            [0],
+        )
+        const totalWidth = partialWidths.at(-1)!
         childs.forEach((child, i) => {
-            index = child.updateProgress(rsp, index, depthToActiveAncestor + (i === activeIndex ? 0 : 1))
+            let progress =
+                child instanceof AnimatedContentContainer
+                    ? rsp
+                    : remapScalar(partialWidths[i], partialWidths[i + 1], this.sharedProgressSpline.at(rsp)[0])
+            index = child.updateProgress(
+                progress,
+                index,
+                depthToActiveAncestor + Number(!_.inRange(rsp, child.tss, child.tes)),
+            )
         })
 
         return index
     }
 
+    firstUpdated(changedProperties: PropertyValueMap<this>) {
+        const childs = Array.from(this.childs)
+        const partialWidths = childs.reduce(
+            (partialWidths, child) => [...partialWidths, partialWidths.at(-1)! + child.offsetWidth],
+            [0],
+        )
+        const totalWidth = partialWidths.at(-1)!
+        const points = childs
+            .map((child, i) => [child.tss, [partialWidths[i] / totalWidth]] as vectorWithTime)
+            .concat([childs.at(-1)!.tes, [1]])
+        this.sharedProgressSpline = CatmullRollSpline.fromPointsClamped(points)!
+    }
+
     render() {
         return html`${map(this.content, part => {
                 if (Array.isArray(part.content)) {
-                    return html`<animated-content-container .content=${part.content} tsr=${part.tsr} ter=${part.ter} />`
+                    return html`<animated-content-container .content=${part.content} tss=${part.tss} tes=${part.tes} />`
                 }
 
                 if (part.content === Filler) {
                     const filler = part as SyncedFiller
                     return html`<animated-filler
                         content=${filler.content}
-                        tsr=${filler.tsr}
-                        ter=${filler.ter}
+                        tss=${filler.tss}
+                        tes=${filler.tes}
                         duration=${filler.duration}
                     />`
                 }
 
-                return html` <animated-content content=${part.content} tsr=${part.tsr} ter=${part.ter} />`
+                return html` <animated-content content=${part.content} tss=${part.tss} tes=${part.tes} />`
             })}<br />`
     }
 }
@@ -90,16 +117,19 @@ export abstract class SyncedScrolledContent extends LitElement {
     @property()
     content = ""
     @property({ type: Number })
-    tsr = 0
+    tss = 0
     @property({ type: Number })
-    ter = 1
+    tes = 1
 
     @consume({ context: scrollTimeoutCtx, subscribe: true })
     scrollTimeout = 0
     @consume({ context: spotifyContainerCtx })
     spotifyContainer?: HTMLElement
+    @consume({ context: sharedProgressSplineCtx })
+    // @ts-expect-error fuck you
+    sharedProgressSpline: CatmullRollSpline
 
-    updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
+    updateProgress(scaledProgress: number, index: number, depthToActiveAncestor: number) {
         const isActive = depthToActiveAncestor === 0
 
         if (isActive) {
@@ -118,13 +148,13 @@ export abstract class SyncedScrolledContent extends LitElement {
             }
         }
 
-        const crsp = _.clamp(remapScalar(this.tsr, this.ter, rsp), -0.5, 1.5)
-        this.animateContent(crsp, depthToActiveAncestor)
+        const csp = _.clamp(scaledProgress, -0.5, 1.5)
+        this.animateContent(csp, depthToActiveAncestor)
 
         return index + 1
     }
 
-    abstract animateContent(srsp: number, depthToActiveAncestor: number): void
+    abstract animateContent(scaledProgress: number, depthToActiveAncestor: number): void
 }
 
 @customElement(AnimatedFiller.NAME)
@@ -170,7 +200,7 @@ export class AnimatedFiller extends SyncedScrolledContent {
     render() {
         if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS) return
         return html`
-            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}>${this.content}</span><br />
+            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}>${this.content}</span><br />
         `
     }
 }
@@ -216,7 +246,7 @@ export class AnimatedContent extends SyncedScrolledContent {
     }
 
     render() {
-        return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}
+        return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}
             >${this.content}</span
         >`
     }
@@ -238,9 +268,6 @@ export class LyricsContainer extends LitElement {
     @property({ attribute: false })
     song: Song | null = null
 
-    @state()
-    globalRSPSpline: CatmullRollSpline | null = null
-
     @provide({ context: loadedLyricsTypeCtx })
     @state()
     loadedLyricsType = LyricsType.NONE
@@ -255,14 +282,6 @@ export class LyricsContainer extends LitElement {
             const availableLyrics = await song?.lyrics
             const lyrics = Object.values(availableLyrics!)[0]
             this.loadedLyricsType = lyrics ? lyrics.__type : LyricsType.NONE
-
-            if (this.loadedLyricsType === LyricsType.LINE_SYNCED || this.loadedLyricsType === LyricsType.WORD_SYNCED) {
-                this.globalRSPSpline = CatmullRollSpline.fromPointsClamped(
-                    flattenLyrics(lyrics as SyncedContent).map(l => [l.tsr, [l.tsr]] as vectorWithTime),
-                )
-            } else {
-                this.globalRSPSpline = null
-            }
             return lyrics
         },
         args: () => [this.song],
@@ -270,7 +289,7 @@ export class LyricsContainer extends LitElement {
 
     public updateProgress(progress: number) {
         if (this.loadedLyricsType === LyricsType.NONE || this.loadedLyricsType === LyricsType.NOT_SYNCED) return
-        this.firstContainer.updateProgress(this.globalRSPSpline?.at(progress)[0] ?? 0, 0, 0)
+        this.firstContainer.updateProgress(progress, 0, 0)
     }
 
     @query(AnimatedContentContainer.NAME)

@@ -98,7 +98,6 @@ Spicetify.CosmosAsync.get(url.toString(), void 0, _.omit(headers, "cookie")).the
   }
 });
 var Filler = "\u266A";
-var flattenLyrics = (lyrics) => Array.isArray(lyrics.content) ? lyrics.content.flatMap(flattenLyrics) : [lyrics];
 var findLyrics = async (info) => {
   const { lyrics, subtitles, track } = await fetchMxmMacroSubtitlesGet(
     info.uri,
@@ -112,36 +111,36 @@ var findLyrics = async (info) => {
     return l;
   const wrapInContainerSyncedType = (__type, content) => ({
     __type,
-    tsr: 0,
-    ter: 1,
+    tss: 0,
+    tes: 1,
     content
   });
   if (track.has_richsync) {
     const richSync = await fetchMxmTrackRichSyncGet(track.commontrack_id, track.track_length);
     const wordSynced = richSync.map((rsLine) => {
-      const tsr = rsLine.ts / track.track_length;
-      const ter = rsLine.te / track.track_length;
+      const tss = rsLine.ts / track.track_length;
+      const tes = rsLine.te / track.track_length;
       const content = rsLine.l.map((word, index, words) => {
         return {
-          tsr: tsr + word.o / track.track_length,
-          ter: tsr + words[index + 1]?.o / track.track_length || ter,
+          tss: tss + word.o / track.track_length,
+          tes: tss + words[index + 1]?.o / track.track_length || tes,
           content: word.c
         };
       });
-      return { tsr, ter, content };
+      return { tss, tes, content };
     });
     const wordSyncedFilled = wordSynced.flatMap((rsLine, i, wordSynced2) => {
       const nextRsLine = wordSynced2[i + 1];
-      const tsr = rsLine.ter;
-      const ter = nextRsLine?.tsr;
-      const dr = ter - tsr;
+      const tss = rsLine.tes;
+      const tes = nextRsLine?.tss;
+      const dr = tes - tss;
       if (!dr)
         return rsLine;
       return [
         rsLine,
         {
-          tsr,
-          ter,
+          tss,
+          tes,
           duration: dr * track.track_length * 1e3,
           content: Filler
         }
@@ -152,9 +151,9 @@ var findLyrics = async (info) => {
   if (track.has_subtitles) {
     const subtitle = JSON.parse(subtitles[0].subtitle_body);
     const lineSynced = subtitle.map((sLine, i, subtitle2) => {
-      const tsr = sLine.time.total / track.track_length;
-      const ter = subtitle2[i + 1]?.time.total / track.track_length || 1;
-      return { tsr, ter, content: [{ tsr, ter, content: sLine.text }] };
+      const tss = sLine.time.total / track.track_length;
+      const tes = subtitle2[i + 1]?.time.total / track.track_length || 1;
+      return { tss, tes, content: [{ tss, tes, content: sLine.text }] };
     });
     l.lineSynced = wrapInContainerSyncedType(2 /* LINE_SYNCED */, lineSynced);
   }
@@ -314,7 +313,6 @@ import { customElement, property, query, queryAll, state } from "https://esm.sh/
 import { map } from "https://esm.sh/lit/directives/map.js";
 
 // extensions/bad-lyrics/pkgs/catmullRomSpline.ts
-import { mixCubicHermite, tangentCardinal } from "https://esm.sh/@thi.ng/math";
 var scalarLerp = (s, e, t) => s + (e - s) * t;
 var vectorLerp = (u, v, t) => _.zip(u, v).map(([xiu, xiv]) => scalarLerp(xiu, xiv, t));
 var remapScalar = (s, e, x) => (x - s) / (e - s);
@@ -325,17 +323,18 @@ var CatmullRomCurve = class {
     [this.T, this.P] = _.unzip(points);
   }
   at(t) {
-    const X = (t2) => t2 / (this.T[2] - this.T[1]);
-    t = _.clamp(X(t), 0, 1);
-    return [
-      mixCubicHermite(
-        this.P[1][0],
-        tangentCardinal(this.P[0][0], this.P[2][0], 1, X(this.T[0]), X(this.T[2])),
-        this.P[2][0],
-        tangentCardinal(this.P[1][0], this.P[3][0], 1, X(this.T[1]), X(this.T[3])),
-        t
-      )
+    t = _.clamp(t, this.T[1], this.T[2]);
+    const vectorLerpWithRemapedScalar = (s, e, x) => vectorLerp(s[1], e[1], remapScalar(s[0], e[0], x));
+    const A = [
+      vectorLerpWithRemapedScalar([this.T[0], this.P[0]], [this.T[1], this.P[1]], t),
+      vectorLerpWithRemapedScalar([this.T[1], this.P[1]], [this.T[2], this.P[2]], t),
+      vectorLerpWithRemapedScalar([this.T[2], this.P[2]], [this.T[3], this.P[3]], t)
     ];
+    const B = [
+      vectorLerpWithRemapedScalar([this.T[0], A[0]], [this.T[2], A[1]], t),
+      vectorLerpWithRemapedScalar([this.T[1], A[1]], [this.T[3], A[2]], t)
+    ];
+    return vectorLerpWithRemapedScalar([this.T[1], B[0]], [this.T[2], B[1]], t);
   }
 };
 var CatmullRollSpline = class _CatmullRollSpline {
@@ -370,37 +369,56 @@ var CatmullRollSpline = class _CatmullRollSpline {
 var scrollTimeoutCtx = createContext("scrollTimeout");
 var spotifyContainerCtx = createContext("spotifyContainer");
 var loadedLyricsTypeCtx = createContext("loadedLyricsType");
+var sharedProgressSplineCtx = createContext("sharedProgressSpline");
 var AnimatedContentContainer = class extends LitElement {
   constructor() {
     super(...arguments);
-    this.content = [];
-    this.tsr = 0;
-    this.ter = 1;
+    this.content = new Array();
+    this.tss = 0;
+    this.tes = 1;
   }
   updateProgress(rsp, index, depthToActiveAncestor) {
     const childs = Array.from(this.childs);
-    const tsrs = childs.map((child) => child.tsr);
-    const activeIndex = _.sortedIndex(tsrs, rsp) - 1;
+    const partialWidths = childs.reduce(
+      (partialWidths2, child) => [...partialWidths2, partialWidths2.at(-1) + child.offsetWidth],
+      [0]
+    );
+    const totalWidth = partialWidths.at(-1);
     childs.forEach((child, i) => {
-      index = child.updateProgress(rsp, index, depthToActiveAncestor + (i === activeIndex ? 0 : 1));
+      let progress = child instanceof AnimatedContentContainer ? rsp : remapScalar(partialWidths[i], partialWidths[i + 1], this.sharedProgressSpline.at(rsp)[0]);
+      index = child.updateProgress(
+        progress,
+        index,
+        depthToActiveAncestor + Number(!_.inRange(rsp, child.tss, child.tes))
+      );
     });
     return index;
+  }
+  firstUpdated(changedProperties) {
+    const childs = Array.from(this.childs);
+    const partialWidths = childs.reduce(
+      (partialWidths2, child) => [...partialWidths2, partialWidths2.at(-1) + child.offsetWidth],
+      [0]
+    );
+    const totalWidth = partialWidths.at(-1);
+    const points = childs.map((child, i) => [child.tss, [partialWidths[i] / totalWidth]]).concat([childs.at(-1).tes, [1]]);
+    this.sharedProgressSpline = CatmullRollSpline.fromPointsClamped(points);
   }
   render() {
     return html`${map(this.content, (part) => {
       if (Array.isArray(part.content)) {
-        return html`<animated-content-container .content=${part.content} tsr=${part.tsr} ter=${part.ter} />`;
+        return html`<animated-content-container .content=${part.content} tss=${part.tss} tes=${part.tes} />`;
       }
       if (part.content === Filler) {
         const filler = part;
         return html`<animated-filler
                         content=${filler.content}
-                        tsr=${filler.tsr}
-                        ter=${filler.ter}
+                        tss=${filler.tss}
+                        tes=${filler.tes}
                         duration=${filler.duration}
                     />`;
       }
-      return html` <animated-content content=${part.content} tsr=${part.tsr} ter=${part.ter} />`;
+      return html` <animated-content content=${part.content} tss=${part.tss} tes=${part.tes} />`;
     })}<br />`;
   }
 };
@@ -416,10 +434,14 @@ __decorateClass([
 ], AnimatedContentContainer.prototype, "content", 2);
 __decorateClass([
   property({ type: Number })
-], AnimatedContentContainer.prototype, "tsr", 2);
+], AnimatedContentContainer.prototype, "tss", 2);
 __decorateClass([
   property({ type: Number })
-], AnimatedContentContainer.prototype, "ter", 2);
+], AnimatedContentContainer.prototype, "tes", 2);
+// @ts-expect-error fuck you
+__decorateClass([
+  provide({ context: sharedProgressSplineCtx })
+], AnimatedContentContainer.prototype, "sharedProgressSpline", 2);
 // @ts-expect-error only has a getter
 __decorateClass([
   queryAll("*:not(br)")
@@ -431,11 +453,11 @@ var SyncedScrolledContent = class extends LitElement {
   constructor() {
     super(...arguments);
     this.content = "";
-    this.tsr = 0;
-    this.ter = 1;
+    this.tss = 0;
+    this.tes = 1;
     this.scrollTimeout = 0;
   }
-  updateProgress(rsp, index, depthToActiveAncestor) {
+  updateProgress(scaledProgress, index, depthToActiveAncestor) {
     const isActive = depthToActiveAncestor === 0;
     if (isActive) {
       if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
@@ -450,8 +472,8 @@ var SyncedScrolledContent = class extends LitElement {
         }
       }
     }
-    const crsp = _.clamp(remapScalar(this.tsr, this.ter, rsp), -0.5, 1.5);
-    this.animateContent(crsp, depthToActiveAncestor);
+    const csp = _.clamp(scaledProgress, -0.5, 1.5);
+    this.animateContent(csp, depthToActiveAncestor);
     return index + 1;
   }
 };
@@ -460,16 +482,20 @@ __decorateClass([
 ], SyncedScrolledContent.prototype, "content", 2);
 __decorateClass([
   property({ type: Number })
-], SyncedScrolledContent.prototype, "tsr", 2);
+], SyncedScrolledContent.prototype, "tss", 2);
 __decorateClass([
   property({ type: Number })
-], SyncedScrolledContent.prototype, "ter", 2);
+], SyncedScrolledContent.prototype, "tes", 2);
 __decorateClass([
   consume({ context: scrollTimeoutCtx, subscribe: true })
 ], SyncedScrolledContent.prototype, "scrollTimeout", 2);
 __decorateClass([
   consume({ context: spotifyContainerCtx })
 ], SyncedScrolledContent.prototype, "spotifyContainer", 2);
+// @ts-expect-error fuck you
+__decorateClass([
+  consume({ context: sharedProgressSplineCtx })
+], SyncedScrolledContent.prototype, "sharedProgressSpline", 2);
 var AnimatedFiller = class extends SyncedScrolledContent {
   constructor() {
     super(...arguments);
@@ -490,7 +516,7 @@ var AnimatedFiller = class extends SyncedScrolledContent {
     if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS)
       return;
     return html`
-            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}>${this.content}</span><br />
+            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}>${this.content}</span><br />
         `;
   }
 };
@@ -526,7 +552,7 @@ var AnimatedContent = class extends SyncedScrolledContent {
     this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${scaledProgress * 100}%, rgba(255,255,255,0) ${scaledProgress * 110}%)`;
   }
   render() {
-    return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tsr)}
+    return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}
             >${this.content}</span
         >`;
   }
@@ -550,7 +576,6 @@ var LyricsContainer = class extends LitElement {
   constructor() {
     super(...arguments);
     this.song = null;
-    this.globalRSPSpline = null;
     this.loadedLyricsType = 0 /* NONE */;
     this.updateSong = (song) => {
       this.song = song;
@@ -561,13 +586,6 @@ var LyricsContainer = class extends LitElement {
         const availableLyrics = await song?.lyrics;
         const lyrics = Object.values(availableLyrics)[0];
         this.loadedLyricsType = lyrics ? lyrics.__type : 0 /* NONE */;
-        if (this.loadedLyricsType === 2 /* LINE_SYNCED */ || this.loadedLyricsType === 3 /* WORD_SYNCED */) {
-          this.globalRSPSpline = CatmullRollSpline.fromPointsClamped(
-            flattenLyrics(lyrics).map((l) => [l.tsr, [l.tsr]])
-          );
-        } else {
-          this.globalRSPSpline = null;
-        }
         return lyrics;
       },
       args: () => [this.song]
@@ -578,7 +596,7 @@ var LyricsContainer = class extends LitElement {
   updateProgress(progress) {
     if (this.loadedLyricsType === 0 /* NONE */ || this.loadedLyricsType === 1 /* NOT_SYNCED */)
       return;
-    this.firstContainer.updateProgress(this.globalRSPSpline?.at(progress)[0] ?? 0, 0, 0);
+    this.firstContainer.updateProgress(progress, 0, 0);
   }
   firstUpdated(changedProperties) {
     this.spotifyContainer?.addEventListener("scroll", (e) => {
@@ -625,9 +643,6 @@ LyricsContainer.styles = css`
 __decorateClass([
   property({ attribute: false })
 ], LyricsContainer.prototype, "song", 2);
-__decorateClass([
-  state()
-], LyricsContainer.prototype, "globalRSPSpline", 2);
 __decorateClass([
   provide({ context: loadedLyricsTypeCtx }),
   state()

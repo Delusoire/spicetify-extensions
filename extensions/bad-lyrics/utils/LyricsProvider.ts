@@ -26,14 +26,14 @@ export type Lyrics = {
 }
 
 export type SyncedContent = {
-    tsr: number
-    ter: number
+    tss: number
+    tes: number
     content: Array<SyncedContent> | string
 }
 
 export type Synced<A> = {
-    tsr: number
-    ter: number
+    tss: number
+    tes: number
     content: A
 }
 
@@ -79,40 +79,40 @@ export const findLyrics = async (info: {
 
     const wrapInContainerSyncedType = <T extends LyricsType, P>(__type: T, content: P) => ({
         __type,
-        tsr: 0,
-        ter: 1,
+        tss: 0,
+        tes: 1,
         content,
     })
 
     if (track.has_richsync) {
         const richSync = await fetchMxmTrackRichSyncGet(track.commontrack_id, track.track_length)
         const wordSynced = richSync.map(rsLine => {
-            const tsr = rsLine.ts / track.track_length
-            const ter = rsLine.te / track.track_length
+            const tss = rsLine.ts / track.track_length
+            const tes = rsLine.te / track.track_length
 
             const content = rsLine.l.map((word, index, words) => {
                 return {
-                    tsr: tsr + word.o / track.track_length,
-                    ter: tsr + words[index + 1]?.o / track.track_length || ter,
+                    tss: tss + word.o / track.track_length,
+                    tes: tss + words[index + 1]?.o / track.track_length || tes,
                     content: word.c,
                 }
             })
 
-            return { tsr, ter, content }
+            return { tss, tes, content }
         })
 
         const wordSyncedFilled = wordSynced.flatMap((rsLine, i, wordSynced) => {
             const nextRsLine = wordSynced[i + 1]
-            const tsr = rsLine.ter
-            const ter = nextRsLine?.tsr
-            const dr = ter - tsr
+            const tss = rsLine.tes
+            const tes = nextRsLine?.tss
+            const dr = tes - tss
             if (!dr) return rsLine
 
             return [
                 rsLine,
                 {
-                    tsr,
-                    ter,
+                    tss,
+                    tes,
                     duration: dr * track.track_length * 1000,
                     content: Filler,
                 } as SyncedFiller,
@@ -128,9 +128,9 @@ export const findLyrics = async (info: {
             time: { total: number; minutes: number; seconds: number; hundredths: number }
         }>
         const lineSynced = subtitle.map((sLine, i, subtitle) => {
-            const tsr = sLine.time.total / track.track_length
-            const ter = subtitle[i + 1]?.time.total / track.track_length || 1
-            return { tsr, ter, content: [{ tsr, ter, content: sLine.text }] as const }
+            const tss = sLine.time.total / track.track_length
+            const tes = subtitle[i + 1]?.time.total / track.track_length || 1
+            return { tss, tes, content: [{ tss, tes, content: sLine.text }] as const }
         })
         l.lineSynced = wrapInContainerSyncedType(LyricsType.LINE_SYNCED, lineSynced)
     }
