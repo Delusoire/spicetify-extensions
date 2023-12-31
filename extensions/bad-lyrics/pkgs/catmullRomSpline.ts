@@ -5,7 +5,7 @@ import { _ } from "../../../shared/deps.ts"
 type vector = readonly number[]
 export type vectorWithTime = readonly [number, vector]
 
-const scalarLerp = (s: number, e: number, t: number) => s + (e - s) * t
+export const scalarLerp = (s: number, e: number, t: number) => s + (e - s) * t
 const vectorLerp = (u: vector, v: vector, t: number) => _.zip(u, v).map(([xiu, xiv]) => scalarLerp(xiu!, xiv!, t))
 export const remapScalar = (s: number, e: number, x: number) => (x - s) / (e - s)
 

@@ -7,7 +7,7 @@ import { map } from "https://esm.sh/lit/directives/map.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
 
 import { _ } from "../../shared/deps.ts"
-import { CatmullRollSpline, remapScalar, vectorWithTime } from "./pkgs/catmullRomSpline.ts"
+import { CatmullRollSpline, remapScalar, scalarLerp, vectorWithTime } from "./pkgs/catmullRomSpline.ts"
 import { Filler, LyricsType, SyncedContent, SyncedFiller } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
@@ -61,15 +61,24 @@ export class AnimatedContentContainer extends LitElement {
             [0],
         )
         const totalWidth = partialWidths.at(-1)!
+        const relativePartialWidths = partialWidths.map(pw => pw / totalWidth)
         const points = childs
-            .map((child, i) => [child.tss, [partialWidths[i] / totalWidth]] as vectorWithTime)
-            .concat([[childs.at(-1)!.tes, [1]]])
-        const sharedProgressSpline = CatmullRollSpline.fromPointsClamped(points)!
+            .map((child, i) => [child.tss, [relativePartialWidths[i]]] as vectorWithTime)
+            .concat([[childs.at(-1)!.tes, [relativePartialWidths.at(-1)!]]])
+        const sharedRelativePartialWidthSpline = CatmullRollSpline.fromPointsClamped(points)!
         childs.forEach((child, i) => {
-            let progress =
+            const progress =
                 child instanceof AnimatedContentContainer
                     ? rsp
-                    : remapScalar(partialWidths[i], partialWidths[i + 1], sharedProgressSpline.at(rsp)[0])
+                    : remapScalar(
+                          relativePartialWidths[i],
+                          relativePartialWidths[i + 1],
+                          _.clamp(
+                              sharedRelativePartialWidthSpline.at(rsp)[0],
+                              relativePartialWidths[i],
+                              relativePartialWidths[i + 1],
+                          ),
+                      )
             index = child.updateProgress(
                 progress,
                 index,

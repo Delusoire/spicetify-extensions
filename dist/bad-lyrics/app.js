@@ -385,10 +385,19 @@ var AnimatedContentContainer = class extends LitElement {
       [0]
     );
     const totalWidth = partialWidths.at(-1);
-    const points = childs.map((child, i) => [child.tss, [partialWidths[i] / totalWidth]]).concat([[childs.at(-1).tes, [1]]]);
-    const sharedProgressSpline = CatmullRollSpline.fromPointsClamped(points);
+    const relativePartialWidths = partialWidths.map((pw) => pw / totalWidth);
+    const points = childs.map((child, i) => [child.tss, [relativePartialWidths[i]]]).concat([[childs.at(-1).tes, [relativePartialWidths.at(-1)]]]);
+    const sharedRelativePartialWidthSpline = CatmullRollSpline.fromPointsClamped(points);
     childs.forEach((child, i) => {
-      let progress = child instanceof AnimatedContentContainer ? rsp : remapScalar(partialWidths[i], partialWidths[i + 1], sharedProgressSpline.at(rsp)[0]);
+      const progress = child instanceof AnimatedContentContainer ? rsp : remapScalar(
+        relativePartialWidths[i],
+        relativePartialWidths[i + 1],
+        _.clamp(
+          sharedRelativePartialWidthSpline.at(rsp)[0],
+          relativePartialWidths[i],
+          relativePartialWidths[i + 1]
+        )
+      );
       index = child.updateProgress(
         progress,
         index,
