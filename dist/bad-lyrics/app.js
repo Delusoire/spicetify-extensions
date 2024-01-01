@@ -440,18 +440,16 @@ var KochanekBartels = class _KochanekBartels extends CubicHermite {
     );
     if (closed) {
       tangents = [tangents.at(-1), ...tangents.slice(0, -1)];
+    } else if (!tangents?.length) {
+      const tangent = scalarMultVector(grid[1] - grid[0], vectorSubVector(vertices[1], vertices[0]));
+      tangents = [tangent, tangent];
     } else {
-      if (!tangents?.length) {
-        const tangent = scalarMultVector(grid[1] - grid[0], vectorSubVector(vertices[1], vertices[0]));
-        tangents = [tangent, tangent];
-      } else {
-        const [start, end] = endconditions;
-        tangents = [
-          _end_tangent(start, vertices.slice(0, 2), grid.slice(0, 2), tangents[0]),
-          ...tangents,
-          _end_tangent(end, vertices.slice(-2), grid.slice(-2), tangents.at(-1))
-        ];
-      }
+      const [start, end] = endconditions;
+      tangents = [
+        _end_tangent(start, vertices.slice(0, 2), grid.slice(0, 2), tangents[0]),
+        ...tangents,
+        _end_tangent(end, vertices.slice(-2), grid.slice(-2), tangents.at(-1))
+      ];
     }
     super(vertices, tangents, grid);
   }
