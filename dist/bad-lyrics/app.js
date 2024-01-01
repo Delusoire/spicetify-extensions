@@ -322,7 +322,7 @@ import { map } from "https://esm.sh/lit/directives/map.js";
 // extensions/bad-lyrics/pkgs/catmullRomSpline.ts
 var remapScalar = (s, e, x) => (x - s) / (e - s);
 
-// extensions/bad-lyrics/pkgs/kochanekBartels.ts
+// extensions/bad-lyrics/pkgs/splines.ts
 var oppositeVector = (u) => scalarMultVector(-1, u);
 var vectorAddVector = (u, v) => _.zip(u, v).map(([uxi, vxi]) => uxi + vxi);
 var vectorMultVector = (u, v) => _.zip(u, v).map(([uix, vix]) => uix * vix);
