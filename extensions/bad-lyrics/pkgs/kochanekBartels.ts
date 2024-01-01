@@ -42,7 +42,8 @@ class Monomial {
     constructor(private segments: matrix[], private grid = _.range(segments.length + 1)) {}
 
     at(t: number, n = 0) {
-        const i = _.clamp(_.sortedLastIndex(this.grid, t) - 1, 0, this.grid.length - 2)
+        t = _.clamp(t, this.grid[0], this.grid.at(-1)! - 1e-7)
+        const i = _.sortedLastIndex(this.grid, t)
         const [t0, t1] = this.grid.slice(i, i + 2)
         t = remapScalar(t0, t1, t)
         const coefficients = this.segments[i].slice(0, -n || undefined)
