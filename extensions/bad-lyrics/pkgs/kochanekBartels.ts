@@ -153,7 +153,7 @@ export class KochanekBartels extends CubicHermite {
         if (closed) {
             tangents = [tangents.at(-1)!, ...tangents.slice(0, -1)]
         } else {
-            if (!tangents) {
+            if (!tangents?.length) {
                 const tangent = scalarMultVector(grid[1] - grid[0], vectorSubVector(vertices[1], vertices[0]))
                 tangents = [tangent, tangent]
             } else {
