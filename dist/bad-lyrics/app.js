@@ -348,7 +348,7 @@ var Monomial = class {
   }
   at(t, n = 0) {
     t = _.clamp(t, this.grid[0], this.grid.at(-1) - 1e-7);
-    const i = _.sortedLastIndex(this.grid, t);
+    const i = _.sortedLastIndex(this.grid, t) - 1;
     const [t0, t1] = this.grid.slice(i, i + 2);
     t = remapScalar2(t0, t1, t);
     const coefficients = this.segments[i].slice(0, -n || void 0);
@@ -384,9 +384,7 @@ var CubicHermite = class _CubicHermite extends Monomial {
       const row = [x0, x1, scalarMultVector(t1 - t0, v0), scalarMultVector(t1 - t0, v1)];
       return matrixMultMatrix(_CubicHermite.matrix, row);
     });
-    const gridCopy = [...grid];
-    gridCopy.pop();
-    super(segments, gridCopy);
+    super(segments, grid);
   }
 };
 var KochanekBartels = class _KochanekBartels extends CubicHermite {
