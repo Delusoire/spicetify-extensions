@@ -326,7 +326,7 @@ var remapScalar = (s, e, x) => (x - s) / (e - s);
 var oppositeVector = (u) => scalarMultVector(-1, u);
 var vectorAddVector = (u, v) => _.zip(u, v).map(([uxi, vxi]) => uxi + vxi);
 var vectorMultVector = (u, v) => _.zip(u, v).map(([uix, vix]) => uix * vix);
-var vectorDotVector = _.flow(vectorMultVector, fp.reduce(fp.add));
+var vectorDotVector = (u, v) => fp.sum(vectorMultVector(u, v));
 var vectorSubVector = (u, v) => vectorAddVector(u, oppositeVector(v));
 var scalarMultVector = (x, u) => u.map((uxi) => x * uxi);
 var vectorDivScalar = (u, x) => scalarMultVector(1 / x, u);

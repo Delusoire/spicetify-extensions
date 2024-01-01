@@ -6,7 +6,7 @@ type matrix = vector[]
 const oppositeVector = (u: vector) => scalarMultVector(-1, u)
 const vectorAddVector = (u: vector, v: vector) => _.zip(u, v).map(([uxi, vxi]) => uxi! + vxi!)
 const vectorMultVector = (u: vector, v: vector) => _.zip(u, v).map(([uix, vix]) => uix! * vix!)
-const vectorDotVector: (u: vector, v: vector) => number = _.flow(vectorMultVector, fp.reduce(fp.add))
+const vectorDotVector = (u: vector, v: vector) => fp.sum(vectorMultVector(u, v))
 const vectorSubVector = (u: vector, v: vector) => vectorAddVector(u, oppositeVector(v))
 const scalarMultVector = (x: number, u: vector) => u.map(uxi => x * uxi)
 const vectorDivScalar = (u: vector, x: number) => scalarMultVector(1 / x, u)
