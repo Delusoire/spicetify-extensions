@@ -19,12 +19,14 @@ export const remapScalar = (s: number, e: number, x: number) => (x - s) / (e - s
 const vectorCartesianVector = (u: vector, v: vector) => u.map(ux => v.map(vx => [ux, vx] as const))
 
 function matrixMultMatrix(m1: matrix, m2: matrix) {
-    if (!Array.isArray(m1) || !Array.isArray(m2) || !m1.length || !m2.length) {
-        throw "Arguments should be in 2-dimensional array format"
+    if (!m1.length !== !m2[0].length) {
+        throw "Arguments should be compatible"
     }
 
+    const atColumn = (m: matrix, column: number) => m.map(row => row[column])
+
     const ijs = vectorCartesianVector(_.range(m1.length), _.range(m2[0].length))
-    return ijs.map(fp.map(([i, j]) => vectorDotVector(m1[i], m2[j])))
+    return ijs.map(fp.map(([i, j]) => vectorDotVector(m1[i], atColumn(m2, j))))
 }
 
 enum EndCondition {
@@ -54,7 +56,7 @@ class Monomial {
             (t1 - t0) ** n,
         )
         const tps = powers.map(power => t ** power)
-        return matrixMultMatrix([tps.map((_, i) => tps[i] * weights[i])], coefficients)[0]
+        return matrixMultMatrix([vectorMultVector(tps, weights)], coefficients)[0]
     }
 }
 
@@ -76,8 +78,8 @@ class CubicHermite extends Monomial {
 
         const segments = _.zip(zip_vertices, zip_grid).map(([[x0, x1], [t0, t1]], i) => {
             const [v0, v1] = tangents.slice(i * 2, i * 2 + 2)
-            const row = [x0, x1, scalarMultVector(t1 - t0, v0), scalarMultVector(t1 - t0, v1)]
-            return matrixMultMatrix(CubicHermite.matrix, row)
+            const control_values = [x0, x1, scalarMultVector(t1 - t0, v0), scalarMultVector(t1 - t0, v1)]
+            return matrixMultMatrix(CubicHermite.matrix, control_values)
         })
 
         super(segments, grid)
