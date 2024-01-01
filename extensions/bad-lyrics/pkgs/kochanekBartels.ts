@@ -178,7 +178,7 @@ export class KochanekBartels extends CubicHermite {
 const zip_n_uplets =
     <R>(n: number) =>
     <A>(a: A[]) =>
-        a.map((_, i, a) => a.slice(i, i + n + 1)).slice(0, -n) as R[]
+        a.map((_, i, a) => a.slice(i, i + n)).slice(0, 1 - n) as R[]
 
 function _end_tangent(
     condition: EndCondition.NATURAL | vector,

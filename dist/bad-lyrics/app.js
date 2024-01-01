@@ -460,7 +460,7 @@ var KochanekBartels = class _KochanekBartels extends CubicHermite {
     super(vertices, tangents, grid);
   }
 };
-var zip_n_uplets = (n) => (a) => a.map((_2, i, a2) => a2.slice(i, i + n + 1)).slice(0, -n);
+var zip_n_uplets = (n) => (a) => a.map((_2, i, a2) => a2.slice(i, i + n)).slice(0, 1 - n);
 function _end_tangent(condition, vertices, times, other_tangent) {
   return condition === 0 /* NATURAL */ ? _natural_tangent(vertices, times, other_tangent) : condition;
 }
