@@ -319,9 +319,6 @@ import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 
-// extensions/bad-lyrics/pkgs/catmullRomSpline.ts
-var remapScalar = (s, e, x) => (x - s) / (e - s);
-
 // extensions/bad-lyrics/pkgs/splines.ts
 var oppositeVector = (u) => scalarMultVector(-1, u);
 var vectorAddVector = (u, v) => _.zip(u, v).map(([uxi, vxi]) => uxi + vxi);
@@ -332,7 +329,7 @@ var scalarMultVector = (x, u) => u.map((uxi) => x * uxi);
 var vectorDivScalar = (u, x) => scalarMultVector(1 / x, u);
 var scalarAddVector = (x, u) => u.map((uxi) => x + uxi);
 var vectorDist = (u, v) => Math.hypot(...vectorSubVector(v, u));
-var remapScalar2 = (s, e, x) => (x - s) / (e - s);
+var remapScalar = (s, e, x) => (x - s) / (e - s);
 var vectorCartesianVector = (u, v) => u.map((ux) => v.map((vx) => [ux, vx]));
 function matrixMultMatrix(m1, m2) {
   if (!m1.length !== !m2[0].length) {
@@ -351,7 +348,7 @@ var Monomial = class {
     t = _.clamp(t, this.grid[0], this.grid.at(-1) - 1e-7);
     const i = _.sortedLastIndex(this.grid, t) - 1;
     const [t0, t1] = this.grid.slice(i, i + 2);
-    t = remapScalar2(t0, t1, t);
+    t = remapScalar(t0, t1, t);
     const coefficients = this.segments[i].slice(0, -n || void 0);
     const powers = _.range(coefficients.length).reverse();
     const weights = vectorDivScalar(
@@ -496,14 +493,14 @@ var AnimatedContentContainer = class extends LitElement {
       );
     }
     childs.forEach((child, i) => {
-      const progress = child instanceof AnimatedContentContainer ? rsp : remapScalar(
-        this.relativePartialWidths[i],
-        this.relativePartialWidths[i + 1],
-        _.clamp(
-          this.sharedRelativePartialWidthSpline.at(rsp)[0],
+      const progress = child instanceof AnimatedContentContainer ? rsp : _.clamp(
+        remapScalar(
           this.relativePartialWidths[i],
-          this.relativePartialWidths[i + 1]
-        )
+          this.relativePartialWidths[i + 1],
+          this.sharedRelativePartialWidthSpline.at(rsp)[0]
+        ),
+        0,
+        1
       );
       index = child.updateProgress(
         progress,
@@ -649,7 +646,7 @@ var AnimatedContent = class extends SyncedScrolledContent {
   }
   animateContent(scaledProgress, depthToActiveAncestor) {
     this.tryInitializeSprings(scaledProgress);
-    this.style.setProperty("--gradient-alpha", scaledProgress.toFixed(2));
+    this.style.setProperty("--gradient-alpha", (scaledProgress * 0.9 ** depthToActiveAncestor).toFixed(2));
     this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${scaledProgress * 100}%, rgba(255,255,255,0) ${scaledProgress * 110}%)`;
   }
   render() {

@@ -7,12 +7,10 @@ import { map } from "https://esm.sh/lit/directives/map.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
 
 import { _ } from "../../shared/deps.ts"
-import { CatmullRomSpline, remapScalar, vectorWithTime } from "./pkgs/catmullRomSpline.ts"
+import { KochanekBartels, remapScalar } from "./pkgs/splines.ts"
 import { Filler, LyricsType, SyncedContent, SyncedFiller } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
-import Spline from "https://esm.sh/cubic-spline"
-import { KochanekBartels } from "./pkgs/splines.ts"
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -22,11 +20,6 @@ declare global {
         ["animated-filler"]: AnimatedFiller
     }
 }
-
-// const createInterpolator = (...stops: number[][]) => {
-//     const spline = hermite(stops)
-//     return (t: number) => spline.at(t)
-// }
 
 const scrollTimeoutCtx = createContext<number>("scrollTimeout")
 const spotifyContainerCtx = createContext<HTMLElement | undefined>("spotifyContainer")
@@ -84,14 +77,14 @@ export class AnimatedContentContainer extends LitElement {
             const progress =
                 child instanceof AnimatedContentContainer
                     ? rsp
-                    : remapScalar(
-                          this.relativePartialWidths![i],
-                          this.relativePartialWidths![i + 1],
-                          _.clamp(
-                              this.sharedRelativePartialWidthSpline!.at(rsp)[0],
+                    : _.clamp(
+                          remapScalar(
                               this.relativePartialWidths![i],
                               this.relativePartialWidths![i + 1],
+                              this.sharedRelativePartialWidthSpline!.at(rsp)[0],
                           ),
+                          0,
+                          1,
                       )
             index = child.updateProgress(
                 progress,
@@ -178,9 +171,6 @@ export class AnimatedFiller extends SyncedScrolledContent {
         }
     `
 
-    // // @ts-expect-error gets initialized in firstUpdated
-    // gradientAlphaSpring: Spring
-
     @property({ type: Number })
     duration = 0
 
@@ -188,17 +178,12 @@ export class AnimatedFiller extends SyncedScrolledContent {
 
     private tryInitializeSprings(scaledProgress: number) {
         if (this.springsInitialized) return
-        // this.gradientAlphaSpring = new Spring(0, 1, 1, scaledProgress)
         this.springsInitialized = true
     }
 
     animateContent(scaledProgress: number, depthToActiveAncestor: number) {
         this.tryInitializeSprings(scaledProgress)
-        // this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
-        // const gradientAlpha = this.gradientAlphaSpring.compute(scaledProgress)
-        // if (!this.gradientAlphaSpring.isInEquilibrium()) {
         this.style.setProperty("--gradient-alpha", scaledProgress.toFixed(2))
-        // }
 
         this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${
             scaledProgress * 100
@@ -226,9 +211,6 @@ export class AnimatedContent extends SyncedScrolledContent {
         }
     `
 
-    // // @ts-expect-error gets initialized in firstUpdated
-    // gradientAlphaSpring: Spring
-
     @consume({ context: loadedLyricsTypeCtx })
     loadedLyricsType = LyricsType.NONE
 
@@ -236,17 +218,12 @@ export class AnimatedContent extends SyncedScrolledContent {
 
     private tryInitializeSprings(scaledProgress: number) {
         if (this.springsInitialized) return
-        // this.gradientAlphaSpring = new Spring(0, 1, 1, scaledProgress)
         this.springsInitialized = true
     }
 
     animateContent(scaledProgress: number, depthToActiveAncestor: number) {
         this.tryInitializeSprings(scaledProgress)
-        // this.gradientAlphaSpring.setEquilibrium(0.9 ** (1 + depthToActiveAncestor))
-        // const gradientAlpha = this.gradientAlphaSpring.compute(scaledProgress)
-        // if (!this.gradientAlphaSpring.isInEquilibrium()) {
-        this.style.setProperty("--gradient-alpha", scaledProgress.toFixed(2))
-        // }
+        this.style.setProperty("--gradient-alpha", (scaledProgress * 0.9 ** depthToActiveAncestor).toFixed(2))
 
         this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${
             scaledProgress * 100
