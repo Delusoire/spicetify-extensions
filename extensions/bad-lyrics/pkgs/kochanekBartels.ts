@@ -50,7 +50,7 @@ class Monomial {
         const weights = vectorDivScalar(
             _.range(n)
                 .map(i => scalarAddVector(i + 1, powers))
-                .reduce((u, v) => u.map((_, i) => u[i] * v[i])),
+                .reduce((u, v) => u.map((_, i) => u[i] * v[i]), new Array(powers.length).fill(1)),
             (t1 - t0) ** n,
         )
         const tps = powers.map(power => t ** power)

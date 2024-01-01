@@ -353,7 +353,7 @@ var Monomial = class {
     const coefficients = this.segments[i].slice(0, -n || void 0);
     const powers = _.range(coefficients.length).reverse();
     const weights = vectorDivScalar(
-      _.range(n).map((i2) => scalarAddVector(i2 + 1, powers)).reduce((u, v) => u.map((_2, i2) => u[i2] * v[i2])),
+      _.range(n).map((i2) => scalarAddVector(i2 + 1, powers)).reduce((u, v) => u.map((_2, i2) => u[i2] * v[i2]), new Array(powers.length).fill(1)),
       (t1 - t0) ** n
     );
     const tps = powers.map((power) => t ** power);
