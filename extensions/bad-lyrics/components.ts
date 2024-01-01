@@ -12,7 +12,7 @@ import { Filler, LyricsType, SyncedContent, SyncedFiller } from "./utils/LyricsP
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
 import Spline from "https://esm.sh/cubic-spline"
-import { KochanekBartels } from "./pkgs/kochanekBartels.ts"
+import { KochanekBartels } from "./pkgs/splines.ts"
 
 declare global {
     interface HTMLElementTagNameMap {

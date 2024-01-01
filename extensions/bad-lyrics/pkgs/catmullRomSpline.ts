@@ -1,7 +1,5 @@
 import { _ } from "../../../shared/deps.ts"
 
-// https://en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline
-
 type vector = readonly number[]
 export type vectorWithTime = readonly [number, vector]
 
