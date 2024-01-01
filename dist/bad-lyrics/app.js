@@ -376,13 +376,13 @@ var CubicHermite = class _CubicHermite extends Monomial {
       throw "Exactly 2 tangents per segment needed";
     if (vertices.length !== grid.length)
       throw "As many grid items as vertices are needed";
-    const segments = vertices.map((_2, i) => {
-      const [x0, x1] = vertices.slice(i, i + 2);
+    const zip_vertices = zip_n_uplets(2)(vertices);
+    const zip_grid = zip_n_uplets(2)(grid);
+    const segments = _.zip(zip_vertices, zip_grid).map(([[x0, x1], [t0, t1]], i) => {
       const [v0, v1] = tangents.slice(i * 2, i * 2 + 2);
-      const [t0, t1] = grid.slice(i, i + 2);
       const row = [x0, x1, scalarMultVector(t1 - t0, v0), scalarMultVector(t1 - t0, v1)];
       return matrixMultMatrix(_CubicHermite.matrix, row);
-    }).slice(0, -1);
+    });
     const gridCopy = [...grid];
     gridCopy.pop();
     super(segments, gridCopy);
@@ -412,11 +412,7 @@ var KochanekBartels = class _KochanekBartels extends CubicHermite {
     return [incoming, outgoing];
   }
   static fromAlpha(vertices, tcb, alpha = 0, endconditions = [0 /* NATURAL */, 0 /* NATURAL */]) {
-    const deltas = vertices.map((_2, i) => {
-      const [x0, x1] = vertices.slice(i, i + 2);
-      return vectorDist(x0, x1) ** alpha;
-    });
-    deltas.pop();
+    const deltas = zip_n_uplets(2)(vertices).map(([x0, x1]) => vectorDist(x0, x1) ** alpha);
     const grid = deltas.reduce((partialSums, delta) => [...partialSums, partialSums.at(-1) + delta], [0]);
     return _KochanekBartels.fromGrid(vertices, tcb, grid, endconditions);
   }
