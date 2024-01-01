@@ -440,7 +440,7 @@ var KochanekBartels = class _KochanekBartels extends CubicHermite {
     );
     if (closed) {
       tangents = [tangents.at(-1), ...tangents.slice(0, -1)];
-    } else if (!tangents?.length) {
+    } else if (!tangents.length) {
       const tangent = scalarMultVector(grid[1] - grid[0], vectorSubVector(vertices[1], vertices[0]));
       tangents = [tangent, tangent];
     } else {
@@ -491,7 +491,8 @@ var AnimatedContentContainer = class extends LitElement {
       this.sharedRelativePartialWidthSpline = KochanekBartels.fromGrid(
         this.relativePartialWidths.map((rpw) => [rpw]),
         [0, 0, 0],
-        childs.map((child) => child.tss).concat(childs.at(-1).tes)
+        childs.map((child) => child.tss).concat(childs.at(-1).tes),
+        [[0], [0]]
       );
     }
     childs.forEach((child, i) => {

@@ -76,6 +76,7 @@ export class AnimatedContentContainer extends LitElement {
                 this.relativePartialWidths.map(rpw => [rpw]),
                 [0, 0, 0],
                 childs.map(child => child.tss).concat(childs.at(-1)!.tes),
+                [[0], [0]],
             )
         }
 
