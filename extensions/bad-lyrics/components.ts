@@ -7,11 +7,12 @@ import { map } from "https://esm.sh/lit/directives/map.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
 
 import { _ } from "../../shared/deps.ts"
-import { CatmullRollSpline, remapScalar, vectorWithTime } from "./pkgs/catmullRomSpline.ts"
+import { CatmullRomSpline, remapScalar, vectorWithTime } from "./pkgs/catmullRomSpline.ts"
 import { Filler, LyricsType, SyncedContent, SyncedFiller } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
 import Spline from "https://esm.sh/cubic-spline"
+import { KochanekBartels } from "./pkgs/kochanekBartels.ts"
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -58,7 +59,7 @@ export class AnimatedContentContainer extends LitElement {
     childs: NodeListOf<AnimatedContentContainer | AnimatedContent | AnimatedFiller>
 
     relativePartialWidths: number[] | undefined
-    sharedRelativePartialWidthSpline: Interpolator<number> | undefined
+    sharedRelativePartialWidthSpline: Interpolator<number[]> | undefined
 
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
         const childs = Array.from(this.childs)
@@ -71,17 +72,11 @@ export class AnimatedContentContainer extends LitElement {
             )
             const totalWidth = partialWidths.at(-1)!
             this.relativePartialWidths = partialWidths.map(pw => pw / totalWidth)
-            // const points = childs
-            //     .map((child, i) => [child.tss, [this.relativePartialWidths![i]]] as vectorWithTime)
-            //     .concat([[childs.at(-1)!.tes, [this.relativePartialWidths!.at(-1)!]]])
-            // this.sharedRelativePartialWidthSpline = CatmullRollSpline.fromPointsClamped(points)!
-            const points = childs
-                .map((child, i) => [child.tss, this.relativePartialWidths![i]] as const)
-                .concat([[childs.at(-1)!.tes, this.relativePartialWidths!.at(-1)!] as const])
-            const s = new Spline(..._.unzip(points))
-            this.sharedRelativePartialWidthSpline = {
-                at: (t: number) => s.at(_.clamp(t, points[0][0], points.at(-1)![0])),
-            }
+            this.sharedRelativePartialWidthSpline = KochanekBartels.fromGrid(
+                this.relativePartialWidths.map(rpw => [rpw]),
+                [0, 0, 0],
+                childs.map(child => child.tss).concat(childs.at(-1)!.tes),
+            )
         }
 
         childs.forEach((child, i) => {
@@ -92,7 +87,7 @@ export class AnimatedContentContainer extends LitElement {
                           this.relativePartialWidths![i],
                           this.relativePartialWidths![i + 1],
                           _.clamp(
-                              this.sharedRelativePartialWidthSpline!.at(rsp),
+                              this.sharedRelativePartialWidthSpline!.at(rsp)[0],
                               this.relativePartialWidths![i],
                               this.relativePartialWidths![i + 1],
                           ),
