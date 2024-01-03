@@ -54,7 +54,7 @@ export const getISRCsForUris = async (uris: string[]) => {
     const tracks = (await db.tracks.bulkGet(uris)).map(
         (track, i) => track ?? { uri: uris[i], isrc: undefined, albumReleaseDate: undefined, popularity: undefined },
     )
-    const missedTracks = tracks.filter(track => track.isrc)
+    const missedTracks = tracks.filter(track => !track.isrc)
     if (missedTracks.length) {
         const missedIds = missedTracks.map(track => URI.fromString(track.uri).id!)
         const fillerTracks = await chunkify50(is => spotifyApi.tracks.get(is))(missedIds)
