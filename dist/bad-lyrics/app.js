@@ -544,7 +544,6 @@ __decorateClass([
 __decorateClass([
   property({ type: Number })
 ], AnimatedContentContainer.prototype, "tes", 2);
-// @ts-expect-error only has a getter
 __decorateClass([
   queryAll("*:not(br)")
 ], AnimatedContentContainer.prototype, "childs", 2);
@@ -745,7 +744,6 @@ __decorateClass([
   provide({ context: loadedLyricsTypeCtx }),
   state()
 ], LyricsContainer.prototype, "loadedLyricsType", 2);
-// @ts-expect-error only has a getter
 __decorateClass([
   query(AnimatedContentContainer.NAME)
 ], LyricsContainer.prototype, "firstContainer", 2);

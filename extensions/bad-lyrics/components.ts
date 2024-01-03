@@ -48,8 +48,7 @@ export class AnimatedContentContainer extends LitElement {
     tes = 1
 
     @queryAll("*:not(br)")
-    // @ts-expect-error only has a getter
-    childs: NodeListOf<AnimatedContentContainer | AnimatedContent | AnimatedFiller>
+    childs!: NodeListOf<AnimatedContentContainer | AnimatedContent | AnimatedFiller>
 
     relativePartialWidths: number[] | undefined
     sharedRelativePartialWidthSpline: Interpolator<number[]> | undefined
@@ -278,8 +277,7 @@ export class LyricsContainer extends LitElement {
     }
 
     @query(AnimatedContentContainer.NAME)
-    // @ts-expect-error only has a getter
-    firstContainer: AnimatedContentContainer
+    firstContainer!: AnimatedContentContainer
 
     @provide({ context: scrollTimeoutCtx })
     scrollTimeout = 0

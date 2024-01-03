@@ -51,6 +51,9 @@ new PermanentMutationObserver("main", () => {
   });
 });
 
+// extensions/detect-duplicates/util.ts
+import Dexie from "https://esm.sh/dexie";
+
 // shared/GraphQL/searchModalResults.ts
 var { GraphQL } = Spicetify;
 var searchModalResults = async (q, offset = 0, limit = 10, topResultsNum = 20, includeAudiobooks = true) => {
@@ -95,70 +98,60 @@ var chunkify50 = (fn) => async (args) => {
 };
 
 // extensions/detect-duplicates/util.ts
+var db = new class extends Dexie {
+  constructor() {
+    super("isrc-objects");
+    this.version(1).stores({
+      tracks: "&uri, albumReleaseDate, isrc, popularity"
+    });
+  }
+}();
 var { URI: URI3 } = Spicetify;
-var SEP = ":";
-var LS_PREFIX = ["extensions", "detect-duplicates"];
-var LS_KEY_INDEX = LS_PREFIX.join(SEP).length + 1;
-var uriToISRC = new Map(
-  Object.values(localStorage).filter(([key]) => key.startsWith(LS_PREFIX.join(SEP))).flatMap(([key, value]) => {
-    const isrc = key.slice(LS_KEY_INDEX);
-    const uris = JSON.parse(value);
-    return uris.map((uri) => [uri, isrc]);
-  })
-);
-var getLSKey = (isrc) => [...LS_PREFIX, isrc].join(SEP);
-var getISRCUris = (isrc) => {
-  const key = getLSKey(isrc);
-  const urisAsJson = localStorage.getItem(key);
-  return urisAsJson ? JSON.parse(urisAsJson) : null;
-};
-var setISRCUris = async (isrc, uris) => {
-  const getTrackReleaseDate = (a) => new Date(a.album.release_date);
-  const sortHeuristic = (a, b) => {
-    const deltaTime = getTrackReleaseDate(b) - getTrackReleaseDate(a);
-    return deltaTime || b.popularity - a.popularity;
-  };
-  const key = getLSKey(isrc);
-  const ids = uris.map((uri) => URI3.fromString(uri).id);
-  const tracks = await spotifyApi.tracks.get(ids);
-  const sortedTracks = tracks.sort(sortHeuristic);
-  const sortedUris = sortedTracks.map((track) => track.uri);
-  const value = JSON.stringify(sortedUris);
-  localStorage.setItem(key, value);
-  return sortedUris;
-};
 var getUrisFromISRC = async (isrc) => {
-  const cachedUris = getISRCUris(isrc);
-  if (!cachedUris) {
+  let tracks = await db.tracks.where({ isrc }).toArray();
+  if (!tracks) {
     try {
       const results = await searchModalResults(`isrc:${isrc}`);
-      const uris = results.map((i) => i.item.data.uri);
-      return await setISRCUris(isrc, uris);
+      const ts = results.map((i) => i.item.data);
+      tracks = ts.map((t) => ({ uri: t.uri, albumReleaseDate: void 0, isrc, popularity: void 0 }));
+      db.tracks.bulkPut(tracks);
+      return tracks.map((track) => track.uri);
     } catch (_2) {
       return null;
     }
   }
-  return cachedUris;
+  {
+    const sortHeuristic = (a, b) => {
+      const getTrackReleaseDate = (a2) => new Date(a2.albumReleaseDate);
+      const deltaTime = getTrackReleaseDate(b) - getTrackReleaseDate(a);
+      return deltaTime || b.popularity - a.popularity || 0;
+    };
+    return tracks.sort(sortHeuristic).map((track) => track.uri);
+  }
 };
 var getISRCsForUris = async (uris) => {
-  const indicesForCacheMiss = new Array();
-  const isrcs = uris.map((uri, i) => uriToISRC.has(uri) ? uriToISRC.get(uri) : void indicesForCacheMiss.push(i));
-  const urisForCacheMiss = indicesForCacheMiss.map((i) => uris[i]);
-  const idsForCacheMiss = urisForCacheMiss.map((uri) => URI3.fromString(uri).id);
-  const tracksForCacheMiss = await chunkify50((is) => spotifyApi.tracks.get(is))(idsForCacheMiss);
-  const isrcsForCacheMiss = tracksForCacheMiss.map((track) => track.external_ids.isrc);
-  urisForCacheMiss.forEach((uri, i) => {
-    const isrc = isrcsForCacheMiss[i];
-    uriToISRC.set(uri, isrc);
-    isrcs[indicesForCacheMiss[i]] = isrc;
-  });
-  return isrcs;
+  const tracks = (await db.tracks.bulkGet(uris)).map(
+    (track, i) => track ?? { uri: uris[i], isrc: void 0, albumReleaseDate: void 0, popularity: void 0 }
+  );
+  const missedTracks = tracks.filter((track) => track.isrc);
+  if (missedTracks.length) {
+    const missedIds = missedTracks.map((track) => URI3.fromString(track.uri).id);
+    const fillerTracks = await chunkify50((is) => spotifyApi.tracks.get(is))(missedIds);
+    missedTracks.forEach((missedTrack, i) => {
+      const fillerTrack = fillerTracks[i];
+      missedTrack.albumReleaseDate = fillerTrack.album.release_date;
+      missedTrack.isrc = fillerTrack.external_ids.isrc;
+      missedTrack.popularity = fillerTrack.popularity;
+    });
+    db.tracks.bulkAdd(missedTracks);
+  }
+  return tracks.map((track) => track.isrc);
 };
 var isUriOutdatedDuplicate = async (uri) => {
-  const isrc = uriToISRC.get(uri);
-  if (!isrc)
+  const track = await db.tracks.get(uri);
+  if (!track?.isrc)
     return null;
-  const uris = await getUrisFromISRC(isrc);
+  const uris = await getUrisFromISRC(track.isrc);
   if (!uris)
     return null;
   return uri !== uris[0];
