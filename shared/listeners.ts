@@ -67,7 +67,7 @@ const _onTrackListMutation = (
 
     tracks.forEach((track, i) => (track.props = tracksProps[i]))
 
-    const fullyRenderedTracks = tracks.filter(track => track.props.uri)
+    const fullyRenderedTracks = tracks.filter(track => track.props?.uri)
 
     onTrackListMutationListeners.map(listener => listener(trackList, fullyRenderedTracks))
 }

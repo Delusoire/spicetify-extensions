@@ -729,7 +729,7 @@ var _onTrackListMutation = (trackList, record, observer) => {
   const reactTracks = reactFiber.pendingProps.children;
   const tracksProps = reactTracks.map((child) => child.props);
   tracks.forEach((track, i) => track.props = tracksProps[i]);
-  const fullyRenderedTracks = tracks.filter((track) => track.props.uri);
+  const fullyRenderedTracks = tracks.filter((track) => track.props?.uri);
   onTrackListMutationListeners.map((listener) => listener(trackList, fullyRenderedTracks));
 };
 new PermanentMutationObserver("main", () => {
