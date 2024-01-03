@@ -100,7 +100,7 @@ var chunkify50 = (fn) => async (args) => {
 // extensions/detect-duplicates/util.ts
 var db = new class extends Dexie {
   constructor() {
-    super("isrc-objects");
+    super("library-data");
     this.version(1).stores({
       tracks: "&uri, albumReleaseDate, isrc, popularity"
     });

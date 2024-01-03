@@ -11,7 +11,7 @@ const db = new (class extends Dexie {
     tracks!: Table<TrackObject>
 
     constructor() {
-        super("isrc-objects")
+        super("library-data")
         this.version(1).stores({
             tracks: "&uri, albumReleaseDate, isrc, popularity",
         })
