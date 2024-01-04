@@ -52,7 +52,7 @@ export class AnimatedContentContainer extends LitElement {
     childs!: NodeListOf<AnimatedContentContainer | AnimatedContent | AnimatedFiller>
 
     relativePartialWidths: number[] | undefined
-    sharedRelativePartialWidthSpline: Spline<number[]> | undefined
+    sharedRelativePartialWidthSpline: Spline<number> | undefined
 
     updateProgress(rsp: number, index: number, depthToActiveAncestor: number) {
         const childs = Array.from(this.childs)
@@ -78,7 +78,7 @@ export class AnimatedContentContainer extends LitElement {
                           remapScalar(
                               this.relativePartialWidths![i],
                               this.relativePartialWidths![i + 1],
-                              this.sharedRelativePartialWidthSpline!.at(rsp)[0],
+                              this.sharedRelativePartialWidthSpline!.at(rsp),
                           ),
                           0,
                           1,
