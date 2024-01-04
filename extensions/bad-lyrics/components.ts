@@ -35,8 +35,7 @@ export class AnimatedContentContainer extends LitElement {
 
     static styles = css`
         :host {
-            /* border: 0;
-            background-color: transparent; */
+            display: flex;
         }
     `
 
@@ -59,7 +58,7 @@ export class AnimatedContentContainer extends LitElement {
 
         if (!this.relativePartialWidths || !this.sharedRelativePartialWidthSpline) {
             const partialWidths = childs.reduce(
-                (partialWidths, child) => [...partialWidths, partialWidths.at(-1)! + child.offsetWidth || 4], // 4 is the width for " "
+                (partialWidths, child) => [...partialWidths, partialWidths.at(-1)! + child.offsetWidth],
                 [0],
             )
             const totalWidth = partialWidths.at(-1)!
@@ -231,7 +230,7 @@ export class AnimatedContent extends SyncedScrolledContent {
 
     render() {
         return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}
-            >${this.content}</span
+            >${this.content.replaceAll(" ", "&nbsp;")}</span
         >`
     }
 }

@@ -479,8 +479,7 @@ var AnimatedContentContainer = class extends LitElement {
       return index;
     if (!this.relativePartialWidths || !this.sharedRelativePartialWidthSpline) {
       const partialWidths = childs.reduce(
-        (partialWidths2, child) => [...partialWidths2, partialWidths2.at(-1) + child.offsetWidth || 4],
-        // 4 is the width for " "
+        (partialWidths2, child) => [...partialWidths2, partialWidths2.at(-1) + child.offsetWidth],
         [0]
       );
       const totalWidth = partialWidths.at(-1);
@@ -531,8 +530,7 @@ var AnimatedContentContainer = class extends LitElement {
 AnimatedContentContainer.NAME = "animated-content-container";
 AnimatedContentContainer.styles = css`
         :host {
-            /* border: 0;
-            background-color: transparent; */
+            display: flex;
         }
     `;
 __decorateClass([
@@ -650,7 +648,7 @@ var AnimatedContent = class extends SyncedScrolledContent {
   }
   render() {
     return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}
-            >${this.content}</span
+            >${this.content.replaceAll(" ", "&nbsp;")}</span
         >`;
   }
 };
