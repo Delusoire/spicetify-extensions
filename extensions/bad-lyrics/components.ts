@@ -230,7 +230,7 @@ export class AnimatedContent extends SyncedScrolledContent {
 
     render() {
         return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}
-            >${this.content.replaceAll(" ", "&nbsp;")}</span
+            >${this.content.replaceAll(" ", " ")}</span
         >`
     }
 }
