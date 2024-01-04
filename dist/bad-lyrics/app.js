@@ -318,7 +318,7 @@ import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 
-// extensions/bad-lyrics/pkgs/monotoneNormalSpline.ts
+// extensions/bad-lyrics/splines/monotoneNormalSpline.ts
 import { MonotoneCubicHermitInterpolation } from "https://esm.sh/@adaskothebeast/splines";
 var MonotoneNormalSpline = class extends MonotoneCubicHermitInterpolation {
   at(t) {
@@ -622,7 +622,7 @@ LyricsContainer = __decorateClass([
 ], LyricsContainer);
 
 // extensions/bad-lyrics/app.ts
-new PermanentMutationObserver("aside", () => {
+var injectNPVLyrics = () => {
   const lyricsContainer = document.querySelector(".main-nowPlayingView-lyricsContent");
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))
     return;
@@ -634,4 +634,6 @@ new PermanentMutationObserver("aside", () => {
   PlayerW.songChangedSubject.subscribe((song) => ourLyricsContainer.song = song ?? null);
   PlayerW.scaledProgressChangedSubject.subscribe((progress) => ourLyricsContainer.updateProgress(progress));
   render(ourLyricsContainer, lyricsContainerClone);
-});
+};
+injectNPVLyrics();
+new PermanentMutationObserver("aside", injectNPVLyrics);

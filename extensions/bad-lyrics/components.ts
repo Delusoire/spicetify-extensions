@@ -10,7 +10,7 @@ import { _ } from "../../shared/deps.ts"
 import { Filler, LyricsType, SyncedContent, SyncedFiller } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
-import { MonotoneNormalSpline } from "./pkgs/monotoneNormalSpline.ts"
+import { MonotoneNormalSpline } from "./splines/monotoneNormalSpline.ts"
 import { remapScalar } from "../../shared/math.ts"
 
 declare global {

@@ -5,7 +5,7 @@ import { PermanentMutationObserver } from "../../shared/util.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { LyricsContainer } from "./components.ts"
 
-new PermanentMutationObserver("aside", () => {
+const injectNPVLyrics = () => {
     const lyricsContainer = document.querySelector<HTMLDivElement>(".main-nowPlayingView-lyricsContent")
     if (!lyricsContainer || lyricsContainer.classList.contains("injected")) return
     lyricsContainer.classList.add("injected")
@@ -17,4 +17,6 @@ new PermanentMutationObserver("aside", () => {
     PlayerW.songChangedSubject.subscribe(song => (ourLyricsContainer.song = song ?? null))
     PlayerW.scaledProgressChangedSubject.subscribe(progress => ourLyricsContainer.updateProgress(progress))
     render(ourLyricsContainer, lyricsContainerClone)
-})
+}
+injectNPVLyrics()
+new PermanentMutationObserver("aside", injectNPVLyrics)
