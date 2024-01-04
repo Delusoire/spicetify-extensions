@@ -1,16 +1,8 @@
 import { _ } from "../../../shared/deps.ts"
+import { TwoUplet, zip_n_uplets } from "../../../shared/fp.ts"
+import { remapScalar, scalarLerp, vector, vectorDist, vectorLerp } from "../../../shared/math.ts"
 
-type vector = readonly number[]
 export type vectorWithTime = readonly [number, vector]
-
-const vectorDiff = (u: vector, v: vector) => _.zip(u, v).map(([xiu, xiv]) => xiu! - xiv!)
-const vectorDist = (u: vector, v: vector) => Math.hypot(...vectorDiff(v, u))
-export const scalarLerp = (s: number, e: number, t: number) => s + (e - s) * t
-const vectorLerp = (u: vector, v: vector, t: number) => _.zip(u, v).map(([xiu, xiv]) => scalarLerp(xiu!, xiv!, t))
-export const remapScalar = (s: number, e: number, x: number) => (x - s) / (e - s)
-
-const slidingWindow = <E>(array: E[], slidingWindowSize: number) =>
-    _.range(slidingWindowSize, array.length + 1).map(i => array.slice(i - slidingWindowSize, i))
 
 type Quadruplet<A> = readonly [A, A, A, A]
 type PointQuadruplet = Quadruplet<vector>
@@ -20,7 +12,7 @@ class CatmullRomCurve {
     private constructor(private P: PointQuadruplet, private T: TimeQuadruplet) {}
 
     static fromPointsAndAlpha(P: PointQuadruplet, alpha: number) {
-        const T = slidingWindow(P as unknown as vector[], 2)
+        const T = zip_n_uplets<TwoUplet<vector>>(2)(P as unknown as vector[])
             .map(([Pi, Pj]) => vectorDist(Pi, Pj) ** alpha)
             .map((ki, i, kis) => (i > 0 ? kis[i - 1] : 0) + ki) as unknown as TimeQuadruplet
         return new CatmullRomCurve(P, T)
@@ -53,7 +45,7 @@ export class AlphaCatmullRomSpline {
     private catnumRollCurves
 
     private constructor(private points: Array<vector>, alpha: number) {
-        this.catnumRollCurves = slidingWindow(this.points, 4).map(P =>
+        this.catnumRollCurves = zip_n_uplets<Quadruplet<vector>>(4)(points).map(P =>
             CatmullRomCurve.fromPointsAndAlpha(P as unknown as PointQuadruplet, alpha),
         )
     }
@@ -87,7 +79,7 @@ export class CatmullRomSpline {
 
     private constructor(points: Array<vectorWithTime>) {
         this.points = _.sortBy(points, p => p[0])
-        this.catnumRollCurves = slidingWindow(this.points, 4).map(P =>
+        this.catnumRollCurves = zip_n_uplets<Quadruplet<vector>>(4)(this.points).map(P =>
             CatmullRomCurve.fromPointsInTime(P as unknown as PointInTimeQuadruplet),
         )
     }
@@ -119,7 +111,7 @@ export class CatmullRomSpline {
 function deCasteljau(points: vector[], position: number) {
     if (points.length < 2) return points[0]
     return deCasteljau(
-        slidingWindow(points, 2).map(([Pi, Pj]) => vectorLerp(Pi, Pj, position)),
+        zip_n_uplets<TwoUplet<vector>>(2)(points).map(([Pi, Pj]) => vectorLerp(Pi, Pj, position)),
         position,
     )
 }

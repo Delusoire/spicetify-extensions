@@ -45,6 +45,7 @@ export const progressify = <F extends (...args: any) => any>(f: F, n: number) =>
 
 export type TwoUplet<E> = [E, E]
 export type Triplet<E> = [E, E, E]
+export type Quadruplet<E> = [E, E, E, E]
 export const zip_n_uplets =
     <R>(n: number) =>
     <A>(a: A[]) =>

@@ -81,7 +81,6 @@ new PermanentMutationObserver("main", () => {
 import { default as ld } from "https://esm.sh/lodash";
 import { default as ld_fp } from "https://esm.sh/lodash/fp";
 var _ = ld;
-var fp = ld_fp;
 
 // shared/fp.ts
 var { Snackbar } = Spicetify;
@@ -318,70 +317,19 @@ import { Task } from "https://esm.sh/@lit/task";
 import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
-import { MonotoneCubicHermitInterpolation } from "https://esm.sh/@adaskothebeast/splines";
 
-// extensions/bad-lyrics/pkgs/splines.ts
-var vectorMultVector = (u, v) => _.zip(u, v).map(([uix, vix]) => uix * vix);
-var vectorDotVector = (u, v) => fp.sum(vectorMultVector(u, v));
-var scalarMultVector = (x, u) => u.map((uxi) => x * uxi);
-var vectorDivScalar = (u, x) => scalarMultVector(1 / x, u);
-var scalarAddVector = (x, u) => u.map((uxi) => x + uxi);
+// extensions/bad-lyrics/pkgs/monotoneNormalSpline.ts
+import { MonotoneCubicHermitInterpolation } from "https://esm.sh/@adaskothebeast/splines";
+var MonotoneNormalSpline = class extends MonotoneCubicHermitInterpolation {
+  at(t) {
+    const t0 = this.xs[0], tf = this.xs.at(-1);
+    const ct = _.clamp(t, t0, tf);
+    return super.interpolate(ct);
+  }
+};
+
+// shared/math.ts
 var remapScalar = (s, e, x) => (x - s) / (e - s);
-var vectorCartesianVector = (u, v) => u.map((ux) => v.map((vx) => [ux, vx]));
-function matrixMultMatrix(m1, m2) {
-  if (!m1.length !== !m2[0].length) {
-    throw "Arguments should be compatible";
-  }
-  const atColumn = (m, column) => m.map((row) => row[column]);
-  const ijs = vectorCartesianVector(_.range(m1.length), _.range(m2[0].length));
-  return ijs.map(fp.map(([i, j]) => vectorDotVector(m1[i], atColumn(m2, j))));
-}
-var Monomial = class {
-  constructor(segments, grid = _.range(segments.length + 1)) {
-    this.segments = segments;
-    this.grid = grid;
-  }
-  at(t, n = 0) {
-    t = _.clamp(t, this.grid[0], this.grid.at(-1) - 1e-7);
-    const i = _.sortedLastIndex(this.grid, t) - 1;
-    const [t0, t1] = this.grid.slice(i, i + 2);
-    t = remapScalar(t0, t1, t);
-    const coefficients = this.segments[i].slice(0, -n || void 0);
-    const powers = _.range(coefficients.length).reverse();
-    const weights = vectorDivScalar(
-      _.range(n).map((i2) => scalarAddVector(i2 + 1, powers)).reduce((u, v) => u.map((_2, i2) => u[i2] * v[i2]), new Array(powers.length).fill(1)),
-      (t1 - t0) ** n
-    );
-    const tps = powers.map((power) => t ** power);
-    return matrixMultMatrix([vectorMultVector(tps, weights)], coefficients)[0];
-  }
-};
-var CubicHermite = class _CubicHermite extends Monomial {
-  static {
-    this.matrix = [
-      [2, -2, 1, 1],
-      [-3, 3, -2, -1],
-      [0, 0, 1, 0],
-      [1, 0, 0, 0]
-    ];
-  }
-  constructor(vertices, tangents, grid = _.range(vertices.length)) {
-    if (vertices.length < 2)
-      throw "At least 2 vertices are needed";
-    if (tangents.length !== 2 * (vertices.length - 1))
-      throw "Exactly 2 tangents per segment needed";
-    if (vertices.length !== grid.length)
-      throw "As many grid items as vertices are needed";
-    const zip_vertices = zip_n_uplets(2)(vertices);
-    const zip_grid = zip_n_uplets(2)(grid);
-    const segments = _.zip(zip_vertices, zip_grid).map(([[x0, x1], [t0, t1]], i) => {
-      const [v0, v1] = tangents.slice(i * 2, i * 2 + 2);
-      const control_values = [x0, x1, scalarMultVector(t1 - t0, v0), scalarMultVector(t1 - t0, v1)];
-      return matrixMultMatrix(_CubicHermite.matrix, control_values);
-    });
-    super(segments, grid);
-  }
-};
 
 // extensions/bad-lyrics/components.ts
 var scrollTimeoutCtx = createContext("scrollTimeout");
@@ -406,14 +354,14 @@ var AnimatedContentContainer = class extends LitElement {
       const totalWidth = partialWidths.at(-1);
       this.relativePartialWidths = partialWidths.map((pw) => pw / totalWidth);
       const pairs = _.zip(childs.map((child) => child.tss).concat(childs.at(-1).tes), this.relativePartialWidths);
-      this.sharedRelativePartialWidthSpline = new MonotoneCubicHermitInterpolation(pairs);
+      this.sharedRelativePartialWidthSpline = new MonotoneNormalSpline(pairs);
     }
     childs.forEach((child, i) => {
       const progress = child instanceof AnimatedContentContainer ? rsp : _.clamp(
         remapScalar(
           this.relativePartialWidths[i],
           this.relativePartialWidths[i + 1],
-          this.sharedRelativePartialWidthSpline.interpolate(rsp)[0]
+          this.sharedRelativePartialWidthSpline.at(rsp)[0]
         ),
         0,
         1

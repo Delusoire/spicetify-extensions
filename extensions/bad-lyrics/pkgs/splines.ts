@@ -1,34 +1,18 @@
-import { _, fp } from "../../../shared/deps.ts"
+import { _ } from "../../../shared/deps.ts"
 import { TwoUplet, Triplet, zip_n_uplets } from "../../../shared/fp.ts"
-
-type vector = number[]
-type matrix = vector[]
-
-const oppositeVector = (u: vector) => scalarMultVector(-1, u)
-const vectorAddVector = (u: vector, v: vector) => _.zip(u, v).map(([uxi, vxi]) => uxi! + vxi!)
-const vectorMultVector = (u: vector, v: vector) => _.zip(u, v).map(([uix, vix]) => uix! * vix!)
-const vectorDotVector = (u: vector, v: vector) => fp.sum(vectorMultVector(u, v))
-const vectorSubVector = (u: vector, v: vector) => vectorAddVector(u, oppositeVector(v))
-const scalarMultVector = (x: number, u: vector) => u.map(uxi => x * uxi)
-const vectorDivScalar = (u: vector, x: number) => scalarMultVector(1 / x, u)
-const scalarAddVector = (x: number, u: vector) => u.map(uxi => x + uxi)
-const vectorDist = (u: vector, v: vector) => Math.hypot(...vectorSubVector(v, u))
-export const scalarLerp = (s: number, e: number, t: number) => s + (e - s) * t
-const vectorLerp = (u: vector, v: vector, t: number) => _.zip(u, v).map(([uxi, vxi]) => scalarLerp(uxi!, vxi!, t))
-export const remapScalar = (s: number, e: number, x: number) => (x - s) / (e - s)
-
-const vectorCartesianVector = (u: vector, v: vector) => u.map(ux => v.map(vx => [ux, vx] as const))
-
-function matrixMultMatrix(m1: matrix, m2: matrix) {
-    if (!m1.length !== !m2[0].length) {
-        throw "Arguments should be compatible"
-    }
-
-    const atColumn = (m: matrix, column: number) => m.map(row => row[column])
-
-    const ijs = vectorCartesianVector(_.range(m1.length), _.range(m2[0].length))
-    return ijs.map(fp.map(([i, j]) => vectorDotVector(m1[i], atColumn(m2, j))))
-}
+import {
+    matrix,
+    matrixMultMatrix,
+    remapScalar,
+    scalarAddVector,
+    scalarMultVector,
+    vector,
+    vectorAddVector,
+    vectorDist,
+    vectorDivScalar,
+    vectorMultVector,
+    vectorSubVector,
+} from "../../../shared/math.ts"
 
 enum EndCondition {
     NATURAL,
