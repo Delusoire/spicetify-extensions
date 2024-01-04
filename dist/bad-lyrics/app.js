@@ -83,6 +83,10 @@ import { default as ld_fp } from "https://esm.sh/lodash/fp";
 var _ = ld;
 var fp = ld_fp;
 
+// shared/fp.ts
+var { Snackbar } = Spicetify;
+var zip_n_uplets = (n) => (a) => a.map((_2, i, a2) => a2.slice(i, i + n)).slice(0, 1 - n);
+
 // extensions/bad-lyrics/utils/LyricsProvider.ts
 var headers = {
   authority: "apic-desktop.musixmatch.com",
@@ -130,29 +134,23 @@ var findLyrics = async (info) => {
       });
       return { tss, tes, content };
     });
-    const wordSyncedFilled = wordSynced.flatMap((rsLine, i, wordSynced2) => {
-      const nextRsLine = wordSynced2[i + 1];
-      const tss = rsLine.tes;
-      const tes = nextRsLine?.tss;
+    const wordSyncedFilled = _(
+      zip_n_uplets(2)([{ tes: 0 }, ...wordSynced, { tss: 1 }])
+    ).map(([prev, next]) => {
+      const tss = prev.tes;
+      const tes = next.tss;
       const dr = tes - tss;
-      if (!dr)
-        return rsLine;
-      return [
-        rsLine,
-        {
+      return dr && {
+        tss,
+        tes,
+        content: {
           tss,
           tes,
-          content: [
-            {
-              tss,
-              tes,
-              duration: dr * track.track_length * 1e3,
-              content: Filler
-            }
-          ]
+          duration: dr * track.track_length * 1e3,
+          content: Filler
         }
-      ];
-    });
+      };
+    }).zip(wordSynced).flatten().compact().value();
     l.wordSynced = wrapInContainerSyncedType(3 /* WORD_SYNCED */, wordSyncedFilled);
   }
   if (track.has_subtitles) {
@@ -451,7 +449,6 @@ var KochanekBartels = class _KochanekBartels extends CubicHermite {
     super(vertices, tangents, grid);
   }
 };
-var zip_n_uplets = (n) => (a) => a.map((_2, i, a2) => a2.slice(i, i + n)).slice(0, 1 - n);
 function _end_tangent(condition, vertices, times, other_tangent) {
   return condition === 0 /* NATURAL */ ? _natural_tangent(vertices, times, other_tangent) : condition;
 }

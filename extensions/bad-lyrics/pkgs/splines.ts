@@ -1,4 +1,5 @@
 import { _, fp } from "../../../shared/deps.ts"
+import { TwoUplet, Triplet, zip_n_uplets } from "../../../shared/fp.ts"
 
 type vector = number[]
 type matrix = vector[]
@@ -35,9 +36,6 @@ enum EndCondition {
 }
 type EndConditionSideable = EndCondition.NATURAL | vector
 type EndConditions = TwoUplet<EndConditionSideable> | EndCondition.CLOSED
-
-type TwoUplet<E> = [E, E]
-type Triplet<E> = [E, E, E]
 
 class Monomial {
     constructor(private segments: matrix[], private grid = _.range(segments.length + 1)) {}
@@ -168,11 +166,6 @@ export class KochanekBartels extends CubicHermite {
         super(vertices, tangents, grid)
     }
 }
-
-const zip_n_uplets =
-    <R>(n: number) =>
-    <A>(a: A[]) =>
-        a.map((_, i, a) => a.slice(i, i + n)).slice(0, 1 - n) as R[]
 
 function _end_tangent(
     condition: EndCondition.NATURAL | vector,

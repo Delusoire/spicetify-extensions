@@ -1,4 +1,5 @@
 import { _ } from "../../../shared/deps.ts"
+import { TwoUplet, zip_n_uplets } from "../../../shared/fp.ts"
 
 const headers = {
     authority: "apic-desktop.musixmatch.com",
@@ -52,7 +53,7 @@ export const Filler = "♪"
 
 export type NotSynced = Synced<string> & { __type: LyricsType.NOT_SYNCED }
 export type LineSynced = Synced<Array<Synced<readonly [Synced<string>]>>> & { __type: LyricsType.LINE_SYNCED }
-export type WordSynced = Synced<Array<Synced<Array<Synced<string>>> | SyncedFiller>> & {
+export type WordSynced = Synced<Array<Synced<Array<Synced<string>> | SyncedFiller>>> & {
     __type: LyricsType.WORD_SYNCED
 }
 
@@ -101,29 +102,31 @@ export const findLyrics = async (info: {
             return { tss, tes, content }
         })
 
-        const wordSyncedFilled = wordSynced.flatMap((rsLine, i, wordSynced) => {
-            const nextRsLine = wordSynced[i + 1]
-            const tss = rsLine.tes
-            const tes = nextRsLine?.tss
-            const dr = tes - tss
-            if (!dr) return rsLine
+        const wordSyncedFilled = _(
+            zip_n_uplets<TwoUplet<Synced<Array<Synced<string>>>>>(2)([{ tes: 0 }, ...wordSynced, { tss: 1 }]),
+        )
+            .map(([prev, next]) => {
+                const tss = prev.tes
+                const tes = next.tss
+                const dr = tes - tss
 
-            return [
-                rsLine,
-                {
-                    tss,
-                    tes,
-                    content: [
-                        {
+                return (
+                    dr && {
+                        tss,
+                        tes,
+                        content: {
                             tss,
                             tes,
                             duration: dr * track.track_length * 1000,
                             content: Filler,
                         } as SyncedFiller,
-                    ],
-                },
-            ]
-        })
+                    }
+                )
+            })
+            .zip(wordSynced)
+            .flatten()
+            .compact()
+            .value()
 
         l.wordSynced = wrapInContainerSyncedType(LyricsType.WORD_SYNCED, wordSyncedFilled)
     }
