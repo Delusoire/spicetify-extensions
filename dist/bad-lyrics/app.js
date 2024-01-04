@@ -143,12 +143,14 @@ var findLyrics = async (info) => {
       return dr && {
         tss,
         tes,
-        content: {
-          tss,
-          tes,
-          duration: dr * track.track_length * 1e3,
-          content: Filler
-        }
+        content: [
+          {
+            tss,
+            tes,
+            duration: dr * track.track_length * 1e3,
+            content: Filler
+          }
+        ]
       };
     }).zip(wordSynced).flatten().compact().value();
     l.wordSynced = wrapInContainerSyncedType(3 /* WORD_SYNCED */, wordSyncedFilled);
