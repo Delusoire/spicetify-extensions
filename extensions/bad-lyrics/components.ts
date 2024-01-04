@@ -6,6 +6,8 @@ import { customElement, property, query, queryAll, state } from "https://esm.sh/
 import { map } from "https://esm.sh/lit/directives/map.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
 
+import { MonotoneCubicHermitInterpolation } from "https://esm.sh/@adaskothebeast/splines"
+
 import { _ } from "../../shared/deps.ts"
 import { KochanekBartels, remapScalar } from "./pkgs/splines.ts"
 import { Filler, LyricsType, SyncedContent, SyncedFiller } from "./utils/LyricsProvider.ts"
@@ -26,7 +28,7 @@ const spotifyContainerCtx = createContext<HTMLElement | undefined>("spotifyConta
 const loadedLyricsTypeCtx = createContext<LyricsType>("loadedLyricsType")
 
 interface Interpolator<A> {
-    at(t: number): A
+    interpolate(t: number): A
 }
 
 @customElement(AnimatedContentContainer.NAME)
@@ -36,6 +38,7 @@ export class AnimatedContentContainer extends LitElement {
     static styles = css`
         :host {
             display: flex;
+            flex-wrap: wrap;
         }
     `
 
@@ -63,12 +66,9 @@ export class AnimatedContentContainer extends LitElement {
             )
             const totalWidth = partialWidths.at(-1)!
             this.relativePartialWidths = partialWidths.map(pw => pw / totalWidth)
-            this.sharedRelativePartialWidthSpline = KochanekBartels.fromGrid(
-                this.relativePartialWidths.map(rpw => [rpw]),
-                [0, 0, 0],
-                childs.map(child => child.tss).concat(childs.at(-1)!.tes),
-                [[0], [0]],
-            )
+
+            const pairs = _.zip(childs.map(child => child.tss).concat(childs.at(-1)!.tes), this.relativePartialWidths)
+            this.sharedRelativePartialWidthSpline = new MonotoneCubicHermitInterpolation(pairs)
         }
 
         childs.forEach((child, i) => {
@@ -79,7 +79,7 @@ export class AnimatedContentContainer extends LitElement {
                           remapScalar(
                               this.relativePartialWidths![i],
                               this.relativePartialWidths![i + 1],
-                              this.sharedRelativePartialWidthSpline!.at(rsp)[0],
+                              this.sharedRelativePartialWidthSpline!.interpolate(rsp)[0],
                           ),
                           0,
                           1,

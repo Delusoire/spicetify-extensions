@@ -318,17 +318,14 @@ import { Task } from "https://esm.sh/@lit/task";
 import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
+import { MonotoneCubicHermitInterpolation } from "https://esm.sh/@adaskothebeast/splines";
 
 // extensions/bad-lyrics/pkgs/splines.ts
-var oppositeVector = (u) => scalarMultVector(-1, u);
-var vectorAddVector = (u, v) => _.zip(u, v).map(([uxi, vxi]) => uxi + vxi);
 var vectorMultVector = (u, v) => _.zip(u, v).map(([uix, vix]) => uix * vix);
 var vectorDotVector = (u, v) => fp.sum(vectorMultVector(u, v));
-var vectorSubVector = (u, v) => vectorAddVector(u, oppositeVector(v));
 var scalarMultVector = (x, u) => u.map((uxi) => x * uxi);
 var vectorDivScalar = (u, x) => scalarMultVector(1 / x, u);
 var scalarAddVector = (x, u) => u.map((uxi) => x + uxi);
-var vectorDist = (u, v) => Math.hypot(...vectorSubVector(v, u));
 var remapScalar = (s, e, x) => (x - s) / (e - s);
 var vectorCartesianVector = (u, v) => u.map((ux) => v.map((vx) => [ux, vx]));
 function matrixMultMatrix(m1, m2) {
@@ -385,81 +382,6 @@ var CubicHermite = class _CubicHermite extends Monomial {
     super(segments, grid);
   }
 };
-var KochanekBartels = class _KochanekBartels extends CubicHermite {
-  static _calculate_tangents(points, times, tcb) {
-    const [x_1, x0, x1] = points;
-    const [t_1, t0, t1] = times;
-    const [T, C, B] = tcb;
-    const a = (1 - T) * (1 + C) * (1 + B);
-    const b = (1 - T) * (1 - C) * (1 - B);
-    const c = (1 - T) * (1 - C) * (1 + B);
-    const d = (1 - T) * (1 + C) * (1 - B);
-    const delta_1 = t0 - t_1;
-    const delta0 = t1 - t0;
-    const v_1 = vectorDivScalar(vectorSubVector(x0, x_1), delta_1);
-    const v0 = vectorDivScalar(vectorSubVector(x1, x0), delta0);
-    const incoming = vectorDivScalar(
-      vectorAddVector(scalarMultVector(c * delta0, v_1), scalarMultVector(d * delta_1, v0)),
-      delta_1 + delta0
-    );
-    const outgoing = vectorDivScalar(
-      vectorAddVector(scalarMultVector(a * delta0, v_1), scalarMultVector(b * delta_1, v0)),
-      delta_1 + delta0
-    );
-    return [incoming, outgoing];
-  }
-  static fromAlpha(vertices, tcb, alpha = 0, endconditions = [0 /* NATURAL */, 0 /* NATURAL */]) {
-    const deltas = zip_n_uplets(2)(vertices).map(([x0, x1]) => vectorDist(x0, x1) ** alpha);
-    const grid = deltas.reduce((partialSums, delta) => [...partialSums, partialSums.at(-1) + delta], [0]);
-    return _KochanekBartels.fromGrid(vertices, tcb, grid, endconditions);
-  }
-  static fromGrid(vertices, tcb, grid, endconditions = [0 /* NATURAL */, 0 /* NATURAL */]) {
-    const closed = endconditions === 1 /* CLOSED */;
-    const tcb_slots = vertices.length - (closed ? 0 : 2);
-    return new _KochanekBartels(vertices, new Array(tcb_slots).fill(tcb), grid, endconditions);
-  }
-  constructor(vertices, tcb, grid, endconditions) {
-    if (vertices.length < 2)
-      throw "At least two vertices are required";
-    if (vertices.length !== grid.length)
-      throw "Number of grid values must be same as vertices";
-    const closed = endconditions === 1 /* CLOSED */;
-    if (closed) {
-      vertices.push(vertices[0], vertices[1]);
-      tcb = [...tcb.slice(1), tcb[0]];
-      const first_interval = grid[1] - grid[0];
-      grid.push(grid.at(-1) + first_interval);
-    }
-    const zip_vertices = zip_n_uplets(3)(vertices);
-    const zip_grid = zip_n_uplets(3)(grid);
-    let tangents = _.zip(zip_vertices, zip_grid, tcb).flatMap(
-      ([points, times, tcb2]) => _KochanekBartels._calculate_tangents(points, times, tcb2)
-    );
-    if (closed) {
-      tangents = [tangents.at(-1), ...tangents.slice(0, -1)];
-    } else if (!tangents.length) {
-      const tangent = scalarMultVector(grid[1] - grid[0], vectorSubVector(vertices[1], vertices[0]));
-      tangents = [tangent, tangent];
-    } else {
-      const [start, end] = endconditions;
-      tangents = [
-        _end_tangent(start, vertices.slice(0, 2), grid.slice(0, 2), tangents[0]),
-        ...tangents,
-        _end_tangent(end, vertices.slice(-2), grid.slice(-2), tangents.at(-1))
-      ];
-    }
-    super(vertices, tangents, grid);
-  }
-};
-function _end_tangent(condition, vertices, times, other_tangent) {
-  return condition === 0 /* NATURAL */ ? _natural_tangent(vertices, times, other_tangent) : condition;
-}
-function _natural_tangent(vertices, times, tangent) {
-  const [x0, x1] = vertices;
-  const [t0, t1] = times;
-  const delta = t1 - t0;
-  return vectorSubVector(scalarMultVector(3 / (2 * delta), vectorSubVector(x1, x0)), vectorDivScalar(tangent, 2));
-}
 
 // extensions/bad-lyrics/components.ts
 var scrollTimeoutCtx = createContext("scrollTimeout");
@@ -483,19 +405,15 @@ var AnimatedContentContainer = class extends LitElement {
       );
       const totalWidth = partialWidths.at(-1);
       this.relativePartialWidths = partialWidths.map((pw) => pw / totalWidth);
-      this.sharedRelativePartialWidthSpline = KochanekBartels.fromGrid(
-        this.relativePartialWidths.map((rpw) => [rpw]),
-        [0, 0, 0],
-        childs.map((child) => child.tss).concat(childs.at(-1).tes),
-        [[0], [0]]
-      );
+      const pairs = _.zip(childs.map((child) => child.tss).concat(childs.at(-1).tes), this.relativePartialWidths);
+      this.sharedRelativePartialWidthSpline = new MonotoneCubicHermitInterpolation(pairs);
     }
     childs.forEach((child, i) => {
       const progress = child instanceof AnimatedContentContainer ? rsp : _.clamp(
         remapScalar(
           this.relativePartialWidths[i],
           this.relativePartialWidths[i + 1],
-          this.sharedRelativePartialWidthSpline.at(rsp)[0]
+          this.sharedRelativePartialWidthSpline.interpolate(rsp)[0]
         ),
         0,
         1
@@ -530,6 +448,7 @@ AnimatedContentContainer.NAME = "animated-content-container";
 AnimatedContentContainer.styles = css`
         :host {
             display: flex;
+            flex-wrap: wrap;
         }
     `;
 __decorateClass([
