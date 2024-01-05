@@ -318,7 +318,7 @@ import { customElement, property, query, queryAll, state } from "https://esm.sh/
 import { map } from "https://esm.sh/lit/directives/map.js";
 
 // extensions/bad-lyrics/splines/monotoneNormalSpline.ts
-import { MonotoneCubicHermitInterpolation } from "https://esm.sh/@adaskothebeast/splines";
+import { MonotoneCubicHermitInterpolation } from "https://esm.sh/v135/@adaskothebeast/splines@4.0.0/es2022/splines.mjs";
 var MonotoneNormalSpline = class extends MonotoneCubicHermitInterpolation {
   at(t) {
     const t0 = this.xs[0], tf = this.xs.at(-1);
@@ -431,7 +431,7 @@ var SyncedScrolledContent = class extends LitElement {
         if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
           this.spotifyContainer.scrollTo({
             top: scrollTop,
-            behavior: "smooth"
+            behavior: "instant"
           });
         }
       }

@@ -68,7 +68,6 @@ export class AnimatedContentContainer extends LitElement {
             this.relativePartialWidths = partialWidths.map(pw => pw / totalWidth)
 
             const pairs = _.zip(childs.map(child => child.tss).concat(childs.at(-1)!.tes), this.relativePartialWidths)
-            // @ts-expect-error no types
             this.sharedRelativePartialWidthSpline = new MonotoneNormalSpline(pairs)
         }
 
@@ -142,7 +141,7 @@ export abstract class SyncedScrolledContent extends LitElement {
                 if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
                     this.spotifyContainer.scrollTo({
                         top: scrollTop,
-                        behavior: "smooth",
+                        behavior: "instant",
                     })
                 }
             }

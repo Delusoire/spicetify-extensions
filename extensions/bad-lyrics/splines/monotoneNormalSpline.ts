@@ -1,4 +1,4 @@
-import { MonotoneCubicHermitInterpolation } from "https://esm.sh/@adaskothebeast/splines"
+import { MonotoneCubicHermitInterpolation } from "https://esm.sh/v135/@adaskothebeast/splines@4.0.0/es2022/splines.mjs"
 
 import { _ } from "../../../shared/deps.ts"
 
