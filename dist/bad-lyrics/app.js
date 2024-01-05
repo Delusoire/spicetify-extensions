@@ -431,7 +431,7 @@ var SyncedScrolledContent = class extends LitElement {
         if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
           this.spotifyContainer.scrollTo({
             top: scrollTop,
-            behavior: "auto"
+            behavior: document.visibilityState === "visible" ? "smooth" : "auto"
           });
         }
       }
@@ -476,7 +476,7 @@ var AnimatedContent = class extends SyncedScrolledContent {
     const nextGradientOpacity = this.opacityInterpolator.at(scaledProgress) * 0.9 ** depthToActiveAncestor;
     const nextGlowRadius = `${(1 - scaledProgress) * 3}px`;
     const nextGlowAlpha = scaledProgress.toFixed(3);
-    const nextYOffset = `-${this.offsetHeight * 0.7 * scaledProgress}px`;
+    const nextYOffset = `-${this.offsetHeight * 0.07 * scaledProgress}px`;
     const nextGradientStart = `${scaledProgress * 95}%`;
     const nextGradientEnd = `${scaledProgress * 105}%`;
     this.style.setProperty("--gradient-alpha", nextGradientOpacity.toFixed(3));
