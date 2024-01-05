@@ -12,7 +12,6 @@ import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
 import { MonotoneNormalSpline } from "./splines/monotoneNormalSpline.ts"
 import { remapScalar, vectorLerp } from "../../shared/math.ts"
-import { Spring } from "./pkgs/spring.ts"
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -204,17 +203,17 @@ export class AnimatedContent extends SyncedScrolledContent {
     ])
     scaleInterpolator = new MonotoneNormalSpline([
         [-0.5, 1],
-        [-0.2, 0.97],
-        [-0.1, 0.93],
-        [0, 0.88],
-        [0.1, 0.9],
+        [-0.2, 0.99],
+        [-0.1, 0.98],
+        [0, 0.94],
+        [0.1, 0.99],
         [0.2, 1],
-        [0.5, 1.12],
-        [0.7, 1.24],
-        [0.9, 1.2],
-        [1, 1.1],
-        [1.2, 1],
-        [1.5, 0.99],
+        [0.5, 1.07],
+        [0.7, 1.1],
+        [0.9, 1.07],
+        [1, 1.05],
+        [1.2, 1.03],
+        [1.5, 1],
     ])
 
     sp?: number
