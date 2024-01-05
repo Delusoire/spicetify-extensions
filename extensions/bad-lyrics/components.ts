@@ -157,47 +157,9 @@ export abstract class SyncedScrolledContent extends LitElement {
     abstract animateContent(scaledProgress: number, depthToActiveAncestor: number): void
 }
 
-@customElement(AnimatedFiller.NAME)
-export class AnimatedFiller extends SyncedScrolledContent {
-    static readonly NAME = "animated-filler" as const
-
-    static styles = css`
-        :host {
-            cursor: pointer;
-            background-color: black;
-            -webkit-text-fill-color: transparent;
-            -webkit-background-clip: text;
-        }
-    `
-
-    @property({ type: Number })
-    duration = 0
-
-    private springsInitialized = false
-
-    private tryInitializeSprings(scaledProgress: number) {
-        if (this.springsInitialized) return
-        this.springsInitialized = true
-    }
-
-    animateContent(scaledProgress: number, depthToActiveAncestor: number) {
-        this.tryInitializeSprings(scaledProgress)
-        this.style.setProperty("--gradient-alpha", scaledProgress.toFixed(2))
-
-        this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${
-            scaledProgress * 100
-        }%, rgba(255,255,255,0) ${scaledProgress * 110}%)`
-    }
-
-    render() {
-        if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS) return
-        return html` <span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}>${this.content}</span> `
-    }
-}
-
 @customElement(AnimatedContent.NAME)
 export class AnimatedContent extends SyncedScrolledContent {
-    static readonly NAME = "animated-content" as const
+    static readonly NAME = "animated-content" as string
 
     static styles = css`
         :host {
@@ -234,10 +196,23 @@ export class AnimatedContent extends SyncedScrolledContent {
         }%, rgba(255,255,255,0) ${scaledProgress * 105}%)`
     }
 
-    render() {
+    render(): any {
         return html`<span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}
             >${this.content.replaceAll(" ", " ")}</span
         >`
+    }
+}
+
+@customElement(AnimatedFiller.NAME)
+export class AnimatedFiller extends AnimatedContent {
+    static readonly NAME = "animated-filler"
+
+    @property({ type: Number })
+    duration = 0
+
+    render() {
+        if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS) return
+        return super.render()
     }
 }
 

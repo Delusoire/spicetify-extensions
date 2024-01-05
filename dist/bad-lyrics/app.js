@@ -456,43 +456,6 @@ __decorateClass([
 __decorateClass([
   consume({ context: spotifyContainerCtx })
 ], SyncedScrolledContent.prototype, "spotifyContainer", 2);
-var AnimatedFiller = class extends SyncedScrolledContent {
-  constructor() {
-    super(...arguments);
-    this.duration = 0;
-    this.springsInitialized = false;
-  }
-  tryInitializeSprings(scaledProgress) {
-    if (this.springsInitialized)
-      return;
-    this.springsInitialized = true;
-  }
-  animateContent(scaledProgress, depthToActiveAncestor) {
-    this.tryInitializeSprings(scaledProgress);
-    this.style.setProperty("--gradient-alpha", scaledProgress.toFixed(2));
-    this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${scaledProgress * 100}%, rgba(255,255,255,0) ${scaledProgress * 110}%)`;
-  }
-  render() {
-    if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS)
-      return;
-    return html` <span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}>${this.content}</span> `;
-  }
-};
-AnimatedFiller.NAME = "animated-filler";
-AnimatedFiller.styles = css`
-        :host {
-            cursor: pointer;
-            background-color: black;
-            -webkit-text-fill-color: transparent;
-            -webkit-background-clip: text;
-        }
-    `;
-__decorateClass([
-  property({ type: Number })
-], AnimatedFiller.prototype, "duration", 2);
-AnimatedFiller = __decorateClass([
-  customElement(AnimatedFiller.NAME)
-], AnimatedFiller);
 var AnimatedContent = class extends SyncedScrolledContent {
   constructor() {
     super(...arguments);
@@ -536,6 +499,24 @@ __decorateClass([
 AnimatedContent = __decorateClass([
   customElement(AnimatedContent.NAME)
 ], AnimatedContent);
+var AnimatedFiller = class extends AnimatedContent {
+  constructor() {
+    super(...arguments);
+    this.duration = 0;
+  }
+  render() {
+    if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS)
+      return;
+    return super.render();
+  }
+};
+AnimatedFiller.NAME = "animated-filler";
+__decorateClass([
+  property({ type: Number })
+], AnimatedFiller.prototype, "duration", 2);
+AnimatedFiller = __decorateClass([
+  customElement(AnimatedFiller.NAME)
+], AnimatedFiller);
 var LyricsContainer = class extends LitElement {
   constructor() {
     super(...arguments);
