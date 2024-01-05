@@ -13,8 +13,6 @@ export class Song {
     readonly lyrics: Promise<Lyrics>
 
     isPaused: boolean
-    private timestamp = 0
-
     constructor(opts: {
         uri: string
         name: string
@@ -40,8 +38,4 @@ export class Song {
             durationS: this.duration / 1000,
         })
     }
-
-    getTimestamp = () => this.timestamp
-
-    setTimestamp = (timestampMs: number) => Spicetify.Player.seek(timestampMs)
 }

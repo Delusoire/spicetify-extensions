@@ -12,6 +12,7 @@ import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
 import { MonotoneNormalSpline } from "./splines/monotoneNormalSpline.ts"
 import { remapScalar } from "../../shared/math.ts"
+import { Spring } from "./pkgs/spring.ts"
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -67,6 +68,7 @@ export class AnimatedContentContainer extends LitElement {
             this.relativePartialWidths = partialWidths.map(pw => pw / totalWidth)
 
             const pairs = _.zip(childs.map(child => child.tss).concat(childs.at(-1)!.tes), this.relativePartialWidths)
+            // @ts-expect-error no types
             this.sharedRelativePartialWidthSpline = new MonotoneNormalSpline(pairs)
         }
 
@@ -189,9 +191,7 @@ export class AnimatedFiller extends SyncedScrolledContent {
 
     render() {
         if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS) return
-        return html`
-            <span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}>${this.content}</span>
-        `
+        return html` <span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}>${this.content}</span> `
     }
 }
 
@@ -205,30 +205,29 @@ export class AnimatedContent extends SyncedScrolledContent {
             background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
+            text-shadow: 0 0 var(--text-shadow-blur-radius, 0) rgba(255, 255, 255, var(--text-shadow-alpha, 0));
         }
     `
 
     @consume({ context: loadedLyricsTypeCtx })
     loadedLyricsType = LyricsType.NONE
 
-    private springsInitialized = false
-
-    private tryInitializeSprings(scaledProgress: number) {
-        if (this.springsInitialized) return
-        this.springsInitialized = true
-    }
+    opacitySpring = new Spring(0.5, 1, 1, PlayerW.scaledProgress)
 
     animateContent(scaledProgress: number, depthToActiveAncestor: number) {
-        this.tryInitializeSprings(scaledProgress)
-        this.style.setProperty("--gradient-alpha", (scaledProgress * 0.9 ** depthToActiveAncestor).toFixed(2))
+        const opacity = this.opacitySpring.compute(PlayerW.scaledProgress)
+        this.opacitySpring.setEquilibrium(0.9 ** depthToActiveAncestor)
+        this.style.setProperty("--gradient-alpha", opacity.toFixed(2))
+        this.style.setProperty("--text-shadow-blur-radius", `${(1 - scaledProgress) * 3}px`)
+        this.style.setProperty("--text-shadow-alpha", `${scaledProgress}px`)
 
         this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${
-            scaledProgress * 100
-        }%, rgba(255,255,255,0) ${scaledProgress * 110}%)`
+            scaledProgress * 95
+        }%, rgba(255,255,255,0) ${scaledProgress * 105}%)`
     }
 
     render() {
-        return html`<span role="button" @click=${() => PlayerW.GetSong()?.setTimestamp(this.tss)}
+        return html`<span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}
             >${this.content.replaceAll(" ", " ")}</span
         >`
     }

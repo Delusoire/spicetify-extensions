@@ -15,7 +15,7 @@ export const PlayerW = new (class {
     isPausedChangedSubject = new Subject<boolean>()
     scaledProgressChangedSubject = new Subject<number>()
 
-    GetSong = () => this.Song
+    getSong = () => this.Song
 
     constructor() {
         onSongChanged(state => {
@@ -88,4 +88,6 @@ export const PlayerW = new (class {
 
         this.triggerTimestampSync()
     }
+
+    setTimestamp = (timestamp: number) => Spicetify.Player.seek(timestamp) // ms or percent
 })()
