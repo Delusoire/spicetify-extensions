@@ -466,7 +466,19 @@ var AnimatedContent = class extends SyncedScrolledContent {
       [0.2, 0.3],
       [0.5, 0.55],
       [0.7, 0.8],
-      [1, 1]
+      [1, 1],
+      [1.2, 0.8],
+      [1.5, 0.7]
+    ]);
+    this.glowAlphaInterpolator = new MonotoneNormalSpline([
+      [0, 0],
+      [0.1, 0.2],
+      [0.2, 0.35],
+      [0.5, 0.65],
+      [0.7, 0.9],
+      [1, 1],
+      [1.2, 0.6],
+      [1.5, 0]
     ]);
   }
   animateContent(scaledProgress, depthToActiveAncestor) {
@@ -475,7 +487,7 @@ var AnimatedContent = class extends SyncedScrolledContent {
     this.sp = scaledProgress;
     const nextGradientOpacity = this.opacityInterpolator.at(scaledProgress) * 0.9 ** depthToActiveAncestor;
     const nextGlowRadius = `${(1 - scaledProgress) * 3}px`;
-    const nextGlowAlpha = scaledProgress.toFixed(3);
+    const nextGlowAlpha = this.glowAlphaInterpolator.at(scaledProgress);
     const nextYOffset = `-${this.offsetHeight * 0.07 * scaledProgress}px`;
     const nextGradientStart = `${scaledProgress * 95}%`;
     const nextGradientEnd = `${scaledProgress * 105}%`;
