@@ -517,9 +517,8 @@ var AnimatedContent = class extends SyncedScrolledContent {
     this.style.scale = nextScale;
   }
   render() {
-    return html`<span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}
-            >${this.content.replaceAll(" ", "\xA0")}</span
-        >`;
+    const content = this.loadedLyricsType === 3 /* WORD_SYNCED */ ? this.content.replaceAll(" ", "\xA0") : this.content;
+    return html`<span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}>${content}</span>`;
   }
 };
 AnimatedContent.NAME = "animated-content";

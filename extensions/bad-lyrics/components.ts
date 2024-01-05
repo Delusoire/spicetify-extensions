@@ -243,9 +243,9 @@ export class AnimatedContent extends SyncedScrolledContent {
     }
 
     render(): any {
-        return html`<span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}
-            >${this.content.replaceAll(" ", " ")}</span
-        >`
+        const content =
+            this.loadedLyricsType === LyricsType.WORD_SYNCED ? this.content.replaceAll(" ", " ") : this.content
+        return html`<span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}>${content}</span>`
     }
 }
 
