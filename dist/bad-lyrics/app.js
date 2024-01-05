@@ -579,9 +579,9 @@ var AnimatedContent = class extends SyncedScrolledContent {
   animateContent(scaledProgress, depthToActiveAncestor) {
     const opacity = this.opacitySpring.compute(PlayerW.scaledProgress);
     this.opacitySpring.setEquilibrium(0.9 ** depthToActiveAncestor);
-    this.style.setProperty("--gradient-alpha", opacity.toFixed(2));
+    this.style.setProperty("--gradient-alpha", opacity.toFixed(3));
     this.style.setProperty("--text-shadow-blur-radius", `${(1 - scaledProgress) * 3}px`);
-    this.style.setProperty("--text-shadow-alpha", `${scaledProgress}px`);
+    this.style.setProperty("--text-shadow-alpha", scaledProgress.toFixed(3));
     this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${scaledProgress * 95}%, rgba(255,255,255,0) ${scaledProgress * 105}%)`;
   }
   render() {
