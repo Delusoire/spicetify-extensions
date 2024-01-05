@@ -75,14 +75,10 @@ export class AnimatedContentContainer extends LitElement {
             const progress =
                 child instanceof AnimatedContentContainer
                     ? rsp
-                    : _.clamp(
-                          remapScalar(
-                              this.relativePartialWidths![i],
-                              this.relativePartialWidths![i + 1],
-                              this.sharedRelativePartialWidthSpline!.at(rsp),
-                          ),
-                          0,
-                          1,
+                    : remapScalar(
+                          this.relativePartialWidths![i],
+                          this.relativePartialWidths![i + 1],
+                          this.sharedRelativePartialWidthSpline!.at(rsp),
                       )
             index = child.updateProgress(
                 progress,

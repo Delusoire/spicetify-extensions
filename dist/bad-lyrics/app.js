@@ -356,14 +356,10 @@ var AnimatedContentContainer = class extends LitElement {
       this.sharedRelativePartialWidthSpline = new MonotoneNormalSpline(pairs);
     }
     childs.forEach((child, i) => {
-      const progress = child instanceof AnimatedContentContainer ? rsp : _.clamp(
-        remapScalar(
-          this.relativePartialWidths[i],
-          this.relativePartialWidths[i + 1],
-          this.sharedRelativePartialWidthSpline.at(rsp)
-        ),
-        0,
-        1
+      const progress = child instanceof AnimatedContentContainer ? rsp : remapScalar(
+        this.relativePartialWidths[i],
+        this.relativePartialWidths[i + 1],
+        this.sharedRelativePartialWidthSpline.at(rsp)
       );
       index = child.updateProgress(
         progress,
