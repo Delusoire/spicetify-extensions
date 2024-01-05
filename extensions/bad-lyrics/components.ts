@@ -191,6 +191,17 @@ export class AnimatedContent extends SyncedScrolledContent {
         [1.2, 0.8],
         [1.5, 0.7],
     ])
+    glowRadiusInterpolator = new MonotoneNormalSpline([
+        [0, 100],
+        [0.2, 7],
+        [0.4, 5],
+        [0.6, 3],
+        [0.7, 2],
+        [0.9, 1],
+        [1, 3],
+        [1.1, 7],
+        [1.25, 100],
+    ])
     glowAlphaInterpolator = new MonotoneNormalSpline([
         [0, 0],
         [0.1, 0.2],
