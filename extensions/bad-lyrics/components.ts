@@ -239,7 +239,7 @@ export class AnimatedContent extends SyncedScrolledContent {
         ).toFixed(5)
         const nextGlowRadius = `${(1 - scaledProgress) * 3}px`
         const nextGlowAlpha = this.glowAlphaInterpolator.at(scaledProgress)
-        const nextYOffset = `-${this.offsetHeight * 0.07 * scaledProgress}px`
+        const nextYOffset = `-${this.offsetHeight * 0.12 * scaledProgress}px`
         const nextGradientStart = `${scaledProgress * 95}%`
         const nextGradientEnd = `${scaledProgress * 105}%`
         const nextScale = this.scaleInterpolator.at(scaledProgress).toFixed(5)
