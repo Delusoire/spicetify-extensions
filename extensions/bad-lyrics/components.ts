@@ -227,7 +227,7 @@ export class AnimatedContent extends SyncedScrolledContent {
         this.style.setProperty("--glow-radius", `${(1 - scaledProgress) * 3}px`)
         this.style.setProperty("--glow-alpha", scaledProgress.toFixed(3))
 
-        this.style.transform = `translateY(-${this.offsetHeight * 0.2 * scaledProgress}px)`
+        this.style.transform = `translateY(-${this.offsetHeight * 0.12 * scaledProgress}px)`
 
         this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${
             scaledProgress * 95
