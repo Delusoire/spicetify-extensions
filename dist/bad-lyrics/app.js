@@ -436,7 +436,7 @@ var SyncedScrolledContent = class extends LitElement {
         }
       }
     }
-    const csp = _.clamp(scaledProgress, -0.5, 1.5);
+    const csp = _.clamp(scaledProgress, AnimatedContent.MIN_SCALED_PROGRESS, AnimatedContent.MAX_SCALED_PROGRESS);
     this.animateContent(csp, depthToActiveAncestor);
     return index + 1;
   }
@@ -470,14 +470,21 @@ var AnimatedContent = class extends SyncedScrolledContent {
     ]);
   }
   animateContent(scaledProgress, depthToActiveAncestor) {
-    if (depthToActiveAncestor === 0) {
-      const opacity = this.opacityInterpolator.at(scaledProgress) * 0.9 ** depthToActiveAncestor;
-      this.style.setProperty("--gradient-alpha", opacity.toFixed(3));
-      this.style.setProperty("--glow-radius", `${(1 - scaledProgress) * 3}px`);
-      this.style.setProperty("--glow-alpha", scaledProgress.toFixed(3));
-      this.style.transform = `translateY(-${this.offsetHeight * 0.12 * scaledProgress}px)`;
-      this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${scaledProgress * 95}%, rgba(255,255,255,0) ${scaledProgress * 105}%)`;
-    }
+    if (this.sp === scaledProgress)
+      return;
+    this.sp = scaledProgress;
+    const nextGradientOpacity = this.opacityInterpolator.at(scaledProgress) * 0.9 ** depthToActiveAncestor;
+    const nextGlowRadius = `${(1 - scaledProgress) * 3}px`;
+    const nextGlowAlpha = scaledProgress.toFixed(3);
+    const nextYOffset = `-${this.offsetHeight * 0.12 * scaledProgress}px`;
+    const nextGradientStart = `${scaledProgress * 95}%`;
+    const nextGradientEnd = `${scaledProgress * 105}%`;
+    this.style.setProperty("--gradient-alpha", nextGradientOpacity.toFixed(3));
+    this.style.setProperty("--glow-radius", nextGlowRadius);
+    this.style.setProperty("--glow-alpha", nextGlowAlpha);
+    this.style.setProperty("--gradient-start", nextGradientStart);
+    this.style.setProperty("--gradient-end", nextGradientEnd);
+    this.style.transform = `translateY(${nextYOffset})`;
   }
   render() {
     return html`<span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}
@@ -486,6 +493,8 @@ var AnimatedContent = class extends SyncedScrolledContent {
   }
 };
 AnimatedContent.NAME = "animated-content";
+AnimatedContent.MIN_SCALED_PROGRESS = -0.5;
+AnimatedContent.MAX_SCALED_PROGRESS = 1.5;
 AnimatedContent.styles = css`
         :host {
             cursor: pointer;
@@ -493,6 +502,11 @@ AnimatedContent.styles = css`
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
             text-shadow: 0 0 var(--glow-radius, 0) rgba(255, 255, 255, var(--glow-alpha, 0));
+            background-image: linear-gradient(
+                var(--gradient-angle),
+                rgba(255, 255, 255, var(--gradient-alpha)) var(--gradient-start),
+                rgba(255, 255, 255, 0) var(--gradient-end)
+            );
         }
     `;
 __decorateClass([
@@ -543,7 +557,7 @@ var LyricsContainer = class extends LitElement {
   updateProgress(progress) {
     if (this.loadedLyricsType === 0 /* NONE */ || this.loadedLyricsType === 1 /* NOT_SYNCED */)
       return;
-    this.firstContainer.updateProgress(progress, 0, 0);
+    this.firstContainer?.updateProgress(progress, 0, 0);
   }
   firstUpdated(changedProperties) {
     this.spotifyContainer?.addEventListener("scroll", (e) => {
