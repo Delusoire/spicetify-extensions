@@ -205,21 +205,29 @@ export class AnimatedContent extends SyncedScrolledContent {
             background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
-            text-shadow: 0 0 var(--text-shadow-blur-radius, 0) rgba(255, 255, 255, var(--text-shadow-alpha, 0));
+            text-shadow: 0 0 var(--glow-radius, 0) rgba(255, 255, 255, var(--glow-alpha, 0));
         }
     `
 
     @consume({ context: loadedLyricsTypeCtx })
     loadedLyricsType = LyricsType.NONE
 
-    opacitySpring = new Spring(0.5, 1, 1, PlayerW.scaledProgress)
+    opacityInterpolator = new MonotoneNormalSpline([
+        [0, 0],
+        [0.1, 0.1],
+        [0.2, 0.3],
+        [0.5, 0.55],
+        [0.7, 0.8],
+        [1, 1],
+    ])
 
     animateContent(scaledProgress: number, depthToActiveAncestor: number) {
-        const opacity = this.opacitySpring.compute(PlayerW.scaledProgress)
-        this.opacitySpring.setEquilibrium(0.9 ** depthToActiveAncestor)
+        const opacity = this.opacityInterpolator.at(scaledProgress) * 0.9 ** depthToActiveAncestor
         this.style.setProperty("--gradient-alpha", opacity.toFixed(3))
-        this.style.setProperty("--text-shadow-blur-radius", `${(1 - scaledProgress) * 3}px`)
-        this.style.setProperty("--text-shadow-alpha", scaledProgress.toFixed(3))
+        this.style.setProperty("--glow-radius", `${(1 - scaledProgress) * 3}px`)
+        this.style.setProperty("--glow-alpha", scaledProgress.toFixed(3))
+
+        this.style.transform = `translateY(-${this.offsetHeight * 0.2 * scaledProgress}px)`
 
         this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${
             scaledProgress * 95

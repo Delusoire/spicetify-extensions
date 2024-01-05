@@ -330,83 +330,6 @@ var MonotoneNormalSpline = class extends MonotoneCubicHermitInterpolation {
 // shared/math.ts
 var remapScalar = (s, e, x) => (x - s) / (e - s);
 
-// extensions/bad-lyrics/pkgs/spring.ts
-var TAU = Math.PI * 2;
-var SLEEPING_EPSILON = 1e-7;
-var Spring = class {
-  constructor(p, dampingRatio, frequency, lastUpdateTime = Date.now()) {
-    this.p = p;
-    this.dampingRatio = dampingRatio;
-    this.lastUpdateTime = lastUpdateTime;
-    this.inEquilibrium = true;
-    this.isInEquilibrium = () => this.inEquilibrium;
-    if (dampingRatio * frequency < 0) {
-      throw new Error("Spring does not converge.");
-    }
-    this.v = 0;
-    this.p_e = p;
-    this.W0 = frequency * TAU;
-  }
-  // We allow consumers to specify their own timescales
-  compute(time = Date.now()) {
-    const current = this.inEquilibrium ? this.p : this.solve(time - this.lastUpdateTime);
-    this.lastUpdateTime = time;
-    return current;
-  }
-  solve(dt) {
-    const offset = this.p - this.p_e;
-    const dp = this.v * dt;
-    const A = this.dampingRatio * this.W0;
-    const Adt = A * dt;
-    const decay = Math.exp(-Adt);
-    let nextP, nextV;
-    if (this.dampingRatio == 1) {
-      nextP = this.p_e + (offset * (1 + Adt) + dp) * decay;
-      nextV = (this.v * (1 - Adt) - offset * (A * Adt)) * decay;
-    } else if (this.dampingRatio < 1) {
-      const W_W0 = Math.sqrt(1 - this.dampingRatio * this.dampingRatio);
-      const W = this.W0 * W_W0;
-      const i = Math.cos(W * dt);
-      const j = Math.sin(W * dt);
-      nextP = this.p_e + (offset * i + (dp + Adt * offset) * (j / (W * dt))) * decay;
-      nextV = (this.v * (i - A / W * j) - offset * j * (this.W0 / W_W0)) * decay;
-    } else if (this.dampingRatio > 1) {
-      const W_W0 = Math.sqrt(this.dampingRatio ** 2 - 1);
-      const W = this.W0 * W_W0;
-      const r_average = -this.W0 * this.dampingRatio;
-      const r_1 = r_average + W;
-      const r_2 = r_average - W;
-      const c_2 = (offset * r_1 - this.v) / (r_1 - r_2);
-      const c_1 = offset - c_2;
-      const e_1 = c_1 * Math.exp(r_1 * dt);
-      const e_2 = c_2 * Math.exp(r_2 * dt);
-      nextP = this.p_e + e_1 + e_2;
-      nextV = r_1 * e_1 + r_2 * e_2;
-    } else {
-      throw "Solar flare detected.";
-    }
-    if (Math.abs(nextV) > SLEEPING_EPSILON) {
-      this.p = nextP;
-      this.v = nextV;
-    } else {
-      this.reset(this.p_e);
-    }
-    return nextP;
-  }
-  setEquilibrium(position) {
-    if (this.p_e != position) {
-      this.p_e = position;
-      this.inEquilibrium = false;
-    }
-    return this.p_e;
-  }
-  reset(position) {
-    this.v = 0;
-    this.p = this.p_e = position;
-    this.inEquilibrium = true;
-  }
-};
-
 // extensions/bad-lyrics/components.ts
 var scrollTimeoutCtx = createContext("scrollTimeout");
 var spotifyContainerCtx = createContext("spotifyContainer");
@@ -574,14 +497,21 @@ var AnimatedContent = class extends SyncedScrolledContent {
   constructor() {
     super(...arguments);
     this.loadedLyricsType = 0 /* NONE */;
-    this.opacitySpring = new Spring(0.5, 1, 1, PlayerW.scaledProgress);
+    this.opacityInterpolator = new MonotoneNormalSpline([
+      [0, 0],
+      [0.1, 0.1],
+      [0.2, 0.3],
+      [0.5, 0.55],
+      [0.7, 0.8],
+      [1, 1]
+    ]);
   }
   animateContent(scaledProgress, depthToActiveAncestor) {
-    const opacity = this.opacitySpring.compute(PlayerW.scaledProgress);
-    this.opacitySpring.setEquilibrium(0.9 ** depthToActiveAncestor);
+    const opacity = this.opacityInterpolator.at(scaledProgress) * 0.9 ** depthToActiveAncestor;
     this.style.setProperty("--gradient-alpha", opacity.toFixed(3));
-    this.style.setProperty("--text-shadow-blur-radius", `${(1 - scaledProgress) * 3}px`);
-    this.style.setProperty("--text-shadow-alpha", scaledProgress.toFixed(3));
+    this.style.setProperty("--glow-radius", `${(1 - scaledProgress) * 3}px`);
+    this.style.setProperty("--glow-alpha", scaledProgress.toFixed(3));
+    this.style.transform = `translateY(-${this.offsetHeight * 0.2 * scaledProgress}px)`;
     this.style.backgroundImage = `linear-gradient(var(--gradient-angle), rgba(255,255,255,var(--gradient-alpha)) ${scaledProgress * 95}%, rgba(255,255,255,0) ${scaledProgress * 105}%)`;
   }
   render() {
@@ -597,7 +527,7 @@ AnimatedContent.styles = css`
             background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
-            text-shadow: 0 0 var(--text-shadow-blur-radius, 0) rgba(255, 255, 255, var(--text-shadow-alpha, 0));
+            text-shadow: 0 0 var(--glow-radius, 0) rgba(255, 255, 255, var(--glow-alpha, 0));
         }
     `;
 __decorateClass([
