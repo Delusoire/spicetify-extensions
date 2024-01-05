@@ -328,6 +328,8 @@ var MonotoneNormalSpline = class extends MonotoneCubicHermitInterpolation {
 };
 
 // shared/math.ts
+var scalarLerp = (s, e, t) => s + (e - s) * t;
+var vectorLerp = (u, v, t) => _.zip(u, v).map(([uxi, vxi]) => scalarLerp(uxi, vxi, t));
 var remapScalar = (s, e, x) => (x - s) / (e - s);
 
 // extensions/bad-lyrics/components.ts
@@ -352,15 +354,19 @@ var AnimatedContentContainer = class extends LitElement {
       );
       const totalWidth = partialWidths.at(-1);
       this.relativePartialWidths = partialWidths.map((pw) => pw / totalWidth);
-      const pairs = _.zip(childs.map((child) => child.tss).concat(childs.at(-1).tes), this.relativePartialWidths);
-      this.sharedRelativePartialWidthSpline = new MonotoneNormalSpline(pairs);
-    }
-    childs.forEach((child, i) => {
-      const progress = child instanceof AnimatedContentContainer ? rsp : remapScalar(
-        this.relativePartialWidths[i],
-        this.relativePartialWidths[i + 1],
-        this.sharedRelativePartialWidthSpline.at(rsp)
+      const pairs = _.zip(
+        childs.map((child) => child.tss).concat(childs.at(-1).tes),
+        this.relativePartialWidths
       );
+      const first = vectorLerp(pairs[0], pairs[1], -1);
+      const last = vectorLerp(pairs.at(-2), pairs.at(-1), 2);
+      this.sharedRelativePartialWidthSpline = new MonotoneNormalSpline([first, ...pairs, last]);
+    }
+    if (this.relativePartialWidths.length < 2)
+      return index;
+    const srpw = this.sharedRelativePartialWidthSpline.at(rsp);
+    childs.forEach((child, i) => {
+      const progress = child instanceof AnimatedContentContainer ? rsp : remapScalar(this.relativePartialWidths[i], this.relativePartialWidths[i + 1], srpw);
       index = child.updateProgress(
         progress,
         index,
@@ -479,7 +485,7 @@ var AnimatedContent = class extends SyncedScrolledContent {
     this.scaleInterpolator = new MonotoneNormalSpline([
       [-0.5, 1],
       [-0.2, 0.97],
-      [-0.1, -0.93],
+      [-0.1, 0.93],
       [0, 0.88],
       [0.1, 0.9],
       [0.2, 1],
