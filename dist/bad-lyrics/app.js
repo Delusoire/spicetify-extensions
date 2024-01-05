@@ -480,23 +480,39 @@ var AnimatedContent = class extends SyncedScrolledContent {
       [1.2, 0.6],
       [1.5, 0]
     ]);
+    this.scaleInterpolator = new MonotoneNormalSpline([
+      [-0.5, 1],
+      [-0.2, 0.97],
+      [-0.1, -0.93],
+      [0, 0.88],
+      [0.1, 0.9],
+      [0.2, 1],
+      [0.5, 1.12],
+      [0.7, 1.24],
+      [0.9, 1.2],
+      [1, 1.1],
+      [1.2, 1],
+      [1.5, 0.99]
+    ]);
   }
   animateContent(scaledProgress, depthToActiveAncestor) {
     if (this.sp === scaledProgress)
       return;
     this.sp = scaledProgress;
-    const nextGradientOpacity = this.opacityInterpolator.at(scaledProgress) * 0.9 ** depthToActiveAncestor;
+    const nextGradientOpacity = (this.opacityInterpolator.at(scaledProgress) * 0.9 ** depthToActiveAncestor).toFixed(5);
     const nextGlowRadius = `${(1 - scaledProgress) * 3}px`;
     const nextGlowAlpha = this.glowAlphaInterpolator.at(scaledProgress);
     const nextYOffset = `-${this.offsetHeight * 0.07 * scaledProgress}px`;
     const nextGradientStart = `${scaledProgress * 95}%`;
     const nextGradientEnd = `${scaledProgress * 105}%`;
-    this.style.setProperty("--gradient-alpha", nextGradientOpacity.toFixed(3));
+    const nextScale = this.scaleInterpolator.at(scaledProgress).toFixed(5);
+    this.style.setProperty("--gradient-alpha", nextGradientOpacity);
     this.style.setProperty("--glow-radius", nextGlowRadius);
     this.style.setProperty("--glow-alpha", nextGlowAlpha);
     this.style.setProperty("--gradient-start", nextGradientStart);
     this.style.setProperty("--gradient-end", nextGradientEnd);
     this.style.transform = `translateY(${nextYOffset})`;
+    this.style.scale = nextScale;
   }
   render() {
     return html`<span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}
