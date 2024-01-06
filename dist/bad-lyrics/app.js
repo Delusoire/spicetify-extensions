@@ -619,7 +619,7 @@ var LyricsWrapper = class extends LitElement2 {
       args: () => [this.song]
     });
     this.scrollTimeout = 0;
-    this.spotifyContainer = document.querySelector(query2);
+    this.spotifyContainer = document.querySelector(query2) ?? void 0;
   }
   updateProgress(progress) {
     if (this.loadedLyricsType === void 0 || this.loadedLyricsType === 0 /* NOT_SYNCED */)
@@ -662,6 +662,7 @@ var LyricsWrapper = class extends LitElement2 {
                                                         >${map(
                 w.content.split(""),
                 (c) => html2`<animated-text
+                                                                    tss=${w.tss}
                                                                     content=${c === " " ? "\xA0" : c}
                                                                 ></animated-text>`
               )}</detail-timeline-provider

@@ -218,7 +218,7 @@ export class LyricsWrapper extends LitElement {
 
     constructor(query: string) {
         super()
-        this.spotifyContainer = document.querySelector<HTMLElement>(query)
+        this.spotifyContainer = document.querySelector<HTMLElement>(query) ?? undefined
     }
 
     static styles = css`
@@ -260,7 +260,7 @@ export class LyricsWrapper extends LitElement {
     scrollTimeout = 0
 
     @provide({ context: spotifyContainerCtx })
-    spotifyContainer
+    spotifyContainer?: HTMLElement
 
     firstUpdated(changedProperties: PropertyValueMap<this>) {
         this.spotifyContainer?.addEventListener("scroll", e => {
@@ -306,6 +306,7 @@ export class LyricsWrapper extends LitElement {
                                                             w.content.split(""),
                                                             c =>
                                                                 html`<animated-text
+                                                                    tss=${w.tss}
                                                                     content=${c === " " ? " " : c}
                                                                 ></animated-text>`,
                                                         )}</detail-timeline-provider
