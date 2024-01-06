@@ -126,6 +126,7 @@ interface Spline<A> {
     at(t: number): A
 }
 
+@customElement(DetailTimelineProvider.NAME)
 export class DetailTimelineProvider extends SyncedContainerMixin(SyncedMixin(LitElement)) {
     static readonly NAME = "detail-timeline-provider"
 

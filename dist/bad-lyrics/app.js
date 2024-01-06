@@ -530,17 +530,6 @@ AnimatedText = __decorateClass([
   customElement(AnimatedText.NAME)
 ], AnimatedText);
 var DetailTimelineProvider = class extends SyncedContainerMixin(SyncedMixin(LitElement2)) {
-  static {
-    this.NAME = "detail-timeline-provider";
-  }
-  static {
-    this.styles = css`
-        :host {
-            display: flex;
-            flex-wrap: wrap;
-        }
-    `;
-  }
   computeChildProgress(rp, child) {
     if (!this.intermediatePositions) {
       const childs = Array.from(this.childs);
@@ -554,6 +543,16 @@ var DetailTimelineProvider = class extends SyncedContainerMixin(SyncedMixin(LitE
     return remapScalar(this.intermediatePositions[child], this.intermediatePositions[child + 1], rp);
   }
 };
+DetailTimelineProvider.NAME = "detail-timeline-provider";
+DetailTimelineProvider.styles = css`
+        :host {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    `;
+DetailTimelineProvider = __decorateClass([
+  customElement(DetailTimelineProvider.NAME)
+], DetailTimelineProvider);
 var TimelineProvider = class extends SyncedContainerMixin(SyncedMixin(LitElement2)) {
   computeIntermediatePosition(rsp) {
     if (!this.timelineSpline) {
