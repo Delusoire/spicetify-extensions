@@ -118,7 +118,7 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
         this.style.setProperty("--gradient-end", nextGradientEnd)
 
         if (this.split) {
-            if (!this.timelineSpline) {
+            if (!this.intermediatePositions) {
                 const childs = Array.from(this.cs)
                 const partialWidths = childs.reduce(
                     (partialWidths, child) => (

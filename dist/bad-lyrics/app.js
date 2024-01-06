@@ -492,7 +492,7 @@ var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElem
     this.style.setProperty("--gradient-start", nextGradientStart);
     this.style.setProperty("--gradient-end", nextGradientEnd);
     if (this.split) {
-      if (!this.timelineSpline) {
+      if (!this.intermediatePositions) {
         const childs = Array.from(this.cs);
         const partialWidths = childs.reduce(
           (partialWidths2, child) => (partialWidths2.push(partialWidths2.at(-1) + child.offsetWidth), partialWidths2),
