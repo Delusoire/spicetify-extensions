@@ -96,18 +96,8 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
         }
     `
 
-    opacitySpring = new Spring(0, 100, 5)
-
-    springsInEquilibrium() {
-        return this.opacitySpring.isInEquilibrium()
-    }
-
-    updateSprings() {
-        this.opacitySpring.setEquilibrium(0.9 ** this.dtaa)
-    }
-
     animateContent() {
-        const nextGradientAlpha = (opacityInterpolator.at(this.csp) * this.opacitySpring.compute()).toFixed(5)
+        const nextGradientAlpha = opacityInterpolator.at(this.csp).toFixed(5)
         const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`
         const nextGlowAlpha = glowAlphaInterpolator.at(this.csp)
         const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`
