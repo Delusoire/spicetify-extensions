@@ -260,7 +260,7 @@ var SettingsSection = class _SettingsSection {
         get: (target, prop) => _SettingsSection.getFieldValue(this.getId(prop.toString())),
         set: (target, prop, newValue) => {
           const id = this.getId(prop.toString());
-          if (SettingSection.getFieldValue(id) === newValue)
+          if (_SettingsSection.getFieldValue(id) === newValue)
             return false;
           _SettingsSection.setFieldValue(id, newValue);
           return true;
