@@ -602,8 +602,8 @@ LyricsContainer = __decorateClass([
   customElement(LyricsContainer.NAME)
 ], LyricsContainer);
 var LyricsWrapper = class extends LitElement2 {
-  constructor() {
-    super(...arguments);
+  constructor(query2) {
+    super();
     this.song = null;
     this.updateSong = (song) => {
       this.song = song;
@@ -619,7 +619,7 @@ var LyricsWrapper = class extends LitElement2 {
       args: () => [this.song]
     });
     this.scrollTimeout = 0;
-    this.spotifyContainer = document.querySelector("aside div.main-nowPlayingView-lyricsContent.injected") ?? void 0;
+    this.spotifyContainer = document.querySelector(query2);
   }
   updateProgress(progress) {
     if (this.loadedLyricsType === void 0 || this.loadedLyricsType === 0 /* NOT_SYNCED */)
@@ -721,18 +721,22 @@ LyricsWrapper = __decorateClass([
 ], LyricsWrapper);
 
 // extensions/bad-lyrics/app.ts
-var injectNPVLyrics = () => {
-  const lyricsContainer = document.querySelector(".main-nowPlayingView-lyricsContent");
+var injectLyrics = (selector) => () => {
+  const lyricsContainer = document.querySelector(selector);
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))
     return;
   lyricsContainer.classList.add("injected");
   const lyricsContainerClone = lyricsContainer.cloneNode(false);
   lyricsContainer.replaceWith(lyricsContainerClone);
-  const ourLyricsContainer = new LyricsWrapper();
+  const ourLyricsContainer = new LyricsWrapper(selector);
   ourLyricsContainer.song = PlayerW.getSong() ?? null;
   PlayerW.songChangedSubject.subscribe((song) => ourLyricsContainer.updateSong(song ?? null));
   PlayerW.scaledProgressChangedSubject.subscribe((progress) => ourLyricsContainer.updateProgress(progress));
   render(ourLyricsContainer, lyricsContainerClone);
 };
+var injectNPVLyrics = injectLyrics("aside .main-nowPlayingView-lyricsContent");
+var injectCinemaLyrics = injectLyrics("main .lyrics-lyrics-contentWrapper");
 injectNPVLyrics();
+injectCinemaLyrics();
 new PermanentMutationObserver("aside", injectNPVLyrics);
+new PermanentMutationObserver("main", injectCinemaLyrics);

@@ -1,4 +1,4 @@
-import { consume, provide } from "https://esm.sh/@lit/context"
+import { provide } from "https://esm.sh/@lit/context"
 import { Task } from "https://esm.sh/@lit/task"
 import { LitElement, css, html } from "https://esm.sh/lit"
 import { customElement, property, query, state } from "https://esm.sh/lit/decorators.js"
@@ -15,7 +15,6 @@ import { PlayerW } from "../utils/PlayerW.ts"
 import { Song } from "../utils/Song.ts"
 import { loadedLyricsTypeCtx, scrollTimeoutCtx, spotifyContainerCtx } from "./contexts.ts"
 import { AnimatedMixin, ScrolledMixin, SyncedContainerMixin, SyncedMixin } from "./mixins.ts"
-import { Spring } from "../pkgs/spring.ts"
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -217,6 +216,11 @@ export class LyricsWrapper extends LitElement {
     static readonly NAME = "lyrics-wrapper"
     static readonly SCROLL_TIMEOUT_MS = 500
 
+    constructor(query: string) {
+        super()
+        this.spotifyContainer = document.querySelector<HTMLElement>(query)
+    }
+
     static styles = css`
         :host > animated-content-container {
             display: unset;
@@ -256,8 +260,7 @@ export class LyricsWrapper extends LitElement {
     scrollTimeout = 0
 
     @provide({ context: spotifyContainerCtx })
-    spotifyContainer =
-        document.querySelector<HTMLElement>("aside div.main-nowPlayingView-lyricsContent.injected") ?? undefined
+    spotifyContainer
 
     firstUpdated(changedProperties: PropertyValueMap<this>) {
         this.spotifyContainer?.addEventListener("scroll", e => {
