@@ -736,7 +736,7 @@ var injectLyrics = (selector) => () => {
   render(ourLyricsContainer, lyricsContainerClone);
 };
 var injectNPVLyrics = injectLyrics("aside .main-nowPlayingView-lyricsContent");
-var injectCinemaLyrics = injectLyrics("main .lyrics-lyrics-contentWrapper");
+var injectCinemaLyrics = injectLyrics(".lyrics-cinema .lyrics-lyrics-contentWrapper");
 injectNPVLyrics();
 injectCinemaLyrics();
 new PermanentMutationObserver("aside", injectNPVLyrics);

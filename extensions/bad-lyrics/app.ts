@@ -20,7 +20,7 @@ const injectLyrics = (selector: string) => () => {
 }
 
 const injectNPVLyrics = injectLyrics("aside .main-nowPlayingView-lyricsContent")
-const injectCinemaLyrics = injectLyrics("main .lyrics-lyrics-contentWrapper")
+const injectCinemaLyrics = injectLyrics(".lyrics-cinema .lyrics-lyrics-contentWrapper")
 injectNPVLyrics()
 injectCinemaLyrics()
 new PermanentMutationObserver("aside", injectNPVLyrics)
