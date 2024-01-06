@@ -521,16 +521,19 @@ var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElem
     PlayerW.setTimestamp(this.tss);
   }
   render() {
-    return html`<div role="button" , @click=${this.onClick}>
+    return html`
             ${when(
       this.split,
       () => {
         const content = this.content.split("");
-        return html`${map(content, (c) => html`<span>${c === " " ? "\xA0" : c}</span>`)}`;
+        return html`${map(
+          content,
+          (c) => html`<span role="button" @click=${this.onClick}>${c === " " ? "\xA0" : c}</span>`
+        )}`;
       },
-      () => html`<span>${this.content}</span>`
+      () => html`<span role="button" @click=${this.onClick}>${this.content}</span>`
     )}
-        </div>`;
+        `;
   }
 };
 AnimatedText.NAME = "animated-text";

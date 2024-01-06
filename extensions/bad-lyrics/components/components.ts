@@ -155,16 +155,19 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
     }
 
     render() {
-        return html`<div role="button" , @click=${this.onClick}>
+        return html`
             ${when(
                 this.split,
                 () => {
                     const content = this.content.split("")
-                    return html`${map(content, c => html`<span>${c === " " ? " " : c}</span>`)}`
+                    return html`${map(
+                        content,
+                        c => html`<span role="button" @click=${this.onClick}>${c === " " ? " " : c}</span>`,
+                    )}`
                 },
-                () => html`<span>${this.content}</span>`,
+                () => html`<span role="button" @click=${this.onClick}>${this.content}</span>`,
             )}
-        </div>`
+        `
     }
 }
 
