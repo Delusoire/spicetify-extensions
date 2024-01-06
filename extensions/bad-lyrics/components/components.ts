@@ -2,9 +2,9 @@ import { consume, provide } from "https://esm.sh/@lit/context"
 import { Task } from "https://esm.sh/@lit/task"
 // import { hermite } from "https://esm.sh/@thi.ng/ramp"
 import { LitElement, css, html } from "https://esm.sh/lit"
-import { customElement, property, queryAll, queryAssignedElements, state } from "https://esm.sh/lit/decorators.js"
-import { map } from "https://esm.sh/lit/directives/map.js"
+import { customElement, property, query, state } from "https://esm.sh/lit/decorators.js"
 import { choose } from "https://esm.sh/lit/directives/choose.js"
+import { map } from "https://esm.sh/lit/directives/map.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
 
 import { _ } from "../../../shared/deps.ts"
@@ -13,11 +13,12 @@ import { MonotoneNormalSpline } from "../splines/monotoneNormalSpline.ts"
 import { LyricsType } from "../utils/LyricsProvider.ts"
 import { PlayerW } from "../utils/PlayerW.ts"
 import { Song } from "../utils/Song.ts"
-import { AnimatedMixin, ScrolledMixin, SyncedMixin } from "./mixins.ts"
 import { loadedLyricsTypeCtx, scrollTimeoutCtx, spotifyContainerCtx } from "./contexts.ts"
+import { AnimatedMixin, ScrolledMixin, SyncedContainerMixin, SyncedMixin } from "./mixins.ts"
 
 declare global {
     interface HTMLElementTagNameMap {
+        ["lyrics-wrapper"]: LyricsWrapper
         ["lyrics-container"]: LyricsContainer
         ["timeline-provider"]: TimelineProvider
         ["animated-text"]: AnimatedText
@@ -69,70 +70,6 @@ const scaleInterpolator = new MonotoneNormalSpline([
     [1.2, 1.01],
     [1.5, 1],
 ])
-
-interface Spline<A> {
-    at(t: number): A
-}
-
-@customElement(TimelineProvider.NAME)
-export class TimelineProvider extends LitElement {
-    static readonly NAME = "timeline-provider"
-
-    static styles = css`
-        :host {
-            display: flex;
-            flex-wrap: wrap;
-        }
-    `
-
-    @queryAssignedElements()
-    childs!: NodeListOf<AnimatedText>
-
-    intermediatePositions?: number[]
-    lastPosition?: number
-    timelineSpline?: Spline<number>
-
-    computeIntermediatePosition(rsp: number) {
-        if (!this.timelineSpline) {
-            const childs = Array.from(this.childs)
-            const partialWidths = childs.reduce(
-                (partialWidths, child) => (
-                    partialWidths.push(partialWidths.at(-1)! + child.offsetWidth), partialWidths
-                ),
-                [0],
-            )
-            this.lastPosition = partialWidths.at(-1)!
-            this.intermediatePositions = partialWidths.map(pw => pw / this.lastPosition!)
-
-            const pairs = _.zip(
-                childs.map(child => child.tss).concat(childs.at(-1)!.tes),
-                this.intermediatePositions,
-            ) as Array<[number, number]>
-            const first = vectorLerp(pairs[0], pairs[1], -1)
-            const last = vectorLerp(pairs.at(-2)!, pairs.at(-1)!, 2)
-            this.timelineSpline = new MonotoneNormalSpline([first, ...pairs, last])
-        }
-
-        return this.timelineSpline.at(rsp)
-    }
-
-    updateProgress(rsp: number, depthToActiveAncestor: number) {
-        const childs = Array.from(this.childs)
-        if (childs.length === 0) return
-
-        const sip = this.computeIntermediatePosition(rsp)
-
-        childs.forEach((child, i) => {
-            const progress = remapScalar(this.intermediatePositions![i], this.intermediatePositions![i + 1], sip)
-            const isActive = _.inRange(rsp, child.tss, child.tes)
-            child.updateProgress(progress, depthToActiveAncestor + (isActive ? 0 : 1))
-        })
-    }
-
-    render() {
-        return html`<slot></slot><br />`
-    }
-}
 
 @customElement(AnimatedText.NAME)
 export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement))) {
@@ -195,9 +132,71 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
     }
 }
 
+interface Spline<A> {
+    at(t: number): A
+}
+
+@customElement(TimelineProvider.NAME)
+export class TimelineProvider extends SyncedContainerMixin(SyncedMixin(LitElement)) {
+    static readonly NAME = "timeline-provider"
+
+    static styles = css`
+        :host {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    `
+
+    intermediatePositions?: number[]
+    lastPosition?: number
+    timelineSpline?: Spline<number>
+
+    computeIntermediatePosition(rsp: number) {
+        if (!this.timelineSpline) {
+            const childs = Array.from(this.childs)
+            const partialWidths = childs.reduce(
+                (partialWidths, child) => (
+                    partialWidths.push(partialWidths.at(-1)! + child.offsetWidth), partialWidths
+                ),
+                [0],
+            )
+            this.lastPosition = partialWidths.at(-1)!
+            this.intermediatePositions = partialWidths.map(pw => pw / this.lastPosition!)
+
+            const pairs = _.zip(
+                childs.map(child => child.tss).concat(childs.at(-1)!.tes),
+                this.intermediatePositions,
+            ) as Array<[number, number]>
+            const first = vectorLerp(pairs[0], pairs[1], -1)
+            const last = vectorLerp(pairs.at(-2)!, pairs.at(-1)!, 2)
+            this.timelineSpline = new MonotoneNormalSpline([first, ...pairs, last])
+        }
+
+        return this.timelineSpline.at(rsp)
+    }
+
+    computeChildProgress(rsp: number, child: number) {
+        const sip = this.computeIntermediatePosition(rsp)
+        return remapScalar(this.intermediatePositions![child], this.intermediatePositions![child + 1], sip)
+    }
+
+    render() {
+        return html`<slot></slot><br />`
+    }
+}
+
 @customElement(LyricsContainer.NAME)
-export class LyricsContainer extends LitElement {
+export class LyricsContainer extends SyncedContainerMixin(SyncedMixin(LitElement)) {
     static readonly NAME = "lyrics-container"
+
+    render() {
+        return html`<slot></slot>`
+    }
+}
+
+@customElement(LyricsWrapper.NAME)
+export class LyricsWrapper extends LitElement {
+    static readonly NAME = "lyrics-wrapper"
     static readonly SCROLL_TIMEOUT_MS = 500
 
     static styles = css`
@@ -228,13 +227,12 @@ export class LyricsContainer extends LitElement {
         args: () => [this.song],
     })
 
+    @query(LyricsContainer.NAME)
+    container?: LyricsContainer
     public updateProgress(progress: number) {
         if (this.loadedLyricsType === LyricsType.NONE || this.loadedLyricsType === LyricsType.NOT_SYNCED) return
-        this.timelines?.forEach(timeline => timeline.updateProgress(progress, 0))
+        this.container?.updateProgress(progress, 0)
     }
-
-    @queryAll(TimelineProvider.NAME)
-    timelines?: NodeListOf<TimelineProvider>
 
     @provide({ context: scrollTimeoutCtx })
     scrollTimeout = 0
@@ -245,7 +243,7 @@ export class LyricsContainer extends LitElement {
 
     firstUpdated(changedProperties: PropertyValueMap<this>) {
         this.spotifyContainer?.addEventListener("scroll", e => {
-            this.scrollTimeout = Date.now() + LyricsContainer.SCROLL_TIMEOUT_MS
+            this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS
         })
     }
 
@@ -271,7 +269,7 @@ export class LyricsContainer extends LitElement {
                     ${map(
                         lyrics.content,
                         l =>
-                            html`<timeline-provider
+                            html`<timeline-provider tss=${l.tss} tes=${l.tes}
                                 >${map(
                                     l.content,
                                     w =>

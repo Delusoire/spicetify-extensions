@@ -1,6 +1,6 @@
 import { consume } from "https://esm.sh/@lit/context"
 import { LitElement } from "https://esm.sh/lit"
-import { property } from "https://esm.sh/lit/decorators.js"
+import { property, queryAssignedElements } from "https://esm.sh/lit/decorators.js"
 
 import { _ } from "../../../shared/deps.ts"
 
@@ -74,6 +74,31 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
                     }
                 }
             }
+        }
+    }
+
+    return mixedClass
+}
+
+export const SyncedContainerMixin = <T extends Constructor<LitElement & SyncedMixinI>>(superClass: T) => {
+    class mixedClass extends superClass {
+        @queryAssignedElements()
+        childs!: NodeListOf<LitElement & SyncedMixinI>
+
+        computeChildProgress(rp: number, child: number) {
+            return rp
+        }
+
+        updateProgress(rp: number, depthToActiveAncestor: number) {
+            super.updateProgress(rp, depthToActiveAncestor)
+            const childs = Array.from(this.childs)
+            if (childs.length === 0) return
+
+            childs.forEach((child, i) => {
+                const progress = this.computeChildProgress(rp, i)
+                const isActive = _.inRange(rp, child.tss, child.tes)
+                child.updateProgress(progress, depthToActiveAncestor + (isActive ? 0 : 1))
+            })
         }
     }
 

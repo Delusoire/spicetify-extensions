@@ -3,7 +3,7 @@ import { render } from "https://esm.sh/lit"
 import { PermanentMutationObserver } from "../../shared/util.ts"
 
 import { PlayerW } from "./utils/PlayerW.ts"
-import { LyricsContainer } from "./components/components.ts"
+import { LyricsWrapper } from "./components/components.ts"
 
 const injectNPVLyrics = () => {
     const lyricsContainer = document.querySelector<HTMLDivElement>(".main-nowPlayingView-lyricsContent")
@@ -12,7 +12,7 @@ const injectNPVLyrics = () => {
     const lyricsContainerClone = lyricsContainer.cloneNode(false) as typeof lyricsContainer
     lyricsContainer.replaceWith(lyricsContainerClone)
 
-    const ourLyricsContainer = new LyricsContainer()
+    const ourLyricsContainer = new LyricsWrapper()
     ourLyricsContainer.song = PlayerW.getSong() ?? null
     PlayerW.songChangedSubject.subscribe(song => ourLyricsContainer.updateSong(song ?? null))
     PlayerW.scaledProgressChangedSubject.subscribe(progress => ourLyricsContainer.updateProgress(progress))
