@@ -13,7 +13,6 @@ import { MonotoneNormalSpline } from "./splines/monotoneNormalSpline.ts"
 import { LyricsType } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
-import { number } from "../../../../AppData/Local/deno/npm/registry.npmjs.org/@types/prop-types/15.7.10/index.d.ts"
 
 declare global {
     interface HTMLElementTagNameMap {
