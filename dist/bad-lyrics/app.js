@@ -138,15 +138,15 @@ var findLyrics = async (info) => {
     ).map(([prev, next]) => {
       const tss = prev.tes;
       const tes = next.tss;
-      const dr = tes - tss;
-      return dr && {
+      const duration = (tes - tss) * track.track_length * 1e3;
+      return duration > 500 && {
         tss,
         tes,
         content: [
           {
             tss,
             tes,
-            duration: dr * track.track_length * 1e3,
+            duration,
             content: Filler
           }
         ]
@@ -164,7 +164,6 @@ var findLyrics = async (info) => {
     l.lineSynced = wrapInContainerSyncedType(2 /* LINE_SYNCED */, lineSynced);
   }
   if (track.has_lyrics || track.has_lyrics_crowd) {
-    l.notSynced = wrapInContainerSyncedType(1 /* NOT_SYNCED */, lyrics.lyrics_body);
   }
   return l;
 };
@@ -314,8 +313,14 @@ var PlayerW = new class {
 import { consume, createContext, provide } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
 import { LitElement, css, html } from "https://esm.sh/lit";
-import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
+import { customElement, property, queryAll, queryAssignedElements, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
+import { choose } from "https://esm.sh/lit/directives/choose.js";
+
+// shared/math.ts
+var scalarLerp = (s, e, t) => s + (e - s) * t;
+var vectorLerp = (u, v, t) => _.zip(u, v).map(([uxi, vxi]) => scalarLerp(uxi, vxi, t));
+var remapScalar = (s, e, x) => (x - s) / (e - s);
 
 // extensions/bad-lyrics/splines/monotoneNormalSpline.ts
 import { MonotoneCubicHermitInterpolation } from "https://esm.sh/v135/@adaskothebeast/splines@4.0.0/es2022/splines.mjs";
@@ -327,95 +332,104 @@ var MonotoneNormalSpline = class extends MonotoneCubicHermitInterpolation {
   }
 };
 
-// shared/math.ts
-var scalarLerp = (s, e, t) => s + (e - s) * t;
-var vectorLerp = (u, v, t) => _.zip(u, v).map(([uxi, vxi]) => scalarLerp(uxi, vxi, t));
-var remapScalar = (s, e, x) => (x - s) / (e - s);
-
 // extensions/bad-lyrics/components.ts
+var opacityInterpolator = new MonotoneNormalSpline([
+  [0, 0],
+  [0.1, 0.1],
+  [0.2, 0.3],
+  [0.5, 0.55],
+  [0.7, 0.8],
+  [1, 1],
+  [1.2, 0.8],
+  [1.5, 0.7]
+]);
+var glowRadiusInterpolator = new MonotoneNormalSpline([
+  [0, 100],
+  [0.2, 7],
+  [0.4, 5],
+  [0.6, 3],
+  [0.7, 2],
+  [0.9, 1],
+  [1, 3],
+  [1.1, 7],
+  [1.25, 100]
+]);
+var glowAlphaInterpolator = new MonotoneNormalSpline([
+  [0, 0],
+  [0.1, 0.2],
+  [0.2, 0.35],
+  [0.5, 0.65],
+  [0.7, 0.9],
+  [1, 1],
+  [1.2, 0.6],
+  [1.5, 0]
+]);
+var scaleInterpolator = new MonotoneNormalSpline([
+  [-0.5, 1],
+  [-0.2, 0.99],
+  [-0.1, 0.98],
+  [0, 0.94],
+  [0.1, 0.99],
+  [0.2, 1],
+  [0.5, 1.02],
+  [0.7, 1.06],
+  [0.9, 1.04],
+  [1, 1.02],
+  [1.2, 1.01],
+  [1.5, 1]
+]);
 var scrollTimeoutCtx = createContext("scrollTimeout");
 var spotifyContainerCtx = createContext("spotifyContainer");
 var loadedLyricsTypeCtx = createContext("loadedLyricsType");
-var AnimatedContentContainer = class extends LitElement {
-  constructor() {
-    super(...arguments);
-    this.content = new Array();
-    this.tss = 0;
-    this.tes = 1;
-  }
-  updateProgress(rsp, index, depthToActiveAncestor) {
-    const childs = Array.from(this.childs);
-    if (childs.length === 0)
-      return index;
-    if (!this.relativePartialWidths || !this.sharedRelativePartialWidthSpline) {
+var TimelineProvider = class extends LitElement {
+  computeIntermediatePosition(rsp) {
+    if (!this.timelineSpline) {
+      const childs = Array.from(this.childs);
       const partialWidths = childs.reduce(
-        (partialWidths2, child) => [...partialWidths2, partialWidths2.at(-1) + child.offsetWidth],
+        (partialWidths2, child) => (partialWidths2.push(partialWidths2.at(-1) + child.offsetWidth), partialWidths2),
         [0]
       );
-      const totalWidth = partialWidths.at(-1);
-      this.relativePartialWidths = partialWidths.map((pw) => pw / totalWidth);
+      this.lastPosition = partialWidths.at(-1);
+      this.intermediatePositions = partialWidths.map((pw) => pw / this.lastPosition);
       const pairs = _.zip(
         childs.map((child) => child.tss).concat(childs.at(-1).tes),
-        this.relativePartialWidths
+        this.intermediatePositions
       );
       const first = vectorLerp(pairs[0], pairs[1], -1);
       const last = vectorLerp(pairs.at(-2), pairs.at(-1), 2);
-      this.sharedRelativePartialWidthSpline = new MonotoneNormalSpline([first, ...pairs, last]);
+      this.timelineSpline = new MonotoneNormalSpline([first, ...pairs, last]);
     }
-    if (this.relativePartialWidths.length < 2)
-      return index;
-    const srpw = this.sharedRelativePartialWidthSpline.at(rsp);
+    return this.timelineSpline.at(rsp);
+  }
+  updateProgress(rsp, depthToActiveAncestor) {
+    const childs = Array.from(this.childs);
+    if (childs.length === 0)
+      return;
+    const sip = this.computeIntermediatePosition(rsp);
     childs.forEach((child, i) => {
-      const progress = child instanceof AnimatedContentContainer ? rsp : remapScalar(this.relativePartialWidths[i], this.relativePartialWidths[i + 1], srpw);
-      index = child.updateProgress(
-        progress,
-        index,
-        depthToActiveAncestor + Number(!_.inRange(rsp, child.tss, child.tes))
-      );
+      const progress = remapScalar(this.intermediatePositions[i], this.intermediatePositions[i + 1], sip);
+      const isActive = _.inRange(rsp, child.tss, child.tes);
+      child.updateProgress(progress, depthToActiveAncestor + (isActive ? 0 : 1));
     });
-    return index;
   }
   render() {
-    return html`${map(this.content, (part) => {
-      if (Array.isArray(part.content)) {
-        return html`<animated-content-container .content=${part.content} tss=${part.tss} tes=${part.tes} />`;
-      }
-      if (part.content === Filler) {
-        const filler = part;
-        return html`<animated-filler
-                        content=${filler.content}
-                        tss=${filler.tss}
-                        tes=${filler.tes}
-                        duration=${filler.duration}
-                    />`;
-      }
-      return html` <animated-content content=${part.content} tss=${part.tss} tes=${part.tes} />`;
-    })}<br />`;
+    return html`<slot></slot><br />`;
   }
 };
-AnimatedContentContainer.NAME = "animated-content-container";
-AnimatedContentContainer.styles = css`
+TimelineProvider.NAME = "timeline-provider";
+TimelineProvider.styles = css`
         :host {
             display: flex;
             flex-wrap: wrap;
         }
     `;
 __decorateClass([
-  property({ type: Array })
-], AnimatedContentContainer.prototype, "content", 2);
-__decorateClass([
-  property({ type: Number })
-], AnimatedContentContainer.prototype, "tss", 2);
-__decorateClass([
-  property({ type: Number })
-], AnimatedContentContainer.prototype, "tes", 2);
-__decorateClass([
-  queryAll("*:not(br)")
-], AnimatedContentContainer.prototype, "childs", 2);
-AnimatedContentContainer = __decorateClass([
-  customElement(AnimatedContentContainer.NAME)
-], AnimatedContentContainer);
-var SyncedScrolledContent = class extends LitElement {
+  queryAssignedElements()
+], TimelineProvider.prototype, "childs", 2);
+TimelineProvider = __decorateClass([
+  customElement(TimelineProvider.NAME)
+], TimelineProvider);
+var AnimatedScrolledContent = class extends LitElement {
   constructor() {
     super(...arguments);
     this.content = "";
@@ -423,7 +437,7 @@ var SyncedScrolledContent = class extends LitElement {
     this.tes = 1;
     this.scrollTimeout = 0;
   }
-  updateProgress(scaledProgress, index, depthToActiveAncestor) {
+  updateProgress(scaledProgress, depthToActiveAncestor) {
     const isActive = depthToActiveAncestor === 0;
     if (isActive) {
       if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
@@ -438,110 +452,76 @@ var SyncedScrolledContent = class extends LitElement {
         }
       }
     }
-    const csp = _.clamp(scaledProgress, AnimatedContent.MIN_SCALED_PROGRESS, AnimatedContent.MAX_SCALED_PROGRESS);
-    this.animateContent(csp, depthToActiveAncestor);
-    return index + 1;
+    const csp = _.clamp(scaledProgress, -0.5, 1.5);
+    if (this.csp !== csp) {
+      this.csp = csp;
+      this.animateContent(depthToActiveAncestor);
+    }
   }
 };
 __decorateClass([
   property()
-], SyncedScrolledContent.prototype, "content", 2);
+], AnimatedScrolledContent.prototype, "content", 2);
 __decorateClass([
   property({ type: Number })
-], SyncedScrolledContent.prototype, "tss", 2);
+], AnimatedScrolledContent.prototype, "tss", 2);
 __decorateClass([
   property({ type: Number })
-], SyncedScrolledContent.prototype, "tes", 2);
+], AnimatedScrolledContent.prototype, "tes", 2);
 __decorateClass([
   consume({ context: scrollTimeoutCtx, subscribe: true })
-], SyncedScrolledContent.prototype, "scrollTimeout", 2);
+], AnimatedScrolledContent.prototype, "scrollTimeout", 2);
 __decorateClass([
   consume({ context: spotifyContainerCtx })
-], SyncedScrolledContent.prototype, "spotifyContainer", 2);
-var AnimatedContent = class extends SyncedScrolledContent {
+], AnimatedScrolledContent.prototype, "spotifyContainer", 2);
+var AnimatedText = class extends AnimatedScrolledContent {
   constructor() {
     super(...arguments);
     this.loadedLyricsType = 0 /* NONE */;
-    this.opacityInterpolator = new MonotoneNormalSpline([
-      [0, 0],
-      [0.1, 0.1],
-      [0.2, 0.3],
-      [0.5, 0.55],
-      [0.7, 0.8],
-      [1, 1],
-      [1.2, 0.8],
-      [1.5, 0.7]
-    ]);
-    this.glowRadiusInterpolator = new MonotoneNormalSpline([
-      [0, 100],
-      [0.2, 7],
-      [0.4, 5],
-      [0.6, 3],
-      [0.7, 2],
-      [0.9, 1],
-      [1, 3],
-      [1.1, 7],
-      [1.25, 100]
-    ]);
-    this.glowAlphaInterpolator = new MonotoneNormalSpline([
-      [0, 0],
-      [0.1, 0.2],
-      [0.2, 0.35],
-      [0.5, 0.65],
-      [0.7, 0.9],
-      [1, 1],
-      [1.2, 0.6],
-      [1.5, 0]
-    ]);
-    this.scaleInterpolator = new MonotoneNormalSpline([
-      [-0.5, 1],
-      [-0.2, 0.99],
-      [-0.1, 0.98],
-      [0, 0.94],
-      [0.1, 0.99],
-      [0.2, 1],
-      [0.5, 1.02],
-      [0.7, 1.06],
-      [0.9, 1.04],
-      [1, 1.02],
-      [1.2, 1.01],
-      [1.5, 1]
-    ]);
   }
-  animateContent(scaledProgress, depthToActiveAncestor) {
-    if (this.sp === scaledProgress)
-      return;
-    this.sp = scaledProgress;
-    const nextGradientOpacity = (this.opacityInterpolator.at(scaledProgress) * 0.9 ** depthToActiveAncestor).toFixed(5);
-    const nextGlowRadius = `${(1 - scaledProgress) * 3}px`;
-    const nextGlowAlpha = this.glowAlphaInterpolator.at(scaledProgress);
-    const nextYOffset = `-${this.offsetHeight * 0.12 * scaledProgress}px`;
-    const nextGradientStart = `${scaledProgress * 95}%`;
-    const nextGradientEnd = `${scaledProgress * 105}%`;
-    const nextScale = this.scaleInterpolator.at(scaledProgress).toFixed(5);
+  animateContent(depthToActiveAncestor) {
+    const nextGradientOpacity = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5);
+    const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
+    const nextGlowAlpha = glowAlphaInterpolator.at(this.csp);
+    const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`;
+    const nextGradientStart = `${this.csp * 95}%`;
+    const nextGradientEnd = `${this.csp * 105}%`;
+    const nextScale = scaleInterpolator.at(this.csp).toFixed(5);
     this.style.setProperty("--gradient-alpha", nextGradientOpacity);
     this.style.setProperty("--glow-radius", nextGlowRadius);
     this.style.setProperty("--glow-alpha", nextGlowAlpha);
     this.style.setProperty("--gradient-start", nextGradientStart);
     this.style.setProperty("--gradient-end", nextGradientEnd);
-    this.style.transform = `translateY(${nextYOffset})`;
+    this.style.setProperty("--y-offset", nextYOffset);
     this.style.scale = nextScale;
   }
+  onClick() {
+    PlayerW.setTimestamp(this.tss);
+  }
   render() {
-    const content = this.loadedLyricsType === 3 /* WORD_SYNCED */ ? this.content.replaceAll(" ", "\xA0") : this.content;
-    return html`<span role="button" @click=${() => PlayerW.setTimestamp(this.tss)}>${content}</span>`;
+    return html`<div role="button" , @click=${this.onClick}>
+            ${choose(this.loadedLyricsType, [
+      [2 /* LINE_SYNCED */, () => html`<span>${this.content}</span>`],
+      [
+        3 /* WORD_SYNCED */,
+        () => {
+          const content = this.content.split("");
+          return html`${map(content, (c) => html`<span>${c === " " ? "\xA0" : c}</span>`)}`;
+        }
+      ]
+    ])}
+        </div>`;
   }
 };
-AnimatedContent.NAME = "animated-content";
-AnimatedContent.MIN_SCALED_PROGRESS = -0.5;
-AnimatedContent.MAX_SCALED_PROGRESS = 1.5;
-AnimatedContent.styles = css`
+AnimatedText.NAME = "text";
+AnimatedText.styles = css`
         :host {
             cursor: pointer;
             background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
             text-shadow: 0 0 var(--glow-radius, 0) rgba(255, 255, 255, var(--glow-alpha, 0));
+            transform: translateY(var(--y-offset, 0));
             background-image: linear-gradient(
                 var(--gradient-angle),
                 rgba(255, 255, 255, var(--gradient-alpha)) var(--gradient-start),
@@ -551,28 +531,10 @@ AnimatedContent.styles = css`
     `;
 __decorateClass([
   consume({ context: loadedLyricsTypeCtx })
-], AnimatedContent.prototype, "loadedLyricsType", 2);
-AnimatedContent = __decorateClass([
-  customElement(AnimatedContent.NAME)
-], AnimatedContent);
-var AnimatedFiller = class extends AnimatedContent {
-  constructor() {
-    super(...arguments);
-    this.duration = 0;
-  }
-  render() {
-    if (this.duration < LyricsContainer.MINIMUM_FILL_DURATION_MS)
-      return;
-    return super.render();
-  }
-};
-AnimatedFiller.NAME = "animated-filler";
-__decorateClass([
-  property({ type: Number })
-], AnimatedFiller.prototype, "duration", 2);
-AnimatedFiller = __decorateClass([
-  customElement(AnimatedFiller.NAME)
-], AnimatedFiller);
+], AnimatedText.prototype, "loadedLyricsType", 2);
+AnimatedText = __decorateClass([
+  customElement(AnimatedText.NAME)
+], AnimatedText);
 var LyricsContainer = class extends LitElement {
   constructor() {
     super(...arguments);
@@ -597,7 +559,7 @@ var LyricsContainer = class extends LitElement {
   updateProgress(progress) {
     if (this.loadedLyricsType === 0 /* NONE */ || this.loadedLyricsType === 1 /* NOT_SYNCED */)
       return;
-    this.firstContainer?.updateProgress(progress, 0, 0);
+    this.timelines?.forEach((timeline) => timeline.updateProgress(progress, 0));
   }
   firstUpdated(changedProperties) {
     this.spotifyContainer?.addEventListener("scroll", (e) => {
@@ -605,13 +567,16 @@ var LyricsContainer = class extends LitElement {
     });
   }
   render() {
-    return this.song ? this.lyricsTask.render({
+    if (!this.song) {
+      return html`<div class="info">No Song Loaded</div>`;
+    }
+    return this.lyricsTask.render({
       pending: () => {
-        return html`<div class="fetching">Fetching Lyrics...</div>`;
+        return html`<div class="loading">Fetching Lyrics...</div>`;
       },
       complete: (lyrics) => {
-        if (!lyrics) {
-          return html`<div class="noLyrics">No Lyrics Found</div>`;
+        if (!lyrics || lyrics.__type === 1 /* NOT_SYNCED */) {
+          return html`<div class="error">No Lyrics Found</div>`;
         }
         const isWordSynced = this.loadedLyricsType === 3 /* WORD_SYNCED */;
         const style = [
@@ -619,22 +584,28 @@ var LyricsContainer = class extends LitElement {
           ["--animated-text-bg-color", isWordSynced ? "black" : "white"],
           [""]
         ].map((a) => a.join(": ")).join("; ");
-        return html`
-                          <animated-content-container
-                              style=${style}
-                              .content=${lyrics.content}
-                          ></animated-content-container>
-                      `;
+        return html`${map(
+          lyrics.content,
+          (l) => html`<timeline-provider
+                            >${map(
+            l.content,
+            (w) => html`<animated-text
+                                        tss=${w.tss}
+                                        tes=${w.tes}
+                                        content=${w.content}
+                                    ></animated-text>`
+          )}</timeline-provider
+                        >`
+        )}`;
       },
       error: (e) => {
         console.error(e);
         return html`<div class="error">Error</div>`;
       }
-    }) : html`<div class="error">No Song Loaded</div>`;
+    });
   }
 };
 LyricsContainer.NAME = "lyrics-container";
-LyricsContainer.MINIMUM_FILL_DURATION_MS = 300;
 LyricsContainer.SCROLL_TIMEOUT_MS = 500;
 LyricsContainer.styles = css`
         :host > animated-content-container {
@@ -649,8 +620,8 @@ __decorateClass([
   state()
 ], LyricsContainer.prototype, "loadedLyricsType", 2);
 __decorateClass([
-  query(AnimatedContentContainer.NAME)
-], LyricsContainer.prototype, "firstContainer", 2);
+  queryAll(TimelineProvider.NAME)
+], LyricsContainer.prototype, "timelines", 2);
 __decorateClass([
   provide({ context: scrollTimeoutCtx })
 ], LyricsContainer.prototype, "scrollTimeout", 2);
@@ -671,7 +642,7 @@ var injectNPVLyrics = () => {
   lyricsContainer.replaceWith(lyricsContainerClone);
   const ourLyricsContainer = new LyricsContainer();
   ourLyricsContainer.song = PlayerW.getSong() ?? null;
-  PlayerW.songChangedSubject.subscribe((song) => ourLyricsContainer.song = song ?? null);
+  PlayerW.songChangedSubject.subscribe((song) => ourLyricsContainer.updateSong(song ?? null));
   PlayerW.scaledProgressChangedSubject.subscribe((progress) => ourLyricsContainer.updateProgress(progress));
   render(ourLyricsContainer, lyricsContainerClone);
 };

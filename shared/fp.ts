@@ -43,6 +43,7 @@ export const progressify = <F extends (...args: any) => any>(f: F, n: number) =>
     }
 }
 
+export type OneUplet<E> = [E]
 export type TwoUplet<E> = [E, E]
 export type Triplet<E> = [E, E, E]
 export type Quadruplet<E> = [E, E, E, E]

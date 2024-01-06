@@ -1,5 +1,5 @@
 import { _ } from "../../../shared/deps.ts"
-import { TwoUplet, zip_n_uplets } from "../../../shared/fp.ts"
+import { OneUplet, TwoUplet, zip_n_uplets } from "../../../shared/fp.ts"
 
 const headers = {
     authority: "apic-desktop.musixmatch.com",
@@ -32,14 +32,16 @@ export type SyncedContent = {
     content: Array<SyncedContent> | string
 }
 
-export type Synced<A> = {
-    tss: number
-    tes: number
+type SW<A> = {
+    tss: 0
+    tes: 1
     content: A
 }
 
-export type SyncedFiller = Synced<typeof Filler> & {
-    duration: number
+export type S<A> = {
+    tss: number
+    tes: number
+    content: A
 }
 
 export enum LyricsType {
@@ -51,14 +53,14 @@ export enum LyricsType {
 
 export const Filler = "♪"
 
-export type NotSynced = Synced<string> & { __type: LyricsType.NOT_SYNCED }
-export type LineSynced = Synced<Array<Synced<readonly [Synced<string>]>>> & { __type: LyricsType.LINE_SYNCED }
-export type WordSynced = Synced<Array<Synced<Array<Synced<string>> | SyncedFiller>>> & {
+export type NotSynced = SW<string> & { __type: LyricsType.NOT_SYNCED }
+export type LineSynced = SW<Array<S<OneUplet<S<string>>>>> & { __type: LyricsType.LINE_SYNCED }
+export type WordSynced = SW<Array<S<Array<S<string>>>>> & {
     __type: LyricsType.WORD_SYNCED
 }
 
-export const flattenLyrics = (lyrics: SyncedContent): Array<Synced<string> | SyncedFiller> =>
-    Array.isArray(lyrics.content) ? lyrics.content.flatMap(flattenLyrics) : [lyrics as Synced<string> | SyncedFiller]
+export const flattenLyrics = (lyrics: SyncedContent): Array<S<string>> =>
+    Array.isArray(lyrics.content) ? lyrics.content.flatMap(flattenLyrics) : [lyrics as S<string>]
 
 export const findLyrics = async (info: {
     uri: string
@@ -80,8 +82,8 @@ export const findLyrics = async (info: {
 
     const wrapInContainerSyncedType = <T extends LyricsType, P>(__type: T, content: P) => ({
         __type,
-        tss: 0,
-        tes: 1,
+        tss: 0 as const,
+        tes: 1 as const,
         content,
     })
 
@@ -103,24 +105,24 @@ export const findLyrics = async (info: {
         })
 
         const wordSyncedFilled = _(
-            zip_n_uplets<TwoUplet<Synced<Array<Synced<string>>>>>(2)([{ tes: 0 }, ...wordSynced, { tss: 1 }]),
+            zip_n_uplets<TwoUplet<S<Array<S<string>>>>>(2)([{ tes: 0 }, ...wordSynced, { tss: 1 }]),
         )
             .map(([prev, next]) => {
                 const tss = prev.tes
                 const tes = next.tss
-                const dr = tes - tss
+                const duration = (tes - tss) * track.track_length * 1000
 
                 return (
-                    dr && {
+                    duration > 500 && {
                         tss,
                         tes,
                         content: [
                             {
                                 tss,
                                 tes,
-                                duration: dr * track.track_length * 1000,
+                                duration,
                                 content: Filler,
-                            } as SyncedFiller,
+                            },
                         ],
                     }
                 )
@@ -141,13 +143,13 @@ export const findLyrics = async (info: {
         const lineSynced = subtitle.map((sLine, i, subtitle) => {
             const tss = sLine.time.total / track.track_length
             const tes = subtitle[i + 1]?.time.total / track.track_length || 1
-            return { tss, tes, content: [{ tss, tes, content: sLine.text }] as const }
+            return { tss, tes, content: [{ tss, tes, content: sLine.text }] as OneUplet<S<string>> }
         })
         l.lineSynced = wrapInContainerSyncedType(LyricsType.LINE_SYNCED, lineSynced)
     }
 
     if (track.has_lyrics || track.has_lyrics_crowd) {
-        l.notSynced = wrapInContainerSyncedType(LyricsType.NOT_SYNCED, lyrics.lyrics_body)
+        //l.notSynced = wrapInContainerSyncedType(LyricsType.NOT_SYNCED, lyrics.lyrics_body)
     }
 
     return l

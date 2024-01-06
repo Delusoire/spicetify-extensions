@@ -14,7 +14,7 @@ const injectNPVLyrics = () => {
 
     const ourLyricsContainer = new LyricsContainer()
     ourLyricsContainer.song = PlayerW.getSong() ?? null
-    PlayerW.songChangedSubject.subscribe(song => (ourLyricsContainer.song = song ?? null))
+    PlayerW.songChangedSubject.subscribe(song => ourLyricsContainer.updateSong(song ?? null))
     PlayerW.scaledProgressChangedSubject.subscribe(progress => ourLyricsContainer.updateProgress(progress))
     render(ourLyricsContainer, lyricsContainerClone)
 }
