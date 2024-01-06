@@ -38,12 +38,19 @@ export const AnimatedMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
         updateProgress(scaledProgress: number, depthToActiveAncestor: number) {
             super.updateProgress(scaledProgress, depthToActiveAncestor)
             const clampedScaledProgress = _.clamp(scaledProgress, -0.5, 1.5)
-            if (this.csp !== clampedScaledProgress || this.dtaa !== depthToActiveAncestor) {
+            if (
+                this.csp !== clampedScaledProgress ||
+                this.dtaa !== depthToActiveAncestor ||
+                !this.springsInEquilibrium()
+            ) {
                 this.csp = clampedScaledProgress
                 this.dtaa = depthToActiveAncestor
                 this.animateContent()
             }
             this.updateSprings()
+        }
+        springsInEquilibrium() {
+            return true
         }
         updateSprings() {}
         animateContent() {}

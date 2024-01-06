@@ -98,6 +98,10 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
 
     opacitySpring = new Spring(0, 1, 5)
 
+    springsInEquilibrium() {
+        return this.opacitySpring.isInEquilibrium()
+    }
+
     updateSprings() {
         this.opacitySpring.setEquilibrium(0.9 ** this.dtaa)
     }

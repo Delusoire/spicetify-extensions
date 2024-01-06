@@ -369,12 +369,15 @@ var AnimatedMixin = (superClass) => {
     updateProgress(scaledProgress, depthToActiveAncestor) {
       super.updateProgress(scaledProgress, depthToActiveAncestor);
       const clampedScaledProgress = _.clamp(scaledProgress, -0.5, 1.5);
-      if (this.csp !== clampedScaledProgress || this.dtaa !== depthToActiveAncestor) {
+      if (this.csp !== clampedScaledProgress || this.dtaa !== depthToActiveAncestor || !this.springsInEquilibrium()) {
         this.csp = clampedScaledProgress;
         this.dtaa = depthToActiveAncestor;
         this.animateContent();
       }
       this.updateSprings();
+    }
+    springsInEquilibrium() {
+      return true;
     }
     updateSprings() {
     }
@@ -568,6 +571,9 @@ var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElem
   constructor() {
     super(...arguments);
     this.opacitySpring = new Spring(0, 1, 5);
+  }
+  springsInEquilibrium() {
+    return this.opacitySpring.isInEquilibrium();
   }
   updateSprings() {
     this.opacitySpring.setEquilibrium(0.9 ** this.dtaa);
