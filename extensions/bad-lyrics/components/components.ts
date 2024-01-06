@@ -81,6 +81,7 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
     static styles = css`
         :host {
             cursor: pointer;
+            display: flex;
             background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;

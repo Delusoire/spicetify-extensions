@@ -540,6 +540,7 @@ AnimatedText.NAME = "animated-text";
 AnimatedText.styles = css`
         :host {
             cursor: pointer;
+            display: flex;
             background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
