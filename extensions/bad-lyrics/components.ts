@@ -182,7 +182,7 @@ export abstract class AnimatedScrolledContent extends LitElement {
 
 @customElement(AnimatedText.NAME)
 export class AnimatedText extends AnimatedScrolledContent {
-    static readonly NAME = "text" as string
+    static readonly NAME = "animated-text" as string
 
     static styles = css`
         :host {

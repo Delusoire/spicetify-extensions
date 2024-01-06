@@ -513,7 +513,7 @@ var AnimatedText = class extends AnimatedScrolledContent {
         </div>`;
   }
 };
-AnimatedText.NAME = "text";
+AnimatedText.NAME = "animated-text";
 AnimatedText.styles = css`
         :host {
             cursor: pointer;
