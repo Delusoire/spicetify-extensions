@@ -13,6 +13,7 @@ import { MonotoneNormalSpline } from "./splines/monotoneNormalSpline.ts"
 import { LyricsType } from "./utils/LyricsProvider.ts"
 import { PlayerW } from "./utils/PlayerW.ts"
 import { Song } from "./utils/Song.ts"
+import { number } from "../../../../AppData/Local/deno/npm/registry.npmjs.org/@types/prop-types/15.7.10/index.d.ts"
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -136,52 +137,82 @@ export class TimelineProvider extends LitElement {
     }
 }
 
-export abstract class AnimatedScrolledContent extends LitElement {
-    @property()
-    content = ""
-    @property({ type: Number })
-    tss = 0
-    @property({ type: Number })
-    tes = 1
+type Constructor<T = {}> = new (...args: any[]) => T
 
-    @consume({ context: scrollTimeoutCtx, subscribe: true })
-    scrollTimeout = 0
-    @consume({ context: spotifyContainerCtx })
-    spotifyContainer?: HTMLElement
+export declare class SyncedMixinI {
+    content: string
+    tss: number
+    tes: number
 
-    csp!: number
+    updateProgress(scaledProgress: number, depthToActiveAncestor: number): void
+}
 
-    updateProgress(scaledProgress: number, depthToActiveAncestor: number) {
-        const isActive = depthToActiveAncestor === 0
+const SyncedMixin = <T extends Constructor<LitElement>>(superClass: T) => {
+    abstract class mixedClass extends superClass {
+        @property()
+        content = ""
+        @property({ type: Number })
+        tss = 0
+        @property({ type: Number })
+        tes = 1
 
-        if (isActive) {
-            if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
-                const lineHeightHeuristic = this.offsetHeight
-                const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic
-                const verticalLinesToActive =
-                    Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight
+        abstract updateProgress(scaledProgress: number, depthToActiveAncestor: number): void
+    }
 
-                if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
-                    this.spotifyContainer.scrollTo({
-                        top: scrollTop,
-                        behavior: document.visibilityState === "visible" ? "smooth" : "auto",
-                    })
+    return mixedClass as Constructor<SyncedMixinI> & T
+}
+
+const AnimatedMixin = <T extends Constructor<LitElement & SyncedMixinI>>(superClass: T) => {
+    abstract class mixedClass extends superClass {
+        csp!: number
+        updateProgress(scaledProgress: number, depthToActiveAncestor: number) {
+            super.updateProgress(scaledProgress, depthToActiveAncestor)
+            const csp = _.clamp(scaledProgress, -0.5, 1.5)
+            if (this.csp !== csp) {
+                this.csp = csp
+                this.animateContent(depthToActiveAncestor)
+            }
+        }
+        abstract animateContent(depthToActiveAncestor: number): void
+    }
+
+    return mixedClass
+}
+
+const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(superClass: T) => {
+    class mixedClass extends superClass {
+        @consume({ context: scrollTimeoutCtx, subscribe: true })
+        scrollTimeout = 0
+        @consume({ context: spotifyContainerCtx })
+        spotifyContainer?: HTMLElement
+
+        updateProgress(scaledProgress: number, depthToActiveAncestor: number) {
+            super.updateProgress(scaledProgress, depthToActiveAncestor)
+            const isActive = depthToActiveAncestor === 0
+
+            if (isActive) {
+                if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
+                    const lineHeightHeuristic = this.offsetHeight
+                    const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic
+                    const verticalLinesToActive =
+                        Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight
+
+                    if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
+                        this.spotifyContainer.scrollTo({
+                            top: scrollTop,
+                            behavior: document.visibilityState === "visible" ? "smooth" : "auto",
+                        })
+                    }
                 }
             }
         }
-
-        const csp = _.clamp(scaledProgress, -0.5, 1.5)
-        if (this.csp !== csp) {
-            this.csp = csp
-            this.animateContent(depthToActiveAncestor)
-        }
     }
 
-    abstract animateContent(depthToActiveAncestor: number): void
+    return mixedClass
 }
 
 @customElement(AnimatedText.NAME)
-export class AnimatedText extends AnimatedScrolledContent {
+export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement))) {
     static readonly NAME = "animated-text" as string
 
     static styles = css`

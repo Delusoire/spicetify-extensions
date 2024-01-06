@@ -429,52 +429,72 @@ __decorateClass([
 TimelineProvider = __decorateClass([
   customElement(TimelineProvider.NAME)
 ], TimelineProvider);
-var AnimatedScrolledContent = class extends LitElement {
-  constructor() {
-    super(...arguments);
-    this.content = "";
-    this.tss = 0;
-    this.tes = 1;
-    this.scrollTimeout = 0;
+var SyncedMixin = (superClass) => {
+  class mixedClass extends superClass {
+    constructor() {
+      super(...arguments);
+      this.content = "";
+      this.tss = 0;
+      this.tes = 1;
+    }
   }
-  updateProgress(scaledProgress, depthToActiveAncestor) {
-    const isActive = depthToActiveAncestor === 0;
-    if (isActive) {
-      if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
-        const lineHeightHeuristic = this.offsetHeight;
-        const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic;
-        const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight;
-        if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
-          this.spotifyContainer.scrollTo({
-            top: scrollTop,
-            behavior: document.visibilityState === "visible" ? "smooth" : "auto"
-          });
+  __decorateClass([
+    property()
+  ], mixedClass.prototype, "content", 2);
+  __decorateClass([
+    property({ type: Number })
+  ], mixedClass.prototype, "tss", 2);
+  __decorateClass([
+    property({ type: Number })
+  ], mixedClass.prototype, "tes", 2);
+  return mixedClass;
+};
+var AnimatedMixin = (superClass) => {
+  class mixedClass extends superClass {
+    updateProgress(scaledProgress, depthToActiveAncestor) {
+      super.updateProgress(scaledProgress, depthToActiveAncestor);
+      const csp = _.clamp(scaledProgress, -0.5, 1.5);
+      if (this.csp !== csp) {
+        this.csp = csp;
+        this.animateContent(depthToActiveAncestor);
+      }
+    }
+  }
+  return mixedClass;
+};
+var ScrolledMixin = (superClass) => {
+  class mixedClass extends superClass {
+    constructor() {
+      super(...arguments);
+      this.scrollTimeout = 0;
+    }
+    updateProgress(scaledProgress, depthToActiveAncestor) {
+      super.updateProgress(scaledProgress, depthToActiveAncestor);
+      const isActive = depthToActiveAncestor === 0;
+      if (isActive) {
+        if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
+          const lineHeightHeuristic = this.offsetHeight;
+          const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic;
+          const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight;
+          if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
+            this.spotifyContainer.scrollTo({
+              top: scrollTop,
+              behavior: document.visibilityState === "visible" ? "smooth" : "auto"
+            });
+          }
         }
       }
     }
-    const csp = _.clamp(scaledProgress, -0.5, 1.5);
-    if (this.csp !== csp) {
-      this.csp = csp;
-      this.animateContent(depthToActiveAncestor);
-    }
   }
+  __decorateClass([
+    consume({ context: scrollTimeoutCtx, subscribe: true })
+  ], mixedClass.prototype, "scrollTimeout", 2);
+  __decorateClass([
+    consume({ context: spotifyContainerCtx })
+  ], mixedClass.prototype, "spotifyContainer", 2);
+  return mixedClass;
 };
-__decorateClass([
-  property()
-], AnimatedScrolledContent.prototype, "content", 2);
-__decorateClass([
-  property({ type: Number })
-], AnimatedScrolledContent.prototype, "tss", 2);
-__decorateClass([
-  property({ type: Number })
-], AnimatedScrolledContent.prototype, "tes", 2);
-__decorateClass([
-  consume({ context: scrollTimeoutCtx, subscribe: true })
-], AnimatedScrolledContent.prototype, "scrollTimeout", 2);
-__decorateClass([
-  consume({ context: spotifyContainerCtx })
-], AnimatedScrolledContent.prototype, "spotifyContainer", 2);
-var AnimatedText = class extends AnimatedScrolledContent {
+var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement))) {
   constructor() {
     super(...arguments);
     this.loadedLyricsType = 0 /* NONE */;
