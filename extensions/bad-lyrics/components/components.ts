@@ -98,7 +98,7 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
     xxx = 0
 
     animateContent(depthToActiveAncestor: number) {
-        xxx = this.depthToActive
+        this.xxx = this.depthToActive
         const nextGradientAlpha = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5)
         const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`
         const nextGlowAlpha = glowAlphaInterpolator.at(this.csp)
