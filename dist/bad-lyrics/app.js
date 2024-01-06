@@ -570,7 +570,7 @@ var scaleInterpolator = new MonotoneNormalSpline([
 var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement2))) {
   constructor() {
     super(...arguments);
-    this.opacitySpring = new Spring(0, 1, 5);
+    this.opacitySpring = new Spring(0, 100, 5);
   }
   springsInEquilibrium() {
     return this.opacitySpring.isInEquilibrium();
