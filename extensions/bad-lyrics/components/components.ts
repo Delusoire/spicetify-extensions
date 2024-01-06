@@ -118,7 +118,7 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
     }
 
     render() {
-        return html`<div role="button" , @click=${this.onClick}>${this.content}</div>`
+        return html`<span role="button" @click=${this.onClick}>${this.content}</span>`
     }
 }
 
@@ -289,7 +289,7 @@ export class LyricsWrapper extends LitElement {
                         ${when(
                             isWordSync,
                             () =>
-                                html` ${map(
+                                html`${map(
                                     lyrics.content,
                                     l =>
                                         html`<timeline-provider tss=${l.tss} tes=${l.tes}

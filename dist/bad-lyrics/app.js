@@ -504,7 +504,7 @@ var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElem
     PlayerW.setTimestamp(this.tss);
   }
   render() {
-    return html2`<div role="button" , @click=${this.onClick}>${this.content}</div>`;
+    return html2`<span role="button" @click=${this.onClick}>${this.content}</span>`;
   }
 };
 AnimatedText.NAME = "animated-text";
@@ -650,7 +650,7 @@ var LyricsWrapper = class extends LitElement2 {
                     <lyrics-container>
                         ${when(
           isWordSync,
-          () => html2` ${map(
+          () => html2`${map(
             lyrics.content,
             (l) => html2`<timeline-provider tss=${l.tss} tes=${l.tes}
                                             >${map(
