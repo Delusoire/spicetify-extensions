@@ -113,3 +113,12 @@ SortBySubMenu.register()
 
 new Topbar.Button("Create a Playlist from Sorted Queue", "plus2px", createPlaylistFromLastSortedQueue)
 new Topbar.Button("Reorder current Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue)
+
+// Other
+
+new ContextMenu.Item(
+    "Select as Sorted Playlists Folder",
+    ([uri]) => (CONFIG.sortedPlaylistsFolderUri = uri),
+    ([uri]) => URI.isFolder(uri),
+    "folder",
+)

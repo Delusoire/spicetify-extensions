@@ -73,7 +73,14 @@ var SettingsSection = class _SettingsSection {
     this.toObject = () => new Proxy(
       {},
       {
-        get: (target, prop) => _SettingsSection.getFieldValue(this.getId(prop.toString()))
+        get: (target, prop) => _SettingsSection.getFieldValue(this.getId(prop.toString())),
+        set: (target, prop, newValue) => {
+          const id = this.getId(prop.toString());
+          if (SettingSection.getFieldValue(id) === newValue)
+            return false;
+          _SettingsSection.setFieldValue(id, newValue);
+          return true;
+        }
       }
     );
     this.render = async () => {

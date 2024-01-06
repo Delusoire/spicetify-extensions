@@ -64,6 +64,12 @@ export class SettingsSection {
             {},
             {
                 get: (target, prop) => SettingsSection.getFieldValue(this.getId(prop.toString())),
+                set: (target, prop, newValue) => {
+                    const id = this.getId(prop.toString())
+                    if (SettingSection.getFieldValue(id) === newValue) return false
+                    SettingsSection.setFieldValue(id, newValue)
+                    return true
+                },
             },
         )
 

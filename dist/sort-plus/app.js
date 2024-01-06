@@ -130,7 +130,14 @@ var SettingsSection = class _SettingsSection {
     this.toObject = () => new Proxy(
       {},
       {
-        get: (target, prop) => _SettingsSection.getFieldValue(this.getId(prop.toString()))
+        get: (target, prop) => _SettingsSection.getFieldValue(this.getId(prop.toString())),
+        set: (target, prop, newValue) => {
+          const id = this.getId(prop.toString());
+          if (SettingSection.getFieldValue(id) === newValue)
+            return false;
+          _SettingsSection.setFieldValue(id, newValue);
+          return true;
+        }
       }
     );
     this.render = async () => {
@@ -729,6 +736,12 @@ var SortBySubMenu = new ContextMenu.SubMenu(
 SortBySubMenu.register();
 new Topbar.Button("Create a Playlist from Sorted Queue", "plus2px", createPlaylistFromLastSortedQueue);
 new Topbar.Button("Reorder current Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue);
+new ContextMenu.Item(
+  "Select as Sorted Playlists Folder",
+  ([uri]) => CONFIG.sortedPlaylistsFolderUri = uri,
+  ([uri]) => URI6.isFolder(uri),
+  "folder"
+);
 export {
   lastFetchedUri,
   lastSortAction,
