@@ -312,7 +312,7 @@ var PlayerW = new class {
 // extensions/bad-lyrics/components/components.ts
 import { provide } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
-import { LitElement, css, html } from "https://esm.sh/lit";
+import { LitElement as LitElement2, css, html as html2 } from "https://esm.sh/lit";
 import { customElement, property as property2, query, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { when } from "https://esm.sh/lit/directives/when.js";
@@ -340,6 +340,7 @@ var loadedLyricsTypeCtx = createContext("loadedLyricsType");
 
 // extensions/bad-lyrics/components/mixins.ts
 import { consume } from "https://esm.sh/@lit/context";
+import { html } from "https://esm.sh/lit";
 import { property, queryAssignedElements } from "https://esm.sh/lit/decorators.js";
 var SyncedMixin = (superClass) => {
   class mixedClass extends superClass {
@@ -426,6 +427,9 @@ var SyncedContainerMixin = (superClass) => {
         child.updateProgress(progress, depthToActiveAncestor + (isActive ? 0 : 1));
       });
     }
+    render() {
+      return html`<slot></slot><br />`;
+    }
   }
   __decorateClass([
     queryAssignedElements()
@@ -479,7 +483,7 @@ var scaleInterpolator = new MonotoneNormalSpline([
   [1.2, 1.01],
   [1.5, 1]
 ]);
-var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement))) {
+var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement2))) {
   animateContent(depthToActiveAncestor) {
     const nextGradientOpacity = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5);
     const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
@@ -500,16 +504,7 @@ var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElem
     PlayerW.setTimestamp(this.tss);
   }
   render() {
-    return html`<div role="button" , @click=${this.onClick}>
-            ${when(
-      this.split,
-      () => {
-        const content = this.content.split("");
-        return html`${map(content, (c) => html`<span>${c === " " ? "\xA0" : c}</span>`)}`;
-      },
-      () => html`<span>${this.content}</span>`
-    )}
-        </div>`;
+    return html2`<div role="button" , @click=${this.onClick}>${this.content}</div>`;
   }
 };
 AnimatedText.NAME = "animated-text";
@@ -534,7 +529,32 @@ __decorateClass([
 AnimatedText = __decorateClass([
   customElement(AnimatedText.NAME)
 ], AnimatedText);
-var TimelineProvider = class extends SyncedContainerMixin(SyncedMixin(LitElement)) {
+var DetailTimelineProvider = class extends SyncedContainerMixin(SyncedMixin(LitElement2)) {
+  static {
+    this.NAME = "detail-timeline-provider";
+  }
+  static {
+    this.styles = css`
+        :host {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    `;
+  }
+  computeChildProgress(rp, child) {
+    if (!this.intermediatePositions) {
+      const childs = Array.from(this.childs);
+      const partialWidths = childs.reduce(
+        (partialWidths2, child2) => (partialWidths2.push(partialWidths2.at(-1) + child2.offsetWidth), partialWidths2),
+        [0]
+      );
+      this.lastPosition = partialWidths.at(-1);
+      this.intermediatePositions = partialWidths.map((pw) => pw / this.lastPosition);
+    }
+    return remapScalar(this.intermediatePositions[child], this.intermediatePositions[child + 1], rp);
+  }
+};
+var TimelineProvider = class extends SyncedContainerMixin(SyncedMixin(LitElement2)) {
   computeIntermediatePosition(rsp) {
     if (!this.timelineSpline) {
       const childs = Array.from(this.childs);
@@ -554,12 +574,9 @@ var TimelineProvider = class extends SyncedContainerMixin(SyncedMixin(LitElement
     }
     return this.timelineSpline.at(rsp);
   }
-  computeChildProgress(rsp, child) {
-    const sip = this.computeIntermediatePosition(rsp);
+  computeChildProgress(rp, child) {
+    const sip = this.computeIntermediatePosition(rp);
     return remapScalar(this.intermediatePositions[child], this.intermediatePositions[child + 1], sip);
-  }
-  render() {
-    return html`<slot></slot><br />`;
   }
 };
 TimelineProvider.NAME = "timeline-provider";
@@ -572,16 +589,16 @@ TimelineProvider.styles = css`
 TimelineProvider = __decorateClass([
   customElement(TimelineProvider.NAME)
 ], TimelineProvider);
-var LyricsContainer = class extends SyncedContainerMixin(SyncedMixin(LitElement)) {
+var LyricsContainer = class extends SyncedContainerMixin(SyncedMixin(LitElement2)) {
   render() {
-    return html`<slot></slot>`;
+    return html2`<slot></slot>`;
   }
 };
 LyricsContainer.NAME = "lyrics-container";
 LyricsContainer = __decorateClass([
   customElement(LyricsContainer.NAME)
 ], LyricsContainer);
-var LyricsWrapper = class extends LitElement {
+var LyricsWrapper = class extends LitElement2 {
   constructor() {
     super(...arguments);
     this.song = null;
@@ -613,43 +630,62 @@ var LyricsWrapper = class extends LitElement {
   }
   render() {
     if (!this.song) {
-      return html`<div class="info">No Song Loaded</div>`;
+      return html2`<div class="info">No Song Loaded</div>`;
     }
     return this.lyricsTask.render({
       pending: () => {
-        return html`<div class="loading">Fetching Lyrics...</div>`;
+        return html2`<div class="loading">Fetching Lyrics...</div>`;
       },
       complete: (lyrics) => {
         if (!lyrics || lyrics.__type === 0 /* NOT_SYNCED */) {
-          return html`<div class="error">No Lyrics Found</div>`;
+          return html2`<div class="error">No Lyrics Found</div>`;
         }
         const isWordSync = this.loadedLyricsType === 2 /* WORD_SYNCED */;
-        return html`
+        return html2`
                     <style>
                         * {
                             --gradient-angle: ${this.loadedLyricsType === 2 /* WORD_SYNCED */ ? 90 : 180}deg;
                         }
                     </style>
-                    <lyrics-container
-                        >${map(
-          lyrics.content,
-          (l) => html`<timeline-provider tss=${l.tss} tes=${l.tes}
-                                    >${map(
-            l.content,
-            (w) => html`<animated-text
-                                                tss=${w.tss}
-                                                tes=${w.tes}
-                                                content=${w.content}
-                                            ></animated-text>`
-          )}</timeline-provider
-                                >`
+                    <lyrics-container>
+                        ${when(
+          isWordSync,
+          () => html2` ${map(
+            lyrics.content,
+            (l) => html2`<timeline-provider tss=${l.tss} tes=${l.tes}
+                                            >${map(
+              l.content,
+              (w) => html2`<detail-timeline-provider tss=${w.tss} tes=${w.tes}
+                                                        >${map(
+                w.content.split(""),
+                (c) => html2`<animated-text
+                                                                    content=${c === " " ? "\xA0" : c}
+                                                                ></animated-text>`
+              )}</detail-timeline-provider
+                                                    >`
+            )}</timeline-provider
+                                        >`
+          )}`,
+          () => html2`${map(
+            lyrics.content,
+            (l) => html2`<timeline-provider tss=${l.tss} tes=${l.tes}
+                                            >${map(
+              l.content,
+              (wl) => html2`<animated-text
+                                                        tss=${wl.tss}
+                                                        tes=${wl.tes}
+                                                        content=${wl.content}
+                                                    ></animated-text>`
+            )}</timeline-provider
+                                        >`
+          )}`
         )}</lyrics-container
-                    >
+                    >,
                 `;
       },
       error: (e) => {
         console.error(e);
-        return html`<div class="error">Error</div>`;
+        return html2`<div class="error">Error</div>`;
       }
     });
   }

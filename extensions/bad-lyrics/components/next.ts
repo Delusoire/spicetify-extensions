@@ -1,7 +1,7 @@
 import { consume, provide } from "https://esm.sh/@lit/context"
 import { Task } from "https://esm.sh/@lit/task"
 import { LitElement, css, html } from "https://esm.sh/lit"
-import { customElement, property, query, state } from "https://esm.sh/lit/decorators.js"
+import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js"
 import { map } from "https://esm.sh/lit/directives/map.js"
 import { when } from "https://esm.sh/lit/directives/when.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
@@ -15,16 +15,6 @@ import { PlayerW } from "../utils/PlayerW.ts"
 import { Song } from "../utils/Song.ts"
 import { loadedLyricsTypeCtx, scrollTimeoutCtx, spotifyContainerCtx } from "./contexts.ts"
 import { AnimatedMixin, ScrolledMixin, SyncedContainerMixin, SyncedMixin } from "./mixins.ts"
-
-declare global {
-    interface HTMLElementTagNameMap {
-        ["lyrics-wrapper"]: LyricsWrapper
-        ["lyrics-container"]: LyricsContainer
-        ["timeline-provider"]: TimelineProvider
-        ["detail-timeline-provider"]: DetailTimelineProvider
-        ["animated-text"]: AnimatedText
-    }
-}
 
 const opacityInterpolator = new MonotoneNormalSpline([
     [0, 0],
@@ -43,9 +33,9 @@ const glowRadiusInterpolator = new MonotoneNormalSpline([
     [0.6, 3],
     [0.7, 2],
     [0.9, 1],
-    [1, 3],
-    [1.1, 7],
-    [1.25, 100],
+    [1, 0],
+    [1.1, 1.2],
+    [1.25, 1.4],
 ])
 const glowAlphaInterpolator = new MonotoneNormalSpline([
     [0, 0],
@@ -55,7 +45,6 @@ const glowAlphaInterpolator = new MonotoneNormalSpline([
     [0.7, 0.9],
     [1, 1],
     [1.2, 0.6],
-    [1.5, 0],
 ])
 const scaleInterpolator = new MonotoneNormalSpline([
     [-0.5, 1],
@@ -76,12 +65,13 @@ const scaleInterpolator = new MonotoneNormalSpline([
 export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement))) {
     static readonly NAME = "animated-text" as string
 
-    @property()
+    @property({ type: Boolean })
     split!: boolean
 
     static styles = css`
         :host {
             cursor: pointer;
+            display: flex;
             background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
@@ -95,11 +85,20 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
         }
     `
 
+    @consume({ context: loadedLyricsTypeCtx })
+    loadedLyricsType?: LyricsType
+
+    @queryAll("span")
+    cs!: NodeListOf<HTMLSpanElement>
+
+    intermediatePositions?: number[]
+    lastPosition?: number
+    timelineSpline?: Spline<number>
+
     animateContent(depthToActiveAncestor: number) {
         const nextGradientOpacity = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5)
         const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`
         const nextGlowAlpha = glowAlphaInterpolator.at(this.csp)
-        const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`
         const nextGradientStart = `${this.csp * 95}%`
         const nextGradientEnd = `${this.csp * 105}%`
         const nextScale = scaleInterpolator.at(this.csp).toFixed(5)
@@ -109,8 +108,37 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
         this.style.setProperty("--glow-alpha", nextGlowAlpha)
         this.style.setProperty("--gradient-start", nextGradientStart)
         this.style.setProperty("--gradient-end", nextGradientEnd)
-        this.style.setProperty("--y-offset", nextYOffset)
         this.style.scale = nextScale
+
+        if (this.split) {
+            if (!this.intermediatePositions) {
+                const childs = Array.from(this.cs)
+                const partialWidths = childs.reduce(
+                    (partialWidths, child) => (
+                        partialWidths.push(partialWidths.at(-1)! + child.offsetWidth), partialWidths
+                    ),
+                    [0],
+                )
+                this.lastPosition = partialWidths.at(-1)!
+                this.intermediatePositions = partialWidths.map(pw => pw / this.lastPosition!)
+            }
+
+            const sip = this.csp
+
+            this.cs.forEach((c, i) => {
+                const csp = _.clamp(
+                    remapScalar(this.intermediatePositions![i], this.intermediatePositions![i + 1], sip),
+                    -0.5,
+                    1.5,
+                )
+
+                c.style.transform = `translateY(-${this.offsetHeight * 0.12 * csp}px)`
+            })
+        } else {
+            const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`
+
+            this.style.setProperty("--y-offset", nextYOffset)
+        }
     }
 
     onClick() {
@@ -118,42 +146,24 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
     }
 
     render() {
-        return html`<div role="button" , @click=${this.onClick}>${this.content}</div>`
+        return html`
+            ${when(
+                this.split,
+                () => {
+                    const content = this.content.split("")
+                    return html`${map(
+                        content,
+                        c => html`<span role="button" @click=${this.onClick}>${c === " " ? " " : c}</span>`,
+                    )}`
+                },
+                () => html`<span role="button" @click=${this.onClick}>${this.content}</span>`,
+            )}
+        `
     }
 }
 
 interface Spline<A> {
     at(t: number): A
-}
-
-export class DetailTimelineProvider extends SyncedContainerMixin(SyncedMixin(LitElement)) {
-    static readonly NAME = "detail-timeline-provider"
-
-    static styles = css`
-        :host {
-            display: flex;
-            flex-wrap: wrap;
-        }
-    `
-
-    intermediatePositions?: number[]
-    lastPosition?: number
-
-    computeChildProgress(rp: number, child: number) {
-        if (!this.intermediatePositions) {
-            const childs = Array.from(this.childs)
-            const partialWidths = childs.reduce(
-                (partialWidths, child) => (
-                    partialWidths.push(partialWidths.at(-1)! + child.offsetWidth), partialWidths
-                ),
-                [0],
-            )
-            this.lastPosition = partialWidths.at(-1)!
-            this.intermediatePositions = partialWidths.map(pw => pw / this.lastPosition!)
-        }
-
-        return remapScalar(this.intermediatePositions![child], this.intermediatePositions![child + 1], rp)
-    }
 }
 
 @customElement(TimelineProvider.NAME)
@@ -195,9 +205,13 @@ export class TimelineProvider extends SyncedContainerMixin(SyncedMixin(LitElemen
         return this.timelineSpline.at(rsp)
     }
 
-    computeChildProgress(rp: number, child: number) {
-        const sip = this.computeIntermediatePosition(rp)
+    computeChildProgress(rsp: number, child: number) {
+        const sip = this.computeIntermediatePosition(rsp)
         return remapScalar(this.intermediatePositions![child], this.intermediatePositions![child + 1], sip)
+    }
+
+    render() {
+        return html`<slot></slot><br />`
     }
 }
 
@@ -285,47 +299,24 @@ export class LyricsWrapper extends LitElement {
                             --gradient-angle: ${this.loadedLyricsType === LyricsType.WORD_SYNCED ? 90 : 180}deg;
                         }
                     </style>
-                    <lyrics-container>
-                        ${when(
-                            isWordSync,
-                            () =>
-                                html` ${map(
-                                    lyrics.content,
-                                    l =>
-                                        html`<timeline-provider tss=${l.tss} tes=${l.tes}
-                                            >${map(
-                                                l.content,
-                                                w =>
-                                                    html`<detail-timeline-provider tss=${w.tss} tes=${w.tes}
-                                                        >${map(
-                                                            w.content.split(""),
-                                                            c =>
-                                                                html`<animated-text
-                                                                    content=${c === " " ? " " : c}
-                                                                ></animated-text>`,
-                                                        )}</detail-timeline-provider
-                                                    >`,
-                                            )}</timeline-provider
-                                        >`,
-                                )}`,
-                            () =>
-                                html`${map(
-                                    lyrics.content,
-                                    l =>
-                                        html`<timeline-provider tss=${l.tss} tes=${l.tes}
-                                            >${map(
-                                                l.content,
-                                                wl =>
-                                                    html`<animated-text
-                                                        tss=${wl.tss}
-                                                        tes=${wl.tes}
-                                                        content=${wl.content}
-                                                    ></animated-text>`,
-                                            )}</timeline-provider
-                                        >`,
-                                )}`,
+                    <lyrics-container
+                        >${map(
+                            lyrics.content,
+                            l =>
+                                html`<timeline-provider tss=${l.tss} tes=${l.tes}
+                                    >${map(
+                                        l.content,
+                                        w =>
+                                            html`<animated-text
+                                                tss=${w.tss}
+                                                tes=${w.tes}
+                                                content=${w.content}
+                                                split=${isWordSync}
+                                            ></animated-text>`,
+                                    )}</timeline-provider
+                                >`,
                         )}</lyrics-container
-                    >,
+                    >
                 `
             },
             error: e => {

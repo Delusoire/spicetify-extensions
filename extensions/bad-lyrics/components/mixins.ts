@@ -1,5 +1,5 @@
 import { consume } from "https://esm.sh/@lit/context"
-import { LitElement } from "https://esm.sh/lit"
+import { LitElement, html } from "https://esm.sh/lit"
 import { property, queryAssignedElements } from "https://esm.sh/lit/decorators.js"
 
 import { _ } from "../../../shared/deps.ts"
@@ -99,6 +99,10 @@ export const SyncedContainerMixin = <T extends Constructor<LitElement & SyncedMi
                 const isActive = _.inRange(rp, child.tss, child.tes)
                 child.updateProgress(progress, depthToActiveAncestor + (isActive ? 0 : 1))
             })
+        }
+
+        render() {
+            return html`<slot></slot><br />`
         }
     }
 
