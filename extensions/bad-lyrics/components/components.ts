@@ -1,4 +1,4 @@
-import { consume, createContext, provide } from "https://esm.sh/@lit/context"
+import { consume, provide } from "https://esm.sh/@lit/context"
 import { Task } from "https://esm.sh/@lit/task"
 // import { hermite } from "https://esm.sh/@thi.ng/ramp"
 import { LitElement, css, html } from "https://esm.sh/lit"
@@ -7,12 +7,14 @@ import { map } from "https://esm.sh/lit/directives/map.js"
 import { choose } from "https://esm.sh/lit/directives/choose.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
 
-import { _ } from "../../shared/deps.ts"
-import { remapScalar, vectorLerp } from "../../shared/math.ts"
-import { MonotoneNormalSpline } from "./splines/monotoneNormalSpline.ts"
-import { LyricsType } from "./utils/LyricsProvider.ts"
-import { PlayerW } from "./utils/PlayerW.ts"
-import { Song } from "./utils/Song.ts"
+import { _ } from "../../../shared/deps.ts"
+import { remapScalar, vectorLerp } from "../../../shared/math.ts"
+import { MonotoneNormalSpline } from "../splines/monotoneNormalSpline.ts"
+import { LyricsType } from "../utils/LyricsProvider.ts"
+import { PlayerW } from "../utils/PlayerW.ts"
+import { Song } from "../utils/Song.ts"
+import { AnimatedMixin, ScrolledMixin, SyncedMixin } from "./mixins.ts"
+import { loadedLyricsTypeCtx, scrollTimeoutCtx, spotifyContainerCtx } from "./contexts.ts"
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -67,10 +69,6 @@ const scaleInterpolator = new MonotoneNormalSpline([
     [1.2, 1.01],
     [1.5, 1],
 ])
-
-const scrollTimeoutCtx = createContext<number>("scrollTimeout")
-const spotifyContainerCtx = createContext<HTMLElement | undefined>("spotifyContainer")
-const loadedLyricsTypeCtx = createContext<LyricsType>("loadedLyricsType")
 
 interface Spline<A> {
     at(t: number): A
@@ -134,80 +132,6 @@ export class TimelineProvider extends LitElement {
     render() {
         return html`<slot></slot><br />`
     }
-}
-
-type Constructor<T = {}> = new (...args: any[]) => T
-
-export declare class SyncedMixinI {
-    content: string
-    tss: number
-    tes: number
-
-    updateProgress(scaledProgress: number, depthToActiveAncestor: number): void
-}
-
-const SyncedMixin = <T extends Constructor<LitElement>>(superClass: T) => {
-    class mixedClass extends superClass {
-        @property()
-        content = ""
-        @property({ type: Number })
-        tss = 0
-        @property({ type: Number })
-        tes = 1
-
-        updateProgress(scaledProgress: number, depthToActiveAncestor: number) {}
-    }
-
-    return mixedClass as Constructor<SyncedMixinI> & T
-}
-
-const AnimatedMixin = <T extends Constructor<LitElement & SyncedMixinI>>(superClass: T) => {
-    class mixedClass extends superClass {
-        csp!: number
-        updateProgress(scaledProgress: number, depthToActiveAncestor: number) {
-            super.updateProgress(scaledProgress, depthToActiveAncestor)
-            const csp = _.clamp(scaledProgress, -0.5, 1.5)
-            if (this.csp !== csp) {
-                this.csp = csp
-                this.animateContent(depthToActiveAncestor)
-            }
-        }
-        animateContent(depthToActiveAncestor: number) {}
-    }
-
-    return mixedClass
-}
-
-const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(superClass: T) => {
-    class mixedClass extends superClass {
-        @consume({ context: scrollTimeoutCtx, subscribe: true })
-        scrollTimeout = 0
-        @consume({ context: spotifyContainerCtx })
-        spotifyContainer?: HTMLElement
-
-        updateProgress(scaledProgress: number, depthToActiveAncestor: number) {
-            super.updateProgress(scaledProgress, depthToActiveAncestor)
-            const isActive = depthToActiveAncestor === 0
-
-            if (isActive) {
-                if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
-                    const lineHeightHeuristic = this.offsetHeight
-                    const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic
-                    const verticalLinesToActive =
-                        Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight
-
-                    if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
-                        this.spotifyContainer.scrollTo({
-                            top: scrollTop,
-                            behavior: document.visibilityState === "visible" ? "smooth" : "auto",
-                        })
-                    }
-                }
-            }
-        }
-    }
-
-    return mixedClass
 }
 
 @customElement(AnimatedText.NAME)

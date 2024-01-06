@@ -309,11 +309,11 @@ var PlayerW = new class {
   // ms or percent
 }();
 
-// extensions/bad-lyrics/components.ts
-import { consume, createContext, provide } from "https://esm.sh/@lit/context";
+// extensions/bad-lyrics/components/components.ts
+import { consume as consume2, provide } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
 import { LitElement, css, html } from "https://esm.sh/lit";
-import { customElement, property, queryAll, queryAssignedElements, state } from "https://esm.sh/lit/decorators.js";
+import { customElement, property as property2, queryAll, queryAssignedElements, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { choose } from "https://esm.sh/lit/directives/choose.js";
 
@@ -332,103 +332,17 @@ var MonotoneNormalSpline = class extends MonotoneCubicHermitInterpolation {
   }
 };
 
-// extensions/bad-lyrics/components.ts
-var opacityInterpolator = new MonotoneNormalSpline([
-  [0, 0],
-  [0.1, 0.1],
-  [0.2, 0.3],
-  [0.5, 0.55],
-  [0.7, 0.8],
-  [1, 1],
-  [1.2, 0.8],
-  [1.5, 0.7]
-]);
-var glowRadiusInterpolator = new MonotoneNormalSpline([
-  [0, 100],
-  [0.2, 7],
-  [0.4, 5],
-  [0.6, 3],
-  [0.7, 2],
-  [0.9, 1],
-  [1, 3],
-  [1.1, 7],
-  [1.25, 100]
-]);
-var glowAlphaInterpolator = new MonotoneNormalSpline([
-  [0, 0],
-  [0.1, 0.2],
-  [0.2, 0.35],
-  [0.5, 0.65],
-  [0.7, 0.9],
-  [1, 1],
-  [1.2, 0.6],
-  [1.5, 0]
-]);
-var scaleInterpolator = new MonotoneNormalSpline([
-  [-0.5, 1],
-  [-0.2, 0.99],
-  [-0.1, 0.98],
-  [0, 0.94],
-  [0.1, 0.99],
-  [0.2, 1],
-  [0.5, 1.02],
-  [0.7, 1.06],
-  [0.9, 1.04],
-  [1, 1.02],
-  [1.2, 1.01],
-  [1.5, 1]
-]);
+// extensions/bad-lyrics/components/mixins.ts
+import { consume } from "https://esm.sh/@lit/context";
+import { property } from "https://esm.sh/lit/decorators.js";
+
+// extensions/bad-lyrics/components/contexts.ts
+import { createContext } from "https://esm.sh/@lit/context";
 var scrollTimeoutCtx = createContext("scrollTimeout");
 var spotifyContainerCtx = createContext("spotifyContainer");
 var loadedLyricsTypeCtx = createContext("loadedLyricsType");
-var TimelineProvider = class extends LitElement {
-  computeIntermediatePosition(rsp) {
-    if (!this.timelineSpline) {
-      const childs = Array.from(this.childs);
-      const partialWidths = childs.reduce(
-        (partialWidths2, child) => (partialWidths2.push(partialWidths2.at(-1) + child.offsetWidth), partialWidths2),
-        [0]
-      );
-      this.lastPosition = partialWidths.at(-1);
-      this.intermediatePositions = partialWidths.map((pw) => pw / this.lastPosition);
-      const pairs = _.zip(
-        childs.map((child) => child.tss).concat(childs.at(-1).tes),
-        this.intermediatePositions
-      );
-      const first = vectorLerp(pairs[0], pairs[1], -1);
-      const last = vectorLerp(pairs.at(-2), pairs.at(-1), 2);
-      this.timelineSpline = new MonotoneNormalSpline([first, ...pairs, last]);
-    }
-    return this.timelineSpline.at(rsp);
-  }
-  updateProgress(rsp, depthToActiveAncestor) {
-    const childs = Array.from(this.childs);
-    if (childs.length === 0)
-      return;
-    const sip = this.computeIntermediatePosition(rsp);
-    childs.forEach((child, i) => {
-      const progress = remapScalar(this.intermediatePositions[i], this.intermediatePositions[i + 1], sip);
-      const isActive = _.inRange(rsp, child.tss, child.tes);
-      child.updateProgress(progress, depthToActiveAncestor + (isActive ? 0 : 1));
-    });
-  }
-  render() {
-    return html`<slot></slot><br />`;
-  }
-};
-TimelineProvider.NAME = "timeline-provider";
-TimelineProvider.styles = css`
-        :host {
-            display: flex;
-            flex-wrap: wrap;
-        }
-    `;
-__decorateClass([
-  queryAssignedElements()
-], TimelineProvider.prototype, "childs", 2);
-TimelineProvider = __decorateClass([
-  customElement(TimelineProvider.NAME)
-], TimelineProvider);
+
+// extensions/bad-lyrics/components/mixins.ts
 var SyncedMixin = (superClass) => {
   class mixedClass extends superClass {
     constructor() {
@@ -498,6 +412,101 @@ var ScrolledMixin = (superClass) => {
   ], mixedClass.prototype, "spotifyContainer", 2);
   return mixedClass;
 };
+
+// extensions/bad-lyrics/components/components.ts
+var opacityInterpolator = new MonotoneNormalSpline([
+  [0, 0],
+  [0.1, 0.1],
+  [0.2, 0.3],
+  [0.5, 0.55],
+  [0.7, 0.8],
+  [1, 1],
+  [1.2, 0.8],
+  [1.5, 0.7]
+]);
+var glowRadiusInterpolator = new MonotoneNormalSpline([
+  [0, 100],
+  [0.2, 7],
+  [0.4, 5],
+  [0.6, 3],
+  [0.7, 2],
+  [0.9, 1],
+  [1, 3],
+  [1.1, 7],
+  [1.25, 100]
+]);
+var glowAlphaInterpolator = new MonotoneNormalSpline([
+  [0, 0],
+  [0.1, 0.2],
+  [0.2, 0.35],
+  [0.5, 0.65],
+  [0.7, 0.9],
+  [1, 1],
+  [1.2, 0.6],
+  [1.5, 0]
+]);
+var scaleInterpolator = new MonotoneNormalSpline([
+  [-0.5, 1],
+  [-0.2, 0.99],
+  [-0.1, 0.98],
+  [0, 0.94],
+  [0.1, 0.99],
+  [0.2, 1],
+  [0.5, 1.02],
+  [0.7, 1.06],
+  [0.9, 1.04],
+  [1, 1.02],
+  [1.2, 1.01],
+  [1.5, 1]
+]);
+var TimelineProvider = class extends LitElement {
+  computeIntermediatePosition(rsp) {
+    if (!this.timelineSpline) {
+      const childs = Array.from(this.childs);
+      const partialWidths = childs.reduce(
+        (partialWidths2, child) => (partialWidths2.push(partialWidths2.at(-1) + child.offsetWidth), partialWidths2),
+        [0]
+      );
+      this.lastPosition = partialWidths.at(-1);
+      this.intermediatePositions = partialWidths.map((pw) => pw / this.lastPosition);
+      const pairs = _.zip(
+        childs.map((child) => child.tss).concat(childs.at(-1).tes),
+        this.intermediatePositions
+      );
+      const first = vectorLerp(pairs[0], pairs[1], -1);
+      const last = vectorLerp(pairs.at(-2), pairs.at(-1), 2);
+      this.timelineSpline = new MonotoneNormalSpline([first, ...pairs, last]);
+    }
+    return this.timelineSpline.at(rsp);
+  }
+  updateProgress(rsp, depthToActiveAncestor) {
+    const childs = Array.from(this.childs);
+    if (childs.length === 0)
+      return;
+    const sip = this.computeIntermediatePosition(rsp);
+    childs.forEach((child, i) => {
+      const progress = remapScalar(this.intermediatePositions[i], this.intermediatePositions[i + 1], sip);
+      const isActive = _.inRange(rsp, child.tss, child.tes);
+      child.updateProgress(progress, depthToActiveAncestor + (isActive ? 0 : 1));
+    });
+  }
+  render() {
+    return html`<slot></slot><br />`;
+  }
+};
+TimelineProvider.NAME = "timeline-provider";
+TimelineProvider.styles = css`
+        :host {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    `;
+__decorateClass([
+  queryAssignedElements()
+], TimelineProvider.prototype, "childs", 2);
+TimelineProvider = __decorateClass([
+  customElement(TimelineProvider.NAME)
+], TimelineProvider);
 var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement))) {
   constructor() {
     super(...arguments);
@@ -554,7 +563,7 @@ AnimatedText.styles = css`
         }
     `;
 __decorateClass([
-  consume({ context: loadedLyricsTypeCtx })
+  consume2({ context: loadedLyricsTypeCtx })
 ], AnimatedText.prototype, "loadedLyricsType", 2);
 AnimatedText = __decorateClass([
   customElement(AnimatedText.NAME)
@@ -636,7 +645,7 @@ LyricsContainer.styles = css`
         }
     `;
 __decorateClass([
-  property({ attribute: false })
+  property2({ attribute: false })
 ], LyricsContainer.prototype, "song", 2);
 __decorateClass([
   provide({ context: loadedLyricsTypeCtx }),

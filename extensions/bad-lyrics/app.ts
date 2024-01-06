@@ -3,7 +3,7 @@ import { render } from "https://esm.sh/lit"
 import { PermanentMutationObserver } from "../../shared/util.ts"
 
 import { PlayerW } from "./utils/PlayerW.ts"
-import { LyricsContainer } from "./components.ts"
+import { LyricsContainer } from "./components/components.ts"
 
 const injectNPVLyrics = () => {
     const lyricsContainer = document.querySelector<HTMLDivElement>(".main-nowPlayingView-lyricsContent")
