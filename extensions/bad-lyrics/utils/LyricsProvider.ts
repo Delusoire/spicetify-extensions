@@ -45,7 +45,6 @@ export type S<A> = {
 }
 
 export enum LyricsType {
-    NONE,
     NOT_SYNCED,
     LINE_SYNCED,
     WORD_SYNCED,

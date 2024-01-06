@@ -1,11 +1,11 @@
 import { consume, provide } from "https://esm.sh/@lit/context"
 import { Task } from "https://esm.sh/@lit/task"
-// import { hermite } from "https://esm.sh/@thi.ng/ramp"
 import { LitElement, css, html } from "https://esm.sh/lit"
-import { customElement, property, query, state } from "https://esm.sh/lit/decorators.js"
-import { choose } from "https://esm.sh/lit/directives/choose.js"
+import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js"
 import { map } from "https://esm.sh/lit/directives/map.js"
+import { when } from "https://esm.sh/lit/directives/when.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
+// import { hermite } from "https://esm.sh/@thi.ng/ramp"
 
 import { _ } from "../../../shared/deps.ts"
 import { remapScalar, vectorLerp } from "../../../shared/math.ts"
@@ -75,6 +75,9 @@ const scaleInterpolator = new MonotoneNormalSpline([
 export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement))) {
     static readonly NAME = "animated-text" as string
 
+    @property({ type: Boolean })
+    split!: boolean
+
     static styles = css`
         :host {
             cursor: pointer;
@@ -92,24 +95,62 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
     `
 
     @consume({ context: loadedLyricsTypeCtx })
-    loadedLyricsType = LyricsType.NONE
+    loadedLyricsType?: LyricsType
+
+    @queryAll("span")
+    cs!: NodeListOf<HTMLSpanElement>
+
+    intermediatePositions?: number[]
+    lastPosition?: number
+    timelineSpline?: Spline<number>
 
     animateContent(depthToActiveAncestor: number) {
         const nextGradientOpacity = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5)
         const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`
         const nextGlowAlpha = glowAlphaInterpolator.at(this.csp)
-        const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`
         const nextGradientStart = `${this.csp * 95}%`
         const nextGradientEnd = `${this.csp * 105}%`
-        const nextScale = scaleInterpolator.at(this.csp).toFixed(5)
 
         this.style.setProperty("--gradient-alpha", nextGradientOpacity)
         this.style.setProperty("--glow-radius", nextGlowRadius)
         this.style.setProperty("--glow-alpha", nextGlowAlpha)
         this.style.setProperty("--gradient-start", nextGradientStart)
         this.style.setProperty("--gradient-end", nextGradientEnd)
-        this.style.setProperty("--y-offset", nextYOffset)
-        this.style.scale = nextScale
+
+        if (this.split) {
+            if (!this.timelineSpline) {
+                const childs = Array.from(this.cs)
+                const partialWidths = childs.reduce(
+                    (partialWidths, child) => (
+                        partialWidths.push(partialWidths.at(-1)! + child.offsetWidth), partialWidths
+                    ),
+                    [0],
+                )
+                this.lastPosition = partialWidths.at(-1)!
+                this.intermediatePositions = partialWidths.map(pw => pw / this.lastPosition!)
+            }
+
+            const sip = this.csp
+
+            this.cs.forEach((c, i) => {
+                const csp = _.clamp(
+                    remapScalar(this.intermediatePositions![i], this.intermediatePositions![i + 1], sip),
+                    -0.5,
+                    1.5,
+                )
+                const nextYOffset = `-${this.offsetHeight * 0.12 * csp}px`
+                const nextScale = scaleInterpolator.at(csp).toFixed(5)
+
+                c.style.setProperty("--y-offset", nextYOffset)
+                c.style.scale = nextScale
+            })
+        } else {
+            const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`
+            const nextScale = scaleInterpolator.at(this.csp).toFixed(5)
+
+            this.style.setProperty("--y-offset", nextYOffset)
+            this.style.scale = nextScale
+        }
     }
 
     onClick() {
@@ -118,16 +159,14 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
 
     render() {
         return html`<div role="button" , @click=${this.onClick}>
-            ${choose(this.loadedLyricsType, [
-                [LyricsType.LINE_SYNCED, () => html`<span>${this.content}</span>`],
-                [
-                    LyricsType.WORD_SYNCED,
-                    () => {
-                        const content = this.content.split("")
-                        return html`${map(content, c => html`<span>${c === " " ? " " : c}</span>`)}`
-                    },
-                ],
-            ])}
+            ${when(
+                this.split,
+                () => {
+                    const content = this.content.split("")
+                    return html`${map(content, c => html`<span>${c === " " ? " " : c}</span>`)}`
+                },
+                () => html`<span>${this.content}</span>`,
+            )}
         </div>`
     }
 }
@@ -210,18 +249,18 @@ export class LyricsWrapper extends LitElement {
 
     @provide({ context: loadedLyricsTypeCtx })
     @state()
-    loadedLyricsType = LyricsType.NONE
+    loadedLyricsType?: LyricsType
 
     updateSong = (song: Song | null) => {
         this.song = song
-        this.loadedLyricsType = LyricsType.NONE
+        this.loadedLyricsType = undefined
     }
 
     private lyricsTask = new Task(this, {
         task: async ([song]) => {
             const availableLyrics = await song?.lyrics
             const lyrics = Object.values(availableLyrics!)[0]
-            this.loadedLyricsType = lyrics ? lyrics.__type : LyricsType.NONE
+            this.loadedLyricsType = lyrics?.__type
             return lyrics
         },
         args: () => [this.song],
@@ -230,7 +269,7 @@ export class LyricsWrapper extends LitElement {
     @query(LyricsContainer.NAME)
     container?: LyricsContainer
     public updateProgress(progress: number) {
-        if (this.loadedLyricsType === LyricsType.NONE || this.loadedLyricsType === LyricsType.NOT_SYNCED) return
+        if (this.loadedLyricsType === undefined || this.loadedLyricsType === LyricsType.NOT_SYNCED) return
         this.container?.updateProgress(progress, 0)
     }
 
@@ -261,6 +300,8 @@ export class LyricsWrapper extends LitElement {
                     return html`<div class="error">No Lyrics Found</div>`
                 }
 
+                const isWordSync = this.loadedLyricsType === LyricsType.WORD_SYNCED
+
                 return html`
                     <style>
                         * {
@@ -279,6 +320,7 @@ export class LyricsWrapper extends LitElement {
                                                 tss=${w.tss}
                                                 tes=${w.tes}
                                                 content=${w.content}
+                                                split=${isWordSync}
                                             ></animated-text>`,
                                     )}</timeline-provider
                                 >`,

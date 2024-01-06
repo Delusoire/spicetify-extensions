@@ -152,7 +152,7 @@ var findLyrics = async (info) => {
         ]
       };
     }).zip(wordSynced).flatten().compact().value();
-    l.wordSynced = wrapInContainerSyncedType(3 /* WORD_SYNCED */, wordSyncedFilled);
+    l.wordSynced = wrapInContainerSyncedType(2 /* WORD_SYNCED */, wordSyncedFilled);
   }
   if (track.has_subtitles) {
     const subtitle = JSON.parse(subtitles[0].subtitle_body);
@@ -161,7 +161,7 @@ var findLyrics = async (info) => {
       const tes = subtitle2[i + 1]?.time.total / track.track_length || 1;
       return { tss, tes, content: [{ tss, tes, content: sLine.text }] };
     });
-    l.lineSynced = wrapInContainerSyncedType(2 /* LINE_SYNCED */, lineSynced);
+    l.lineSynced = wrapInContainerSyncedType(1 /* LINE_SYNCED */, lineSynced);
   }
   if (track.has_lyrics || track.has_lyrics_crowd) {
   }
@@ -313,9 +313,9 @@ var PlayerW = new class {
 import { consume as consume2, provide } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
 import { LitElement, css, html } from "https://esm.sh/lit";
-import { customElement, property as property2, query, state } from "https://esm.sh/lit/decorators.js";
-import { choose } from "https://esm.sh/lit/directives/choose.js";
+import { customElement, property as property2, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
+import { when } from "https://esm.sh/lit/directives/when.js";
 
 // shared/math.ts
 var scalarLerp = (s, e, t) => s + (e - s) * t;
@@ -480,41 +480,59 @@ var scaleInterpolator = new MonotoneNormalSpline([
   [1.5, 1]
 ]);
 var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement))) {
-  constructor() {
-    super(...arguments);
-    this.loadedLyricsType = 0 /* NONE */;
-  }
   animateContent(depthToActiveAncestor) {
     const nextGradientOpacity = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5);
     const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
     const nextGlowAlpha = glowAlphaInterpolator.at(this.csp);
-    const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`;
     const nextGradientStart = `${this.csp * 95}%`;
     const nextGradientEnd = `${this.csp * 105}%`;
-    const nextScale = scaleInterpolator.at(this.csp).toFixed(5);
     this.style.setProperty("--gradient-alpha", nextGradientOpacity);
     this.style.setProperty("--glow-radius", nextGlowRadius);
     this.style.setProperty("--glow-alpha", nextGlowAlpha);
     this.style.setProperty("--gradient-start", nextGradientStart);
     this.style.setProperty("--gradient-end", nextGradientEnd);
-    this.style.setProperty("--y-offset", nextYOffset);
-    this.style.scale = nextScale;
+    if (this.split) {
+      if (!this.timelineSpline) {
+        const childs = Array.from(this.cs);
+        const partialWidths = childs.reduce(
+          (partialWidths2, child) => (partialWidths2.push(partialWidths2.at(-1) + child.offsetWidth), partialWidths2),
+          [0]
+        );
+        this.lastPosition = partialWidths.at(-1);
+        this.intermediatePositions = partialWidths.map((pw) => pw / this.lastPosition);
+      }
+      const sip = this.csp;
+      this.cs.forEach((c, i) => {
+        const csp = _.clamp(
+          remapScalar(this.intermediatePositions[i], this.intermediatePositions[i + 1], sip),
+          -0.5,
+          1.5
+        );
+        const nextYOffset = `-${this.offsetHeight * 0.12 * csp}px`;
+        const nextScale = scaleInterpolator.at(csp).toFixed(5);
+        c.style.setProperty("--y-offset", nextYOffset);
+        c.style.scale = nextScale;
+      });
+    } else {
+      const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`;
+      const nextScale = scaleInterpolator.at(this.csp).toFixed(5);
+      this.style.setProperty("--y-offset", nextYOffset);
+      this.style.scale = nextScale;
+    }
   }
   onClick() {
     PlayerW.setTimestamp(this.tss);
   }
   render() {
     return html`<div role="button" , @click=${this.onClick}>
-            ${choose(this.loadedLyricsType, [
-      [2 /* LINE_SYNCED */, () => html`<span>${this.content}</span>`],
-      [
-        3 /* WORD_SYNCED */,
-        () => {
-          const content = this.content.split("");
-          return html`${map(content, (c) => html`<span>${c === " " ? "\xA0" : c}</span>`)}`;
-        }
-      ]
-    ])}
+            ${when(
+      this.split,
+      () => {
+        const content = this.content.split("");
+        return html`${map(content, (c) => html`<span>${c === " " ? "\xA0" : c}</span>`)}`;
+      },
+      () => html`<span>${this.content}</span>`
+    )}
         </div>`;
   }
 };
@@ -535,8 +553,14 @@ AnimatedText.styles = css`
         }
     `;
 __decorateClass([
+  property2({ type: Boolean })
+], AnimatedText.prototype, "split", 2);
+__decorateClass([
   consume2({ context: loadedLyricsTypeCtx })
 ], AnimatedText.prototype, "loadedLyricsType", 2);
+__decorateClass([
+  queryAll("span")
+], AnimatedText.prototype, "cs", 2);
 AnimatedText = __decorateClass([
   customElement(AnimatedText.NAME)
 ], AnimatedText);
@@ -591,16 +615,15 @@ var LyricsWrapper = class extends LitElement {
   constructor() {
     super(...arguments);
     this.song = null;
-    this.loadedLyricsType = 0 /* NONE */;
     this.updateSong = (song) => {
       this.song = song;
-      this.loadedLyricsType = 0 /* NONE */;
+      this.loadedLyricsType = void 0;
     };
     this.lyricsTask = new Task(this, {
       task: async ([song]) => {
         const availableLyrics = await song?.lyrics;
         const lyrics = Object.values(availableLyrics)[0];
-        this.loadedLyricsType = lyrics ? lyrics.__type : 0 /* NONE */;
+        this.loadedLyricsType = lyrics?.__type;
         return lyrics;
       },
       args: () => [this.song]
@@ -609,7 +632,7 @@ var LyricsWrapper = class extends LitElement {
     this.spotifyContainer = document.querySelector("aside div.main-nowPlayingView-lyricsContent.injected") ?? void 0;
   }
   updateProgress(progress) {
-    if (this.loadedLyricsType === 0 /* NONE */ || this.loadedLyricsType === 1 /* NOT_SYNCED */)
+    if (this.loadedLyricsType === void 0 || this.loadedLyricsType === 0 /* NOT_SYNCED */)
       return;
     this.container?.updateProgress(progress, 0);
   }
@@ -627,13 +650,14 @@ var LyricsWrapper = class extends LitElement {
         return html`<div class="loading">Fetching Lyrics...</div>`;
       },
       complete: (lyrics) => {
-        if (!lyrics || lyrics.__type === 1 /* NOT_SYNCED */) {
+        if (!lyrics || lyrics.__type === 0 /* NOT_SYNCED */) {
           return html`<div class="error">No Lyrics Found</div>`;
         }
+        const isWordSync = this.loadedLyricsType === 2 /* WORD_SYNCED */;
         return html`
                     <style>
                         * {
-                            --gradient-angle: ${this.loadedLyricsType === 3 /* WORD_SYNCED */ ? 90 : 180}deg;
+                            --gradient-angle: ${this.loadedLyricsType === 2 /* WORD_SYNCED */ ? 90 : 180}deg;
                         }
                     </style>
                     <lyrics-container
@@ -646,6 +670,7 @@ var LyricsWrapper = class extends LitElement {
                                                 tss=${w.tss}
                                                 tes=${w.tes}
                                                 content=${w.content}
+                                                split=${isWordSync}
                                             ></animated-text>`
           )}</timeline-provider
                                 >`
