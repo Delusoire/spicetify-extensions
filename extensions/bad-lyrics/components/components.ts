@@ -261,26 +261,30 @@ export class LyricsWrapper extends LitElement {
                     return html`<div class="error">No Lyrics Found</div>`
                 }
 
-                return html` <style>
+                return html`
+                    <style>
                         * {
                             --gradient-angle: ${this.loadedLyricsType === LyricsType.WORD_SYNCED ? 90 : 180}deg;
                         }
                     </style>
-                    ${map(
-                        lyrics.content,
-                        l =>
-                            html`<timeline-provider tss=${l.tss} tes=${l.tes}
-                                >${map(
-                                    l.content,
-                                    w =>
-                                        html`<animated-text
-                                            tss=${w.tss}
-                                            tes=${w.tes}
-                                            content=${w.content}
-                                        ></animated-text>`,
-                                )}</timeline-provider
-                            >`,
-                    )}`
+                    <lyrics-container
+                        >${map(
+                            lyrics.content,
+                            l =>
+                                html`<timeline-provider tss=${l.tss} tes=${l.tes}
+                                    >${map(
+                                        l.content,
+                                        w =>
+                                            html`<animated-text
+                                                tss=${w.tss}
+                                                tes=${w.tes}
+                                                content=${w.content}
+                                            ></animated-text>`,
+                                    )}</timeline-provider
+                                >`,
+                        )}</lyrics-container
+                    >
+                `
             },
             error: e => {
                 console.error(e)

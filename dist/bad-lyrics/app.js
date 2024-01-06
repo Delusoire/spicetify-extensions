@@ -630,24 +630,28 @@ var LyricsWrapper = class extends LitElement {
         if (!lyrics || lyrics.__type === 1 /* NOT_SYNCED */) {
           return html`<div class="error">No Lyrics Found</div>`;
         }
-        return html` <style>
+        return html`
+                    <style>
                         * {
                             --gradient-angle: ${this.loadedLyricsType === 3 /* WORD_SYNCED */ ? 90 : 180}deg;
                         }
                     </style>
-                    ${map(
+                    <lyrics-container
+                        >${map(
           lyrics.content,
           (l) => html`<timeline-provider tss=${l.tss} tes=${l.tes}
-                                >${map(
+                                    >${map(
             l.content,
             (w) => html`<animated-text
-                                            tss=${w.tss}
-                                            tes=${w.tes}
-                                            content=${w.content}
-                                        ></animated-text>`
+                                                tss=${w.tss}
+                                                tes=${w.tes}
+                                                content=${w.content}
+                                            ></animated-text>`
           )}</timeline-provider
-                            >`
-        )}`;
+                                >`
+        )}</lyrics-container
+                    >
+                `;
       },
       error: (e) => {
         console.error(e);
