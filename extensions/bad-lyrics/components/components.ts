@@ -100,7 +100,7 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
         const nextGradientAlpha = opacityInterpolator.at(this.csp).toFixed(5)
         const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`
         const nextGlowAlpha = glowAlphaInterpolator.at(this.csp)
-        const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`
+        const nextYOffset = `-${this.offsetHeight * 0.1 * this.csp}px`
         const nextGradientStart = `${this.csp * 95}%`
         const nextGradientEnd = `${this.csp * 105}%`
         const nextScale = scaleInterpolator.at(this.csp).toFixed(5)
