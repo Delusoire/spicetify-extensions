@@ -489,7 +489,7 @@ var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElem
     this.xxx = 0;
   }
   animateContent(depthToActiveAncestor) {
-    this.xxx = this.depthToActive;
+    this.xxx = depthToActiveAncestor;
     const nextGradientAlpha = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5);
     const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
     const nextGlowAlpha = glowAlphaInterpolator.at(this.csp);
