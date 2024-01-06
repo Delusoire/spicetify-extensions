@@ -117,8 +117,8 @@ new Topbar.Button("Reorder current Playlist like Sorted Queue", "chart-down", re
 // Other
 
 new ContextMenu.Item(
-    "Select as Sorted Playlists Folder",
+    "Choose for Sorted Playlists",
     ([uri]) => (CONFIG.sortedPlaylistsFolderUri = uri),
     ([uri]) => URI.isFolder(uri),
-    "folder",
+    "playlist-folder",
 ).register()
