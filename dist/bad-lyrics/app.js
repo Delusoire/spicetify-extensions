@@ -451,9 +451,9 @@ var glowRadiusInterpolator = new MonotoneNormalSpline([
   [0.6, 3],
   [0.7, 2],
   [0.9, 1],
-  [1, 3],
-  [1.1, 7],
-  [1.25, 100]
+  [1, 0],
+  [1.1, 1.2],
+  [1.25, 1.4]
 ]);
 var glowAlphaInterpolator = new MonotoneNormalSpline([
   [0, 0],
@@ -462,8 +462,7 @@ var glowAlphaInterpolator = new MonotoneNormalSpline([
   [0.5, 0.65],
   [0.7, 0.9],
   [1, 1],
-  [1.2, 0.6],
-  [1.5, 0]
+  [1.2, 0.6]
 ]);
 var scaleInterpolator = new MonotoneNormalSpline([
   [-0.5, 1],
