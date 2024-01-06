@@ -34,15 +34,17 @@ export const SyncedMixin = <T extends Constructor<LitElement>>(superClass: T) =>
 export const AnimatedMixin = <T extends Constructor<LitElement & SyncedMixinI>>(superClass: T) => {
     class mixedClass extends superClass {
         csp!: number
+        dtaa!: number
         updateProgress(scaledProgress: number, depthToActiveAncestor: number) {
             super.updateProgress(scaledProgress, depthToActiveAncestor)
-            const csp = _.clamp(scaledProgress, -0.5, 1.5)
-            if (this.csp !== csp) {
-                this.csp = csp
-                this.animateContent(depthToActiveAncestor)
+            const clampedScaledProgress = _.clamp(scaledProgress, -0.5, 1.5)
+            if (this.csp !== clampedScaledProgress || this.dtaa !== depthToActiveAncestor) {
+                this.csp = clampedScaledProgress
+                this.dtaa = depthToActiveAncestor
+                this.animateContent()
             }
         }
-        animateContent(depthToActiveAncestor: number) {}
+        animateContent() {}
     }
 
     return mixedClass

@@ -368,13 +368,14 @@ var AnimatedMixin = (superClass) => {
   class mixedClass extends superClass {
     updateProgress(scaledProgress, depthToActiveAncestor) {
       super.updateProgress(scaledProgress, depthToActiveAncestor);
-      const csp = _.clamp(scaledProgress, -0.5, 1.5);
-      if (this.csp !== csp) {
-        this.csp = csp;
-        this.animateContent(depthToActiveAncestor);
+      const clampedScaledProgress = _.clamp(scaledProgress, -0.5, 1.5);
+      if (this.csp !== clampedScaledProgress || this.dtaa !== depthToActiveAncestor) {
+        this.csp = clampedScaledProgress;
+        this.dtaa = depthToActiveAncestor;
+        this.animateContent();
       }
     }
-    animateContent(depthToActiveAncestor) {
+    animateContent() {
     }
   }
   return mixedClass;
@@ -484,13 +485,8 @@ var scaleInterpolator = new MonotoneNormalSpline([
   [1.5, 1]
 ]);
 var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement2))) {
-  constructor() {
-    super(...arguments);
-    this.xxx = 0;
-  }
-  animateContent(depthToActiveAncestor) {
-    this.xxx = depthToActiveAncestor;
-    const nextGradientAlpha = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5);
+  animateContent() {
+    const nextGradientAlpha = (opacityInterpolator.at(this.csp) * 0.9 ** this.dtaa).toFixed(5);
     const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
     const nextGlowAlpha = glowAlphaInterpolator.at(this.csp);
     const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`;
