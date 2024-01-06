@@ -95,8 +95,11 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
         }
     `
 
+    xxx = 0
+
     animateContent(depthToActiveAncestor: number) {
-        const nextGradientOpacity = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5)
+        xxx = this.depthToActive
+        const nextGradientAlpha = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5)
         const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`
         const nextGlowAlpha = glowAlphaInterpolator.at(this.csp)
         const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`
@@ -104,7 +107,7 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
         const nextGradientEnd = `${this.csp * 105}%`
         const nextScale = scaleInterpolator.at(this.csp).toFixed(5)
 
-        this.style.setProperty("--gradient-alpha", nextGradientOpacity)
+        this.style.setProperty("--gradient-alpha", nextGradientAlpha)
         this.style.setProperty("--glow-radius", nextGlowRadius)
         this.style.setProperty("--glow-alpha", nextGlowAlpha)
         this.style.setProperty("--gradient-start", nextGradientStart)
