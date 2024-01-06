@@ -578,24 +578,23 @@ var LyricsContainer = class extends LitElement {
         if (!lyrics || lyrics.__type === 1 /* NOT_SYNCED */) {
           return html`<div class="error">No Lyrics Found</div>`;
         }
-        const isWordSynced = this.loadedLyricsType === 3 /* WORD_SYNCED */;
-        const style = [
-          ["--gradient-angle", `${isWordSynced ? 90 : 180}deg`],
-          ["--animated-text-bg-color", isWordSynced ? "black" : "white"],
-          [""]
-        ].map((a) => a.join(": ")).join("; ");
-        return html`${map(
+        return html` <style>
+                        * {
+                            --gradient-angle: ${this.loadedLyricsType === 3 /* WORD_SYNCED */ ? 90 : 180}deg;
+                        }
+                    </style>
+                    ${map(
           lyrics.content,
           (l) => html`<timeline-provider
-                            >${map(
+                                >${map(
             l.content,
             (w) => html`<animated-text
-                                        tss=${w.tss}
-                                        tes=${w.tes}
-                                        content=${w.content}
-                                    ></animated-text>`
+                                            tss=${w.tss}
+                                            tes=${w.tes}
+                                            content=${w.content}
+                                        ></animated-text>`
           )}</timeline-provider
-                        >`
+                            >`
         )}`;
       },
       error: (e) => {
