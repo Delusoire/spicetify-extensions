@@ -486,11 +486,13 @@ var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElem
     const nextGlowAlpha = glowAlphaInterpolator.at(this.csp);
     const nextGradientStart = `${this.csp * 95}%`;
     const nextGradientEnd = `${this.csp * 105}%`;
+    const nextScale = scaleInterpolator.at(this.csp).toFixed(5);
     this.style.setProperty("--gradient-alpha", nextGradientOpacity);
     this.style.setProperty("--glow-radius", nextGlowRadius);
     this.style.setProperty("--glow-alpha", nextGlowAlpha);
     this.style.setProperty("--gradient-start", nextGradientStart);
     this.style.setProperty("--gradient-end", nextGradientEnd);
+    this.style.scale = nextScale;
     if (this.split) {
       if (!this.intermediatePositions) {
         const childs = Array.from(this.cs);
@@ -508,16 +510,11 @@ var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElem
           -0.5,
           1.5
         );
-        const nextYOffset = `-${this.offsetHeight * 0.12 * csp}px`;
-        const nextScale = scaleInterpolator.at(csp).toFixed(5);
-        c.style.setProperty("--y-offset", nextYOffset);
-        c.style.scale = nextScale;
+        c.style.transform = `translateY(-${this.offsetHeight * 0.12 * csp}px)`;
       });
     } else {
       const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`;
-      const nextScale = scaleInterpolator.at(this.csp).toFixed(5);
       this.style.setProperty("--y-offset", nextYOffset);
-      this.style.scale = nextScale;
     }
   }
   onClick() {
