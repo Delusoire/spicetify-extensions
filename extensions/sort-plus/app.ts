@@ -121,4 +121,4 @@ new ContextMenu.Item(
     ([uri]) => (CONFIG.sortedPlaylistsFolderUri = uri),
     ([uri]) => URI.isFolder(uri),
     "folder",
-)
+).register()

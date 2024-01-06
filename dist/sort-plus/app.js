@@ -741,7 +741,7 @@ new ContextMenu.Item(
   ([uri]) => CONFIG.sortedPlaylistsFolderUri = uri,
   ([uri]) => URI6.isFolder(uri),
   "folder"
-);
+).register();
 export {
   lastFetchedUri,
   lastSortAction,
