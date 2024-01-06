@@ -15,6 +15,7 @@ import { PlayerW } from "../utils/PlayerW.ts"
 import { Song } from "../utils/Song.ts"
 import { loadedLyricsTypeCtx, scrollTimeoutCtx, spotifyContainerCtx } from "./contexts.ts"
 import { AnimatedMixin, ScrolledMixin, SyncedContainerMixin, SyncedMixin } from "./mixins.ts"
+import { Spring } from "../pkgs/spring.ts"
 
 declare global {
     interface HTMLElementTagNameMap {
@@ -95,8 +96,14 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
         }
     `
 
+    opacitySpring = new Spring(0, 1, 5)
+
+    updateSprings() {
+        this.opacitySpring.setEquilibrium(0.9 ** this.dtaa)
+    }
+
     animateContent() {
-        const nextGradientAlpha = (opacityInterpolator.at(this.csp) * 0.9 ** this.dtaa).toFixed(5)
+        const nextGradientAlpha = (opacityInterpolator.at(this.csp) * this.opacitySpring.compute()).toFixed(5)
         const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`
         const nextGlowAlpha = glowAlphaInterpolator.at(this.csp)
         const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`

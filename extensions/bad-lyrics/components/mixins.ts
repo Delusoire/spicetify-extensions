@@ -43,7 +43,9 @@ export const AnimatedMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
                 this.dtaa = depthToActiveAncestor
                 this.animateContent()
             }
+            this.updateSprings()
         }
+        updateSprings() {}
         animateContent() {}
     }
 
