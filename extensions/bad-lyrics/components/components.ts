@@ -1,7 +1,7 @@
 import { consume, provide } from "https://esm.sh/@lit/context"
 import { Task } from "https://esm.sh/@lit/task"
 import { LitElement, css, html } from "https://esm.sh/lit"
-import { customElement, property, query, queryAll, state } from "https://esm.sh/lit/decorators.js"
+import { customElement, property, query, state } from "https://esm.sh/lit/decorators.js"
 import { map } from "https://esm.sh/lit/directives/map.js"
 import { when } from "https://esm.sh/lit/directives/when.js"
 import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element@2.0.1/development/reactive-element.js"
@@ -42,9 +42,9 @@ const glowRadiusInterpolator = new MonotoneNormalSpline([
     [0.6, 3],
     [0.7, 2],
     [0.9, 1],
-    [1, 0],
-    [1.1, 1.2],
-    [1.25, 1.4],
+    [1, 3],
+    [1.1, 7],
+    [1.25, 100],
 ])
 const glowAlphaInterpolator = new MonotoneNormalSpline([
     [0, 0],
@@ -54,6 +54,7 @@ const glowAlphaInterpolator = new MonotoneNormalSpline([
     [0.7, 0.9],
     [1, 1],
     [1.2, 0.6],
+    [1.5, 0],
 ])
 const scaleInterpolator = new MonotoneNormalSpline([
     [-0.5, 1],
@@ -74,13 +75,12 @@ const scaleInterpolator = new MonotoneNormalSpline([
 export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement))) {
     static readonly NAME = "animated-text" as string
 
-    @property({ type: Boolean })
+    @property()
     split!: boolean
 
     static styles = css`
         :host {
             cursor: pointer;
-            display: flex;
             background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
@@ -94,20 +94,11 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
         }
     `
 
-    @consume({ context: loadedLyricsTypeCtx })
-    loadedLyricsType?: LyricsType
-
-    @queryAll("span")
-    cs!: NodeListOf<HTMLSpanElement>
-
-    intermediatePositions?: number[]
-    lastPosition?: number
-    timelineSpline?: Spline<number>
-
     animateContent(depthToActiveAncestor: number) {
         const nextGradientOpacity = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5)
         const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`
         const nextGlowAlpha = glowAlphaInterpolator.at(this.csp)
+        const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`
         const nextGradientStart = `${this.csp * 95}%`
         const nextGradientEnd = `${this.csp * 105}%`
         const nextScale = scaleInterpolator.at(this.csp).toFixed(5)
@@ -117,37 +108,8 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
         this.style.setProperty("--glow-alpha", nextGlowAlpha)
         this.style.setProperty("--gradient-start", nextGradientStart)
         this.style.setProperty("--gradient-end", nextGradientEnd)
+        this.style.setProperty("--y-offset", nextYOffset)
         this.style.scale = nextScale
-
-        if (this.split) {
-            if (!this.intermediatePositions) {
-                const childs = Array.from(this.cs)
-                const partialWidths = childs.reduce(
-                    (partialWidths, child) => (
-                        partialWidths.push(partialWidths.at(-1)! + child.offsetWidth), partialWidths
-                    ),
-                    [0],
-                )
-                this.lastPosition = partialWidths.at(-1)!
-                this.intermediatePositions = partialWidths.map(pw => pw / this.lastPosition!)
-            }
-
-            const sip = this.csp
-
-            this.cs.forEach((c, i) => {
-                const csp = _.clamp(
-                    remapScalar(this.intermediatePositions![i], this.intermediatePositions![i + 1], sip),
-                    -0.5,
-                    1.5,
-                )
-
-                c.style.transform = `translateY(-${this.offsetHeight * 0.12 * csp}px)`
-            })
-        } else {
-            const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`
-
-            this.style.setProperty("--y-offset", nextYOffset)
-        }
     }
 
     onClick() {
@@ -155,19 +117,16 @@ export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitEle
     }
 
     render() {
-        return html`
+        return html`<div role="button" , @click=${this.onClick}>
             ${when(
                 this.split,
                 () => {
                     const content = this.content.split("")
-                    return html`${map(
-                        content,
-                        c => html`<span role="button" @click=${this.onClick}>${c === " " ? " " : c}</span>`,
-                    )}`
+                    return html`${map(content, c => html`<span>${c === " " ? " " : c}</span>`)}`
                 },
-                () => html`<span role="button" @click=${this.onClick}>${this.content}</span>`,
+                () => html`<span>${this.content}</span>`,
             )}
-        `
+        </div>`
     }
 }
 
@@ -320,7 +279,6 @@ export class LyricsWrapper extends LitElement {
                                                 tss=${w.tss}
                                                 tes=${w.tes}
                                                 content=${w.content}
-                                                split=${isWordSync}
                                             ></animated-text>`,
                                     )}</timeline-provider
                                 >`,

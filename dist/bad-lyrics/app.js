@@ -310,10 +310,10 @@ var PlayerW = new class {
 }();
 
 // extensions/bad-lyrics/components/components.ts
-import { consume as consume2, provide } from "https://esm.sh/@lit/context";
+import { provide } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
 import { LitElement, css, html } from "https://esm.sh/lit";
-import { customElement, property as property2, query, queryAll, state } from "https://esm.sh/lit/decorators.js";
+import { customElement, property as property2, query, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { when } from "https://esm.sh/lit/directives/when.js";
 
@@ -451,9 +451,9 @@ var glowRadiusInterpolator = new MonotoneNormalSpline([
   [0.6, 3],
   [0.7, 2],
   [0.9, 1],
-  [1, 0],
-  [1.1, 1.2],
-  [1.25, 1.4]
+  [1, 3],
+  [1.1, 7],
+  [1.25, 100]
 ]);
 var glowAlphaInterpolator = new MonotoneNormalSpline([
   [0, 0],
@@ -462,7 +462,8 @@ var glowAlphaInterpolator = new MonotoneNormalSpline([
   [0.5, 0.65],
   [0.7, 0.9],
   [1, 1],
-  [1.2, 0.6]
+  [1.2, 0.6],
+  [1.5, 0]
 ]);
 var scaleInterpolator = new MonotoneNormalSpline([
   [-0.5, 1],
@@ -483,6 +484,7 @@ var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElem
     const nextGradientOpacity = (opacityInterpolator.at(this.csp) * 0.9 ** depthToActiveAncestor).toFixed(5);
     const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
     const nextGlowAlpha = glowAlphaInterpolator.at(this.csp);
+    const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`;
     const nextGradientStart = `${this.csp * 95}%`;
     const nextGradientEnd = `${this.csp * 105}%`;
     const nextScale = scaleInterpolator.at(this.csp).toFixed(5);
@@ -491,55 +493,29 @@ var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElem
     this.style.setProperty("--glow-alpha", nextGlowAlpha);
     this.style.setProperty("--gradient-start", nextGradientStart);
     this.style.setProperty("--gradient-end", nextGradientEnd);
+    this.style.setProperty("--y-offset", nextYOffset);
     this.style.scale = nextScale;
-    if (this.split) {
-      if (!this.intermediatePositions) {
-        const childs = Array.from(this.cs);
-        const partialWidths = childs.reduce(
-          (partialWidths2, child) => (partialWidths2.push(partialWidths2.at(-1) + child.offsetWidth), partialWidths2),
-          [0]
-        );
-        this.lastPosition = partialWidths.at(-1);
-        this.intermediatePositions = partialWidths.map((pw) => pw / this.lastPosition);
-      }
-      const sip = this.csp;
-      this.cs.forEach((c, i) => {
-        const csp = _.clamp(
-          remapScalar(this.intermediatePositions[i], this.intermediatePositions[i + 1], sip),
-          -0.5,
-          1.5
-        );
-        c.style.transform = `translateY(-${this.offsetHeight * 0.12 * csp}px)`;
-      });
-    } else {
-      const nextYOffset = `-${this.offsetHeight * 0.12 * this.csp}px`;
-      this.style.setProperty("--y-offset", nextYOffset);
-    }
   }
   onClick() {
     PlayerW.setTimestamp(this.tss);
   }
   render() {
-    return html`
+    return html`<div role="button" , @click=${this.onClick}>
             ${when(
       this.split,
       () => {
         const content = this.content.split("");
-        return html`${map(
-          content,
-          (c) => html`<span role="button" @click=${this.onClick}>${c === " " ? "\xA0" : c}</span>`
-        )}`;
+        return html`${map(content, (c) => html`<span>${c === " " ? "\xA0" : c}</span>`)}`;
       },
-      () => html`<span role="button" @click=${this.onClick}>${this.content}</span>`
+      () => html`<span>${this.content}</span>`
     )}
-        `;
+        </div>`;
   }
 };
 AnimatedText.NAME = "animated-text";
 AnimatedText.styles = css`
         :host {
             cursor: pointer;
-            display: flex;
             background-color: black;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
@@ -553,14 +529,8 @@ AnimatedText.styles = css`
         }
     `;
 __decorateClass([
-  property2({ type: Boolean })
+  property2()
 ], AnimatedText.prototype, "split", 2);
-__decorateClass([
-  consume2({ context: loadedLyricsTypeCtx })
-], AnimatedText.prototype, "loadedLyricsType", 2);
-__decorateClass([
-  queryAll("span")
-], AnimatedText.prototype, "cs", 2);
 AnimatedText = __decorateClass([
   customElement(AnimatedText.NAME)
 ], AnimatedText);
@@ -670,7 +640,6 @@ var LyricsWrapper = class extends LitElement {
                                                 tss=${w.tss}
                                                 tes=${w.tes}
                                                 content=${w.content}
-                                                split=${isWordSync}
                                             ></animated-text>`
           )}</timeline-provider
                                 >`
