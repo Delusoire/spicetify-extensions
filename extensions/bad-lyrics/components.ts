@@ -147,7 +147,7 @@ export declare class SyncedMixinI {
 }
 
 const SyncedMixin = <T extends Constructor<LitElement>>(superClass: T) => {
-    abstract class mixedClass extends superClass {
+    class mixedClass extends superClass {
         @property()
         content = ""
         @property({ type: Number })
@@ -155,14 +155,14 @@ const SyncedMixin = <T extends Constructor<LitElement>>(superClass: T) => {
         @property({ type: Number })
         tes = 1
 
-        abstract updateProgress(scaledProgress: number, depthToActiveAncestor: number): void
+        updateProgress(scaledProgress: number, depthToActiveAncestor: number) {}
     }
 
     return mixedClass as Constructor<SyncedMixinI> & T
 }
 
 const AnimatedMixin = <T extends Constructor<LitElement & SyncedMixinI>>(superClass: T) => {
-    abstract class mixedClass extends superClass {
+    class mixedClass extends superClass {
         csp!: number
         updateProgress(scaledProgress: number, depthToActiveAncestor: number) {
             super.updateProgress(scaledProgress, depthToActiveAncestor)
@@ -172,7 +172,7 @@ const AnimatedMixin = <T extends Constructor<LitElement & SyncedMixinI>>(superCl
                 this.animateContent(depthToActiveAncestor)
             }
         }
-        abstract animateContent(depthToActiveAncestor: number): void
+        animateContent(depthToActiveAncestor: number) {}
     }
 
     return mixedClass

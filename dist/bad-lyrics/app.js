@@ -437,6 +437,8 @@ var SyncedMixin = (superClass) => {
       this.tss = 0;
       this.tes = 1;
     }
+    updateProgress(scaledProgress, depthToActiveAncestor) {
+    }
   }
   __decorateClass([
     property()
@@ -458,6 +460,8 @@ var AnimatedMixin = (superClass) => {
         this.csp = csp;
         this.animateContent(depthToActiveAncestor);
       }
+    }
+    animateContent(depthToActiveAncestor) {
     }
   }
   return mixedClass;
