@@ -47,7 +47,7 @@ class _ArtistGenreContainer extends LitElement {
     @state()
     genres: string[] = []
 
-    @property()
+    @property({ type: Boolean })
     isSmall = true
 
     @property()

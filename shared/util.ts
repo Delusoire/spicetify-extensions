@@ -60,7 +60,7 @@ export const waitForElement = <E extends Element>(
     location = document.body,
     notEl?: E | null,
 ) =>
-    new Promise((resolve: (value: Element) => void, reject) => {
+    new Promise((resolve: (value: E) => void, reject) => {
         const onMutation = () => {
             const el = document.querySelector<E>(selector)
             if (el) {

@@ -355,7 +355,7 @@ __decorateClass([
   state()
 ], _ArtistGenreContainer.prototype, "genres", 2);
 __decorateClass([
-  property()
+  property({ type: Boolean })
 ], _ArtistGenreContainer.prototype, "isSmall", 2);
 __decorateClass([
   property()
