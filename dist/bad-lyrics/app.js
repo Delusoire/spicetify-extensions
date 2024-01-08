@@ -398,6 +398,7 @@ var ScrolledMixin = (superClass) => {
           const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic;
           const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight;
           if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
+            console.info(scrollTop, this);
             this.spotifyContainer.scrollTo({
               top: scrollTop,
               behavior: document.visibilityState === "visible" ? "smooth" : "auto"

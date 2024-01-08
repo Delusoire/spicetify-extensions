@@ -72,6 +72,7 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
                         Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight
 
                     if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
+                        console.info(scrollTop, this)
                         this.spotifyContainer.scrollTo({
                             top: scrollTop,
                             behavior: document.visibilityState === "visible" ? "smooth" : "auto",
