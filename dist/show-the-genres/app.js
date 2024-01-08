@@ -487,7 +487,7 @@ var updateArtistPage = async (uri) => {
     lastHeaderTextEl
   );
   const headerTextDetailsEl = await waitForElement("span.main-entityHeader-detailsText");
-  headerTextEl?.insertBefore(artistGenreContainerEl, headerTextDetailsEl);
+  headerTextEl.insertBefore(artistGenreContainerEl, headerTextDetailsEl);
 };
 onHistoryChanged((uri) => URI3.isArtist(uri), updateArtistPage);
 (async () => {

@@ -81,7 +81,7 @@ const updateArtistPage = async (uri: SpotifyURI) => {
         lastHeaderTextEl,
     )
     const headerTextDetailsEl = await waitForElement("span.main-entityHeader-detailsText")
-    headerTextEl?.insertBefore(artistGenreContainerEl, headerTextDetailsEl)
+    headerTextEl.insertBefore(artistGenreContainerEl, headerTextDetailsEl)
 }
 
 onHistoryChanged(uri => URI.isArtist(uri), updateArtistPage)
