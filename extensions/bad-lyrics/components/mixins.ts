@@ -4,7 +4,7 @@ import { property, queryAssignedElements } from "https://esm.sh/lit/decorators.j
 
 import { _ } from "../../../shared/deps.ts"
 
-import { scrollTimeoutCtx, spotifyContainerCtx } from "./contexts.ts"
+import { scrollTimeoutCtx, scrollContainerCtx } from "./contexts.ts"
 
 type Constructor<T = {}> = new (...args: any[]) => T
 
@@ -57,8 +57,8 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
     class mixedClass extends superClass {
         @consume({ context: scrollTimeoutCtx, subscribe: true })
         scrollTimeout = 0
-        @consume({ context: spotifyContainerCtx })
-        spotifyContainer?: HTMLElement
+        @consume({ context: scrollContainerCtx })
+        scrollContainer?: HTMLElement
 
         dtaa!: number
 
@@ -69,16 +69,16 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
             this.dtaa = depthToActiveAncestor
 
             if (!isActive || wasActive) return
-            if (Date.now() < this.scrollTimeout || !this.spotifyContainer) return
+            if (Date.now() < this.scrollTimeout || !this.scrollContainer) return
 
             const lineHeight = parseInt(document.defaultView!.getComputedStyle(this).lineHeight)
-            const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight * 2
+            const scrollTop = this.offsetTop - this.scrollContainer.offsetTop - lineHeight * 2
             const verticalLinesToActive =
-                Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight
+                Math.abs(scrollTop - this.scrollContainer.scrollTop) / this.scrollContainer.offsetHeight
 
             if (!_.inRange(verticalLinesToActive, 0.1, 0.75)) return
 
-            this.spotifyContainer.scrollTo({
+            this.scrollContainer.scrollTo({
                 top: scrollTop,
                 behavior: document.visibilityState === "visible" ? "smooth" : "auto",
             })

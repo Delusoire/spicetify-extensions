@@ -338,7 +338,7 @@ var MonotoneNormalSpline = class extends MonotoneCubicHermitInterpolation {
 // extensions/bad-lyrics/components/contexts.ts
 import { createContext } from "https://esm.sh/@lit/context";
 var scrollTimeoutCtx = createContext("scrollTimeout");
-var spotifyContainerCtx = createContext("spotifyContainer");
+var scrollContainerCtx = createContext("scrollContainer");
 var loadedLyricsTypeCtx = createContext("loadedLyricsType");
 
 // extensions/bad-lyrics/components/mixins.ts
@@ -400,14 +400,14 @@ var ScrolledMixin = (superClass) => {
       this.dtaa = depthToActiveAncestor;
       if (!isActive || wasActive)
         return;
-      if (Date.now() < this.scrollTimeout || !this.spotifyContainer)
+      if (Date.now() < this.scrollTimeout || !this.scrollContainer)
         return;
       const lineHeight = parseInt(document.defaultView.getComputedStyle(this).lineHeight);
-      const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight * 2;
-      const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight;
+      const scrollTop = this.offsetTop - this.scrollContainer.offsetTop - lineHeight * 2;
+      const verticalLinesToActive = Math.abs(scrollTop - this.scrollContainer.scrollTop) / this.scrollContainer.offsetHeight;
       if (!_.inRange(verticalLinesToActive, 0.1, 0.75))
         return;
-      this.spotifyContainer.scrollTo({
+      this.scrollContainer.scrollTo({
         top: scrollTop,
         behavior: document.visibilityState === "visible" ? "smooth" : "auto"
       });
@@ -417,8 +417,8 @@ var ScrolledMixin = (superClass) => {
     consume({ context: scrollTimeoutCtx, subscribe: true })
   ], mixedClass.prototype, "scrollTimeout", 2);
   __decorateClass([
-    consume({ context: spotifyContainerCtx })
-  ], mixedClass.prototype, "spotifyContainer", 2);
+    consume({ context: scrollContainerCtx })
+  ], mixedClass.prototype, "scrollContainer", 2);
   return mixedClass;
 };
 var SyncedContainerMixin = (superClass) => {
@@ -625,7 +625,7 @@ var LyricsWrapper = class extends LitElement2 {
       args: () => [this.song]
     });
     this.scrollTimeout = 0;
-    this.spotifyContainer = document.querySelector(query2) ?? void 0;
+    this.scrollContainer = document.querySelector(query2) ?? void 0;
   }
   updateProgress(progress) {
     if (this.loadedLyricsType === void 0 || this.loadedLyricsType === 0 /* NOT_SYNCED */)
@@ -633,7 +633,7 @@ var LyricsWrapper = class extends LitElement2 {
     this.container?.updateProgress(progress, 0);
   }
   firstUpdated(changedProperties) {
-    this.spotifyContainer?.addEventListener("scroll", (e) => {
+    this.scrollContainer?.addEventListener("scroll", (e) => {
       this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS;
     });
   }
@@ -721,28 +721,34 @@ __decorateClass([
   provide({ context: scrollTimeoutCtx })
 ], LyricsWrapper.prototype, "scrollTimeout", 2);
 __decorateClass([
-  provide({ context: spotifyContainerCtx })
-], LyricsWrapper.prototype, "spotifyContainer", 2);
+  provide({ context: scrollContainerCtx })
+], LyricsWrapper.prototype, "scrollContainer", 2);
 LyricsWrapper = __decorateClass([
   customElement(LyricsWrapper.NAME)
 ], LyricsWrapper);
 
 // extensions/bad-lyrics/app.ts
-var injectLyrics = (selector) => () => {
-  const lyricsContainer = document.querySelector(selector);
+var injectLyrics = (insertSelector, scrollSelector) => () => {
+  const lyricsContainer = document.querySelector(insertSelector);
   if (!lyricsContainer || lyricsContainer.classList.contains("injected"))
     return;
   lyricsContainer.classList.add("injected");
   const lyricsContainerClone = lyricsContainer.cloneNode(false);
   lyricsContainer.replaceWith(lyricsContainerClone);
-  const ourLyricsContainer = new LyricsWrapper(selector);
+  const ourLyricsContainer = new LyricsWrapper(scrollSelector);
   ourLyricsContainer.song = PlayerW.getSong() ?? null;
   PlayerW.songChangedSubject.subscribe((song) => ourLyricsContainer.updateSong(song ?? null));
   PlayerW.scaledProgressChangedSubject.subscribe((progress) => ourLyricsContainer.updateProgress(progress));
   render(ourLyricsContainer, lyricsContainerClone);
 };
-var injectNPVLyrics = injectLyrics("aside .main-nowPlayingView-lyricsContent");
-var injectCinemaLyrics = injectLyrics("#lyrics-cinema .lyrics-lyrics-contentWrapper");
+var injectNPVLyrics = injectLyrics(
+  "aside .main-nowPlayingView-lyricsContent",
+  "aside .main-nowPlayingView-lyricsContent"
+);
+var injectCinemaLyrics = injectLyrics(
+  "#lyrics-cinema .lyrics-lyrics-contentWrapper",
+  "#lyrics-cinema .os-viewport-native-scrollbars-invisible"
+);
 injectNPVLyrics();
 injectCinemaLyrics();
 new PermanentMutationObserver(".Root__right-sidebar", injectNPVLyrics);

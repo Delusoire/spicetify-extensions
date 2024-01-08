@@ -13,7 +13,7 @@ import { MonotoneNormalSpline } from "../splines/monotoneNormalSpline.ts"
 import { LyricsType } from "../utils/LyricsProvider.ts"
 import { PlayerW } from "../utils/PlayerW.ts"
 import { Song } from "../utils/Song.ts"
-import { loadedLyricsTypeCtx, scrollTimeoutCtx, spotifyContainerCtx } from "./contexts.ts"
+import { loadedLyricsTypeCtx, scrollTimeoutCtx, scrollContainerCtx } from "./contexts.ts"
 import { AnimatedMixin, ScrolledMixin, SyncedContainerMixin, SyncedMixin } from "./mixins.ts"
 
 declare global {
@@ -218,7 +218,7 @@ export class LyricsWrapper extends LitElement {
 
     constructor(query: string) {
         super()
-        this.spotifyContainer = document.querySelector<HTMLElement>(query) ?? undefined
+        this.scrollContainer = document.querySelector<HTMLElement>(query) ?? undefined
     }
 
     static styles = css`
@@ -259,11 +259,11 @@ export class LyricsWrapper extends LitElement {
     @provide({ context: scrollTimeoutCtx })
     scrollTimeout = 0
 
-    @provide({ context: spotifyContainerCtx })
-    spotifyContainer?: HTMLElement
+    @provide({ context: scrollContainerCtx })
+    scrollContainer?: HTMLElement
 
     firstUpdated(changedProperties: PropertyValueMap<this>) {
-        this.spotifyContainer?.addEventListener("scroll", e => {
+        this.scrollContainer?.addEventListener("scroll", e => {
             this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS
         })
     }
