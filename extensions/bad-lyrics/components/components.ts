@@ -114,7 +114,7 @@ export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
     }
 
     onClick() {
-        PlayerW.setTimestamp(this.tss)
+        PlayerW.setTimestamp(this.tsp)
     }
 
     render() {
@@ -185,7 +185,7 @@ export class TimelineProvider extends ScrolledMixin(SyncedContainerMixin(SyncedM
             this.intermediatePositions = partialWidths.map(pw => pw / this.lastPosition!)
 
             const pairs = _.zip(
-                childs.map(child => child.tss).concat(childs.at(-1)!.tes),
+                childs.map(child => child.tsp).concat(childs.at(-1)!.tep),
                 this.intermediatePositions,
             ) as Array<[number, number]>
             const first = vectorLerp(pairs[0], pairs[1], -1)
@@ -297,16 +297,16 @@ export class LyricsWrapper extends LitElement {
                                 html`${map(
                                     lyrics.content,
                                     l =>
-                                        html`<timeline-provider tss=${l.tss} tes=${l.tes}
+                                        html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
                                             >${map(
                                                 l.content,
                                                 w =>
-                                                    html`<detail-timeline-provider tss=${w.tss} tes=${w.tes}
+                                                    html`<detail-timeline-provider tsp=${w.tsp} tep=${w.tep}
                                                         >${map(
                                                             w.content.split(""),
                                                             c =>
                                                                 html`<animated-text
-                                                                    tss=${w.tss}
+                                                                    tsp=${w.tsp}
                                                                     content=${c === " " ? " " : c}
                                                                 ></animated-text>`,
                                                         )}</detail-timeline-provider
@@ -318,13 +318,13 @@ export class LyricsWrapper extends LitElement {
                                 html`${map(
                                     lyrics.content,
                                     l =>
-                                        html`<timeline-provider tss=${l.tss} tes=${l.tes}
+                                        html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
                                             >${map(
                                                 l.content,
                                                 wl =>
                                                     html`<animated-text
-                                                        tss=${wl.tss}
-                                                        tes=${wl.tes}
+                                                        tsp=${wl.tsp}
+                                                        tep=${wl.tep}
                                                         content=${wl.content}
                                                     ></animated-text>`,
                                             )}</timeline-provider

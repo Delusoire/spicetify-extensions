@@ -10,8 +10,8 @@ type Constructor<T = {}> = new (...args: any[]) => T
 
 export declare class SyncedMixinI {
     content: string
-    tss: number
-    tes: number
+    tsp: number
+    tep: number
 
     updateProgress(scaledProgress: number, depthToActiveAncestor: number): void
 }
@@ -21,9 +21,9 @@ export const SyncedMixin = <T extends Constructor<LitElement>>(superClass: T) =>
         @property()
         content = ""
         @property({ type: Number })
-        tss = 0
+        tsp = 0 // time start percent
         @property({ type: Number })
-        tes = 1
+        tep = 1 // time end percent
 
         updateProgress(scaledProgress: number, depthToActiveAncestor: number) {}
     }
@@ -60,26 +60,29 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
         @consume({ context: spotifyContainerCtx })
         spotifyContainer?: HTMLElement
 
-        updateProgress(scaledProgress: number, depthToActiveAncestor: number) {
-            super.updateProgress(scaledProgress, depthToActiveAncestor)
+        dtaa!: number
+
+        updateProgress(progress: number, depthToActiveAncestor: number) {
+            super.updateProgress(progress, depthToActiveAncestor)
             const isActive = depthToActiveAncestor === 0
+            const wasActive = this.dtaa === 0
+            this.dtaa = depthToActiveAncestor
 
-            if (isActive) {
-                if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
-                    const lineHeightHeuristic = this.offsetHeight
-                    const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic
-                    const verticalLinesToActive =
-                        Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight
+            if (!isActive || wasActive) return
+            if (Date.now() < this.scrollTimeout || !this.spotifyContainer) return
 
-                    if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
-                        console.info(scrollTop, this)
-                        this.spotifyContainer.scrollTo({
-                            top: scrollTop,
-                            behavior: document.visibilityState === "visible" ? "smooth" : "auto",
-                        })
-                    }
-                }
-            }
+            const lineHeightHeuristic = this.offsetHeight
+            const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic
+            const verticalLinesToActive =
+                Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight
+
+            if (!_.inRange(verticalLinesToActive, 0.1, 0.75)) return
+
+            console.info(scrollTop, this)
+            this.spotifyContainer.scrollTo({
+                top: scrollTop,
+                behavior: document.visibilityState === "visible" ? "smooth" : "auto",
+            })
         }
     }
 
@@ -102,7 +105,7 @@ export const SyncedContainerMixin = <T extends Constructor<LitElement & SyncedMi
 
             childs.forEach((child, i) => {
                 const progress = this.computeChildProgress(rp, i)
-                const isActive = _.inRange(rp, child.tss, child.tes)
+                const isActive = _.inRange(rp, child.tsp, child.tep)
                 child.updateProgress(progress, depthToActiveAncestor + (isActive ? 0 : 1))
             })
         }

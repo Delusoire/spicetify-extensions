@@ -27,20 +27,20 @@ export type Lyrics = {
 }
 
 export type SyncedContent = {
-    tss: number
-    tes: number
+    tsp: number
+    tep: number
     content: Array<SyncedContent> | string
 }
 
 type SW<A> = {
-    tss: 0
-    tes: 1
+    tsp: 0
+    tep: 1
     content: A
 }
 
 export type S<A> = {
-    tss: number
-    tes: number
+    tsp: number
+    tep: number
     content: A
 }
 
@@ -81,44 +81,44 @@ export const findLyrics = async (info: {
 
     const wrapInContainerSyncedType = <T extends LyricsType, P>(__type: T, content: P) => ({
         __type,
-        tss: 0 as const,
-        tes: 1 as const,
+        tsp: 0 as const,
+        tep: 1 as const,
         content,
     })
 
     if (track.has_richsync) {
         const richSync = await fetchMxmTrackRichSyncGet(track.commontrack_id, track.track_length)
         const wordSynced = richSync.map(rsLine => {
-            const tss = rsLine.ts / track.track_length
-            const tes = rsLine.te / track.track_length
+            const tsp = rsLine.ts / track.track_length
+            const tep = rsLine.te / track.track_length
 
             const content = rsLine.l.map((word, index, words) => {
                 return {
-                    tss: tss + word.o / track.track_length,
-                    tes: tss + words[index + 1]?.o / track.track_length || tes,
+                    tsp: tsp + word.o / track.track_length,
+                    tep: tsp + words[index + 1]?.o / track.track_length || tep,
                     content: word.c,
                 }
             })
 
-            return { tss, tes, content }
+            return { tsp, tep, content }
         })
 
         const wordSyncedFilled = _(
-            zip_n_uplets<TwoUplet<S<Array<S<string>>>>>(2)([{ tes: 0 }, ...wordSynced, { tss: 1 }]),
+            zip_n_uplets<TwoUplet<S<Array<S<string>>>>>(2)([{ tep: 0 }, ...wordSynced, { tsp: 1 }]),
         )
             .map(([prev, next]) => {
-                const tss = prev.tes
-                const tes = next.tss
-                const duration = (tes - tss) * track.track_length * 1000
+                const tsp = prev.tep
+                const tep = next.tsp
+                const duration = (tep - tsp) * track.track_length * 1000
 
                 return (
                     duration > 500 && {
-                        tss,
-                        tes,
+                        tsp,
+                        tep,
                         content: [
                             {
-                                tss,
-                                tes,
+                                tsp,
+                                tep,
                                 duration,
                                 content: Filler,
                             },
@@ -140,9 +140,9 @@ export const findLyrics = async (info: {
             time: { total: number; minutes: number; seconds: number; hundredths: number }
         }>
         const lineSynced = subtitle.map((sLine, i, subtitle) => {
-            const tss = sLine.time.total / track.track_length
-            const tes = subtitle[i + 1]?.time.total / track.track_length || 1
-            return { tss, tes, content: [{ tss, tes, content: sLine.text }] as OneUplet<S<string>> }
+            const tsp = sLine.time.total / track.track_length
+            const tep = subtitle[i + 1]?.time.total / track.track_length || 1
+            return { tsp, tep, content: [{ tsp, tep, content: sLine.text }] as OneUplet<S<string>> }
         })
         l.lineSynced = wrapInContainerSyncedType(LyricsType.LINE_SYNCED, lineSynced)
     }

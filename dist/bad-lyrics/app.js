@@ -115,37 +115,37 @@ var findLyrics = async (info) => {
     return l;
   const wrapInContainerSyncedType = (__type, content) => ({
     __type,
-    tss: 0,
-    tes: 1,
+    tsp: 0,
+    tep: 1,
     content
   });
   if (track.has_richsync) {
     const richSync = await fetchMxmTrackRichSyncGet(track.commontrack_id, track.track_length);
     const wordSynced = richSync.map((rsLine) => {
-      const tss = rsLine.ts / track.track_length;
-      const tes = rsLine.te / track.track_length;
+      const tsp = rsLine.ts / track.track_length;
+      const tep = rsLine.te / track.track_length;
       const content = rsLine.l.map((word, index, words) => {
         return {
-          tss: tss + word.o / track.track_length,
-          tes: tss + words[index + 1]?.o / track.track_length || tes,
+          tsp: tsp + word.o / track.track_length,
+          tep: tsp + words[index + 1]?.o / track.track_length || tep,
           content: word.c
         };
       });
-      return { tss, tes, content };
+      return { tsp, tep, content };
     });
     const wordSyncedFilled = _(
-      zip_n_uplets(2)([{ tes: 0 }, ...wordSynced, { tss: 1 }])
+      zip_n_uplets(2)([{ tep: 0 }, ...wordSynced, { tsp: 1 }])
     ).map(([prev, next]) => {
-      const tss = prev.tes;
-      const tes = next.tss;
-      const duration = (tes - tss) * track.track_length * 1e3;
+      const tsp = prev.tep;
+      const tep = next.tsp;
+      const duration = (tep - tsp) * track.track_length * 1e3;
       return duration > 500 && {
-        tss,
-        tes,
+        tsp,
+        tep,
         content: [
           {
-            tss,
-            tes,
+            tsp,
+            tep,
             duration,
             content: Filler
           }
@@ -157,9 +157,9 @@ var findLyrics = async (info) => {
   if (track.has_subtitles) {
     const subtitle = JSON.parse(subtitles[0].subtitle_body);
     const lineSynced = subtitle.map((sLine, i, subtitle2) => {
-      const tss = sLine.time.total / track.track_length;
-      const tes = subtitle2[i + 1]?.time.total / track.track_length || 1;
-      return { tss, tes, content: [{ tss, tes, content: sLine.text }] };
+      const tsp = sLine.time.total / track.track_length;
+      const tep = subtitle2[i + 1]?.time.total / track.track_length || 1;
+      return { tsp, tep, content: [{ tsp, tep, content: sLine.text }] };
     });
     l.lineSynced = wrapInContainerSyncedType(1 /* LINE_SYNCED */, lineSynced);
   }
@@ -347,9 +347,10 @@ var SyncedMixin = (superClass) => {
     constructor() {
       super(...arguments);
       this.content = "";
-      this.tss = 0;
-      this.tes = 1;
+      this.tsp = 0;
+      this.tep = 1;
     }
+    // time end percent
     updateProgress(scaledProgress, depthToActiveAncestor) {
     }
   }
@@ -358,10 +359,10 @@ var SyncedMixin = (superClass) => {
   ], mixedClass.prototype, "content", 2);
   __decorateClass([
     property({ type: Number })
-  ], mixedClass.prototype, "tss", 2);
+  ], mixedClass.prototype, "tsp", 2);
   __decorateClass([
     property({ type: Number })
-  ], mixedClass.prototype, "tes", 2);
+  ], mixedClass.prototype, "tep", 2);
   return mixedClass;
 };
 var AnimatedMixin = (superClass) => {
@@ -389,23 +390,25 @@ var ScrolledMixin = (superClass) => {
       super(...arguments);
       this.scrollTimeout = 0;
     }
-    updateProgress(scaledProgress, depthToActiveAncestor) {
-      super.updateProgress(scaledProgress, depthToActiveAncestor);
+    updateProgress(progress, depthToActiveAncestor) {
+      super.updateProgress(progress, depthToActiveAncestor);
       const isActive = depthToActiveAncestor === 0;
-      if (isActive) {
-        if (Date.now() > this.scrollTimeout && this.spotifyContainer) {
-          const lineHeightHeuristic = this.offsetHeight;
-          const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic;
-          const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight;
-          if (_.inRange(verticalLinesToActive, 0.1, 0.75)) {
-            console.info(scrollTop, this);
-            this.spotifyContainer.scrollTo({
-              top: scrollTop,
-              behavior: document.visibilityState === "visible" ? "smooth" : "auto"
-            });
-          }
-        }
-      }
+      const wasActive = this.dtaa === 0;
+      this.dtaa = depthToActiveAncestor;
+      if (!isActive || wasActive)
+        return;
+      if (Date.now() < this.scrollTimeout || !this.spotifyContainer)
+        return;
+      const lineHeightHeuristic = this.offsetHeight;
+      const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic;
+      const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight;
+      if (!_.inRange(verticalLinesToActive, 0.1, 0.75))
+        return;
+      console.info(scrollTop, this);
+      this.spotifyContainer.scrollTo({
+        top: scrollTop,
+        behavior: document.visibilityState === "visible" ? "smooth" : "auto"
+      });
     }
   }
   __decorateClass([
@@ -428,7 +431,7 @@ var SyncedContainerMixin = (superClass) => {
         return;
       childs.forEach((child, i) => {
         const progress = this.computeChildProgress(rp, i);
-        const isActive = _.inRange(rp, child.tss, child.tes);
+        const isActive = _.inRange(rp, child.tsp, child.tep);
         child.updateProgress(progress, depthToActiveAncestor + (isActive ? 0 : 1));
       });
     }
@@ -506,7 +509,7 @@ var AnimatedText = class extends AnimatedMixin(SyncedMixin(LitElement2)) {
     this.style.scale = nextScale;
   }
   onClick() {
-    PlayerW.setTimestamp(this.tss);
+    PlayerW.setTimestamp(this.tsp);
   }
   render() {
     return html2`<span role="button" @click=${this.onClick}>${this.content}</span>`;
@@ -569,7 +572,7 @@ var TimelineProvider = class extends ScrolledMixin(SyncedContainerMixin(SyncedMi
       this.lastPosition = partialWidths.at(-1);
       this.intermediatePositions = partialWidths.map((pw) => pw / this.lastPosition);
       const pairs = _.zip(
-        childs.map((child) => child.tss).concat(childs.at(-1).tes),
+        childs.map((child) => child.tsp).concat(childs.at(-1).tep),
         this.intermediatePositions
       );
       const first = vectorLerp(pairs[0], pairs[1], -1);
@@ -656,14 +659,14 @@ var LyricsWrapper = class extends LitElement2 {
           isWordSync,
           () => html2`${map(
             lyrics.content,
-            (l) => html2`<timeline-provider tss=${l.tss} tes=${l.tes}
+            (l) => html2`<timeline-provider tsp=${l.tsp} tep=${l.tep}
                                             >${map(
               l.content,
-              (w) => html2`<detail-timeline-provider tss=${w.tss} tes=${w.tes}
+              (w) => html2`<detail-timeline-provider tsp=${w.tsp} tep=${w.tep}
                                                         >${map(
                 w.content.split(""),
                 (c) => html2`<animated-text
-                                                                    tss=${w.tss}
+                                                                    tsp=${w.tsp}
                                                                     content=${c === " " ? "\xA0" : c}
                                                                 ></animated-text>`
               )}</detail-timeline-provider
@@ -673,12 +676,12 @@ var LyricsWrapper = class extends LitElement2 {
           )}`,
           () => html2`${map(
             lyrics.content,
-            (l) => html2`<timeline-provider tss=${l.tss} tes=${l.tes}
+            (l) => html2`<timeline-provider tsp=${l.tsp} tep=${l.tep}
                                             >${map(
               l.content,
               (wl) => html2`<animated-text
-                                                        tss=${wl.tss}
-                                                        tes=${wl.tes}
+                                                        tsp=${wl.tsp}
+                                                        tep=${wl.tep}
                                                         content=${wl.content}
                                                     ></animated-text>`
             )}</timeline-provider
