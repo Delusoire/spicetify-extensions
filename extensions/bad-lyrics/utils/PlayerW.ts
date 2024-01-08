@@ -69,17 +69,17 @@ export const PlayerW = new (class {
         )
     }
 
+    private tryUpdateScaledProgress(scaledProgress: number) {
+        if (this.scaledProgress === scaledProgress) return
+        this.scaledProgress = scaledProgress
+        this.scaledProgressChangedSubject.next(scaledProgress)
+    }
+
     private startTimestepping() {
-        let oldScaledProgress = Spicetify.Player.getProgressPercent()
         animationFrameScheduler.schedule(
             function (self) {
                 if (self!.isPaused) return
-
-                self!.scaledProgress = Spicetify.Player.getProgressPercent()
-                if (self!.scaledProgress !== oldScaledProgress) {
-                    self!.scaledProgressChangedSubject.next(self!.scaledProgress)
-                }
-                oldScaledProgress = self!.scaledProgress
+                self!.tryUpdateScaledProgress(Spicetify.Player.getProgressPercent())
                 this.schedule(self)
             },
             undefined,
@@ -89,5 +89,8 @@ export const PlayerW = new (class {
         this.triggerTimestampSync()
     }
 
-    setTimestamp = (timestamp: number) => Spicetify.Player.seek(timestamp) // ms or percent
+    setTimestamp = (timestamp: number) => {
+        Spicetify.Player.seek(timestamp) // ms or percent
+        this.tryUpdateScaledProgress(timestamp)
+    }
 })()

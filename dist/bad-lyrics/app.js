@@ -244,7 +244,10 @@ var PlayerW = new class {
     this.isPausedChangedSubject = new Subject();
     this.scaledProgressChangedSubject = new Subject();
     this.getSong = () => this.Song;
-    this.setTimestamp = (timestamp) => Spicetify.Player.seek(timestamp);
+    this.setTimestamp = (timestamp) => {
+      Spicetify.Player.seek(timestamp);
+      this.tryUpdateScaledProgress(timestamp);
+    };
     onSongChanged((state2) => {
       const { item } = state2;
       if (item && item.type === "track") {
@@ -288,17 +291,18 @@ var PlayerW = new class {
       this
     );
   }
+  tryUpdateScaledProgress(scaledProgress) {
+    if (this.scaledProgress === scaledProgress)
+      return;
+    this.scaledProgress = scaledProgress;
+    this.scaledProgressChangedSubject.next(scaledProgress);
+  }
   startTimestepping() {
-    let oldScaledProgress = Spicetify.Player.getProgressPercent();
     animationFrameScheduler.schedule(
       function(self) {
         if (self.isPaused)
           return;
-        self.scaledProgress = Spicetify.Player.getProgressPercent();
-        if (self.scaledProgress !== oldScaledProgress) {
-          self.scaledProgressChangedSubject.next(self.scaledProgress);
-        }
-        oldScaledProgress = self.scaledProgress;
+        self.tryUpdateScaledProgress(Spicetify.Player.getProgressPercent());
         this.schedule(self);
       },
       void 0,
@@ -306,7 +310,6 @@ var PlayerW = new class {
     );
     this.triggerTimestampSync();
   }
-  // ms or percent
 }();
 
 // extensions/bad-lyrics/components/components.ts
@@ -399,12 +402,11 @@ var ScrolledMixin = (superClass) => {
         return;
       if (Date.now() < this.scrollTimeout || !this.spotifyContainer)
         return;
-      const lineHeightHeuristic = parseInt(document.defaultView.getComputedStyle(this).lineHeight);
-      const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic;
+      const lineHeight = parseInt(document.defaultView.getComputedStyle(this).lineHeight);
+      const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeight * 2;
       const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight;
       if (!_.inRange(verticalLinesToActive, 0.1, 0.75))
         return;
-      console.info(scrollTop, this);
       this.spotifyContainer.scrollTo({
         top: scrollTop,
         behavior: document.visibilityState === "visible" ? "smooth" : "auto"
