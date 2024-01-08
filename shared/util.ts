@@ -83,6 +83,7 @@ export const waitForElement = <E extends Element>(
         if (timeout)
             setTimeout(() => {
                 observer.disconnect()
+                console.debug("waitForElement: timed out waiting for", selector)
                 reject()
             }, timeout)
     })

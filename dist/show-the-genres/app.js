@@ -94,6 +94,7 @@ var waitForElement = (selector, timeout = 5e3, location = document.body, notEl) 
   if (timeout)
     setTimeout(() => {
       observer.disconnect();
+      console.debug("waitForElement: timed out waiting for", selector);
       reject();
     }, timeout);
 });
