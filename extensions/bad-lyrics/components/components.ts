@@ -73,7 +73,7 @@ const scaleInterpolator = new MonotoneNormalSpline([
 ])
 
 @customElement(AnimatedText.NAME)
-export class AnimatedText extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement))) {
+export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
     static readonly NAME = "animated-text" as string
 
     @property()
@@ -158,7 +158,7 @@ export class DetailTimelineProvider extends SyncedContainerMixin(SyncedMixin(Lit
 }
 
 @customElement(TimelineProvider.NAME)
-export class TimelineProvider extends SyncedContainerMixin(SyncedMixin(LitElement)) {
+export class TimelineProvider extends ScrolledMixin(SyncedContainerMixin(SyncedMixin(LitElement))) {
     static readonly NAME = "timeline-provider"
 
     static styles = css`

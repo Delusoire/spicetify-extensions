@@ -488,7 +488,7 @@ var scaleInterpolator = new MonotoneNormalSpline([
   [1.2, 1.01],
   [1.5, 1]
 ]);
-var AnimatedText = class extends AnimatedMixin(ScrolledMixin(SyncedMixin(LitElement2))) {
+var AnimatedText = class extends AnimatedMixin(SyncedMixin(LitElement2)) {
   animateContent() {
     const nextGradientAlpha = opacityInterpolator.at(this.csp).toFixed(5);
     const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
@@ -558,7 +558,7 @@ DetailTimelineProvider.styles = css`
 DetailTimelineProvider = __decorateClass([
   customElement(DetailTimelineProvider.NAME)
 ], DetailTimelineProvider);
-var TimelineProvider = class extends SyncedContainerMixin(SyncedMixin(LitElement2)) {
+var TimelineProvider = class extends ScrolledMixin(SyncedContainerMixin(SyncedMixin(LitElement2))) {
   computeIntermediatePosition(rsp) {
     if (!this.timelineSpline) {
       const childs = Array.from(this.childs);
