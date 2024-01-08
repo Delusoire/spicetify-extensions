@@ -637,9 +637,11 @@ var LyricsWrapper = class extends LitElement2 {
     this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS;
   }
   connectedCallback() {
+    super.connectedCallback();
     this.scrollContainer?.addEventListener("scroll", this.onExternalScroll);
   }
   disconnectedCallback() {
+    super.disconnectedCallback();
     this.scrollContainer?.removeEventListener("scroll", this.onExternalScroll);
   }
   render() {

@@ -267,10 +267,12 @@ export class LyricsWrapper extends LitElement {
     }
 
     connectedCallback() {
+        super.connectedCallback()
         this.scrollContainer?.addEventListener("scroll", this.onExternalScroll)
     }
 
     disconnectedCallback() {
+        super.disconnectedCallback()
         this.scrollContainer?.removeEventListener("scroll", this.onExternalScroll)
     }
 
