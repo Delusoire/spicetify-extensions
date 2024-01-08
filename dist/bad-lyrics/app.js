@@ -239,10 +239,10 @@ var { PlayerAPI: PlayerAPI3 } = Spicetify.Platform;
 var PlayerW = new class {
   constructor() {
     this.isPaused = PlayerAPI3._state.isPaused;
-    this.scaledProgress = 0;
-    this.songChangedSubject = new Subject();
-    this.isPausedChangedSubject = new Subject();
-    this.scaledProgressChangedSubject = new Subject();
+    this.progressPercent = 0;
+    this.songSubject = new Subject();
+    this.isPausedSubject = new Subject();
+    this.progressPercentSubject = new Subject();
     this.getSong = () => this.Song;
     this.setTimestamp = (timestamp) => {
       Spicetify.Player.seek(timestamp);
@@ -262,7 +262,7 @@ var PlayerW = new class {
       } else {
         this.Song = void 0;
       }
-      this.songChangedSubject.next(this.Song);
+      this.songSubject.next(this.Song);
     });
     onPlayedPaused((state2) => {
       const isPausedNext = state2.isPaused ?? true;
@@ -271,7 +271,7 @@ var PlayerW = new class {
           this.startTimestepping();
         }
         this.isPaused = !this.isPaused;
-        this.isPausedChangedSubject.next(this.isPaused);
+        this.isPausedSubject.next(this.isPaused);
       }
     });
   }
@@ -292,10 +292,10 @@ var PlayerW = new class {
     );
   }
   tryUpdateScaledProgress(scaledProgress) {
-    if (this.scaledProgress === scaledProgress)
+    if (this.progressPercent === scaledProgress)
       return;
-    this.scaledProgress = scaledProgress;
-    this.scaledProgressChangedSubject.next(scaledProgress);
+    this.progressPercent = scaledProgress;
+    this.progressPercentSubject.next(scaledProgress);
   }
   startTimestepping() {
     animationFrameScheduler.schedule(
@@ -397,6 +397,7 @@ var ScrolledMixin = (superClass) => {
       super.updateProgress(progress, depthToActiveAncestor);
       const isActive = depthToActiveAncestor === 0;
       const wasActive = this.dtaa === 0;
+      const bypassProximityCheck = this.dtaa === void 0;
       this.dtaa = depthToActiveAncestor;
       if (!isActive || wasActive)
         return;
@@ -405,7 +406,7 @@ var ScrolledMixin = (superClass) => {
       const lineHeight = parseInt(document.defaultView.getComputedStyle(this).lineHeight);
       const scrollTop = this.offsetTop - this.scrollContainer.offsetTop - lineHeight * 2;
       const verticalLinesToActive = Math.abs(scrollTop - this.scrollContainer.scrollTop) / this.scrollContainer.offsetHeight;
-      if (!_.inRange(verticalLinesToActive, 0.1, 0.75))
+      if (!bypassProximityCheck || !_.inRange(verticalLinesToActive, 0.1, 0.75))
         return;
       this.scrollContainer.scrollTo({
         top: scrollTop,
@@ -632,10 +633,14 @@ var LyricsWrapper = class extends LitElement2 {
       return;
     this.container?.updateProgress(progress, 0);
   }
-  firstUpdated(changedProperties) {
-    this.scrollContainer?.addEventListener("scroll", (e) => {
-      this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS;
-    });
+  onExternalScroll(e) {
+    this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS;
+  }
+  connectedCallback() {
+    this.scrollContainer?.addEventListener("scroll", this.onExternalScroll);
+  }
+  disconnectedCallback() {
+    this.scrollContainer?.removeEventListener("scroll", this.onExternalScroll);
   }
   render() {
     if (!this.song) {
@@ -737,8 +742,8 @@ var injectLyrics = (insertSelector, scrollSelector) => () => {
   lyricsContainer.replaceWith(lyricsContainerClone);
   const ourLyricsContainer = new LyricsWrapper(scrollSelector);
   ourLyricsContainer.song = PlayerW.getSong() ?? null;
-  PlayerW.songChangedSubject.subscribe((song) => ourLyricsContainer.updateSong(song ?? null));
-  PlayerW.scaledProgressChangedSubject.subscribe((progress) => ourLyricsContainer.updateProgress(progress));
+  PlayerW.songSubject.subscribe((song) => ourLyricsContainer.updateSong(song ?? null));
+  PlayerW.progressPercentSubject.subscribe((progress) => ourLyricsContainer.updateProgress(progress));
   render(ourLyricsContainer, lyricsContainerClone);
 };
 var injectNPVLyrics = injectLyrics(

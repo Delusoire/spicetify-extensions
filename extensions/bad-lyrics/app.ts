@@ -14,8 +14,8 @@ const injectLyrics = (insertSelector: string, scrollSelector: string) => () => {
 
     const ourLyricsContainer = new LyricsWrapper(scrollSelector)
     ourLyricsContainer.song = PlayerW.getSong() ?? null
-    PlayerW.songChangedSubject.subscribe(song => ourLyricsContainer.updateSong(song ?? null))
-    PlayerW.scaledProgressChangedSubject.subscribe(progress => ourLyricsContainer.updateProgress(progress))
+    PlayerW.songSubject.subscribe(song => ourLyricsContainer.updateSong(song ?? null))
+    PlayerW.progressPercentSubject.subscribe(progress => ourLyricsContainer.updateProgress(progress))
     render(ourLyricsContainer, lyricsContainerClone)
 }
 

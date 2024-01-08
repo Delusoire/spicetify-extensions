@@ -66,6 +66,7 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
             super.updateProgress(progress, depthToActiveAncestor)
             const isActive = depthToActiveAncestor === 0
             const wasActive = this.dtaa === 0
+            const bypassProximityCheck = this.dtaa === undefined
             this.dtaa = depthToActiveAncestor
 
             if (!isActive || wasActive) return
@@ -76,7 +77,7 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
             const verticalLinesToActive =
                 Math.abs(scrollTop - this.scrollContainer.scrollTop) / this.scrollContainer.offsetHeight
 
-            if (!_.inRange(verticalLinesToActive, 0.1, 0.75)) return
+            if (!bypassProximityCheck || !_.inRange(verticalLinesToActive, 0.1, 0.75)) return
 
             this.scrollContainer.scrollTo({
                 top: scrollTop,

@@ -262,10 +262,16 @@ export class LyricsWrapper extends LitElement {
     @provide({ context: scrollContainerCtx })
     scrollContainer?: HTMLElement
 
-    firstUpdated(changedProperties: PropertyValueMap<this>) {
-        this.scrollContainer?.addEventListener("scroll", e => {
-            this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS
-        })
+    private onExternalScroll(e: Event) {
+        this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS
+    }
+
+    connectedCallback() {
+        this.scrollContainer?.addEventListener("scroll", this.onExternalScroll)
+    }
+
+    disconnectedCallback() {
+        this.scrollContainer?.removeEventListener("scroll", this.onExternalScroll)
     }
 
     render() {

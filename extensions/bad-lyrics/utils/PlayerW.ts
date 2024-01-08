@@ -9,11 +9,11 @@ const { PlayerAPI } = Spicetify.Platform
 export const PlayerW = new (class {
     private Song?: Song
     isPaused = PlayerAPI._state.isPaused
-    scaledProgress = 0
+    progressPercent = 0
 
-    songChangedSubject = new Subject<Song | void>()
-    isPausedChangedSubject = new Subject<boolean>()
-    scaledProgressChangedSubject = new Subject<number>()
+    songSubject = new Subject<Song | void>()
+    isPausedSubject = new Subject<boolean>()
+    progressPercentSubject = new Subject<number>()
 
     getSong = () => this.Song
 
@@ -34,7 +34,7 @@ export const PlayerW = new (class {
                 this.Song = undefined
             }
 
-            this.songChangedSubject.next(this.Song)
+            this.songSubject.next(this.Song)
         })
 
         onPlayedPaused(state => {
@@ -44,7 +44,7 @@ export const PlayerW = new (class {
                     this.startTimestepping()
                 }
                 this.isPaused = !this.isPaused
-                this.isPausedChangedSubject.next(this.isPaused)
+                this.isPausedSubject.next(this.isPaused)
             }
         })
     }
@@ -70,9 +70,9 @@ export const PlayerW = new (class {
     }
 
     private tryUpdateScaledProgress(scaledProgress: number) {
-        if (this.scaledProgress === scaledProgress) return
-        this.scaledProgress = scaledProgress
-        this.scaledProgressChangedSubject.next(scaledProgress)
+        if (this.progressPercent === scaledProgress) return
+        this.progressPercent = scaledProgress
+        this.progressPercentSubject.next(scaledProgress)
     }
 
     private startTimestepping() {
