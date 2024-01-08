@@ -77,7 +77,7 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
             const verticalLinesToActive =
                 Math.abs(scrollTop - this.scrollContainer.scrollTop) / this.scrollContainer.offsetHeight
 
-            if (!bypassProximityCheck || !_.inRange(verticalLinesToActive, 0.1, 0.75)) return
+            if (!bypassProximityCheck && !_.inRange(verticalLinesToActive, 0.1, 0.75)) return
 
             this.scrollContainer.scrollTo({
                 top: scrollTop,

@@ -406,7 +406,7 @@ var ScrolledMixin = (superClass) => {
       const lineHeight = parseInt(document.defaultView.getComputedStyle(this).lineHeight);
       const scrollTop = this.offsetTop - this.scrollContainer.offsetTop - lineHeight * 2;
       const verticalLinesToActive = Math.abs(scrollTop - this.scrollContainer.scrollTop) / this.scrollContainer.offsetHeight;
-      if (!bypassProximityCheck || !_.inRange(verticalLinesToActive, 0.1, 0.75))
+      if (!bypassProximityCheck && !_.inRange(verticalLinesToActive, 0.1, 0.75))
         return;
       this.scrollContainer.scrollTo({
         top: scrollTop,
