@@ -56,7 +56,7 @@ export class PermanentMutationObserver extends MutationObserver {
 
 export const waitForElement = <E extends Element>(
     selector: string,
-    timeout = 1000,
+    timeout = 5000,
     location = document.body,
     notEl?: E | null,
 ) =>

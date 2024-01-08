@@ -74,7 +74,7 @@ var PermanentMutationObserver = class extends MutationObserver {
     });
   }
 };
-var waitForElement = (selector, timeout = 1e3, location = document.body, notEl) => new Promise((resolve, reject) => {
+var waitForElement = (selector, timeout = 5e3, location = document.body, notEl) => new Promise((resolve, reject) => {
   const onMutation = () => {
     const el = document.querySelector(selector);
     if (el) {
