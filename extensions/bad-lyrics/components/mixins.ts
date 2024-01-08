@@ -71,7 +71,7 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
             if (!isActive || wasActive) return
             if (Date.now() < this.scrollTimeout || !this.spotifyContainer) return
 
-            const lineHeightHeuristic = this.offsetHeight
+            const lineHeightHeuristic = parseInt(document.defaultView!.getComputedStyle(this).lineHeight)
             const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic
             const verticalLinesToActive =
                 Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight

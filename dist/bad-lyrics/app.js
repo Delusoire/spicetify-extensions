@@ -399,7 +399,7 @@ var ScrolledMixin = (superClass) => {
         return;
       if (Date.now() < this.scrollTimeout || !this.spotifyContainer)
         return;
-      const lineHeightHeuristic = this.offsetHeight;
+      const lineHeightHeuristic = parseInt(document.defaultView.getComputedStyle(this).lineHeight);
       const scrollTop = this.offsetTop - this.spotifyContainer.offsetTop - lineHeightHeuristic;
       const verticalLinesToActive = Math.abs(scrollTop - this.spotifyContainer.scrollTop) / this.spotifyContainer.offsetHeight;
       if (!_.inRange(verticalLinesToActive, 0.1, 0.75))
