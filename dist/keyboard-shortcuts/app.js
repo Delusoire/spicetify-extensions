@@ -116,22 +116,26 @@ var _SneakKey = class extends LitElement {
   render() {
     const { x, y } = this.target.getBoundingClientRect();
     const styles = {
-      position: "fixed",
-      padding: "3px 6px",
-      backgroundColor: "black",
-      borderRadius: "3px",
-      border: "solid 2px white",
-      color: "white",
-      textTransform: "lowercase",
-      lineHeight: "normal",
-      fontSize: "14px",
-      fontWeight: "500",
       top: y + "px",
       left: x + "px"
     };
     return html`<span style=${styleMap(styles)}>${this.key}</span>`;
   }
 };
+_SneakKey.styles = css`
+        :host {
+            position: fixed;
+            padding: 3px 6px;
+            background-color: black;
+            border-radius: 3px;
+            border: solid 2px zhite;
+            color: white;
+            text-transform: lowercase;
+            line-height: normal;
+            font-size: 14px;
+            font-weight: 500;
+        }
+    `;
 __decorateClass([
   property()
 ], _SneakKey.prototype, "key", 2);
@@ -184,7 +188,7 @@ var _SneakOverlay = class extends LitElement {
       this.remove();
   }
   render() {
-    return html`${map(this.props, (i) => html`<sneak-key key=${i.key} .target=${i.target} />`)}`;
+    return html`${map(this.props, (i) => html`<sneak-key part="key" key=${i.key} .target=${i.target} />`)}`;
   }
 };
 _SneakOverlay.styles = css`
