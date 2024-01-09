@@ -1,5 +1,3 @@
-import { array as a, function as f } from "https://esm.sh/fp-ts"
-
 import { LitElement, css, html } from "https://esm.sh/lit"
 import { customElement, property } from "https://esm.sh/lit/decorators.js"
 import { map } from "https://esm.sh/lit/directives/map.js"
@@ -67,16 +65,14 @@ export class _SneakOverlay extends LitElement {
             let k1 = 0,
                 k2 = 0
 
-            this.props = f.pipe(
-                Array.from(document.querySelectorAll<HTMLElement>(CLICKABLE_ELEMENT_SELECTOR)),
-                // a.filter(isElementVisible),
-                a.filter(isElementInViewPort),
-                a.map(target => {
+            this.props = Array.from(document.querySelectorAll<HTMLElement>(CLICKABLE_ELEMENT_SELECTOR))
+                // .filter(isElementVisible),
+                .filter(isElementInViewPort)
+                .map(target => {
                     const key = KEY_LIST[k1] + KEY_LIST[k2++]
                     if (k2 >= KEY_LIST.length) k1++, (k2 = 0)
                     return { target, key }
-                }),
-            )
+                })
 
             if (k1 + k2 === 0) this.remove()
             else listeningToSneakBinds = true

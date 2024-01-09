@@ -31,7 +31,6 @@ var toggleTracksLiked = async (uris) => {
 };
 
 // extensions/keyboard-shortcuts/sneak.ts
-import { array as a, function as f2 } from "https://esm.sh/fp-ts";
 import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
@@ -151,17 +150,12 @@ var _SneakOverlay = class extends LitElement {
     this.props = [];
     requestAnimationFrame(() => {
       let k1 = 0, k2 = 0;
-      this.props = f2.pipe(
-        Array.from(document.querySelectorAll(CLICKABLE_ELEMENT_SELECTOR)),
-        // a.filter(isElementVisible),
-        a.filter(isElementInViewPort),
-        a.map((target) => {
-          const key = KEY_LIST[k1] + KEY_LIST[k2++];
-          if (k2 >= KEY_LIST.length)
-            k1++, k2 = 0;
-          return { target, key };
-        })
-      );
+      this.props = Array.from(document.querySelectorAll(CLICKABLE_ELEMENT_SELECTOR)).filter(isElementInViewPort).map((target) => {
+        const key = KEY_LIST[k1] + KEY_LIST[k2++];
+        if (k2 >= KEY_LIST.length)
+          k1++, k2 = 0;
+        return { target, key };
+      });
       if (k1 + k2 === 0)
         this.remove();
       else
