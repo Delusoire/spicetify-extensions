@@ -13,12 +13,12 @@ export let listeningToSneakBinds = false
 @customElement("sneak-key")
 class _SneakKey extends LitElement {
     static styles = css`
-        :host {
+        :host > span {
             position: fixed;
             padding: 3px 6px;
             background-color: black;
             border-radius: 3px;
-            border: solid 2px zhite;
+            border: solid 2px white;
             color: white;
             text-transform: lowercase;
             line-height: normal;

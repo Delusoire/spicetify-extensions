@@ -122,12 +122,12 @@ var _SneakKey = class extends LitElement {
   }
 };
 _SneakKey.styles = css`
-        :host {
+        :host > span {
             position: fixed;
             padding: 3px 6px;
             background-color: black;
             border-radius: 3px;
-            border: solid 2px zhite;
+            border: solid 2px white;
             color: white;
             text-transform: lowercase;
             line-height: normal;
