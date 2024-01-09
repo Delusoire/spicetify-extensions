@@ -660,11 +660,11 @@ var lastSortAction;
 var lastSortedQueue2 = [];
 var invertOrder = 0;
 addEventListener("keydown", (event) => {
-  if (!event.repeat && event.key === "Control")
+  if (!event.repeat && event.key === "Shift")
     invertOrder = 1;
 });
 addEventListener("keyup", (event) => {
-  if (!event.repeat && event.key === "Control")
+  if (!event.repeat && event.key === "Shift")
     invertOrder = 0;
 });
 var populateTracks = _.cond([

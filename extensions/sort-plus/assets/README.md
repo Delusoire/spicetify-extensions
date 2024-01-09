@@ -13,4 +13,4 @@ tags:
 
 i: This extension has settings that are accessible right under spotify's.
 
-ii: Holding ctrl while sorting inverts the ascending order.
+ii: Holding Shift while sorting inverts the ascending order.
