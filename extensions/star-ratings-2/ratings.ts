@@ -21,6 +21,7 @@ const { URI } = Spicetify
 const { History, PlayerAPI } = Spicetify.Platform
 
 export const loadRatings = async () => {
+    debugger
     const ratingsFolder = await fetchFolder(CONFIG.ratingsFolderUri)
 
     playlistUris = f.pipe(

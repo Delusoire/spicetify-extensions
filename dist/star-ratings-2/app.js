@@ -508,6 +508,7 @@ var getCollectionPlaylistButton = () => {
 var { URI: URI4 } = Spicetify;
 var { History: History2, PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
 var loadRatings = async () => {
+  debugger;
   const ratingsFolder = await fetchFolder(CONFIG2.ratingsFolderUri);
   playlistUris = f.pipe(
     ratingsFolder.items,
