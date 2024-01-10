@@ -112,7 +112,7 @@ SortBySubMenu.register()
 // Topbar
 
 new Topbar.Button("Create a Playlist from Sorted Queue", "plus2px", createPlaylistFromLastSortedQueue)
-new Topbar.Button("Reorder current Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue)
+new Topbar.Button("Reorder Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue)
 
 // Other
 

@@ -616,7 +616,7 @@ var reordedPlaylistLikeSortedQueue = async () => {
   const playlistUids = (await fetchPlaylistContents(lastFetchedUri)).map((item) => item.uid);
   let i = sortedUids.length - 1;
   let reqs = new Array();
-  while (i > 0) {
+  while (i >= 0) {
     const uids = new Array();
     _.forEachRight(playlistUids, (uid, j) => {
       if (uid === sortedUids[i]) {
@@ -757,7 +757,7 @@ var SortBySubMenu = new ContextMenu.SubMenu(
 );
 SortBySubMenu.register();
 new Topbar.Button("Create a Playlist from Sorted Queue", "plus2px", createPlaylistFromLastSortedQueue);
-new Topbar.Button("Reorder current Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue);
+new Topbar.Button("Reorder Playlist like Sorted Queue", "chart-down", reordedPlaylistLikeSortedQueue);
 new ContextMenu.Item(
   "Choose for Sorted Playlists",
   ([uri]) => CONFIG.sortedPlaylistsFolderUri = uri,

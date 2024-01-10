@@ -57,7 +57,7 @@ export const reordedPlaylistLikeSortedQueue = async () => {
 
     let i = sortedUids.length - 1
     let reqs = new Array<string[]>()
-    while (i > 0) {
+    while (i >= 0) {
         const uids = new Array<string>()
 
         _.forEachRight(playlistUids, (uid, j) => {
