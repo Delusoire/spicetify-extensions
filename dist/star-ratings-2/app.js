@@ -204,7 +204,7 @@ var fetchPlaylistContents = async (uri) => (await PlaylistAPI.getContents(uri)).
 var createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
 var createPlaylist = async (name, location = {}) => await RootlistAPI.createPlaylist(name, location);
 var setPlaylistVisibility = async (playlist, visibleForAll) => await PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
-var fetchFolder = async (folder) => await RootlistAPI.getContents(folder);
+var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
 var addPlaylistTracks = async (playlist, tracks, location = {}) => await PlaylistAPI.add(playlist, tracks, location);
 var removePlaylistTracks = (playlist, tracks) => PlaylistAPI.remove(playlist, tracks);
 
@@ -674,22 +674,18 @@ var updateNowPlayingControls = (newTrack, updateDropdown = true) => {
   if (updateDropdown)
     wrapDropdownInsidePlaylistButton(pb, newTrack, true);
 };
-var updateTrackListControls = (updateDropdown = true) => {
-  const trackLists = getTrackLists();
-  trackLists.map((trackList) => {
-    const trackListTracks = getTrackListTracks(trackList);
-    trackListTracks.map((track) => {
-      const uri = getTrackListTrackUri(track);
-      if (!URI5.isTrack(uri))
-        return;
-      const r = tracksRatings[uri];
-      const pb = getPlaylistButton(track);
-      colorizePlaylistButton(pb, r);
-      if (updateDropdown)
-        wrapDropdownInsidePlaylistButton(pb, uri);
-    });
-  });
-};
+var updateTrackListControls = (updateDropdown = true) => getTrackLists().map(getTrackListTracks).map(
+  fp.map((track) => {
+    const uri = getTrackListTrackUri(track);
+    if (!URI5.isTrack(uri))
+      return;
+    const r = tracksRatings[uri];
+    const pb = getPlaylistButton(track);
+    colorizePlaylistButton(pb, r);
+    if (updateDropdown)
+      wrapDropdownInsidePlaylistButton(pb, uri);
+  })
+);
 var updateCollectionControls = async (uri) => {
   const tracks = await getTracksFromUri(uri);
   const ratings = _.compact(tracks.map((track) => tracksRatings[track.uri]));

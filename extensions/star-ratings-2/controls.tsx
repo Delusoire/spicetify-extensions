@@ -15,7 +15,7 @@ import {
     getTrackListTracks,
     getTrackLists,
 } from "./util.ts"
-import { _ } from "../../shared/deps.ts"
+import { _, fp } from "../../shared/deps.ts"
 
 const { URI, Tippy } = Spicetify
 const { React, ReactDOM } = Spicetify
@@ -103,25 +103,22 @@ export const updateNowPlayingControls = (newTrack: SpotifyURI, updateDropdown = 
     if (updateDropdown) wrapDropdownInsidePlaylistButton(pb, newTrack, true)
 }
 
-export const updateTrackListControls = (updateDropdown = true) => {
-    const trackLists = getTrackLists()
+export const updateTrackListControls = (updateDropdown = true) =>
+    getTrackLists()
+        .map(getTrackListTracks)
+        .map(
+            fp.map(track => {
+                const uri = getTrackListTrackUri(track)
 
-    trackLists.map(trackList => {
-        const trackListTracks = getTrackListTracks(trackList)
+                if (!URI.isTrack(uri!)) return
 
-        trackListTracks.map(track => {
-            const uri = getTrackListTrackUri(track)
+                const r = tracksRatings[uri]
+                const pb = getPlaylistButton(track)
 
-            if (!URI.isTrack(uri!)) return
-
-            const r = tracksRatings[uri]
-            const pb = getPlaylistButton(track)
-
-            colorizePlaylistButton(pb, r)
-            if (updateDropdown) wrapDropdownInsidePlaylistButton(pb, uri)
-        })
-    })
-}
+                colorizePlaylistButton(pb, r)
+                if (updateDropdown) wrapDropdownInsidePlaylistButton(pb, uri)
+            }),
+        )
 
 export const updateCollectionControls = async (uri: string) => {
     const tracks = await getTracksFromUri(uri)

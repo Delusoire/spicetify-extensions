@@ -45,7 +45,7 @@ var init_platformApi = __esm({
       playlist: true,
       uris: tracks
     });
-    fetchFolder = async (folder) => await RootlistAPI.getContents(folder);
+    fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
     fetchRootFolder = () => fetchFolder(void 0);
   }
 });
