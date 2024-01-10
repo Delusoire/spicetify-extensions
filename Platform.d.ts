@@ -341,7 +341,7 @@ declare namespace Spicetify.Platform {
             flatten?: boolean
         }
 
-        function getContents(options?: Options): Folder
+        function getContents(options?: Options | string): Folder
 
         type Location = {
             before?: "start" | { uri: string } | { uid: string }

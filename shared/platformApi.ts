@@ -54,7 +54,7 @@ export const setPlaylistVisibility = async (playlist: SpotifyURI, visibleForAll:
 export const setPlaylistPublished = async (playlist: SpotifyURI, published: boolean) =>
     await RootlistAPI.setPublishedState(playlist, published)
 
-export const fetchFolder = async (folder?: SpotifyURI) => await RootlistAPI.getContents({ folderUri: folder })
+export const fetchFolder = async (folder?: SpotifyURI) => await RootlistAPI.getContents(folder)
 export const fetchRootFolder = () => fetchFolder(undefined)
 
 export const addPlaylistTracks = async (

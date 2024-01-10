@@ -204,7 +204,7 @@ var fetchPlaylistContents = async (uri) => (await PlaylistAPI.getContents(uri)).
 var createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
 var createPlaylist = async (name, location = {}) => await RootlistAPI.createPlaylist(name, location);
 var setPlaylistVisibility = async (playlist, visibleForAll) => await PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
-var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
+var fetchFolder = async (folder) => await RootlistAPI.getContents(folder);
 var addPlaylistTracks = async (playlist, tracks, location = {}) => await PlaylistAPI.add(playlist, tracks, location);
 var removePlaylistTracks = (playlist, tracks) => PlaylistAPI.remove(playlist, tracks);
 
@@ -508,7 +508,6 @@ var getCollectionPlaylistButton = () => {
 var { URI: URI4 } = Spicetify;
 var { History: History2, PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
 var loadRatings = async () => {
-  debugger;
   const ratingsFolder = await fetchFolder(CONFIG2.ratingsFolderUri);
   playlistUris = f.pipe(
     ratingsFolder.items,

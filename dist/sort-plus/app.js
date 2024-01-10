@@ -104,7 +104,7 @@ var createPlaylistFromTracks = (name, tracks, folder) => CosmosAsync.post("sp://
   uris: tracks
 });
 var setPlaylistVisibility = async (playlist, visibleForAll) => await PlaylistPermissionsAPI.setBasePermission(playlist, visibleForAll ? "VIEWER" : "BLOCKED");
-var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
+var fetchFolder = async (folder) => await RootlistAPI.getContents(folder);
 var fetchRootFolder = () => fetchFolder(void 0);
 var movePlaylistTracks = async (playlist, uids, location = {}) => await PlaylistAPI.move(
   playlist,
