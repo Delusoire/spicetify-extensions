@@ -383,7 +383,7 @@ var SettingsSection = class _SettingsSection {
 };
 
 // extensions/sort-plus/settings.ts
-var SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists";
+var SORTED_PLAYLISTS_FOLDER_NAME = "\u{1F4C0} Sorted Playlists";
 var settings = new SettingsSection("Sort Plus").addToggle({ id: "preventDuplicates", desc: "Prevent Duplicates" }, task2.of(true)).addToggle({ id: "descending", desc: "Descending" }, task2.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task2.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task2.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task2.of(true)).addToggle({ id: "artistAppearsOn", desc: "Appears On" }, task2.of(false)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task2.of("Username")).addInput(
   { id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" },
   task2.of("********************************")

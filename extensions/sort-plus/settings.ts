@@ -4,7 +4,7 @@ import { createFolder } from "../../shared/platformApi.ts"
 import { SettingsSection } from "../../shared/settings.tsx"
 import { SpotifyURI } from "../../shared/util.ts"
 
-const SORTED_PLAYLISTS_FOLDER_NAME = "Sorted Playlists"
+const SORTED_PLAYLISTS_FOLDER_NAME = "📀 Sorted Playlists"
 
 const settings = new SettingsSection("Sort Plus")
     .addToggle({ id: "preventDuplicates", desc: "Prevent Duplicates" }, task.of(true))
