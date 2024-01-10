@@ -22,16 +22,20 @@ export const createPlaylistFromLastSortedQueue = async () => {
     const sortedPlaylistsFolder = await fetchFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchRootFolder)
 
     const uri = URI.fromString(lastFetchedUri)
-    const playlistName = `${getNameFromUri(uri)} - ${lastSortAction}`
+    const playlistName = `${await getNameFromUri(uri)} - ${lastSortAction}`
 
-    const { palylistUri } = await createPlaylistFromTracks(
+    const { success, uri: playlistUri } = await createPlaylistFromTracks(
         playlistName,
         lastSortedQueue.map(t => t.uri),
         sortedPlaylistsFolder.uri,
     )
 
-    setPlaylistVisibility(palylistUri, false)
+    if (!success) {
+        Spicetify.showNotification(`Failed to create Playlist ${playlistName}`, true)
+        return
+    }
 
+    setPlaylistVisibility(playlistUri, false)
     Spicetify.showNotification(`Playlist ${playlistName} created`)
 }
 
