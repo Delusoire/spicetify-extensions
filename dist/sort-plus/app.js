@@ -615,7 +615,7 @@ var reordedPlaylistLikeSortedQueue = async () => {
   const sortedUids = lastSortedQueue.map((track) => track.uid);
   const playlistUids = (await fetchPlaylistContents(lastFetchedUri)).map((item) => item.uid);
   let i = sortedUids.length - 1;
-  let reqs = new Array();
+  let uidsByReqs = new Array();
   while (i >= 0) {
     const uids = new Array();
     _.forEachRight(playlistUids, (uid, j) => {
@@ -625,13 +625,13 @@ var reordedPlaylistLikeSortedQueue = async () => {
         uids.push(uid);
       }
     });
-    reqs.push(uids.reverse());
+    uidsByReqs.push(uids.reverse());
   }
   const fn = progressify(
     (uids) => movePlaylistTracks(lastFetchedUri, uids, SpotifyLoc.before.start()),
-    reqs.length
+    uidsByReqs.length
   );
-  await Promise.all(reqs.map(fn));
+  await Promise.all(uidsByReqs.map(fn));
   Spicetify.showNotification(`Reordered the sorted playlist`);
   if (playlistUids.length) {
     Spicetify.showNotification(`Left ${playlistUids.length} unordered at the bottom`);
