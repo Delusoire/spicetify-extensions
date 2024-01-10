@@ -1,4 +1,5 @@
 import { _ } from "../../shared/deps.ts"
+import { progressify } from "../../shared/fp.ts"
 import {
     createPlaylistFromTracks,
     fetchFolder,
@@ -71,7 +72,12 @@ export const reordedPlaylistLikeSortedQueue = async () => {
         reqs.push(uids.reverse())
     }
 
-    await Promise.all(reqs.map(uids => movePlaylistTracks(lastFetchedUri, uids, SpotifyLoc.before.start())))
+    const fn = progressify(
+        (uids: string[]) => movePlaylistTracks(lastFetchedUri, uids, SpotifyLoc.before.start()),
+        reqs.length,
+    )
+
+    await Promise.all(reqs.map(fn))
 
     Spicetify.showNotification(`Reordered the sorted playlist`)
     if (playlistUids.length) {

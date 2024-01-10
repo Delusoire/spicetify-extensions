@@ -56,6 +56,37 @@ var setPlayingContext = (uri) => {
   return PlayerAPI.updateContext(sessionId, { uri, url: "context://" + uri });
 };
 
+// shared/fp.ts
+var { Snackbar } = Spicetify;
+var pMchain = (f) => async (fa) => f(await fa);
+var chunkify50 = (fn) => async (args) => {
+  const a = await Promise.all(_.chunk(args, 50).map(fn));
+  return a.flat();
+};
+var progressify = (f, n) => {
+  let i = n, lastProgress = 0;
+  return async function(..._2) {
+    const res = await f(...arguments), progress = Math.round((1 - --i / n) * 100);
+    if (progress > lastProgress) {
+      ;
+      Snackbar.updater.enqueueSetState(Snackbar, () => ({
+        snacks: [],
+        queue: []
+      }));
+      Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
+        variant: "default",
+        autoHideDuration: 200,
+        transitionDuration: {
+          enter: 0,
+          exit: 0
+        }
+      });
+    }
+    lastProgress = progress;
+    return res;
+  };
+};
+
 // shared/platformApi.ts
 var { CosmosAsync } = Spicetify;
 var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
@@ -352,37 +383,6 @@ var fetchArtistOverview = async (uri) => {
   return res.data.artistUnion;
 };
 
-// shared/fp.ts
-var { Snackbar } = Spicetify;
-var pMchain = (f) => async (fa) => f(await fa);
-var chunkify50 = (fn) => async (args) => {
-  const a = await Promise.all(_.chunk(args, 50).map(fn));
-  return a.flat();
-};
-var progressify = (f, n) => {
-  let i = n, lastProgress = 0;
-  return async function(..._2) {
-    const res = await f(...arguments), progress = Math.round((1 - --i / n) * 100);
-    if (progress > lastProgress) {
-      ;
-      Snackbar.updater.enqueueSetState(Snackbar, () => ({
-        snacks: [],
-        queue: []
-      }));
-      Snackbar.enqueueSnackbar(`Loading: ${progress}%`, {
-        variant: "default",
-        autoHideDuration: 200,
-        transitionDuration: {
-          enter: 0,
-          exit: 0
-        }
-      });
-    }
-    lastProgress = progress;
-    return res;
-  };
-};
-
 // shared/parse.ts
 var parseTopTrackFromArtist = ({ track }) => ({
   uri: track.uri,
@@ -627,7 +627,11 @@ var reordedPlaylistLikeSortedQueue = async () => {
     });
     reqs.push(uids.reverse());
   }
-  await Promise.all(reqs.map((uids) => movePlaylistTracks(lastFetchedUri, uids, SpotifyLoc.before.start())));
+  const fn = progressify(
+    (uids) => movePlaylistTracks(lastFetchedUri, uids, SpotifyLoc.before.start()),
+    reqs.length
+  );
+  await Promise.all(reqs.map(fn));
   Spicetify.showNotification(`Reordered the sorted playlist`);
   if (playlistUids.length) {
     Spicetify.showNotification(`Left ${playlistUids.length} unordered at the bottom`);
