@@ -1,6 +1,8 @@
+import { _ } from "../../shared/deps.ts"
 import {
     createPlaylistFromTracks,
     fetchFolder,
+    fetchPlaylistContents,
     fetchRootFolder,
     movePlaylistTracks,
     setPlaylistVisibility,
@@ -50,6 +52,29 @@ export const reordedPlaylistLikeSortedQueue = async () => {
         return
     }
 
-    const fn = (uid: string) => movePlaylistTracks(lastFetchedUri, [uid], SpotifyLoc.after.end())
-    await Promise.all(lastSortedQueue.map(track => track.uid!).map(fn))
+    const sortedUids = lastSortedQueue.map(track => track.uid!)
+    const playlistUids = (await fetchPlaylistContents(lastFetchedUri)).map(item => item.uid)
+
+    let i = sortedUids.length - 1
+    let reqs = new Array<string[]>()
+    while (i > 0) {
+        const uids = new Array<string>()
+
+        _.forEachRight(playlistUids, (uid, j) => {
+            if (uid === sortedUids[i]) {
+                i--
+                playlistUids.splice(j, 1)
+                uids.push(uid)
+            }
+        })
+
+        reqs.push(uids.reverse())
+    }
+
+    await Promise.all(reqs.map(uids => movePlaylistTracks(lastFetchedUri, uids, SpotifyLoc.before.start())))
+
+    Spicetify.showNotification(`Reordered the sorted playlist`)
+    if (playlistUids.length) {
+        Spicetify.showNotification(`Left ${playlistUids.length} unordered at the bottom`)
+    }
 }

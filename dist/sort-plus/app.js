@@ -612,8 +612,26 @@ var reordedPlaylistLikeSortedQueue = async () => {
     Spicetify.showNotification("Last sorted queue must be a playlist" /* LAST_SORTED_QUEUE_NOT_A_PLAYLIST */);
     return;
   }
-  const fn = (uid) => movePlaylistTracks(lastFetchedUri, [uid], SpotifyLoc.after.end());
-  await Promise.all(lastSortedQueue.map((track) => track.uid).map(fn));
+  const sortedUids = lastSortedQueue.map((track) => track.uid);
+  const playlistUids = (await fetchPlaylistContents(lastFetchedUri)).map((item) => item.uid);
+  let i = sortedUids.length - 1;
+  let reqs = new Array();
+  while (i > 0) {
+    const uids = new Array();
+    _.forEachRight(playlistUids, (uid, j) => {
+      if (uid === sortedUids[i]) {
+        i--;
+        playlistUids.splice(j, 1);
+        uids.push(uid);
+      }
+    });
+    reqs.push(uids.reverse());
+  }
+  await Promise.all(reqs.map((uids) => movePlaylistTracks(lastFetchedUri, uids, SpotifyLoc.before.start())));
+  Spicetify.showNotification(`Reordered the sorted playlist`);
+  if (playlistUids.length) {
+    Spicetify.showNotification(`Left ${playlistUids.length} unordered at the bottom`);
+  }
 };
 
 // extensions/sort-plus/populate.ts
