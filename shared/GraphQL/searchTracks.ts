@@ -1,4 +1,5 @@
 import { Items } from "./sharedTypes.ts"
+import { searchTracksDefinition } from "./Definitions/searchTracks.ts"
 
 const { GraphQL } = Spicetify
 
@@ -47,7 +48,7 @@ type searchModalResultsRes = Array<{
     item: TrackResponseWrapper
 }>
 export const searchTracks = async (q: string, offset = 0, limit = 50, topResultsNum = 20, includeAudiobooks = true) => {
-    const res = await GraphQL.Request(GraphQL.Definitions.searchModalResults, {
+    const res = await GraphQL.Request(searchTracksDefinition, {
         searchTerm: q,
         offset,
         limit,
