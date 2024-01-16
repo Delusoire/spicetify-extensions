@@ -7,47 +7,56 @@ interface TrackObject {
     popularity: number | undefined
 }
 
+interface IsrcObject {
+    isrc: string
+    uri: string
+}
+
 const db = new (class extends Dexie {
     tracks!: Table<TrackObject>
+    isrcs!: Table<IsrcObject>
 
     constructor() {
         super("library-data")
         this.version(1).stores({
             tracks: "&uri, albumReleaseDate, isrc, popularity",
+            isrcs: "&isrc, uri",
         })
     }
 })()
 
-import { searchModalResults } from "../../shared/GraphQL/searchModalResults.ts"
+import { searchTracks } from "../../shared/GraphQL/searchTracks.ts"
 import { spotifyApi } from "../../shared/api.ts"
 import { chunkify50 } from "../../shared/fp.ts"
 
 const { URI } = Spicetify
 
-export const getUrisFromISRC = async (isrc: string) => {
-    let tracks = await db.tracks.where({ isrc }).toArray()
+export const getFirstUriFromISRC = async (isrc: string) => {
+    const track = await db.isrcs.get(isrc)
 
-    if (!tracks) {
+    if (!track) {
         try {
-            const results = await searchModalResults(`isrc:${isrc}`)
-            const ts = results.map(i => i.item.data)
-            tracks = ts.map(t => ({ uri: t.uri, albumReleaseDate: undefined, isrc, popularity: undefined }))
-            db.tracks.bulkPut(tracks)
-            return tracks.map(track => track.uri)
+            const results = await searchTracks(`isrc:${isrc}`)
+            const topResult = results[0]
+            const { uri } = topResult.item.data
+            db.isrcs.put({ isrc, uri })
+            return uri
         } catch (_) {
             return null
         }
     }
 
-    {
-        const sortHeuristic = (a: TrackObject, b: TrackObject) => {
-            const getTrackReleaseDate = (a: TrackObject) => new Date(a.albumReleaseDate!)
-            //@ts-expect-error: ts dumb, ts can't substract dates
-            const deltaTime = getTrackReleaseDate(b) - getTrackReleaseDate(a)
-            return deltaTime || b.popularity! - a.popularity! || 0
-        }
-        return tracks.sort(sortHeuristic).map(track => track.uri)
-    }
+    return track.uri
+
+    // {
+    //     const sortHeuristic = (a: TrackObject, b: TrackObject) => {
+    //         const getTrackReleaseDate = (a: TrackObject) => new Date(a.albumReleaseDate!)
+    //         //@ts-expect-error: ts dumb, ts can't substract dates
+    //         const deltaTime = getTrackReleaseDate(b) - getTrackReleaseDate(a)
+    //         return deltaTime || b.popularity! - a.popularity! || 0
+    //     }
+    //     return tracks.sort(sortHeuristic).map(track => track.uri)
+    // }
 }
 
 export const getISRCsForUris = async (uris: string[]) => {
@@ -74,7 +83,7 @@ export const isUriOutdatedDuplicate = async (uri: string) => {
     const track = await db.tracks.get(uri)
 
     if (!track?.isrc) return null // cache miss, should never happen as we have made a pass to load the cache
-    const uris = await getUrisFromISRC(track.isrc)
-    if (!uris) return null
-    return uri !== uris[0]
+    const candidate = await getFirstUriFromISRC(track.isrc)
+    if (!candidate) return null
+    return uri !== candidate
 }

@@ -54,9 +54,9 @@ new PermanentMutationObserver("main", () => {
 // extensions/detect-duplicates/util.ts
 import Dexie from "https://esm.sh/dexie";
 
-// shared/GraphQL/searchModalResults.ts
+// shared/GraphQL/searchTracks.ts
 var { GraphQL } = Spicetify;
-var searchModalResults = async (q, offset = 0, limit = 10, topResultsNum = 20, includeAudiobooks = true) => {
+var searchTracks = async (q, offset = 0, limit = 50, topResultsNum = 20, includeAudiobooks = true) => {
   const res = await GraphQL.Request(GraphQL.Definitions.searchModalResults, {
     searchTerm: q,
     offset,
@@ -64,7 +64,7 @@ var searchModalResults = async (q, offset = 0, limit = 10, topResultsNum = 20, i
     numberOfTopResults: topResultsNum,
     includeAudiobooks
   });
-  return res.data.searchV2.topResults.itemsV2;
+  return res.data.searchV2.tracksV2.items;
 };
 
 // shared/api.ts
@@ -102,32 +102,26 @@ var db = new class extends Dexie {
   constructor() {
     super("library-data");
     this.version(1).stores({
-      tracks: "&uri, albumReleaseDate, isrc, popularity"
+      tracks: "&uri, albumReleaseDate, isrc, popularity",
+      isrcs: "&isrc, uri"
     });
   }
 }();
 var { URI: URI3 } = Spicetify;
-var getUrisFromISRC = async (isrc) => {
-  let tracks = await db.tracks.where({ isrc }).toArray();
-  if (!tracks) {
+var getFirstUriFromISRC = async (isrc) => {
+  const track = await db.isrcs.get(isrc);
+  if (!track) {
     try {
-      const results = await searchModalResults(`isrc:${isrc}`);
-      const ts = results.map((i) => i.item.data);
-      tracks = ts.map((t) => ({ uri: t.uri, albumReleaseDate: void 0, isrc, popularity: void 0 }));
-      db.tracks.bulkPut(tracks);
-      return tracks.map((track) => track.uri);
+      const results = await searchTracks(`isrc:${isrc}`);
+      const topResult = results[0];
+      const { uri } = topResult.item.data;
+      db.isrcs.put({ isrc, uri });
+      return uri;
     } catch (_2) {
       return null;
     }
   }
-  {
-    const sortHeuristic = (a, b) => {
-      const getTrackReleaseDate = (a2) => new Date(a2.albumReleaseDate);
-      const deltaTime = getTrackReleaseDate(b) - getTrackReleaseDate(a);
-      return deltaTime || b.popularity - a.popularity || 0;
-    };
-    return tracks.sort(sortHeuristic).map((track) => track.uri);
-  }
+  return track.uri;
 };
 var getISRCsForUris = async (uris) => {
   const tracks = (await db.tracks.bulkGet(uris)).map(
@@ -151,10 +145,10 @@ var isUriOutdatedDuplicate = async (uri) => {
   const track = await db.tracks.get(uri);
   if (!track?.isrc)
     return null;
-  const uris = await getUrisFromISRC(track.isrc);
-  if (!uris)
+  const candidate = await getFirstUriFromISRC(track.isrc);
+  if (!candidate)
     return null;
-  return uri !== uris[0];
+  return uri !== candidate;
 };
 
 // extensions/detect-duplicates/app.ts
