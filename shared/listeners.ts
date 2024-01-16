@@ -1,4 +1,5 @@
 import { getTrackListTracks, getTrackLists } from "../extensions/star-ratings-2/util.ts"
+import { _ } from "./deps.ts"
 
 import { PermanentMutationObserver, REACT_FIBER } from "./util.ts"
 
@@ -48,7 +49,9 @@ export const onPlayedPaused = (callback: (state: Spicetify.Platform.PlayerAPI.Pl
     Player.addEventListener("onplaypause", event => callback(event!.data))
 }
 
-type TrackListElement = HTMLDivElement & { presentation?: HTMLDivElement }
+const PRESENTATION_KEY = Symbol("presentation")
+
+type TrackListElement = HTMLDivElement & { [PRESENTATION_KEY]?: HTMLDivElement }
 type TrackElement = HTMLDivElement & { props?: Record<string, any> }
 
 type TrackListMutationListener = (trackList: Required<TrackListElement>, tracks: Array<Required<TrackElement>>) => void
@@ -59,9 +62,9 @@ const _onTrackListMutation = (
     record: MutationRecord[],
     observer: MutationObserver,
 ) => {
-    const tracks = getTrackListTracks(trackList.presentation) as Array<Required<TrackElement>>
+    const tracks = getTrackListTracks(trackList[PRESENTATION_KEY]) as Array<Required<TrackElement>>
 
-    const reactFiber = trackList.presentation[REACT_FIBER].alternate
+    const reactFiber = trackList[PRESENTATION_KEY][REACT_FIBER].alternate
     const reactTracks = reactFiber.pendingProps.children as any[]
     const tracksProps = reactTracks.map((child: any) => child.props as Record<string, any>)
 
@@ -75,13 +78,13 @@ const _onTrackListMutation = (
 new PermanentMutationObserver("main", () => {
     const trackLists = getTrackLists() as Array<TrackListElement>
     trackLists
-        .filter(trackList => !trackList.presentation)
+        .filter(trackList => !trackList[PRESENTATION_KEY])
         .forEach(trackList => {
-            trackList.presentation = trackList.lastElementChild!.firstElementChild!
+            trackList[PRESENTATION_KEY] = trackList.lastElementChild!.firstElementChild!
                 .nextElementSibling! as HTMLDivElement
 
             new MutationObserver((record, observer) =>
                 _onTrackListMutation(trackList as Required<TrackListElement>, record, observer),
-            ).observe(trackList.presentation, { childList: true })
+            ).observe(trackList[PRESENTATION_KEY], { childList: true })
         })
 })

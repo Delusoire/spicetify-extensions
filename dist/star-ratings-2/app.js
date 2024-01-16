@@ -725,10 +725,11 @@ var onSongChanged = (callback) => {
   callback(PlayerAPI3._state);
   Player.addEventListener("songchange", (event) => callback(event.data));
 };
+var PRESENTATION_KEY = Symbol("presentation");
 var onTrackListMutationListeners = new Array();
 var _onTrackListMutation = (trackList, record, observer) => {
-  const tracks = getTrackListTracks(trackList.presentation);
-  const reactFiber = trackList.presentation[REACT_FIBER].alternate;
+  const tracks = getTrackListTracks(trackList[PRESENTATION_KEY]);
+  const reactFiber = trackList[PRESENTATION_KEY][REACT_FIBER].alternate;
   const reactTracks = reactFiber.pendingProps.children;
   const tracksProps = reactTracks.map((child) => child.props);
   tracks.forEach((track, i) => track.props = tracksProps[i]);
@@ -737,11 +738,11 @@ var _onTrackListMutation = (trackList, record, observer) => {
 };
 new PermanentMutationObserver("main", () => {
   const trackLists = getTrackLists();
-  trackLists.filter((trackList) => !trackList.presentation).forEach((trackList) => {
-    trackList.presentation = trackList.lastElementChild.firstElementChild.nextElementSibling;
+  trackLists.filter((trackList) => !trackList[PRESENTATION_KEY]).forEach((trackList) => {
+    trackList[PRESENTATION_KEY] = trackList.lastElementChild.firstElementChild.nextElementSibling;
     new MutationObserver(
       (record, observer) => _onTrackListMutation(trackList, record, observer)
-    ).observe(trackList.presentation, { childList: true });
+    ).observe(trackList[PRESENTATION_KEY], { childList: true });
   });
 });
 
