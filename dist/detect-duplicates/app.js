@@ -52,7 +52,7 @@ new PermanentMutationObserver("main", () => {
   });
 });
 
-// extensions/detect-duplicates/util.ts
+// extensions/detect-duplicates/app.ts
 import Dexie from "https://esm.sh/dexie";
 
 // shared/GraphQL/Definitions/searchTracks.ts
@@ -718,7 +718,7 @@ var chunkify50 = (fn) => async (args) => {
   return a.flat();
 };
 
-// extensions/detect-duplicates/util.ts
+// extensions/detect-duplicates/app.ts
 var db = new class extends Dexie {
   constructor() {
     super("library-data");
@@ -729,25 +729,22 @@ var db = new class extends Dexie {
   }
 }();
 var { URI: URI3 } = Spicetify;
-var getFirstUriFromISRC = async (isrc) => {
-  const track = await db.isrcs.get(isrc);
-  if (!track) {
-    try {
-      const results = await searchTracks(`isrc:${isrc}`);
-      const topResult = results[0];
-      const { uri } = topResult.item.data;
-      db.isrcs.put({ isrc, uri });
-      return uri;
-    } catch (_2) {
-      return null;
-    }
+var getMainUrisForIsrcs = async (isrcs) => {
+  const tracks = (await db.isrcs.bulkGet(isrcs)).map((track, i) => track ?? { isrc: isrcs[i] });
+  const missedTracks = tracks.filter((track) => !track.isrc);
+  if (missedTracks.length) {
+    const missedIsrcs = missedTracks.map((track) => track.isrc);
+    const results = await Promise.all(missedIsrcs.map((isrc) => searchTracks(`isrc:${isrc}`)));
+    const uris = results.map((results2) => results2[0].item.data.uri);
+    missedTracks.forEach((missedTrack, i) => {
+      missedTrack.uri = uris[i];
+    });
+    db.isrcs.bulkAdd(missedTracks);
   }
-  return track.uri;
+  return tracks.map((track) => track.uri);
 };
 var getISRCsForUris = async (uris) => {
-  const tracks = (await db.tracks.bulkGet(uris)).map(
-    (track, i) => track ?? { uri: uris[i], isrc: void 0, albumReleaseDate: void 0, popularity: void 0 }
-  );
+  const tracks = (await db.tracks.bulkGet(uris)).map((track, i) => track ?? { uri: uris[i] });
   const missedTracks = tracks.filter((track) => !track.isrc);
   if (missedTracks.length) {
     const missedIds = missedTracks.map((track) => URI3.fromString(track.uri).id);
@@ -762,26 +759,17 @@ var getISRCsForUris = async (uris) => {
   }
   return tracks.map((track) => track.isrc);
 };
-var isUriOutdatedDuplicate = async (uri) => {
-  const track = await db.tracks.get(uri);
-  if (!track?.isrc)
-    return null;
-  const candidate = await getFirstUriFromISRC(track.isrc);
-  if (!candidate)
-    return null;
-  return uri !== candidate;
-};
-
-// extensions/detect-duplicates/app.ts
 var greyOutTrack = (track) => {
   track.style.backgroundColor = "gray";
   track.style.opacity = "0.3";
 };
 onTrackListMutationListeners.push(async (_2, tracks) => {
-  const trackUris = tracks.map((track) => track.props.uri);
-  await getISRCsForUris(trackUris);
-  tracks.map(async (track) => {
-    const isDuplicate = await isUriOutdatedDuplicate(track.props.uri);
-    isDuplicate && greyOutTrack(track);
-  });
+  const uris = tracks.map((track) => track.props.uri);
+  const isrcs = await getISRCsForUris(uris);
+  const isrcUris = await getMainUrisForIsrcs(isrcs);
+  tracks.map((track, i) => uris[i] === isrcUris[i] || greyOutTrack(track));
 });
+export {
+  getISRCsForUris,
+  getMainUrisForIsrcs
+};
