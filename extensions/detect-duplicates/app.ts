@@ -33,7 +33,7 @@ export const getMainUrisForIsrcs = async (isrcs: string[]) => {
 
     if (missedTracks.length) {
         const missedIsrcs = missedTracks.map(i => isrcs[i])
-        const results = await Promise.all(missedIsrcs.map(isrc => searchTracks(`isrc:${isrc}`)))
+        const results = await Promise.all(missedIsrcs.map(isrc => searchTracks(`isrc:${isrc}`, 0, 1)))
         const filledTracks = results.map(results => results[0].item.data.uri).map((uri, i) => ({ isrc: isrcs[i], uri }))
         db.isrcs.bulkAdd(filledTracks)
         missedTracks.forEach((missedTrack, i) => {

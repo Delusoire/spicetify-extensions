@@ -734,7 +734,7 @@ var getMainUrisForIsrcs = async (isrcs) => {
   const missedTracks = tracks.reduce((missed, track, i) => (track || missed.push(i), missed), []);
   if (missedTracks.length) {
     const missedIsrcs = missedTracks.map((i) => isrcs[i]);
-    const results = await Promise.all(missedIsrcs.map((isrc) => searchTracks(`isrc:${isrc}`)));
+    const results = await Promise.all(missedIsrcs.map((isrc) => searchTracks(`isrc:${isrc}`, 0, 1)));
     const filledTracks = results.map((results2) => results2[0].item.data.uri).map((uri, i) => ({ isrc: isrcs[i], uri }));
     db.isrcs.bulkAdd(filledTracks);
     missedTracks.forEach((missedTrack, i) => {
