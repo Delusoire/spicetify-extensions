@@ -734,14 +734,21 @@ var getMainUrisForIsrcs = async (isrcs) => {
   const missedTracks = tracks.reduce((missed, track, i) => (track || missed.push(i), missed), []);
   if (missedTracks.length) {
     const missedIsrcs = missedTracks.map((i) => isrcs[i]);
-    const results = await Promise.all(missedIsrcs.map((isrc) => searchTracks(`isrc:${isrc}`, 0, 1)));
-    const filledTracks = results.map((results2) => results2[0].item.data.uri).map((uri, i) => ({ isrc: isrcs[i], uri }));
+    const results = await Promise.allSettled(missedIsrcs.map((isrc) => searchTracks(`isrc:${isrc}`, 0, 1)));
+    const filledTracks = _.compact(
+      results.map((results2, i) => {
+        if (results2.status === "fulfilled") {
+          return { isrc: isrcs[i], uri: results2.value[0].item.data.uri };
+        }
+        console.error("Couldn't get a matching track for isrc:", isrcs[i]);
+      })
+    );
     db.isrcs.bulkAdd(filledTracks);
     missedTracks.forEach((missedTrack, i) => {
-      tracks[i] = filledTracks[i];
+      tracks[missedTrack] = filledTracks[i];
     });
   }
-  return tracks.map((track) => track.uri);
+  return tracks.map((track) => track?.uri);
 };
 var getISRCsForUris = async (uris) => {
   const tracks = await db.webTracks.bulkGet(uris);
@@ -750,8 +757,8 @@ var getISRCsForUris = async (uris) => {
     const missedIds = missedTracks.map((i) => URI3.fromString(uris[i]).id);
     const filledTracks = await chunkify50((is) => spotifyApi.tracks.get(is))(missedIds);
     db.webTracks.bulkAdd(filledTracks);
-    missedTracks.forEach((i, j) => {
-      tracks[i] = filledTracks[j];
+    missedTracks.forEach((missedTrack, i) => {
+      tracks[missedTrack] = filledTracks[i];
     });
   }
   return tracks.map((track) => track.external_ids.isrc);
@@ -764,7 +771,12 @@ onTrackListMutationListeners.push(async (_2, tracks) => {
   const uris = tracks.map((track) => track.props.uri);
   const isrcs = await getISRCsForUris(uris);
   const isrcUris = await getMainUrisForIsrcs(isrcs);
-  tracks.map((track, i) => uris[i] === isrcUris[i] || greyOutTrack(track));
+  tracks.map((track, i) => {
+    const isrcUri = isrcUris[i];
+    if (isrcUri && uris[i] !== isrcUri) {
+      greyOutTrack(track);
+    }
+  });
 });
 export {
   getISRCsForUris,
