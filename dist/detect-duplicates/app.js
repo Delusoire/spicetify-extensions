@@ -723,7 +723,7 @@ var db = new class extends Dexie {
   constructor() {
     super("library-data");
     this.version(1).stores({
-      tracks: "&uri, albumReleaseDate, isrc, popularity",
+      webTracks: "&uri",
       isrcs: "&isrc, uri"
     });
   }
@@ -744,20 +744,17 @@ var getMainUrisForIsrcs = async (isrcs) => {
   return tracks.map((track) => track.uri);
 };
 var getISRCsForUris = async (uris) => {
-  const tracks = (await db.tracks.bulkGet(uris)).map((track, i) => track ?? { uri: uris[i] });
-  const missedTracks = tracks.filter((track) => !track.isrc);
+  const tracks = await db.webTracks.bulkGet(uris);
+  const missedTracks = tracks.reduce((missed, track, i) => (track || missed.push(i), missed), []);
   if (missedTracks.length) {
-    const missedIds = missedTracks.map((track) => URI3.fromString(track.uri).id);
+    const missedIds = missedTracks.map((i) => URI3.fromString(uris[i]).id);
     const fillerTracks = await chunkify50((is) => spotifyApi.tracks.get(is))(missedIds);
-    missedTracks.forEach((missedTrack, i) => {
-      const fillerTrack = fillerTracks[i];
-      missedTrack.albumReleaseDate = fillerTrack.album.release_date;
-      missedTrack.isrc = fillerTrack.external_ids.isrc;
-      missedTrack.popularity = fillerTrack.popularity;
+    missedTracks.forEach((i, j) => {
+      tracks[i] = fillerTracks[j];
     });
-    db.tracks.bulkAdd(missedTracks);
+    db.webTracks.bulkAdd(fillerTracks);
   }
-  return tracks.map((track) => track.isrc);
+  return tracks.map((track) => track.external_ids.isrc);
 };
 var greyOutTrack = (track) => {
   track.style.backgroundColor = "gray";

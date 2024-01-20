@@ -2,26 +2,19 @@ import { onTrackListMutationListeners } from "../../shared/listeners.ts"
 
 import Dexie, { Table } from "https://esm.sh/dexie"
 
-interface TrackObject {
-    uri: string
-    albumReleaseDate: string | undefined
-    isrc: string
-    popularity: number | undefined
-}
-
 interface IsrcObject {
     isrc: string
     uri: string
 }
 
 const db = new (class extends Dexie {
-    tracks!: Table<TrackObject>
+    webTracks!: Table<Track>
     isrcs!: Table<IsrcObject>
 
     constructor() {
         super("library-data")
         this.version(1).stores({
-            tracks: "&uri, albumReleaseDate, isrc, popularity",
+            webTracks: "&uri",
             isrcs: "&isrc, uri",
         })
     }
@@ -30,6 +23,7 @@ const db = new (class extends Dexie {
 import { searchTracks } from "../../shared/GraphQL/searchTracks.ts"
 import { spotifyApi } from "../../shared/api.ts"
 import { chunkify50 } from "../../shared/fp.ts"
+import { Track } from "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk@1.2.1/dist/mjs/types.js"
 
 const { URI } = Spicetify
 
@@ -51,22 +45,19 @@ export const getMainUrisForIsrcs = async (isrcs: string[]) => {
 }
 
 export const getISRCsForUris = async (uris: string[]) => {
-    const tracks = (await db.tracks.bulkGet(uris)).map((track, i) => track ?? ({ uri: uris[i] } as TrackObject))
-    const missedTracks = tracks.filter(track => !track.isrc)
+    const tracks = await db.webTracks.bulkGet(uris)
+    const missedTracks = tracks.reduce((missed, track, i) => (track || missed.push(i), missed), [] as number[])
 
     if (missedTracks.length) {
-        const missedIds = missedTracks.map(track => URI.fromString(track.uri).id!)
+        const missedIds = missedTracks.map(i => URI.fromString(uris[i]).id!)
         const fillerTracks = await chunkify50(is => spotifyApi.tracks.get(is))(missedIds)
-        missedTracks.forEach((missedTrack, i) => {
-            const fillerTrack = fillerTracks[i]
-            missedTrack.albumReleaseDate = fillerTrack.album.release_date
-            missedTrack.isrc = fillerTrack.external_ids.isrc
-            missedTrack.popularity = fillerTrack.popularity
+        missedTracks.forEach((i, j) => {
+            tracks[i] = fillerTracks[j]
         })
-        db.tracks.bulkAdd(missedTracks)
+        db.webTracks.bulkAdd(fillerTracks)
     }
 
-    return tracks.map(track => track.isrc)
+    return tracks.map(track => track!.external_ids.isrc)
 }
 
 const greyOutTrack = (track: HTMLDivElement) => {

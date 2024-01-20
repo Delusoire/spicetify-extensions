@@ -1,34 +1,68 @@
-// shared/deps.ts
-import { default as ld } from "https://esm.sh/lodash";
-import { default as ld_fp } from "https://esm.sh/lodash/fp";
-var _ = ld;
+// extensions/star-ratings/app.ts
+import { html, render } from "https://esm.sh/lit";
 
 // shared/util.ts
 var { URI } = Spicetify;
 var { PlayerAPI } = Spicetify.Platform;
-var SpotifyLoc = {
-  before: {
-    start: () => ({ before: "start" }),
-    fromUri: (uri) => ({ before: { uri } }),
-    fromUid: (uid) => ({ before: { uid } })
-  },
-  after: {
-    end: () => ({ after: "end" }),
-    fromUri: (uri) => ({ after: { uri } }),
-    fromUid: (uid) => ({ after: { uid } })
+var PermanentMutationObserver = class extends MutationObserver {
+  constructor(targetSelector, callback, opts = {
+    childList: true,
+    subtree: true
+  }) {
+    super(callback);
+    this.target = null;
+    new MutationObserver(() => {
+      const nextTarget = document.querySelector(targetSelector);
+      if (nextTarget && !nextTarget.isEqualNode(this.target)) {
+        this.target && this.disconnect();
+        this.target = nextTarget;
+        this.observe(this.target, opts);
+      }
+    }).observe(document.body, {
+      childList: true,
+      subtree: true
+    });
   }
 };
 var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 var mainElement = document.querySelector("main");
 var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
-// shared/platformApi.ts
-var { CosmosAsync } = Spicetify;
-var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
-var createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
+// extensions/star-ratings-2/util.ts
+var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-trackList.main-trackList-indexable"));
+var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
+
+// shared/listeners.ts
+var { Player, URI: URI2 } = Spicetify;
+var { PlayerAPI: PlayerAPI2, History } = Spicetify.Platform;
+var PRESENTATION_KEY = Symbol("presentation");
+var onTrackListMutationListeners = new Array();
+var _onTrackListMutation = (trackList, record, observer) => {
+  const tracks = getTrackListTracks(trackList[PRESENTATION_KEY]);
+  const reactFiber = trackList[PRESENTATION_KEY][REACT_FIBER].alternate;
+  const reactTracks = reactFiber.pendingProps.children;
+  const tracksProps = reactTracks.map((child) => child.props);
+  tracks.forEach((track, i) => track.props = tracksProps[i]);
+  const fullyRenderedTracks = tracks.filter((track) => track.props?.uri);
+  onTrackListMutationListeners.map((listener) => listener(trackList, fullyRenderedTracks));
+};
+new PermanentMutationObserver("main", () => {
+  const trackLists = getTrackLists();
+  trackLists.filter((trackList) => !trackList[PRESENTATION_KEY]).forEach((trackList) => {
+    trackList[PRESENTATION_KEY] = trackList.lastElementChild.firstElementChild.nextElementSibling;
+    new MutationObserver(
+      (record, observer) => _onTrackListMutation(trackList, record, observer)
+    ).observe(trackList[PRESENTATION_KEY], { childList: true });
+  });
+});
 
 // shared/settings.tsx
 import { task } from "https://esm.sh/fp-ts";
+
+// shared/deps.ts
+import { default as ld } from "https://esm.sh/lodash";
+import { default as ld_fp } from "https://esm.sh/lodash/fp";
+var _ = ld;
 
 // shared/modules.ts
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
@@ -65,7 +99,7 @@ var rs_w = reactForwardRefs.filter((x) => x.render?.toString().includes("hasLead
 // shared/settings.tsx
 var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
-var { History } = Spicetify.Platform;
+var { History: History2 } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
   constructor(name, sectionFields = {}) {
     this.name = name;
@@ -73,7 +107,7 @@ var SettingsSection = class _SettingsSection {
     this.pushSettings = () => {
       if (this.stopHistoryListener)
         this.stopHistoryListener();
-      this.stopHistoryListener = History.listen(() => this.render());
+      this.stopHistoryListener = History2.listen(() => this.render());
       this.render();
     };
     this.toObject = () => new Proxy(
@@ -91,7 +125,7 @@ var SettingsSection = class _SettingsSection {
     );
     this.render = async () => {
       while (!document.getElementById("desktop.settings.selectLanguage")) {
-        if (History.location.pathname !== "/preferences")
+        if (History2.location.pathname !== "/preferences")
           return;
         await sleep(100);
       }
@@ -204,34 +238,89 @@ var SettingsSection = class _SettingsSection {
   }
 };
 
-// extensions/spoqify-radios/settings.ts
-var ANONIMYZED_RADIOS_FOLDER_NAME = "Anonymized Radios";
-var settings = new SettingsSection("Spoqify Radios").addInput(
-  {
-    id: "anonymizedRadiosFolderUri",
-    desc: "Anonymized Radios folder uri",
-    inputType: "text"
-  },
-  async () => (await createFolder(ANONIMYZED_RADIOS_FOLDER_NAME)).uri
-);
+// extensions/star-ratings/settings.ts
+var settings = new SettingsSection("Star Ratings").addToggle({ id: "showInTrackLists", desc: "Show in tracklists" });
 settings.pushSettings();
 var CONFIG = settings.toObject();
 
-// extensions/spoqify-radios/app.ts
-var { URI: URI2, ContextMenu } = Spicetify;
-var { History: History2, RootlistAPI: RootlistAPI2 } = Spicetify.Platform;
-var createAnonRadio = (uri) => {
-  const sse = new EventSource(`https://open.spoqify.com/anonymize?url=${uri.substring(8)}`);
-  sse.addEventListener("done", (e) => {
-    sse.close();
-    const anonUri = URI2.fromString(e.data);
-    History2.push(anonUri.toURLPath(true));
-    RootlistAPI2.add([anonUri.toURI()], SpotifyLoc.after.fromUri(CONFIG.anonymizedRadiosFolderUri));
-  });
+// shared/platformApi.ts
+var { CosmosAsync } = Spicetify;
+var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
+var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
+var fetchRootFolder = () => fetchFolder(void 0);
+
+// extensions/star-ratings/util.ts
+var { PlaylistAPI: PlaylistAPI2 } = Spicetify.Platform;
+var getTrackListHeader = (trackList) => trackList.querySelector(".main-trackList-trackListHeader")?.firstChild;
+var getLastCol = (parent) => {
+  const lastCol = parent.querySelector("div.main-trackList-rowSectionEnd");
+  const lastColIndex = Number(lastCol.getAttribute("aria-colindex"));
+  return [lastColIndex, lastCol];
 };
-new ContextMenu.Item(
-  "Create anonymized radio",
-  ([uri]) => createAnonRadio(uri),
-  ([uri]) => _.overSome([URI2.isAlbum, URI2.isArtist, URI2.isPlaylistV1OrV2, URI2.isTrack])(uri),
-  "podcasts"
-).register();
+var getOwnedPlaylists = async () => {
+  const rootFolder = await fetchRootFolder();
+  const traverse = (item) => {
+    switch (item.type) {
+      case "folder":
+        return item.items.flatMap(traverse);
+      case "playlist":
+        return item.isOwnedBySelf ? [item] : [];
+    }
+  };
+  return traverse(rootFolder);
+};
+var getTracksPlaylists = async () => {
+  const ownedPlaylists = await getOwnedPlaylists();
+  const tracks = await Promise.all(ownedPlaylists.map((playlist) => PlaylistAPI2.getContents(playlist.uri)));
+  const [playlists, uris] = _.unzip(
+    tracks.flatMap((tracks2, i) => tracks2.items.map((track) => [ownedPlaylists[i], track.uri]))
+  );
+  return Object.groupBy(playlists, (_2, i) => uris[i]);
+};
+
+// extensions/star-ratings/app.ts
+var customTrackListColCss = [
+  null,
+  null,
+  null,
+  null,
+  "[index] 16px [first] 4fr [var1] 2fr [var2] 1fr [last] minmax(120px,1fr)",
+  "[index] 16px [first] 6fr [var1] 4fr [var2] 3fr [var3] 2fr [last] minmax(120px,1fr)",
+  "[index] 16px [first] 6fr [var1] 4fr [var2] 3fr [var3] minmax(120px,2fr) [var3] 2fr [last] minmax(120px,1fr)"
+];
+onTrackListMutationListeners.push((tracklist, tracks) => {
+  if (!CONFIG.showInTrackLists)
+    return;
+  if (tracks.length === 0)
+    return;
+  const hasStars = (parent) => parent.getElementsByClassName("stars").length > 0;
+  const trackListHeader = getTrackListHeader(tracklist);
+  const firstElement = trackListHeader ?? tracks[0];
+  const [lastColIndex] = getLastCol(firstElement);
+  const lastColOffset = hasStars(firstElement) ? 1 : 0;
+  const newTrackListColCss = customTrackListColCss[lastColIndex - lastColOffset];
+  if (!newTrackListColCss)
+    return;
+  if (trackListHeader) {
+    trackListHeader.style.gridTemplateColumns = newTrackListColCss;
+  }
+  tracks.map((track) => {
+    if (hasStars(track))
+      return;
+    let addedColumnWrapper = track.querySelector("div.ratings-column-wrapper");
+    if (!addedColumnWrapper) {
+      const [colIndex, lastColumn] = getLastCol(track);
+      lastColumn?.setAttribute("aria-colindex", String(colIndex + 1));
+      addedColumnWrapper = document.createElement("div");
+      addedColumnWrapper.setAttribute("aria-colindex", String(colIndex));
+      addedColumnWrapper.role = "gridcell";
+      addedColumnWrapper.style.display = "flex";
+      addedColumnWrapper.classList.add("ratings-column-wrapper", "main-trackList-rowSectionVariable");
+      track.insertBefore(addedColumnWrapper, lastColumn);
+      track.style.gridTemplateColumns = newTrackListColCss;
+      const trackUri = track.props.uri;
+      render(html`<label-container .playlists=${TRACK_PLAYLISTS[trackUri] ?? []} />`, addedColumnWrapper);
+    }
+  });
+});
+var TRACK_PLAYLISTS = await getTracksPlaylists();

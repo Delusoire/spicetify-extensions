@@ -61,29 +61,35 @@ import { task } from "https://esm.sh/fp-ts";
 
 // shared/modules.ts
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
-var cache = Object.keys(require2.m).map((id) => require2(id));
-var modules = cache.filter((module) => typeof module === "object").flatMap((module) => Object.values(module));
-var functionModules = modules.filter((module) => typeof module === "function");
-var findModuleByStrings = (modules2, ...filters) => modules2.find(
+var modules = Object.keys(require2.m).map((id) => require2(id)).filter((module) => typeof module === "object");
+var exportedMembers = _.compact(modules.flatMap((module) => Object.values(module)));
+var exportedFunctions = exportedMembers.filter((module) => typeof module === "function");
+var findByStrings = (modules2, ...filters) => modules2.find(
   (f) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
   )(f.toString())
 );
-var CheckedPlaylistButtonIcon = findModuleByStrings(
-  functionModules,
+var CheckedPlaylistButtonIcon = findByStrings(
+  exportedFunctions,
   "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm11.748-1.97a.75.75 0 0 0-1.06-1.06l-4.47 4.47-1.405-1.406a.75.75 0 1 0-1.061 1.06l2.466 2.467 5.53-5.53z"
 );
-var SettingSection = findModuleByStrings(
-  functionModules,
+var SettingSection = findByStrings(
+  exportedFunctions,
   "function m(e){return(0,d.jsx)(r.k,{children:(0,d.jsx)(u,{...e})})}"
 );
-var SectionTitle = findModuleByStrings(functionModules, "textToHighlight", "textBase");
-var SettingColumn = findModuleByStrings(functionModules, "setSectionFilterMatchQueryValue", "filterMatchQuery");
-var SettingText = findModuleByStrings(functionModules, "textSubdued", "viola");
-var SettingToggle = findModuleByStrings(functionModules, "condensed", "onSelected");
-var curationButtonClass = modules.find((m) => m?.curationButton).curationButton;
+var SectionTitle = findByStrings(exportedFunctions, "textToHighlight", "textBase");
+var SettingColumn = findByStrings(exportedFunctions, "setSectionFilterMatchQueryValue", "filterMatchQuery");
+var SettingText = findByStrings(exportedFunctions, "textSubdued", "viola");
+var SettingToggle = findByStrings(exportedFunctions, "condensed", "onSelected");
+var curationButtonClass = exportedMembers.find((m) => m?.curationButton).curationButton;
+var reactObjects = modules.filter((m) => m?.$$typeof);
+var reactForwardRefSymbol = Spicetify.React.forwardRef().$$typeof;
+var reactForwardRefs = reactObjects.filter((m) => m.$$typeof === reactForwardRefSymbol);
+var reactMemoSymbol = Spicetify.React.memo().$$typeof;
+var reactMemos = reactObjects.filter((m) => m.$$typeof === reactMemoSymbol);
+var rs_w = reactForwardRefs.filter((x) => x.render?.toString().includes("hasLeadingOrMedia"));
 
 // shared/settings.tsx
 var { React, ReactDOM, LocalStorage } = Spicetify;
