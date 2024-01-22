@@ -86,14 +86,12 @@ var SettingSection = findByStrings(
 );
 var SectionTitle = findByStrings(exportedFunctions, "textToHighlight", "textBase");
 var SettingColumn = findByStrings(exportedFunctions, "setSectionFilterMatchQueryValue", "filterMatchQuery");
-var SettingText = findByStrings(exportedFunctions, "textSubdued", "viola");
+var SettingText = findByStrings(exportedFunctions, "textSubdued", "dangerouslySetInnerHTML");
 var SettingToggle = findByStrings(exportedFunctions, "condensed", "onSelected");
 var curationButtonClass = exportedMembers.find((m) => m?.curationButton).curationButton;
 var reactObjects = modules.filter((m) => m?.$$typeof);
-var reactForwardRefSymbol = Spicetify.React.forwardRef().$$typeof;
-var reactForwardRefs = reactObjects.filter((m) => m.$$typeof === reactForwardRefSymbol);
-var reactMemoSymbol = Spicetify.React.memo().$$typeof;
-var reactMemos = reactObjects.filter((m) => m.$$typeof === reactMemoSymbol);
+var reactForwardRefs = reactObjects.filter((m) => m.$$typeof === Symbol.for("react.forward_ref"));
+var reactMemos = reactObjects.filter((m) => m.$$typeof === Symbol.for("react.memo"));
 var rs_w = reactForwardRefs.filter((x) => x.render?.toString().includes("hasLeadingOrMedia"));
 
 // shared/settings.tsx

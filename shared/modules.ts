@@ -28,17 +28,13 @@ export const SettingSection = findByStrings(
 )
 export const SectionTitle = findByStrings(exportedFunctions, "textToHighlight", "textBase")
 export const SettingColumn = findByStrings(exportedFunctions, "setSectionFilterMatchQueryValue", "filterMatchQuery")
-export const SettingText = findByStrings(exportedFunctions, "textSubdued", "viola")
+export const SettingText = findByStrings(exportedFunctions, "textSubdued", "dangerouslySetInnerHTML")
 export const SettingToggle = findByStrings(exportedFunctions, "condensed", "onSelected")
 
 export const curationButtonClass = exportedMembers.find(m => m?.curationButton)!.curationButton
 
 const reactObjects = modules.filter(m => m?.$$typeof)
-
-const reactForwardRefSymbol = Spicetify.React.forwardRef().$$typeof
-const reactForwardRefs = reactObjects.filter(m => m.$$typeof === reactForwardRefSymbol)
-
-const reactMemoSymbol = Spicetify.React.memo().$$typeof
-const reactMemos = reactObjects.filter(m => m.$$typeof === reactMemoSymbol)
+const reactForwardRefs = reactObjects.filter(m => m.$$typeof === Symbol.for("react.forward_ref"))
+const reactMemos = reactObjects.filter(m => m.$$typeof === Symbol.for("react.memo"))
 
 export const rs_w = reactForwardRefs.filter(x => x.render?.toString().includes("hasLeadingOrMedia"))

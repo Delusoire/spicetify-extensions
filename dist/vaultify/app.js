@@ -199,7 +199,7 @@ var init_restore = __esm({
 });
 
 // shared/modules.ts
-var require2, modules, exportedMembers, exportedFunctions, findByStrings, CheckedPlaylistButtonIcon, SettingSection, SectionTitle, SettingColumn, SettingText, SettingToggle, curationButtonClass, reactObjects, reactForwardRefSymbol, reactForwardRefs, reactMemoSymbol, reactMemos, rs_w;
+var require2, modules, exportedMembers, exportedFunctions, findByStrings, CheckedPlaylistButtonIcon, SettingSection, SectionTitle, SettingColumn, SettingText, SettingToggle, curationButtonClass, reactObjects, reactForwardRefs, reactMemos, rs_w;
 var init_modules = __esm({
   "shared/modules.ts"() {
     init_deps();
@@ -224,14 +224,12 @@ var init_modules = __esm({
     );
     SectionTitle = findByStrings(exportedFunctions, "textToHighlight", "textBase");
     SettingColumn = findByStrings(exportedFunctions, "setSectionFilterMatchQueryValue", "filterMatchQuery");
-    SettingText = findByStrings(exportedFunctions, "textSubdued", "viola");
+    SettingText = findByStrings(exportedFunctions, "textSubdued", "dangerouslySetInnerHTML");
     SettingToggle = findByStrings(exportedFunctions, "condensed", "onSelected");
     curationButtonClass = exportedMembers.find((m) => m?.curationButton).curationButton;
     reactObjects = modules.filter((m) => m?.$$typeof);
-    reactForwardRefSymbol = Spicetify.React.forwardRef().$$typeof;
-    reactForwardRefs = reactObjects.filter((m) => m.$$typeof === reactForwardRefSymbol);
-    reactMemoSymbol = Spicetify.React.memo().$$typeof;
-    reactMemos = reactObjects.filter((m) => m.$$typeof === reactMemoSymbol);
+    reactForwardRefs = reactObjects.filter((m) => m.$$typeof === Symbol.for("react.forward_ref"));
+    reactMemos = reactObjects.filter((m) => m.$$typeof === Symbol.for("react.memo"));
     rs_w = reactForwardRefs.filter((x) => x.render?.toString().includes("hasLeadingOrMedia"));
   }
 });
