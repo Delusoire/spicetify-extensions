@@ -1,12 +1,10 @@
-import { PermanentMutationObserver } from "../../shared/util.ts"
-
-import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.tsx"
+import { updateCollectionControls, updateNowPlayingControls, updateTrackControls } from "./controls.tsx"
 import { loadRatings, tracksRatings } from "./ratings.ts"
 import { CONFIG } from "./settings.ts"
 
 import "./assets/styles.scss"
 import { _ } from "../../shared/deps.ts"
-import { onHistoryChanged, onSongChanged } from "../../shared/listeners.ts"
+import { onHistoryChanged, onSongChanged, onTrackListMutationListeners } from "../../shared/listeners.ts"
 const { URI, Player } = Spicetify
 
 loadRatings()
@@ -24,6 +22,8 @@ onSongChanged(state => {
     updateNowPlayingControls(uri)
 })
 
-new PermanentMutationObserver("main", () => updateTrackListControls())
+onTrackListMutationListeners.push(async (_, tracks) => {
+    for (const track of tracks) updateTrackControls(track, track.props.uri)
+})
 
 onHistoryChanged(_.overSome([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2]), uri => updateCollectionControls(uri))

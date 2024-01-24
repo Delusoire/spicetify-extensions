@@ -1,9 +1,8 @@
-import { function as f } from "https://esm.sh/fp-ts"
-
 import { Instance, Props } from "npm:tippy.js"
 
 import { SpotifyURI } from "../../shared/util.ts"
 
+import { _, fp } from "../../shared/deps.ts"
 import { getTracksFromUri } from "../sort-plus/util.ts"
 import { Dropdown } from "./dropdown.tsx"
 import { tracksRatings } from "./ratings.ts"
@@ -15,7 +14,6 @@ import {
     getTrackListTracks,
     getTrackLists,
 } from "./util.ts"
-import { _, fp } from "../../shared/deps.ts"
 
 const { URI, Tippy } = Spicetify
 const { React, ReactDOM } = Spicetify
@@ -28,7 +26,8 @@ const colorizePlaylistButton = (btn: HTMLButtonElement, rating: number) => {
 
     // Do we need this anymore?
     btn.style.opacity = rating > 0 ? "1" : UNSET_CSS
-    const svg = btn.querySelector<SVGElement>("svg")!
+    const svg = btn.querySelector<SVGElement>("svg")
+    if (!svg) return
     svg.style.fill = colorByRating[rating]
 }
 
@@ -62,7 +61,7 @@ const wrapDropdownInsidePlaylistButton = (pb: HTMLButtonElement, uri: SpotifyURI
             box.className = "main-contextMenu-tippy"
             box.appendChild(instance.props.content)
 
-            return { popper, onUpdate: f.constVoid }
+            return { popper, onUpdate: () => undefined }
         },
         onShow(instance: any) {
             instance.popper.firstChild.classList.add("main-contextMenu-tippyEnter")
@@ -103,20 +102,22 @@ export const updateNowPlayingControls = (newTrack: SpotifyURI, updateDropdown = 
     if (updateDropdown) wrapDropdownInsidePlaylistButton(pb, newTrack, true)
 }
 
+export const updateTrackControls = (track: HTMLElement, uri: string, updateDropdown = true) => {
+    if (!URI.isTrack(uri)) return
+    const r = tracksRatings[uri]
+    const pb = getPlaylistButton(track)
+
+    colorizePlaylistButton(pb, r)
+    updateDropdown && wrapDropdownInsidePlaylistButton(pb, uri)
+}
+
 export const updateTrackListControls = (updateDropdown = true) =>
     getTrackLists()
         .map(getTrackListTracks)
         .map(
             fp.map(track => {
                 const uri = getTrackListTrackUri(track)
-
-                if (!URI.isTrack(uri!)) return
-
-                const r = tracksRatings[uri]
-                const pb = getPlaylistButton(track)
-
-                colorizePlaylistButton(pb, r)
-                if (updateDropdown) wrapDropdownInsidePlaylistButton(pb, uri)
+                updateTrackControls(track, uri, updateDropdown)
             }),
         )
 

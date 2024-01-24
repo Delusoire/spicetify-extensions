@@ -10,9 +10,6 @@ var __decorateClass = (decorators, target, key, kind) => {
   return result;
 };
 
-// extensions/show-the-genres/app.ts
-import { array as a, function as f } from "https://esm.sh/fp-ts";
-
 // shared/api.ts
 import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 
@@ -46,10 +43,6 @@ var fetchLastFMTrack = async (LFMApiKey, artist, trackName, lastFmUsername = "")
   const res = await fetch(url).then((res2) => res2.json());
   return res.track;
 };
-
-// shared/fp.ts
-var { Snackbar } = Spicetify;
-var pMchain = (f2) => async (fa) => f2(await fa);
 
 // shared/util.ts
 var { URI } = Spicetify;
@@ -102,23 +95,17 @@ var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 var mainElement = document.querySelector("main");
 var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
-// extensions/show-the-genres/settings.ts
-import { task as task2 } from "https://esm.sh/fp-ts";
-
-// shared/settings.tsx
-import { task } from "https://esm.sh/fp-ts";
-
 // shared/modules.ts
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
 var modules = Object.keys(require2.m).map((id) => require2(id)).filter((module) => typeof module === "object");
 var exportedMembers = _.compact(modules.flatMap((module) => Object.values(module)));
 var exportedFunctions = exportedMembers.filter((module) => typeof module === "function");
 var findByStrings = (modules2, ...filters) => modules2.find(
-  (f2) => _.overEvery(
+  (f) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f2.toString())
+  )(f.toString())
 );
 var CheckedPlaylistButtonIcon = findByStrings(
   exportedFunctions,
@@ -172,6 +159,8 @@ var SettingsSection = class _SettingsSection {
         await sleep(100);
       }
       const allSettingsContainer = document.querySelector(".x-settings-container");
+      if (!allSettingsContainer)
+        return;
       let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.id);
       if (!pluginSettingsContainer) {
         pluginSettingsContainer = document.createElement("div");
@@ -185,11 +174,11 @@ var SettingsSection = class _SettingsSection {
       this.addField("button" /* BUTTON */, props);
       return this;
     };
-    this.addToggle = (props, defaultValue = task.of(false)) => {
+    this.addToggle = (props, defaultValue = () => false) => {
       this.addField("toggle" /* TOGGLE */, props, defaultValue);
       return this;
     };
-    this.addInput = (props, defaultValue = task.of("")) => {
+    this.addInput = (props, defaultValue = () => "") => {
       this.addField("input" /* INPUT */, props, defaultValue);
       return this;
     };
@@ -287,7 +276,7 @@ var settings = new SettingsSection("Show The Genres").addInput(
     desc: "Last.fm API Key",
     inputType: "text"
   },
-  task2.of("********************************")
+  () => "********************************"
 );
 settings.pushSettings();
 var CONFIG = settings.toObject();
@@ -438,6 +427,8 @@ new PermanentMutationObserver("main", () => {
 var { URI: URI3 } = Spicetify;
 var fetchLastFMTags = async (uri) => {
   const uid = URI3.fromString(uri).id;
+  if (!uid)
+    return [];
   const { name, artists } = await spotifyApi.tracks.get(uid);
   const artistNames = artists.map((artist) => artist.name);
   const track = await fetchLastFMTrack(CONFIG.LFMApiKey, artistNames[0], name);
@@ -454,11 +445,13 @@ nowPlayingGenreContainerEl.style.gridArea = "genres";
   const trackInfoContainer = await waitForElement("div.main-trackInfo-container");
   trackInfoContainer.appendChild(nowPlayingGenreContainerEl);
 })();
-onSongChanged((state2) => nowPlayingGenreContainerEl.uri = state2.item?.uri);
+onSongChanged((state2) => {
+  nowPlayingGenreContainerEl.uri = state2.item?.uri;
+});
 var getArtistsGenresOrRelated = async (artistsUris) => {
   const getArtistsGenres = async (artistsUris2) => {
     const ids = artistsUris2.map((uri) => URI3.fromString(uri).id);
-    const artists = await spotifyApi.artists.get(ids);
+    const artists = await spotifyApi.artists.get(_.compact(ids));
     const genres = new Set(artists.flatMap((artist) => artist.genres));
     return Array.from(genres);
   };
@@ -467,17 +460,15 @@ var getArtistsGenresOrRelated = async (artistsUris) => {
     return allGenres;
   const relatedArtists = await fetchArtistRelated(artistsUris[0]);
   relatedArtists.map((artist) => artist.uri);
-  return allGenres.length ? allGenres : await f.pipe(
-    artistsUris[0],
-    fetchArtistRelated,
-    pMchain(a.map((a2) => a2.uri)),
-    pMchain(a.chunksOf(5)),
-    pMchain(
-      a.reduce(
-        Promise.resolve([]),
-        async (acc, arr5uris) => (await acc).length ? await acc : await getArtistsGenres(arr5uris)
-      )
-    )
+  if (allGenres.length)
+    return allGenres;
+  const artistRelated = await fetchArtistRelated(artistsUris[0]);
+  return _.chunk(
+    artistRelated.map((a) => a.uri),
+    5
+  ).reduce(
+    async (acc, arr5uris) => (await acc).length ? await acc : await getArtistsGenres(arr5uris),
+    Promise.resolve([])
   );
 };
 var updateArtistPage = async (uri) => {

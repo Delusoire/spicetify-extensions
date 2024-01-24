@@ -1,5 +1,3 @@
-import { array as a, function as f } from "https://esm.sh/fp-ts"
-
 import { fetchLastFMTrack, spotifyApi } from "../../shared/api.ts"
 import { pMchain } from "../../shared/fp.ts"
 import { SpotifyURI, waitForElement } from "../../shared/util.ts"
@@ -10,11 +8,13 @@ import "./assets/styles.scss"
 import "./components.ts"
 import { fetchArtistRelated } from "../../shared/GraphQL/fetchArtistRelated.ts"
 import { onHistoryChanged, onSongChanged } from "../../shared/listeners.ts"
+import { _ } from "../../shared/deps.ts"
 
 const { URI } = Spicetify
 
 const fetchLastFMTags = async (uri: SpotifyURI) => {
-    const uid = URI.fromString(uri).id!
+    const uid = URI.fromString(uri).id
+    if (!uid) return []
     const { name, artists } = await spotifyApi.tracks.get(uid)
     const artistNames = artists.map(artist => artist.name)
     const track = await fetchLastFMTrack(CONFIG.LFMApiKey, artistNames[0], name)
@@ -31,15 +31,17 @@ nowPlayingGenreContainerEl.className += " ellipsis-one-line main-type-finale"
 nowPlayingGenreContainerEl.style.gridArea = "genres"
 ;(async () => {
     const trackInfoContainer = await waitForElement("div.main-trackInfo-container")
-    trackInfoContainer!.appendChild(nowPlayingGenreContainerEl)
+    trackInfoContainer.appendChild(nowPlayingGenreContainerEl)
 })()
 
-onSongChanged(state => (nowPlayingGenreContainerEl.uri = state.item?.uri))
+onSongChanged(state => {
+    nowPlayingGenreContainerEl.uri = state.item?.uri
+})
 
 const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[]) => {
     const getArtistsGenres = async (artistsUris: SpotifyURI[]) => {
-        const ids = artistsUris.map(uri => URI.fromString(uri)!.id!)
-        const artists = await spotifyApi.artists.get(ids)
+        const ids = artistsUris.map(uri => URI.fromString(uri).id)
+        const artists = await spotifyApi.artists.get(_.compact(ids))
         const genres = new Set(artists.flatMap(artist => artist.genres))
         return Array.from(genres)
     }
@@ -52,19 +54,17 @@ const getArtistsGenresOrRelated = async (artistsUris: SpotifyURI[]) => {
 
     relatedArtists.map(artist => artist.uri)
 
-    return allGenres.length
-        ? allGenres
-        : await f.pipe(
-              artistsUris[0],
-              fetchArtistRelated,
-              pMchain(a.map(a => a.uri)),
-              pMchain(a.chunksOf(5)),
-              pMchain(
-                  a.reduce(Promise.resolve([] as string[]), async (acc, arr5uris) =>
-                      (await acc).length ? await acc : await getArtistsGenres(arr5uris),
-                  ),
-              ),
-          )
+    if (allGenres.length) return allGenres
+
+    const artistRelated = await fetchArtistRelated(artistsUris[0])
+
+    return _.chunk(
+        artistRelated.map(a => a.uri),
+        5,
+    ).reduce(
+        async (acc, arr5uris) => ((await acc).length ? await acc : await getArtistsGenres(arr5uris)),
+        Promise.resolve([] as string[]),
+    )
 }
 
 const updateArtistPage = async (uri: SpotifyURI) => {

@@ -30,7 +30,10 @@ const { URI } = Spicetify
 
 export const getMainUrisForIsrcs = async (isrcs: string[]) => {
     const tracks = await db.isrcs.bulkGet(isrcs)
-    const missedTracks = tracks.reduce((missed, track, i) => (track || missed.push(i), missed), [] as number[])
+    const missedTracks = tracks.reduce((missed, track, i) => {
+        track || missed.push(i)
+        return missed
+    }, [] as number[])
 
     if (missedTracks.length) {
         const missedIsrcs = missedTracks.map(i => isrcs[i])
@@ -60,10 +63,13 @@ export const getMainUrisForIsrcs = async (isrcs: string[]) => {
 
 export const getISRCsForUris = async (uris: string[]) => {
     const tracks = await db.webTracks.bulkGet(uris)
-    const missedTracks = tracks.reduce((missed, track, i) => (track || missed.push(i), missed), [] as number[])
+    const missedTracks = tracks.reduce((missed, track, i) => {
+        track || missed.push(i)
+        return missed
+    }, [] as number[])
 
     if (missedTracks.length) {
-        const missedIds = missedTracks.map(i => URI.fromString(uris[i]).id!)
+        const missedIds = _.compact(missedTracks.map(i => URI.fromString(uris[i]).id))
         const filledTracks = await chunkify50(is => spotifyApi.tracks.get(is))(missedIds)
         db.webTracks.bulkAdd(filledTracks)
         missedTracks.forEach((missedTrack, i) => {
@@ -71,7 +77,7 @@ export const getISRCsForUris = async (uris: string[]) => {
         })
     }
 
-    return tracks.map(track => track!.external_ids.isrc)
+    return tracks.map(track => (track as Track).external_ids.isrc)
 }
 
 const greyOutTrack = (track: HTMLDivElement) => {

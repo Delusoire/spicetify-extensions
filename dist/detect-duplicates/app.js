@@ -731,7 +731,10 @@ var db = new class extends Dexie {
 var { URI: URI3 } = Spicetify;
 var getMainUrisForIsrcs = async (isrcs) => {
   const tracks = await db.isrcs.bulkGet(isrcs);
-  const missedTracks = tracks.reduce((missed, track, i) => (track || missed.push(i), missed), []);
+  const missedTracks = tracks.reduce((missed, track, i) => {
+    track || missed.push(i);
+    return missed;
+  }, []);
   if (missedTracks.length) {
     const missedIsrcs = missedTracks.map((i) => isrcs[i]);
     const resultsIsrcs = await Promise.allSettled(missedIsrcs.map((isrc) => searchTracks(`isrc:${isrc}`, 0, 1)));
@@ -758,9 +761,12 @@ var getMainUrisForIsrcs = async (isrcs) => {
 };
 var getISRCsForUris = async (uris) => {
   const tracks = await db.webTracks.bulkGet(uris);
-  const missedTracks = tracks.reduce((missed, track, i) => (track || missed.push(i), missed), []);
+  const missedTracks = tracks.reduce((missed, track, i) => {
+    track || missed.push(i);
+    return missed;
+  }, []);
   if (missedTracks.length) {
-    const missedIds = missedTracks.map((i) => URI3.fromString(uris[i]).id);
+    const missedIds = _.compact(missedTracks.map((i) => URI3.fromString(uris[i]).id));
     const filledTracks = await chunkify50((is) => spotifyApi.tracks.get(is))(missedIds);
     db.webTracks.bulkAdd(filledTracks);
     missedTracks.forEach((missedTrack, i) => {

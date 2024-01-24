@@ -1,5 +1,3 @@
-import { task } from "https://esm.sh/fp-ts"
-
 import { SettingsSection } from "../../shared/settings.tsx"
 
 const settings = new SettingsSection("Search On YouTube").addInput(
@@ -8,7 +6,7 @@ const settings = new SettingsSection("Search On YouTube").addInput(
         desc: "YouTube API Key",
         inputType: "text",
     },
-    task.of("***************************************"),
+    () => "***************************************",
 )
 
 settings.pushSettings()

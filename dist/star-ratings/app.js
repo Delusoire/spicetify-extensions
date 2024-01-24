@@ -56,9 +56,6 @@ new PermanentMutationObserver("main", () => {
   });
 });
 
-// shared/settings.tsx
-import { task } from "https://esm.sh/fp-ts";
-
 // shared/deps.ts
 import { default as ld } from "https://esm.sh/lodash";
 import { default as ld_fp } from "https://esm.sh/lodash/fp";
@@ -128,6 +125,8 @@ var SettingsSection = class _SettingsSection {
         await sleep(100);
       }
       const allSettingsContainer = document.querySelector(".x-settings-container");
+      if (!allSettingsContainer)
+        return;
       let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.id);
       if (!pluginSettingsContainer) {
         pluginSettingsContainer = document.createElement("div");
@@ -141,11 +140,11 @@ var SettingsSection = class _SettingsSection {
       this.addField("button" /* BUTTON */, props);
       return this;
     };
-    this.addToggle = (props, defaultValue = task.of(false)) => {
+    this.addToggle = (props, defaultValue = () => false) => {
       this.addField("toggle" /* TOGGLE */, props, defaultValue);
       return this;
     };
-    this.addInput = (props, defaultValue = task.of("")) => {
+    this.addInput = (props, defaultValue = () => "") => {
       this.addField("input" /* INPUT */, props, defaultValue);
       return this;
     };

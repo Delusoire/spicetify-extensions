@@ -1,48 +1,3 @@
-// shared/util.ts
-var { URI } = Spicetify;
-var { PlayerAPI } = Spicetify.Platform;
-var SpotifyLoc = {
-  before: {
-    start: () => ({ before: "start" }),
-    fromUri: (uri) => ({ before: { uri } }),
-    fromUid: (uid) => ({ before: { uid } })
-  },
-  after: {
-    end: () => ({ after: "end" }),
-    fromUri: (uri) => ({ after: { uri } }),
-    fromUid: (uid) => ({ after: { uid } })
-  }
-};
-var PermanentMutationObserver = class extends MutationObserver {
-  constructor(targetSelector, callback, opts = {
-    childList: true,
-    subtree: true
-  }) {
-    super(callback);
-    this.target = null;
-    new MutationObserver(() => {
-      const nextTarget = document.querySelector(targetSelector);
-      if (nextTarget && !nextTarget.isEqualNode(this.target)) {
-        this.target && this.disconnect();
-        this.target = nextTarget;
-        this.observe(this.target, opts);
-      }
-    }).observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
-};
-var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var mainElement = document.querySelector("main");
-var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
-
-// extensions/star-ratings-2/controls.tsx
-import { function as f2 } from "https://esm.sh/fp-ts";
-
-// shared/api.ts
-import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
-
 // shared/deps.ts
 import { default as ld } from "https://esm.sh/lodash";
 import { default as ld_fp } from "https://esm.sh/lodash/fp";
@@ -50,6 +5,7 @@ var _ = ld;
 var fp = ld_fp;
 
 // shared/api.ts
+import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 var { CosmosAsync } = Spicetify;
 var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
   // @ts-ignore
@@ -120,7 +76,7 @@ var fetchArtistOverview = async (uri) => {
 
 // shared/fp.ts
 var { Snackbar } = Spicetify;
-var pMchain = (f3) => async (fa) => f3(await fa);
+var pMchain = (f) => async (fa) => f(await fa);
 
 // shared/parse.ts
 var parseTopTrackFromArtist = ({ track }) => ({
@@ -192,6 +148,45 @@ var parseLibraryAPILikedTracks = (track) => ({
   releaseDate: void 0
 });
 
+// shared/util.ts
+var { URI } = Spicetify;
+var { PlayerAPI } = Spicetify.Platform;
+var SpotifyLoc = {
+  before: {
+    start: () => ({ before: "start" }),
+    fromUri: (uri) => ({ before: { uri } }),
+    fromUid: (uid) => ({ before: { uid } })
+  },
+  after: {
+    end: () => ({ after: "end" }),
+    fromUri: (uri) => ({ after: { uri } }),
+    fromUid: (uid) => ({ after: { uid } })
+  }
+};
+var PermanentMutationObserver = class extends MutationObserver {
+  constructor(targetSelector, callback, opts = {
+    childList: true,
+    subtree: true
+  }) {
+    super(callback);
+    this.target = null;
+    new MutationObserver(() => {
+      const nextTarget = document.querySelector(targetSelector);
+      if (nextTarget && !nextTarget.isEqualNode(this.target)) {
+        this.target && this.disconnect();
+        this.target = nextTarget;
+        this.observe(this.target, opts);
+      }
+    }).observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+};
+var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var mainElement = document.querySelector("main");
+var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
+
 // shared/platformApi.ts
 var { CosmosAsync: CosmosAsync2 } = Spicetify;
 var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
@@ -208,23 +203,17 @@ var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: f
 var addPlaylistTracks = async (playlist, tracks, location = {}) => await PlaylistAPI.add(playlist, tracks, location);
 var removePlaylistTracks = (playlist, tracks) => PlaylistAPI.remove(playlist, tracks);
 
-// extensions/sort-plus/settings.ts
-import { task as task2 } from "https://esm.sh/fp-ts";
-
-// shared/settings.tsx
-import { task } from "https://esm.sh/fp-ts";
-
 // shared/modules.ts
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
 var modules = Object.keys(require2.m).map((id) => require2(id)).filter((module) => typeof module === "object");
 var exportedMembers = _.compact(modules.flatMap((module) => Object.values(module)));
 var exportedFunctions = exportedMembers.filter((module) => typeof module === "function");
 var findByStrings = (modules2, ...filters) => modules2.find(
-  (f3) => _.overEvery(
+  (f) => _.overEvery(
     filters.map(
       (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
     )
-  )(f3.toString())
+  )(f.toString())
 );
 var CheckedPlaylistButtonIcon = findByStrings(
   exportedFunctions,
@@ -278,6 +267,8 @@ var SettingsSection = class _SettingsSection {
         await sleep(100);
       }
       const allSettingsContainer = document.querySelector(".x-settings-container");
+      if (!allSettingsContainer)
+        return;
       let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.id);
       if (!pluginSettingsContainer) {
         pluginSettingsContainer = document.createElement("div");
@@ -291,11 +282,11 @@ var SettingsSection = class _SettingsSection {
       this.addField("button" /* BUTTON */, props);
       return this;
     };
-    this.addToggle = (props, defaultValue = task.of(false)) => {
+    this.addToggle = (props, defaultValue = () => false) => {
       this.addField("toggle" /* TOGGLE */, props, defaultValue);
       return this;
     };
-    this.addInput = (props, defaultValue = task.of("")) => {
+    this.addInput = (props, defaultValue = () => "") => {
       this.addField("input" /* INPUT */, props, defaultValue);
       return this;
     };
@@ -388,10 +379,7 @@ var SettingsSection = class _SettingsSection {
 
 // extensions/sort-plus/settings.ts
 var SORTED_PLAYLISTS_FOLDER_NAME = "\u{1F4C0} Sorted Playlists";
-var settings = new SettingsSection("Sort Plus").addToggle({ id: "preventDuplicates", desc: "Prevent Duplicates" }, task2.of(true)).addToggle({ id: "descending", desc: "Descending" }, task2.of(true)).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, task2.of(true)).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, task2.of(true)).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, task2.of(true)).addToggle({ id: "artistAppearsOn", desc: "Appears On" }, task2.of(false)).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, task2.of("Username")).addInput(
-  { id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" },
-  task2.of("********************************")
-).addInput(
+var settings = new SettingsSection("Sort Plus").addToggle({ id: "preventDuplicates", desc: "Prevent Duplicates" }, () => true).addToggle({ id: "descending", desc: "Descending" }, () => true).addToggle({ id: "artistAllDiscography", desc: "All of the artist's Discography" }).addToggle({ id: "artistTopTracks", desc: "Top Tracks" }, () => true).addToggle({ id: "artistPopularReleases", desc: "Popular Releases" }, () => true).addToggle({ id: "artistSingles", desc: "Singles" }).addToggle({ id: "artistAlbums", desc: "Albums" }).addToggle({ id: "artistCompilations", desc: "Compilations" }).addToggle({ id: "artistLikedTracks", desc: "Liked Tracks" }, () => true).addToggle({ id: "artistAppearsOn", desc: "Appears On" }).addInput({ id: "lastFmUsername", desc: "Last.fm Username", inputType: "text" }, () => "Username").addInput({ id: "LFMApiKey", desc: "Last.fm API Key", inputType: "text" }, () => "********************************").addInput(
   {
     id: "sortedPlaylistsFolderUri",
     desc: "Sorted Playlists folder uri",
@@ -466,13 +454,9 @@ var getTracksFromUri = _.cond([
   [URI3.isPlaylistV1OrV2, getTracksFromPlaylist]
 ]);
 
-// extensions/star-ratings-2/ratings.ts
-import { array as ar, function as f } from "https://esm.sh/fp-ts";
-
 // extensions/star-ratings-2/settings.ts
-import { task as task3 } from "https://esm.sh/fp-ts";
 var RATINGS_FOLDER_NAME = "Ratings";
-var settings2 = new SettingsSection("Star Ratings 2").addInput({ id: "heartThreshold", desc: "Threshold for liking trakcs", inputType: "number" }, task3.of("3")).addInput({ id: "skipThreshold", desc: "Threshold for skipping trakcs", inputType: "number" }, task3.of("1")).addInput(
+var settings2 = new SettingsSection("Star Ratings 2").addInput({ id: "heartThreshold", desc: "Threshold for liking trakcs", inputType: "number" }, () => "3").addInput({ id: "skipThreshold", desc: "Threshold for skipping trakcs", inputType: "number" }, () => "1").addInput(
   {
     id: "ratingsFolderUri",
     desc: "Ratings folder uri",
@@ -513,27 +497,16 @@ var { URI: URI4 } = Spicetify;
 var { History: History2, PlayerAPI: PlayerAPI2 } = Spicetify.Platform;
 var loadRatings = async () => {
   const ratingsFolder = await fetchFolder(CONFIG2.ratingsFolderUri);
-  playlistUris = f.pipe(
-    ratingsFolder.items,
-    ar.map((p) => [p.uri, Number(p.name)]),
-    ar.reduce([], (uris, [uri, rating]) => (uris[rating] = uri, uris))
-  );
-  global.tracksRatings = tracksRatings = await f.pipe(
-    playlistUris,
-    ar.map(fetchPlaylistContents),
-    (ps) => Promise.all(ps),
-    // Promise.all flips empty to undefined
-    pMchain(ar.map((tracks) => tracks ?? [])),
-    pMchain(ar.map(ar.map((t) => t.uri))),
-    pMchain(ar.flatMap((trackUris, rating) => trackUris.map((trackUri) => [trackUri, rating]))),
-    pMchain(
-      ar.reduce(
-        {},
-        (acc, [trackUri, rating]) => Object.assign(acc, {
-          [trackUri]: Math.max(rating, acc[trackUri] ?? 0)
-        })
-      )
-    )
+  playlistUris = ratingsFolder.items.map((p) => [p.uri, Number(p.name)]).reduce((uris, [uri, rating]) => {
+    uris[rating] = uri;
+    return uris;
+  }, []);
+  const playlists = await Promise.all(playlistUris.map(fetchPlaylistContents));
+  global.tracksRatings = tracksRatings = playlists.flatMap((tracks, rating) => tracks?.map((t) => [t.uri, rating]) ?? []).reduce(
+    (acc, [trackUri, rating]) => Object.assign(acc, {
+      [trackUri]: Math.max(rating, acc[trackUri] ?? 0)
+    }),
+    {}
   );
 };
 var toggleRating = async (uri, rating) => {
@@ -541,12 +514,12 @@ var toggleRating = async (uri, rating) => {
   if (currentRating === rating)
     rating = 0;
   if (currentRating) {
-    f.pipe(
-      playlistUris.slice(0, currentRating + 1),
-      fp.compact,
-      ar.map((playlistUri) => URI4.fromString(playlistUri).id),
-      ar.map((playlistId) => removePlaylistTracks(playlistId, [{ uri, uid: "" }]))
+    const playlistIds = _.compact(playlistUris.slice(0, currentRating + 1)).map(
+      (playlistUri) => URI4.fromString(playlistUri).id
     );
+    for (const playlistId of playlistIds) {
+      removePlaylistTracks(playlistId, [{ uri, uid: "" }]);
+    }
   }
   tracksRatings[uri] = rating;
   if (rating > 0) {
@@ -613,6 +586,8 @@ var colorizePlaylistButton = (btn, rating) => {
     return;
   btn.style.opacity = rating > 0 ? "1" : UNSET_CSS;
   const svg = btn.querySelector("svg");
+  if (!svg)
+    return;
   svg.style.fill = colorByRating[rating];
 };
 var lastNPTippyInstance;
@@ -642,7 +617,7 @@ var wrapDropdownInsidePlaylistButton = (pb, uri, forced = false) => {
       popper.appendChild(box);
       box.className = "main-contextMenu-tippy";
       box.appendChild(instance.props.content);
-      return { popper, onUpdate: f2.constVoid };
+      return { popper, onUpdate: () => void 0 };
     },
     onShow(instance) {
       instance.popper.firstChild.classList.add("main-contextMenu-tippyEnter");
@@ -678,16 +653,18 @@ var updateNowPlayingControls = (newTrack, updateDropdown = true) => {
   if (updateDropdown)
     wrapDropdownInsidePlaylistButton(pb, newTrack, true);
 };
+var updateTrackControls = (track, uri, updateDropdown = true) => {
+  if (!URI5.isTrack(uri))
+    return;
+  const r = tracksRatings[uri];
+  const pb = getPlaylistButton(track);
+  colorizePlaylistButton(pb, r);
+  updateDropdown && wrapDropdownInsidePlaylistButton(pb, uri);
+};
 var updateTrackListControls = (updateDropdown = true) => getTrackLists().map(getTrackListTracks).map(
   fp.map((track) => {
     const uri = getTrackListTrackUri(track);
-    if (!URI5.isTrack(uri))
-      return;
-    const r = tracksRatings[uri];
-    const pb = getPlaylistButton(track);
-    colorizePlaylistButton(pb, r);
-    if (updateDropdown)
-      wrapDropdownInsidePlaylistButton(pb, uri);
+    updateTrackControls(track, uri, updateDropdown);
   })
 );
 var updateCollectionControls = async (uri) => {
@@ -766,7 +743,10 @@ onSongChanged((state) => {
   }
   updateNowPlayingControls(uri);
 });
-new PermanentMutationObserver("main", () => updateTrackListControls());
+onTrackListMutationListeners.push(async (_2, tracks) => {
+  for (const track of tracks)
+    updateTrackControls(track, track.props.uri);
+});
 onHistoryChanged(_.overSome([URI7.isAlbum, URI7.isArtist, URI7.isPlaylistV1OrV2]), (uri) => updateCollectionControls(uri));
 (async () => {
     if (!document.getElementById("star-ratings-2-css")) {

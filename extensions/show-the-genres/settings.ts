@@ -1,5 +1,3 @@
-import { task } from "https://esm.sh/fp-ts"
-
 import { SettingsSection } from "../../shared/settings.tsx"
 
 const settings = new SettingsSection("Show The Genres").addInput(
@@ -8,7 +6,7 @@ const settings = new SettingsSection("Show The Genres").addInput(
         desc: "Last.fm API Key",
         inputType: "text",
     },
-    task.of("********************************"),
+    () => "********************************",
 )
 
 settings.pushSettings()

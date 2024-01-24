@@ -36,9 +36,6 @@ import { customElement, property } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { styleMap } from "https://esm.sh/lit/directives/style-map.js";
 
-// extensions/keyboard-shortcuts/util.ts
-import { function as f, number as n, ord } from "https://esm.sh/fp-ts";
-
 // shared/deps.ts
 import { default as ld } from "https://esm.sh/lodash";
 import { default as ld_fp } from "https://esm.sh/lodash/fp";
@@ -48,13 +45,17 @@ var _ = ld;
 var { Keyboard } = Spicetify;
 var { History } = Spicetify.Platform;
 var SCROLL_STEP = 25;
-var focusOnApp = () => document.querySelector(".Root__main-view .os-viewport");
+var getApp = () => document.querySelector(".Root__main-view div.os-viewport");
 var appScroll = (s) => {
-  const app = focusOnApp();
-  const scrollIntervalId = setInterval(() => app.scrollTop += s * SCROLL_STEP, 10);
+  const app = getApp();
+  if (!app)
+    return;
+  const scrollIntervalId = setInterval(() => {
+    app.scrollTop += s * SCROLL_STEP;
+  }, 10);
   document.addEventListener("keyup", () => clearInterval(scrollIntervalId));
 };
-var appScrollY = (y) => focusOnApp().scroll(0, y);
+var appScrollY = (y) => getApp()?.scroll(0, y);
 var openPage = (page) => History.push({ pathname: page });
 var rotateSidebar = (offset) => {
   if (offset === 0)
@@ -64,19 +65,14 @@ var rotateSidebar = (offset) => {
   );
   if (navLinks.length === 0)
     return;
-  f.pipe(
-    document.querySelector(".main-yourLibraryX-navLinkActive"),
-    (active) => navLinks.findIndex((e) => e === active),
-    (curr) => {
-      if (curr === -1 && offset < 0)
-        curr = navLinks.length;
-      let target = curr + offset % navLinks.length;
-      if (target < 0)
-        target += navLinks.length;
-      return target;
-    },
-    (target) => navLinks[target].click()
-  );
+  const activeNavLink = document.querySelector(".main-yourLibraryX-navLinkActive");
+  let activeNavLinkIndex = navLinks.findIndex((e) => e === activeNavLink);
+  if (activeNavLinkIndex === -1 && offset < 0)
+    activeNavLinkIndex = navLinks.length;
+  let target = activeNavLinkIndex + offset % navLinks.length;
+  if (target < 0)
+    target += navLinks.length;
+  navLinks[target].click();
 };
 var Bind = class {
   constructor(key, callback) {
@@ -85,9 +81,18 @@ var Bind = class {
     this.ctrl = false;
     this.shift = false;
     this.alt = false;
-    this.setCtrl = (required) => (this.ctrl = required, this);
-    this.setShift = (required) => (this.shift = required, this);
-    this.setAlt = (required) => (this.alt = required, this);
+    this.setCtrl = (required) => {
+      this.ctrl = required;
+      return this;
+    };
+    this.setShift = (required) => {
+      this.shift = required;
+      return this;
+    };
+    this.setAlt = (required) => {
+      this.alt = required;
+      return this;
+    };
     this.register = () => Keyboard.registerShortcut(
       { key: this.key, ctrl: this.ctrl, shift: this.shift, alt: this.alt },
       (event) => void (!listeningToSneakBinds && this.callback(event))
@@ -97,8 +102,9 @@ var Bind = class {
 var isElementInViewPort = (e) => {
   const c = document.body;
   const bound = e.getBoundingClientRect();
-  const within = (m, M) => (x) => x === ord.clamp(n.Ord)(m, M)(x);
-  return f.pipe(_.mean([bound.top, bound.bottom]), within(0, c.clientHeight)) && f.pipe(_.mean([bound.left, bound.right]), within(0, c.clientWidth));
+  const within = (m, M) => (x) => m <= x && x <= M;
+  const f = (top) => _.flow(_.mean, within(0, top));
+  return f(c.clientHeight)([bound.top, bound.bottom]) && f(c.clientWidth)([bound.left, bound.right]);
 };
 var CLICKABLE_ELEMENT_SELECTOR = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`;
 

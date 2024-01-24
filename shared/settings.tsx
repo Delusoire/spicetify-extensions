@@ -1,7 +1,8 @@
-import { task } from "https://esm.sh/fp-ts"
 import { SectionTitle, SettingColumn, SettingSection, SettingText, SettingToggle } from "./modules.ts"
 import { sleep } from "./util.ts"
 import { _ } from "./deps.ts"
+
+type Task<A> = (() => Awaited<A>) | (() => Promise<Awaited<A>>)
 
 const { React, ReactDOM, LocalStorage } = Spicetify
 const { ButtonSecondary } = Spicetify.ReactComponent
@@ -9,7 +10,7 @@ const { History } = Spicetify.Platform
 
 type FieldToProps<A> = Omit<A, "type">
 
-export const enum FieldType {
+export enum FieldType {
     BUTTON = "button",
     TOGGLE = "toggle",
     INPUT = "input",
@@ -79,7 +80,9 @@ export class SettingsSection {
             await sleep(100)
         }
 
-        const allSettingsContainer = document.querySelector(".x-settings-container")!
+        const allSettingsContainer = document.querySelector(".x-settings-container")
+
+        if (!allSettingsContainer) return
 
         let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.id)
 
@@ -98,12 +101,12 @@ export class SettingsSection {
         return this
     }
 
-    addToggle = (props: FieldToProps<ToggleField>, defaultValue = task.of(false)) => {
+    addToggle = (props: FieldToProps<ToggleField>, defaultValue: Task<boolean> = () => false) => {
         this.addField(FieldType.TOGGLE, props, defaultValue)
         return this
     }
 
-    addInput = (props: FieldToProps<InputField>, defaultValue = task.of("")) => {
+    addInput = (props: FieldToProps<InputField>, defaultValue: Task<string> = () => "") => {
         this.addField(FieldType.INPUT, props, defaultValue)
         return this
     }
@@ -127,7 +130,7 @@ export class SettingsSection {
             (newValue: A) => {
                 if (newValue !== undefined) {
                     setValueState(newValue)
-                    SettingsSection.setFieldValue(id!, newValue)
+                    SettingsSection.setFieldValue(id, newValue)
                 }
             },
         ] as const
@@ -137,7 +140,7 @@ export class SettingsSection {
 
     static setFieldValue = (id: string, newValue: any) => LocalStorage.set(id, JSON.stringify(newValue))
 
-    private static setDefaultFieldValue = async (id: string, defaultValue: task.Task<any>) => {
+    private static setDefaultFieldValue = async (id: string, defaultValue: Task<any>) => {
         if (SettingsSection.getFieldValue(id) === null) SettingsSection.setFieldValue(id, await defaultValue())
     }
 

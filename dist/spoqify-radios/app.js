@@ -27,9 +27,6 @@ var { CosmosAsync } = Spicetify;
 var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
 var createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
 
-// shared/settings.tsx
-import { task } from "https://esm.sh/fp-ts";
-
 // shared/modules.ts
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
 var modules = Object.keys(require2.m).map((id) => require2(id)).filter((module) => typeof module === "object");
@@ -94,6 +91,8 @@ var SettingsSection = class _SettingsSection {
         await sleep(100);
       }
       const allSettingsContainer = document.querySelector(".x-settings-container");
+      if (!allSettingsContainer)
+        return;
       let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.id);
       if (!pluginSettingsContainer) {
         pluginSettingsContainer = document.createElement("div");
@@ -107,11 +106,11 @@ var SettingsSection = class _SettingsSection {
       this.addField("button" /* BUTTON */, props);
       return this;
     };
-    this.addToggle = (props, defaultValue = task.of(false)) => {
+    this.addToggle = (props, defaultValue = () => false) => {
       this.addField("toggle" /* TOGGLE */, props, defaultValue);
       return this;
     };
-    this.addInput = (props, defaultValue = task.of("")) => {
+    this.addInput = (props, defaultValue = () => "") => {
       this.addField("input" /* INPUT */, props, defaultValue);
       return this;
     };

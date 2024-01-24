@@ -235,7 +235,6 @@ var init_modules = __esm({
 });
 
 // shared/settings.tsx
-import { task } from "https://esm.sh/fp-ts";
 var React, ReactDOM, LocalStorage, ButtonSecondary, History, SettingsSection;
 var init_settings = __esm({
   "shared/settings.tsx"() {
@@ -275,6 +274,8 @@ var init_settings = __esm({
             await sleep(100);
           }
           const allSettingsContainer = document.querySelector(".x-settings-container");
+          if (!allSettingsContainer)
+            return;
           let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.id);
           if (!pluginSettingsContainer) {
             pluginSettingsContainer = document.createElement("div");
@@ -288,11 +289,11 @@ var init_settings = __esm({
           this.addField("button" /* BUTTON */, props);
           return this;
         };
-        this.addToggle = (props, defaultValue = task.of(false)) => {
+        this.addToggle = (props, defaultValue = () => false) => {
           this.addField("toggle" /* TOGGLE */, props, defaultValue);
           return this;
         };
-        this.addInput = (props, defaultValue = task.of("")) => {
+        this.addInput = (props, defaultValue = () => "") => {
           this.addField("input" /* INPUT */, props, defaultValue);
           return this;
         };

@@ -1,6 +1,3 @@
-import { array as ar, function as f } from "https://esm.sh/fp-ts"
-
-import { pMchain } from "../../shared/fp.ts"
 import {
     addPlaylistTracks,
     createPlaylist,
@@ -15,7 +12,7 @@ import { SpotifyLoc, SpotifyURI } from "../../shared/util.ts"
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.tsx"
 import { CONFIG } from "./settings.ts"
 import { getNowPlayingBar } from "./util.ts"
-import { fp } from "../../shared/deps.ts"
+import { _, fp } from "../../shared/deps.ts"
 
 const { URI } = Spicetify
 const { History, PlayerAPI } = Spicetify.Platform
@@ -23,27 +20,23 @@ const { History, PlayerAPI } = Spicetify.Platform
 export const loadRatings = async () => {
     const ratingsFolder = await fetchFolder(CONFIG.ratingsFolderUri)
 
-    playlistUris = f.pipe(
-        ratingsFolder!.items!,
-        ar.map(p => [p.uri, Number(p.name!)] as [SpotifyURI, number]),
-        ar.reduce([] as SpotifyURI[], (uris, [uri, rating]) => ((uris[rating] = uri), uris)),
-    )
+    playlistUris = ratingsFolder.items
+        .map(p => [p.uri, Number(p.name)] as const)
+        .reduce((uris, [uri, rating]) => {
+            uris[rating] = uri
+            return uris
+        }, [] as string[])
 
-    global.tracksRatings = tracksRatings = await f.pipe(
-        playlistUris,
-        ar.map(fetchPlaylistContents),
-        ps => Promise.all(ps), // Promise.all flips empty to undefined
-        pMchain(ar.map(tracks => tracks ?? [])),
-        pMchain(ar.map(ar.map(t => t.uri))),
-        pMchain(ar.flatMap((trackUris, rating) => trackUris.map(trackUri => [trackUri, rating] as const))),
-        pMchain(
-            ar.reduce({} as Record<string, number>, (acc, [trackUri, rating]) =>
+    const playlists = await Promise.all(playlistUris.map(fetchPlaylistContents))
+    global.tracksRatings = tracksRatings = playlists
+        .flatMap((tracks, rating) => tracks?.map(t => [t.uri, rating] as const) ?? [])
+        .reduce(
+            (acc, [trackUri, rating]) =>
                 Object.assign(acc, {
                     [trackUri]: Math.max(rating, acc[trackUri] ?? 0),
                 }),
-            ),
-        ),
-    )
+            {} as Record<string, number>,
+        )
 }
 
 export const toggleRating = async (uri: SpotifyURI, rating: number) => {
@@ -52,12 +45,13 @@ export const toggleRating = async (uri: SpotifyURI, rating: number) => {
     if (currentRating === rating) rating = 0
 
     if (currentRating) {
-        f.pipe(
-            playlistUris.slice(0, currentRating + 1),
-            fp.compact,
-            ar.map(playlistUri => URI.fromString(playlistUri).id!),
-            ar.map(playlistId => removePlaylistTracks(playlistId, [{ uri, uid: "" } as { uid: string }])),
+        const playlistIds = _.compact(playlistUris.slice(0, currentRating + 1)).map<string>(
+            playlistUri => URI.fromString(playlistUri).id,
         )
+
+        for (const playlistId of playlistIds) {
+            removePlaylistTracks(playlistId, [{ uri, uid: "" } as { uid: string }])
+        }
     }
 
     tracksRatings[uri] = rating

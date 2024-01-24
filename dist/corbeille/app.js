@@ -1,57 +1,73 @@
-// shared/api.ts
-import { SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
+// shared/util.ts
+var { URI } = Spicetify;
+var { PlayerAPI } = Spicetify.Platform;
+var PermanentMutationObserver = class extends MutationObserver {
+  constructor(targetSelector, callback, opts = {
+    childList: true,
+    subtree: true
+  }) {
+    super(callback);
+    this.target = null;
+    new MutationObserver(() => {
+      const nextTarget = document.querySelector(targetSelector);
+      if (nextTarget && !nextTarget.isEqualNode(this.target)) {
+        this.target && this.disconnect();
+        this.target = nextTarget;
+        this.observe(this.target, opts);
+      }
+    }).observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
+};
+var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var mainElement = document.querySelector("main");
+var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
+
+// shared/platformApi.ts
+var { CosmosAsync } = Spicetify;
+var { LibraryAPI, PlaylistAPI, RootlistAPI, PlaylistPermissionsAPI, EnhanceAPI, LocalFilesAPI } = Spicetify.Platform;
+var fetchPlaylistContents = async (uri) => (await PlaylistAPI.getContents(uri)).items;
+var createFolder = async (name, location = {}) => await RootlistAPI.createFolder(name, location);
+var fetchFolder = async (folder) => await RootlistAPI.getContents({ folderUri: folder });
+
+// extensions/star-ratings-2/util.ts
+var getTrackLists = () => Array.from(document.querySelectorAll(".main-trackList-trackList.main-trackList-indexable"));
+var getTrackListTracks = (trackList) => Array.from(trackList.querySelectorAll(".main-trackList-trackListRow"));
+
+// shared/listeners.ts
+var { Player, URI: URI2 } = Spicetify;
+var { PlayerAPI: PlayerAPI2, History } = Spicetify.Platform;
+var onSongChanged = (callback) => {
+  callback(PlayerAPI2._state);
+  Player.addEventListener("songchange", (event) => callback(event.data));
+};
+var PRESENTATION_KEY = Symbol("presentation");
+var onTrackListMutationListeners = new Array();
+var _onTrackListMutation = (trackList, record, observer) => {
+  const tracks = getTrackListTracks(trackList[PRESENTATION_KEY]);
+  const reactFiber = trackList[PRESENTATION_KEY][REACT_FIBER].alternate;
+  const reactTracks = reactFiber.pendingProps.children;
+  const tracksProps = reactTracks.map((child) => child.props);
+  tracks.forEach((track, i) => track.props = tracksProps[i]);
+  const fullyRenderedTracks = tracks.filter((track) => track.props?.uri);
+  onTrackListMutationListeners.map((listener) => listener(trackList, fullyRenderedTracks));
+};
+new PermanentMutationObserver("main", () => {
+  const trackLists = getTrackLists();
+  trackLists.filter((trackList) => !trackList[PRESENTATION_KEY]).forEach((trackList) => {
+    trackList[PRESENTATION_KEY] = trackList.lastElementChild.firstElementChild.nextElementSibling;
+    new MutationObserver(
+      (record, observer) => _onTrackListMutation(trackList, record, observer)
+    ).observe(trackList[PRESENTATION_KEY], { childList: true });
+  });
+});
 
 // shared/deps.ts
 import { default as ld } from "https://esm.sh/lodash";
 import { default as ld_fp } from "https://esm.sh/lodash/fp";
 var _ = ld;
-
-// shared/api.ts
-var { CosmosAsync } = Spicetify;
-var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
-  // @ts-ignore
-  fetch(url, opts) {
-    const { method } = opts;
-    return CosmosAsync.resolve(method, url);
-  },
-  deserializer: {
-    deserialize(res) {
-      return res.body;
-    }
-  }
-});
-var searchYoutube = async (YouTubeApiKey, searchString) => {
-  const url = new URL("https://www.googleapis.com/youtube/v3/search");
-  url.searchParams.append("part", "snippet");
-  url.searchParams.append("maxResults", "10");
-  url.searchParams.append("q", searchString);
-  url.searchParams.append("type", "video");
-  url.searchParams.append("key", YouTubeApiKey);
-  return await fetch(url).then((res) => res.json());
-};
-
-// shared/parse.ts
-var parseWebAPITrack = (track) => ({
-  uri: track.uri,
-  uid: void 0,
-  name: track.name,
-  albumUri: track.album.uri,
-  albumName: track.album.name,
-  artistUris: track.artists.map((artist) => artist.uri),
-  artistName: track.artists[0].name,
-  durationMilis: track.duration_ms,
-  playcount: void 0,
-  popularity: track.popularity,
-  releaseDate: new Date(track.album.release_date).getTime()
-});
-
-// shared/util.ts
-var { URI } = Spicetify;
-var { PlayerAPI } = Spicetify.Platform;
-var normalizeStr = (str) => str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
-var sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var mainElement = document.querySelector("main");
-var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
 // shared/modules.ts
 var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
@@ -86,7 +102,7 @@ var rs_w = reactForwardRefs.filter((x) => x.render?.toString().includes("hasLead
 // shared/settings.tsx
 var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
-var { History } = Spicetify.Platform;
+var { History: History2 } = Spicetify.Platform;
 var SettingsSection = class _SettingsSection {
   constructor(name, sectionFields = {}) {
     this.name = name;
@@ -94,7 +110,7 @@ var SettingsSection = class _SettingsSection {
     this.pushSettings = () => {
       if (this.stopHistoryListener)
         this.stopHistoryListener();
-      this.stopHistoryListener = History.listen(() => this.render());
+      this.stopHistoryListener = History2.listen(() => this.render());
       this.render();
     };
     this.toObject = () => new Proxy(
@@ -112,7 +128,7 @@ var SettingsSection = class _SettingsSection {
     );
     this.render = async () => {
       while (!document.getElementById("desktop.settings.selectLanguage")) {
-        if (History.location.pathname !== "/preferences")
+        if (History2.location.pathname !== "/preferences")
           return;
         await sleep(100);
       }
@@ -227,42 +243,35 @@ var SettingsSection = class _SettingsSection {
   }
 };
 
-// extensions/search-on-youtube/settings.ts
-var settings = new SettingsSection("Search On YouTube").addInput(
+// extensions/corbeille/settings.ts
+var TRASH_FOLDER_NAME = "\u{1F5D1}\uFE0F Trash";
+var settings = new SettingsSection("Sort Plus").addInput(
   {
-    id: "YouTubeApiKey",
-    desc: "YouTube API Key",
+    id: "trashFolderUri",
+    desc: "Trash folder uri",
     inputType: "text"
   },
-  () => "***************************************"
+  async () => (await createFolder(TRASH_FOLDER_NAME)).uri
 );
 settings.pushSettings();
 var CONFIG = settings.toObject();
 
-// extensions/search-on-youtube/app.ts
-var { URI: URI2, ContextMenu } = Spicetify;
-var YTVidIDCache = /* @__PURE__ */ new Map();
-var showOnYouTube = async (uri) => {
-  const id = URI2.fromString(uri).id;
-  if (!YTVidIDCache.get(id)) {
-    const track = parseWebAPITrack(await spotifyApi.tracks.get(id));
-    const searchString = `${track.artistName} - ${track.name} music video`;
-    try {
-      const videos = await searchYoutube(CONFIG.YouTubeApiKey, searchString).then((res) => res.items);
-      const normalizedTrackName = normalizeStr(track.name);
-      const video = videos.find((video2) => {
-        normalizeStr(video2.snippet.title).includes(normalizedTrackName);
-      }) ?? videos[0];
-      YTVidIDCache.set(id, video.id.videoId);
-      window.open(`https://www.youtube.com/watch?v=${video.id.videoId}`);
-    } catch (_2) {
-      window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(searchString)}`);
-    }
-  }
+// extensions/corbeille/app.ts
+var trashedTrackUris = [];
+global.trashedTrackUris = trashedTrackUris;
+var loadTrash = async () => {
+  const trashFolder = await fetchFolder(CONFIG.trashFolderUri);
+  const playlistUris = trashFolder.items.map((p) => [p.uri, Number(p.name)]).reduce((uris, [uri, rating]) => {
+    uris[rating] = uri;
+    return uris;
+  }, []);
+  const playlists = await Promise.all(playlistUris.map(fetchPlaylistContents));
+  trashedTrackUris.concat(playlists.flatMap((tracks) => tracks.map((t) => t.uri)));
 };
-new ContextMenu.Item(
-  "Search on YouTube",
-  ([uri]) => showOnYouTube(uri),
-  ([uri]) => _.overSome([URI2.isTrack])(uri),
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="19px" height="19px"><path fill="currentColor" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"/><path fill="var(--spice-main)" d="M20 31L20 17 32 24z"/></svg>`
-).register();
+loadTrash();
+onSongChanged((state) => {
+  trashedTrackUris.includes(state.item.uri) && Spicetify.Platform.PlayerAPI.skipToNext();
+});
+export {
+  trashedTrackUris
+};
