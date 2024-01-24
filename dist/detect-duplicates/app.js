@@ -734,13 +734,19 @@ var getMainUrisForIsrcs = async (isrcs) => {
   const missedTracks = tracks.reduce((missed, track, i) => (track || missed.push(i), missed), []);
   if (missedTracks.length) {
     const missedIsrcs = missedTracks.map((i) => isrcs[i]);
-    const results = await Promise.allSettled(missedIsrcs.map((isrc) => searchTracks(`isrc:${isrc}`, 0, 1)));
+    const resultsIsrcs = await Promise.allSettled(missedIsrcs.map((isrc) => searchTracks(`isrc:${isrc}`, 0, 1)));
     const filledTracks = _.compact(
-      results.map((results2, i) => {
-        if (results2.status === "fulfilled") {
-          return { isrc: isrcs[i], uri: results2.value[0].item.data.uri };
+      resultsIsrcs.map((resultsIsrc, i) => {
+        const isrc = isrcs[i];
+        if (resultsIsrc.status === "fulfilled") {
+          const uri = resultsIsrc.value[0]?.item.data.uri;
+          if (!uri) {
+            console.error("Couldn't get matching track for isrc:", isrc);
+            return;
+          }
+          return { isrc, uri };
         }
-        console.error("Couldn't get a matching track for isrc:", isrcs[i]);
+        console.error("Failed searching track for isrc:", isrc);
       })
     );
     db.isrcs.bulkAdd(filledTracks);

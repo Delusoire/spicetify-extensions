@@ -45,7 +45,7 @@ var setQueue = async (nextTracks, contextUri) => {
   await PlayerAPI.skipToNext();
   if (contextUri) {
     await new Promise((resolve) => {
-      PlayerAPI._events.addListener("queue_update", () => resolve(), { once: true });
+      PlayerAPI.getEvents().addListener("queue_update", () => resolve(), { once: true });
     });
     await setPlayingContext(contextUri);
   }
