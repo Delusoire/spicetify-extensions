@@ -127,7 +127,7 @@ export const setQueue = async (
 
     if (contextUri) {
         await new Promise<void>(resolve => {
-            PlayerAPI._events.addListener("queue_update", () => resolve(), { once: true })
+            PlayerAPI.getEvents().addListener("queue_update", () => resolve(), { once: true })
         })
         await setPlayingContext(contextUri)
     }
