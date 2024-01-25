@@ -96,7 +96,7 @@ var mainElement = document.querySelector("main");
 var [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
 
 // shared/modules.ts
-var require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
+var require2 = webpackChunkopen.push([[Symbol("Dummy chunk to extract require method")], {}, (require3) => require3]);
 var modules = Object.keys(require2.m).map((id) => require2(id)).filter((module) => typeof module === "object");
 var exportedMembers = _.compact(modules.flatMap((module) => Object.values(module)));
 var exportedFunctions = exportedMembers.filter((module) => typeof module === "function");

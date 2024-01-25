@@ -203,7 +203,7 @@ var require2, modules, exportedMembers, exportedFunctions, findByStrings, Checke
 var init_modules = __esm({
   "shared/modules.ts"() {
     init_deps();
-    require2 = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, (re) => re]);
+    require2 = webpackChunkopen.push([[Symbol("Dummy chunk to extract require method")], {}, (require3) => require3]);
     modules = Object.keys(require2.m).map((id) => require2(id)).filter((module) => typeof module === "object");
     exportedMembers = _.compact(modules.flatMap((module) => Object.values(module)));
     exportedFunctions = exportedMembers.filter((module) => typeof module === "function");

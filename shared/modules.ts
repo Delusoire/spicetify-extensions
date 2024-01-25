@@ -1,7 +1,7 @@
 import { _ } from "./deps.ts"
 
 // @ts-expect-error webpackChunkOpen is only defined in the browser
-const require = webpackChunkopen.push([[Symbol("Dummy module to extract require method")], {}, re => re])
+const require = webpackChunkopen.push([[Symbol("Dummy chunk to extract require method")], {}, require => require])
 const modules = Object.keys(require.m)
     .map(id => require(id))
     .filter((module): module is Object => typeof module === "object")
