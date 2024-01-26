@@ -128,7 +128,7 @@ export type fetchAlbumRes = {
     }>
 }
 const queue = new Array<() => void>()
-export const fetchAlbum = async (uri: string, offset = 0, limit = 450) => {
+export const fetchAlbum = async (uri: string, offset = 0, limit = 415) => {
     let resolveOwn: undefined | (() => void)
     await new Promise<void>(resolve => {
         queue.push((resolveOwn = resolve))

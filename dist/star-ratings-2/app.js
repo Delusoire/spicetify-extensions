@@ -23,7 +23,7 @@ var spotifyApi = SpotifyApi.withAccessToken("client-id", {}, {
 // shared/GraphQL/fetchAlbum.ts
 var { Locale, GraphQL } = Spicetify;
 var queue = new Array();
-var fetchAlbum = async (uri, offset = 0, limit = 450) => {
+var fetchAlbum = async (uri, offset = 0, limit = 415) => {
   let resolveOwn;
   await new Promise((resolve) => {
     queue.push(resolveOwn = resolve);
