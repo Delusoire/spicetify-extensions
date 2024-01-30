@@ -327,7 +327,7 @@ var _ArtistGenreContainer = class extends LitElement {
   }
   render() {
     const artistGenreLinks = map(this.genres, (genre) => html`<genre-link genre=${genre} />`);
-    const divider = html`<span>, </span>`;
+    const divider = () => html`<span>, </span>`;
     return html`<style>
                 a {
                     --genre-link-size: ${this.isSmall ? "12px" : "1rem"};

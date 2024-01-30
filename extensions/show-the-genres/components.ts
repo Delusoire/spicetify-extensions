@@ -61,7 +61,7 @@ class _ArtistGenreContainer extends LitElement {
 
     protected render() {
         const artistGenreLinks = map(this.genres, genre => html`<genre-link genre=${genre} />`)
-        const divider = html`<span>, </span>`
+        const divider = () => html`<span>, </span>`
 
         return html`<style>
                 a {
