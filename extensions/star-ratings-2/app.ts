@@ -5,7 +5,7 @@ import { CONFIG } from "./settings.ts"
 import "./assets/styles.scss"
 import { _ } from "../../shared/deps.ts"
 import { onHistoryChanged, onSongChanged, onTrackListMutationListeners } from "../../shared/listeners.ts"
-const { URI, Player } = Spicetify
+const { URI, Player, ContextMenu } = Spicetify
 
 loadRatings()
 

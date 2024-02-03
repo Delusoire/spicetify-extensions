@@ -728,7 +728,7 @@ new PermanentMutationObserver("main", () => {
 });
 
 // extensions/star-ratings-2/app.ts
-var { URI: URI7, Player: Player2 } = Spicetify;
+var { URI: URI7, Player: Player2, ContextMenu } = Spicetify;
 loadRatings();
 onSongChanged((state) => {
   if (!state)
