@@ -27,3 +27,10 @@ onTrackListMutationListeners.push(async (_, tracks) => {
 })
 
 onHistoryChanged(_.overSome([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2]), uri => updateCollectionControls(uri))
+
+new ContextMenu.Item(
+    "Choose for Ratings Playlists",
+    ([uri]) => (CONFIG.ratingsFolderUri = uri),
+    ([uri]) => URI.isFolder(uri),
+    "playlist-folder",
+).register()

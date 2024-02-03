@@ -748,6 +748,12 @@ onTrackListMutationListeners.push(async (_2, tracks) => {
     updateTrackControls(track, track.props.uri);
 });
 onHistoryChanged(_.overSome([URI7.isAlbum, URI7.isArtist, URI7.isPlaylistV1OrV2]), (uri) => updateCollectionControls(uri));
+new ContextMenu.Item(
+  "Choose for Ratings Playlists",
+  ([uri]) => CONFIG2.ratingsFolderUri = uri,
+  ([uri]) => URI7.isFolder(uri),
+  "playlist-folder"
+).register();
 (async () => {
     if (!document.getElementById("star-ratings-2-css")) {
         const el = document.createElement("style")

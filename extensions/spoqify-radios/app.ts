@@ -23,3 +23,10 @@ new ContextMenu.Item(
     ([uri]) => _.overSome([URI.isAlbum, URI.isArtist, URI.isPlaylistV1OrV2, URI.isTrack])(uri),
     "podcasts",
 ).register()
+
+new ContextMenu.Item(
+    "Choose for Anonymized Radios",
+    ([uri]) => (CONFIG.anonymizedRadiosFolderUri = uri),
+    ([uri]) => URI.isFolder(uri),
+    "playlist-folder",
+).register()
