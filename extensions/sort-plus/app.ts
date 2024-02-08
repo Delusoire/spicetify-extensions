@@ -1,6 +1,6 @@
 import { _, fp } from "../../shared/deps.ts"
 import { TrackData } from "../../shared/parse.ts"
-import { SpotifyURI, createQueueItem, setPlayingContext, setQueue as _setQueue } from "../../shared/util.ts"
+import { createQueueItem, setQueue as _setQueue } from "../../shared/util.ts"
 
 import { createPlaylistFromLastSortedQueue, reordedPlaylistLikeSortedQueue } from "./playlistsInterop.ts"
 import { fillTracksFromLastFM, fillTracksFromSpotify } from "./populate.ts"
@@ -18,7 +18,7 @@ import {
 const { URI, ContextMenu, Topbar } = Spicetify
 const { PlayerAPI } = Spicetify.Platform
 
-export let lastFetchedUri: SpotifyURI
+export let lastFetchedUri: string
 export let lastSortAction: SortAction | "True Shuffle" | "Stars"
 export let lastSortedQueue: TrackData[] = []
 
@@ -52,7 +52,7 @@ const setQueue = (tracks: TrackData[]) => {
 
 // Menu
 
-const sortTracksBy = (sortAction: typeof lastSortAction, sortFn: AsyncTracksOperation) => async (uri: SpotifyURI) => {
+const sortTracksBy = (sortAction: typeof lastSortAction, sortFn: AsyncTracksOperation) => async (uri: string) => {
     lastSortAction = sortAction
     const descending = invertOrder ^ Number(CONFIG.descending)
     lastFetchedUri = uri

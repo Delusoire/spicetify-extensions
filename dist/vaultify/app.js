@@ -4,7 +4,7 @@ var __esm = (fn, res) => function __init() {
 };
 
 // shared/util.ts
-var URI, PlayerAPI, SpotifyLoc, sleep, mainElement, REACT_FIBER, REACT_PROPS;
+var URI, PlayerAPI, SpotifyLoc, mainElement, REACT_FIBER, REACT_PROPS;
 var init_util = __esm({
   "shared/util.ts"() {
     ({ URI } = Spicetify);
@@ -21,7 +21,6 @@ var init_util = __esm({
         fromUid: (uid) => ({ after: { uid } })
       }
     };
-    sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     mainElement = document.querySelector("main");
     [REACT_FIBER, REACT_PROPS] = Object.keys(mainElement);
   }
@@ -199,38 +198,32 @@ var init_restore = __esm({
 });
 
 // shared/modules.ts
-var require2, modules, exportedMembers, exportedFunctions, findByStrings, CheckedPlaylistButtonIcon, SettingSection, SectionTitle, SettingColumn, SettingText, SettingToggle, curationButtonClass, reactObjects, reactForwardRefs, reactMemos, rs_w;
+var require2, modules, exportedMembers, exportedFunctions, exportedReactObjects, exportedContexts, exportedForwardRefs, exportedMemos, findByStrings, CheckedPlaylistButtonIcon, Highlight, SettingColumn, SettingText, SettingToggle, curationButtonClass, rs_w;
 var init_modules = __esm({
   "shared/modules.ts"() {
-    init_deps();
     require2 = webpackChunkopen.push([[Symbol("Dummy chunk to extract require method")], {}, (require3) => require3]);
     modules = Object.keys(require2.m).map((id) => require2(id)).filter((module) => typeof module === "object");
-    exportedMembers = _.compact(modules.flatMap((module) => Object.values(module)));
+    exportedMembers = modules.flatMap((module) => Object.values(module)).filter(Boolean);
     exportedFunctions = exportedMembers.filter((module) => typeof module === "function");
+    exportedReactObjects = Object.groupBy(exportedFunctions, (x) => x.$$typeof);
+    exportedContexts = exportedReactObjects[Symbol.for("react.context")];
+    exportedForwardRefs = exportedReactObjects[Symbol.for("react.forward_ref")];
+    exportedMemos = exportedReactObjects[Symbol.for("react.memo")];
     findByStrings = (modules2, ...filters) => modules2.find(
-      (f) => _.overEvery(
-        filters.map(
-          (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
-        )
-      )(f.toString())
+      (f) => filters.map(
+        (filter) => typeof filter === "string" ? (s) => s.includes(filter) : (s) => filter.test(s)
+      ).every((filterFn) => filterFn(f.toString()))
     );
     CheckedPlaylistButtonIcon = findByStrings(
       exportedFunctions,
       "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm11.748-1.97a.75.75 0 0 0-1.06-1.06l-4.47 4.47-1.405-1.406a.75.75 0 1 0-1.061 1.06l2.466 2.467 5.53-5.53z"
     );
-    SettingSection = findByStrings(
-      exportedFunctions,
-      "function m(e){return(0,d.jsx)(r.k,{children:(0,d.jsx)(u,{...e})})}"
-    );
-    SectionTitle = findByStrings(exportedFunctions, "textToHighlight", "textBase");
+    Highlight = findByStrings(exportedFunctions, "hightlightClassName", "textToHighlight");
     SettingColumn = findByStrings(exportedFunctions, "setSectionFilterMatchQueryValue", "filterMatchQuery");
     SettingText = findByStrings(exportedFunctions, "textSubdued", "dangerouslySetInnerHTML");
     SettingToggle = findByStrings(exportedFunctions, "condensed", "onSelected");
     curationButtonClass = exportedMembers.find((m) => m?.curationButton).curationButton;
-    reactObjects = modules.filter((m) => m?.$$typeof);
-    reactForwardRefs = reactObjects.filter((m) => m.$$typeof === Symbol.for("react.forward_ref"));
-    reactMemos = reactObjects.filter((m) => m.$$typeof === Symbol.for("react.memo"));
-    rs_w = reactForwardRefs.filter((x) => x.render?.toString().includes("hasLeadingOrMedia"));
+    rs_w = exportedForwardRefs.filter((x) => x.render?.toString().includes("hasLeadingOrMedia"));
   }
 });
 
@@ -239,20 +232,20 @@ var React, ReactDOM, LocalStorage, ButtonSecondary, History, SettingsSection;
 var init_settings = __esm({
   "shared/settings.tsx"() {
     init_modules();
-    init_util();
     init_deps();
     ({ React, ReactDOM, LocalStorage } = Spicetify);
     ({ ButtonSecondary } = Spicetify.ReactComponent);
     ({ History } = Spicetify.Platform);
+    if (!__renderSettingSections) {
+      globalThis.__settingSections = /* @__PURE__ */ new Set();
+      globalThis.__renderSettingSections = () => Array.from(globalThis.__settingSections);
+    }
     SettingsSection = class _SettingsSection {
       constructor(name, sectionFields = {}) {
         this.name = name;
         this.sectionFields = sectionFields;
         this.pushSettings = () => {
-          if (this.stopHistoryListener)
-            this.stopHistoryListener();
-          this.stopHistoryListener = History.listen(() => this.render());
-          this.render();
+          globalThis.__settingSections.push(/* @__PURE__ */ React.createElement(this.SettingsSection, null));
         };
         this.toObject = () => new Proxy(
           {},
@@ -267,34 +260,16 @@ var init_settings = __esm({
             }
           }
         );
-        this.render = async () => {
-          while (!document.getElementById("desktop.settings.selectLanguage")) {
-            if (History.location.pathname !== "/preferences")
-              return;
-            await sleep(100);
-          }
-          const allSettingsContainer = document.querySelector(".x-settings-container");
-          if (!allSettingsContainer)
-            return;
-          let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.id);
-          if (!pluginSettingsContainer) {
-            pluginSettingsContainer = document.createElement("div");
-            pluginSettingsContainer.id = this.id;
-            pluginSettingsContainer.className = "settingsContainer";
-            allSettingsContainer.appendChild(pluginSettingsContainer);
-          }
-          ReactDOM.render(/* @__PURE__ */ React.createElement(this.SettingsSection, null), pluginSettingsContainer);
-        };
         this.addButton = (props) => {
-          this.addField("button" /* BUTTON */, props);
+          this.addField("button" /* BUTTON */, props, this.ButtonField);
           return this;
         };
         this.addToggle = (props, defaultValue = () => false) => {
-          this.addField("toggle" /* TOGGLE */, props, defaultValue);
+          this.addField("toggle" /* TOGGLE */, props, this.ToggleField, defaultValue);
           return this;
         };
         this.addInput = (props, defaultValue = () => "") => {
-          this.addField("input" /* INPUT */, props, defaultValue);
+          this.addField("input" /* INPUT */, props, this.InputField, defaultValue);
           return this;
         };
         this.getId = (nameId) => ["extensions", this.id, nameId].join(":");
@@ -310,19 +285,7 @@ var init_settings = __esm({
             }
           ];
         };
-        this.toReactComponent = (field) => {
-          switch (field.type) {
-            case "button" /* BUTTON */:
-              return this.ButtonField(field);
-            case "toggle" /* TOGGLE */:
-              return this.ToggleField(field);
-            case "input" /* INPUT */:
-              return this.InputField(field);
-            default:
-              return /* @__PURE__ */ React.createElement(React.Fragment, null);
-          }
-        };
-        this.SettingsSection = () => /* @__PURE__ */ React.createElement(SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(SectionTitle, null, this.name), Object.values(this.sectionFields).map(this.toReactComponent));
+        this.SettingsSection = () => /* @__PURE__ */ React.createElement(__SettingSection, { filterMatchQuery: this.name }, /* @__PURE__ */ React.createElement(__SectionTitle, null, this.name), Object.values(this.sectionFields));
         this.SettingField = ({ field, children }) => /* @__PURE__ */ React.createElement(SettingColumn, { filterMatchQuery: field.id }, /* @__PURE__ */ React.createElement("div", { className: "x-settings-firstColumn" }, /* @__PURE__ */ React.createElement(SettingText, { htmlFor: field.id }, field.desc)), /* @__PURE__ */ React.createElement("div", { className: "x-settings-secondColumn" }, children));
         this.ButtonField = (field) => /* @__PURE__ */ React.createElement(this.SettingField, { field }, /* @__PURE__ */ React.createElement(ButtonSecondary, { id: field.id, buttonSize: "sm", onClick: field.onClick, className: "x-settings-button" }, field.text));
         this.ToggleField = (field) => {
@@ -362,13 +325,13 @@ var init_settings = __esm({
         };
         this.id = _.kebabCase(name);
       }
-      addField(type, opts, defaultValue) {
+      addField(type, opts, fieldComponent, defaultValue) {
         if (defaultValue !== void 0) {
           const settingId = this.getId(opts.id);
           _SettingsSection.setDefaultFieldValue(settingId, defaultValue);
         }
         const field = Object.assign({}, opts, { type });
-        this.sectionFields[opts.id] = field;
+        this.sectionFields[opts.id] = fieldComponent(field);
       }
       static {
         this.getFieldValue = (id) => JSON.parse(LocalStorage.get(id) ?? "null");

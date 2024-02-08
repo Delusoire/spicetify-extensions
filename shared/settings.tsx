@@ -1,4 +1,4 @@
-import { SectionTitle, SettingColumn, SettingSection, SettingText, SettingToggle } from "./modules.ts"
+import { SettingColumn, SettingText, SettingToggle } from "./modules.ts"
 import { sleep } from "./util.ts"
 import { _ } from "./deps.ts"
 
@@ -45,19 +45,20 @@ export interface HiddenField extends BaseField {
     type: FieldType.HIDDEN
 }
 
+if (!__renderSettingSections) {
+    globalThis.__settingSections = new Set()
+    globalThis.__renderSettingSections = () => Array.from(globalThis.__settingSections)
+}
+
 export class SettingsSection {
-    private stopHistoryListener: any
     public id: string
 
-    constructor(public name: string, public sectionFields: { [key: string]: SettingsField } = {}) {
+    constructor(public name: string, public sectionFields: { [key: string]: React.JSX.Element } = {}) {
         this.id = _.kebabCase(name)
     }
 
     pushSettings = () => {
-        if (this.stopHistoryListener) this.stopHistoryListener()
-
-        this.stopHistoryListener = History.listen(() => this.render())
-        this.render()
+        globalThis.__settingSections.push(<this.SettingsSection />)
     }
 
     toObject = () =>
@@ -74,50 +75,33 @@ export class SettingsSection {
             },
         )
 
-    private render = async () => {
-        while (!document.getElementById("desktop.settings.selectLanguage")) {
-            if (History.location.pathname !== "/preferences") return
-            await sleep(100)
-        }
-
-        const allSettingsContainer = document.querySelector(".x-settings-container")
-
-        if (!allSettingsContainer) return
-
-        let pluginSettingsContainer = Array.from(allSettingsContainer.children).find(({ id }) => id === this.id)
-
-        if (!pluginSettingsContainer) {
-            pluginSettingsContainer = document.createElement("div")
-            pluginSettingsContainer.id = this.id
-            pluginSettingsContainer.className = "settingsContainer"
-            allSettingsContainer.appendChild(pluginSettingsContainer)
-        }
-
-        ReactDOM.render(<this.SettingsSection />, pluginSettingsContainer)
-    }
-
     addButton = (props: FieldToProps<ButtonField>) => {
-        this.addField(FieldType.BUTTON, props)
+        this.addField(FieldType.BUTTON, props, this.ButtonField)
         return this
     }
 
     addToggle = (props: FieldToProps<ToggleField>, defaultValue: Task<boolean> = () => false) => {
-        this.addField(FieldType.TOGGLE, props, defaultValue)
+        this.addField(FieldType.TOGGLE, props, this.ToggleField, defaultValue)
         return this
     }
 
     addInput = (props: FieldToProps<InputField>, defaultValue: Task<string> = () => "") => {
-        this.addField(FieldType.INPUT, props, defaultValue)
+        this.addField(FieldType.INPUT, props, this.InputField, defaultValue)
         return this
     }
 
-    private addField(type: FieldType, opts: FieldToProps<SettingsField>, defaultValue?: any) {
+    private addField<SF extends SettingsField>(
+        type: SF["type"],
+        opts: FieldToProps<SF>,
+        fieldComponent: (field: SF) => React.JSX.Element,
+        defaultValue?: any,
+    ) {
         if (defaultValue !== undefined) {
             const settingId = this.getId(opts.id)
             SettingsSection.setDefaultFieldValue(settingId, defaultValue)
         }
-        const field = Object.assign({}, opts, { type }) as SettingsField
-        this.sectionFields[opts.id] = field
+        const field = Object.assign({}, opts, { type }) as SF
+        this.sectionFields[opts.id] = fieldComponent(field)
     }
 
     getId = (nameId: string) => ["extensions", this.id, nameId].join(":")
@@ -144,24 +128,11 @@ export class SettingsSection {
         if (SettingsSection.getFieldValue(id) === null) SettingsSection.setFieldValue(id, await defaultValue())
     }
 
-    private toReactComponent = (field: SettingsField) => {
-        switch (field.type) {
-            case FieldType.BUTTON:
-                return this.ButtonField(field)
-            case FieldType.TOGGLE:
-                return this.ToggleField(field)
-            case FieldType.INPUT:
-                return this.InputField(field)
-            default:
-                return <></>
-        }
-    }
-
     private SettingsSection = () => (
-        <SettingSection filterMatchQuery={this.name}>
-            <SectionTitle>{this.name}</SectionTitle>
-            {Object.values(this.sectionFields).map(this.toReactComponent)}
-        </SettingSection>
+        <__SettingSection filterMatchQuery={this.name}>
+            <__SectionTitle>{this.name}</__SectionTitle>
+            {Object.values(this.sectionFields)}
+        </__SettingSection>
     )
 
     SettingField = ({ field, children }: { field: SettingsField; children?: any }) => (
