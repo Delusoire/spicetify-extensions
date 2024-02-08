@@ -55,7 +55,7 @@ var rs_w = exportedForwardRefs.filter((x) => x.render?.toString().includes("hasL
 var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
 var { History } = Spicetify.Platform;
-if (!__renderSettingSections) {
+if (!globalThis.__renderSettingSections) {
   globalThis.__settingSections = /* @__PURE__ */ new Set();
   globalThis.__renderSettingSections = () => Array.from(globalThis.__settingSections);
 }
@@ -64,7 +64,7 @@ var SettingsSection = class _SettingsSection {
     this.name = name;
     this.sectionFields = sectionFields;
     this.pushSettings = () => {
-      globalThis.__settingSections.push(/* @__PURE__ */ React.createElement(this.SettingsSection, null));
+      __settingSections.push(/* @__PURE__ */ React.createElement(this.SettingsSection, null));
     };
     this.toObject = () => new Proxy(
       {},

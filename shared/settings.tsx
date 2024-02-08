@@ -45,7 +45,7 @@ export interface HiddenField extends BaseField {
     type: FieldType.HIDDEN
 }
 
-if (!__renderSettingSections) {
+if (!globalThis.__renderSettingSections) {
     globalThis.__settingSections = new Set()
     globalThis.__renderSettingSections = () => Array.from(globalThis.__settingSections)
 }
@@ -58,7 +58,7 @@ export class SettingsSection {
     }
 
     pushSettings = () => {
-        globalThis.__settingSections.push(<this.SettingsSection />)
+        __settingSections.push(<this.SettingsSection />)
     }
 
     toObject = () =>
