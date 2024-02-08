@@ -205,7 +205,7 @@ var init_modules = __esm({
     modules = Object.keys(require2.m).map((id) => require2(id)).filter((module) => typeof module === "object");
     exportedMembers = modules.flatMap((module) => Object.values(module)).filter(Boolean);
     exportedFunctions = exportedMembers.filter((module) => typeof module === "function");
-    exportedReactObjects = Object.groupBy(exportedFunctions, (x) => x.$$typeof);
+    exportedReactObjects = Object.groupBy(exportedMembers, (x) => x.$$typeof);
     exportedContexts = exportedReactObjects[Symbol.for("react.context")];
     exportedForwardRefs = exportedReactObjects[Symbol.for("react.forward_ref")];
     exportedMemos = exportedReactObjects[Symbol.for("react.memo")];

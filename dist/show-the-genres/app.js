@@ -99,7 +99,7 @@ var require2 = webpackChunkopen.push([[Symbol("Dummy chunk to extract require me
 var modules = Object.keys(require2.m).map((id) => require2(id)).filter((module) => typeof module === "object");
 var exportedMembers = modules.flatMap((module) => Object.values(module)).filter(Boolean);
 var exportedFunctions = exportedMembers.filter((module) => typeof module === "function");
-var exportedReactObjects = Object.groupBy(exportedFunctions, (x) => x.$$typeof);
+var exportedReactObjects = Object.groupBy(exportedMembers, (x) => x.$$typeof);
 var exportedContexts = exportedReactObjects[Symbol.for("react.context")];
 var exportedForwardRefs = exportedReactObjects[Symbol.for("react.forward_ref")];
 var exportedMemos = exportedReactObjects[Symbol.for("react.memo")];

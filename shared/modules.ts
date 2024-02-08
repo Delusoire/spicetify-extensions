@@ -6,16 +6,18 @@ const modules = Object.keys(require.m)
 export const exportedMembers = modules.flatMap(module => Object.values(module)).filter(Boolean)
 export const exportedFunctions = exportedMembers.filter((module): module is Function => typeof module === "function")
 
-const exportedReactObjects = Object.groupBy(exportedFunctions, x => x.$$typeof);
-const  exportedContexts = exportedReactObjects[Symbol.for("react.context")]!;
-const exportedForwardRefs = exportedReactObjects[Symbol.for("react.forward_ref")]!;
-const exportedMemos = exportedReactObjects[Symbol.for("react.memo")]!;
+const exportedReactObjects = Object.groupBy(exportedMembers, x => x.$$typeof)
+const exportedContexts = exportedReactObjects[Symbol.for("react.context")]!
+const exportedForwardRefs = exportedReactObjects[Symbol.for("react.forward_ref")]!
+const exportedMemos = exportedReactObjects[Symbol.for("react.memo")]!
 
 const findByStrings = (modules: Array<any>, ...filters: Array<string | RegExp>) =>
     modules.find(f =>
-            filters.map(filter =>
+        filters
+            .map(filter =>
                 typeof filter === "string" ? (s: string) => s.includes(filter) : (s: string) => filter.test(s),
-            ).every(filterFn => filterFn(f.toString()))
+            )
+            .every(filterFn => filterFn(f.toString())),
     )
 
 export const CheckedPlaylistButtonIcon = findByStrings(
