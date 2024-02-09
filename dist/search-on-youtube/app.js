@@ -82,15 +82,15 @@ var { React, ReactDOM, LocalStorage } = Spicetify;
 var { ButtonSecondary } = Spicetify.ReactComponent;
 var { History } = Spicetify.Platform;
 if (!globalThis.__renderSettingSections) {
-  globalThis.__settingSections = /* @__PURE__ */ new Set();
-  globalThis.__renderSettingSections = () => Array.from(globalThis.__settingSections);
+  globalThis.__settingSections = /* @__PURE__ */ new Map();
+  globalThis.__renderSettingSections = () => Array.from(globalThis.__settingSections.values());
 }
 var SettingsSection = class _SettingsSection {
   constructor(name, sectionFields = {}) {
     this.name = name;
     this.sectionFields = sectionFields;
     this.pushSettings = () => {
-      __settingSections.add(/* @__PURE__ */ React.createElement(this.SettingsSection, null));
+      __settingSections.set(this.id, /* @__PURE__ */ React.createElement(this.SettingsSection, null));
     };
     this.toObject = () => new Proxy(
       {},

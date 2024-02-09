@@ -46,8 +46,8 @@ export interface HiddenField extends BaseField {
 }
 
 if (!globalThis.__renderSettingSections) {
-    globalThis.__settingSections = new Set()
-    globalThis.__renderSettingSections = () => Array.from(globalThis.__settingSections)
+    globalThis.__settingSections = new Map<string, React.JSX.Element>()
+    globalThis.__renderSettingSections = () => Array.from(globalThis.__settingSections.values())
 }
 
 export class SettingsSection {
@@ -58,7 +58,7 @@ export class SettingsSection {
     }
 
     pushSettings = () => {
-        __settingSections.add(<this.SettingsSection />)
+        __settingSections.set(this.id, <this.SettingsSection />)
     }
 
     toObject = () =>
