@@ -58,7 +58,7 @@ export class SettingsSection {
     }
 
     pushSettings = () => {
-        __settingSections.push(<this.SettingsSection />)
+        __settingSections.add(<this.SettingsSection />)
     }
 
     toObject = () =>

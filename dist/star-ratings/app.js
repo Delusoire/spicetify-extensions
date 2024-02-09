@@ -98,7 +98,7 @@ var SettingsSection = class _SettingsSection {
     this.name = name;
     this.sectionFields = sectionFields;
     this.pushSettings = () => {
-      __settingSections.push(/* @__PURE__ */ React.createElement(this.SettingsSection, null));
+      __settingSections.add(/* @__PURE__ */ React.createElement(this.SettingsSection, null));
     };
     this.toObject = () => new Proxy(
       {},
