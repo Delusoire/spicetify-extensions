@@ -101,7 +101,7 @@ export class SettingsSection {
             SettingsSection.setDefaultFieldValue(settingId, defaultValue)
         }
         const field = Object.assign({}, opts, { type }) as SF
-        this.sectionFields[opts.id] = fieldComponent(field)
+        this.sectionFields[opts.id] = React.createElement(fieldComponent, field)
     }
 
     getId = (nameId: string) => ["extensions", this.id, nameId].join(":")

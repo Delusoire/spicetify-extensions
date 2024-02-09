@@ -235,7 +235,7 @@ var SettingsSection = class _SettingsSection {
       _SettingsSection.setDefaultFieldValue(settingId, defaultValue);
     }
     const field = Object.assign({}, opts, { type });
-    this.sectionFields[opts.id] = fieldComponent(field);
+    this.sectionFields[opts.id] = React.createElement(fieldComponent, field);
   }
   static {
     this.getFieldValue = (id) => JSON.parse(LocalStorage.get(id) ?? "null");
