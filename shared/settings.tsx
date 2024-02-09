@@ -1,12 +1,10 @@
 import { SettingColumn, SettingText, SettingToggle } from "./modules.ts"
-import { sleep } from "./util.ts"
 import { _ } from "./deps.ts"
 
 type Task<A> = (() => Awaited<A>) | (() => Promise<Awaited<A>>)
 
-const { React, ReactDOM, LocalStorage } = Spicetify
+const { React, LocalStorage } = Spicetify
 const { ButtonSecondary } = Spicetify.ReactComponent
-const { History } = Spicetify.Platform
 
 type FieldToProps<A> = Omit<A, "type">
 
