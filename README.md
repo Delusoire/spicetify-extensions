@@ -1,3 +1,7 @@
+# NOTICE
+I'm moving all of my extensions and porting some other famous ones over to my fork of spicetify-cli available at https://github.com/Delusoire/bespoke. As such, this repo is in maintenance mode, no new extenions/features will be added to this repo and the support will be very limited.
+#
+
 ### Practical Spicetify Extensions
 
 Install using [marketplace](https://github.com/spicetify/spicetify-marketplace) OR by downloading either:
