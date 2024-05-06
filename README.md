@@ -1,6 +1,7 @@
 # NOTICE
 ~~I'm moving all of my extensions and porting some other famous ones over to my fork of spicetify-cli available at https://github.com/Delusoire/bespoke. As such, this repo is in maintenance mode, no new extenions/features will be added to this repo and the support will be very limited.~~
-This repository is now outdated as spicetify-v3 (codenamed bespoke) is in beta stage. These extensions have been updated to work for the newer spicetify release at https://github.com/Delusoire/bespoke-modules where they'll still be getting new features and bug fixes. However, this repo will be archived.
+
+This repository is now outdated as spicetify-v3 (codenamed bespoke) is in beta stage. These extensions [have been updated here](https://github.com/Delusoire/bespoke-modules) to work for the newer spicetify release where they'll still be getting new features and bug fixes. However, this repo will be archived.
 #
 
 ### Practical Spicetify Extensions
